@@ -1,0 +1,316 @@
+{
+  "schema_version": 1,
+  "dut": "new_load_unit",
+  "top": "NewLoadUnit",
+  "run": "failure-recheck-final-03",
+  "rtl_sha256": {
+    "NewLoadUnit.sv": "31b1d16c45fb105ed80b02887827af845b4c5c0318fe77632bb00e64b5d0c84f"
+  },
+  "metrics": {
+    "line_dut_only": {
+      "hit": 762,
+      "total": 762,
+      "percent": 100.0
+    },
+    "branch": {
+      "hit": 502,
+      "total": 508,
+      "percent": 98.82
+    },
+    "toggle_closure": {
+      "hit": 39686,
+      "total": 40024,
+      "percent": 99.16
+    },
+    "functional": {
+      "coverage": 100.0,
+      "cases": 25,
+      "checked": false,
+      "note": "Tool reports 100% declared-bin sampling; independent per-bin reached/checked completeness is not proven."
+    }
+  },
+  "uncovered": [
+    {
+      "id": "NLU-PERF-WIDTH-AND-DEAD-COUNTER",
+      "kind": "mixed_structural_and_rtl_defect",
+      "points": "174 points: io_perf_*_value[1..5] and the perf_3/perf_7 pipeline bits",
+      "evidence": [
+        "Leaf stage perf outputs zero-extend delayed booleans. NewLoadUnit.sv:1138-1159 forwards stage events through 6-bit registers; upper bits settle to zero but can have random initialization transients",
+        "NewLoadUnit.sv:1152-1153,4011 forwards S2 perf3 as parent perf7. S2 defect LSU-HWPF-MISS-001 is proven dynamically only at the exposed S2 boundary; generated parent has no direct hardware-prefetch injection port",
+        "174 residual raw points are a mixed group, not 174 harmless constants or 174 independent bugs; no denominator is removed"
+      ],
+      "required_supplement": true,
+      "defect_id": "LSU-HWPF-MISS-001"
+    },
+    {
+      "id": "NLU-ENTRANCE-CODES",
+      "kind": "unreachable_structural",
+      "points": "65 points on entrance[4]/[5]/[7] and in_2.entrance[2]",
+      "evidence": [
+        "the parent has no prefetchReq port, so the hi-confidence prefetch lane (entrance 0x10) and the low-confidence lane (0x80 as a real beat) are constant-eliminated in S0's arbiter (docs/contracts/load-arbiter.md)",
+        "entrance bit 5 (0x20) is not produced by any lane; bit 7 only exists as the arbiter bubble default, but pipeOut is registered only when a lane is valid",
+        "S0 forces the fast lane's entrance[2] with OR 3'h4 (LoadUnitS0.sv), so that bit can never fall"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "NLU-TAIL-LINE-ALIGNED",
+      "kind": "unreachable_structural",
+      "points": "54 points on tail vaddr/fullva[0..3] and mask[15]",
+      "evidence": [
+        "LoadUnitS1.sv: unalignTail.vaddr = {46'(vaddr[49:4]+1), 4'h0} and fullva = {60'(fullva[63:4]+1), 4'h0}",
+        "LoadUnitS1.sv: unalignTail.mask = {1'h0, shifted[30:16]} - bit 15 is a literal zero and only spilled bytes are representable",
+        "cross-16B directed tests confirm the tail always lands on a line boundary"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "NLU-DCACHE-CMD-TIED",
+      "kind": "unreachable_structural",
+      "points": "24 points on dcache_req cmd/instrtype high bits",
+      "evidence": [
+        "LoadUnitS0.sv: cmd = {3'h0, instrType[2], 1'h0} and instrtype = {2'h0, {2{instrType[2]}}}",
+        "only cmd[1] and instrtype[1:0] are driven"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "NLU-LQ-CAUSE-UNUSED-BITS",
+      "kind": "unreachable_structural",
+      "points": "12 points on LQ cause 7 and cause 12",
+      "evidence": [
+        "LoadUnitS3.sv encodes 11 replay causes onto bits 0..6 and 8..11; bit 7 and bit 12 are tied to zero (see docs/gaps/load_s3.json LS3-CAUSE7-12-NOT-ENCODED)"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "NLU-TRAIN-FLAGS-CONSTANT",
+      "kind": "unreachable_structural",
+      "points": "6 points on prefetchTrain isFirstIssue/isHwPrefetch (both directions)",
+      "evidence": [
+        "a training beat requires entrance[6]|entrance[5]; those codes (0x40/0x44) are only produced by the scalar lane and by fast replays of scalar beats",
+        "the scalar lane's pftType[1] is the literal 1 (LoadUnitS0.sv), so isHwPrefetch = instrType[2] & ~pftType[1] is always 0 on a training beat",
+        "isFirstIssue = entrance[6]|entrance[5] is therefore always 1 on a valid train and stays 1 in the register"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "NLU-SCALAR-ACCESS-CONSTANTS",
+      "kind": "unreachable_structural",
+      "points": "3 points on scalar lane accessType instruction/prefetch encoding bits",
+      "evidence": [
+        "LoadUnitS0.sv: io_in_5_bits_accessType_instrType = fuOpType[0] ? 3'h4 : 3'h1 (bit 1 constant 0)",
+        "LoadUnitS0.sv: io_in_5_bits_accessType_pftType = {1'h1, noQuery} (bit 1 constant 1)"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "NLU-TRAIN-META-RESIDUAL",
+      "kind": "unreachable_structural",
+      "points": "0 point on prefetchTrain metaSource",
+      "evidence": [
+        "No metaSource residual remains in the final raw uncovered list; the previous duplicate-copy explanation is not used as an unreachable proof"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "NLU-BRANCH-INITIAL-RESET",
+      "kind": "tool_boundary",
+      "points": "6 reset branches (NewLoadUnit.sv:1196, LoadUnitS0.sv:657/654, LoadUnitS1.sv:693/654, LoadUnitS2.sv:977, LoadUnitS3.sv:711)",
+      "evidence": [
+        "all six are the ENABLE_INITIAL_REG_ reset arms, executed before the first test cycle",
+        "reset is exercised: every stage's valids and the redirect/prefetch-train registers are cleared and the model tracks them"
+      ],
+      "required_supplement": false
+    }
+  ],
+  "semantic_findings": [
+    {
+      "id": "NLU-TLB-RESPONSE-CYCLE",
+      "finding": "the TLB response must be presented in the cycle the beat sits in S1, not when S0 issues the request",
+      "evidence": [
+        "the first probes drove the response with ldin and observed cause_3 replays; adding the response one cycle later produced the expected ldout",
+        "this matches LoadUnitS1.sv (tlbResp is sampled together with pipeIn)"
+      ],
+      "impact": "any parent-level stimulus must schedule responses with pipeline latency; the tests do so",
+      "defect_claim": false
+    },
+    {
+      "id": "NLU-S3-COMB-WRITEBACK",
+      "finding": "S3's ldout/vldout/lqWrite are combinational from its pipeIn, so the writeback is visible in the same cycle the beat enters S3",
+      "evidence": [
+        "the aligned load writes back 3 edges after ldin (ldin t0, S1 t1, S2 t2, S3 t2 comb)",
+        "LoadUnitS3.sv: ldoutValid = pipeIn_valid & writebackArmed & ~vecWen & ~cancel"
+      ],
+      "impact": "the parent timing table records this; tests assert the writeback at that cycle",
+      "defect_claim": false
+    },
+    {
+      "id": "NLU-TAIL-DATA-TIMING",
+      "finding": "the head+tail merge appears on the datapath output one cycle before the merged LQ entry is written",
+      "evidence": [
+        "cross-16B test: the S3 input is the head while the datapath output already holds head|tail; the LQ write with the head address/cause happens on the following edge",
+        "datapath s4ShiftHead is loaded from the head's rotated data at the tail's S3 capture"
+      ],
+      "impact": "both values are checked (the merged data at the writeback cycle and the tail-line mask in the LQ stream)",
+      "defect_claim": false
+    }
+  ],
+  "failures": [],
+  "status": "KNOWN_RTL_PERFORMANCE_DEFECT_AND_EVIDENCE_LIMITS",
+  "review": {
+    "status": "CONFIRMED_RTL_DEFECT_AND_EVIDENCE_LIMITS",
+    "acceptance_passed": false,
+    "known_rtl_defects": [
+      "LSU-HWPF-MISS-001"
+    ],
+    "historical_failures_fully_attributed": false,
+    "independent_reached_checked_complete": false,
+    "report": "docs/bug-reports-20261026/README.md",
+    "evidence": "review/failure_recheck_20261026/final-audit.json"
+  },
+  "retracted_gap_classifications": {
+    "reason": "Legally reached by new parent cases; original 21+1 unreachable claims are disproved, denominators unchanged.",
+    "old_entries": [
+      {
+        "id": "NLU-CHILD-PORT-CAUSE-COPIES",
+        "kind": "unreachable_structural",
+        "points": "21 points on cause_0/cause_11/fastReplayNukeFirst in child instance port copies",
+        "evidence": [
+          "these points are reported inside LoadUnitS1/S3 port lists; cause_0 is only generated by S2 (never by S1) and cause_11 is generated by S1 and captured by S2, so the child copies that never carry the value cannot toggle",
+          "the functionally meaningful copies are exercised: the uncache test asserts lqWrite cause_0, the nuke tests assert cause_11, and the nuke-first test drives fastReplayNukeFirst",
+          "the same child points are covered by the corresponding leaf UT runs (load-s1/s2/s3 final runs) with their own denominators"
+        ],
+        "required_supplement": false
+      },
+      {
+        "id": "NLU-ALLOW-RR-PULSE",
+        "kind": "unreachable_structural",
+        "points": "1 point on allowRRBankConflictFastReplay 1->0",
+        "evidence": [
+          "LoadUnitS3.sv: allowRRBankConflictFastReplay is a combinational wire that is high only while the granted bank-conflict replay is in S3; the post-edge sampling point never observes the falling half (the wire is recomputed from the next beat)",
+          "the RR replay behaviour itself is verified by test xstage.fast_replay_reenters_pipeline (the beat is not committed and later re-enters)"
+        ],
+        "required_supplement": false
+      }
+    ],
+    "recovered_points": [
+      {
+        "file": "LoadUnitS1.sv",
+        "line": 148,
+        "name": "io_pipeOut_bits_cause_11:1->0"
+      },
+      {
+        "file": "LoadUnitS1.sv",
+        "line": 150,
+        "name": "io_pipeOut_bits_fastReplayNukeFirst:1->0"
+      },
+      {
+        "file": "LoadUnitS1.sv",
+        "line": 425,
+        "name": "pipeOutBits_cause_11:1->0"
+      },
+      {
+        "file": "LoadUnitS1.sv",
+        "line": 427,
+        "name": "pipeOutBits_fastReplayNukeFirst:1->0"
+      },
+      {
+        "file": "LoadUnitS2.sv",
+        "line": 102,
+        "name": "io_pipeIn_bits_cause_11:1->0"
+      },
+      {
+        "file": "LoadUnitS2.sv",
+        "line": 104,
+        "name": "io_pipeIn_bits_fastReplayNukeFirst:1->0"
+      },
+      {
+        "file": "LoadUnitS3.sv",
+        "line": 154,
+        "name": "io_pipeOut_bits_cause_0:0->1"
+      },
+      {
+        "file": "LoadUnitS3.sv",
+        "line": 154,
+        "name": "io_pipeOut_bits_cause_0:1->0"
+      },
+      {
+        "file": "LoadUnitS3.sv",
+        "line": 164,
+        "name": "io_pipeOut_bits_cause_11:1->0"
+      },
+      {
+        "file": "LoadUnitS3.sv",
+        "line": 202,
+        "name": "io_unalignConcat_bits_cause_0:0->1"
+      },
+      {
+        "file": "LoadUnitS3.sv",
+        "line": 202,
+        "name": "io_unalignConcat_bits_cause_0:1->0"
+      },
+      {
+        "file": "LoadUnitS3.sv",
+        "line": 212,
+        "name": "io_unalignConcat_bits_cause_11:1->0"
+      },
+      {
+        "file": "LoadUnitS3.sv",
+        "line": 494,
+        "name": "allowRRBankConflictFastReplay:1->0"
+      },
+      {
+        "file": "LoadUnitS3.sv",
+        "line": 580,
+        "name": "pipeOutBits_cause_0:0->1"
+      },
+      {
+        "file": "LoadUnitS3.sv",
+        "line": 580,
+        "name": "pipeOutBits_cause_0:1->0"
+      },
+      {
+        "file": "LoadUnitS3.sv",
+        "line": 590,
+        "name": "pipeOutBits_cause_11:1->0"
+      },
+      {
+        "file": "LoadUnitS4.sv",
+        "line": 23,
+        "name": "io_pipeIn_bits_cause_0:0->1"
+      },
+      {
+        "file": "LoadUnitS4.sv",
+        "line": 23,
+        "name": "io_pipeIn_bits_cause_0:1->0"
+      },
+      {
+        "file": "LoadUnitS4.sv",
+        "line": 33,
+        "name": "io_pipeIn_bits_cause_11:1->0"
+      },
+      {
+        "file": "LoadUnitS4.sv",
+        "line": 65,
+        "name": "io_unalignConcat_bits_cause_0:0->1"
+      },
+      {
+        "file": "LoadUnitS4.sv",
+        "line": 65,
+        "name": "io_unalignConcat_bits_cause_0:1->0"
+      },
+      {
+        "file": "LoadUnitS4.sv",
+        "line": 75,
+        "name": "io_unalignConcat_bits_cause_11:1->0"
+      }
+    ]
+  },
+  "known_defects": [
+    {
+      "id": "LSU-HWPF-MISS-001",
+      "observation": "S2 dynamic reproduction; parent perf7 static propagation only. Direct hardware-prefetch parent input absent in this generated configuration."
+    }
+  ]
+}

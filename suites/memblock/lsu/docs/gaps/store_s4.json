@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "dut": "store_s4",
+  "top": "StoreUnitS4",
+  "run": "store-s4-initial-02",
+  "metrics": {
+    "line": {
+      "hit": 0,
+      "total": 0,
+      "note": "pure continuous assigns; Verilator line coverage only instruments procedural statements"
+    },
+    "branch": {
+      "hit": 0,
+      "total": 0
+    },
+    "toggle": {
+      "hit": 572,
+      "total": 572
+    },
+    "functional": {
+      "coverage": 100.0,
+      "cases": 5
+    }
+  },
+  "uncovered": [],
+  "failures": [],
+  "status": "PASS",
+  "rtl_sha256": {
+    "StoreUnitS4.sv": "0ce0a8076e1d9f4bb018b5684c790e4677b99dbacbf08eacf3e6456366ab5cc8"
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "format": "mmu-coverage-audit-summary",
+  "generated_at": "2026-10-24T13:40:53.656368+00:00",
+  "run": "results/hptw-tests-04",
+  "coverage_dat_sha256": "40ded08fde193b47496bc789c905e8e40221f9cb7bc3766d47ac87d46e84efbb",
+  "coverage_info_sha256": "0a527fa7e248e3bb01aac583afc939eea84787007c19be03c03c51a591e8cc06",
+  "lcov_lines": {
+    "unique_lines": 461,
+    "covered_lines": 136,
+    "uncovered": 325,
+    "procedural_uncovered": 248,
+    "coverage_percent": 29.5011
+  },
+  "lcov_lines_dut_only": {
+    "unique_lines": 133,
+    "covered_lines": 133,
+    "uncovered": 0,
+    "procedural_uncovered": 0,
+    "coverage_percent": 100.0
+  },
+  "lcov_lines_per_file": {
+    "HptwDut.v": {
+      "covered_lines": 133,
+      "unique_lines": 133,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "HptwDut_top.sv": {
+      "covered_lines": 3,
+      "unique_lines": 328,
+      "uncovered": 325,
+      "coverage_percent": 0.9146
+    }
+  },
+  "branches": {
+    "total": 98,
+    "covered": 95,
+    "uncovered_count": 3
+  },
+  "toggles": {
+    "total": 5270,
+    "covered": 2450,
+    "uncovered_count": 2820
+  },
+  "functional_coverage": {
+    "coverage": 91.66666666666667,
+    "covered": false,
+    "groups": [
+      {
+        "instance": "hptw",
+        "coverage": 91.66666666666667,
+        "samples": 18,
+        "points": [
+          {
+            "name": "event",
+            "coverage": 100.0,
+            "samples": 18
+          },
+          {
+            "name": "page",
+            "coverage": 100.0,
+            "samples": 18
+          },
+          {
+            "name": "hit",
+            "coverage": 75.0,
+            "samples": 18
+          }
+        ],
+        "crosses": []
+      }
+    ]
+  },
+  "limits": "Verilator point summaries are not semantic checks. LCOV DA hits are summed per line (duplicate shadow points included) and every denominator is retained. Declarative wire/reg/end lines are separated by source text, not deleted; procedural lines are still listed if uncovered. Files are kept separate so a parent DUT does not hide a child's own gaps.",
+  "note": "Compact summary; final run keeps the full audit."
+}

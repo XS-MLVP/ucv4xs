@@ -1,0 +1,1029 @@
+{
+  "format": "xreactor-functional-coverage",
+  "version": 2,
+  "coverage": 100.0,
+  "covered": true,
+  "groups": [
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "tlb_lookup",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "exception",
+            "source": "exception",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "af",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "af"
+                  ]
+                }
+              },
+              {
+                "name": "fake_or_nonleaf",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "fake_or_nonleaf"
+                  ]
+                }
+              },
+              {
+                "name": "none",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "none"
+                  ]
+                }
+              },
+              {
+                "name": "not_applicable",
+                "kind": "ignore",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    -1
+                  ]
+                }
+              },
+              {
+                "name": "pf",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "pf"
+                  ]
+                }
+              }
+            ],
+            "description": "命中时的异常类别：无异常、page fault、access fault、fake/non-leaf 标志。"
+          },
+          {
+            "name": "outcome",
+            "source": "outcome",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "hit",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "hit"
+                  ]
+                }
+              },
+              {
+                "name": "miss",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "miss"
+                  ]
+                }
+              }
+            ],
+            "description": "查找命中或未命中。"
+          },
+          {
+            "name": "translation_mode",
+            "source": "translation_mode",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "bare",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "bare"
+                  ]
+                }
+              },
+              {
+                "name": "sv39",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "sv39"
+                  ]
+                }
+              },
+              {
+                "name": "sv48",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "sv48"
+                  ]
+                }
+              }
+            ],
+            "description": "地址翻译处于 Bare、Sv39 或 Sv48 模式。"
+          }
+        ],
+        "crosses": [],
+        "description": "TLB 顶层请求/翻译结果。"
+      },
+      "schema_digest": "ed7f2175fbba604a2acead7e349dd314163f2541af696e26bb9d0b486850fe7c",
+      "instance": "tlb.lookup",
+      "illegal_policy": "raise",
+      "samples": 301,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 301,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "bare": 2,
+            "sv39": 297,
+            "sv48": 2
+          },
+          "provenance": {
+            "bare": {
+              "26759f1eaa474ed8b39d8f3147132b4b": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "sv39": {
+              "26759f1eaa474ed8b39d8f3147132b4b": {
+                "count": 297,
+                "first": null,
+                "last": null
+              }
+            },
+            "sv48": {
+              "26759f1eaa474ed8b39d8f3147132b4b": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "translation_mode",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 301,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "hit": 78,
+            "miss": 223
+          },
+          "provenance": {
+            "hit": {
+              "26759f1eaa474ed8b39d8f3147132b4b": {
+                "count": 78,
+                "first": null,
+                "last": null
+              }
+            },
+            "miss": {
+              "26759f1eaa474ed8b39d8f3147132b4b": {
+                "count": 223,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "outcome",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 301,
+          "gated": 0,
+          "ignored": 223,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "af": 1,
+            "fake_or_nonleaf": 2,
+            "none": 72,
+            "not_applicable": 223,
+            "pf": 3
+          },
+          "provenance": {
+            "none": {
+              "26759f1eaa474ed8b39d8f3147132b4b": {
+                "count": 72,
+                "first": null,
+                "last": null
+              }
+            },
+            "pf": {
+              "26759f1eaa474ed8b39d8f3147132b4b": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "af": {
+              "26759f1eaa474ed8b39d8f3147132b4b": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "fake_or_nonleaf": {
+              "26759f1eaa474ed8b39d8f3147132b4b": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "exception",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "26759f1eaa474ed8b39d8f3147132b4b": {
+          "run_id": "26759f1eaa474ed8b39d8f3147132b4b",
+          "instance": "tlb.lookup",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "26759f1eaa474ed8b39d8f3147132b4b",
+      "snapshot_id": "22b3a71761abbcc72ab8fe6c383161220fd35eea86b73c5bbea13eb390511112"
+    },
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "tlb_ptw",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "refill",
+            "source": "refill",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "stage1_refill",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "stage1_refill"
+                  ]
+                }
+              },
+              {
+                "name": "two_stage_refill",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "two_stage_refill"
+                  ]
+                }
+              }
+            ],
+            "description": "PTW 响应回填 stage1 或两阶段翻译。"
+          },
+          {
+            "name": "request",
+            "source": "request",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "miss_request",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "miss_request"
+                  ]
+                }
+              },
+              {
+                "name": "no_request_on_hit",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "no_request_on_hit"
+                  ]
+                }
+              },
+              {
+                "name": "s2xlate_request",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "s2xlate_request"
+                  ]
+                }
+              }
+            ],
+            "description": "miss 发起 PTW 请求、hit 不请求、以及两阶段上下文请求。"
+          }
+        ],
+        "crosses": [],
+        "description": "TLB 与 PTW 的请求/响应关系。"
+      },
+      "schema_digest": "dd13340bcf00beca8c466f3d644a452f3d04ec72a7773770e68dc514af404d0f",
+      "instance": "tlb.ptw",
+      "illegal_policy": "raise",
+      "samples": 510,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 510,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "miss_request": 426,
+            "no_request_on_hit": 78,
+            "s2xlate_request": 6
+          },
+          "provenance": {
+            "no_request_on_hit": {
+              "1d54fd3398124721805aab64e4f539ce": {
+                "count": 78,
+                "first": null,
+                "last": null
+              }
+            },
+            "miss_request": {
+              "1d54fd3398124721805aab64e4f539ce": {
+                "count": 426,
+                "first": null,
+                "last": null
+              }
+            },
+            "s2xlate_request": {
+              "1d54fd3398124721805aab64e4f539ce": {
+                "count": 6,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "request",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 510,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "stage1_refill": 508,
+            "two_stage_refill": 2
+          },
+          "provenance": {
+            "stage1_refill": {
+              "1d54fd3398124721805aab64e4f539ce": {
+                "count": 508,
+                "first": null,
+                "last": null
+              }
+            },
+            "two_stage_refill": {
+              "1d54fd3398124721805aab64e4f539ce": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "refill",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "1d54fd3398124721805aab64e4f539ce": {
+          "run_id": "1d54fd3398124721805aab64e4f539ce",
+          "instance": "tlb.ptw",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "1d54fd3398124721805aab64e4f539ce",
+      "snapshot_id": "1a09944823ff33a44d1f436be2c8f549239e57bd173597fa932c6437d9421f23"
+    },
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "tlb_exception",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "fault_type",
+            "source": "fault_type",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "af_set",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "af_set"
+                  ]
+                }
+              },
+              {
+                "name": "fake",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "fake"
+                  ]
+                }
+              },
+              {
+                "name": "none",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "none"
+                  ]
+                }
+              },
+              {
+                "name": "pf_a",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "pf_a"
+                  ]
+                }
+              },
+              {
+                "name": "pf_u",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "pf_u"
+                  ]
+                }
+              },
+              {
+                "name": "pf_x",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "pf_x"
+                  ]
+                }
+              }
+            ],
+            "description": "命中 PTE 的 x/u/a 权限失败、A 位失败、fake PTE 或无故障。"
+          }
+        ],
+        "crosses": [],
+        "description": "TLB 命中 PTE 的异常语义。"
+      },
+      "schema_digest": "3442d77c6bc46045c979f5058cf22d7821e7afd3ed6779578556087a1178a99b",
+      "instance": "tlb.exception",
+      "illegal_policy": "raise",
+      "samples": 8,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 8,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "af_set": 1,
+            "fake": 2,
+            "none": 2,
+            "pf_a": 1,
+            "pf_u": 1,
+            "pf_x": 1
+          },
+          "provenance": {
+            "pf_x": {
+              "531dadb7bbdc46b7b123277ca88a508d": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "pf_u": {
+              "531dadb7bbdc46b7b123277ca88a508d": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "pf_a": {
+              "531dadb7bbdc46b7b123277ca88a508d": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "af_set": {
+              "531dadb7bbdc46b7b123277ca88a508d": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "fake": {
+              "531dadb7bbdc46b7b123277ca88a508d": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "none": {
+              "531dadb7bbdc46b7b123277ca88a508d": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "fault_type",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "531dadb7bbdc46b7b123277ca88a508d": {
+          "run_id": "531dadb7bbdc46b7b123277ca88a508d",
+          "instance": "tlb.exception",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "531dadb7bbdc46b7b123277ca88a508d",
+      "snapshot_id": "631600718e5fc82a03ff04dbb3e74a00d4a340654a24c499db03fff7e5adfa1e"
+    },
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "tlb_sfence",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "fence_effect",
+            "source": "fence_effect",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "cleared",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "cleared"
+                  ]
+                }
+              },
+              {
+                "name": "survived",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "survived"
+                  ]
+                }
+              }
+            ],
+            "description": "目标条目被清除、无关条目保留。"
+          },
+          {
+            "name": "fence_form",
+            "source": "fence_form",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "addr",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "addr"
+                  ]
+                }
+              },
+              {
+                "name": "all_all",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "all_all"
+                  ]
+                }
+              },
+              {
+                "name": "all_asid",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "all_asid"
+                  ]
+                }
+              },
+              {
+                "name": "hfenceg",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "hfenceg"
+                  ]
+                }
+              },
+              {
+                "name": "hfencev",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "hfencev"
+                  ]
+                }
+              }
+            ],
+            "description": "sfence/hfence 失效形式在 TLB 顶层的透传。"
+          }
+        ],
+        "crosses": [],
+        "description": "TLB 顶层失效透传。"
+      },
+      "schema_digest": "5969fcbbd701e956476be3842bbde16acc29857f3bdedd200e9936faba94abdc",
+      "instance": "tlb.sfence",
+      "illegal_policy": "raise",
+      "samples": 27,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 27,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "addr": 7,
+            "all_all": 3,
+            "all_asid": 5,
+            "hfenceg": 6,
+            "hfencev": 6
+          },
+          "provenance": {
+            "all_all": {
+              "7913b0523ec0479eb5344dc92f1ba694": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "all_asid": {
+              "7913b0523ec0479eb5344dc92f1ba694": {
+                "count": 5,
+                "first": null,
+                "last": null
+              }
+            },
+            "addr": {
+              "7913b0523ec0479eb5344dc92f1ba694": {
+                "count": 7,
+                "first": null,
+                "last": null
+              }
+            },
+            "hfencev": {
+              "7913b0523ec0479eb5344dc92f1ba694": {
+                "count": 6,
+                "first": null,
+                "last": null
+              }
+            },
+            "hfenceg": {
+              "7913b0523ec0479eb5344dc92f1ba694": {
+                "count": 6,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "fence_form",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 27,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "cleared": 19,
+            "survived": 8
+          },
+          "provenance": {
+            "cleared": {
+              "7913b0523ec0479eb5344dc92f1ba694": {
+                "count": 19,
+                "first": null,
+                "last": null
+              }
+            },
+            "survived": {
+              "7913b0523ec0479eb5344dc92f1ba694": {
+                "count": 8,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "fence_effect",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "7913b0523ec0479eb5344dc92f1ba694": {
+          "run_id": "7913b0523ec0479eb5344dc92f1ba694",
+          "instance": "tlb.sfence",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "7913b0523ec0479eb5344dc92f1ba694",
+      "snapshot_id": "4d0a5023d29871867f7508910c21b866b94dffbdb229c868e33406abf6d55b89"
+    },
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "tlb_reset",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "reset_context",
+            "source": "reset_context",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "empty",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "empty"
+                  ]
+                }
+              },
+              {
+                "name": "with_valid_entries",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "with_valid_entries"
+                  ]
+                }
+              }
+            ],
+            "description": "复位清空有效翻译或从空状态开始。"
+          }
+        ],
+        "crosses": [],
+        "description": "TLB 复位语义。"
+      },
+      "schema_digest": "148e1c41cffb1a657c06da3d5e9234981710bb3ed3ff182e5d067092051e78e3",
+      "instance": "tlb.reset",
+      "illegal_policy": "raise",
+      "samples": 29,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 29,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "empty": 25,
+            "with_valid_entries": 4
+          },
+          "provenance": {
+            "empty": {
+              "1200c3f510e84dcaafd91c90fba9dd33": {
+                "count": 25,
+                "first": null,
+                "last": null
+              }
+            },
+            "with_valid_entries": {
+              "1200c3f510e84dcaafd91c90fba9dd33": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "reset_context",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "1200c3f510e84dcaafd91c90fba9dd33": {
+          "run_id": "1200c3f510e84dcaafd91c90fba9dd33",
+          "instance": "tlb.reset",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "1200c3f510e84dcaafd91c90fba9dd33",
+      "snapshot_id": "4979f6944bcc3f1b83795ab24d5e2036c61f71c4b4866f343f7cee3dfb539a40"
+    }
+  ]
+}

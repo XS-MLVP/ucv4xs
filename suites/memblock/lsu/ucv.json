@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "suite": "lsu",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "store_arbiter": {
+      "top": "Arbiter3_StoreStageIO",
+      "export_name": "StoreArbiterDut"
+    },
+    "store_trigger": {
+      "top": "MemTrigger_3",
+      "export_name": "StoreTriggerDut"
+    },
+    "store_delay": {
+      "top": "DelayPipeline",
+      "export_name": "StoreDelayDut"
+    },
+    "store_s0": {
+      "top": "StoreUnitS0",
+      "export_name": "StoreS0Dut"
+    },
+    "store_s1": {
+      "top": "StoreUnitS1",
+      "export_name": "StoreS1Dut"
+    },
+    "store_s2": {
+      "top": "StoreUnitS2",
+      "export_name": "StoreS2Dut"
+    },
+    "store_s3": {
+      "top": "StoreUnitS3",
+      "export_name": "StoreS3Dut"
+    },
+    "store_s4": {
+      "top": "StoreUnitS4",
+      "export_name": "StoreS4Dut"
+    },
+    "new_store_unit": {
+      "top": "NewStoreUnit",
+      "export_name": "NewStoreUnitDut"
+    },
+    "std_exe_unit": {
+      "top": "StdExeUnit",
+      "export_name": "StdExeUnitDut"
+    },
+    "load_arbiter": {
+      "top": "Arbiter7_LoadStageIO",
+      "export_name": "LoadArbiterDut"
+    },
+    "load_trigger": {
+      "top": "MemTrigger",
+      "export_name": "LoadTriggerDut"
+    },
+    "load_datapath": {
+      "top": "LoadUnitDataPath",
+      "export_name": "LoadDatapathDut"
+    },
+    "load_s0": {
+      "top": "LoadUnitS0",
+      "export_name": "LoadS0Dut"
+    },
+    "load_s1": {
+      "top": "LoadUnitS1",
+      "export_name": "LoadS1Dut"
+    },
+    "load_s2": {
+      "top": "LoadUnitS2",
+      "export_name": "LoadS2Dut"
+    },
+    "load_s3": {
+      "top": "LoadUnitS3",
+      "export_name": "LoadS3Dut"
+    },
+    "load_s4": {
+      "top": "LoadUnitS4",
+      "export_name": "LoadS4Dut"
+    },
+    "new_load_unit": {
+      "top": "NewLoadUnit",
+      "export_name": "NewLoadUnitDut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "tests"
+  ],
+  "process_isolation": "suite"
+}

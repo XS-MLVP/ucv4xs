@@ -1,0 +1,46 @@
+{
+  "title": "早期方向缺口：先证明共同规则，再区分原来源和未访问副本",
+  "contract": "results/instruction-confidence-development-20261019-v1/ahead-local-contract.json",
+  "evidence": "results/instruction-confidence-development-20261019-v1/ahead-local-rule-hardened/qualification-analysis.json",
+  "human_requirements": [
+    "只让实际执行的条件分支接受教导，未执行后缀不受罚。",
+    "本分支的跳转结果只增强自己的方向，非条件记录和其他窗口保持。",
+    "新分支入住后得到自己的弱初值，不继承旧居民的强方向。",
+    "方向达到两端后保持，反向反馈仍能改变它；复位及新身份初始化的优先级明确。"
+  ],
+  "source_to_requirement": {
+    "negative_teaching_of_executed_conditions": 2787,
+    "positive_teaching_of_the_actual_condition": 755,
+    "new_identity_weak_initial_confidence": 501,
+    "total_missing_integrated_rows": 4043,
+    "existing_feature_IDs": ["BPU-ABTB-010", "BPU-ABTB-011", "BPU-ABTB-013", "BPU-ABTB-014", "BPU-ABTB-036", "BPU-ABTB-037"],
+    "new_feature_IDs": 0
+  },
+  "completed_review": {
+    "independently_extracted_sources": ["rtl/bpu/AheadBtb.sv", "rtl/abtb/AheadBtb.sv"],
+    "all_direction_cells": 1024,
+    "clocked_assignments_accounted": 4096,
+    "unique_local_transition_projections": 1,
+    "symbolic_counterexample_query": "unsat",
+    "source_faults_with_counterexamples": 9,
+    "unsupported_source_faults_rejected": 7,
+    "negative_controls_total": 16,
+    "all_4043_missing_rows_inside_complete_reviewed_rules": true,
+    "independent_expected_values": "显式四态转移表及已执行前缀事件，不导入现有AbtbReference或CounterReference。",
+    "optimization_checked": "离线首轮在发出中断前已经自行完成，没有进程被终止；优化版以一次声明索引和行位置索引替代重复全文搜索，约5.19秒重现全部原结论，并额外拒绝4种遗漏写者。"
+  },
+  "decision_changed_by_evidence": "当前源码全部方向副本的一拍局部规则均与上述语义一致，因此不能再把4043个零行笼统列为尚缺方向增减功能。下一步应查父级原来源、真正的学习可用性及新消费者；没有新的独立义务时不扩展bank/set用例。",
+  "remaining_failures": "四个集成前缀程序仍在首窗口准备阶段普通FAIL：原NT短历史经验因完整tag与表项宽度差异未命中，导致后续分支选择和历史不同。独立ABTB不同待写目标的归属失败也保留，均不被本地规则结论豁免。",
+  "evidence_boundaries": [
+    "限定于当前源码哈希和定义二态输入的一拍方向递推，不是完整模块或编译后二进制等价证明。",
+    "不证明父级提供的年龄、祖先、分支身份与服务主人正确，也不证明目标、重复清理、替换关系和持久写回。",
+    "原六项独立硬件PASS仅为22个对应行提供独立通过见证；本轮不把其余4021行改成硬件通过。",
+    "独立模块的成功不授予完整BPU/FTQ可达性或集成信用。"
+  ],
+  "new_DUT_runs": 0,
+  "new_native_rows": 0,
+  "functional_checked_credit_added": 0,
+  "native_denominator_rows_removed": 0,
+  "production_source_and_public_reports_unchanged": true,
+  "goal_complete": false
+}

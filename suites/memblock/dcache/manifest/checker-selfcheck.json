@@ -1,0 +1,71 @@
+{
+  "method": "unmutated must PASS, corrupted oracle must FAIL",
+  "pairs": [
+    {
+      "mutation": "bda_readback",
+      "nodeid": "tests/banked_data_array/test_banked_data_array.py::test_read_window_all_ports_and_ways",
+      "baseline": "PASS",
+      "mutated": "FAIL",
+      "sensitive": true,
+      "mutated_tail": ""
+    },
+    {
+      "mutation": "cf_expected",
+      "nodeid": "tests/counter_filter/test_counter_filter.py::test_random_legal_traffic",
+      "baseline": "PASS",
+      "mutated": "FAIL",
+      "sensitive": true,
+      "mutated_tail": ""
+    },
+    {
+      "mutation": "dta_readback",
+      "nodeid": "tests/duplicated_tag_array/test_duplicated_tag_array.py::test_set_independence_and_boundaries",
+      "baseline": "PASS",
+      "mutated": "FAIL",
+      "sensitive": true,
+      "mutated_tail": ""
+    },
+    {
+      "mutation": "mq_expected",
+      "nodeid": "tests/miss_queue/test_miss_queue.py::test_two_beat_refill_installs_line",
+      "baseline": "PASS",
+      "mutated": "FAIL",
+      "sensitive": true,
+      "mutated_tail": ""
+    },
+    {
+      "mutation": "lp_expected",
+      "nodeid": "tests/load_pipe/test_load_pipe.py::test_outcome_way_matrix",
+      "baseline": "PASS",
+      "mutated": "FAIL",
+      "sensitive": true,
+      "mutated_tail": ""
+    },
+    {
+      "mutation": "mp_expected",
+      "nodeid": "tests/main_pipe/test_main_pipe.py::test_amo_miss_request_and_replay",
+      "baseline": "PASS",
+      "mutated": "FAIL",
+      "sensitive": true,
+      "mutated_tail": ""
+    },
+    {
+      "mutation": "dcache_readback",
+      "nodeid": "tests/dcache/test_dcache.py::test_cold_miss_refill_then_hit",
+      "baseline": "PASS",
+      "mutated": "FAIL",
+      "sensitive": true,
+      "mutated_tail": ""
+    },
+    {
+      "mutation": "store_hit_readback",
+      "nodeid": "tests/dcache/test_dcache.py::test_store_then_load_observes_data",
+      "baseline": "PASS",
+      "mutated": "FAIL",
+      "sensitive": true,
+      "mutated_tail": ""
+    }
+  ],
+  "sensitive_pairs": 8,
+  "total_pairs": 8
+}

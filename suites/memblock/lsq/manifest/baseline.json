@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "created_at_date": "2026-10-18",
+  "verification_root_relative_to_workspace": "memblock-hash/lsq",
+  "current_status": "layered_verification_in_progress",
+  "source": {
+    "directory_relative_to_verification_root": "../../XiangShan",
+    "remote": "https://github.com/OpenXiangShan/XiangShan.git",
+    "branch": "kunminghu-v3",
+    "commit": "893e1580b705d81f113c30c7a05734e09a08050e",
+    "internal_repository_is_target": false
+  },
+  "rtl": {
+    "directory_relative_to_verification_root": "../../soc-split/rtl",
+    "declared_source_commit": "893e1580b705d81f113c30c7a05734e09a08050e",
+    "declared_configuration": "DefaultConfig",
+    "declared_num_cores": 1,
+    "declared_generator": "top.TopMain",
+    "firtool_version_from_generated_header": "1.149.0",
+    "generation_profile_from_existing_metadata": [
+      "--fpga-platform",
+      "--reset-gen",
+      "--default-layer-specialization=disable"
+    ],
+    "provenance_metadata_relative_to_verification_root": [
+      "../../soc-split/README.md",
+      "../../soc-split/meta/time.log"
+    ],
+    "provenance_check": "declared_and_statically_inspected_not_regenerated"
+  },
+  "initial_scope": {
+    "subsystem": "LSQ",
+    "integration_top": "LsqWrapper",
+    "eventual_memblock_top": "MemBlock",
+    "recommended_pilot_tops": ["FreeList", "FreeList_1"],
+    "recommended_first_business_top": "VirtualLoadQueue",
+    "adjacent_not_lsq_children": ["LsqEnqCtrl", "ExceptionInfoGen"]
+  },
+  "lsq_static_closure": {
+    "top": "LsqWrapper",
+    "method": "recursive_generated_module_instantiations_deduplicated_by_file",
+    "file_count": 53,
+    "physical_lines_including_comments_and_blank_lines": 227749,
+    "bytes": 11538089,
+    "unresolved_modules": [],
+    "hash_manifest": "lsq-rtl.sha256",
+    "hash_manifest_paths_relative_to": "rtl.directory_relative_to_verification_root",
+    "hash_manifest_content_sha256": "f18a68bae42402ee96a7956f53752b4b94cefe902a83fadf15b0f26f8d6ed135"
+  },
+  "verification_status": {
+    "source_and_rtl_hierarchy_inspected": true,
+    "rtl_copied_to_this_project": true,
+    "toolchain_runtime_versions_validated_for_this_project": true,
+    "picker_duts_exported_for_this_project": true,
+    "lsq_lint_run_for_this_project": false,
+    "functional_tests_run_for_this_project": true,
+    "functional_coverage_closed": false,
+    "all_planned_dut_status": "IN_PROGRESS",
+    "verified_dut_keys": ["freelist_rar", "freelist_raw", "freelist_replay", "freelist_uncache", "cam_rar", "cam_raw", "cam_mask", "age_replay", "virtual_load_queue", "load_queue_raw", "uncache_entry_0", "uncache_entry_1", "uncache_entry_2", "uncache_entry_3", "uncache_entry_4", "uncache_entry_5", "uncache_entry_6", "uncache_entry_7", "uncache_entry_8", "uncache_entry_9", "uncache_entry_10", "uncache_entry_11", "uncache_entry_12", "uncache_entry_13", "uncache_entry_14", "uncache_entry_15"],
+    "evidence_reports": ["docs/reports/freelist-20261018.md", "docs/reports/cam-20261018.md", "docs/reports/age-20261018.md", "docs/reports/vlq-20261018.md", "docs/reports/rar-20261018.md", "docs/reports/raw-20261018.md", "docs/reports/uncache-entry-20261018.md"],
+    "tested_not_accepted_dut_keys": ["load_queue_rar"],
+    "known_issues": ["RAR-REL-001"],
+    "scope_note": "已验证叶子模块不代表全部LSQ；整体功能覆盖仍未闭合，未运行完整LsqWrapper lint或集成仿真。"
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "suite": "mmu",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "tlbfa": {
+      "top": "TLBFA",
+      "export_name": "TlbfaDut"
+    },
+    "wrapper": {
+      "top": "TlbStorageWrapper",
+      "export_name": "TlbStorageWrapperDut"
+    },
+    "tlb": {
+      "top": "TLB",
+      "export_name": "TlbDut"
+    },
+    "l2mq": {
+      "top": "L2TlbMissQueue",
+      "export_name": "L2TlbMissQueueDut"
+    },
+    "l2pf": {
+      "top": "L2TlbPrefetch",
+      "export_name": "L2TlbPrefetchDut"
+    },
+    "ptwrepeater": {
+      "top": "PTWRepeaterNB",
+      "export_name": "PtwRepeaterNBDut"
+    },
+    "ptwfilter": {
+      "top": "PTWFilter",
+      "export_name": "PtwFilterDut"
+    },
+    "ptw": {
+      "top": "PTW",
+      "export_name": "PtwDut"
+    },
+    "pmp": {
+      "top": "PMP",
+      "export_name": "PmpDut"
+    },
+    "bitmap": {
+      "top": "Bitmap",
+      "export_name": "BitmapDut"
+    },
+    "bitmapcache": {
+      "top": "BitmapCache",
+      "export_name": "BitmapCacheDut"
+    },
+    "ptwcache": {
+      "top": "PtwCache",
+      "export_name": "PtwCacheDut"
+    },
+    "llptw": {
+      "top": "LLPTW",
+      "export_name": "LlptwDut"
+    },
+    "tlbn": {
+      "top": "TLBNonBlock",
+      "export_name": "TlbNonBlockDut"
+    },
+    "l2tlbwrapper": {
+      "top": "L2TLBWrapper",
+      "export_name": "L2TlbWrapperDut"
+    },
+    "l2tlb": {
+      "top": "L2TLB",
+      "export_name": "L2TlbDut"
+    },
+    "hptw": {
+      "top": "HPTW",
+      "export_name": "HptwDut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "tests"
+  ],
+  "process_isolation": "suite"
+}

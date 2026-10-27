@@ -1,0 +1,398 @@
+{
+  "format": "xreactor-functional-coverage",
+  "version": 2,
+  "coverage": 100.0,
+  "covered": true,
+  "groups": [
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "hptw",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "event",
+            "source": "event",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "bitmap",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "bitmap"
+                  ]
+                }
+              },
+              {
+                "name": "fault",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "fault"
+                  ]
+                }
+              },
+              {
+                "name": "hit",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "hit"
+                  ]
+                }
+              },
+              {
+                "name": "mask",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "mask"
+                  ]
+                }
+              },
+              {
+                "name": "sfence",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "sfence"
+                  ]
+                }
+              },
+              {
+                "name": "walk",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "walk"
+                  ]
+                }
+              }
+            ],
+            "description": "G-stage 走表、故障、失效、缓存命中提示、bitmap 和内存 mask。"
+          },
+          {
+            "name": "hit",
+            "source": "hit",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "l1",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "l1"
+                  ]
+                }
+              },
+              {
+                "name": "l2",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "l2"
+                  ]
+                }
+              },
+              {
+                "name": "l3",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "l3"
+                  ]
+                }
+              },
+              {
+                "name": "none",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "none"
+                  ]
+                }
+              }
+            ],
+            "description": "请求携带的 level cache 命中提示。"
+          },
+          {
+            "name": "page",
+            "source": "page",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "1g",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "1g"
+                  ]
+                }
+              },
+              {
+                "name": "2m",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "2m"
+                  ]
+                }
+              },
+              {
+                "name": "4k",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "4k"
+                  ]
+                }
+              },
+              {
+                "name": "fault",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "fault"
+                  ]
+                }
+              }
+            ],
+            "description": "G-stage 响应页大小或故障。"
+          }
+        ],
+        "crosses": [],
+        "description": "HPTW 独立 G-stage 走表语义。"
+      },
+      "schema_digest": "047b6217845e799fc621dfba5d5e108a89e80f7ad45841dfeb903c3915790122",
+      "instance": "hptw",
+      "illegal_policy": "raise",
+      "samples": 35,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 35,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "bitmap": 2,
+            "fault": 6,
+            "hit": 3,
+            "mask": 1,
+            "sfence": 1,
+            "walk": 22
+          },
+          "provenance": {
+            "walk": {
+              "3dcb06312a7941dc886adb26dc255974": {
+                "count": 22,
+                "first": null,
+                "last": null
+              }
+            },
+            "fault": {
+              "3dcb06312a7941dc886adb26dc255974": {
+                "count": 6,
+                "first": null,
+                "last": null
+              }
+            },
+            "mask": {
+              "3dcb06312a7941dc886adb26dc255974": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "sfence": {
+              "3dcb06312a7941dc886adb26dc255974": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "hit": {
+              "3dcb06312a7941dc886adb26dc255974": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "bitmap": {
+              "3dcb06312a7941dc886adb26dc255974": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "event",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 35,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "1g": 4,
+            "2m": 4,
+            "4k": 21,
+            "fault": 6
+          },
+          "provenance": {
+            "4k": {
+              "3dcb06312a7941dc886adb26dc255974": {
+                "count": 21,
+                "first": null,
+                "last": null
+              }
+            },
+            "2m": {
+              "3dcb06312a7941dc886adb26dc255974": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            },
+            "1g": {
+              "3dcb06312a7941dc886adb26dc255974": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            },
+            "fault": {
+              "3dcb06312a7941dc886adb26dc255974": {
+                "count": 6,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "page",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 35,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "l1": 1,
+            "l2": 1,
+            "l3": 1,
+            "none": 32
+          },
+          "provenance": {
+            "none": {
+              "3dcb06312a7941dc886adb26dc255974": {
+                "count": 32,
+                "first": null,
+                "last": null
+              }
+            },
+            "l1": {
+              "3dcb06312a7941dc886adb26dc255974": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "l2": {
+              "3dcb06312a7941dc886adb26dc255974": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "l3": {
+              "3dcb06312a7941dc886adb26dc255974": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "hit",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "3dcb06312a7941dc886adb26dc255974": {
+          "run_id": "3dcb06312a7941dc886adb26dc255974",
+          "instance": "hptw",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "3dcb06312a7941dc886adb26dc255974",
+      "snapshot_id": "6e2ebed6ffe697de158e9422ba3d13115dca54bd2ff8eff17e1487e7d73bc0bb"
+    }
+  ]
+}

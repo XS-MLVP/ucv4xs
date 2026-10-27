@@ -1,0 +1,140 @@
+{
+  "title": "MicroBTB 模块语义闭环：连续训练的饱和确认、fall-through 复活缺陷，以及 4 个结构性不可达 branch",
+  "status": "module-loop-closed-for-current-RTL; BPU-UBTB-011 remains ordinary FAIL",
+  "module": "MicroBtb",
+  "scope": "独立 Ubtb DUT 的 17 个功能点与 42 个选测用例；不证明整合 BPU 或完整 FTQ",
+  "human_events": [
+    {
+      "id": "BPU-UBTB-010",
+      "event": "一个已学的 taken 分支连续收到相邻的 taken 确认：可靠性在上界保持，不回绕，也不跳变；随后必须恰好三次 not-taken 才失效。",
+      "owner": "可靠性属于该 PC/tag 的原记录，前向命中只是同一记录的更新视图。",
+      "observed": "三拍相邻 taken 后记录仍命中；随后两次 not-taken 仍命中，第三次 not-taken 才 miss。",
+      "evidence": [
+        "tests/ubtb/testcase/test_contiguous_training.py::test_contiguous_saturated_confirmation_holds_the_upper_bound"
+      ]
+    },
+    {
+      "id": "BPU-UBTB-011",
+      "event": "连续 taken→三次 not-taken 后记录已死亡；再一个相邻 not-taken 结果（带与旧记录不同的目标）到达。",
+      "owner": "死亡记录不再拥有 taken 预测资格；not-taken 的目标字段不能被安装成该 PC 的 taken 目标。",
+      "observed_difference": "RTL 把前向命中的 stale t1_hit 当作命中限定符，hit 且 useful=0 时执行 initEntryIfNotUseful，把强可靠性、tag 和 not-taken 的 target 写回；随后查询返回 valid=1、taken=1、target=0x80003650。",
+      "evidence": [
+        "tests/ubtb/testcase/test_semantic_reference.py::test_contiguous_fallthrough_does_not_reallocate_a_dead_entry[consecutive]",
+        "tests/ubtb/testcase/test_contiguous_training.py::test_fallthrough_does_not_revive_a_dead_entry_with_its_target"
+      ]
+    }
+  ],
+  "source_facts": {
+    "dead_entry_revival": [
+      "MicroBtb.scala:57-58：MicroBtbEntry.valid = usefulCnt > 0，因此 useful=0 的记录在正常 t0 命中判断中是 miss。",
+      "MicroBtb.scala:126-131：t0_hitT1Update = t1_fire && t0_tag === t1_tag && (t1_hit || t1_allocate)，其中 t1_hit 是上一拍读取时的命中限定符，不重新检查该记录是否已死亡。",
+      "MicroBtb.scala:145-147：t0_hitEntry 在 t0_hitT1Update 时直接取 t1_updatedEntry（可能 usefulCnt=0）。",
+      "MicroBtb.scala:171-176：t1_hit && (!same || !actualTaken) 时调用 initEntryIfNotUseful(t1_hitNotUseful)；t1_hitNotUseful 为真时执行 tag/usefulCnt=3/slot1 整体重初始化，即使 actualTaken=0。",
+      "RTL 生成代码 dut/ubtb/UbtbDut.v:1787-1789 与 764-771 显示同一路径。",
+      "参考模型 bpuverify/ubtb/model/semantic.py 的 _learn 明确：旧记录无 confidence 时，not-taken 不能复活，源码注释也指出不能把 forwarding hit 限定符复制进学习规则。"
+    ],
+    "unreachable_arms": {
+      "UbtbDut.v:1785 else": "该块位于 if (t0_hitT1Update) 内；t0_hitT1Update 的生成式（UbtbDut.v:747-748）含 t1_fire_REG 合取项，因此块内 t1_fire_REG 恒真，else 不可达。",
+      "UbtbDut.v:1790 else + 770 cond_then": "两个点都是 !t1_hitNotUseful 且影子 usefulCnt==0 的组合。t1_hitNotUseful 是 t0_hitEntry.usefulCnt.isSaturateNegative 的寄存，影子寄存器在同一次 t1 写入中与记录计数同步更新，且 t0_hitT1Update 时 t0_hitEntry 正是 t1_updatedEntry；因此 useful>0 与影子==0 不能同时成立，两个臂是互斥条件死分支。",
+      "MicroBtbReplacer.sv:283 else": "外层 UbtbDut 生成的 always 块由 if (io_predTouch_valid | io_trainTouch_valid) 守卫（MicroBtbReplacer.sv:123）；块内 if (trainTouch) ... else if (predTouch) ... else 的最终 else 要求两者都为假，与父守卫矛盾。"
+    }
+  },
+  "coverage_closure": {
+    "baseline_run": "results/ubtb-module-baseline-20261020-v1",
+    "qualification_run": "results/ubtb-module-qualification-20261020-v2",
+    "denominator": {
+      "lines": 794,
+      "branches": 192,
+      "toggles": 8430
+    },
+    "baseline": {
+      "lines": "794/794",
+      "branches": "187/192",
+      "toggles": "3653/8430",
+      "tests": "39 PASS / 1 FAIL"
+    },
+    "final": {
+      "lines": "794/794",
+      "branches": "188/192",
+      "toggles": "3653/8430",
+      "tests": "40 PASS / 2 FAIL"
+    },
+    "delta": {
+      "lines": 0,
+      "branches": 1,
+      "toggles": 0,
+      "new_tests": 2,
+      "new_points": 0
+    },
+    "closed": {
+      "point": "UbtbDut.v:1793 else (usefulCnt==3 saturate retain on an adjacent taken confirm)",
+      "case": "tests/ubtb/testcase/test_contiguous_training.py::test_contiguous_saturated_confirmation_holds_the_upper_bound",
+      "classification": "missing case enumeration of BPU-UBTB-010",
+      "proof": "raw DAT branch n=19 count=1 after the case; 0 before"
+    },
+    "remaining": [
+      "UbtbDut.v:1785 else — parent guard t0_hitT1Update implies t1_fire_REG",
+      "UbtbDut.v:1790 else — mutually exclusive with t1_hitNotUseful",
+      "UbtbDut.v:770 cond_then — same mutually exclusive condition as 1790 else",
+      "MicroBtbReplacer.sv:283 else — parent guard requires trainTouch|predTouch"
+    ],
+    "toggle_classification": {
+      "uncovered": 4777,
+      "train_and_fasttrain_bundles": 3509,
+      "entry_tag_storage_payload": 1169,
+      "address_target_payload": 91,
+      "unused_control_or_tied": 6,
+      "prediction_payload": 1,
+      "internal_hit_index_bit": 1,
+      "notes": [
+        "MicroBTB consumes only io.train.mispredictBranch from the FTQ train bundle; the rest of io.train and all io.fastTrain.meta-side payload are unconsumed.",
+        "io_sramResetDone and io_trainReady are tied true in MicroBtb.scala; 1->0 is structurally impossible.",
+        "io_stageCtrl.s2_fire/s3_fire are not consumed by MicroBTB.",
+        "io_enable, train valid, fastTrain valid, mispredictBranch, s1_fire/t0_fire and redirect are all covered."
+      ]
+    },
+    "functional_groups": {
+      "kunminghu_v3.ubtb": 100.0,
+      "kunminghu_v3.ubtb_usefulness": 100.0,
+      "kunminghu_v3.ubtb.bypass_recovery": 100.0,
+      "kunminghu_v3.ubtb.replacement_collision": 100.0,
+      "kunminghu_v3.ubtb.resolve_slots": 100.0,
+      "kunminghu_v3.ubtb.resolve_arbitration": 100.0,
+      "kunminghu_v3.ubtb.enable": 100.0
+    },
+    "functional_interpretation": "All 15 measured groups are 100%, yet BPU-UBTB-011 is a plain FAIL. Functional-coverage bins and line/branch coverage do not cover the dead-entry revival path; the failing test is the evidence.",
+    "preceding_identical_run": "results/ubtb-module-qualification-20261020-v1"
+  },
+  "supplementary_cases": [
+    {
+      "test": "test_contiguous_saturated_confirmation_holds_the_upper_bound",
+      "status": "PASS",
+      "point": "BPU-UBTB-010",
+      "kind": "missing case enumeration",
+      "effect": "closes the last reachable branch"
+    },
+    {
+      "test": "test_fallthrough_does_not_revive_a_dead_entry_with_its_target",
+      "status": "FAIL",
+      "point": "BPU-UBTB-011",
+      "kind": "same RTL difference, stronger witness",
+      "effect": "shows the revived entry installs the not-taken branch's target 0x80003650 as a taken prediction"
+    }
+  ],
+  "false_positive_false_negative_checks": [
+    "The baseline test already failed only in 'consecutive' mode; the separated mode passes, proving the difference is the forwarded contiguous path rather than a general confidence rule error.",
+    "The new different-target case verifies the harm: the predictor emits a taken prediction with target 0x80003650, which is the not-taken report's target, not the original taken target.",
+    "The 4 remaining branch arms were classified from generated RTL guards and the t1 update invariant, not by 'could not reach it quickly'.",
+    "No line-coverage growth was claimed: lines were already 794/794 before the new case."
+  ],
+  "constraints": [
+    "No RTL, DUT or system SDK change.",
+    "No new XFAIL.",
+    "No forged internal signals; the revival case uses the public training and lookup APIs.",
+    "The selected run does not replace the retained full regression."
+  ],
+  "remaining": [
+    "MicroBTB dead-entry revival needs an RTL fix or a specification decision; BPU-UBTB-011 stays FAIL.",
+    "Integrated BPU/FTQ behavior and the composed predictor arbitration remain outside this module run."
+  ]
+}

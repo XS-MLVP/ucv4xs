@@ -1,0 +1,2293 @@
+{
+  "format": "mmu-coverage-audit-summary",
+  "generated_at": "2026-10-24T11:43:47.064584+00:00",
+  "run": "results/tlb-sweep-12",
+  "coverage_dat_sha256": "1b8f4e1c7cda94a6703cd2a736142e5ccecd98ddae721a607be4c8de53d1a830",
+  "coverage_info_sha256": "44ddb5a0c98548fea64cb5b28da49c8fb24d61e831c547edff15f6d0d5d2ad17",
+  "lcov_lines": {
+    "unique_lines": 4169,
+    "covered_lines": 3647,
+    "uncovered": 522,
+    "procedural_uncovered": 415,
+    "coverage_percent": 87.479
+  },
+  "lcov_lines_dut_only": {
+    "unique_lines": 3657,
+    "covered_lines": 3644,
+    "uncovered": 13,
+    "procedural_uncovered": 13,
+    "coverage_percent": 99.6445
+  },
+  "lcov_lines_per_file": {
+    "TlbDut.v": {
+      "role": "dut",
+      "unique_lines": 158,
+      "covered_lines": 145,
+      "coverage_percent": 91.7722,
+      "uncovered": 13,
+      "uncovered_procedural": 13,
+      "uncovered_declarative": 0,
+      "procedural_lines": 122,
+      "procedural_covered": 109,
+      "uncovered_procedural_lines": [
+        {
+          "line": 701,
+          "source": "if (_readResult_T_12)"
+        },
+        {
+          "line": 702,
+          "source": "need_gpa_vpn <= 38'h0;"
+        },
+        {
+          "line": 704,
+          "source": "need_gpa_vpn <= req_out_0_vaddr[49:12];"
+        },
+        {
+          "line": 708,
+          "source": "resp_gpa_gvpn <="
+        },
+        {
+          "line": 710,
+          "source": "? _GEN_16"
+        },
+        {
+          "line": 714,
+          "source": "? {io_ptw_resp_bits_s1_entry_ppn, _GEN_17}"
+        },
+        {
+          "line": 715,
+          "source": ": _GEN_18[io_ptw_resp_bits_s1_entry_level];"
+        },
+        {
+          "line": 877,
+          "source": "else begin"
+        },
+        {
+          "line": 878,
+          "source": "resp_s1_level <= io_ptw_resp_bits_s1_entry_level;"
+        },
+        {
+          "line": 879,
+          "source": "resp_s1_isLeaf <="
+        },
+        {
+          "line": 881,
+          "source": "& io_ptw_resp_bits_s1_entry_v;"
+        },
+        {
+          "line": 882,
+          "source": "resp_s1_isFakePte <="
+        },
+        {
+          "line": 884,
+          "source": "& ~io_ptw_resp_bits_s1_af;"
+        }
+      ],
+      "uncovered_declarative_lines": []
+    },
+    "TlbDut_top.sv": {
+      "role": "picker_harness",
+      "unique_lines": 512,
+      "covered_lines": 3,
+      "coverage_percent": 0.5859,
+      "uncovered": 509,
+      "uncovered_procedural": 402,
+      "uncovered_declarative": 107,
+      "procedural_lines": 405,
+      "procedural_covered": 3,
+      "uncovered_procedural_lines": [
+        {
+          "line": 427,
+          "source": "function void get_clockxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 429,
+          "source": "value=clock;"
+        },
+        {
+          "line": 432,
+          "source": "function void set_clockxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 434,
+          "source": "clock=value;"
+        },
+        {
+          "line": 437,
+          "source": "function void get_resetxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 439,
+          "source": "value=reset;"
+        },
+        {
+          "line": 442,
+          "source": "function void set_resetxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 444,
+          "source": "reset=value;"
+        },
+        {
+          "line": 447,
+          "source": "function void get_io_sfence_validxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 449,
+          "source": "value=io_sfence_valid;"
+        },
+        {
+          "line": 452,
+          "source": "function void set_io_sfence_validxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 454,
+          "source": "io_sfence_valid=value;"
+        },
+        {
+          "line": 457,
+          "source": "function void get_io_sfence_bits_rs1xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 459,
+          "source": "value=io_sfence_bits_rs1;"
+        },
+        {
+          "line": 462,
+          "source": "function void set_io_sfence_bits_rs1xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 464,
+          "source": "io_sfence_bits_rs1=value;"
+        },
+        {
+          "line": 467,
+          "source": "function void get_io_sfence_bits_rs2xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 469,
+          "source": "value=io_sfence_bits_rs2;"
+        },
+        {
+          "line": 472,
+          "source": "function void set_io_sfence_bits_rs2xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 474,
+          "source": "io_sfence_bits_rs2=value;"
+        },
+        {
+          "line": 477,
+          "source": "function void get_io_sfence_bits_addrxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 479,
+          "source": "value=io_sfence_bits_addr;"
+        },
+        {
+          "line": 482,
+          "source": "function void set_io_sfence_bits_addrxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 484,
+          "source": "io_sfence_bits_addr=value;"
+        },
+        {
+          "line": 487,
+          "source": "function void get_io_sfence_bits_idxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 489,
+          "source": "value=io_sfence_bits_id;"
+        },
+        {
+          "line": 492,
+          "source": "function void set_io_sfence_bits_idxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 494,
+          "source": "io_sfence_bits_id=value;"
+        },
+        {
+          "line": 497,
+          "source": "function void get_io_sfence_bits_hvxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 499,
+          "source": "value=io_sfence_bits_hv;"
+        },
+        {
+          "line": 502,
+          "source": "function void set_io_sfence_bits_hvxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 504,
+          "source": "io_sfence_bits_hv=value;"
+        },
+        {
+          "line": 507,
+          "source": "function void get_io_sfence_bits_hgxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 509,
+          "source": "value=io_sfence_bits_hg;"
+        },
+        {
+          "line": 512,
+          "source": "function void set_io_sfence_bits_hgxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 514,
+          "source": "io_sfence_bits_hg=value;"
+        },
+        {
+          "line": 517,
+          "source": "function void get_io_csr_satp_modexxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 519,
+          "source": "value=io_csr_satp_mode;"
+        },
+        {
+          "line": 522,
+          "source": "function void set_io_csr_satp_modexxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 524,
+          "source": "io_csr_satp_mode=value;"
+        },
+        {
+          "line": 527,
+          "source": "function void get_io_csr_satp_asidxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 529,
+          "source": "value=io_csr_satp_asid;"
+        },
+        {
+          "line": 532,
+          "source": "function void set_io_csr_satp_asidxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 534,
+          "source": "io_csr_satp_asid=value;"
+        },
+        {
+          "line": 537,
+          "source": "function void get_io_csr_satp_changedxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 539,
+          "source": "value=io_csr_satp_changed;"
+        },
+        {
+          "line": 542,
+          "source": "function void set_io_csr_satp_changedxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 544,
+          "source": "io_csr_satp_changed=value;"
+        },
+        {
+          "line": 547,
+          "source": "function void get_io_csr_vsatp_modexxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 549,
+          "source": "value=io_csr_vsatp_mode;"
+        },
+        {
+          "line": 552,
+          "source": "function void set_io_csr_vsatp_modexxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 554,
+          "source": "io_csr_vsatp_mode=value;"
+        },
+        {
+          "line": 557,
+          "source": "function void get_io_csr_vsatp_asidxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 559,
+          "source": "value=io_csr_vsatp_asid;"
+        },
+        {
+          "line": 562,
+          "source": "function void set_io_csr_vsatp_asidxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 564,
+          "source": "io_csr_vsatp_asid=value;"
+        },
+        {
+          "line": 567,
+          "source": "function void get_io_csr_vsatp_changedxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 569,
+          "source": "value=io_csr_vsatp_changed;"
+        },
+        {
+          "line": 572,
+          "source": "function void set_io_csr_vsatp_changedxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 574,
+          "source": "io_csr_vsatp_changed=value;"
+        },
+        {
+          "line": 577,
+          "source": "function void get_io_csr_hgatp_modexxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 579,
+          "source": "value=io_csr_hgatp_mode;"
+        },
+        {
+          "line": 582,
+          "source": "function void set_io_csr_hgatp_modexxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 584,
+          "source": "io_csr_hgatp_mode=value;"
+        },
+        {
+          "line": 587,
+          "source": "function void get_io_csr_hgatp_vmidxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 589,
+          "source": "value=io_csr_hgatp_vmid;"
+        },
+        {
+          "line": 592,
+          "source": "function void set_io_csr_hgatp_vmidxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 594,
+          "source": "io_csr_hgatp_vmid=value;"
+        },
+        {
+          "line": 597,
+          "source": "function void get_io_csr_hgatp_changedxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 599,
+          "source": "value=io_csr_hgatp_changed;"
+        },
+        {
+          "line": 602,
+          "source": "function void set_io_csr_hgatp_changedxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 604,
+          "source": "io_csr_hgatp_changed=value;"
+        },
+        {
+          "line": 607,
+          "source": "function void get_io_csr_mbmc_BMExxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 609,
+          "source": "value=io_csr_mbmc_BME;"
+        },
+        {
+          "line": 612,
+          "source": "function void set_io_csr_mbmc_BMExxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 614,
+          "source": "io_csr_mbmc_BME=value;"
+        },
+        {
+          "line": 617,
+          "source": "function void get_io_csr_mbmc_CMODExxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 619,
+          "source": "value=io_csr_mbmc_CMODE;"
+        },
+        {
+          "line": 622,
+          "source": "function void set_io_csr_mbmc_CMODExxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 624,
+          "source": "io_csr_mbmc_CMODE=value;"
+        },
+        {
+          "line": 627,
+          "source": "function void get_io_csr_priv_mxrxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 629,
+          "source": "value=io_csr_priv_mxr;"
+        },
+        {
+          "line": 632,
+          "source": "function void set_io_csr_priv_mxrxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 634,
+          "source": "io_csr_priv_mxr=value;"
+        },
+        {
+          "line": 637,
+          "source": "function void get_io_csr_priv_sumxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 639,
+          "source": "value=io_csr_priv_sum;"
+        },
+        {
+          "line": 642,
+          "source": "function void set_io_csr_priv_sumxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 644,
+          "source": "io_csr_priv_sum=value;"
+        },
+        {
+          "line": 647,
+          "source": "function void get_io_csr_priv_vmxrxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 649,
+          "source": "value=io_csr_priv_vmxr;"
+        },
+        {
+          "line": 652,
+          "source": "function void set_io_csr_priv_vmxrxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 654,
+          "source": "io_csr_priv_vmxr=value;"
+        },
+        {
+          "line": 657,
+          "source": "function void get_io_csr_priv_vsumxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 659,
+          "source": "value=io_csr_priv_vsum;"
+        },
+        {
+          "line": 662,
+          "source": "function void set_io_csr_priv_vsumxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 664,
+          "source": "io_csr_priv_vsum=value;"
+        },
+        {
+          "line": 667,
+          "source": "function void get_io_csr_priv_virtxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 669,
+          "source": "value=io_csr_priv_virt;"
+        },
+        {
+          "line": 672,
+          "source": "function void set_io_csr_priv_virtxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 674,
+          "source": "io_csr_priv_virt=value;"
+        },
+        {
+          "line": 677,
+          "source": "function void get_io_csr_priv_virt_changedxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 679,
+          "source": "value=io_csr_priv_virt_changed;"
+        },
+        {
+          "line": 682,
+          "source": "function void set_io_csr_priv_virt_changedxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 684,
+          "source": "io_csr_priv_virt_changed=value;"
+        },
+        {
+          "line": 687,
+          "source": "function void get_io_csr_priv_spvpxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 689,
+          "source": "value=io_csr_priv_spvp;"
+        },
+        {
+          "line": 692,
+          "source": "function void set_io_csr_priv_spvpxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 694,
+          "source": "io_csr_priv_spvp=value;"
+        },
+        {
+          "line": 697,
+          "source": "function void get_io_csr_priv_imodexxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 699,
+          "source": "value=io_csr_priv_imode;"
+        },
+        {
+          "line": 702,
+          "source": "function void set_io_csr_priv_imodexxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 704,
+          "source": "io_csr_priv_imode=value;"
+        },
+        {
+          "line": 707,
+          "source": "function void get_io_csr_priv_dmodexxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 709,
+          "source": "value=io_csr_priv_dmode;"
+        },
+        {
+          "line": 712,
+          "source": "function void set_io_csr_priv_dmodexxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 714,
+          "source": "io_csr_priv_dmode=value;"
+        },
+        {
+          "line": 717,
+          "source": "function void get_io_csr_pmm_mseccfgxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 719,
+          "source": "value=io_csr_pmm_mseccfg;"
+        },
+        {
+          "line": 722,
+          "source": "function void set_io_csr_pmm_mseccfgxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 724,
+          "source": "io_csr_pmm_mseccfg=value;"
+        },
+        {
+          "line": 727,
+          "source": "function void get_io_csr_pmm_menvcfgxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 729,
+          "source": "value=io_csr_pmm_menvcfg;"
+        },
+        {
+          "line": 732,
+          "source": "function void set_io_csr_pmm_menvcfgxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 734,
+          "source": "io_csr_pmm_menvcfg=value;"
+        },
+        {
+          "line": 737,
+          "source": "function void get_io_csr_pmm_henvcfgxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 739,
+          "source": "value=io_csr_pmm_henvcfg;"
+        },
+        {
+          "line": 742,
+          "source": "function void set_io_csr_pmm_henvcfgxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 744,
+          "source": "io_csr_pmm_henvcfg=value;"
+        },
+        {
+          "line": 747,
+          "source": "function void get_io_csr_pmm_hstatusxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 749,
+          "source": "value=io_csr_pmm_hstatus;"
+        },
+        {
+          "line": 752,
+          "source": "function void set_io_csr_pmm_hstatusxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 754,
+          "source": "io_csr_pmm_hstatus=value;"
+        },
+        {
+          "line": 757,
+          "source": "function void get_io_csr_pmm_senvcfgxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 759,
+          "source": "value=io_csr_pmm_senvcfg;"
+        },
+        {
+          "line": 762,
+          "source": "function void set_io_csr_pmm_senvcfgxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 764,
+          "source": "io_csr_pmm_senvcfg=value;"
+        },
+        {
+          "line": 767,
+          "source": "function void get_io_requestor_0_req_validxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 769,
+          "source": "value=io_requestor_0_req_valid;"
+        },
+        {
+          "line": 772,
+          "source": "function void set_io_requestor_0_req_validxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 774,
+          "source": "io_requestor_0_req_valid=value;"
+        },
+        {
+          "line": 777,
+          "source": "function void get_io_requestor_0_req_bits_vaddrxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 779,
+          "source": "value=io_requestor_0_req_bits_vaddr;"
+        },
+        {
+          "line": 782,
+          "source": "function void set_io_requestor_0_req_bits_vaddrxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 784,
+          "source": "io_requestor_0_req_bits_vaddr=value;"
+        },
+        {
+          "line": 787,
+          "source": "function void get_io_requestor_0_req_bits_fullvaxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 789,
+          "source": "value=io_requestor_0_req_bits_fullva;"
+        },
+        {
+          "line": 792,
+          "source": "function void set_io_requestor_0_req_bits_fullvaxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 794,
+          "source": "io_requestor_0_req_bits_fullva=value;"
+        },
+        {
+          "line": 797,
+          "source": "function void get_io_requestor_0_resp_bits_paddr_0xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 799,
+          "source": "value=io_requestor_0_resp_bits_paddr_0;"
+        },
+        {
+          "line": 802,
+          "source": "function void get_io_requestor_0_resp_bits_gpaddr_0xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 804,
+          "source": "value=io_requestor_0_resp_bits_gpaddr_0;"
+        },
+        {
+          "line": 807,
+          "source": "function void get_io_requestor_0_resp_bits_pbmt_0xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 809,
+          "source": "value=io_requestor_0_resp_bits_pbmt_0;"
+        },
+        {
+          "line": 812,
+          "source": "function void get_io_requestor_0_resp_bits_missxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 814,
+          "source": "value=io_requestor_0_resp_bits_miss;"
+        },
+        {
+          "line": 817,
+          "source": "function void get_io_requestor_0_resp_bits_isForVSnonLeafPTExxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 819,
+          "source": "value=io_requestor_0_resp_bits_isForVSnonLeafPTE;"
+        },
+        {
+          "line": 822,
+          "source": "function void get_io_requestor_0_resp_bits_excp_0_gpf_instrxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 824,
+          "source": "value=io_requestor_0_resp_bits_excp_0_gpf_instr;"
+        },
+        {
+          "line": 827,
+          "source": "function void get_io_requestor_0_resp_bits_excp_0_pf_instrxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 829,
+          "source": "value=io_requestor_0_resp_bits_excp_0_pf_instr;"
+        },
+        {
+          "line": 832,
+          "source": "function void get_io_requestor_0_resp_bits_excp_0_af_instrxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 834,
+          "source": "value=io_requestor_0_resp_bits_excp_0_af_instr;"
+        },
+        {
+          "line": 837,
+          "source": "function void get_io_flushPipe_0xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 839,
+          "source": "value=io_flushPipe_0;"
+        },
+        {
+          "line": 842,
+          "source": "function void set_io_flushPipe_0xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 844,
+          "source": "io_flushPipe_0=value;"
+        },
+        {
+          "line": 847,
+          "source": "function void get_io_ptw_req_0_readyxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 849,
+          "source": "value=io_ptw_req_0_ready;"
+        },
+        {
+          "line": 852,
+          "source": "function void set_io_ptw_req_0_readyxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 854,
+          "source": "io_ptw_req_0_ready=value;"
+        },
+        {
+          "line": 857,
+          "source": "function void get_io_ptw_req_0_validxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 859,
+          "source": "value=io_ptw_req_0_valid;"
+        },
+        {
+          "line": 862,
+          "source": "function void get_io_ptw_req_0_bits_vpnxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 864,
+          "source": "value=io_ptw_req_0_bits_vpn;"
+        },
+        {
+          "line": 867,
+          "source": "function void get_io_ptw_req_0_bits_s2xlatexxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 869,
+          "source": "value=io_ptw_req_0_bits_s2xlate;"
+        },
+        {
+          "line": 872,
+          "source": "function void get_io_ptw_req_0_bits_getGpaxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 874,
+          "source": "value=io_ptw_req_0_bits_getGpa;"
+        },
+        {
+          "line": 877,
+          "source": "function void get_io_ptw_resp_validxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 879,
+          "source": "value=io_ptw_resp_valid;"
+        },
+        {
+          "line": 882,
+          "source": "function void set_io_ptw_resp_validxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 884,
+          "source": "io_ptw_resp_valid=value;"
+        },
+        {
+          "line": 887,
+          "source": "function void get_io_ptw_resp_bits_s2xlatexxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 889,
+          "source": "value=io_ptw_resp_bits_s2xlate;"
+        },
+        {
+          "line": 892,
+          "source": "function void set_io_ptw_resp_bits_s2xlatexxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 894,
+          "source": "io_ptw_resp_bits_s2xlate=value;"
+        },
+        {
+          "line": 897,
+          "source": "function void get_io_ptw_resp_bits_s1_entry_tagxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 899,
+          "source": "value=io_ptw_resp_bits_s1_entry_tag;"
+        },
+        {
+          "line": 902,
+          "source": "function void set_io_ptw_resp_bits_s1_entry_tagxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 904,
+          "source": "io_ptw_resp_bits_s1_entry_tag=value;"
+        },
+        {
+          "line": 907,
+          "source": "function void get_io_ptw_resp_bits_s1_entry_asidxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 909,
+          "source": "value=io_ptw_resp_bits_s1_entry_asid;"
+        },
+        {
+          "line": 912,
+          "source": "function void set_io_ptw_resp_bits_s1_entry_asidxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 914,
+          "source": "io_ptw_resp_bits_s1_entry_asid=value;"
+        },
+        {
+          "line": 917,
+          "source": "function void get_io_ptw_resp_bits_s1_entry_vmidxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 919,
+          "source": "value=io_ptw_resp_bits_s1_entry_vmid;"
+        },
+        {
+          "line": 922,
+          "source": "function void set_io_ptw_resp_bits_s1_entry_vmidxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 924,
+          "source": "io_ptw_resp_bits_s1_entry_vmid=value;"
+        },
+        {
+          "line": 927,
+          "source": "function void get_io_ptw_resp_bits_s1_entry_nxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 929,
+          "source": "value=io_ptw_resp_bits_s1_entry_n;"
+        },
+        {
+          "line": 932,
+          "source": "function void set_io_ptw_resp_bits_s1_entry_nxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 934,
+          "source": "io_ptw_resp_bits_s1_entry_n=value;"
+        },
+        {
+          "line": 937,
+          "source": "function void get_io_ptw_resp_bits_s1_entry_pbmtxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 939,
+          "source": "value=io_ptw_resp_bits_s1_entry_pbmt;"
+        },
+        {
+          "line": 942,
+          "source": "function void set_io_ptw_resp_bits_s1_entry_pbmtxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 944,
+          "source": "io_ptw_resp_bits_s1_entry_pbmt=value;"
+        },
+        {
+          "line": 947,
+          "source": "function void get_io_ptw_resp_bits_s1_entry_perm_axxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 949,
+          "source": "value=io_ptw_resp_bits_s1_entry_perm_a;"
+        },
+        {
+          "line": 952,
+          "source": "function void set_io_ptw_resp_bits_s1_entry_perm_axxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 954,
+          "source": "io_ptw_resp_bits_s1_entry_perm_a=value;"
+        },
+        {
+          "line": 957,
+          "source": "function void get_io_ptw_resp_bits_s1_entry_perm_gxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 959,
+          "source": "value=io_ptw_resp_bits_s1_entry_perm_g;"
+        },
+        {
+          "line": 962,
+          "source": "function void set_io_ptw_resp_bits_s1_entry_perm_gxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 964,
+          "source": "io_ptw_resp_bits_s1_entry_perm_g=value;"
+        },
+        {
+          "line": 967,
+          "source": "function void get_io_ptw_resp_bits_s1_entry_perm_uxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 969,
+          "source": "value=io_ptw_resp_bits_s1_entry_perm_u;"
+        },
+        {
+          "line": 972,
+          "source": "function void set_io_ptw_resp_bits_s1_entry_perm_uxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 974,
+          "source": "io_ptw_resp_bits_s1_entry_perm_u=value;"
+        },
+        {
+          "line": 977,
+          "source": "function void get_io_ptw_resp_bits_s1_entry_perm_xxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 979,
+          "source": "value=io_ptw_resp_bits_s1_entry_perm_x;"
+        },
+        {
+          "line": 982,
+          "source": "function void set_io_ptw_resp_bits_s1_entry_perm_xxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 984,
+          "source": "io_ptw_resp_bits_s1_entry_perm_x=value;"
+        },
+        {
+          "line": 987,
+          "source": "function void get_io_ptw_resp_bits_s1_entry_perm_wxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 989,
+          "source": "value=io_ptw_resp_bits_s1_entry_perm_w;"
+        },
+        {
+          "line": 992,
+          "source": "function void set_io_ptw_resp_bits_s1_entry_perm_wxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 994,
+          "source": "io_ptw_resp_bits_s1_entry_perm_w=value;"
+        },
+        {
+          "line": 997,
+          "source": "function void get_io_ptw_resp_bits_s1_entry_perm_rxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 999,
+          "source": "value=io_ptw_resp_bits_s1_entry_perm_r;"
+        },
+        {
+          "line": 1002,
+          "source": "function void set_io_ptw_resp_bits_s1_entry_perm_rxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1004,
+          "source": "io_ptw_resp_bits_s1_entry_perm_r=value;"
+        },
+        {
+          "line": 1007,
+          "source": "function void get_io_ptw_resp_bits_s1_entry_levelxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1009,
+          "source": "value=io_ptw_resp_bits_s1_entry_level;"
+        },
+        {
+          "line": 1012,
+          "source": "function void set_io_ptw_resp_bits_s1_entry_levelxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1014,
+          "source": "io_ptw_resp_bits_s1_entry_level=value;"
+        },
+        {
+          "line": 1017,
+          "source": "function void get_io_ptw_resp_bits_s1_entry_vxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1019,
+          "source": "value=io_ptw_resp_bits_s1_entry_v;"
+        },
+        {
+          "line": 1022,
+          "source": "function void set_io_ptw_resp_bits_s1_entry_vxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1024,
+          "source": "io_ptw_resp_bits_s1_entry_v=value;"
+        },
+        {
+          "line": 1027,
+          "source": "function void get_io_ptw_resp_bits_s1_entry_ppnxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1029,
+          "source": "value=io_ptw_resp_bits_s1_entry_ppn;"
+        },
+        {
+          "line": 1032,
+          "source": "function void set_io_ptw_resp_bits_s1_entry_ppnxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1034,
+          "source": "io_ptw_resp_bits_s1_entry_ppn=value;"
+        },
+        {
+          "line": 1037,
+          "source": "function void get_io_ptw_resp_bits_s1_addr_lowxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1039,
+          "source": "value=io_ptw_resp_bits_s1_addr_low;"
+        },
+        {
+          "line": 1042,
+          "source": "function void set_io_ptw_resp_bits_s1_addr_lowxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1044,
+          "source": "io_ptw_resp_bits_s1_addr_low=value;"
+        },
+        {
+          "line": 1047,
+          "source": "function void get_io_ptw_resp_bits_s1_ppn_low_0xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1049,
+          "source": "value=io_ptw_resp_bits_s1_ppn_low_0;"
+        },
+        {
+          "line": 1052,
+          "source": "function void set_io_ptw_resp_bits_s1_ppn_low_0xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1054,
+          "source": "io_ptw_resp_bits_s1_ppn_low_0=value;"
+        },
+        {
+          "line": 1057,
+          "source": "function void get_io_ptw_resp_bits_s1_ppn_low_1xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1059,
+          "source": "value=io_ptw_resp_bits_s1_ppn_low_1;"
+        },
+        {
+          "line": 1062,
+          "source": "function void set_io_ptw_resp_bits_s1_ppn_low_1xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1064,
+          "source": "io_ptw_resp_bits_s1_ppn_low_1=value;"
+        },
+        {
+          "line": 1067,
+          "source": "function void get_io_ptw_resp_bits_s1_ppn_low_2xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1069,
+          "source": "value=io_ptw_resp_bits_s1_ppn_low_2;"
+        },
+        {
+          "line": 1072,
+          "source": "function void set_io_ptw_resp_bits_s1_ppn_low_2xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1074,
+          "source": "io_ptw_resp_bits_s1_ppn_low_2=value;"
+        },
+        {
+          "line": 1077,
+          "source": "function void get_io_ptw_resp_bits_s1_ppn_low_3xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1079,
+          "source": "value=io_ptw_resp_bits_s1_ppn_low_3;"
+        },
+        {
+          "line": 1082,
+          "source": "function void set_io_ptw_resp_bits_s1_ppn_low_3xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1084,
+          "source": "io_ptw_resp_bits_s1_ppn_low_3=value;"
+        },
+        {
+          "line": 1087,
+          "source": "function void get_io_ptw_resp_bits_s1_ppn_low_4xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1089,
+          "source": "value=io_ptw_resp_bits_s1_ppn_low_4;"
+        },
+        {
+          "line": 1092,
+          "source": "function void set_io_ptw_resp_bits_s1_ppn_low_4xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1094,
+          "source": "io_ptw_resp_bits_s1_ppn_low_4=value;"
+        },
+        {
+          "line": 1097,
+          "source": "function void get_io_ptw_resp_bits_s1_ppn_low_5xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1099,
+          "source": "value=io_ptw_resp_bits_s1_ppn_low_5;"
+        },
+        {
+          "line": 1102,
+          "source": "function void set_io_ptw_resp_bits_s1_ppn_low_5xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1104,
+          "source": "io_ptw_resp_bits_s1_ppn_low_5=value;"
+        },
+        {
+          "line": 1107,
+          "source": "function void get_io_ptw_resp_bits_s1_ppn_low_6xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1109,
+          "source": "value=io_ptw_resp_bits_s1_ppn_low_6;"
+        },
+        {
+          "line": 1112,
+          "source": "function void set_io_ptw_resp_bits_s1_ppn_low_6xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1114,
+          "source": "io_ptw_resp_bits_s1_ppn_low_6=value;"
+        },
+        {
+          "line": 1117,
+          "source": "function void get_io_ptw_resp_bits_s1_ppn_low_7xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1119,
+          "source": "value=io_ptw_resp_bits_s1_ppn_low_7;"
+        },
+        {
+          "line": 1122,
+          "source": "function void set_io_ptw_resp_bits_s1_ppn_low_7xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1124,
+          "source": "io_ptw_resp_bits_s1_ppn_low_7=value;"
+        },
+        {
+          "line": 1127,
+          "source": "function void get_io_ptw_resp_bits_s1_valididx_0xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1129,
+          "source": "value=io_ptw_resp_bits_s1_valididx_0;"
+        },
+        {
+          "line": 1132,
+          "source": "function void set_io_ptw_resp_bits_s1_valididx_0xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1134,
+          "source": "io_ptw_resp_bits_s1_valididx_0=value;"
+        },
+        {
+          "line": 1137,
+          "source": "function void get_io_ptw_resp_bits_s1_valididx_1xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1139,
+          "source": "value=io_ptw_resp_bits_s1_valididx_1;"
+        },
+        {
+          "line": 1142,
+          "source": "function void set_io_ptw_resp_bits_s1_valididx_1xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1144,
+          "source": "io_ptw_resp_bits_s1_valididx_1=value;"
+        },
+        {
+          "line": 1147,
+          "source": "function void get_io_ptw_resp_bits_s1_valididx_2xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1149,
+          "source": "value=io_ptw_resp_bits_s1_valididx_2;"
+        },
+        {
+          "line": 1152,
+          "source": "function void set_io_ptw_resp_bits_s1_valididx_2xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1154,
+          "source": "io_ptw_resp_bits_s1_valididx_2=value;"
+        },
+        {
+          "line": 1157,
+          "source": "function void get_io_ptw_resp_bits_s1_valididx_3xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1159,
+          "source": "value=io_ptw_resp_bits_s1_valididx_3;"
+        },
+        {
+          "line": 1162,
+          "source": "function void set_io_ptw_resp_bits_s1_valididx_3xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1164,
+          "source": "io_ptw_resp_bits_s1_valididx_3=value;"
+        },
+        {
+          "line": 1167,
+          "source": "function void get_io_ptw_resp_bits_s1_valididx_4xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1169,
+          "source": "value=io_ptw_resp_bits_s1_valididx_4;"
+        },
+        {
+          "line": 1172,
+          "source": "function void set_io_ptw_resp_bits_s1_valididx_4xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1174,
+          "source": "io_ptw_resp_bits_s1_valididx_4=value;"
+        },
+        {
+          "line": 1177,
+          "source": "function void get_io_ptw_resp_bits_s1_valididx_5xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1179,
+          "source": "value=io_ptw_resp_bits_s1_valididx_5;"
+        },
+        {
+          "line": 1182,
+          "source": "function void set_io_ptw_resp_bits_s1_valididx_5xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1184,
+          "source": "io_ptw_resp_bits_s1_valididx_5=value;"
+        },
+        {
+          "line": 1187,
+          "source": "function void get_io_ptw_resp_bits_s1_valididx_6xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1189,
+          "source": "value=io_ptw_resp_bits_s1_valididx_6;"
+        },
+        {
+          "line": 1192,
+          "source": "function void set_io_ptw_resp_bits_s1_valididx_6xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1194,
+          "source": "io_ptw_resp_bits_s1_valididx_6=value;"
+        },
+        {
+          "line": 1197,
+          "source": "function void get_io_ptw_resp_bits_s1_valididx_7xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1199,
+          "source": "value=io_ptw_resp_bits_s1_valididx_7;"
+        },
+        {
+          "line": 1202,
+          "source": "function void set_io_ptw_resp_bits_s1_valididx_7xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1204,
+          "source": "io_ptw_resp_bits_s1_valididx_7=value;"
+        },
+        {
+          "line": 1207,
+          "source": "function void get_io_ptw_resp_bits_s1_pteidx_0xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1209,
+          "source": "value=io_ptw_resp_bits_s1_pteidx_0;"
+        },
+        {
+          "line": 1212,
+          "source": "function void set_io_ptw_resp_bits_s1_pteidx_0xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1214,
+          "source": "io_ptw_resp_bits_s1_pteidx_0=value;"
+        },
+        {
+          "line": 1217,
+          "source": "function void get_io_ptw_resp_bits_s1_pteidx_1xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1219,
+          "source": "value=io_ptw_resp_bits_s1_pteidx_1;"
+        },
+        {
+          "line": 1222,
+          "source": "function void set_io_ptw_resp_bits_s1_pteidx_1xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1224,
+          "source": "io_ptw_resp_bits_s1_pteidx_1=value;"
+        },
+        {
+          "line": 1227,
+          "source": "function void get_io_ptw_resp_bits_s1_pteidx_2xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1229,
+          "source": "value=io_ptw_resp_bits_s1_pteidx_2;"
+        },
+        {
+          "line": 1232,
+          "source": "function void set_io_ptw_resp_bits_s1_pteidx_2xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1234,
+          "source": "io_ptw_resp_bits_s1_pteidx_2=value;"
+        },
+        {
+          "line": 1237,
+          "source": "function void get_io_ptw_resp_bits_s1_pteidx_3xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1239,
+          "source": "value=io_ptw_resp_bits_s1_pteidx_3;"
+        },
+        {
+          "line": 1242,
+          "source": "function void set_io_ptw_resp_bits_s1_pteidx_3xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1244,
+          "source": "io_ptw_resp_bits_s1_pteidx_3=value;"
+        },
+        {
+          "line": 1247,
+          "source": "function void get_io_ptw_resp_bits_s1_pteidx_4xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1249,
+          "source": "value=io_ptw_resp_bits_s1_pteidx_4;"
+        },
+        {
+          "line": 1252,
+          "source": "function void set_io_ptw_resp_bits_s1_pteidx_4xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1254,
+          "source": "io_ptw_resp_bits_s1_pteidx_4=value;"
+        },
+        {
+          "line": 1257,
+          "source": "function void get_io_ptw_resp_bits_s1_pteidx_5xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1259,
+          "source": "value=io_ptw_resp_bits_s1_pteidx_5;"
+        },
+        {
+          "line": 1262,
+          "source": "function void set_io_ptw_resp_bits_s1_pteidx_5xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1264,
+          "source": "io_ptw_resp_bits_s1_pteidx_5=value;"
+        },
+        {
+          "line": 1267,
+          "source": "function void get_io_ptw_resp_bits_s1_pteidx_6xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1269,
+          "source": "value=io_ptw_resp_bits_s1_pteidx_6;"
+        },
+        {
+          "line": 1272,
+          "source": "function void set_io_ptw_resp_bits_s1_pteidx_6xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1274,
+          "source": "io_ptw_resp_bits_s1_pteidx_6=value;"
+        },
+        {
+          "line": 1277,
+          "source": "function void get_io_ptw_resp_bits_s1_pteidx_7xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1279,
+          "source": "value=io_ptw_resp_bits_s1_pteidx_7;"
+        },
+        {
+          "line": 1282,
+          "source": "function void set_io_ptw_resp_bits_s1_pteidx_7xxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1284,
+          "source": "io_ptw_resp_bits_s1_pteidx_7=value;"
+        },
+        {
+          "line": 1287,
+          "source": "function void get_io_ptw_resp_bits_s1_pfxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1289,
+          "source": "value=io_ptw_resp_bits_s1_pf;"
+        },
+        {
+          "line": 1292,
+          "source": "function void set_io_ptw_resp_bits_s1_pfxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1294,
+          "source": "io_ptw_resp_bits_s1_pf=value;"
+        },
+        {
+          "line": 1297,
+          "source": "function void get_io_ptw_resp_bits_s1_afxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1299,
+          "source": "value=io_ptw_resp_bits_s1_af;"
+        },
+        {
+          "line": 1302,
+          "source": "function void set_io_ptw_resp_bits_s1_afxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1304,
+          "source": "io_ptw_resp_bits_s1_af=value;"
+        },
+        {
+          "line": 1307,
+          "source": "function void get_io_ptw_resp_bits_s2_entry_tagxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1309,
+          "source": "value=io_ptw_resp_bits_s2_entry_tag;"
+        },
+        {
+          "line": 1312,
+          "source": "function void set_io_ptw_resp_bits_s2_entry_tagxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1314,
+          "source": "io_ptw_resp_bits_s2_entry_tag=value;"
+        },
+        {
+          "line": 1317,
+          "source": "function void get_io_ptw_resp_bits_s2_entry_vmidxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1319,
+          "source": "value=io_ptw_resp_bits_s2_entry_vmid;"
+        },
+        {
+          "line": 1322,
+          "source": "function void set_io_ptw_resp_bits_s2_entry_vmidxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1324,
+          "source": "io_ptw_resp_bits_s2_entry_vmid=value;"
+        },
+        {
+          "line": 1327,
+          "source": "function void get_io_ptw_resp_bits_s2_entry_nxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1329,
+          "source": "value=io_ptw_resp_bits_s2_entry_n;"
+        },
+        {
+          "line": 1332,
+          "source": "function void set_io_ptw_resp_bits_s2_entry_nxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1334,
+          "source": "io_ptw_resp_bits_s2_entry_n=value;"
+        },
+        {
+          "line": 1337,
+          "source": "function void get_io_ptw_resp_bits_s2_entry_pbmtxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1339,
+          "source": "value=io_ptw_resp_bits_s2_entry_pbmt;"
+        },
+        {
+          "line": 1342,
+          "source": "function void set_io_ptw_resp_bits_s2_entry_pbmtxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1344,
+          "source": "io_ptw_resp_bits_s2_entry_pbmt=value;"
+        },
+        {
+          "line": 1347,
+          "source": "function void get_io_ptw_resp_bits_s2_entry_ppnxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1349,
+          "source": "value=io_ptw_resp_bits_s2_entry_ppn;"
+        },
+        {
+          "line": 1352,
+          "source": "function void set_io_ptw_resp_bits_s2_entry_ppnxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1354,
+          "source": "io_ptw_resp_bits_s2_entry_ppn=value;"
+        },
+        {
+          "line": 1357,
+          "source": "function void get_io_ptw_resp_bits_s2_entry_perm_axxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1359,
+          "source": "value=io_ptw_resp_bits_s2_entry_perm_a;"
+        },
+        {
+          "line": 1362,
+          "source": "function void set_io_ptw_resp_bits_s2_entry_perm_axxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1364,
+          "source": "io_ptw_resp_bits_s2_entry_perm_a=value;"
+        },
+        {
+          "line": 1367,
+          "source": "function void get_io_ptw_resp_bits_s2_entry_perm_xxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1369,
+          "source": "value=io_ptw_resp_bits_s2_entry_perm_x;"
+        },
+        {
+          "line": 1372,
+          "source": "function void set_io_ptw_resp_bits_s2_entry_perm_xxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1374,
+          "source": "io_ptw_resp_bits_s2_entry_perm_x=value;"
+        },
+        {
+          "line": 1377,
+          "source": "function void get_io_ptw_resp_bits_s2_entry_levelxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1379,
+          "source": "value=io_ptw_resp_bits_s2_entry_level;"
+        },
+        {
+          "line": 1382,
+          "source": "function void set_io_ptw_resp_bits_s2_entry_levelxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1384,
+          "source": "io_ptw_resp_bits_s2_entry_level=value;"
+        },
+        {
+          "line": 1387,
+          "source": "function void get_io_ptw_resp_bits_s2_gpfxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1389,
+          "source": "value=io_ptw_resp_bits_s2_gpf;"
+        },
+        {
+          "line": 1392,
+          "source": "function void set_io_ptw_resp_bits_s2_gpfxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1394,
+          "source": "io_ptw_resp_bits_s2_gpf=value;"
+        },
+        {
+          "line": 1397,
+          "source": "function void get_io_ptw_resp_bits_s2_gafxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1399,
+          "source": "value=io_ptw_resp_bits_s2_gaf;"
+        },
+        {
+          "line": 1402,
+          "source": "function void set_io_ptw_resp_bits_s2_gafxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1404,
+          "source": "io_ptw_resp_bits_s2_gaf=value;"
+        },
+        {
+          "line": 1407,
+          "source": "function void get_io_ptw_resp_bits_getGpaxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1409,
+          "source": "value=io_ptw_resp_bits_getGpa;"
+        },
+        {
+          "line": 1412,
+          "source": "function void set_io_ptw_resp_bits_getGpaxxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1414,
+          "source": "io_ptw_resp_bits_getGpa=value;"
+        },
+        {
+          "line": 1417,
+          "source": "function void get_io_perf_0_valuexxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1419,
+          "source": "value=io_perf_0_value;"
+        },
+        {
+          "line": 1422,
+          "source": "function void get_io_perf_1_valuexxBQbYZxB5NTQ;"
+        },
+        {
+          "line": 1424,
+          "source": "value=io_perf_1_value;"
+        },
+        {
+          "line": 1435,
+          "source": "function void finish_BQbYZxB5NTQ;"
+        },
+        {
+          "line": 1436,
+          "source": "$finish;"
+        }
+      ],
+      "uncovered_declarative_lines": [
+        {
+          "line": 428,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 438,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 448,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 458,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 468,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 478,
+          "source": "output logic [49:0] value;"
+        },
+        {
+          "line": 488,
+          "source": "output logic [15:0] value;"
+        },
+        {
+          "line": 498,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 508,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 518,
+          "source": "output logic [3:0] value;"
+        },
+        {
+          "line": 528,
+          "source": "output logic [15:0] value;"
+        },
+        {
+          "line": 538,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 548,
+          "source": "output logic [3:0] value;"
+        },
+        {
+          "line": 558,
+          "source": "output logic [15:0] value;"
+        },
+        {
+          "line": 568,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 578,
+          "source": "output logic [3:0] value;"
+        },
+        {
+          "line": 588,
+          "source": "output logic [15:0] value;"
+        },
+        {
+          "line": 598,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 608,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 618,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 628,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 638,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 648,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 658,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 668,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 678,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 688,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 698,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 708,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 718,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 728,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 738,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 748,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 758,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 768,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 778,
+          "source": "output logic [49:0] value;"
+        },
+        {
+          "line": 788,
+          "source": "output logic [63:0] value;"
+        },
+        {
+          "line": 798,
+          "source": "output logic [47:0] value;"
+        },
+        {
+          "line": 803,
+          "source": "output logic [63:0] value;"
+        },
+        {
+          "line": 808,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 813,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 818,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 823,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 828,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 833,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 838,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 848,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 858,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 863,
+          "source": "output logic [37:0] value;"
+        },
+        {
+          "line": 868,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 873,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 878,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 888,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 898,
+          "source": "output logic [34:0] value;"
+        },
+        {
+          "line": 908,
+          "source": "output logic [15:0] value;"
+        },
+        {
+          "line": 918,
+          "source": "output logic [13:0] value;"
+        },
+        {
+          "line": 928,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 938,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 948,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 958,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 968,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 978,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 988,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 998,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1008,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 1018,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1028,
+          "source": "output logic [40:0] value;"
+        },
+        {
+          "line": 1038,
+          "source": "output logic [2:0] value;"
+        },
+        {
+          "line": 1048,
+          "source": "output logic [2:0] value;"
+        },
+        {
+          "line": 1058,
+          "source": "output logic [2:0] value;"
+        },
+        {
+          "line": 1068,
+          "source": "output logic [2:0] value;"
+        },
+        {
+          "line": 1078,
+          "source": "output logic [2:0] value;"
+        },
+        {
+          "line": 1088,
+          "source": "output logic [2:0] value;"
+        },
+        {
+          "line": 1098,
+          "source": "output logic [2:0] value;"
+        },
+        {
+          "line": 1108,
+          "source": "output logic [2:0] value;"
+        },
+        {
+          "line": 1118,
+          "source": "output logic [2:0] value;"
+        },
+        {
+          "line": 1128,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1138,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1148,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1158,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1168,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1178,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1188,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1198,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1208,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1218,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1228,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1238,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1248,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1258,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1268,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1278,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1288,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1298,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1308,
+          "source": "output logic [37:0] value;"
+        },
+        {
+          "line": 1318,
+          "source": "output logic [13:0] value;"
+        },
+        {
+          "line": 1328,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1338,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 1348,
+          "source": "output logic [37:0] value;"
+        },
+        {
+          "line": 1358,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1368,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1378,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 1388,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1398,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1408,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1418,
+          "source": "output logic [5:0] value;"
+        },
+        {
+          "line": 1423,
+          "source": "output logic [5:0] value;"
+        }
+      ]
+    },
+    "DelayN_3.sv": {
+      "role": "dut",
+      "unique_lines": 16,
+      "covered_lines": 16,
+      "coverage_percent": 100.0,
+      "uncovered": 0,
+      "uncovered_procedural": 0,
+      "uncovered_declarative": 0,
+      "procedural_lines": 16,
+      "procedural_covered": 16,
+      "uncovered_procedural_lines": [],
+      "uncovered_declarative_lines": []
+    },
+    "DelayN_5.sv": {
+      "role": "dut",
+      "unique_lines": 52,
+      "covered_lines": 52,
+      "coverage_percent": 100.0,
+      "uncovered": 0,
+      "uncovered_procedural": 0,
+      "uncovered_declarative": 0,
+      "procedural_lines": 52,
+      "procedural_covered": 52,
+      "uncovered_procedural_lines": [],
+      "uncovered_declarative_lines": []
+    },
+    "TLBFA.sv": {
+      "role": "dut",
+      "unique_lines": 3419,
+      "covered_lines": 3419,
+      "coverage_percent": 100.0,
+      "uncovered": 0,
+      "uncovered_procedural": 0,
+      "uncovered_declarative": 0,
+      "procedural_lines": 3394,
+      "procedural_covered": 3394,
+      "uncovered_procedural_lines": [],
+      "uncovered_declarative_lines": []
+    },
+    "TlbStorageWrapper.sv": {
+      "role": "dut",
+      "unique_lines": 12,
+      "covered_lines": 12,
+      "coverage_percent": 100.0,
+      "uncovered": 0,
+      "uncovered_procedural": 0,
+      "uncovered_declarative": 0,
+      "procedural_lines": 12,
+      "procedural_covered": 12,
+      "uncovered_procedural_lines": [],
+      "uncovered_declarative_lines": []
+    }
+  },
+  "branches": {
+    "total": 1104,
+    "covered": 1089,
+    "uncovered_count": 15
+  },
+  "toggles": {
+    "total": 23074,
+    "covered": 18716,
+    "uncovered_count": 4358,
+    "classes": {
+      "other": 4358
+    }
+  },
+  "functional_coverage": {
+    "coverage": 100.0,
+    "covered": true,
+    "groups": [
+      {
+        "instance": "tlb.lookup",
+        "coverage": 100.0,
+        "samples": 301,
+        "points": [
+          {
+            "name": "translation_mode",
+            "coverage": 100.0,
+            "samples": 301
+          },
+          {
+            "name": "outcome",
+            "coverage": 100.0,
+            "samples": 301
+          },
+          {
+            "name": "exception",
+            "coverage": 100.0,
+            "samples": 301
+          }
+        ]
+      },
+      {
+        "instance": "tlb.ptw",
+        "coverage": 100.0,
+        "samples": 510,
+        "points": [
+          {
+            "name": "request",
+            "coverage": 100.0,
+            "samples": 510
+          },
+          {
+            "name": "refill",
+            "coverage": 100.0,
+            "samples": 510
+          }
+        ]
+      },
+      {
+        "instance": "tlb.exception",
+        "coverage": 100.0,
+        "samples": 8,
+        "points": [
+          {
+            "name": "fault_type",
+            "coverage": 100.0,
+            "samples": 8
+          }
+        ]
+      },
+      {
+        "instance": "tlb.sfence",
+        "coverage": 100.0,
+        "samples": 27,
+        "points": [
+          {
+            "name": "fence_form",
+            "coverage": 100.0,
+            "samples": 27
+          },
+          {
+            "name": "fence_effect",
+            "coverage": 100.0,
+            "samples": 27
+          }
+        ]
+      },
+      {
+        "instance": "tlb.reset",
+        "coverage": 100.0,
+        "samples": 29,
+        "points": [
+          {
+            "name": "reset_context",
+            "coverage": 100.0,
+            "samples": 29
+          }
+        ]
+      }
+    ]
+  },
+  "limits": "Verilator point summaries are not semantic checks. LCOV DA hits are summed per line (duplicate shadow points included) and every denominator is retained. Declarative wire/reg/end lines are separated by source text, not deleted; procedural lines are still listed if uncovered. Files are kept separate so a parent DUT does not hide a child's own gaps.",
+  "note": "Compact summary; the final run keeps the full audit and coverage database."
+}

@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "suite": "sbuffer",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "sbuffer_data": {
+      "top": "SbufferData",
+      "export_name": "SbufferDataDut"
+    },
+    "sbuffer": {
+      "top": "Sbuffer",
+      "export_name": "SbufferDut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "tests"
+  ],
+  "process_isolation": "suite"
+}

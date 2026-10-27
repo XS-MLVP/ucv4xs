@@ -1,0 +1,33 @@
+{
+  "format": "semantic-requirement-before-case",
+  "version": 1,
+  "title": "相反方向的两笔旧预测反馈各自更新当前版本，不互相覆盖待写学习",
+  "event": "两个原来分别正确预测跳转和不跳转的来源，在部分分支结果已写入、另一部分仍待写时，相邻送入相反方向的反馈。",
+  "owner": "每笔反馈保留自己预测时期的完整原始metadata；计数运算属于当前同一分支和历史版本，不属于旧提示值或发送端口。",
+  "effect": "内含较早分支的跳转反馈与较晚分支的不跳转反馈分别更新自己的当前计数；改变到达顺序不能丢掉任一有效学习，也不能用旧置信度替换当前值。",
+  "preservation": "无关历史、未提供结果的后继分支、仍待写的邻分支、原始metadata和已经比较过的写入保持。",
+  "observation": "逐笔比较真实接纳、完整原提案、原身份到当前归属的命中、全部待写义务、每次实际SDK服务，以及初始/部分写入/再次学习待写/最终写入四阶段的完整新查询。",
+  "crosses": {
+    "arrival_order": ["positive-then-negative", "negative-then-positive"],
+    "original_confidence": ["both-interior", "positive-at-bound", "negative-at-bound", "both-at-bound"]
+  },
+  "independent_expected_result": "不跳转的较晚分支反馈包含较早分支的不跳转执行前缀。当前目标从0/6开始：先正后负时较早分支先增为1再减为0，最终0/5；先负后正时较早分支先保持0再增为1，最终1/5。邻历史保持1/6；Main基计数也按各原输入的完整语义独立判断，不假设交换等价。",
+  "source_gap": {
+    "measurement": "results/owned-state-full-measurement-audit-20261018-v1/current-source-event-review.json",
+    "native_file": "rtl/bpu/WriteBuffer_8.sv",
+    "open_rows": 103,
+    "event": "pending.rewrite",
+    "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/WriteBuffer.scala:231",
+    "related_source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/tage/Tage.scala:421",
+    "association_is_not_a_promise_to_hit_or_close_all_rows": true,
+    "guard_rows_and_physical_denominator_retained": true
+  },
+  "reference": "复用现有语义TAGE、Main及历史参考；新增声明式双反馈程序以独立计数增减推导待写结果，不从实际缓冲、PLRU或端口数据初始化预期。",
+  "scope": "复用现有BPU预测器组件切点：原预测的数值、分支前缀正确性及接纳关联受检查，但未证明完整FTQ年龄、恢复取消或后端可达性。保存原快照不等于证明FTQ学习资格；本轮不把组件差异提升为新的架构错误。",
+  "known_failure_policy": "原有三个饱和来源准入普通FAIL保持；新组合不增加XFAIL，不因已知缺陷放宽提案、服务或消费者要求。",
+  "features": ["BPU-INT-086"],
+  "new_feature_IDs": 0,
+  "new_predictor_reference_algorithms": 0,
+  "physical_coordinate_enumeration": false,
+  "SDK_RTL_DUT_changes": false
+}

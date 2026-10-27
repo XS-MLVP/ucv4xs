@@ -1,0 +1,28 @@
+{
+  "format": "semantic-requirement-before-case",
+  "version": 1,
+  "title": "同一分支的原始解析按实际接纳顺序更新，未执行后继不被重学",
+  "event": "同一间接分支的两个真实预测先后发布；按年老先或年轻先的顺序解析为不同目标。两次学习在自然读优先下合并，或在第一次实际服务后再接受第二次。",
+  "effect": "训练始终携带该发生身份的完整原始metadata。最终目标属于最后实际接纳的解析，而不是最大预测年龄、当拍信号或被覆盖的旧待写版本。未执行的后继条件分支保持原弱不跳或强不跳方向。",
+  "preservation": "两个原始快照不重绑定；一次原始解析仅接纳一次；条目和独立方向服务都不丢失、重复或污染后继。",
+  "observation": "公共driver准入门禁、全部实际S1、完整训练输入、被动Bundle服务monitor、真实保留状态，以及两个fresh独立预测消费者共同构成证据。",
+  "source_gap": {
+    "measurement": "results/owned-state-full-measurement-audit-20261018-v1/analysis.json",
+    "semantic_family": "修正分支目标或属性时，不改变本次未执行的后继分支",
+    "related_native_zero_rows": 93,
+    "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/WriteBuffer.scala:213",
+    "relation_is_not_a_claim_to_hit_all_93_rows": true
+  },
+  "crosses": {
+    "arrival": ["old-then-young", "young-then-old"],
+    "visibility": ["serviced-between", "retained-under-reads"],
+    "unexecuted_sibling": ["weak-not-taken", "strong-not-taken"]
+  },
+  "reference": "复用独立MainBTB条目/方向/替换及BPU/PHR逻辑模型；新程序只声明解析顺序、语义版本和保持义务，不从实际SRAM或输出生成golden。",
+  "read_pressure": "真实自环预测产生读优先。窗口由已比较的完整保留状态完成，不用固定等待周期或内部ready强制保持。",
+  "source_capacity": "本组显式采用16个有界上游窗口，所有实际S1均计数；不推断后端提交，不声称完整FTQ可达性。其他现有8窗口用例默认不变。",
+  "features": ["BPU-INT-093", "BPU-INT-095", "BPU-MBTB-028"],
+  "new_feature_IDs": 0,
+  "physical_coordinate_enumeration": false,
+  "SDK_RTL_DUT_changes": false
+}

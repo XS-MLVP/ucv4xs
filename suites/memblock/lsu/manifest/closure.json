@@ -1,0 +1,198 @@
+{
+  "duts": {
+    "load_arbiter": {
+      "family": "load",
+      "files": [
+        "Arbiter7_LoadStageIO.sv"
+      ],
+      "layer": "leaf",
+      "role": "seven-input load issue arbiter with fixed lane priority",
+      "top": "Arbiter7_LoadStageIO"
+    },
+    "load_datapath": {
+      "family": "load",
+      "files": [
+        "LoadUnitDataPath.sv"
+      ],
+      "layer": "leaf",
+      "role": "load S2/S3 data path: forward/bypass/cache byte selection and align",
+      "top": "LoadUnitDataPath"
+    },
+    "load_s0": {
+      "family": "load",
+      "files": [
+        "Arbiter7_LoadStageIO.sv",
+        "LoadUnitS0.sv"
+      ],
+      "layer": "stage",
+      "role": "load S0: issue arbitration, forward/bypass request, redirect/kill",
+      "top": "LoadUnitS0"
+    },
+    "load_s1": {
+      "family": "load",
+      "files": [
+        "LoadUnitS1.sv",
+        "MemTrigger.sv"
+      ],
+      "layer": "stage",
+      "role": "load S1: physical address, cache/TLB request, early kill",
+      "top": "LoadUnitS1"
+    },
+    "load_s2": {
+      "family": "load",
+      "files": [
+        "LoadUnitS2.sv"
+      ],
+      "layer": "stage",
+      "role": "load S2: TLB/PMP/cache response, RAR/RAW query, replay cause",
+      "top": "LoadUnitS2"
+    },
+    "load_s3": {
+      "family": "load",
+      "files": [
+        "LoadUnitS3.sv"
+      ],
+      "layer": "stage",
+      "role": "load S3: replay/exception revocation, data select, LQ write",
+      "top": "LoadUnitS3"
+    },
+    "load_s4": {
+      "family": "load",
+      "files": [
+        "LoadUnitS4.sv"
+      ],
+      "layer": "stage",
+      "role": "load S4: cross-16B head/tail merge, final writeback and exception",
+      "top": "LoadUnitS4"
+    },
+    "load_trigger": {
+      "family": "load",
+      "files": [
+        "MemTrigger.sv"
+      ],
+      "layer": "leaf",
+      "role": "load address/mask trigger matcher (four trigger slots)",
+      "top": "MemTrigger"
+    },
+    "new_load_unit": {
+      "family": "load",
+      "files": [
+        "Arbiter7_LoadStageIO.sv",
+        "LoadUnitDataPath.sv",
+        "LoadUnitS0.sv",
+        "LoadUnitS1.sv",
+        "LoadUnitS2.sv",
+        "LoadUnitS3.sv",
+        "LoadUnitS4.sv",
+        "MemTrigger.sv",
+        "NewLoadUnit.sv"
+      ],
+      "layer": "parent",
+      "role": "integrated load pipeline with real S0-S4 and data path",
+      "top": "NewLoadUnit"
+    },
+    "new_store_unit": {
+      "family": "store",
+      "files": [
+        "Arbiter3_StoreStageIO.sv",
+        "DelayPipeline.sv",
+        "MemTrigger_3.sv",
+        "NewStoreUnit.sv",
+        "StoreUnitS0.sv",
+        "StoreUnitS1.sv",
+        "StoreUnitS2.sv",
+        "StoreUnitS3.sv",
+        "StoreUnitS4.sv"
+      ],
+      "layer": "parent",
+      "role": "integrated store-address pipeline with real S0-S4",
+      "top": "NewStoreUnit"
+    },
+    "std_exe_unit": {
+      "family": "std",
+      "files": [
+        "StdExeUnit.sv"
+      ],
+      "layer": "leaf",
+      "role": "store-data unit: scalar/vector STD arbitration, SQ data, AMO data",
+      "top": "StdExeUnit"
+    },
+    "store_arbiter": {
+      "family": "store",
+      "files": [
+        "Arbiter3_StoreStageIO.sv"
+      ],
+      "layer": "leaf",
+      "role": "three-input store issue arbiter with fixed lane priority",
+      "top": "Arbiter3_StoreStageIO"
+    },
+    "store_delay": {
+      "family": "store",
+      "files": [
+        "DelayPipeline.sv"
+      ],
+      "layer": "leaf",
+      "role": "one-cycle delayed store payload pipeline",
+      "top": "DelayPipeline"
+    },
+    "store_s0": {
+      "family": "store",
+      "files": [
+        "Arbiter3_StoreStageIO.sv",
+        "StoreUnitS0.sv"
+      ],
+      "layer": "stage",
+      "role": "store S0: issue arbitration, redirect/illegal-issue kill, TLB/PMP, trigger, unaligned head/tail injection",
+      "top": "StoreUnitS0"
+    },
+    "store_s1": {
+      "family": "store",
+      "files": [
+        "MemTrigger_3.sv",
+        "StoreUnitS1.sv"
+      ],
+      "layer": "stage",
+      "role": "store S1: address calculation, TLB request, STA nuke query",
+      "top": "StoreUnitS1"
+    },
+    "store_s2": {
+      "family": "store",
+      "files": [
+        "StoreUnitS2.sv"
+      ],
+      "layer": "stage",
+      "role": "store S2: TLB response, exception formation, SQ address write",
+      "top": "StoreUnitS2"
+    },
+    "store_s3": {
+      "family": "store",
+      "files": [
+        "DelayPipeline.sv",
+        "StoreUnitS3.sv"
+      ],
+      "layer": "stage",
+      "role": "store S3: unaligned queue request, non-cacheable flags, delay pipeline",
+      "top": "StoreUnitS3"
+    },
+    "store_s4": {
+      "family": "store",
+      "files": [
+        "StoreUnitS4.sv"
+      ],
+      "layer": "stage",
+      "role": "store S4: final writeback and exception information",
+      "top": "StoreUnitS4"
+    },
+    "store_trigger": {
+      "family": "store",
+      "files": [
+        "MemTrigger_3.sv"
+      ],
+      "layer": "leaf",
+      "role": "store address/mask trigger matcher (four trigger slots)",
+      "top": "MemTrigger_3"
+    }
+  },
+  "schema_version": 1,
+  "source_rtl": "/home/xyl/kmh-v3-test/soc-split/rtl"
+}

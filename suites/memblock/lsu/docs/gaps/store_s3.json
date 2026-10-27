@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "dut": "store_s3",
+  "top": "StoreUnitS3",
+  "run": "store-s3-initial-01",
+  "metrics": {
+    "line": {
+      "hit": 51,
+      "total": 51
+    },
+    "branch": {
+      "hit": 10,
+      "total": 12
+    },
+    "toggle": {
+      "hit": 2502,
+      "total": 2506
+    },
+    "functional": {
+      "coverage": 100.0,
+      "cases": 26
+    }
+  },
+  "uncovered": [
+    {
+      "id": "S3-BRANCH-INITIAL-RESET",
+      "kind": "tool_boundary",
+      "points": [
+        "StoreUnitS3.sv:229 if (reset)",
+        "DelayPipeline.sv:204 if (reset)"
+      ],
+      "evidence": [
+        "both are initial-block reset assignments inside ENABLE_INITIAL_REG_"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "S3-TOGGLE-DELAY-INSTRTYPE-BIT2",
+      "kind": "unreachable",
+      "points": [
+        "datas_1_r_accessType_instrType[2]",
+        "io_out_bits_accessType_instrType[2]"
+      ],
+      "evidence": [
+        "StoreUnitS3.sv:239 requires !instrType[2] for the delay pipe input",
+        "prefetch never enters the writeback pipe, so bit 2 of that register is constant 0"
+      ],
+      "required_supplement": false
+    }
+  ],
+  "failures": [],
+  "status": "PASS_WITH_CLASSIFIED_GAPS",
+  "rtl_sha256": {
+    "StoreUnitS3.sv": "f315f5128f97f02b01c9fd7f409d9a125d3ae03615971b3191f963f441fe02c5"
+  }
+}

@@ -1,0 +1,1 @@
+"""SC scoreboard tests."""

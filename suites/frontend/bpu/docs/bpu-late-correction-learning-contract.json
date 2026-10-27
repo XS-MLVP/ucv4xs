@@ -1,0 +1,35 @@
+{
+  "format": "semantic-requirement-before-native-case",
+  "title": "最后才发现早期方向错误时，只教导原来的分支，年轻错误路径不能偷学",
+  "event": "真实A到B路径先建立B内较早条件的早级T经验；另一真实后继路径建立Main的NT与TAGE新弱T经验。重新启用早级后，原S1/S2选较早条件，但同原件S3选择更晚后继并纠正。",
+  "owner": "Ahead、MicroTAGE与TAGE各自保存同Checkpoint的独立读取和选择期快照。教导只来自命名的原B，而不是当前年轻S1/S2；即使它们PC和历史数值相同也不能替代。",
+  "effect": "实际S3教导原早级条件为NT，新短项建立自己的保护与方向；下一完整实际状态确认后，沿原S3自然恢复路径的新A到B查询消费该NT并选择更晚后继。不能插入额外redirect覆盖S3保存的读取祖先后再声称验证了同一恢复。被冲刷年轻原件的三个来源域同时释放，不产生借来的学习。",
+  "observation": "组合已有独立Main/Micro/Ahead/MicroTAGE/TAGE算法，每组件每边界只推进一次；比较完整PHR、所有已定义TAGE公开metadata、原快速反馈、全1024个短表保护状态、命名纠正及新消费者。早级与TAGE命名域显式分离，绝不将组件DUT输出当输入。",
+  "preservation": "全部后端发现、旧早级经验、弱末级预测原件及最终教导的metadata/各域快照不重绑定。每次恢复必须通过原52bit保留窗口门禁，来源刷新必须是真实新原件。",
+  "scope": "两个有指令语义区别的入口，各比较S3纠正时暂停/继续推进预测，共4个代表程序。S3可以同时压过年轻S2纠正，不能将年轻S2信号冒作原请求的S2。FastTrain仍是预测教导，不是后端提交真值；不声称全部TAGE存储逐项观察、SC/ITTAGE/RAS或完整FTQ已验证。",
+  "existing_feature": "BPU-INT-044",
+  "event_catalog": "useful.allocate",
+  "gap_basis": {
+    "requirement": "results/cross-block-learning-development-20261018-v1/next-late-correction-learning-requirement.json",
+    "short_zero_rows": 4167,
+    "integrated_low_zero_rows": 500,
+    "integrated_high_zero_rows": 1764,
+    "missing_semantics": "上一批普通/S2跨块来源已闭合，但TAGE始终关闭，不能外推末级纠正。两个原有来源组合分别缺少独立TAGE或独立早级，不能仅启用开关就假定验证能力已存在。",
+    "limit": "S3事件本身不等于合格学习：必须同时证明原早级条件资格、实际状态和新消费者。是否新增原生行只由DUT/LCOV实测并去重决定，不将全部余下行都归因于S3。"
+  },
+  "profiles": ["compressed-entry.held-repair", "compressed-entry.flowing-repair", "conditional-entry.held-repair", "conditional-entry.flowing-repair"],
+  "source_chain": [
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:190",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:205",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:141",
+    "bpuverify/bpu/model/early_direction_sources.py:105",
+    "bpuverify/bpu/model/direction_sources.py:56"
+  ],
+  "required_rejection_controls": ["只有S3纠正而原早级条件无资格", "年轻相同PC原件冒领教导", "将年轻S2纠正错当原S2", "复制Checkpoint或Token", "只有预期分配而没有下一实际状态", "原公开metadata或各域快照被改写", "只有Main结果正确而没有短方向新消费者", "恢复原件超出物理保留窗口"],
+  "reference_composition": "bpuverify/bpu/model/early_late_sources.py",
+  "new_predictor_algorithms": 0,
+  "new_feature_IDs": 0,
+  "no_bank_set_way_sweep": true,
+  "no_RTL_DUT_SDK_changes": true,
+  "hardware_or_functional_credit_before_DUT_execution": false
+}

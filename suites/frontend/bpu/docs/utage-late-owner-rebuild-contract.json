@@ -1,0 +1,30 @@
+{
+  "feature": "BPU-UTAGE-019",
+  "event": "一条分支的真实旧预测尚未反馈时，短历史经验已让给另一分支；两份旧反馈随后依次返回，学习仍属于各自原来的分支。",
+  "meaning": "旧分支重新学习时不能继承新主人的强置信度；第二份迟到反馈也不能借用刚重建的另一分支。",
+  "gap": {
+    "ledger": "results/current-semantic-gap-review.json",
+    "requirements": ["late-feedback/migration-and-return", "path-experience/distinct-ancestors"],
+    "native_scope": "MicroTAGE 短历史经验更新与不同身份的方向计数重建；不以物理 bank/set 坐标定义功能。",
+    "existing_evidence": [
+      "test_history_collision.py 已证明长表冲突后按两份旧来源重建，但没有短表对应生命周期。",
+      "test_read_lifetime.py 已证明短表换主人及新查询版本，但替换后没有让原短表来源重新反馈。"
+    ]
+  },
+  "programs": {
+    "directions": ["旧 NT3 与当前 T7", "旧 T4 与当前 NT0"],
+    "feedback": ["串行返回并消费中间结果", "相邻返回，逐笔比较实际中间写入"],
+    "preparation": "所有经验从复位后真实预测和反馈建立；先正常释放 A 的保护，再让 B 进入并强化。每份来源只反馈一次。",
+    "expected_rebuilds": ["A: NT3→T4，随后旧 B: T7→T6", "A: T4→NT3，随后旧 B: NT0→NT1"],
+    "consumers": "原来路的长表经验、无对应长表经验的新来路、被替换分支及独立邻居均重新查询；不能只比较最终一个值。",
+    "overlap": "第二份相邻请求的原分配读取发生在前驱写入前，因此仍可分配长表 B；串行请求看见已建立的长表 A 保护而被阻止。短表重建结果相同，但长表主人与最后公开预测不同，不能强行要求两种模式最终相等。"
+  },
+  "observation": {
+    "reference": "复用独立 UtageReference；场景仅声明刺激及可区分的阶段结果，不增加信号镜像模型。",
+    "actual": "复用公开 driver/transfer 和已有逐版本 MEM_DIRECT monitor，比较每笔完整真实输入、短/长实际写入、全部1024个保护值与新公开预测。",
+    "ownership": "保留全部原始 metadata、完整 tag、读取祖先及匹配历史；原响应完成后才能反馈，不把当前信号伪装为旧来源。",
+    "coverage": "四程序×十二语义检查，reached/checked 分开；完整生命周期通过后才采 checked。"
+  },
+  "scope": "独立 MicroTAGE 的公开索引祖先和匹配祖先可不同；不声称任意集成 FTQ 的迟到来源合法，不声称版本脱离旁路后的持久保存，不修改 RTL/DUT/SDK。",
+  "failure_policy": "保留普通 FAIL 和最早差异；不换坐标、截断 tag、放宽参考或新增 XFAIL 来取得通过。"
+}

@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "xiangshan-ucv"
+version = "0.1.0"
+description = "Unified XiangShan block verification"
+requires-python = ">=3.12,<3.13"
+license = {text = "MPL-2.0"}
+
+[project.scripts]
+ucv = "ucv.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

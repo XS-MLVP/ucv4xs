@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "dut": "load_datapath",
+  "top": "LoadUnitDataPath",
+  "run": "load-datapath-final-01",
+  "rtl_sha256": {
+    "LoadUnitDataPath.sv": "bee690cc069b9c028a06e3c3f3824ee5d2c7d10ad066c4bd0ba6dd48ee82b618"
+  },
+  "metrics": {
+    "line_dut_only": {
+      "hit": 122,
+      "total": 122,
+      "percent": 100.0
+    },
+    "branch": {
+      "hit": 17,
+      "total": 18,
+      "percent": 94.44
+    },
+    "toggle_dut_only": {
+      "hit": 3928,
+      "total": 3928,
+      "percent": 100.0
+    },
+    "functional": {
+      "coverage": 100.0,
+      "cases": 21,
+      "checked": true
+    }
+  },
+  "uncovered": [
+    {
+      "id": "LDP-BRANCH-INITIAL-RESET",
+      "kind": "tool_boundary",
+      "points": [
+        "LoadUnitDataPath.sv:693 if (reset) begin"
+      ],
+      "evidence": [
+        "the reset arm lives inside ENABLE_INITIAL_REG_ and runs before a test can assert reset",
+        "reset behaviour is still checked at the boundary: s2Valid/isUnalignTail/s3Valid clear and outputs match the model"
+      ],
+      "required_supplement": false
+    }
+  ],
+  "semantic_findings": [
+    {
+      "id": "LDP-SHIFT-NOT-ROTATE",
+      "finding": "s3ShiftHead is a logical right shift, not a byte rotation",
+      "evidence": [
+        "LoadUnitDataPath.sv: s3ShiftHead = {_s3ShiftHead_T[127:120], _GEN[119:112], ...} where _GEN = s3Data[127:8] for offset 1",
+        "the only high-byte fill is the offset=15 term, which places s3Data[127:120] in result[7:0]",
+        "a rotation would have produced result[127:120] = s3Data[7:0]; the RTL leaves it 0"
+      ],
+      "impact": "the initial model rotated and produced wrong bytes at offset>=1; the corrected model matches all 16 offsets",
+      "defect_claim": false
+    },
+    {
+      "id": "LDP-UNUSED-FUOPTYPE-BITS",
+      "finding": "bits 0, 6, 8, 10 of fuOpType are not decoded",
+      "evidence": [
+        "only 0x00/02/04/06, 0x40..46, 0x50..54, 0x72/0x74 are compared, covering bits 1,2,4,6,7",
+        "a walking-one over all 12 bits is used to toggle the port; unknown encodings decode to 0 extension"
+      ],
+      "impact": "the port bits are exercised but do not change behaviour; documented, not a defect claim",
+      "defect_claim": false
+    }
+  ],
+  "failures": [],
+  "status": "PASS_WITH_CLASSIFIED_TOOL_BOUNDARY"
+}

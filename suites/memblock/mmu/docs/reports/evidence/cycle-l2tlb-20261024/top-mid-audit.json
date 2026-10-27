@@ -1,0 +1,310 @@
+{
+  "format": "mmu-coverage-audit-summary",
+  "generated_at": "2026-10-24T13:12:03.622926+00:00",
+  "run": "results/l2tlb-final-01",
+  "coverage_dat_sha256": "4145ddac28083625b02da3f3a16b2360f6e2d167369f23f35d4ef6d2c8a7b490",
+  "coverage_info_sha256": "d6f6b61cc4d7812105f28774bdcd353d31005ab356a44f0a83e9179968421bd7",
+  "lcov_lines": {
+    "unique_lines": 23852,
+    "covered_lines": 16797,
+    "uncovered": 7055,
+    "procedural_uncovered": 6574,
+    "coverage_percent": 70.4218
+  },
+  "lcov_lines_dut_only": {
+    "unique_lines": 22249,
+    "covered_lines": 16794,
+    "uncovered": 5455,
+    "procedural_uncovered": 5350,
+    "coverage_percent": 75.482
+  },
+  "lcov_lines_per_file": {
+    "L2TlbDut.v": {
+      "covered_lines": 797,
+      "unique_lines": 1442,
+      "uncovered": 645,
+      "coverage_percent": 55.2705
+    },
+    "L2TlbDut_top.sv": {
+      "covered_lines": 3,
+      "unique_lines": 1603,
+      "uncovered": 1600,
+      "coverage_percent": 0.1871
+    },
+    "Arbiter2_L2TLBImp_Anon.sv": {
+      "covered_lines": 3,
+      "unique_lines": 3,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "Arbiter2_L2TLBImp_Anon_1.sv": {
+      "covered_lines": 13,
+      "unique_lines": 13,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "Arbiter2_L2TlbWithHptwIdBundle.sv": {
+      "covered_lines": 3,
+      "unique_lines": 3,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "Arbiter2_LLPTW_Anon.sv": {
+      "covered_lines": 3,
+      "unique_lines": 3,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "Arbiter2_PtwReq.sv": {
+      "covered_lines": 2,
+      "unique_lines": 2,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "Arbiter3_L2TLBImp_Anon.sv": {
+      "covered_lines": 332,
+      "unique_lines": 332,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "Arbiter3_bitmapReqBundle.sv": {
+      "covered_lines": 9,
+      "unique_lines": 9,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "Arbiter4_L2TlbMemReqBundle.sv": {
+      "covered_lines": 5,
+      "unique_lines": 5,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "Arbiter5_L2TlbWithHptwIdBundle.sv": {
+      "covered_lines": 17,
+      "unique_lines": 17,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "Arbiter8_bitmapCacheReqBundle.sv": {
+      "covered_lines": 17,
+      "unique_lines": 17,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "Bitmap.sv": {
+      "covered_lines": 631,
+      "unique_lines": 1376,
+      "uncovered": 745,
+      "coverage_percent": 45.8576
+    },
+    "BitmapCache.sv": {
+      "covered_lines": 163,
+      "unique_lines": 255,
+      "uncovered": 92,
+      "coverage_percent": 63.9216
+    },
+    "ClockGate.sv": {
+      "covered_lines": 2,
+      "unique_lines": 2,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "DelayN_1.sv": {
+      "covered_lines": 35,
+      "unique_lines": 35,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "DelayN_153.sv": {
+      "covered_lines": 9,
+      "unique_lines": 9,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "DelayN_8.sv": {
+      "covered_lines": 3,
+      "unique_lines": 3,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "FastArbiter.sv": {
+      "covered_lines": 15,
+      "unique_lines": 15,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "HPTW.sv": {
+      "covered_lines": 130,
+      "unique_lines": 133,
+      "uncovered": 3,
+      "coverage_percent": 97.7444
+    },
+    "L2TlbPrefetch.sv": {
+      "covered_lines": 39,
+      "unique_lines": 39,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "LLPTW.sv": {
+      "covered_lines": 962,
+      "unique_lines": 1906,
+      "uncovered": 944,
+      "coverage_percent": 50.4722
+    },
+    "MbistBitmapCache.sv": {
+      "covered_lines": 38,
+      "unique_lines": 46,
+      "uncovered": 8,
+      "coverage_percent": 82.6087
+    },
+    "MbistPipePtwL0.sv": {
+      "covered_lines": 74,
+      "unique_lines": 82,
+      "uncovered": 8,
+      "coverage_percent": 90.2439
+    },
+    "MbistPipePtwL1.sv": {
+      "covered_lines": 29,
+      "unique_lines": 37,
+      "uncovered": 8,
+      "coverage_percent": 78.3784
+    },
+    "PMP.sv": {
+      "covered_lines": 1286,
+      "unique_lines": 2117,
+      "uncovered": 831,
+      "coverage_percent": 60.7463
+    },
+    "PMPChecker.sv": {
+      "covered_lines": 26,
+      "unique_lines": 94,
+      "uncovered": 68,
+      "coverage_percent": 27.6596
+    },
+    "PTW.sv": {
+      "covered_lines": 515,
+      "unique_lines": 530,
+      "uncovered": 15,
+      "coverage_percent": 97.1698
+    },
+    "PtwCache.sv": {
+      "covered_lines": 11484,
+      "unique_lines": 13567,
+      "uncovered": 2083,
+      "coverage_percent": 84.6466
+    },
+    "Queue40_L2TlbMQBundle.sv": {
+      "covered_lines": 20,
+      "unique_lines": 20,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "RRArbiterInit.sv": {
+      "covered_lines": 22,
+      "unique_lines": 22,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "RRArbiterInit_1.sv": {
+      "covered_lines": 17,
+      "unique_lines": 17,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "SRAMTemplate_286.sv": {
+      "covered_lines": 10,
+      "unique_lines": 11,
+      "uncovered": 1,
+      "coverage_percent": 90.9091
+    },
+    "SRAMTemplate_290.sv": {
+      "covered_lines": 11,
+      "unique_lines": 12,
+      "uncovered": 1,
+      "coverage_percent": 91.6667
+    },
+    "SRAMTemplate_291.sv": {
+      "covered_lines": 10,
+      "unique_lines": 11,
+      "uncovered": 1,
+      "coverage_percent": 90.9091
+    },
+    "SRAMTemplate_305.sv": {
+      "covered_lines": 10,
+      "unique_lines": 11,
+      "uncovered": 1,
+      "coverage_percent": 90.9091
+    },
+    "TwoLevelRRArbiter.sv": {
+      "covered_lines": 14,
+      "unique_lines": 14,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "array_32x90.sv": {
+      "covered_lines": 8,
+      "unique_lines": 9,
+      "uncovered": 1,
+      "coverage_percent": 88.8889
+    },
+    "array_4x786.sv": {
+      "covered_lines": 17,
+      "unique_lines": 17,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "array_64x114.sv": {
+      "covered_lines": 9,
+      "unique_lines": 9,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "ram_40x47.sv": {
+      "covered_lines": 4,
+      "unique_lines": 4,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    }
+  },
+  "branches": {
+    "total": 6304,
+    "covered": 4211,
+    "uncovered_count": 2093
+  },
+  "toggles": {
+    "total": 255430,
+    "covered": 91146,
+    "uncovered_count": 164284
+  },
+  "functional_coverage": {
+    "coverage": 100.0,
+    "covered": true,
+    "groups": [
+      {
+        "instance": "l2tlb",
+        "coverage": 100.0,
+        "samples": 10,
+        "points": [
+          {
+            "name": "event",
+            "coverage": 100.0,
+            "samples": 10
+          },
+          {
+            "name": "page",
+            "coverage": 100.0,
+            "samples": 10
+          },
+          {
+            "name": "port",
+            "coverage": 100.0,
+            "samples": 10
+          }
+        ],
+        "crosses": []
+      }
+    ]
+  },
+  "limits": "Verilator point summaries are not semantic checks. LCOV DA hits are summed per line (duplicate shadow points included) and every denominator is retained. Declarative wire/reg/end lines are separated by source text, not deleted; procedural lines are still listed if uncovered. Files are kept separate so a parent DUT does not hide a child's own gaps.",
+  "note": "Compact summary. Full uncovered-point lists were in the original run directory; the final run keeps the full audit beside its coverage database."
+}

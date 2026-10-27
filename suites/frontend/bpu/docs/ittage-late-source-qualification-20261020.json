@@ -1,0 +1,67 @@
+{
+  "title": "原预测未发布 ITTAGE 快照时，迟到间接结果不得建立目标学习",
+  "status": "adopted-for-verification; actual DUT difference kept as ordinary FAIL",
+  "human_event": "一个真实取指块在 ITTAGE 服务关闭时被预测，公开元数据的 master valid 为 0；随后 ITTAGE 重新启用，该原块唯一的 taken 间接分支结果迟到返回。ITTAGE 只有在原预测真正发布过自己的 provider/allocate/target 快照时才有学习资格。",
+  "why_residue_is_not_a_source": [
+    "Ittage.scala 的 s0_fire/s1_fire/s2_fire/s3_fire 都受 io.enable 门控；关闭期间 ITTAGE 内部流水线和表读取不前进，meta 子字段保留的是更早一次使能查询或无关寄存器状态。",
+    "公开 ittageMeta.valid = s3_fire，因此 master valid=0 正好表示本原查询没有发布 ITTAGE 快照；此时 provider.valid、allocate.valid、providerTarget 等子字段没有本原件的语义。",
+    "训练路径 updateValid = hasTrainBranch && RegNext(t0_fire)，当前源码没有把 t1_meta.valid 并入学习资格；因此迟到反馈会消费无主残留字段。",
+    "可观察反例：独立 ITTAGE DUT 上，最后一次使能查询的 allocate.bits=0 被关闭期间的查询保留；重新使能后的新查询 allocate.bits=1；用未发布原件的残留 bits=0 训练后，实际 provider=0 且目标被建立，证明学习使用了旧查询的候选而非本原件快照。",
+    "另一个独立反例：集成 BPU 的未发布原件 provider.bits=3（三表配置中不可能的表号）和无关完整目标同时可见；这些字段若被当作金值会构造出无法由本原件证明的结果。"
+  ],
+  "adopted_policy": [
+    "master valid=0 的原件不向 ITTAGE 提供学习资格，不建立 provider/置信度/目标，也不触发 tick 或维护。",
+    "同一反馈中其他组件仍按各自合法的公开快照处理，不能因为 ITTAGE 跳过而丢弃整笔反馈；已发布原件的正常间接学习由独立正对照证明。",
+    "已发布快照的正对照必须继续学习，证明门控针对的是原件资格而不是把正常间接学习全部关闭。"
+  ],
+  "rejected_policy_alternatives": [
+    "按残留 allocate.bits 当作冷启动分配：该候选属于更早的使能查询，且实测可由不同 PC 的查询残留，不能作为本原件规则。",
+    "用残留 provider/目标字段重建期望：provider.bits 可越界且目标与原件无关，不能作为金值。"
+  ],
+  "evidence": {
+    "qualification": "results/ittage-late-source-qualification-20261020-v2/qualification-analysis.json",
+    "standalone_pre_fix_false_negative": "results/ittage-late-source-qualification-20261020-v2/pre-fix-false-negative.xml",
+    "standalone_post_fix_failure": "results/ittage-late-source-qualification-20261020-v2/post-fix-standalone.xml",
+    "integrated_post_fix_failure": "results/ittage-late-source-qualification-20261020-v2/post-fix-integrated.xml",
+    "final_selected_run": "results/ittage-late-source-qualification-20261020-v2",
+    "raw_observed": {
+      "unserved_master_valid": 0,
+      "unserved_allocate_bits": 0,
+      "fresh_re_enabled_allocate_bits": 1,
+      "learned_provider_table": 0,
+      "learned_confidence": 2,
+      "standalone_learned_target": "0x40001234",
+      "integrated_learned_target": "0x40002800"
+    },
+    "coverage": {
+      "ittage_baseline": {
+        "line": "1398/1398",
+        "branch": "651/658",
+        "toggle": "12599/18994"
+      },
+      "ittage_final": {
+        "line": "1398/1398",
+        "branch": "655/658",
+        "toggle": "12698/18994"
+      },
+      "closed": {
+        "io_train_meta_ittage_valid:1->0": "toggle, new BPU-ITTAGE-020 case",
+        "IttageDut.v:556/560": "branch, BPU-ITTAGE-010 slot 3/5 case",
+        "IttageTable_1.sv:154": "branch, BPU-ITTAGE-003 table-1 confidence case",
+        "RegionWays.sv:572": "branch, BPU-ITTAGE-018 same-region bypass case"
+      },
+      "remaining": {
+        "RegionWays.sv:586": "alternate bypass guarded by zero-confidence provider and same-cycle allocation; not faked",
+        "WriteBuffer.sv:436": "parent-guard unreachable else arm",
+        "WriteBuffer_4.sv:436": "parent-guard unreachable else arm"
+      }
+    },
+    "preceding_identical_run": "results/ittage-late-source-qualification-20261020-v1"
+  },
+  "scope": "ITTAGE 独立 DUT 与 BPU 集成切点；不证明全部预测器组合、完整 FTQ 寿命、所有迟到路径或所有 enable 切换边界。",
+  "constraints": [
+    "不修改 RTL、DUT 或系统 SDK。",
+    "不新增 XFAIL，不把实际差异标成 PASS。",
+    "保留原有 ITTAGE 关闭/重新启用功能和 source-participation 诊断的旧结论。"
+  ]
+}

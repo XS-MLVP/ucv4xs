@@ -1,0 +1,25 @@
+{
+  "feature": "BPU-INT-103",
+  "event": "两个分支同时记住多种真实来路；总经验超过近期写缓存容量后，改变一个分支的一条来路，再恢复，其他分支及来路仍保留自己的经验。",
+  "gap": {
+    "ledger": "results/current-semantic-gap-review.json",
+    "requirements": ["path-experience/retained-experience", "path-experience/selective-repair"],
+    "native_role": "短历史记录的新身份接纳、方向改变与保护饱和保持；不按计数器副本定义新功能。",
+    "existing_limit": "已有双分支用例只有两个短身份；已有十五身份混合工作集只有一个分支。两者单独通过不证明共享存储压力下的跨分支隔离。"
+  },
+  "stimulus": {
+    "layout": "复用现有两分支代码布局与八条真实前驱边；每分支七个最近来路，共十四个独立短身份，另有各自指导基础预测的辅助来路。",
+    "selection": "分别选择左/右分支，并交换两个分支的建立次序，四个完整程序。参数没有bank/set/way。",
+    "lifetime": "先正常学会全部NT；令选中分支部分来路成为T，再只反转另一条NT来路为T并恢复NT。每阶段新查询两处分支的全部来路。",
+    "learning": "相反结果由不同的真实较老来路到达；它们共享目标短身份，但更长伴随分配不落在任何原消费者的长索引上。"
+  },
+  "checks": {
+    "oracle": "保留同一 EarlyDirectionSources、UtageReference 与原反馈 ProtectionLedger；场景类仅声明路径和结果转移。",
+    "identity": "逐原件核对真实早读祖先、完整匹配历史和分支PC，全部原metadata不可变，每次指导只学习一次。",
+    "retention": "混合、局部反转、恢复三个阶段检查十四份实际MEM_DIRECT SRAM记录；至少一个原身份已不在近期缓存，随后十四份新公开预测必须仍消费各自短记录。",
+    "isolation": "选中一个短身份的相反结果不改变另外十三份方向/保护；另一分支不能被辅助指导或跨分支程序切换重新学习。",
+    "sampling": "四程序×十二语义检查，reached与checked分开，完整监视退出成功后才授予checked。"
+  },
+  "limits": "有限两分支/十四身份程序，不是所有地址或任意FTQ证明。完整tag不截断，不伪造折叠历史、不写内部状态；已有高tag、退休持久性及自主老化FAIL保留，不为绕开差异改变旧程序布局。",
+  "failure_policy": "普通FAIL暴露最早差异；不降低参考或新增XFAIL。"
+}

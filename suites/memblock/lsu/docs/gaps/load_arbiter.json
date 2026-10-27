@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "dut": "load_arbiter",
+  "top": "Arbiter7_LoadStageIO",
+  "run": "load-arbiter-initial-01",
+  "rtl_sha256": {
+    "Arbiter7_LoadStageIO.sv": "a9e6594794d53456ac4111fea90138dfc1b0979dc8077b299d53bcfbb668015e"
+  },
+  "metrics": {
+    "line_dut_only": {
+      "hit": 195,
+      "total": 195,
+      "percent": 100.0
+    },
+    "branch": {
+      "hit": 346,
+      "total": 346,
+      "percent": 100.0
+    },
+    "toggle_dut_only": {
+      "hit": 3702,
+      "total": 3702,
+      "percent": 100.0
+    },
+    "functional": {
+      "coverage": 100.0,
+      "cases": 22,
+      "checked": true
+    }
+  },
+  "uncovered": [],
+  "semantic_findings": [
+    {
+      "id": "ARB7-FIELD-RULES",
+      "finding": "the five-source arbiter is not a uniform six-way mux: each payload field folds differently (full pass-through, single-bit gated, missing slot 5, slot-2-only paddr, Q-forced tail size, zero pftType for replays, collapsed noQuery)",
+      "evidence": [
+        "LoadUnitS0.sv/Arbiter7_LoadStageIO.sv: 43 distinct assign shapes for the 43 payload fields",
+        "the directed per-field sweep compares all 43 fields for every source and every payload shape"
+      ],
+      "impact": "a naive 'always take the winner payload' model would match only 26 of 43 fields",
+      "defect_claim": false
+    },
+    {
+      "id": "ARB7-MISSING-SLOT5-ARM",
+      "finding": "exceptionVec/uncacheReplay/ncReplay have no slot-5 arm and fall back to the (gated) slot-3 payload",
+      "evidence": [
+        "Arbiter7_LoadStageIO.sv: in_3_valid & io_in_3_bits_* is the last arm for those fields",
+        "when slot 5 wins, slot 3 is necessarily invalid, so the result is 0 - the test asserts the zero value"
+      ],
+      "impact": "no leak because the priority relation makes the two conditions exclusive",
+      "defect_claim": false
+    }
+  ],
+  "failures": [],
+  "status": "PASS"
+}

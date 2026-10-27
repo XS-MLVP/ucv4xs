@@ -1,0 +1,179 @@
+{
+  "duts": {
+    "load_arbiter": {
+      "family": "load",
+      "files": [
+        "Arbiter7_LoadStageIO.sv"
+      ],
+      "layer": "leaf",
+      "top": "Arbiter7_LoadStageIO"
+    },
+    "load_datapath": {
+      "family": "load",
+      "files": [
+        "LoadUnitDataPath.sv"
+      ],
+      "layer": "leaf",
+      "top": "LoadUnitDataPath"
+    },
+    "load_s0": {
+      "family": "load",
+      "files": [
+        "Arbiter7_LoadStageIO.sv",
+        "LoadUnitS0.sv"
+      ],
+      "layer": "stage",
+      "top": "LoadUnitS0"
+    },
+    "load_s1": {
+      "family": "load",
+      "files": [
+        "LoadUnitS1.sv",
+        "MemTrigger.sv"
+      ],
+      "layer": "stage",
+      "top": "LoadUnitS1"
+    },
+    "load_s2": {
+      "family": "load",
+      "files": [
+        "LoadUnitS2.sv"
+      ],
+      "layer": "stage",
+      "top": "LoadUnitS2"
+    },
+    "load_s3": {
+      "family": "load",
+      "files": [
+        "LoadUnitS3.sv"
+      ],
+      "layer": "stage",
+      "top": "LoadUnitS3"
+    },
+    "load_s4": {
+      "family": "load",
+      "files": [
+        "LoadUnitS4.sv"
+      ],
+      "layer": "stage",
+      "top": "LoadUnitS4"
+    },
+    "load_trigger": {
+      "family": "load",
+      "files": [
+        "MemTrigger.sv"
+      ],
+      "layer": "leaf",
+      "top": "MemTrigger"
+    },
+    "new_load_unit": {
+      "family": "load",
+      "files": [
+        "Arbiter7_LoadStageIO.sv",
+        "LoadUnitDataPath.sv",
+        "LoadUnitS0.sv",
+        "LoadUnitS1.sv",
+        "LoadUnitS2.sv",
+        "LoadUnitS3.sv",
+        "LoadUnitS4.sv",
+        "MemTrigger.sv",
+        "NewLoadUnit.sv"
+      ],
+      "layer": "parent",
+      "top": "NewLoadUnit"
+    },
+    "new_store_unit": {
+      "family": "store",
+      "files": [
+        "Arbiter3_StoreStageIO.sv",
+        "DelayPipeline.sv",
+        "MemTrigger_3.sv",
+        "NewStoreUnit.sv",
+        "StoreUnitS0.sv",
+        "StoreUnitS1.sv",
+        "StoreUnitS2.sv",
+        "StoreUnitS3.sv",
+        "StoreUnitS4.sv"
+      ],
+      "layer": "parent",
+      "top": "NewStoreUnit"
+    },
+    "std_exe_unit": {
+      "family": "std",
+      "files": [
+        "StdExeUnit.sv"
+      ],
+      "layer": "leaf",
+      "top": "StdExeUnit"
+    },
+    "store_arbiter": {
+      "family": "store",
+      "files": [
+        "Arbiter3_StoreStageIO.sv"
+      ],
+      "layer": "leaf",
+      "top": "Arbiter3_StoreStageIO"
+    },
+    "store_delay": {
+      "family": "store",
+      "files": [
+        "DelayPipeline.sv"
+      ],
+      "layer": "leaf",
+      "top": "DelayPipeline"
+    },
+    "store_s0": {
+      "family": "store",
+      "files": [
+        "Arbiter3_StoreStageIO.sv",
+        "StoreUnitS0.sv"
+      ],
+      "layer": "stage",
+      "top": "StoreUnitS0"
+    },
+    "store_s1": {
+      "family": "store",
+      "files": [
+        "MemTrigger_3.sv",
+        "StoreUnitS1.sv"
+      ],
+      "layer": "stage",
+      "top": "StoreUnitS1"
+    },
+    "store_s2": {
+      "family": "store",
+      "files": [
+        "StoreUnitS2.sv"
+      ],
+      "layer": "stage",
+      "top": "StoreUnitS2"
+    },
+    "store_s3": {
+      "family": "store",
+      "files": [
+        "DelayPipeline.sv",
+        "StoreUnitS3.sv"
+      ],
+      "layer": "stage",
+      "top": "StoreUnitS3"
+    },
+    "store_s4": {
+      "family": "store",
+      "files": [
+        "StoreUnitS4.sv"
+      ],
+      "layer": "stage",
+      "top": "StoreUnitS4"
+    },
+    "store_trigger": {
+      "family": "store",
+      "files": [
+        "MemTrigger_3.sv"
+      ],
+      "layer": "leaf",
+      "top": "MemTrigger_3"
+    }
+  },
+  "schema_version": 1,
+  "top": "LSU independent UT"
+}

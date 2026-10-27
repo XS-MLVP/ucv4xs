@@ -1,0 +1,15 @@
+{
+  "format": "existing-human-requirement-before-case-migration",
+  "feature": "BPU-MBTB-022",
+  "title": "不同分支的完整目标纠正各自保留并服务",
+  "human_event": "两个真实间接分支的反馈相邻到达，服务可能被预测读取阻挡；到达顺序不改变各自完整目标，另一分支和邻居不受污染。",
+  "semantic_axes": {"visibility": ["blocked", "flow"], "arrival_order": ["first_second", "second_first"], "target_regions": ["fit_overflow", "overflow_underflow", "underflow_fit"]},
+  "obligations": ["distinct-original-identities", "both-full-feedbacks-accepted", "independent-full-entry-services", "fresh-forward-consumers", "fresh-reverse-consumers", "neighbors-and-originals-preserved"],
+  "old_execution": "一个pytest项内部串行执行192个组合；最近完整回归该项58.532秒。物理坐标与语义场景混在同一循环，不能独立调度或选取有明确语义的native见证。",
+  "new_execution": "生产默认12个独立语义程序，每种完整语义组合选择一个固定代表坐标；physical保留192个独立pytest项，而非移除旧程序。各程序使用同一独立MbtbReference及完整输入/服务/消费者比较。",
+  "coverage_contract": "新增paired语义schema共72bin，任何缺失义务或模型失败都不能授予checked；旧576bin物理cross及所有未命中项完整保留，只有physical回归要求它全满。",
+  "gap_attribution": "用于核实Main剩余72个源码行已有何种独立UT语义见证；UT命中不证明集成BPU可达，也不能冒充已解决陈旧来源/重复清理普通FAIL。",
+  "independence": "沿用从reset持续推进的MbtbSemanticChecker；旧局部快照断言仅为附加检查，不替代独立模型。case中不驱动边沿、逐IO get/set或手写task。",
+  "new_feature_IDs": 0,
+  "predictor_algorithms_RTL_DUT_SDK_changed": false
+}

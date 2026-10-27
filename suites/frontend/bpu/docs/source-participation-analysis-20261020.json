@@ -1,0 +1,44 @@
+{
+  "title": "原预测没有ITTAGE结果时，迟到反馈的学习策略尚未定义",
+  "contract": "docs/source-participation-contract-20261020.json",
+  "evidence": "results/source-participation-development-20261020-v1/diagnostic-evidence.json",
+  "execution": "results/source-participation-development-20261020-v1/diagnostic-execution.json",
+  "new_gap": "当前组合参考可验证重新启用后的新查询，却拒绝原查询未参与ITTAGE的间接反馈。这不是已有功能点通过率能说明的行为，也不能仅凭ITTAGE行覆盖100%认为已验证。",
+  "observed_facts": {
+    "diagnostic_profiles": 3,
+    "default_reference_changed": false,
+    "RTL_DUT_SDK_changed": false,
+    "old_originals": "三个真实公开旧原件的S2参与和S3发布资格均为False，整体meta.valid=0；重新启用后取得真实新原件，独立模型及实际meta.valid均为1。旧metadata保持不变。",
+    "cold_residual_payload": "未参与原件的整体valid=0，但实际allocate.valid=1，allocate.bits=0。",
+    "warm_residual_payload": "另一条指令正常学习后，未参与原件的整体valid仍为0，但provider.valid=1、provider.bits=0、counter=2、providerTarget=0x40000800，同时allocate.valid=1。这是实际公开载荷，不是测试伪造。",
+    "interpretation_limit": "valid=0时保留这些载荷本身不构成RTL错误；问题是后续学习是否有权消费它们。没有该原件的预测信息，不能用这些实际残留值构造预期结果。",
+    "positive_control": "旧原件解析为直接分支后，正常公开反馈被接纳，Main独立模型及fresh完整消费者正确；当前参考不会误拦截这类不需要ITTAGE学习的结果。",
+    "indirect_cases": "冷/暖两个间接候选在默认参考的feedback_for构造阶段均抛NotImplementedError，且模型状态未变。未把未决间接反馈送入DUT，未推断它实际会学习、跳过或出错。"
+  },
+  "policy_pending": true,
+  "required_specification": [
+    "忽略没有原预测资格的ITTAGE学习，同时其他合格预测器正常学习。",
+    "按无原provider的冷启动结果分配，并明确其独立分配规则，不借用陈旧provider或allocate载荷。",
+    "上层明确禁止此种跨参与资格的反馈，并提供可验证的FTQ排空/转换合同。"
+  ],
+  "source_review_limit": "公开meta.valid由当前S3服务使能产生，不等价于整个原查询过程参与；不能用单个valid替代完整来源定义。Ittage.scala当前学习选择没有消费该原valid，尚不能据此判定其意图。",
+  "already_covered_candidates_not_redeveloped": [
+    "短/长保护维护同拍分配、奖励、惩罚的六个独立UT程序已存在。",
+    "集成维护后的学习机会受真实S3纠正气泡约束，不能从独立UT能送输入推断父BPU也能到达。",
+    "PHR游标所有写者及原件假设闭包已有源码核验，保留1404行条件归因，不重命名为新功能。"
+  ],
+  "coverage_and_retention": {
+    "diagnostic_pytest": {"PASS": 3},
+    "formal_functional_points_executed": 0,
+    "functional_groups": 0,
+    "new_native_rows": 0,
+    "default_collection_unchanged": 29746,
+    "latest_qualified_run_replaced": false,
+    "raw_diagnostic_files_deleted": 30,
+    "raw_bytes_reclaimed": 96145408,
+    "retained": "精确JUnit、必要来源事实、源码身份和构建身份；DAT与大型逐行导出需要时重跑。"
+  },
+  "new_feature_IDs": 0,
+  "functional_credit": 0,
+  "goal_complete": false
+}

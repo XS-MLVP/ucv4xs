@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "validated_date": "2026-10-18",
+  "python": "3.12.3",
+  "picker": {
+    "executable": "/usr/local/bin/picker",
+    "version": "2.0.0-HEAD-4dd442c-2026-10-12",
+    "commit": "4dd442c4a80c92549381e417c608836e3b78a8e9"
+  },
+  "verilator": {
+    "root": "/opt/verilator-5.052",
+    "version": "5.052",
+    "coverage_processor": "/opt/verilator-5.052/bin/verilator_coverage"
+  },
+  "xreactor": {
+    "package_version": "0.1.0.dev27+g2461d0fe7",
+    "commit": "2461d0fe75999fb8bf62ef61a92f38fe8231394d",
+    "installed_source": "/home/xyl/bpu-verify-kunminghu-v3/dependencies/xreactor/src/xreactor"
+  },
+  "xcomm": {
+    "commit": "c39db6652cd08d46df05d08f0bb5a033b83e4d2f",
+    "package_version": "0.3.0.dev3",
+    "native_abi": 3,
+    "coverage_protocol": 5
+  },
+  "note": "使用已安装的通用工具库；不导入 BPU/ICache 工程的 DUT、model、driver 或 fixture。工具检出已核验无 tracked 修改。"
+}

@@ -1,0 +1,1 @@
+"""VirtualStoreQueue public transaction verification."""

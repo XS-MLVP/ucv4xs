@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "created_at_date": "2026-10-25",
+  "verification_root_relative_to_workspace": "memblock-hash/lsu",
+  "current_status": "seven_confirmed_rtl_defects",
+  "source": {
+    "directory_relative_to_verification_root": "../../XiangShan",
+    "remote": "https://github.com/OpenXiangShan/XiangShan.git",
+    "branch": "kunminghu-v3",
+    "commit": "893e1580b705d81f113c30c7a05734e09a08050e",
+    "commit_date": "2026-10-16",
+    "internal_repository_is_target": false
+  },
+  "rtl": {
+    "directory_relative_to_verification_root": "../../soc-split/rtl",
+    "declared_source_commit": "893e1580b705d81f113c30c7a05734e09a08050e",
+    "declared_configuration": "DefaultConfig",
+    "declared_num_cores": 1,
+    "declared_generator": "top.TopMain",
+    "firtool_version_from_generated_header": "1.149.0",
+    "provenance_check": "declared_and_statically_inspected_not_regenerated",
+    "hash_manifest": "lsu-rtl.sha256",
+    "hash_manifest_paths_relative_to": "rtl.directory_relative_to_verification_root",
+    "hash_manifest_content_sha256": "f93ea79a335dd24170e3bc167839fe3187deed54db3e8474a7a62b8ab8d2cdb3",
+    "unique_source_files": 19
+  },
+  "scope": {
+    "subsystem": "LSU execution pipeline (independent unit tests only)",
+    "families": [
+      "NewStoreUnit",
+      "NewLoadUnit",
+      "StdExeUnit"
+    ],
+    "excluded": [
+      "AtomicsUnit",
+      "cross-module joint harness",
+      "LSU-integrated verification",
+      "MemBlock top-level",
+      "whole-core integration",
+      "LSQ / LsqWrapper",
+      "Sbuffer",
+      "DCache / Uncache",
+      "TLB / MMU"
+    ],
+    "external_environment": "LSQ, DCache/Uncache, TLB, PMP, Sbuffer and Backend/ROB are supplied by protocol agents or stimulus models; agent behaviour is not evidence for those subsystems"
+  },
+  "hierarchy": {
+    "note": "Module instantiations confirmed from the generated split-verilog files; MemBlock.sv instantiates NewLoadUnit x3, NewStoreUnit x2, StdExeUnit x2, AtomicsUnit x1",
+    "new_store_unit": {
+      "closure": [
+        "Arbiter3_StoreStageIO.sv",
+        "DelayPipeline.sv",
+        "MemTrigger_3.sv",
+        "NewStoreUnit.sv",
+        "StoreUnitS0.sv",
+        "StoreUnitS1.sv",
+        "StoreUnitS2.sv",
+        "StoreUnitS3.sv",
+        "StoreUnitS4.sv"
+      ],
+      "instances_in_memblock": 2
+    },
+    "new_load_unit": {
+      "closure": [
+        "Arbiter7_LoadStageIO.sv",
+        "LoadUnitDataPath.sv",
+        "LoadUnitS0.sv",
+        "LoadUnitS1.sv",
+        "LoadUnitS2.sv",
+        "LoadUnitS3.sv",
+        "LoadUnitS4.sv",
+        "MemTrigger.sv",
+        "NewLoadUnit.sv"
+      ],
+      "instances_in_memblock": 3
+    },
+    "std_exe_unit": {
+      "closure": [
+        "StdExeUnit.sv"
+      ],
+      "instances_in_memblock": 2
+    }
+  },
+  "verification_status": {
+    "source_and_rtl_hierarchy_inspected": true,
+    "static_closure_recorded": true,
+    "toolchain_lock_recorded": true,
+    "duts_built": [
+      "load_arbiter",
+      "load_datapath",
+      "load_s0",
+      "load_s1",
+      "load_s2",
+      "load_s3",
+      "load_s4",
+      "load_trigger",
+      "new_load_unit",
+      "new_store_unit",
+      "std_exe_unit",
+      "store_arbiter",
+      "store_delay",
+      "store_s0",
+      "store_s1",
+      "store_s2",
+      "store_s3",
+      "store_s4",
+      "store_trigger"
+    ],
+    "functional_tests_run": true,
+    "coverage_closed": false
+  },
+  "current_status_note": "Upstream review 2026-10-26 confirmed 6 additional RTL defects at fixed commit; total 7. New regression: 582 PASS / 7 FAIL / 589 items. Acceptance remains FAIL.",
+  "final_run": "upstream-review-regression-02",
+  "failure_review": {
+    "status": "SEVEN_CONFIRMED_RTL_DEFECTS",
+    "acceptance_passed": false,
+    "known_rtl_defects": [
+      "LSU-HWPF-MISS-001",
+      "LSU-STORE-TVAL-001",
+      "LSU-CBO-NC-AF-001",
+      "LSU-S3-KILL-WB-001",
+      "LSU-MATCHINV-CAUSE-001",
+      "LSU-PREFETCH-W-INTENT-001",
+      "LSU-STD-PERF-001"
+    ],
+    "historical_failures_fully_attributed": false,
+    "independent_reached_checked_complete": false,
+    "report": "docs/bug-reports-20261026/README.md",
+    "evidence": "review/failure_recheck_20261026/final-audit.json",
+    "upstream_review": {
+      "date": "2026-10-26",
+      "upstream_head": "f85a1f71da8c1522035744c71e2cb266bfed1a7d",
+      "new_confirmed": 6,
+      "total_confirmed": 7,
+      "audit": "review/upstream_check_20261026_01/audit.json"
+    }
+  }
+}

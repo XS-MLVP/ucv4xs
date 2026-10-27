@@ -1,0 +1,21 @@
+{
+  "format": "existing-semantic-requirement-oracle-strengthening",
+  "human_event": "同一原预测的各类条件经验合成纠偏置信，原分支只选择属于自己的偏置与最终分值；方向碰巧未改变不能掩盖数值错误。",
+  "existing_requirements": [
+    "docs/functional-events.json#behavior_contracts/conditional-context",
+    "docs/functional-events.json#behavior_contracts/late-feedback/requirements/independent-learners",
+    "docs/functional-events.json#behavior_contracts/late-feedback/requirements/multiple-originals"
+  ],
+  "before_implementation_gap": "原权重与五类贡献已独立比较，但中间有符号加法、十六份完整偏置候选和最终已选分值没有直接观测。仅方向、置信资格相同不足以证明这些数值正确。",
+  "obligations": [
+    "只在独立原S1接受后到达S2的真实消费边界比较；不搜索附近周期，不按actual有效位筛选。",
+    "从原S0不可变语义权重推导四份历史合计及各自四种偏置候选；4份9bit、16份10bit有符号硬件结果全部比较。",
+    "复用原TAGE纯决策与Main语义候选，确定已存在分支的位置和原provider偏置；比较其10bit最终已选分值。不存在的分支位置载荷不规定为零。",
+    "无效公共历史仍消费独立中性证据，不从未请求的旧SRAM输出播种期望。",
+    "纯负对照必须证明同方向/同资格下的加法错值、偏置错配、符号错误和原件错配仍会失败。",
+    "通过标准生产入口复验冷态与已有经验、有效/无效历史、原年龄正逆序、预测与反馈重叠的既有程序；已知普通FAIL保留。"
+  ],
+  "implementation_layers": "Bundle公共memory-direct只读字段 -> Monitor既有采样 -> PipelineChecker按原件比较；case无逐信号读取、edge、gather或手动等待。",
+  "scope": "这是既有功能的检查精度增强，不新增功能点编号、覆盖率分母或虚构新的硬件行命中；不改变参考算法、RTL、DUT或SDK。",
+  "new_feature_IDs": 0
+}

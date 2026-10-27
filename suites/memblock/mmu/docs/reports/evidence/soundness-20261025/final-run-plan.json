@@ -1,0 +1,110 @@
+{
+  "tlbfa": {
+    "run": "soundness-final-tlbfa-01",
+    "tests": [
+      "tests/tlbfa"
+    ]
+  },
+  "wrapper": {
+    "run": "soundness-final-wrapper-01",
+    "tests": [
+      "tests/wrapper"
+    ]
+  },
+  "tlb": {
+    "run": "soundness-final-tlb-01",
+    "tests": [
+      "tests/tlb"
+    ]
+  },
+  "tlbn": {
+    "run": "soundness-final-tlbn-01",
+    "tests": [
+      "tests/tlbn"
+    ]
+  },
+  "l2mq": {
+    "run": "soundness-final-l2mq-01",
+    "tests": [
+      "tests/l2/test_l2mq.py"
+    ]
+  },
+  "l2pf": {
+    "run": "soundness-final-l2pf-01",
+    "tests": [
+      "tests/l2/test_l2pf.py"
+    ]
+  },
+  "ptwrepeater": {
+    "run": "soundness-final-ptwrepeater-01",
+    "tests": [
+      "tests/l2/test_ptwrepeater.py"
+    ]
+  },
+  "ptwfilter": {
+    "run": "soundness-final-ptwfilter-01",
+    "tests": [
+      "tests/l2/test_ptwfilter.py"
+    ]
+  },
+  "hptw": {
+    "run": "soundness-final-hptw-01",
+    "tests": [
+      "tests/l2/test_hptw.py"
+    ]
+  },
+  "ptw": {
+    "run": "soundness-final-ptw-01",
+    "tests": [
+      "tests/l2/test_ptw.py"
+    ]
+  },
+  "pmp": {
+    "run": "soundness-final-pmp-01",
+    "tests": [
+      "tests/l2/test_pmp.py"
+    ]
+  },
+  "bitmapcache": {
+    "run": "soundness-final-bitmapcache-01",
+    "tests": [
+      "tests/l2/test_bitmapcache.py"
+    ]
+  },
+  "bitmap": {
+    "run": "soundness-final-bitmap-01",
+    "tests": [
+      "tests/l2/test_bitmap.py"
+    ]
+  },
+  "ptwcache": {
+    "run": "soundness-final-ptwcache-01",
+    "tests": [
+      "tests/l2/test_ptwcache.py"
+    ]
+  },
+  "llptw": {
+    "run": "soundness-final-llptw-01",
+    "tests": [
+      "tests/l2/test_llptw.py"
+    ]
+  },
+  "l2tlb": {
+    "run": "soundness-final-l2tlb-02",
+    "tests": [
+      "tests/l2/test_l2tlb.py"
+    ]
+  },
+  "l2tlbwrapper": {
+    "run": "soundness-final-l2tlbwrapper-02",
+    "tests": [
+      "tests/l2/test_l2tlbwrapper.py"
+    ]
+  },
+  "checker-selftest": {
+    "run": "soundness-final-checker-selftest-01",
+    "tests": [
+      "tests/test_verification_checks.py"
+    ]
+  }
+}

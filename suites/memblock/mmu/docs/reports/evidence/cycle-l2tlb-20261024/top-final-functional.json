@@ -1,0 +1,425 @@
+{
+  "format": "xreactor-functional-coverage",
+  "version": 2,
+  "coverage": 100.0,
+  "covered": true,
+  "groups": [
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "l2tlb",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "event",
+            "source": "event",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "cache_hit",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "cache_hit"
+                  ]
+                }
+              },
+              {
+                "name": "fault",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "fault"
+                  ]
+                }
+              },
+              {
+                "name": "sfence",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "sfence"
+                  ]
+                }
+              },
+              {
+                "name": "walk",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "walk"
+                  ]
+                }
+              }
+            ],
+            "description": "经过真实 PTW/PtwCache 的走表、缓存命中、故障和失效后重走。"
+          },
+          {
+            "name": "page",
+            "source": "page",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "1g",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "1g"
+                  ]
+                }
+              },
+              {
+                "name": "2m",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "2m"
+                  ]
+                }
+              },
+              {
+                "name": "4k",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "4k"
+                  ]
+                }
+              },
+              {
+                "name": "fault",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "fault"
+                  ]
+                }
+              }
+            ],
+            "description": "顶层响应代表的页大小或故障结果。"
+          },
+          {
+            "name": "port",
+            "source": "port",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "0",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    0
+                  ]
+                }
+              },
+              {
+                "name": "1",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    1
+                  ]
+                }
+              }
+            ],
+            "description": "两个 TLB 请求端口都能完成翻译路径。"
+          },
+          {
+            "name": "stage",
+            "source": "stage",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "0",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    0
+                  ]
+                }
+              },
+              {
+                "name": "1",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    1
+                  ]
+                }
+              },
+              {
+                "name": "2",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    2
+                  ]
+                }
+              },
+              {
+                "name": "3",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    3
+                  ]
+                }
+              }
+            ],
+            "description": "noS2、onlyStage1、onlyStage2、allStage 四类翻译。"
+          }
+        ],
+        "crosses": [],
+        "description": "L2TLB 顶层集成语义。"
+      },
+      "schema_digest": "c9eafc08a5031fd4b7b9563f166f3ab9a7c6854978087c25c45926f36ff99d02",
+      "instance": "l2tlb",
+      "illegal_policy": "raise",
+      "samples": 98,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 98,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "cache_hit": 1,
+            "fault": 21,
+            "sfence": 1,
+            "walk": 75
+          },
+          "provenance": {
+            "walk": {
+              "028d8f57717549adaa5db95f9247aa88": {
+                "count": 75,
+                "first": null,
+                "last": null
+              }
+            },
+            "fault": {
+              "028d8f57717549adaa5db95f9247aa88": {
+                "count": 21,
+                "first": null,
+                "last": null
+              }
+            },
+            "cache_hit": {
+              "028d8f57717549adaa5db95f9247aa88": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "sfence": {
+              "028d8f57717549adaa5db95f9247aa88": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "event",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 98,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "1g": 14,
+            "2m": 2,
+            "4k": 61,
+            "fault": 21
+          },
+          "provenance": {
+            "1g": {
+              "028d8f57717549adaa5db95f9247aa88": {
+                "count": 14,
+                "first": null,
+                "last": null
+              }
+            },
+            "fault": {
+              "028d8f57717549adaa5db95f9247aa88": {
+                "count": 21,
+                "first": null,
+                "last": null
+              }
+            },
+            "4k": {
+              "028d8f57717549adaa5db95f9247aa88": {
+                "count": 61,
+                "first": null,
+                "last": null
+              }
+            },
+            "2m": {
+              "028d8f57717549adaa5db95f9247aa88": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "page",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 98,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "0": 94,
+            "1": 1,
+            "2": 1,
+            "3": 2
+          },
+          "provenance": {
+            "0": {
+              "028d8f57717549adaa5db95f9247aa88": {
+                "count": 94,
+                "first": null,
+                "last": null
+              }
+            },
+            "1": {
+              "028d8f57717549adaa5db95f9247aa88": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "2": {
+              "028d8f57717549adaa5db95f9247aa88": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "3": {
+              "028d8f57717549adaa5db95f9247aa88": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "stage",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 98,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "0": 96,
+            "1": 2
+          },
+          "provenance": {
+            "0": {
+              "028d8f57717549adaa5db95f9247aa88": {
+                "count": 96,
+                "first": null,
+                "last": null
+              }
+            },
+            "1": {
+              "028d8f57717549adaa5db95f9247aa88": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "port",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "028d8f57717549adaa5db95f9247aa88": {
+          "run_id": "028d8f57717549adaa5db95f9247aa88",
+          "instance": "l2tlb",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "028d8f57717549adaa5db95f9247aa88",
+      "snapshot_id": "9679a10729b6e3352860d82d97fe3864733f52db95794f4dec47ff944c05f7d1"
+    }
+  ]
+}

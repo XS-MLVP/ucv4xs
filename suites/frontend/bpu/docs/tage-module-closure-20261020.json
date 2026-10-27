@@ -1,0 +1,123 @@
+{
+  "title": "TAGE 模块闭环：恢复已知缺陷的严格 XFAIL（修复误报 FAIL），并逐项归因 120 行 / 85 arm",
+  "status": "module-loop-closed-for-current-RTL; BPU-TAGE-026 remains the documented strict XFAIL",
+  "module": "Tage",
+  "scope": "独立 Tage DUT 的 36 个功能点与 227 个选测用例；不证明完整 BPU 或完整 FTQ",
+  "human_events": [
+    {
+      "id": "BPU-TAGE-025",
+      "event": "同一 bank 的四条真实 PC 在双向 provider-way 迁移后接受新鲜反馈；邻居 tag 的目标、计数与 useful 必须各自保持。",
+      "owner": "新鲜反馈属于原预测的完整身份，不属于当前物理 way。",
+      "evidence": ["tests/tage/testcase/test_way_migration.py::test_fresh_feedback_after_way_migration_preserves_all_neighbors"],
+      "status": "PASS"
+    },
+    {
+      "id": "BPU-TAGE-026",
+      "event": "重放原预测捕获的 provider-way metadata，让 tag 在迟到反馈前迁移。",
+      "owner": "迟到的 useful 更新可以丢弃或改向，但不能改变旧物理 way 上无关 tag 的 useful。",
+      "observed_difference": "迁移后的无关 tag useful 从 3 变 1；这是仓库已记录的 RTL 差异。",
+      "evidence": ["tests/tage/testcase/test_way_migration.py::test_captured_feedback_after_way_migration_preserves_unrelated_tag_useful"],
+      "status": "XFAIL",
+      "strict": true
+    }
+  ],
+  "false_fail_repair": {
+    "before": {
+      "run": "results/tage-module-baseline-20261020-v3",
+      "tests": "226 PASS / 1 FAIL",
+      "point": "BPU-TAGE-026 reported FAIL"
+    },
+    "cause": "The test is marked xfail(strict=True, raises=MisassociatedProviderUseful). After the independent semantic reference began comparing useful, it detects the same defect one boundary earlier and raises ScoreboardMismatch; with raises= set, pytest no longer matches the marker and reports an ordinary FAIL.",
+    "fix": "bpuverify/tage/case/way_migration_scenario.as_misassociated_useful() re-labels only an all-`useful` difference set as MisassociatedProviderUseful. Any other mismatch returns None and the caller re-raises the original exception.",
+    "negative_control": "tests/tage/scoreboard/test_way_migration_mismatch.py: useful-only becomes the declared defect; mixed, counter-only and empty difference sets are not re-labelled.",
+    "after": {
+      "run": "results/tage-module-qualification-20261020-v5",
+      "tests": "226 PASS / 1 XFAIL / 0 FAIL / 0 ERROR / 0 SKIP",
+      "functional_points": "35 PASS / 1 XFAIL"
+    },
+    "not_a_rtl_change": true,
+    "not_xfail_widening": "the marker is still strict and still limited to the one declared exception; a non-useful mismatch would fail the suite"
+  },
+  "coverage": {
+    "denominator": {"lines": 4587, "branches": 1598, "toggles": 15514},
+    "final": {"lines": "4467/4587", "branches": "1513/1598", "toggles": "10711/15514"},
+    "delta_vs_baseline": {"lines": 0, "branches": 0, "toggles": 0, "note": "the repair changes verdicts, not native counts"},
+    "uncovered_lines": {
+      "count": 120,
+      "file": "rtl/tage/WriteBuffer.sv",
+      "guard_classification": {
+        "artifact": "results/tage-module-qualification-20261020-v5/guard-classification.json",
+        "raw_missing": 120,
+        "locally_classified": 120,
+        "unclassified": [],
+        "native_producers": 64,
+        "native_denominator_unchanged": true,
+        "functional_pass_credit": false,
+        "whole_design_formal_claim": false
+      },
+      "structure": {
+        "slots": 8,
+        "slot_definition": "2 write ports x 4 buffer entries",
+        "per_slot": {"counter_payload": 7, "setIdx": 2, "entry_valid": 2, "entry_tag": 2},
+        "split_counter_assignment_second_lines": 8,
+        "else_block_heads": 8,
+        "total": 120
+      },
+      "meaning": "Every line is one arm of the same per-slot register assignment emitted for each of the eight write-buffer slots. The source has a single semantic write per field; the duplicates come from several `when` blocks updating the same register and from the generated hit/not-hit priority tree.",
+      "not_120_functions": true,
+      "no_denominator_change": true
+    },
+    "uncovered_branches": {
+      "count": 85,
+      "breakdown": {
+        "WriteBuffer_slot_arms": 50,
+        "TageDut_replicas": 34,
+        "ram_read_enable": 1
+      },
+      "WriteBuffer": {
+        "slot_hit_arms": 48,
+        "dead_ternary_arms": 2,
+        "dead_detail": "writeTouchVec_{0,1}_bits = io_write_{0,1}_valid & ~hit ? victim : 2'h0 is generated inside the same if guard, so the else is unreachable"
+      },
+      "TageDut": {
+        "per_position_hitmask": 9,
+        "table_tag_match_position": 5,
+        "useAltOnNa_clamp_and_subtract": 20
+      },
+      "ram_4x9": {
+        "arm": "R0_data = R0_en ? Memory[R0_addr] : 12'bx",
+        "reason": "the only generated counter queue instance ties R0_en high"
+      }
+    },
+    "useAltOnNa_open_candidate": {
+      "observed": "the eight useAltOnNa counters show only their normal increment path; clamp-at-31 and subtract-to-zero arms are uncovered",
+      "why_single_pair_cannot_reach": "with one provider/alternate pair a +1 step always moves the provider out of the weak band (3/4), and the next feedback that returns it to the weak band decrements the selector, so the counter oscillates near its weak-positive init instead of saturating",
+      "what_would_reach_it": "a multi-slot t3 beat whose branches share one useAltOnNa index and request the same direction, so the RTL applies a step of two or more",
+      "disposition": "open candidate, not claimed as PASS; no bank/set sweep and no internal writes"
+    },
+    "functional_groups": {
+      "total": 28,
+      "full": 27,
+      "not_full": {"kunminghu_v3.tage.way_migration_captured": 42.5},
+      "explanation": "the captured mode retains its sixteen failing bins; the known RTL defect means those obligations earn reached but not checked credit"
+    }
+  },
+  "false_positive_false_negative_checks": [
+    "The repair targets a false FAIL, not a false PASS: the same RTL difference remains reported, and any non-useful mismatch still fails normally.",
+    "The helper is covered by pure negative controls for mixed, counter-only and empty difference sets.",
+    "The strict marker is unchanged; a future fix that makes the scenario pass would XPASS and fail the strict expectation instead of silently passing.",
+    "Coverage is unchanged by the repair (4467/4587 lines), so no native growth is claimed for a verdict correction.",
+    "The 120 lines are grouped into eight write-buffer slots before being called replicas; they are not waved away as 'copy noise' without evidence."
+  ],
+  "constraints": [
+    "No RTL, DUT or system SDK change.",
+    "No new XFAIL and no loss of strictness.",
+    "No internal signal writes or bank/set sweeps.",
+    "The selected run does not replace the retained full regression."
+  ],
+  "remaining": [
+    "BPU-TAGE-026 remains a real RTL difference (captured provider way misassociating useful after tag migration).",
+    "The useAltOnNa clamp/subtract arms need a multi-slot same-index batch to be exercised; documented as an open candidate.",
+    "Full FTQ lifetime and composed BPU arbitration remain outside this module run."
+  ]
+}

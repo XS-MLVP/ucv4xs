@@ -1,0 +1,550 @@
+{
+  "format": "xreactor-functional-coverage",
+  "version": 2,
+  "coverage": 100.0,
+  "covered": true,
+  "groups": [
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "ptwcache",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "event",
+            "source": "event",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "bitmap",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "bitmap"
+                  ]
+                }
+              },
+              {
+                "name": "flush",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "flush"
+                  ]
+                }
+              },
+              {
+                "name": "hptw",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "hptw"
+                  ]
+                }
+              },
+              {
+                "name": "l0_fill",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "l0_fill"
+                  ]
+                }
+              },
+              {
+                "name": "l0_hit",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "l0_hit"
+                  ]
+                }
+              },
+              {
+                "name": "l1_fill",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "l1_fill"
+                  ]
+                }
+              },
+              {
+                "name": "l1_hit",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "l1_hit"
+                  ]
+                }
+              },
+              {
+                "name": "l2_fill",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "l2_fill"
+                  ]
+                }
+              },
+              {
+                "name": "l2_hit",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "l2_hit"
+                  ]
+                }
+              },
+              {
+                "name": "l3_fill",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "l3_fill"
+                  ]
+                }
+              },
+              {
+                "name": "l3_hit",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "l3_hit"
+                  ]
+                }
+              },
+              {
+                "name": "miss",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "miss"
+                  ]
+                }
+              },
+              {
+                "name": "prefetch",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "prefetch"
+                  ]
+                }
+              },
+              {
+                "name": "sp_fill",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "sp_fill"
+                  ]
+                }
+              }
+            ],
+            "description": "PtwCache 各级 refill/命中/miss、失效、bitmap、HPTW 和预取。"
+          },
+          {
+            "name": "level",
+            "source": "level",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "0",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    0
+                  ]
+                }
+              },
+              {
+                "name": "1",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    1
+                  ]
+                }
+              },
+              {
+                "name": "2",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    2
+                  ]
+                }
+              },
+              {
+                "name": "3",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    3
+                  ]
+                }
+              }
+            ],
+            "description": "层号 0..3。"
+          },
+          {
+            "name": "stage",
+            "source": "stage",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "0",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    0
+                  ]
+                }
+              },
+              {
+                "name": "1",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    1
+                  ]
+                }
+              },
+              {
+                "name": "2",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    2
+                  ]
+                }
+              },
+              {
+                "name": "3",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    3
+                  ]
+                }
+              }
+            ],
+            "description": "s2xlate 四类。"
+          }
+        ],
+        "crosses": [],
+        "description": "PtwCache 页表缓存语义。"
+      },
+      "schema_digest": "a6fa91fa46faea24e110f728a3bd7835b129b5767c9cbb798c5206e4d74e52a6",
+      "instance": "ptwcache",
+      "illegal_policy": "raise",
+      "samples": 44,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 44,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "bitmap": 2,
+            "flush": 2,
+            "hptw": 2,
+            "l0_fill": 4,
+            "l0_hit": 14,
+            "l1_fill": 3,
+            "l1_hit": 2,
+            "l2_fill": 1,
+            "l2_hit": 3,
+            "l3_fill": 1,
+            "l3_hit": 3,
+            "miss": 1,
+            "prefetch": 1,
+            "sp_fill": 5
+          },
+          "provenance": {
+            "l0_fill": {
+              "701db0724e854803b90bbd15657d25dd": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            },
+            "l0_hit": {
+              "701db0724e854803b90bbd15657d25dd": {
+                "count": 14,
+                "first": null,
+                "last": null
+              }
+            },
+            "miss": {
+              "701db0724e854803b90bbd15657d25dd": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "l1_fill": {
+              "701db0724e854803b90bbd15657d25dd": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "l1_hit": {
+              "701db0724e854803b90bbd15657d25dd": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "l2_fill": {
+              "701db0724e854803b90bbd15657d25dd": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "l2_hit": {
+              "701db0724e854803b90bbd15657d25dd": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "l3_fill": {
+              "701db0724e854803b90bbd15657d25dd": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "l3_hit": {
+              "701db0724e854803b90bbd15657d25dd": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "sp_fill": {
+              "701db0724e854803b90bbd15657d25dd": {
+                "count": 5,
+                "first": null,
+                "last": null
+              }
+            },
+            "hptw": {
+              "701db0724e854803b90bbd15657d25dd": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "prefetch": {
+              "701db0724e854803b90bbd15657d25dd": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "bitmap": {
+              "701db0724e854803b90bbd15657d25dd": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "flush": {
+              "701db0724e854803b90bbd15657d25dd": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "event",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 44,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "0": 26,
+            "1": 6,
+            "2": 7,
+            "3": 5
+          },
+          "provenance": {
+            "0": {
+              "701db0724e854803b90bbd15657d25dd": {
+                "count": 26,
+                "first": null,
+                "last": null
+              }
+            },
+            "1": {
+              "701db0724e854803b90bbd15657d25dd": {
+                "count": 6,
+                "first": null,
+                "last": null
+              }
+            },
+            "2": {
+              "701db0724e854803b90bbd15657d25dd": {
+                "count": 7,
+                "first": null,
+                "last": null
+              }
+            },
+            "3": {
+              "701db0724e854803b90bbd15657d25dd": {
+                "count": 5,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "level",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 44,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "0": 40,
+            "1": 1,
+            "2": 1,
+            "3": 2
+          },
+          "provenance": {
+            "0": {
+              "701db0724e854803b90bbd15657d25dd": {
+                "count": 40,
+                "first": null,
+                "last": null
+              }
+            },
+            "1": {
+              "701db0724e854803b90bbd15657d25dd": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "2": {
+              "701db0724e854803b90bbd15657d25dd": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "3": {
+              "701db0724e854803b90bbd15657d25dd": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "stage",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "701db0724e854803b90bbd15657d25dd": {
+          "run_id": "701db0724e854803b90bbd15657d25dd",
+          "instance": "ptwcache",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "701db0724e854803b90bbd15657d25dd",
+      "snapshot_id": "73705174f3bde5181ade9faa73b156093ce67275e24284f32065f2806d72912a"
+    }
+  ]
+}

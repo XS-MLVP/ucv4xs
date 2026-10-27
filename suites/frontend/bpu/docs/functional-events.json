@@ -1,0 +1,666 @@
+{
+  "version": 2,
+  "scope": "未命中源码的语义事件审查目录，不是完整功能规格、测试执行结果或覆盖率排除表。features 是相关要求的多对多索引，不表示每个旧 ID 已完成语义审查。",
+  "events": {
+    "main.replacement-forward": {
+      "title": "相邻 MainBTB 学习保护刚访问或刚建立的分支而非沿用旧年龄",
+      "event": "前一合格访问或正常分配改变替换年龄时，紧随其后的新分支进入分配；两次来源均来自正常预测。",
+      "effect": "后一分配保护刚访问或刚建立的身份；满组连续分配分别替换旧居民，不把首个新分支立即覆盖。共享策略索引的 SRAM 别名共享年龄，独立索引和无资格访问不串入更新。",
+      "observation": "独立 LRU 预先给出各次受害者，核实真实相邻接受，比较新身份及全部幸存分支；再用后续容量竞争检验年龄，不把两个命中等同完整内容正确。",
+      "features": {
+        "mbtb": [
+          "BPU-MBTB-017",
+          "BPU-MBTB-030"
+        ],
+        "bpu": [
+          "BPU-INT-097"
+        ]
+      },
+      "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtbReplacer.scala:54"
+    },
+    "useful.allocate": {
+      "title": "新预测项接纳后建立自身的替换保护状态",
+      "event": "一次合格的条件分支误预测反馈选择可分配的新预测表项。",
+      "effect": "新项的 usefulness 从该表规定的初始保护等级开始，而不是继承被替换身份的保护程度。",
+      "observation": "独立模型从原始反馈推导分配对象；比较目标及未选中项状态，再用后续分配竞争观察保护效果。 集成学习还需从块内压缩指令对齐入口和条件分支自身入口建立真实原件，按完整入口PC及路径消费新分配的条件方向，并比较完整后继目标；不能将入口对齐为块首或借用块首原件。参见docs/bpu-block-entry-learning-contract.json；不授予未执行物理副本信用。 跨块转移须分别绑定A的提前读取与B的匹配/反馈原件，实际分配跨下一完整状态比较后由新A到B查询消费；暂停或推进预测时接纳旧B结果均不得借用年轻请求。参见docs/bpu-cross-block-learning-contract.json；检查义务不是新增功能点，不外推FTQ真值。 末级方向纠正另按docs/bpu-late-correction-learning-contract.json，由独立早级与TAGE原快照证明同一原件S3教导及年轻冲刷，实际确认后沿自然恢复路径由新原件消费；额外redirect不能冒作原S3读取恢复，观察到孤立纠正不计闭环通过。",
+      "features": {
+        "utage": [
+          "BPU-UTAGE-002",
+          "BPU-UTAGE-020"
+        ],
+        "bpu": [
+          "BPU-INT-044",
+          "BPU-INT-048",
+          "BPU-INT-050",
+          "BPU-INT-102",
+          "BPU-INT-103",
+          "BPU-INT-104"
+        ]
+      },
+      "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/BypassShadowBuffer.scala:198"
+    },
+    "useful.change": {
+      "title": "合格反馈奖励有效纠正、削弱错误预测的替换保护",
+      "event": "条件分支 provider 与基础预测发生分歧并预测正确，或 provider 自身预测错误；反馈仍属于原分支和历史上下文。 原预测正确性与已经翻转的当前方向相反时，迟到原反馈仍返回其当时的实际结果。",
+      "effect": "前者增加 usefulness，后者减少 usefulness；没有合格证据时不修改，其他预测项保持。 原正确预测恢复保护，原错误预测削弱保护；方向置信度在当前保留版本累计，不能追溯改判原预测贡献。",
+      "observation": "由原预测来源和实际方向推导资格与增量，比较完整状态及fresh消费者；启停时区分未合格反馈与已合格学习，前者不重放、后者不撤销。只看写使能不算完成。 双完整读取身份在真实升入长提供者后继续独立奖惩和下界纠错；无更长分配对象不意味着丢弃原学习，短经验保留并由后续查询检查。 原transfer及读取祖先、发送前当前完整版本、全部实际学习和保护状态、每阶段新消费者联合检查；独立历史和合法长表伴随结果保持。 块内入口另按docs/bpu-entry-protection-contract.json逐个绑定原贡献及原一致但错误的反馈，比较下一完整实际保护；来源自身或后来当前查询不得冒领。错误后短项方向重访与新长项持久消费仍另列，不因新Main预测通过而豁免。 原奖惩之后另按docs/bpu-short-revisit-contract.json复用真实读取祖先消费新长T4，再经不同较老路径和相同最近后继边消费原短NT1；本批两项消费者均需闭环，不能用Main正确代替，也不关闭长表强选短项。",
+      "features": {
+        "utage": [
+          "BPU-UTAGE-021",
+          "BPU-UTAGE-023",
+          "BPU-UTAGE-024",
+          "BPU-UTAGE-012"
+        ],
+        "bpu": [
+          "BPU-INT-048",
+          "BPU-INT-050",
+          "BPU-INT-066",
+          "BPU-INT-102",
+          "BPU-INT-103",
+          "BPU-INT-104"
+        ]
+      },
+      "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/BypassShadowBuffer.scala:204"
+    },
+    "useful.hold": {
+      "title": "继续奖励或惩罚已饱和的预测项时保护程度不绕回",
+      "event": "合格的 usefulness 增加到达上限，或减少到达下限后，接纳同方向的下一次反馈。 原预测及原基础预测一致且正确的迟到反馈返回时，当前方向已相反且保护非零。",
+      "effect": "保持上限或下限；随后反向的合格反馈必须仍能离开饱和态，且不影响邻居。 保护保持不意味着方向停学；方向必须从当前保留版本更新，后续原贡献及原错误仍能各自奖惩。",
+      "observation": "先独立建立边界前态，分别比较保持和反向恢复；某一地址未访问不等于缺少一个新的饱和功能。 返回前比较原来源、实际相反当前方向及保护1，返回后同时比较无保护变化、确有方向学习和新消费者；保护0的数值巧合不能代替资格证明。 集成短来源另按docs/bpu-neutral-recovery-contract.json证明保护0时中性指导仍改变方向并可恢复保护，保护3时中性保持后仍可被错误削弱。每步绑定确切S1原来源、S3收据、学习效果及完整实际确认，准备指导和最终消费者自己的后续学习不冒领指定阶段；不宣称覆盖所有同语义物理行。",
+      "features": {
+        "utage": [
+          "BPU-UTAGE-021"
+        ],
+        "bpu": [
+          "BPU-INT-048",
+          "BPU-INT-066",
+          "BPU-INT-102",
+          "BPU-INT-103",
+          "BPU-INT-104"
+        ]
+      },
+      "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/SaturateCounter.scala:44"
+    },
+    "useful.maintenance": {
+      "title": "持续无法建立新预测时释放保护，但不忘记已学会的分支方向",
+      "event": "有效原始反馈真正需要新预测，而没有可分配的更长历史记录；这类失败累计达到规定压力。",
+      "effect": "按共同前态降低替换保护，重新开放学习机会；不抹掉已有方向、分支身份或原始metadata。同拍已有身份的方向反馈仍独立生效。",
+      "observation": "独立统计合格失败并比较完整维护后态，随后重新消费已学会的T/NT历史。局部反馈与全局维护分别归因，不以周期或发送次数代替失败压力。",
+      "features": {
+        "utage": [
+          "BPU-UTAGE-017"
+        ],
+        "bpu": [
+          "BPU-INT-051",
+          "BPU-INT-102"
+        ]
+      },
+      "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:380"
+    },
+    "ahead.reward": {
+      "title": "实际执行的条件分支增强自身的早期 taken 预测",
+      "event": "合格训练确认一个已驻留条件分支实际 taken，且逻辑分支与历史来源仍匹配。",
+      "effect": "增强该分支方向置信度，在上限保持；不改变同一取指块内其他分支身份、目标和无关预测项。",
+      "observation": "比较独立计数状态和后续真实预测，且用负向反馈证明增强不是仅写入了任意正值。",
+      "features": {
+        "bpu": [
+          "BPU-INT-058",
+          "BPU-INT-059",
+          "BPU-INT-100"
+        ],
+        "abtb": [
+          "BPU-ABTB-010",
+          "BPU-ABTB-036"
+        ]
+      },
+      "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/abtb/AheadBtb.scala:272"
+    },
+    "ahead.penalize": {
+      "title": "真实不跳转结果或较晚 taken 分支削弱更早的错误条件预测",
+      "event": "反馈确认没有 taken 分支，或实际 taken 位置晚于已驻留的条件分支。",
+      "effect": "只削弱应被否定的条件分支，低饱和保持；非条件分支和实际较晚 taken 分支不能被连带修改。",
+      "observation": "比较按分支位置推导的受影响集合、完整计数状态和后续位置优先级选择。",
+      "features": {
+        "bpu": [
+          "BPU-INT-056",
+          "BPU-INT-058",
+          "BPU-INT-059",
+          "BPU-INT-100"
+        ],
+        "abtb": [
+          "BPU-ABTB-013",
+          "BPU-ABTB-036",
+          "BPU-ABTB-037"
+        ]
+      },
+      "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/abtb/AheadBtb.scala:270",
+      "working_set_program": {
+        "requirement": "一组窗口各有较早和较晚条件分支。只让选定窗口经历较晚跳转、较早恢复跳转、整窗不跳转和再次恢复；只修正实际经过的条件前缀，未执行的较晚分支及未选窗口保持。",
+        "scope": "六个逻辑代码窗口、十二个条件分支；访问次序与选择哪半组窗口交叉四个程序，不遍历bank/set/way。",
+        "oracle": "复用独立Main、Ahead和MicroTAGE模型与真实原件；比较全部1024个实际方向计数及256个近期关系，逐阶段由完整新消费者检查窗口位置、目标和身份。",
+        "case": "tests/bpu/testcase/test_ahead_working_set.py::test_selected_condition_prefix_changes_without_forgetting_other_windows",
+        "evidence": "四个纯模型程序完成全生命周期；results/ahead-prefix-working-set-native-20261019-v1四项普通FAIL，均在准备首个窗口时复现现有高tag差异。配置15位tag，但表项及实际读口仅8位；1072/2086被读成48/38，原NT提供者未命中，实际仍选较早分支。完整DUT生命周期为0，40项checked为0。",
+        "limits": "不截短独立参考、不改变布局绕过高tag差异、不新增XFAIL。Ahead学习的直接指导来自真实S3预测，后端结果只通过正常Main学习影响它，不冒充完整FTQ执行真值。有限代码工作集不证明全部物理副本或容量替换；新场景新增10个执行行点，但失败执行不授予功能通过。"
+      }
+    },
+    "ahead.replace": {
+      "title": "新分支替换旧预测项时不继承旧分支的方向置信度",
+      "event": "正常训练选择替换一个已经学习过的 AheadBTB 驻留项。",
+      "effect": "新条件分支从规定的弱 taken 初态开始，且初始化优先于该项同拍的方向增减；幸存项保持。",
+      "observation": "先建立与初态有区分度的旧置信度，再比较新身份及后续真实预测；遍历替换位置只是物理覆盖维度。",
+      "features": {
+        "bpu": [
+          "BPU-INT-055",
+          "BPU-INT-059",
+          "BPU-INT-100"
+        ],
+        "abtb": [
+          "BPU-ABTB-014",
+          "BPU-ABTB-051"
+        ]
+      },
+      "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/abtb/AheadBtb.scala:276"
+    },
+    "replacement.touch": {
+      "title": "合格访问改变未来的替换受害者，冲突访问遵守既定优先级",
+      "event": "预测器接纳会改变近期使用关系的访问或分配；不是每次查询都自动算一次 touch。",
+      "effect": "后续容量冲突淘汰策略指定的旧项，保护近期项；同一替换状态的多来源冲突按策略处理，独立状态互不影响。",
+      "observation": "从有区分度的访问前史独立计算下一个 victim，再实际分配并查询所有幸存身份；单看状态寄存器被写不算证明。",
+      "features": {
+        "mbtb": [
+          "BPU-MBTB-024"
+        ],
+        "bpu": [
+          "BPU-INT-055",
+          "BPU-INT-100"
+        ],
+        "abtb": [
+          "BPU-ABTB-050"
+        ]
+      },
+      "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/replacer/ReplacerState.scala:58"
+    },
+    "pending.rewrite": {
+      "title": "尚未写回的预测项接纳新反馈后保留正确逻辑身份和完整更新",
+      "event": "真实反馈命中尚在缓冲中的逻辑预测项、为已失去驻留的原身份重新学习，或不同 owner 的反馈在写回受阻时相邻到达。 两个相反方向但各自正确的旧预测反馈，在部分结果已写入而其他结果待写时相邻到达。 多个完整历史的待写学习分别接纳内部原提示的连续正确反馈，交叉交错与成组到达。 旧版本实际写回与同身份或另一身份的新执行前缀学习同边界发生。",
+      "effect": "同身份按序合并，已失驻身份从原状态重新建立；后到同目的地替换明确终止旧义务，异身份不串写；被屏蔽的方向和邻居保留，真实 SRAM 服务及脱离旁路后的消费者仍看到最新版本。 两笔学习分别作用于各自当前分支版本，不能以原饱和提示丢掉会改变当前计数的效果，也不能覆盖另一笔待写义务。 每个身份都累积到并保持自身置信边界；数值保持不取消尚未服务的学习，也不使其他身份回退旧提示。 旧写回只完成旧版本；新学习继续待写，未执行兄弟分支和独立历史保持。",
+      "observation": "以原始反馈和独立 owner 模型比较完整状态，关联实际写回，最后用 fresh 消费者检查，不能只验证缓冲槽发生写入。 交叉正后负/负后正和两个原来源各自的内部/饱和边界，逐笔比较原提案、当前归属、全部服务与四阶段十二个fresh消费者。 原提示均在内部区间时，较晚NT反馈仍包含实际执行的较早NT前缀；分别比较相邻接纳和首个实际学习成熟后的接纳，不能用固定等待或旧饱和值替代关联。 每次提案前比较所有已学习完整身份的实际保留计数和待写资格，再以所有旧消费者、完整SDK服务及新消费者闭合。 实际提案与SDK旧服务必须同边界，分别比较旧载荷、中间新版本、两个混合值消费者及全部剩余服务和最终消费者。",
+      "features": {
+        "sc": [
+          "BPU-SC-016",
+          "BPU-SC-018"
+        ],
+        "tage": [
+          "BPU-TAGE-023",
+          "BPU-TAGE-024",
+          "BPU-TAGE-035"
+        ],
+        "bpu": [
+          "BPU-INT-039",
+          "BPU-INT-040",
+          "BPU-INT-086",
+          "BPU-INT-087",
+          "BPU-INT-088",
+          "BPU-INT-089",
+          "BPU-INT-090",
+          "BPU-INT-091",
+          "BPU-INT-098",
+          "BPU-INT-106",
+          "BPU-INT-107"
+        ],
+        "utage": [
+          "BPU-UTAGE-015",
+          "BPU-UTAGE-016"
+        ]
+      },
+      "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/WriteBuffer.scala:204",
+      "related_sources": [
+        "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/BypassShadowBuffer.scala:258"
+      ]
+    },
+    "main.rewrite": {
+      "title": "分支目标或属性修正替代原待写版本而不污染另一分支",
+      "event": "从原预测记录产生的真实 MainBTB 目标或属性修正，与其他待写记录或预测读竞争。 一个仍有效的真实年轻来源先被学习入口接纳，随后从自己或更老原检查点恢复，交叉学习发布期与完整待写期。 真实旧miss来源经独立分支的干净shadow替换后再次学习，自然形成重复分支版本；新查询触发按目的地清理，并与另一分支完整目标修正并发。",
+      "effect": "修正属于正确分支和保留版本；完整目标、类型、位置与方向一起保持一致。本次未执行的后继条件分支保持原方向；较早分支的初始化不能改变它。重复清理是对目标位置的操作而非新零值分支。 若仍有效的原始冷来源晚到，新的分配提议不能让方向初始化脱离实际保留的逻辑分支主人。 已接纳的完整条目与方向不随后续预测取消而丢失或重复；恢复不是取消已接受学习的隐式flush。 无效清理的零tag/位置不能冒充有效分支身份；仅清除声明的重复副本，独立分支的完整目标和方向学习都必须保留。",
+      "observation": "关联原始metadata、保留身份、实际完整写回和fresh消费者；分别验证待提交/已提交、旧冷/驻留来源，用offset取指检验未执行后继的真实控制流。跨owner源码存在不能独自证明功能成功或整机缺陷。 同一间接分支的两个真实原始预测按不同解析接纳顺序返回时，分别验证合并待写和服务后更新；最终版本按实际接纳顺序判断，未执行后继不重学。 全部实际S1和完整输入门禁证明先接纳后恢复；比较原来源存活/取消后缀、完整保留状态、SDK服务及fresh目标和后继方向。 四种零键/非零身份与单独清理/并发学习程序，使用全部S1有界账本和完整输入门禁，比较实际父操作、完整SDK服务及两个fresh消费者。",
+      "features": {
+        "bpu": [
+          "BPU-INT-020",
+          "BPU-INT-093",
+          "BPU-INT-095"
+        ],
+        "mbtb": [
+          "BPU-MBTB-025",
+          "BPU-MBTB-026",
+          "BPU-MBTB-028",
+          "BPU-MBTB-029"
+        ]
+      },
+      "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/WriteBuffer.scala:213"
+    },
+    "path.recover": {
+      "title": "恢复到真实检查点后只重放实际执行的路径历史",
+      "event": "后端恢复、较晚预测级修正或正常 taken 更新，从本历史 epoch 产生的真实检查点接续执行。",
+      "effect": "较老修正优先，取消年轻后缀，只追加实际执行的路径贡献；循环存储回绕不改变逻辑历史。",
+      "observation": "独立逻辑路径与检查点模型比较后续历史消费者；物理游标的余数约束必须写明 reset 和检查点所有权前提。 内部不同年龄修正竞争另按docs/bpu-competing-correction-contract.json：旧lookup先暂停跨过年轻指令发现，分别绑定原件S1接纳，核实真实S3/S2同拍，下一实际恢复、原学习及新历史消费者闭环。不能把PHR余数守卫或CommonHR死分支称作缺少这一功能，也不能用相邻周期修正冒充同时竞争。",
+      "features": {
+        "bpu": [
+          "BPU-INT-034",
+          "BPU-INT-035",
+          "BPU-INT-036",
+          "BPU-INT-037",
+          "BPU-INT-038",
+          "BPU-INT-094"
+        ]
+      },
+      "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/history/phr/Phr.scala:285"
+    },
+    "common.recover": {
+      "title": "方向历史恢复优先于年轻流水线的历史传播",
+      "event": "真实后端恢复重建方向历史，与正常推进或预测级修正相遇。",
+      "effect": "恢复身份对应的已执行条件分支前缀接替年轻推测历史，不能被同拍正常推进覆盖。",
+      "observation": "比较恢复后的条件分支序列和后续方向预测消费者；重复生成的受优先级排除分支不是新的恢复事件。",
+      "features": {
+        "bpu": [
+          "BPU-INT-042",
+          "BPU-INT-094"
+        ]
+      },
+      "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/history/commonhr/CommonHR.scala:66"
+    },
+    "loop.recover": {
+      "title": "旧预测恢复自己的循环迭代上下文而不继承年轻计数",
+      "event": "真实旧预测被保留，年轻向后条件循环继续执行至饱和，旧来源随后恢复。",
+      "effect": "仅taken向后条件延伸原来源计数并饱和；其他结果结束循环。暂停保持，年龄较老的修正胜过年轻推进。",
+      "observation": "独立预测身份和迭代模型比较实际接纳、只读注册状态、各级原快照、新查找及公开metadata消费者；计数相同不能替代身份相同。",
+      "features": {
+        "bpu": [
+          "BPU-INT-099"
+        ]
+      },
+      "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/history/commonhr/CommonHR.scala:274"
+    },
+    "ras.retire": {
+      "title": "真实调用与返回退休维护提交栈的调用身份及重复次数",
+      "event": "保留下来的调用或返回按序退休，重复组达到边界后继续调用或返回；不同地址外层嵌套和实际提交回绕分别形成寿命交叉。 接近提交容量时，两个相邻但不同调用点的递归层同时存活，分别保留较多或较少的未消费调用。",
+      "effect": "同地址调用可压缩，上界后建立新组；返回仅消耗一个真实调用，完整内层展开后切换到正确父调用，容量仍保留的更老组保持。取消或已被容量淘汰的来源不冒充合法退休。 多层递归的次数各自保留；内层拆组和动态间接调用目标重做不复制调用，也不消耗外层剩余次数。 return-and-call按返回再调用替换最年轻帧，不能因动作资格被过滤为无操作。 内层与外层的剩余返回次数独立；自然返回耗尽内层后，仍按外层自己的次数和返回身份继续展开。",
+      "observation": "独立展开调用程序和有界提交模型交叉检查，比较全部提交单元和每笔最终S3返回目标；原有深度与重复程序全部保留。物理槽不同不新增功能ID。 以还留一组空间和恰好保留全部调用两种容量边界，交叉外层次数更多和内层次数更多；逐笔比较完整返回PC/目标、各层退休后的完整提交状态及最终sentinel。",
+      "features": {
+        "ras": [
+          "BPU-RAS-011",
+          "BPU-RAS-012",
+          "BPU-RAS-013",
+          "BPU-RAS-017"
+        ],
+        "bpu": [
+          "BPU-INT-052",
+          "BPU-INT-053",
+          "BPU-INT-054",
+          "BPU-INT-096",
+          "BPU-INT-033"
+        ]
+      },
+      "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/ras/RasStack.scala:344",
+      "related_sources": [
+        "XiangShan/src/main/scala/xiangshan/frontend/bpu/ras/Ras.scala:109"
+      ]
+    },
+    "micro-ras.repair": {
+      "title": "较晚发现的调用修正被停住的早期返回地址转发来源",
+      "event": "S2 发现应为 CALL 的真实分支，而该级暂未推进到 S3；随后修正撤销或流水线恢复推进。",
+      "effect": "等待期间保留正确的新返回地址和调用身份，后续 RETURN 消费修正来源而不是旧推测调用；不重复执行调用。",
+      "observation": "独立调用序列与按年龄关联的消费者比较；集成输入必须证明 CALL 修正与停顿可以合法同时出现。",
+      "features": {
+        "uras": [
+          "BPU-URAS-003",
+          "BPU-URAS-013",
+          "BPU-URAS-015"
+        ],
+        "bpu": []
+      },
+      "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/ras/MicroRas.scala:145"
+    },
+    "predictor.restart": {
+      "title": "复位结束旧预测与学习寿命，新执行重新建立自己的分支记录",
+      "event": "已有有效预测记录及真实在途反馈时发起正常复位，随后仅接纳新的查询和反馈。 原查询已真实接纳，或旧重复观察已实际产生注册失效写时，正常复位结束旧寿命。",
+      "effect": "旧记录、旧待写学习和被仲裁拒绝的来源不自行复活；新身份只能由新反馈建立规定初态，未参与邻居保持，旧metadata不变。",
+      "observation": "比较实际初始化、原driver接受与memory-direct学习活动、两轮真实冷消费者及完整新学习寿命；不把ready或reset期间闲置输出当作全部清除的证明。 旧查询按原快照身份关联响应/reset结束；注册失效写在reset发起前读到当拍实际请求。",
+      "features": {
+        "mbtb": [
+          "BPU-MBTB-001",
+          "BPU-MBTB-019"
+        ],
+        "ubtb": [
+          "BPU-UBTB-001"
+        ]
+      },
+      "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/ubtb/MicroBtb.scala:48",
+      "related_sources": [
+        "XiangShan/src/main/scala/xiangshan/frontend/bpu/ubtb/MicroBtb.scala:163",
+        "XiangShan/src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtb.scala:122",
+        "XiangShan/src/main/scala/xiangshan/frontend/bpu/WriteBuffer.scala:87"
+      ],
+      "limits": "声明的独立MainBTB/MicroBTB学习、原查询响应/reset关系和cached/registered清理前态；不证明通用processing响应handle取消、retained/conflicting清理或最终reset边沿所有槽占用。"
+    },
+    "branch.duplicate_cleanup": {
+      "title": "重复分支收敛为唯一执行来源，清理不得越过原寿命",
+      "event": "实际消费同一原取指窗口内同位置的重复分支记录；或在其未消费/已注册失效写前态发起reset。",
+      "effect": "正常清理保留规定唯一来源及无关居民；复位结束旧清理，同地址新类型、新目标和方向寿命不被旧失效写误伤。",
+      "observation": "比较真实重复的两个不同目标、原消费及注册失效写、完整幸存者和复位后新分支消费者；看到双命中不等于已清理。",
+      "features": {
+        "mbtb": [
+          "BPU-MBTB-019"
+        ]
+      },
+      "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtbAlignBank.scala:293",
+      "related_sources": [
+        "XiangShan/src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtbInternalBank.scala:171"
+      ],
+      "limits": "独立UT的真实陈旧metadata重放，不证明集成FTQ可达或任意清理缓冲阶段。"
+    },
+    "prediction.select_executed_branch": {
+      "title": "先选择实际执行分支，再引用该分支自己的方向和目标来源",
+      "event": "同一原窗口的较早条件方向由TAGE纠正，较晚间接目标由ITTAGE提供，二者同时具有独立学习来源。",
+      "effect": "条件最终不跳转才允许后继间接消费其原目标；条件最终跳转必须保留自己的目标，未执行间接不获得学习。",
+      "observation": "从原始反馈独立建立Main/TAGE/ITTAGE，比较各自正确读取阶段、同token完整metadata和fresh S2/S3修正窗口，同PC不同原历史不借用快照。",
+      "features": {
+        "bpu": [
+          "BPU-INT-004",
+          "BPU-INT-007",
+          "BPU-INT-032"
+        ]
+      },
+      "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:417",
+      "limits": "已声明联合profile，SC/RAS/Ahead学习和完整FTQ epoch另待证明。"
+    },
+    "prediction.owned_read": {
+      "title": "查询保留已读取的原版本，后续窗口保留自己的匹配身份",
+      "event": "真实学习改正方向或替换身份时，原查询已经读取旧记录；后续窗口以自身地址/历史消费该读取结果。",
+      "effect": "原读取与新版本不混合；同边界查询保留旧结果，后续查询消费新版本，读取索引和后续匹配历史保持各自身份。",
+      "observation": "实际接纳与只读效果边界关联，完整defined结果及不可变读取元组比较；自身上下文miss与正确组合hit对照，全部保护和无关分支保持。",
+      "features": {
+        "utage": [
+          "BPU-UTAGE-006",
+          "BPU-UTAGE-015",
+          "BPU-UTAGE-022"
+        ]
+      },
+      "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:90",
+      "related_sources": [
+        "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/BypassShadowBuffer.scala:101"
+      ],
+      "limits": "独立UT一个实际读写边界和可区分祖先；不外推多查询年龄跨回绕、全部物理位置或完整FTQ可达性。"
+    },
+    "sc.context-learning": {
+      "title": "分支在原来路和条件执行经验下学习，再次处于同一上下文时使用该经验",
+      "event": "真实分支流形成有效且非零的已执行条件历史，随后取得有独立TAGE及SC来源的原预测；其他窗口继续前进后，原结果返回学习。",
+      "effect": "路径、全局方向、后向分支、循环和偏置五类特征分别更新原上下文的权重。读时上下文与反馈时上下文分别按原件持有，不用当前窗口替代；错误路径和未执行条件后缀不参与学习。",
+      "observation": "独立历史日志及SC模型推导实际读取、资格、完整有符号更新和阈值；回到同一上下文由新预测消费，更换来路作为隔离对照。非零但无效的历史、仅零值有效历史、只读不学习以及仅比较调试索引均不能证明此要求。",
+      "features": {
+        "bpu": [
+          "BPU-INT-042",
+          "BPU-INT-043",
+          "BPU-INT-060",
+          "BPU-INT-061",
+          "BPU-INT-105",
+          "BPU-INT-106",
+          "BPU-INT-107"
+        ]
+      },
+      "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/sc/Sc.scala:354",
+      "numeric_experience_contract": {
+        "requirement": "每个预测使用自己原查询读取的完整学习经验；权重数值错误不能因为符号、使用资格或最终方向仍相同而漏检。暂停及训练共用读取端口后，实际消费的经验仍属于原查询。",
+        "observation": "静态memory-direct bundle分别观察ScTable完整预测响应与SC下一阶段逐项数值证据；用独立原S0/S1接纳事件关联，不搜索相邻周期的数据相等点。",
+        "invalid_history": "没有有效条件历史时，不把未发起请求的global/backward旧读口当成有效响应；真实读口残留非零经验时，仍须由同一查询的实际消费证明屏蔽，不能只在参考中置零。",
+        "invalid_history_discriminating_witness": "复用四个串行和八个并发非零上下文程序，补一次合法取消暖查询：普通指令流重新验证原历史，按真实前驱接纳关闭预测流，由正常Main纠正发起并持有暖查询，完整比较非零读取；暂止SC读取，经真实原件恢复无效历史，再启用并消费新查询。见证窗口只在暖查询之后开启，排除复位随机值。global/backward实际均未发新读请求，旧响应必须等于已比较的暖权重，并由声明的同一新查询消费中性编码。六位权重零对应七位2*w+1编码1，不要求全SC分数为零；不新增训练或修改存储，缺任一阶段不能授予checked。",
+        "invalid_history_witness_evidence": "results/sc-invalid-history-native-20261019-v3：12个既有上下文程序和4个基本前缀控制全部PASS。24份因果见证逐份满足暖查询读取早于新请求、旧响应、实际消费；global/backward旧值均等于已独立比较的暖权重，声明的新原件消费中性编码。串行48/48、并发120/120义务，包含24项新判别义务。第一版四个BW见证不足和第二版误取复位随机值均保留原因，只有最终因果版本授信；新增原生行0。",
+        "models": "复用OwnedStatisticalReference与ScReference的不可变原读取，不从实际权重或provider初始化参考。",
+        "evidence": "results/sc-numeric-consumption-native-20261019-v2：复用现有16个程序全部PASS，40个fresh消费者分别有原读取和实际消费的完整数值证明。另18个受影响旧程序为14 PASS/4个原普通FAIL，需按原失败差异核对，不能把FAIL转作数值通过。",
+        "limits": "当前配置每家族一表，因此2*weight+1与原weight一一对应。比较完整单表经验及逐家族消费证据，不声称独立采样了最终合计数值；数值上下界的纯解码测试不是DUT已遍历所有数值的证明，不外推多表配置、任意历史或全FTQ。"
+      },
+      "autonomous_program": {
+        "case": "tests/bpu/testcase/test_statistical_prefix.py::test_SC_learns_original_nonzero_context_and_new_prediction_consumes_it",
+        "profiles": [
+          "forward.agree",
+          "forward.disagree",
+          "backward.agree",
+          "backward.disagree"
+        ],
+        "history": "原真实前缀产生有效GHR=1、BW=0/1、IMLI=0；独立CommonQueryReference分别拥有读取与反馈视图。",
+        "experience": "四份独立冷SC原件分别学习五类特征；原件阈值和低置信资格来自模型。新的同上下文原件取得SC使用权。",
+        "used_feedback": "正确且与TAGE一致不读不学，正确但分歧只读不学，随后原SC错误需读并学习五类特征；每阶段均有新的同上下文消费者。",
+        "coverage": "kunminghu_v3.bpu.sc-context-learning.reached / checked；每场景十项义务，规则不是新功能ID。",
+        "model": [
+          "bpuverify/bpu/model/common_query.py",
+          "bpuverify/bpu/model/statistical_joint_sources.py",
+          "bpuverify/sc/model/semantic.py"
+        ],
+        "checker": "bpuverify/bpu/checker/statistical_prefix.py",
+        "limits": "SC反馈期间通过正常使能保持TAGE经验，不能冒充TAGE和SC同时学习或资源冲突并发；不覆盖任意GHR/BW位、全FTQ、所有物理副本或RAS组合。"
+      },
+      "queued_context_program": {
+        "requirement": "多份携带不同原始条件经验的反馈交错到达，各按原资格生效一次，新查询分别消费共享与私有经验；当前置信变化不能改判旧原件。",
+        "case": "tests/bpu/testcase/test_sc_admission.py::test_distinct_old_context_feedbacks_keep_original_qualification_and_fresh_consumers",
+        "profiles": "原年龄顺序/逆年龄顺序 × 原SC与TAGE一致/分歧 × 同资源/独立资源，八个程序；不是bank或存储坐标遍历。",
+        "experience": "同一真实条件循环分别保留两种近期taken经验，使用其已发布原检查点进行NT退出，再经普通指令流到达目标分支，形成有效非零GHR/BW=6或14、IMLI=0。先保留充分可信的不同原件，再以真实反馈和新查询证明当前置信已降低；十份旧原件一次排入driver，八份错误原件学习，两份正确原件按原一致性免读或只读。",
+        "observation": "monitor核对实际完整输入、相邻接纳、原上下文读取及完整五类signed更新；两条前史的新查询核对完整原权重和实际消费数值，旧九类证据及公开metadata不可变。",
+        "coverage": "kunminghu_v3.bpu.sc-context-burst.reached / checked，八程序各十三项义务；全部实际检查完成后才授予checked。",
+        "qualification": "results/sc-context-burst-native-20261019-v3：八程序全部PASS，80笔相邻接纳、72次按原资格读取、64次五类学习、16个反馈后新消费者；各消费者与反馈前真实新查询比较，不能借准备阶段的变化授信。104/104 reached与checked义务由八个独立来源完整合并，新增原生行0。另30个旧程序28 PASS/2原FAIL，判定及失败字段完全保持。返回从最近公开原预测开始，通过正常分支恢复重建有限特征历史，恢复年龄保护不变；未新增Main使能切换支持。第一版双前驱在Main准备处失败的定义仍保留于results/sc-context-burst-native-20261019-v1/input-definition.tar.gz；第二版四个恢复过期失败不算功能通过。",
+        "limits": "保持SC反馈时正常禁用TAGE学习；按本配置读取时已提交权重推导，不假定相邻反馈转发未提交的数值；不证明任意历史、非零IMLI或完整FTQ合法性。"
+      },
+      "concurrent_program": {
+        "requirement": "旧预测等待期间，新预测可以继续使用不同历史；旧结果始终按原有效非零上下文获得一次完整学习，不被当前历史、重复接纳或半份反馈替代。",
+        "case": "tests/bpu/testcase/test_statistical_prefix.py::test_old_nonzero_context_learns_once_while_unrelated_predictions_continue",
+        "profiles": "前向/后向真实条件前缀 × 原TAGE一致/分歧 × 同资源/独立资源，共八个程序；不是物理副本枚举。",
+        "experience": "复用原串行四次冷学习、正确使用反馈和错误使用反馈；六次反馈分别与正常学习的MicroBTB预测流并行。当前直接跳转流完成窗口后使用有效零值公共历史，旧反馈仍使用原有效非零历史；不能把有效零值误称无效历史。",
+        "acceptance": "需要读取且争用资源时，完整driver transfer保留至少两次实际拒绝后解除；无读取资格或独立资源时应在实际预测同时接纳。每次driver结果与monitor实际接纳一致，五类读取及完整signed更新沿用同一个独立参考。",
+        "coverage": "kunminghu_v3.bpu.sc-concurrent-context.reached / checked；每程序十三项完整行为义务，未完成全部检查不授予checked。",
+        "evidence": "results/sc-concurrent-context-native-20261019-v2：八个实际DUT程序通过。48份原结果分别接纳一次，22份经资源拒绝后解除，44次五类读取、40次五类学习及24个新消费者；104项义务完成。行覆盖单独核算，本批新增0行。",
+        "limits": "保留SC反馈时正常禁用TAGE学习；不证明TAGE/SC共同学习、任意历史位、IMLI非零、多笔相邻原反馈或全FTQ。本组已另按numeric_experience_contract核对完整原权重及实际消费证据，但不声称独立采样最终合计数值。"
+      },
+      "limits": "旧非零物理矩阵、独立UT和零公共历史集成证据保留；新程序只授予声明的联合场景信用，不继承或提升整个功能点的旧PASS。"
+    },
+    "feedback.unmatched-owner": {
+      "title": "未命中的预测记录不拥有学习权限，新分配只建立自己的方向",
+      "event": "另一真实分支的完整原始反馈到达，其预测未命中，但携带了驻留分支的旧位置和方向；反馈可以请求新身份分配，也可以不请求。",
+      "effect": "不请求分配时原驻留分支保持；请求分配时只初始化实际新主人，旧payload不能额外训练别的身份。",
+      "observation": "独立Main模型先推导权限和后态，核对完整输入、实际服务及新消费者；位置不同为判别对照，失败不授予checked信用。",
+      "features": {
+        "mbtb": [
+          "BPU-MBTB-027"
+        ]
+      },
+      "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtbAlignBank.scala:258"
+    }
+  },
+  "short_direction_lifetime": {
+    "feature": "BPU-INT-103",
+    "title": "共享短期经验能被相反结果纠正、再恢复，不能由长期记录代答或污染另一分支",
+    "gap": "长期32/512来路的选择性纠错已在完整基线通过。现有短期共享场景只从NT方向释放一次保护；多来路保留场景也仅证明NT经验。它们不证明短表自身跨越完整方向边界并恢复。",
+    "event": "两个不同分支各有两个原来路，共享各自短期经验。只为一个分支从独立学习来路返回连续相反结果，然后重新消费原来路，最后恢复原方向。",
+    "guidance_source": "短表的每次学习由真实原S3指导触发，Main经验通过正常后端反馈建立；独立模型分别拥有这些来源。S3预测指导不是后端实际执行真值，也不据此声称完整FTQ合法性。",
+    "requirements": [
+      "真实前驱和原预测来源决定每次学习；两分支先各自建立稳定NT经验。",
+      "由独立账本预先推导所需相反结果及状态转移，不等固定周期，也不根据实际DUT值挑选刺激。",
+      "学习-only来路可正常建立长期记录，但这些记录不能覆盖任何原查询来路；原查询必须仍由短表提供T或NT。",
+      "选定分支变为T后，两个原来路都公开选择目标条件分支，另一分支的两个原来路仍选择真实兜底。",
+      "T方向及保护到上界后继续反馈保持；反向恢复NT，达到方向下界与保护上界后仍保持且可被重新消费。",
+      "两个方向端点均核对实际SRAM记录及实际保护状态，不能只比较影子旁路或预期模型。",
+      "完整原metadata及非选定分支保留；先学习哪个分支、纠正哪个分支分别构成独立程序控制。"
+    ],
+    "profiles": [
+      "left-selected.left-first",
+      "left-selected.right-first",
+      "right-selected.left-first",
+      "right-selected.right-first"
+    ],
+    "limits": "不修改RTL/DUT/SDK，不改变旧高tag等失败；不声明所有地址、满表替换、原FTQ完整合法性或已脱离全部缓存。缓存实际驻留单独记录。"
+  },
+  "behavior_contract_scope": "以下八类是当前原生未覆盖代码的稳定行为归组，不是新增八个算法，也不是逐槽功能点。requirements是需要检查的语义义务，不能按旧功能点PASS自动授信；具体剩余行与证据状态在results/current-semantic-gap-review.json中单独记录。物理副本、优先级约束和接口可达性仍保留分母，未证明的约束不当作不可达结论。",
+  "behavior_contracts": {
+    "branch-learning": {
+      "title": "分支结果改变自己的早期预测，不连带改变其他分支",
+      "events": [
+        "ahead.reward",
+        "ahead.penalize",
+        "ahead.replace"
+      ],
+      "requirements": {
+        "executed-prefix": "实际较晚分支发生或整窗不跳转时，只否定已实际经过的较早条件预测；未执行后缀不获得反馈。",
+        "direction-reversal": "连续相同结果使预测稳定，再给相反结果能够改变后续分支选择；达到方向边界后仍可反向学习。",
+        "new-identity": "新分支进入时建立自身经验，不继承被替换分支的强方向；未被淘汰分支仍能预测。",
+        "entry-identity": "从压缩入口、分支自身入口及跨块来路到达同一分支，学习与再次预测始终属于该逻辑分支。"
+      },
+      "case_design": [
+        "在一个自然工作集中学习多个分支，只反转其中一个的结果，再查询全部居民及被否定的较早条件分支。",
+        "建立强旧经验后引入新身份，检查新身份与全部幸存者；不遍历替换坐标。"
+      ],
+      "completion": "原始结果、受影响分支集合、完整预期经验和后续公开预测均一致；只增加物理行命中不算新增行为完成。"
+    },
+    "path-experience": {
+      "title": "同一分支记住不同来路，局部纠错不遗忘其他来路",
+      "events": [
+        "useful.allocate",
+        "useful.change",
+        "useful.hold",
+        "useful.maintenance",
+        "prediction.owned_read"
+      ],
+      "requirements": {
+        "distinct-ancestors": "读取经验的来路和后来匹配分支的来路不同，仍各自使用自己的原始上下文，不能拼成另一个身份。",
+        "retained-experience": "其他路径不断学习、最近版本不断轮换后，容量内各条路径的经验仍可重新使用，不能仅在旁路暂时正确。",
+        "selective-repair": "只改变选定来路的真实结果，使其后续方向反转；其他来路保持。再恢复选定来路，全部来路仍分别正确。",
+        "protection-evidence": "有效纠错获得保护，原错误失去保护；原来正确性不随当前方向变化而被改判，达到边界仍可反向恢复。",
+        "shared-short-distinct-long": "相同最近来路可以共享短期经验，较老来路不同的长期经验仍能独立保留；短期来源不能冒充长期来源。",
+        "learning-pressure": "持续无法学习新错误时释放保护，随后确实能够学习新身份，原有方向与身份不被一并抹去。",
+        "competing-branch-replacement": "共享前驱的不同分支竞争一份短经验时，先保护旧主人；正常释放后新主人从自己的弱置信度开始，旧分支回退自己的后级而不借新方向，双方已有长经验仍保持。"
+      },
+      "case_design": [
+        "保持目标分支不变，改变两段真实来路形成多个身份；学习、轮换最近版本、重访全部身份，并核对实际SRAM。",
+        "分别对最早和最新建立的来路执行反转及恢复；由新预测检查选定者和所有其他来路，不用单一NT结果代替混合方向。",
+        "独立累计真正的分配失败，引出保护释放，再验证新身份能学习且旧身份仍可消费。",
+        "同一真实间接前驱分别到达两个分支，验证保护旧经验、新分支长后备、旧经验正常释放、新弱置信度和旧分支回退的完整生命周期；不把互异索引的共存证明套用于竞争让位。"
+      ],
+      "completion": "从原来源、学习资格到持久保存和新消费者形成闭环；短期NT保留通过不代表长期反转及全局维护也通过。"
+    },
+    "late-feedback": {
+      "title": "迟到结果仍学到原分支，已写回旧版本不吞掉新学习",
+      "events": [
+        "pending.rewrite"
+      ],
+      "requirements": {
+        "original-qualification-current-learning": "是否应当学习由原预测决定，累计效果作用于该分支当前保留经验；旧计数提示不能冒充当前状态。",
+        "drain-and-new-learning": "旧学习完成写回的同时接纳新结果，只结束旧义务，新经验继续保留直至写回，后续查询不得退回旧值。",
+        "migration-and-return": "分支已迁移或暂时失去驻留后，旧结果仍按原逻辑身份处理，不串写原位置的新主人。",
+        "multiple-originals": "多个不同原预测的结果相邻到达、等待或交错写回时，每个结果按接纳顺序生效一次，完整结果及未选分支不丢失。",
+        "learning-recentness": "按已确认的访问型替换策略，重新学习已有待写身份应保护该身份；新身份竞争时不能立即错误淘汰刚学习者。",
+        "independent-learners": "一次分支结果整体接纳后，方向预测和统计纠偏各按原件资格学习；其中一方免读或免写不取消另一方效果，解除整体反压后只接纳一次。"
+      },
+      "case_design": [
+        "先取得多个不同原件，再让真实预测读取延迟写回，提交相反或同向结果，比较逐次效果与最终脱离旁路的消费者。",
+        "由monitor确认实际旧写回与新学习同边界，而非插入固定等待；随后检验新学习仍被写回。",
+        "分别检查迁移后、容量替换后和同身份再次学习；迟到原饱和提示与当前非饱和值构成判别对照。",
+        "在有效非零循环中分别验证冷纠偏、强正确纠偏免读、错误纠偏学习；核心反馈保持两预测器启用，逐次比较实际完整写入及鲜活消费者，不只比较最终方向。"
+      ],
+      "completion": "接纳、每笔完整更新、实际写回和最终消费者全部关联；TAGE迟到饱和策略差异与访问型PLRU差异保留，不降低模型去匹配RTL。"
+    },
+    "branch-record-repair": {
+      "title": "更正分支目标或类型时，记录与方向始终属于同一分支",
+      "events": [
+        "main.rewrite",
+        "branch.duplicate_cleanup",
+        "feedback.unmatched-owner"
+      ],
+      "requirements": {
+        "retained-owner": "更正已存在的分支保留其逻辑身份，方向初始化或更新必须跟随实际保留的主人，不能跟随另一候选分配位置。",
+        "complete-correction": "相邻目标和属性修正保留完整目标及类型，独立方向效果不因记录合并丢失，同窗其他分支保持。",
+        "duplicate-cleanup": "同一分支重复记录收敛到唯一来源；延迟清理不能删除后来建立的独立分支或最新正确版本。",
+        "no-borrowed-authority": "未命中的原预测不拥有驻留分支的学习权限；新分配只能建立实际新分支，不借旧载荷修改其他居民。"
+      },
+      "case_design": [
+        "在同一窗口建立条件分支和较晚分支，保留多份旧原件，再重复反馈较晚分支；检查条件方向不被另一主人初始化。",
+        "交错完整目标修正、重复记录清理和新身份学习，核对实际服务后重新查询全部分支。"
+      ],
+      "completion": "独立逻辑分支模型、实际记录服务、方向服务和fresh预测一致；已有Main归属差异仍是普通FAIL。"
+    },
+    "path-recovery": {
+      "title": "错误路径被取消后，后续预测只继承原分支实际执行的历史",
+      "events": [
+        "path.recover",
+        "loop.recover"
+      ],
+      "requirements": {
+        "owned-checkpoint": "恢复使用被纠正原预测的真实检查点，不使用同PC的另一个年龄或当前请求的历史。",
+        "executed-only": "恢复后只重放实际执行的路径和条件前缀，未执行后缀与被取消年轻路径不进入新上下文。",
+        "pending-cancellation": "较老恢复发生时，即使年轻预测已提出但尚未持久更新历史，其影响也必须取消；暂停和恢复不能重放两次。",
+        "storage-reuse": "历史存储跨边界复用、同时存在多个存活检查点时，恢复后新消费者仍获得正确完整历史与折叠视图。",
+        "loop-original": "恢复原循环迭代上下文，不继承年轻分支已经改变或饱和的迭代状态。"
+      },
+      "case_design": [
+        "形成真实分支前史、保存原件、继续产生年轻推测，再从原件恢复；比较新预测历史及使用它的预测结果。",
+        "组合背压、年轻待更新、早中晚级纠正和后端恢复，分别确认取消对象与存活对象。",
+        "用同一行为程序跨历史存储边界；只接受真实发出的检查点，不为命中某个游标伪造metadata。"
+      ],
+      "completion": "恢复事件、原检查点、完整历史、所有折叠结果及新消费者一致；未访问的游标只保留为条件可达性问题，不生成每游标功能点。"
+    },
+    "replacement-lifetime": {
+      "title": "容量竞争淘汰应淘汰的旧分支，保护最近合格访问的分支",
+      "events": [
+        "replacement.touch",
+        "main.replacement-forward"
+      ],
+      "requirements": {
+        "observable-victim": "有区分度的访问前史决定下一个受害者，实际新分支进入后预期居民继续可预测。",
+        "adjacent-newest-age": "相邻学习使用前一笔最新访问或新建身份的近期关系，不能依据旧年龄立即淘汰刚保护者。",
+        "state-isolation": "共享替换关系的访问相互影响，独立关系不受干扰；没有资格的查询不能冒充合格访问。",
+        "priority-preservation": "预测与训练竞争访问关系时遵守既定优先级，但合法训练和独立居民的保留义务不能消失。"
+      },
+      "case_design": [
+        "学习一组自然分支，重访选定分支后引入新分支，查询新分支和全部幸存者；改变访问顺序作为判别对照。",
+        "相邻提交两个新分支并与无资格访问交错，独立模型在驱动前给出受害者；不枚举替换状态地址。"
+      ],
+      "completion": "近期关系变化由下一次真实容量竞争证明；辅助策略镜像执行与实际受害者正确性分开记录。"
+    },
+    "call-lifetime": {
+      "title": "调用和返回按仍存活的调用身份配对，恢复及退休不重复也不漏掉",
+      "events": [
+        "ras.retire",
+        "micro-ras.repair"
+      ],
+      "requirements": {
+        "logical-calls": "嵌套调用、重复调用和压缩边界返回各自匹配最近未完成的调用；重复压缩不能改变逻辑调用次数。",
+        "rollback-and-redo": "恢复取消年轻调用或返回，再执行原操作一次；较老存活调用不被取消或重新执行。",
+        "retirement-once": "推测调用退休只进入提交历史一次，后续存储复用及回滚仍保留正确返回次序。",
+        "combined-action": "接口允许的返回并调用行为应先完成原返回再建立新调用；若父模块不产生该组合，只限制集成可达性，不能豁免独立模块错误。",
+        "held-call-repair": "早期预测被持有时，较老调用纠正仍修复其应转发的返回来源，不能借年轻栈顶。"
+      },
+      "case_design": [
+        "交错不同返回地址的嵌套及重复调用，保留多个原件，恢复后逐层返回并实际退休，再跨存储复用消费。",
+        "独立UT驱动接口支持的组合动作；集成BPU只用父模块真实产生的动作，分别报告两种范围。"
+      ],
+      "completion": "调用身份、存活年龄、每次动作和最终返回目标一致；已知RAS/URAS差异及父接口约束不互相替代。"
+    },
+    "conditional-context": {
+      "title": "条件执行经验属于原分支，恢复和并行学习不借用另一窗口的经验",
+      "events": [
+        "common.recover",
+        "sc.context-learning"
+      ],
+      "requirements": {
+        "executed-condition-prefix": "只把实际经过的条件结果及合法后向分支纳入经验；年轻推测和未执行后缀不能提前混入。",
+        "read-versus-feedback": "同一原预测读取权重时和公开反馈时可持有不同的合法历史视图，各按自己的原来源比较，不用当前历史重算旧读取。",
+        "five-family-learning": "在有效且非零条件历史下，SC五类特征按原上下文完成合格学习，并由同上下文的新预测消费。",
+        "qualification-and-resources": "原SC是否正确、是否与TAGE分歧及学习置信共同决定读取与学习；与预测竞争时保留完整原件，解除后仅接纳一次。",
+        "history-invalid-gate": "无有效条件历史时不能学习不存在的全局及后向经验；有效零值是单独对照，不能冒充非零上下文闭环。",
+        "iteration-owned-learning": "循环进入年轻迭代后，迟到结果仍按原迭代和原SC资格学习；重走原迭代消费完整数值，年轻私有经验保持，共享特征合法累计。"
+      },
+      "case_design": [
+        "用真实前缀形成有效非零方向和后向经验，建立SC与TAGE分歧原件，推进其他窗口后返回原结果；重新经过相同前缀消费更新。",
+        "交叉方向正确/错误、同资源/独立资源，比较所有合格特征和未选分支；保留无效历史及有效零值控制。",
+        "恢复实际条件前缀后取得新原件，将旧读取视图和新反馈视图分别交给独立历史日志与SC模型。",
+        "真实后向循环形成有效非零原迭代，年轻预测前进后分别返回原正确/错误结果；串行和持续预测两种模式均重新消费旧迭代和年轻私有经验。"
+      ],
+      "completion": "独立历史、实际训练读、完整权重/阈值更新及fresh预测联合证明；纯查询、原件准备失败或仅三类特征学习不算五类闭环。"
+    }
+  }
+}

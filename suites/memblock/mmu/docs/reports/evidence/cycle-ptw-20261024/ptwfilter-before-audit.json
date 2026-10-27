@@ -1,0 +1,82 @@
+{
+  "format": "mmu-coverage-audit-summary",
+  "generated_at": "2026-10-24T11:53:52.291505+00:00",
+  "run": "results/ptwfilter-03",
+  "coverage_dat_sha256": "95a454768915618ed73b07ca66f87da6f77a40a0927f614142deb461f8c586a3",
+  "coverage_info_sha256": "cecef8a3e99fb6e82fde0ab85cb6fa6679a4b42152139b1db98f395d9de9ac9f",
+  "lcov_lines": {
+    "unique_lines": 725,
+    "covered_lines": 209,
+    "uncovered": 516,
+    "procedural_uncovered": 390,
+    "coverage_percent": 28.8276
+  },
+  "lcov_lines_dut_only": {
+    "unique_lines": 206,
+    "covered_lines": 206,
+    "uncovered": 0,
+    "procedural_uncovered": 0,
+    "coverage_percent": 100.0
+  },
+  "lcov_lines_per_file": {
+    "PtwFilterDut.v": {
+      "covered_lines": 202,
+      "unique_lines": 202,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "PtwFilterDut_top.sv": {
+      "covered_lines": 3,
+      "unique_lines": 519,
+      "uncovered": 516,
+      "coverage_percent": 0.578
+    },
+    "DelayN_6.sv": {
+      "covered_lines": 4,
+      "unique_lines": 4,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    }
+  },
+  "branches": {
+    "total": 92,
+    "covered": 82,
+    "uncovered_count": 10
+  },
+  "toggles": {
+    "total": 4414,
+    "covered": 1938,
+    "uncovered_count": 2476
+  },
+  "functional_coverage": {
+    "coverage": 75.0,
+    "covered": false,
+    "groups": [
+      {
+        "instance": "ptwfilter",
+        "coverage": 75.0,
+        "samples": 15,
+        "points": [
+          {
+            "name": "event",
+            "coverage": 100.0,
+            "samples": 15
+          },
+          {
+            "name": "stage",
+            "coverage": 25.0,
+            "samples": 15
+          },
+          {
+            "name": "getgpa",
+            "coverage": 100.0,
+            "samples": 15
+          }
+        ],
+        "crosses": []
+      }
+    ]
+  },
+  "limits": "Verilator point summaries are not semantic checks. LCOV DA hits are summed per line (duplicate shadow points included) and every denominator is retained. Declarative wire/reg/end lines are separated by source text, not deleted; procedural lines are still listed if uncovered. Files are kept separate so a parent DUT does not hide a child's own gaps.",
+  "note": "Compact summary. Full uncovered-point lists were in the original run directory; the final run keeps the full audit beside its coverage database."
+}

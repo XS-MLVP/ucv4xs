@@ -1,0 +1,35 @@
+{
+  "format": "semantic-requirement-before-native-case",
+  "title": "两条不同年龄路径同时要求纠正时，只恢复旧路径，年轻纠正不能串改历史和学习",
+  "event": "旧B查询已发起但暂停时，正常接纳A中新发现的较早条件分支。放行后，B的独立TAGE末级选择较晚直接分支，同时年轻A中级选择其新条件分支，两个修正对应不同目标和路径贡献。",
+  "owner": "旧B查询、原早级条件经验与S3快照共同拥有旧路径；年轻A拥有另一查询和S2结果。不能用相等PC、目标或数值历史替换Checkpoint身份。",
+  "effect": "旧B的S3目标和完整历史生效；年轻A及其后继被冲刷，全部组件来源域释放。原B条件的NT学习仍实际确认，恢复路径上的真实新A查询消费正确历史和新发现的条件分支。",
+  "observation": "复用自主Main/Micro/Ahead/MicroTAGE/TAGE参考和全部PHR比较，先证明旧lookup真的暂停并跨过新反馈接纳，再证明两个原件各自S1接纳及S3/S2同拍。下一完整实际状态分别确认恢复和原件学习，最终新公开metadata消费者闭合。",
+  "preservation": "七笔后端反馈都来自独立真实公开原件；旧A/B metadata及各组件快照保持，不采样DUT状态建立golden，不写内部信号。新旧候选历史必须确实不同。",
+  "scope": "压缩前缀入口与条件入口各比较竞争当拍暂停/推进预测，共四个代表程序。A的普通条件位于半字3/4、NOP5、直接跳转6/7，不重叠指令。FastTrain只证明预测教导，不是提交执行真值；不外推SC/ITTAGE/RAS、CommonHR或完整FTQ。",
+  "existing_feature": "BPU-INT-034",
+  "event_catalog": "path.recover",
+  "profiles": ["compressed-entry.held-competition", "compressed-entry.flowing-competition", "conditional-entry.held-competition", "conditional-entry.flowing-competition"],
+  "gap_basis": {
+    "review": "results/competing-correction-native-gap-review-20261018-v1.json",
+    "PHR_missing": 1417,
+    "PHR_local_guard_rows": 13,
+    "PHR_owned_cursor_conditional_rows": 1404,
+    "CommonHR_local_guard_rows": 3,
+    "native_denominator_unchanged": true,
+    "all1420rows_caused_by_competing_corrections": false,
+    "missing_semantic_evidence": "已有后端恢复压过年轻S2的程序，以及单一生效S3教导程序；没有证明内部老S3与年轻S2同拍时的完整来源、恢复和后续消费者。不能将1417个守卫/余数缺行或三个CommonHR局部矛盾说成缺少这个事件，也不能许诺新行。"
+  },
+  "source_chain": [
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:195",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:208",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:249",
+    "bpuverify/bpu/model/pipeline.py:210"
+  ],
+  "required_rejection_controls": ["只有一条修正", "新分支先学习导致旧lookup未存活", "年轻历史冒充旧历史", "只有预期恢复而未跨下一实际比较", "年轻来源冒领旧NT学习", "缺少真实新消费者", "原metadata或快照被改写"],
+  "new_feature_IDs": 0,
+  "new_predictor_algorithms": 0,
+  "no_bank_set_way_sweep": true,
+  "no_RTL_DUT_SDK_changes": true,
+  "hardware_or_functional_credit_before_DUT_execution": false
+}

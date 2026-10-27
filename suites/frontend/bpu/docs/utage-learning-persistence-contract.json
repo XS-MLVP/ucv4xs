@@ -1,0 +1,47 @@
+{
+  "format": "semantic-learning-persistence-requirement-before-DUT-case",
+  "title": "持续预测和最近版本周转不能丢失已接纳的分支学习",
+  "existing_features": [
+    "BPU-UTAGE-015",
+    "BPU-UTAGE-016"
+  ],
+  "event": "独立分支历史在正常短表前提下建立长表预测；每个新真实来源分别执行一次奖励，最近版本经历保留、首次退休及完整时间窗复用，再次奖励与查询仍保持累计效果。",
+  "owner": "每个原查询的接纳发生身份、完整读取索引、匹配tag和分支位置；反馈、实际版本写入、持久服务和消费者分别关联到该原始身份。",
+  "effect": "学习方向计数由4累计至5再至6；可旁路期间及已落入持久状态后都能由新消费者取得，不能因其他身份或访存竞争而回到4。",
+  "observation": "复用现有独立UtageReference和公开driver/monitor/Scoreboard。另用不含队列、物理bank或RTL状态机的语义账本记录接纳、版本发表和持久服务三类独立事实；memory-direct观察真实服务端口及对应持久数组内容。",
+  "preservation": "每个原始来源只教导一次；全部1024保护单元、短表前提邻居及已完成响应快照保持。实际服务不能凭空生成版本，也不能用旧写入回退新版本。",
+  "scope": "独立UT正常FastTrain教导，不证明完整FTQ或后端提交执行真值；只读memory-direct，不使用VPI、内部写或私有SDK转换。未证明全部剩余零行都由该功能解释。",
+  "prior_gap_review": "results/utage-learning-persistence-followup-20261018.json",
+  "retained_old_counterexample": "tests/utage/testcase/test_working_set.py::test_history_working_set_retains_independent_learning_after_turnover[adjacent-turnover]及adjacent-capacity仍原样保留",
+  "programs": {
+    "retained-window": "逻辑身份数量等于最近版本承诺容量，作为仍驻留版本对照",
+    "first-retirement": "容量加一个身份，直接区分仍旁路与必须持久的首个退休义务",
+    "chronological-lap": "两次容量加一个身份，区分同一缓存时间窗与完整时序复用"
+  },
+  "consumer_protocol": "每阶段两轮不同次序的新消费者分别检查可能旁路和后续持久状态；不是固定周期sleep，也不根据实际错误结果挑等待长度。",
+  "new_predictor_reference_algorithms": 0,
+  "new_feature_IDs": 0,
+  "physical_enumeration": false,
+  "new_skip_or_XFAIL": false,
+  "SDK_RTL_DUT_changes": false,
+  "historical_stage_feature_markers": [
+    "BPU-UTAGE-015",
+    "BPU-UTAGE-016",
+    "BPU-UTAGE-020"
+  ],
+  "historical_preimplementation_calibration_question": "服务端口和实际数组的相位关联必须先用单DUT隔离pilot校准并检查；校准未通过不授予功能信用。",
+  "calibration_status": "qualified by actual service/array receipts in three passing lifetimes;65pure controls;3ordinary failures preserved",
+  "feature_scope_correction": "020 is useful initialization, only a prerequisite here; persistence cancellation must not broaden its contract",
+  "production_layout": {
+    "program.py": "bpuverify/utage/model/learning_persistence.py",
+    "model.py": "bpuverify/utage/model/persistence.py",
+    "coverage.py": "bpuverify/utage/coverage/learning_persistence.py",
+    "monitor.py": "bpuverify/utage/monitor/learning_persistence.py",
+    "env.py": "bpuverify/utage/env/learning_persistence.py",
+    "test_dut.py": "tests/utage/testcase/test_learning_persistence.py",
+    "test_model.py": "tests/utage/scoreboard/test_learning_persistence_model.py",
+    "test_monitor.py": "tests/utage/monitors/test_learning_persistence_monitor.py"
+  },
+  "ordinary_failures_preserved": 3,
+  "source_models_unchanged": true
+}

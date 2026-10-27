@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "suite": "vagq",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "AddrGen": {
+      "top": "AddrGen",
+      "export_name": "AddrGenDut"
+    },
+    "MaskGen": {
+      "top": "MaskGen",
+      "export_name": "MaskGenDut"
+    },
+    "MergeCtrl": {
+      "top": "MergeCtrl",
+      "export_name": "MergeCtrlDut"
+    },
+    "NewPipelineConnectPipe": {
+      "top": "NewPipelineConnectPipe",
+      "export_name": "NewPipelineConnectPipeDut"
+    },
+    "NewPipelineConnectPipe_3": {
+      "top": "NewPipelineConnectPipe_3",
+      "export_name": "NewPipelineConnectPipe_3Dut"
+    },
+    "OrderedPermitCtrl": {
+      "top": "OrderedPermitCtrl",
+      "export_name": "OrderedPermitCtrlDut"
+    },
+    "SplitCtrl": {
+      "top": "SplitCtrl",
+      "export_name": "SplitCtrlDut"
+    },
+    "StoreDataCtrl": {
+      "top": "StoreDataCtrl",
+      "export_name": "StoreDataCtrlDut"
+    },
+    "VAGQ": {
+      "top": "VAGQ",
+      "export_name": "VAGQDut"
+    },
+    "VAGQArbiter": {
+      "top": "VAGQArbiter",
+      "export_name": "VAGQArbiterDut"
+    },
+    "VAGQEntryTable": {
+      "top": "VAGQEntryTable",
+      "export_name": "VAGQEntryTableDut"
+    },
+    "VAGQManager": {
+      "top": "VAGQManager",
+      "export_name": "VAGQManagerDut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "tests"
+  ],
+  "process_isolation": "suite",
+  "baseline": "internal-d4566d58a"
+}

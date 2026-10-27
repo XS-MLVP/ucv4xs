@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "duts": {
+    "sbuffer_data": {
+      "top": "SbufferData",
+      "export_name": "SbufferDataDut",
+      "kind": "sbuffer_data",
+      "store_buffer_size": 16,
+      "vdata_bytes": 16,
+      "cacheline_vwords": 4,
+      "enq_width": 2,
+      "dcache_write_resp": 1,
+      "files": {
+        "SbufferData.sv": "a13eb4a50223633f94d29c60fc2aa30a11ed77f68f0210bfa992b1ed1f9c8b9a"
+      }
+    },
+    "sbuffer": {
+      "top": "Sbuffer",
+      "export_name": "SbufferDut",
+      "kind": "sbuffer",
+      "store_buffer_size": 16,
+      "enq_width": 2,
+      "load_pipeline_width": 3,
+      "store_pipeline_width": 2,
+      "files": {
+        "Sbuffer.sv": "5240c9059eae070d20b3364cc89a2ad9e8e37511d9e2749f8bea255a83698a8e",
+        "SbufferData.sv": "a13eb4a50223633f94d29c60fc2aa30a11ed77f68f0210bfa992b1ed1f9c8b9a"
+      }
+    }
+  }
+}

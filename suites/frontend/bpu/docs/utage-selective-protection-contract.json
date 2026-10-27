@@ -1,0 +1,55 @@
+{
+  "format": "semantic-requirement-before-case",
+  "version": 1,
+  "existing_features": [
+    "BPU-UTAGE-021",
+    "BPU-UTAGE-023",
+    "BPU-UTAGE-024"
+  ],
+  "title": "两个相同匹配来源的完整读取身份，保护见底不阻止方向纠错，恢复和保持也不能串给另一身份",
+  "event": "两个方向相反的逻辑身份分别由新查询接受奖励和惩罚。保护强度见底时，再一次真实错误反馈跨过方向阈值；混合并发查询直接区分这个事件之前、同拍和之后的预测。随后分别用新来源执行base一致、恢复强化和上界保持。",
+  "owner": "每次反馈属于其原始查询的完整读取索引和完整metadata，而不是相同的匹配PC/tag、低八位索引或最新查询。每个原始发生只教导一次。",
+  "effect": "保护计数饱和不意味着冻结方向学习。错误方向能在保护下界继续纠正；正确覆盖base才能恢复保护，base与provider一致时不得虚增保护。两个身份独立推进。",
+  "preservation": "所有非目标保护单元逐次保持；先前完成的查询不被后续provider变化或版本周转改写。短provider被证伪后合法引入的长provider不应使后续短provider检查误认其他来源。",
+  "source_semantics": [
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/BypassShadowBuffer.scala:187",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/BypassShadowBuffer.scala:198",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/SaturateCounter.scala:65"
+  ],
+  "prior_evidence": {
+    "qualified_identity_pair": "results/utage-index-alias-qualified-20261018-v1/qualification-analysis.json",
+    "old_protection_events": "bpuverify/utage/model/usefulness_events.py 包含九类事件；lower-hold明确复用旧错误来源，不替代本需求的每次新来源。",
+    "old_high_index": "bpuverify/utage/case/split_context.py 的count反馈重复原metadata；本需求不重复单个高地址的物理角色矩阵。",
+    "aging": "已有tests/utage/testcase/test_aging_learning.py单独验证128次分配失败后的维护重叠；本批不重复该等待或声称覆盖维护事件。"
+  },
+  "gap_basis": {
+    "baseline_review": "results/utage-query-cohort-qualified-20261018-v1/gap-review.json",
+    "qualified_increment": "results/utage-index-alias-qualified-20261018-v1/native-increment-review.json",
+    "remaining_zero_rows_after_qualified_union": 1903,
+    "semantic_gap": "已证明两个完整索引身份的正确强化，尚缺每次新来源下选择性削弱、下界方向翻转和base一致资格的组合证明。",
+    "limit": "这是已有语义的组合缺口，不是1903个独立功能；不预先保证新增行，也不枚举物理地址。"
+  },
+  "profiles": [
+    "taken身份先经历下界翻转",
+    "not-taken身份先经历下界翻转"
+  ],
+  "communication": [
+    "单次反馈",
+    "每轮两个不同原始身份的相邻反馈"
+  ],
+  "scope": "独立UT的读/匹配祖先分离；不证明完整FTQ调度。真实错误反馈产生的长表分配必须建模，不得禁用或忽略；不修改RTL、DUT、SDK或原有黄金算法。",
+  "new_predictor_reference_algorithms": 0,
+  "new_feature_IDs": 0,
+  "physical_enumeration": false,
+  "production_layout": {
+    "model": "bpuverify/utage/model/selective_protection.py",
+    "checker": "bpuverify/utage/checker/selective_protection.py",
+    "case": "bpuverify/utage/case/selective_protection.py",
+    "testcase": "tests/utage/testcase/test_selective_protection.py",
+    "coverage": {
+      "factory": "bpuverify.utage.coverage.selective_protection",
+      "instance": "kunminghu_v3.utage.selective-protection-alias"
+    },
+    "historical_stage": "results/utage_protection_alias_stage_20261018"
+  }
+}

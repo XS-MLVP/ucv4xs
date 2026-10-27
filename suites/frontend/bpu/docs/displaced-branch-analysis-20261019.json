@@ -1,0 +1,16 @@
+{
+  "title": "迟到反馈不能夺回另一条指令的经验，但同份反馈的合格分支仍须学习",
+  "contract": "docs/displaced-branch-contract.json",
+  "gap": "4022个短经验保护缺失行的局部规则已有源码证据，父级原来源学习资格尚未完全闭环。既有12个换分支重建程序改变的是完整tag，指令位置仍相同；既有40个双来源程序的当前指令位置从未被另一分支接管。两类通过不能替代本组合。",
+  "obligation": "当前训练读取已确认短记录属于不同指令位置时，旧反馈不得改写它的方向或保护，也不得出现等值写入；另一条仍合格的长经验继续学习。同一指令位置的真实刷新不等于换分支，迟到原正确和原错误仍按原贡献奖惩。",
+  "normal_program": "短位置2和长位置12正常建立为NT/T。四份真实原错误反馈将短保护3降至0并把方向0变为4，长经验保持内部置信度6。此前独立保留的真实冷原件安装位置2或7。两份此前完成的真实向量原件随后指导较晚条件跳转；每份原件只训练一次。",
+  "qualification": "旧正确有效纠错在释放前捕获，原短方向NT、基础T；旧错误在释放后捕获，原短方向T、实际应NT。每份向量最多一处条件方向错误。新旧位置和长经验都由完整向量新消费者区分。",
+  "expected_contrast": "不同指令接管的4程序中，迟到短写入0次；同指令刷新4程序中短实际写入8次。全部8程序共有16次长经验实际写入，包括6到7的判别增量和到界后的真实写入。88份完整反馈、88个学习边界、88个新向量消费者逐笔核对，不只比较最终计数。",
+  "verification": "未修改的独立UtageReference重放全部8程序；184项新增纯检查包含漏掉伴随学习、错误写入掩码、等值多余写入、错位置、错置信度、错归属、错边界及缺义务不授信。最终冻结版本3862项相关纯检查和10项关键门禁全部PASS；默认生产集合29272项，原29074个节点全部保留。生产矩阵317组、来源寿命配对组158组。",
+  "measurement": {"qualification": "results/displaced-branch-native-20261019-v2/qualification-analysis.json", "tests": {"PASS": 203, "FAIL": 23}, "previous_218_verdicts_unchanged": true, "new_programs": {"PASS": 8}, "independent_programs": {"PASS": 8}, "semantic_obligations": {"reached": 96, "checked": 96, "total": 96}, "new_native_rows": 0, "new_full_regression": false, "full_feature_status_promoted": false},
+  "scope_limits": "独立UTAGE公开向量/训练切点，不授予完整BPU/FTQ可达性、不覆盖接管尚未在训练读取可见的竞态、不证明所有物理副本或编译等价性。4022个缺失行仍保留分母；新义务的通过不消除原23个普通失败。",
+  "source_observation": "MicroTage.scala的baseIsStrongBias未参与当前usefulValid资格，相关式被注释；不能从一个未生效的策略字段发明缺失功能。entryHitVec显式检查当前可取得的位置是否仍为原位置，本轮关注其整体语义，而非枚举位置比较位。",
+  "development_issue": "首轮功能证据登记补丁误落相邻013，精确ID资格检查拒绝；恢复013并正确扩展014/021，全部353份旧合同未变。修正后另行冻结重跑，不把登记错误版本发布为最终测量。",
+  "constraints": "无RTL、DUT、SDK或参考算法改动；公开xreactor transfer/driver和完整monitor/checker；只读memory-direct、无VPI；不新增功能编号、skip、XFAIL或豁免；波形和逐周期JSON默认关闭，历史原生数据及时清理。",
+  "goal_complete": false
+}

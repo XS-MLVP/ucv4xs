@@ -1,0 +1,360 @@
+{
+  "format": "xreactor-functional-coverage",
+  "version": 2,
+  "coverage": 100.0,
+  "covered": true,
+  "groups": [
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "pmp",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "event",
+            "source": "event",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "addr_write",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "addr_write"
+                  ]
+                }
+              },
+              {
+                "name": "all_entries",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "all_entries"
+                  ]
+                }
+              },
+              {
+                "name": "cfg_write",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "cfg_write"
+                  ]
+                }
+              },
+              {
+                "name": "invalid_csr",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "invalid_csr"
+                  ]
+                }
+              },
+              {
+                "name": "lock",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "lock"
+                  ]
+                }
+              },
+              {
+                "name": "pma",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "pma"
+                  ]
+                }
+              },
+              {
+                "name": "tor_lock",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "tor_lock"
+                  ]
+                }
+              }
+            ],
+            "description": "PMP/PMA 配置写入、地址写入、锁、TOR 锁、非法 CSR 和全 entry 覆盖。"
+          },
+          {
+            "name": "mode",
+            "source": "mode",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "napot",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "napot"
+                  ]
+                }
+              },
+              {
+                "name": "off",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "off"
+                  ]
+                }
+              },
+              {
+                "name": "tor",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "tor"
+                  ]
+                }
+              }
+            ],
+            "description": "地址匹配模式（PlatformGrain=4KB，NA4 被粗化为 NAPOT，不可单独选择）。"
+          },
+          {
+            "name": "table",
+            "source": "table",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "pma",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "pma"
+                  ]
+                }
+              },
+              {
+                "name": "pmp",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "pmp"
+                  ]
+                }
+              }
+            ],
+            "description": "PMP 与 PMA 两套映射。"
+          }
+        ],
+        "crosses": [],
+        "description": "PMP/PMA 配置寄存器与地址掩码语义。"
+      },
+      "schema_digest": "1005187a97968b44e8d376b25257d910b9cde129dc7e534aa84e3c11a8af35fe",
+      "instance": "pmp",
+      "illegal_policy": "raise",
+      "samples": 12,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 12,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "addr_write": 3,
+            "all_entries": 2,
+            "cfg_write": 2,
+            "invalid_csr": 1,
+            "lock": 1,
+            "pma": 2,
+            "tor_lock": 1
+          },
+          "provenance": {
+            "cfg_write": {
+              "ea66b3f6ddde4158b96918d672b383e7": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "addr_write": {
+              "ea66b3f6ddde4158b96918d672b383e7": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "lock": {
+              "ea66b3f6ddde4158b96918d672b383e7": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "tor_lock": {
+              "ea66b3f6ddde4158b96918d672b383e7": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "all_entries": {
+              "ea66b3f6ddde4158b96918d672b383e7": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "pma": {
+              "ea66b3f6ddde4158b96918d672b383e7": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "invalid_csr": {
+              "ea66b3f6ddde4158b96918d672b383e7": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "event",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 12,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "napot": 7,
+            "off": 1,
+            "tor": 4
+          },
+          "provenance": {
+            "napot": {
+              "ea66b3f6ddde4158b96918d672b383e7": {
+                "count": 7,
+                "first": null,
+                "last": null
+              }
+            },
+            "tor": {
+              "ea66b3f6ddde4158b96918d672b383e7": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            },
+            "off": {
+              "ea66b3f6ddde4158b96918d672b383e7": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "mode",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 12,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "pma": 3,
+            "pmp": 9
+          },
+          "provenance": {
+            "pmp": {
+              "ea66b3f6ddde4158b96918d672b383e7": {
+                "count": 9,
+                "first": null,
+                "last": null
+              }
+            },
+            "pma": {
+              "ea66b3f6ddde4158b96918d672b383e7": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "table",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "ea66b3f6ddde4158b96918d672b383e7": {
+          "run_id": "ea66b3f6ddde4158b96918d672b383e7",
+          "instance": "pmp",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "ea66b3f6ddde4158b96918d672b383e7",
+      "snapshot_id": "f9beaa6457c89fc271eb606b8a7d0d2b83b36786c3f3d952ac9b1ee33890dd18"
+    }
+  ]
+}

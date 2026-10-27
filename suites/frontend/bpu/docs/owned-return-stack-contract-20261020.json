@@ -1,0 +1,42 @@
+{
+  "title": "调用和返回的恢复、提交只消费自己的真实原件，不能凭相同栈指针借用别人的寿命",
+  "defined_before_implementation": true,
+  "existing_behavior_family": "call-lifetime",
+  "source_gap": "BPU组合参考的MicroSources.validate拒绝调用/返回学习，environment拒绝提交，StatisticalJointSources明确不含RAS。现有RAS组件语义模型虽自有逻辑调用栈，但恢复和提交仍主要通过group/calls/repeat数值关联，尚不能为自主流水线提供准确的原件对象身份。",
+  "human_event": "同一个调用栈前缀可先后被不同预测观察，尤其无栈操作的窗口会有相同编码。恢复、提交、释放、复位后的新请求必须分别绑定自己的原始观察；复制、异实例、已释放或旧复位原件没有资格。",
+  "semantic_obligations": [
+    "原件由参考自身当前调用程序产生，而非用DUT栈顶或指针构造金值。",
+    "数值相同但不同年龄的预测拥有不同原件；复制值不能借用身份。",
+    "原件恢复重放自己的调用前缀及实际动作，取消更年轻操作，原快照保持。",
+    "调用和返回提交只匹配该原件之后真实接纳的那次操作，不回退到同数值的另一笔。",
+    "待完成恢复或提交仍持有来源，不能提前释放；复位一次性使旧原件失效。",
+    "所有权/动作预检必须在任何程序、已提交状态或未决请求改变之前完成。",
+    "保留独立UT原有数值切点API，不把其兼容性冒充完整BPU自主来源证明。"
+  ],
+  "roadmap": [
+    "先给独立RAS逻辑模型补准确原件快照、显式释放及恢复/提交身份，运行数值别名与非法寿命负对照。",
+    "组合MicroRAS和主RAS的独立模型，依据自主S1/S2/S3选择生成语义操作，提交与redirect绑定已发布来源；禁止从组件实际输入决定金值。",
+    "用真实调用/返回、取消年轻调用、幸存者提交及fresh返回消费者检查全组合，不改变RTL、DUT、SDK。"
+  ],
+  "missing_line_relationship": "关联仍存活调用身份、回滚/重做和准确一次退休要求。RAS/URAS组合动作已有普通FAIL，BPU18和RAS16个缺失行另有优先级/父连接约束，不据新增模型或纯PASS减少行分母。",
+  "before_DUT_execution_credit": 0,
+  "new_feature_IDs": 0,
+  "bounded_native_programs_defined_before_execution": {
+    "modes": ["natural-return", "call-replay", "return-replay"],
+    "early_predictor_profiles": ["main", "micro-main"],
+    "call_pc": "0x40001000",
+    "return_pc": "0x40002000",
+    "instruction_position_halfwords": 2,
+    "actual_return_continuation": "0x40001003",
+    "deliberately_wrong_static_return_target": "0x40002900",
+    "common_obligations": ["正常学习来源", "原调用地址", "真实返回消费者", "存活动作一次退休", "完整提交哨兵恢复", "原metadata不变"],
+    "call_replay_obligations": ["恢复只重做原调用", "年轻返回被取消"],
+    "return_replay_obligations": ["恢复只重做原返回", "重做返回只退休一次"],
+    "required_obligations": 44,
+    "new_coverage_groups": ["kunminghu_v3.bpu.owned-return-stack.reached", "kunminghu_v3.bpu.owned-return-stack.checked"],
+    "scope_limit": "原有压缩、嵌套和容量程序保留；新六程序只关闭声明的自主来源组合，不等于全部FTQ执行或全部九算法已学状态交叉。"
+  },
+  "micro_ras_enable_source_review": "MicroRas.scala当前未消费io.enable；独立早级栈按逻辑操作持续转发，主RAS和最终覆盖仍由Main/RAS使能控制。该连接事实不作为新增使能策略正确性证明。",
+  "full_BPU_RAS_composition_already_completed": false,
+  "RTL_DUT_SDK_changes": false
+}

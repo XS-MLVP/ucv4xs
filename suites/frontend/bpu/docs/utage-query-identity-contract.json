@@ -1,0 +1,57 @@
+{
+  "format": "semantic-requirement-before-case",
+  "version": 1,
+  "existing_features": [
+    "BPU-UTAGE-023",
+    "BPU-UTAGE-024"
+  ],
+  "title": "相同匹配来源的两个完整读取身份，交错学习时仍各自拥有预测版本和保护状态",
+  "event": "两个查询的匹配PC、匹配历史、位置和tag相同，但真实读取祖先的完整索引不同；教导其中一个身份时，混合并发查询跨越实际学习效果，随后用新来源交错教导两个身份直到版本保留周转。",
+  "owner": "索引身份来自各自真实读取祖先和原始metadata，不是当前匹配PC、tag、低八位索引或最近一次查询。",
+  "effect": "被教导身份的旧、同拍和新查询消费各自读取版本；另一身份不被串写。连续新来源学习强化两个相反方向，完整索引的高位不能因tag存储较窄而丢失。",
+  "preservation": "两者均保持独立保护强度；每个来源只教导一次；已完成响应和全部非目标保护状态不变。",
+  "discriminator": {
+    "match_pc": "0x40000000",
+    "match_history": 0,
+    "read_pcs": [
+      "0x40000000",
+      "0x40000100"
+    ],
+    "read_history": 0,
+    "semantic_reason": "两个完整九位索引只在最高位不同而低八位相同，且匹配来源完全相同；这是完整身份与tag/低位身份混淆的最小反例，不是bank/set矩阵。",
+    "initial_directions": [
+      "taken",
+      "not-taken"
+    ]
+  },
+  "existing_evidence_not_duplicated": {
+    "single_high_index": "tests/utage/testcase/test_split_context.py::test_high_index_low_tag_provider_useful_updates 已通过；旧实现包含重复旧metadata，不能替代每次新来源一次性教导的义务。",
+    "maximum_index": "tests/utage/testcase/test_semantic_reference.py::test_maximum_a0_index_independent_a1_tag_lifecycle 已通过，不能重复建点。",
+    "multiple_history_working_set": "串行512历史容量六阶段已通过；相邻工作集的expected5/actual4仍是普通失败。",
+    "same_identity_cohort": "results/utage-query-cohort-qualified-20261018-v1/qualification-analysis.json 证明单身份的多年龄查询，不等于完整索引别名对。"
+  },
+  "gap_basis": {
+    "review": "results/utage-query-cohort-qualified-20261018-v1/gap-review.json",
+    "remaining_native_rows": 1908,
+    "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/BypassShadowBuffer.scala:205",
+    "causal_limit": "先验证完整逻辑身份上的功能，不能声称该反例解释所有零行；物理复制行分母保持。"
+  },
+  "scope": "独立UT允许的读/匹配祖先分离，不证明完整BPU任意FTQ调度可达；自然高tag截断问题另行保留，不能通过调整黄金模型掩盖。",
+  "new_predictor_reference_algorithms": 0,
+  "new_feature_IDs": 0,
+  "physical_enumeration": false,
+  "RTL_DUT_SDK_changes": false,
+  "DUT_case_status": "independently qualified; normal-layout production qualification pending",
+  "historical_preimplementation_status": "not implemented or qualified yet",
+  "production_layout": {
+    "model": "bpuverify/utage/model/query_identity.py",
+    "checker": "bpuverify/utage/checker/query_identity.py",
+    "case": "bpuverify/utage/case/query_identity.py",
+    "testcase": "tests/utage/testcase/test_query_identity.py",
+    "coverage": {
+      "factory": "bpuverify.utage.coverage.query_identity",
+      "instance": "kunminghu_v3.utage.complete-index-alias"
+    },
+    "historical_stage": "results/utage_index_alias_stage_20261018"
+  }
+}

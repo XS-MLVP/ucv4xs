@@ -1,0 +1,59 @@
+{
+  "title": "调用、返回、恢复和退休共同消费精确原件，而不是碰巧相同的栈编码",
+  "contract": "docs/owned-return-stack-contract-20261020.json",
+  "qualification": "results/owned-return-stack-native-20261020-v2/qualification-analysis.json",
+  "gap_found": "008/052/080/081的调用寿命语义已经定义，但原自主组合拒绝调用/返回学习与FTQ提交，RAS组件参考仍以实际组件输入为切点。缺的是独立组合正误判定，不应按栈槽或信号增加同义功能点。",
+  "implementation": {
+    "independent_algorithms": ["MicroBTB", "AheadBTB", "MicroTAGE", "MainBTB", "TAGE", "ITTAGE", "SC", "MicroRAS", "RAS"],
+    "stack_inputs": "从自主S1/S2/S3预测推导调用/返回和指令返回地址；实际组件操作、栈顶及指针只作输出比较，不播种参考。",
+    "originals": "每个S3原件持有参考自身的不可变调用程序和独立寿命。数值相同不能借用身份；复制、异实例、释放、旧复位、取消和重复退休有负对照。中性原件同样参与取消。",
+    "atomicity": "新恢复/退休先在独立预览中验证，非法原件不能部分推进调用程序、其他预测器或流水线。未完成恢复/退休仍持有来源，释放前检查。",
+    "driving": "现有公共PulseDriver、训练driver、公开原metadata和只读MEM_DIRECT monitor；case不实现边沿、pin、固定等待或asyncio拼接。"
+  },
+  "actual_scope": {
+    "programs": 6,
+    "modes": ["自然调用后返回", "恢复原调用并取消年轻返回", "恢复原返回并只重做一次"],
+    "early_sources": ["Main", "Micro/Main"],
+    "reached_obligations": 44,
+    "checked_obligations": 44,
+    "every_program_retires": "一笔存活调用、一笔对应返回；完整提交组回到sentinel，公开原metadata不变。",
+    "initial_pilots": "前两轮各6 FAIL，均未进入调用场景。首轮发现ITTAGE公开metadata.valid应属于当前S3服务，非原S2使能；修正参考及原件发布资格。第二轮发现环境违反已有SC切换前排空合同，改为条件排空，不加固定等待。第三轮六程序全PASS，最终扩大回归再次全PASS。另一次全量收集因052历史单边覆盖绑定失败；按已有legacy格式保留，不伪造reached。"
+  },
+  "expanded_regression": {
+    "total": 17288,
+    "PASS": 17282,
+    "FAIL": 5,
+    "XFAIL": 1,
+    "pure_PASS": 17166,
+    "hardware": {"PASS": 116, "FAIL": 5, "XFAIL": 1},
+    "BPU_hardware": {"PASS": 98},
+    "RAS_hardware": {"PASS": 17, "FAIL": 5, "XFAIL": 1},
+    "ITTAGE_hardware": {"PASS": 1},
+    "framework_gates_PASS": 1040,
+    "exact_prior_verdicts_preserved": 17144,
+    "unmatched_historical_cases": {"PASS": 144},
+    "elapsed_seconds": 560.0642319470644,
+    "old_RAS_differences": "原4项return-and-call行为检查及1项覆盖率闭合检查仍普通FAIL；原禁用测试仍XFAIL，没有新增XFAIL或skip。",
+    "default_collection": {"before": 29624, "after": 29746, "added": 122, "removed": 0},
+    "production_pure_native_isolation": "纯分区原生输入0、功能组0；BPU、RAS和ITTAGE各自独立进程，未混合加载。"
+  },
+  "native_line_coverage": {
+    "new_BPU_rows": 0,
+    "new_RAS_rows": 0,
+    "new_ITTAGE_rows": 0,
+    "cumulative_BPU": {"hit": 38130, "total": 46541},
+    "cumulative_RAS": {"hit": 569, "total": 585},
+    "all_modules_missing": 10761,
+    "interpretation": "实际LCOV逐键差集为0。本批补齐自主参考的来源盲点，不能包装成行覆盖率上涨，也不能据纯PASS减少未命中分母。"
+  },
+  "preserved_limits": [
+    "九个算法参与推进，不等于已经证明全部九个已学状态的交互；新六程序中Ahead/方向/统计/间接学习保持冷态或关闭。",
+    "原嵌套、压缩、容量、组合动作和所有旧合同保留；新单调用程序不代替它们。",
+    "MicroRAS源码未消费enable的连接事实单独记录，不宣称新增使能策略已证明。",
+    "不是完整FTQ年龄、异常提交、任意使能转换或任意容量回绕的验证。",
+    "不修RTL、不改DUT/SDK，不使用VPI，不枚举bank/set。"
+  ],
+  "next_work": "继续从开放行的所有权、恢复后学习资格与真实优先级推导语义；优先尚无独立组合判定的场景，不重复本批六程序或已首错阻断的高tag准备流程。",
+  "new_feature_IDs": 0,
+  "goal_complete": false
+}

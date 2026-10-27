@@ -1,0 +1,33 @@
+{
+  "format": "semantic-requirement-before-case",
+  "version": 1,
+  "title": "一次先返回再调用的提交必须替换最年轻的调用者，不能被当作无操作",
+  "event": "正常预测并提交A、B两个不同调用者，再产生真实C调用来源。以原始提交metadata提交已解决的return、call或return-and-call动作。",
+  "owner": "退休动作属于这一真实来源；需要调用地址时只能使用该来源实际产生的C地址。",
+  "effect": "return保留A为提交栈顶；call把C放在B之上；return-and-call以C替换B并保留A。",
+  "observation": "复用既有独立RAS模型、公开commit driver和memory-direct提交监视器，比较完整保留状态；另记录原始完整输入与实际注册后的child动作，防止把可见的推测C当成已提交C。",
+  "preservation": "原始metadata保持；未执行的调用者A不能被误伤。单独call和return是动作资格的判别对照，不构造每个物理槽一个功能点。",
+  "existing_features": [
+    "BPU-RAS-017"
+  ],
+  "source_basis": {
+    "parent": "rtl/ras/Ras.sv:508",
+    "child": "XiangShan/src/main/scala/xiangshan/frontend/bpu/ras/RasStack.scala:335",
+    "historical_gap": "RAS剩余16行中的8行在push优先级内自相矛盾，另8行依赖父模块不能产生的push且pop。必须把局部不可达证明与组合退休语义FAIL分别记录，不能靠豁免行替代功能验证。",
+    "existing_failure": "tests/ras/testcase/test_semantic_reference.py::test_resolved_return_and_call_retires_real_source_address"
+  },
+  "scope": "独立RAS上游已解决属性纠正合同；真实预测来源与提交metadata，不声称完整FTQ/后端执行可达性。",
+  "new_predictor_reference_algorithms": 0,
+  "new_feature_IDs": 0,
+  "physical_enumeration": false,
+  "SDK_RTL_DUT_changes": false,
+  "production_layout": {
+    "program": "bpuverify/ras/model/commit_action.py",
+    "coverage": "bpuverify/ras/coverage/commit_action.py",
+    "env": "bpuverify/ras/env/commit_action.py",
+    "test_dut": "tests/ras/testcase/test_commit_action.py",
+    "test_model": "tests/ras/scoreboard/test_commit_action.py"
+  },
+  "ordinary_FAILURE_preserved": true,
+  "qualified_stage_sha256": "b500cf526e1ea11ad586abada40e0b30d72ebb8e31728c885b5aae6ad7a246da"
+}

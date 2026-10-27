@@ -1,0 +1,191 @@
+{
+  "method": "runtime pin fetch trace (dcacheverify/common/pin_trace.py) vs RTL output ports",
+  "note": "a never-fetched output cannot be compared; it must be listed as unchecked with a reason, not counted as verified",
+  "duts": {
+    "duplicated_tag_array": {
+      "rtl_top": "rtl/duplicated_tag_array/DuplicatedTagArray.sv",
+      "output_count": 19,
+      "fetched_output_count": 19,
+      "never_fetched_count": 0,
+      "never_fetched_by_bucket": {},
+      "needs_decision": []
+    },
+    "ctrl_unit": {
+      "rtl_top": "rtl/ctrl_unit/CtrlUnit.sv",
+      "output_count": 74,
+      "fetched_output_count": 74,
+      "never_fetched_count": 0,
+      "never_fetched_by_bucket": {},
+      "needs_decision": []
+    },
+    "miss_ready_gen": {
+      "rtl_top": "rtl/miss_ready_gen/MissReadyGen.sv",
+      "output_count": 63,
+      "fetched_output_count": 63,
+      "never_fetched_count": 0,
+      "never_fetched_by_bucket": {},
+      "needs_decision": []
+    },
+    "counter_filter": {
+      "rtl_top": "rtl/counter_filter/CounterFilter.sv",
+      "output_count": 3,
+      "fetched_output_count": 3,
+      "never_fetched_count": 0,
+      "never_fetched_by_bucket": {},
+      "needs_decision": []
+    },
+    "miss_track": {
+      "rtl_top": "rtl/miss_track/MissTrack.sv",
+      "output_count": 6,
+      "fetched_output_count": 6,
+      "never_fetched_count": 0,
+      "never_fetched_by_bucket": {},
+      "needs_decision": []
+    },
+    "load_pipe": {
+      "rtl_top": "rtl/load_pipe/LoadPipe.sv",
+      "output_count": 83,
+      "fetched_output_count": 27,
+      "never_fetched_count": 56,
+      "never_fetched_by_bucket": {
+        "loadpipe_misstrack_link": 13,
+        "child_block_write_req": 12,
+        "prefetch_stat": 7,
+        "writeback_conflict": 2,
+        "replacement_hint": 3,
+        "needs_decision": 12,
+        "perf_counter": 7
+      },
+      "needs_decision": [
+        "io_occupy_set",
+        "io_error_valid",
+        "io_error_bits_paddr",
+        "io_error_bits_report_to_beu",
+        "io_pseudo_tag_error_inj_done",
+        "io_pseudo_data_error_inj_done",
+        "io_counter_filter_query_req_valid",
+        "io_counter_filter_query_req_bits_idx",
+        "io_counter_filter_query_req_bits_way",
+        "io_counter_filter_enq_valid",
+        "io_counter_filter_enq_bits_idx",
+        "io_counter_filter_enq_bits_way"
+      ]
+    },
+    "banked_data_array": {
+      "rtl_top": "rtl/banked_data_array/BankedDataArray.sv",
+      "output_count": 94,
+      "fetched_output_count": 94,
+      "never_fetched_count": 0,
+      "never_fetched_by_bucket": {},
+      "needs_decision": []
+    },
+    "main_pipe": {
+      "rtl_top": "rtl/main_pipe/MainPipe.sv",
+      "output_count": 902,
+      "fetched_output_count": 133,
+      "never_fetched_count": 769,
+      "never_fetched_by_bucket": {
+        "writeback_conflict": 1,
+        "needs_decision": 2,
+        "prefetch_stat": 5,
+        "data_array_bundling": 97,
+        "child_block_write_req": 5,
+        "replacement_hint": 5,
+        "status_mirror": 648,
+        "perf_counter": 6
+      },
+      "needs_decision": [
+        "io_mainpipe_info_s2_replay_to_mq",
+        "io_update_resv_set"
+      ]
+    },
+    "miss_queue": {
+      "rtl_top": "rtl/miss_queue/MissQueue.sv",
+      "output_count": 290,
+      "fetched_output_count": 81,
+      "never_fetched_count": 209,
+      "never_fetched_by_bucket": {
+        "misstrack_sideband": 48,
+        "loadpipe_misstrack_link": 6,
+        "speculative_fabric": 33,
+        "needs_decision": 7,
+        "store_load_forwarding": 108,
+        "prefetch_stat": 2,
+        "perf_counter": 5
+      },
+      "needs_decision": [
+        "io_main_pipe_req_bits_miss_fail_cause_evict_btot",
+        "io_btot_ways_for_set",
+        "io_occupy_fail_0",
+        "io_occupy_fail_1",
+        "io_occupy_fail_2",
+        "io_wfi_wfiSafe",
+        "io_l1Miss"
+      ]
+    },
+    "probe_queue": {
+      "rtl_top": "rtl/probe_queue/ProbeQueue.sv",
+      "output_count": 12,
+      "fetched_output_count": 7,
+      "never_fetched_count": 5,
+      "never_fetched_by_bucket": {
+        "perf_counter": 5
+      },
+      "needs_decision": []
+    },
+    "writeback_queue": {
+      "rtl_top": "rtl/writeback_queue/WritebackQueue.sv",
+      "output_count": 28,
+      "fetched_output_count": 23,
+      "never_fetched_count": 5,
+      "never_fetched_by_bucket": {
+        "perf_counter": 5
+      },
+      "needs_decision": []
+    },
+    "dcache": {
+      "rtl_top": "rtl/dcache/DCache.sv",
+      "output_count": 412,
+      "fetched_output_count": 82,
+      "never_fetched_count": 330,
+      "never_fetched_by_bucket": {
+        "cache_ctrl_slave": 6,
+        "tl_sideband": 10,
+        "speculative_fabric": 33,
+        "writeback_conflict": 6,
+        "ld_ld_violation_hint": 2,
+        "store_load_forwarding": 219,
+        "prefetch_stat": 4,
+        "replacement_hint": 2,
+        "needs_decision": 2,
+        "perf_counter": 42,
+        "debug_bore": 4
+      },
+      "needs_decision": [
+        "io_l1Miss",
+        "io_wfi_wfiSafe"
+      ]
+    },
+    "dcache_wrapper": {
+      "rtl_top": "rtl/dcache_wrapper/DCacheWrapper.sv",
+      "output_count": 412,
+      "fetched_output_count": 139,
+      "never_fetched_count": 273,
+      "never_fetched_by_bucket": {
+        "speculative_fabric": 24,
+        "tl_sideband": 10,
+        "writeback_conflict": 6,
+        "ld_ld_violation_hint": 2,
+        "store_load_forwarding": 219,
+        "prefetch_stat": 4,
+        "replacement_hint": 2,
+        "needs_decision": 2,
+        "debug_bore": 4
+      },
+      "needs_decision": [
+        "io_l1Miss",
+        "io_wfi_wfiSafe"
+      ]
+    }
+  }
+}

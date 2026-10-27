@@ -1,0 +1,1 @@
+"""TAGE interface contract tests."""

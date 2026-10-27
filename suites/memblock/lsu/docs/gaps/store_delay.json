@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "dut": "store_delay",
+  "top": "DelayPipeline",
+  "run": "store-delay-final-01",
+  "rtl_sha256": {"DelayPipeline.sv": "ec5930c0e650109adc263f7a10decb635434e379f3d25f50d40b0bb067ed01c6"},
+  "metrics": {
+    "line_dut_only": {"hit": 29, "total": 29, "percent": 100.0},
+    "branch": {"hit": 5, "total": 6, "percent": 83.33},
+    "toggle_dut_only": {"hit": 978, "total": 978, "percent": 100.0},
+    "functional": {"groups": 1, "coverage": 100.0, "checked": true, "samples": 18}
+  },
+  "uncovered": [
+    {
+      "id": "DLY-BRANCH-INITIAL-RESET",
+      "kind": "tool_boundary",
+      "points": ["DelayPipeline.sv:204 `if (reset)`"],
+      "classification": "initial-block reset assignment inside ENABLE_INITIAL_REG_",
+      "evidence": [
+        "DelayPipeline.sv:203-205: `if (reset) valids_1_r = 1'h0;` is inside the `initial` block used for randomized register initialization",
+        "Picker's InitClock executes that initial block at time 0 before a test can assert reset, so only the else arm is taken",
+        "functional reset behaviour is still verified at the boundary by delay.reset_clears_valid (out.valid==0 after reset)"
+      ],
+      "required_supplement": false
+    }
+  ],
+  "contract_corrections": [
+    {
+      "id": "DLY-OUTKILL-UNOBSERVABLE",
+      "finding": "the RTL term that kills the registered beat is not observable in this instance",
+      "evidence": [
+        "DelayPipeline.sv:43 assigns io_out_valid = valids_1_r with no curKill gating",
+        "DelayPipeline.sv:144-151 updates valids_1_r <= _prevFire_T_8 whenever the update condition holds; with io_out_ready tied high the beat never persists, so the curKill term changes nothing",
+        "the generated DUT has no ready port: NewStoreUnit.scala:782 ties out.ready to true.B and firtool constant-propagates it away",
+        "differential test test_registered_beat_kill_is_not_observable: 40-cycle input stream produces byte-identical outputs with and without a same-slot redirect aimed at the registered beat"
+      ],
+      "impact": "contract section 2 was corrected: only input-side filtering is claimed; the output-side path is recorded as a structural non-observability instead of a functional point"
+    }
+  ],
+  "failures": [],
+  "status": "PASS_WITH_CLASSIFIED_TOOL_BOUNDARY"
+}

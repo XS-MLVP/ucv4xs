@@ -1,0 +1,48 @@
+{
+  "format": "semantic-requirement-before-native-case",
+  "version": 1,
+  "status": "implemented; pure and native qualification pending",
+  "title": "多个分支的学习分别到达置信边界，继续同向反馈不能回退旧值或丢失其他分支的待写结果",
+  "event": "四个正常建立的分支历史同时拥有待写的方向学习；每个历史的三个独立原始预测分别返回相同的实际执行前缀。先让所有历史各学习一次，再分别以交错到达和完成一个再处理另一个的顺序返回剩余反馈。",
+  "owner": "每份反馈只使用自己原始查询的完整metadata；计数应在同一分支及历史的当前保留值上累积，不能重新以旧预测计数初始化。每个原始预测只教导一次。",
+  "effect": "各历史的较早不跳转分支由2变1再变0并保持0，较晚跳转分支由5变6再变7并保持7。达到边界不意味着丢掉此前尚未服务的写回义务。",
+  "preservation": "实际学习到达每一步时，所有已更新的其他身份及其待写资格均保持；旧来源快照不变。读竞争结束前的新查询仍看到各自旧存储值，实际写回后所有历史分别消费正确的最终结果。",
+  "gap_basis": {
+    "measurement": "results/owned-state-full-measurement-audit-20261018-v1/current-source-event-review.json",
+    "file": "rtl/bpu/WriteBuffer_8.sv",
+    "unclosed_rows": 103,
+    "source_role_group": 26,
+    "missing_combination": "已有四身份满容量程序只再次学习第一个身份，不能替代每个独立身份都达到并保持上下界的组合证明。",
+    "limit": "语义组合缺口不等于这103个零行的全部成因；不预先保证行增量，不以物理副本命中代替功能成功。"
+  },
+  "existing_feature": "BPU-INT-087",
+  "event_catalog": "pending.rewrite",
+  "new_functional_IDs": 0,
+  "reference": "复用自主DirectionSources与现有TAGE语义参考；新程序只给出逻辑历史、到达顺序及闭式计数预期，不增加一份信号级黄金算法。",
+  "pure_feasibility": "results/shared-saturation-feasibility-20261018-v1.json",
+  "source_chain": [
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/tage/Tage.scala:421",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/WriteBuffer.scala:163",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/WriteBuffer.scala:231",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/SaturateCounter.scala:65"
+  ],
+  "required_case_phases": [
+    "通过真实查询及反馈建立四个独立历史，保留十二个不同原查询；全部原计数2/5，不触发尚未确认的原饱和提示省写策略。",
+    "使用现有异步driver在真实预测读竞争中接纳十二份完整NT前缀/T尾部反馈；公开monitor比较全部实际接纳与提案，不能用发送返回充当学习成熟。",
+    "通过memory-direct只读bundle，在学习提案前比较各已更新完整身份的当前保留计数和待写资格；每个历史第三次学习确实遇到自己的0/7边界。",
+    "实际学习完成后，分别比较四个新查询的旧存储值；不存在隐藏服务或新身份替换。",
+    "释放读竞争后，SDK monitor关联八份完整服务；四个新的消费者各自比较0/7以及完整metadata和公开修正窗口。",
+    "结束时要求原来源快照不变、无多余写回、无未退休义务，才授予完整checked信用。"
+  ],
+  "required_rejection_controls": [
+    "只发送成功但缺少实际提案，不能算通过。",
+    "最终0/7相同但曾把其他身份清掉，不能算通过。",
+    "当前计数回退旧提示、完整键关联错误、过早服务、漏掉一个消费者，均应普通断言失败。",
+    "原来源复用或已退休来源复活，必须在来源门禁被拒绝。"
+  ],
+  "scope": "当前BPU预测器组件切点的真实原来源和已执行前缀；不外推完整FTQ窗口寿命、后端调度、满容量新键miss或跨owner任意同拍冲突。",
+  "no_bank_set_way_enumeration": true,
+  "no_fixed_native_settling_delay": true,
+  "no_RTL_DUT_SDK_changes": true,
+  "hardware_or_functional_credit_before_DUT_execution": false
+}

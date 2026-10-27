@@ -1,0 +1,689 @@
+{
+  "format": "mmu-soundness-final-runs-v1",
+  "review_date": "2026-10-26",
+  "runs": {
+    "tlbfa": {
+      "run": "soundness-final-tlbfa-01",
+      "tests": {
+        "PASS": 31
+      },
+      "seed": 1,
+      "manifest_sha256": "1b4dd934510629289206b537231b5982e5e68cf6de1d0fbe921d7b88d35f3325",
+      "verification_sources_sha256": "930723e5cf70e3e6a39682e6f26517acfd631f948768bfc1e4ab61dda5b50b74",
+      "trace_policy_sha256": "abfbb4b0158ecc0f072de5679ce3ccd8e695ba4e7ac1075a47023bf2e7ce1add",
+      "build_report": "results/builds/20261024T104239445213Z-tlbfa/report.json",
+      "build_report_sha256": "bdcc2c28ebe29582bb945f4d98609f9a953550d5dcbf054dc975c08b3ceb7966",
+      "coverage_audit_sha256": "bb7771934915208fa4819c4ef9ec395d4ab433fa7f07bc7952c05bb8a40a4e80",
+      "metrics": {
+        "line": [
+          3419,
+          3419
+        ],
+        "toggle": [
+          17766,
+          17766
+        ],
+        "branch": [
+          1016,
+          1018
+        ]
+      },
+      "functional_groups": [
+        {
+          "instance": "tlbfa.lookup",
+          "coverage": 100.0,
+          "samples": 353
+        },
+        {
+          "instance": "tlbfa.refill",
+          "coverage": 100.0,
+          "samples": 232
+        },
+        {
+          "instance": "tlbfa.ppn",
+          "coverage": 100.0,
+          "samples": 150
+        },
+        {
+          "instance": "tlbfa.payload",
+          "coverage": 100.0,
+          "samples": 240
+        },
+        {
+          "instance": "tlbfa.sfence",
+          "coverage": 100.0,
+          "samples": 28
+        },
+        {
+          "instance": "tlbfa.timing",
+          "coverage": 100.0,
+          "samples": 401
+        },
+        {
+          "instance": "tlbfa.touch",
+          "coverage": 100.0,
+          "samples": 380
+        },
+        {
+          "instance": "tlbfa.reset",
+          "coverage": 100.0,
+          "samples": 33
+        }
+      ]
+    },
+    "wrapper": {
+      "run": "soundness-final-wrapper-01",
+      "tests": {
+        "PASS": 8
+      },
+      "seed": 1,
+      "manifest_sha256": "c91fd949b6df3c57bd15eca657300b56d3cac96634f2896cbdebf344915ae5fc",
+      "verification_sources_sha256": "a5a498e3f11e4c98934e814c99d29ee7eef70b0e67bfc7093448b6b499de689e",
+      "trace_policy_sha256": "abfbb4b0158ecc0f072de5679ce3ccd8e695ba4e7ac1075a47023bf2e7ce1add",
+      "build_report": "results/builds/20261024T110716556319Z-wrapper/report.json",
+      "build_report_sha256": "974cab72f9b4515c8dded83754db09d36f63a7951b421b376b53d9a37e1da507",
+      "coverage_audit_sha256": "07eef516b4d93d21fedbf9a71f11ed6ea96822874964fa36d21f49580ff82762",
+      "metrics": {
+        "line": [
+          3431,
+          3431
+        ],
+        "toggle": [
+          18798,
+          18798
+        ],
+        "branch": [
+          1019,
+          1022
+        ]
+      },
+      "functional_groups": [
+        {
+          "instance": "wrapper.replace",
+          "coverage": 100.0,
+          "samples": 294
+        },
+        {
+          "instance": "wrapper.lookup",
+          "coverage": 100.0,
+          "samples": 100
+        },
+        {
+          "instance": "wrapper.fence",
+          "coverage": 100.0,
+          "samples": 10
+        },
+        {
+          "instance": "wrapper.reset",
+          "coverage": 100.0,
+          "samples": 11
+        },
+        {
+          "instance": "wrapper.timing",
+          "coverage": 100.0,
+          "samples": 201
+        }
+      ]
+    },
+    "tlb": {
+      "run": "soundness-final-tlb-01",
+      "tests": {
+        "PASS": 25
+      },
+      "seed": 1,
+      "manifest_sha256": "f9f8d8a82c4c4b8199a71c0c5822545a7e71544effdcb68d8b8fbaca19068e97",
+      "verification_sources_sha256": "887b333dbbf18f6759248d399a2aceb4bdbd7c9baf98ca2962218cba9dcc4105",
+      "trace_policy_sha256": "abfbb4b0158ecc0f072de5679ce3ccd8e695ba4e7ac1075a47023bf2e7ce1add",
+      "build_report": "results/builds/20261024T111943888651Z-tlb/report.json",
+      "build_report_sha256": "a14c928e6c7218244adf7781c3852eaebc4cb07c7126c8b674198dc7e455c387",
+      "coverage_audit_sha256": "151678ed6aa57014385a7051605ab89c838f3a9328bfb84b49880d4adbb04f08",
+      "metrics": {
+        "line": [
+          3655,
+          3657
+        ],
+        "toggle": [
+          18785,
+          23074
+        ],
+        "branch": [
+          1094,
+          1104
+        ]
+      },
+      "functional_groups": [
+        {
+          "instance": "tlb.lookup",
+          "coverage": 100.0,
+          "samples": 302
+        },
+        {
+          "instance": "tlb.ptw",
+          "coverage": 100.0,
+          "samples": 513
+        },
+        {
+          "instance": "tlb.exception",
+          "coverage": 100.0,
+          "samples": 8
+        },
+        {
+          "instance": "tlb.sfence",
+          "coverage": 100.0,
+          "samples": 27
+        },
+        {
+          "instance": "tlb.reset",
+          "coverage": 100.0,
+          "samples": 30
+        }
+      ]
+    },
+    "tlbn": {
+      "run": "soundness-final-tlbn-01",
+      "tests": {
+        "PASS": 30
+      },
+      "seed": 1,
+      "manifest_sha256": "c2e7b3f20eccd4ac97cb27d1bdd21bfd4166c9cc60233c5d3a0cfc593f4ef41c",
+      "verification_sources_sha256": "82ad7d3e6c6a5d0ee7a81149e6b7cfbe7fa164beeaf88ecbdea8fa763805d20c",
+      "trace_policy_sha256": "abfbb4b0158ecc0f072de5679ce3ccd8e695ba4e7ac1075a47023bf2e7ce1add",
+      "build_report": "results/builds/20261025T022103052014Z-tlbn/report.json",
+      "build_report_sha256": "d752e602114aebdb2040d70c539b6b196ab73f2aabdb5461763c67ae4cc38729",
+      "coverage_audit_sha256": "850cdbbfa28ceb0a021d7864526689b577b4a148801c8732ec1bfb8b88589c26",
+      "metrics": {
+        "line": [
+          4839,
+          4956
+        ],
+        "toggle": [
+          20486,
+          37422
+        ],
+        "branch": [
+          1424,
+          1568
+        ]
+      },
+      "functional_groups": [
+        {
+          "instance": "tlbn",
+          "coverage": 100.0,
+          "samples": 629
+        }
+      ]
+    },
+    "l2mq": {
+      "run": "soundness-final-l2mq-01",
+      "tests": {
+        "PASS": 5
+      },
+      "seed": 1,
+      "manifest_sha256": "6a27d57d9647c7c7feaaf25b4ab6f70f58d83dda5485b4934656c35129c08b1e",
+      "verification_sources_sha256": "44476556b45ff910d4cfc6d6f00126281365e9d47bd768a96ca73d24b146f090",
+      "trace_policy_sha256": "abfbb4b0158ecc0f072de5679ce3ccd8e695ba4e7ac1075a47023bf2e7ce1add",
+      "build_report": "results/builds/20261024T113813508753Z-l2mq/report.json",
+      "build_report_sha256": "f26d8bb70213d4a3c1e57803d5822231e4d79bc7eb8335aa927f924bc2c0c43d",
+      "coverage_audit_sha256": "0f22d89d4d2d8d56df4177190bba4c3e76ae5e834198a2189deb3d5d20bd0a65",
+      "metrics": {
+        "line": [
+          24,
+          24
+        ],
+        "toggle": [
+          829,
+          854
+        ],
+        "branch": [
+          17,
+          18
+        ]
+      },
+      "functional_groups": [
+        {
+          "instance": "l2mq",
+          "coverage": 100.0,
+          "samples": 103
+        }
+      ]
+    },
+    "l2pf": {
+      "run": "soundness-final-l2pf-01",
+      "tests": {
+        "PASS": 6
+      },
+      "seed": 1,
+      "manifest_sha256": "56d0cf66a31cf29efca8d0eaffc6e41006eda29ae15ac39b421182d15f2408dd",
+      "verification_sources_sha256": "6a50e204b8fdf2d3f81bc2c09cbb67b69e95f2b3c5119d5308f7bdaefb738bad",
+      "trace_policy_sha256": "abfbb4b0158ecc0f072de5679ce3ccd8e695ba4e7ac1075a47023bf2e7ce1add",
+      "build_report": "results/builds/20261024T113829798384Z-l2pf/report.json",
+      "build_report_sha256": "a35fb98b025e9d78aba6c497ebbd337ffe631aba8552b229cc41e847dd7933eb",
+      "coverage_audit_sha256": "6bb7db2ca9a43d0f439b921207719ad0d7eb05c201e2ba9bc7863653afc743c9",
+      "metrics": {
+        "line": [
+          39,
+          39
+        ],
+        "toggle": [
+          657,
+          784
+        ],
+        "branch": [
+          22,
+          23
+        ]
+      },
+      "functional_groups": [
+        {
+          "instance": "l2pf",
+          "coverage": 100.0,
+          "samples": 43
+        }
+      ]
+    },
+    "ptwrepeater": {
+      "run": "soundness-final-ptwrepeater-01",
+      "tests": {
+        "PASS": 7
+      },
+      "seed": 1,
+      "manifest_sha256": "d66ae19f4547315e72dde74e2b1c3d6eb1eae14a336be31c448e792c93b1497d",
+      "verification_sources_sha256": "a0f7236e7ff7d88b066244e495c05364397071836ab3c8c344b0cd2387c136d1",
+      "trace_policy_sha256": "abfbb4b0158ecc0f072de5679ce3ccd8e695ba4e7ac1075a47023bf2e7ce1add",
+      "build_report": "results/builds/20261024T115030999840Z-ptwrepeater/report.json",
+      "build_report_sha256": "0de5c7d0fb8eb1c38df520be9baea14856596c9b000fe1f16130086c0d3d626e",
+      "coverage_audit_sha256": "ecd226bd1f4d0e047a875ae793fdf2b3e28b65f77fd6d7a3706f68e634d76882",
+      "metrics": {
+        "line": [
+          72,
+          72
+        ],
+        "toggle": [
+          3114,
+          3114
+        ],
+        "branch": [
+          7,
+          8
+        ]
+      },
+      "functional_groups": [
+        {
+          "instance": "ptwrepeater",
+          "coverage": 100.0,
+          "samples": 9
+        }
+      ]
+    },
+    "ptwfilter": {
+      "run": "soundness-final-ptwfilter-01",
+      "tests": {
+        "PASS": 14
+      },
+      "seed": 1,
+      "manifest_sha256": "a931ebb992e282d78c92c6fabff18b57f4acfb73c03d4a8ec247a5cd95fa0c14",
+      "verification_sources_sha256": "ee6119973ab9d310b7a118762fb75a72f677a840a7f697465afefbf792168193",
+      "trace_policy_sha256": "abfbb4b0158ecc0f072de5679ce3ccd8e695ba4e7ac1075a47023bf2e7ce1add",
+      "build_report": "results/builds/20261024T115047936888Z-ptwfilter/report.json",
+      "build_report_sha256": "4fc63e9ff16aa6525db4ea855cdd449ed821b17e66d8fbf0c0110d6a0dedad07",
+      "coverage_audit_sha256": "10ad1636884719793ea0fb749bb0af8b3596697144ada795c61283240a939b73",
+      "metrics": {
+        "line": [
+          206,
+          206
+        ],
+        "toggle": [
+          4412,
+          4414
+        ],
+        "branch": [
+          91,
+          92
+        ]
+      },
+      "functional_groups": [
+        {
+          "instance": "ptwfilter",
+          "coverage": 100.0,
+          "samples": 19
+        }
+      ]
+    },
+    "hptw": {
+      "run": "soundness-final-hptw-01",
+      "tests": {
+        "PASS": 21
+      },
+      "seed": 1,
+      "manifest_sha256": "4ce84b71ddb577aee675777db6c16e4283266bf8fcefa003268c89da4fd5cd97",
+      "verification_sources_sha256": "b020e3eb46dcb27dc35a7c52205edf7446edaab5e13c95366921cda5b017f884",
+      "trace_policy_sha256": "abfbb4b0158ecc0f072de5679ce3ccd8e695ba4e7ac1075a47023bf2e7ce1add",
+      "build_report": "results/builds/20261024T133449754915Z-hptw/report.json",
+      "build_report_sha256": "c9ddda952b126a4aeeaaa2356474177c7cc5180650e823e0ad9c399546e41659",
+      "coverage_audit_sha256": "db391405b8910783f792ee77b412bacc1090aa324fa8708e1cc0dd8b46a9d41c",
+      "metrics": {
+        "line": [
+          133,
+          133
+        ],
+        "toggle": [
+          5069,
+          5270
+        ],
+        "branch": [
+          97,
+          98
+        ]
+      },
+      "functional_groups": [
+        {
+          "instance": "hptw",
+          "coverage": 100.0,
+          "samples": 35
+        }
+      ]
+    },
+    "ptw": {
+      "run": "soundness-final-ptw-01",
+      "tests": {
+        "PASS": 30
+      },
+      "seed": 1,
+      "manifest_sha256": "3d243d90a6fb2b5b95390af903342f71b807b14157756b2d1faf0a0775208086",
+      "verification_sources_sha256": "c3aa5eaa2f73c0bafe87df106d66274187ecec489e535d3f62dd610280aa7804",
+      "trace_policy_sha256": "abfbb4b0158ecc0f072de5679ce3ccd8e695ba4e7ac1075a47023bf2e7ce1add",
+      "build_report": "results/builds/20261024T134706987086Z-ptw/report.json",
+      "build_report_sha256": "a104154717f486925b4bd68532de0ed2261668e70f04cd11c94643f4e05ce2ab",
+      "coverage_audit_sha256": "d628e88c8dc656373df563539e2e006b45ca0d17b07570c571d2a7c487520112",
+      "metrics": {
+        "line": [
+          530,
+          530
+        ],
+        "toggle": [
+          12213,
+          15344
+        ],
+        "branch": [
+          418,
+          420
+        ]
+      },
+      "functional_groups": [
+        {
+          "instance": "ptw",
+          "coverage": 100.0,
+          "samples": 67
+        }
+      ]
+    },
+    "pmp": {
+      "run": "soundness-final-pmp-01",
+      "tests": {
+        "PASS": 12
+      },
+      "seed": 1,
+      "manifest_sha256": "119f164b0582eb4f52f569e85ba138096aded868856ed9f63ad1409b648a60b3",
+      "verification_sources_sha256": "9c640f4dbe2d1e99084d000a9c89c6ea5afaad5e232e55aa9b39827caaf7a38c",
+      "trace_policy_sha256": "abfbb4b0158ecc0f072de5679ce3ccd8e695ba4e7ac1075a47023bf2e7ce1add",
+      "build_report": "results/builds/20261024T134735351815Z-pmp/report.json",
+      "build_report_sha256": "b43e5a9d1004b8bf2e9246c235b900db3ce44ee20f3d29e921e86780c0fc13b4",
+      "coverage_audit_sha256": "c8cefdaa44ee8d00bcc6b1a73be2abf1bcecd044a47435aaee7c2339ea984d1f",
+      "metrics": {
+        "line": [
+          2117,
+          2117
+        ],
+        "toggle": [
+          47680,
+          51404
+        ],
+        "branch": [
+          437,
+          470
+        ]
+      },
+      "functional_groups": [
+        {
+          "instance": "pmp",
+          "coverage": 100.0,
+          "samples": 12
+        }
+      ]
+    },
+    "bitmapcache": {
+      "run": "soundness-final-bitmapcache-01",
+      "tests": {
+        "PASS": 12
+      },
+      "seed": 1,
+      "manifest_sha256": "dd7299e4d046ae8fe92e226d7f5a27a129d771840ea55458cbcb336897c7005e",
+      "verification_sources_sha256": "85bf1bec8e2fc33230fefb4fbeed1156887fd61beec4e95690714dbdc7997a12",
+      "trace_policy_sha256": "abfbb4b0158ecc0f072de5679ce3ccd8e695ba4e7ac1075a47023bf2e7ce1add",
+      "build_report": "results/builds/20261024T134827954742Z-bitmapcache/report.json",
+      "build_report_sha256": "b7a5dd4f248a552e85392bfaaa2ee321b623e9fe7e3bc57fb27b66e2c5640b1e",
+      "coverage_audit_sha256": "1c17bea65c909a2027def69dbbb6f22caab315fc89bb74566749ce5470756d6d",
+      "metrics": {
+        "line": [
+          314,
+          323
+        ],
+        "toggle": [
+          6953,
+          14174
+        ],
+        "branch": [
+          124,
+          148
+        ]
+      },
+      "functional_groups": [
+        {
+          "instance": "bitmapcache",
+          "coverage": 100.0,
+          "samples": 454
+        }
+      ]
+    },
+    "bitmap": {
+      "run": "soundness-final-bitmap-01",
+      "tests": {
+        "PASS": 19
+      },
+      "seed": 1,
+      "manifest_sha256": "7cc4560b82464493c3c972cf4f909bdfeb91d6d5191857ee5d3b20f17380a0d0",
+      "verification_sources_sha256": "3fbd7bd8d7e92e8ff61421cef3b3ec5d1ffc96d621a3c9f152d557042999ecaf",
+      "trace_policy_sha256": "abfbb4b0158ecc0f072de5679ce3ccd8e695ba4e7ac1075a47023bf2e7ce1add",
+      "build_report": "results/builds/20261024T134806364585Z-bitmap/report.json",
+      "build_report_sha256": "1bc31223410a74da9236d130d89aac9ebbc440cf7a72d41f8c9ae3252a04e121",
+      "coverage_audit_sha256": "016c74977299dcafddc5d8278145510ec7e8cadfd33f7438ba6c47982ac89493",
+      "metrics": {
+        "line": [
+          994,
+          1415
+        ],
+        "toggle": [
+          2138,
+          6636
+        ],
+        "branch": [
+          290,
+          398
+        ]
+      },
+      "functional_groups": [
+        {
+          "instance": "bitmap",
+          "coverage": 100.0,
+          "samples": 39
+        }
+      ]
+    },
+    "ptwcache": {
+      "run": "soundness-final-ptwcache-01",
+      "tests": {
+        "PASS": 50
+      },
+      "seed": 1,
+      "manifest_sha256": "b8c7df515b479b6ff40573292f14097a6b37043d609429467f8013898218ba4d",
+      "verification_sources_sha256": "3ccdf2b6ee6817a2270a4ea0f25c1d7e80024e000dd813e3200fae2144b9bb1d",
+      "trace_policy_sha256": "abfbb4b0158ecc0f072de5679ce3ccd8e695ba4e7ac1075a47023bf2e7ce1add",
+      "build_report": "results/builds/20261024T145358069282Z-ptwcache/report.json",
+      "build_report_sha256": "6633d3e22201b5eeeea57164260b11d6f610aefd1b7d1d3ee525c08aaf1b9f5b",
+      "coverage_audit_sha256": "18cb72b198ed8455d52850f1e7d872fd59c9c5dc1e63615700c7f169ac4373fa",
+      "metrics": {
+        "line": [
+          13744,
+          13748
+        ],
+        "toggle": [
+          95616,
+          110892
+        ],
+        "branch": [
+          3182,
+          3226
+        ]
+      },
+      "functional_groups": [
+        {
+          "instance": "ptwcache",
+          "coverage": 100.0,
+          "samples": 44
+        }
+      ]
+    },
+    "llptw": {
+      "run": "soundness-final-llptw-01",
+      "tests": {
+        "PASS": 27
+      },
+      "seed": 1,
+      "manifest_sha256": "51f843f353482f3efa4e95ea33f99ebea09c5c911508408d8092ec7bda976b99",
+      "verification_sources_sha256": "2a7725a43f1648189407faff61f81a77d14b516db6c0714d8f3dd4eb89ff399b",
+      "trace_policy_sha256": "abfbb4b0158ecc0f072de5679ce3ccd8e695ba4e7ac1075a47023bf2e7ce1add",
+      "build_report": "results/builds/20261024T134846434762Z-llptw/report.json",
+      "build_report_sha256": "d8cfb541906e3225be2bb5426f91afe0ba902a9a14a8ad25e151da8b942de0db",
+      "coverage_audit_sha256": "53ae2211a76cc4357db7a35541ec71c991c4e353b2ed75e2589646c63924fede",
+      "metrics": {
+        "line": [
+          1660,
+          1955
+        ],
+        "toggle": [
+          4330,
+          20770
+        ],
+        "branch": [
+          359,
+          407
+        ]
+      },
+      "functional_groups": [
+        {
+          "instance": "llptw",
+          "coverage": 100.0,
+          "samples": 38
+        }
+      ]
+    },
+    "l2tlb": {
+      "run": "soundness-final-l2tlb-02",
+      "tests": {
+        "PASS": 46
+      },
+      "seed": 1,
+      "manifest_sha256": "4b2866bd93c1331832eca6340d599c58a0d0792fade4aa08cc0274abb6665a06",
+      "verification_sources_sha256": "663a80bd15bd39ec7839270508a94135bb48c6b1ff9cf0608386723acf9edfe4",
+      "trace_policy_sha256": "abfbb4b0158ecc0f072de5679ce3ccd8e695ba4e7ac1075a47023bf2e7ce1add",
+      "build_report": "results/builds/20261024T120138135720Z-l2tlb/report.json",
+      "build_report_sha256": "5fe16e1f16ec8823cbb0c0fafad85de71b5d7be799ca50cd8dc9e2f4236ac4c1",
+      "coverage_audit_sha256": "a7ad2e0c382dfd120c8d9c74fe40bd791ffec2ec02ab4460fe4b05bffbc47781",
+      "metrics": {
+        "line": [
+          17079,
+          22249
+        ],
+        "toggle": [
+          96980,
+          255430
+        ],
+        "branch": [
+          4330,
+          6304
+        ]
+      },
+      "functional_groups": [
+        {
+          "instance": "l2tlb",
+          "coverage": 100.0,
+          "samples": 106
+        }
+      ]
+    },
+    "l2tlbwrapper": {
+      "run": "soundness-final-l2tlbwrapper-02",
+      "tests": {
+        "PASS": 52
+      },
+      "seed": 1,
+      "manifest_sha256": "60061363d6cd7c3b0e1fb0e1971cd0074da5bba9eb7585af1f972733bdb822ab",
+      "verification_sources_sha256": "489eb7f566a69ef6c6f740fa00496b5b4e38701710428002ba870c8a51d9ff8e",
+      "trace_policy_sha256": "abfbb4b0158ecc0f072de5679ce3ccd8e695ba4e7ac1075a47023bf2e7ce1add",
+      "build_report": "results/builds/20261025T004040447536Z-l2tlbwrapper/report.json",
+      "build_report_sha256": "05d0c8e1c048f7268d7db460b0e4f7878f11d07ad28ae643cda19f7525183c30",
+      "coverage_audit_sha256": "2556a46e4aee503af192e6b1231f259f0c416ad263582bdab67c9d0af51fcede",
+      "metrics": {
+        "line": [
+          17460,
+          22289
+        ],
+        "toggle": [
+          96604,
+          260640
+        ],
+        "branch": [
+          4430,
+          6304
+        ]
+      },
+      "functional_groups": [
+        {
+          "instance": "l2tlbwrapper",
+          "coverage": 100.0,
+          "samples": 247
+        }
+      ]
+    },
+    "checker-selftest": {
+      "run": "soundness-final-checker-selftest-01",
+      "tests": {
+        "PASS": 13
+      },
+      "seed": 1,
+      "manifest_sha256": "cbe1793c432a6d9fab3c96466e341b21b6dc83282255f53f6e515452b5c2a89b",
+      "verification_sources_sha256": "04b8ea21f7729976fcd8ee0b83798de7607db938e5ad82a2578088174d769a22",
+      "trace_policy_sha256": "abfbb4b0158ecc0f072de5679ce3ccd8e695ba4e7ac1075a47023bf2e7ce1add"
+    }
+  },
+  "totals": {
+    "PASS": 408
+  },
+  "dut_pass": 395,
+  "checker_selftest_pass": 13,
+  "collection": {
+    "count": 408,
+    "unique": 408,
+    "categories": {
+      "functional": 390,
+      "characterization": 2,
+      "structural-stress": 3,
+      "checker-selftest": 13
+    }
+  },
+  "limits": [
+    "Regression PASS does not prove all architectural or functional requirements.",
+    "Source snapshots are run-time whole-tree snapshots; post-run differences are separately reviewed, never silently relabeled as identical.",
+    "state=committed denotes runner artifact finalization, not a version-control commit."
+  ]
+}

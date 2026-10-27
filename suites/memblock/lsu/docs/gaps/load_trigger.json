@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "dut": "load_trigger",
+  "top": "MemTrigger",
+  "run": "load-trigger-initial-01",
+  "rtl_sha256": {
+    "MemTrigger.sv": "65b29b2adecce7226c2ddc011642042d3fbb0d96bbec84142a220db6fa49c541"
+  },
+  "metrics": {
+    "line": {
+      "hit": 33,
+      "total": 33
+    },
+    "branch": {
+      "hit": 10,
+      "total": 10
+    },
+    "toggle": {
+      "hit": 762,
+      "total": 762
+    },
+    "functional": {
+      "coverage": 100.0,
+      "cases": 30
+    }
+  },
+  "uncovered": [],
+  "failures": [],
+  "status": "PASS",
+  "contract_corrections": [
+    {
+      "id": "LT-NO-CBO-BRANCH",
+      "finding": "the load variant of MemTrigger has no CBO comparison branch",
+      "evidence": [
+        "Debug.scala:332-341 DcacheLineBitsEq() returns isCbo.getOrElse(false.B) and load sets memType != STORE",
+        "MemTrigger.sv has only isVectorUnitStride and scalar arms"
+      ],
+      "impact": "a cache-line-aligned matchType EQ trigger hits only the exact address; the CBO mode is store-only",
+      "defect_claim": false
+    }
+  ]
+}

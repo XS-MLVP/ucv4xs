@@ -1,0 +1,58 @@
+{
+  "created_at": "2026-10-27T03:06:17.609337+00:00",
+  "suites": {
+    "bpu": {
+      "source_files": 2584,
+      "source_bytes": 13122517,
+      "artifact_files": 520,
+      "duts": 10
+    },
+    "icache": {
+      "source_files": 221,
+      "source_bytes": 1071504,
+      "artifact_files": 325,
+      "duts": 11
+    },
+    "lsq": {
+      "source_files": 771,
+      "source_bytes": 5616888,
+      "artifact_files": 877,
+      "duts": 38
+    },
+    "dcache": {
+      "source_files": 109,
+      "source_bytes": 1047118,
+      "artifact_files": 322,
+      "duts": 13
+    },
+    "mmu": {
+      "source_files": 222,
+      "source_bytes": 12481069,
+      "artifact_files": 433,
+      "duts": 17
+    },
+    "sbuffer": {
+      "source_files": 35,
+      "source_bytes": 223724,
+      "artifact_files": 35,
+      "duts": 2
+    },
+    "lsu": {
+      "source_files": 175,
+      "source_bytes": 1081099,
+      "artifact_files": 363,
+      "duts": 19
+    },
+    "vagq": {
+      "source_files": 172,
+      "source_bytes": 934302,
+      "artifact_files": 193,
+      "duts": 12
+    }
+  },
+  "notes": [
+    "Source snapshot frozen before framework migration.",
+    "Original result trees are external and are not acceptance of rebuilt RTL.",
+    "Internal source and RTL are excluded from Git."
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "created_at_date": "2026-10-24",
+  "verification_root_relative_to_workspace": "memblock-hash/sbuffer",
+  "current_status": "layered_ut_functional_closed_native_gaps_documented",
+  "source": {
+    "directory_relative_to_verification_root": "../../XiangShan",
+    "remote": "https://github.com/OpenXiangShan/XiangShan.git",
+    "branch": "kunminghu-v3",
+    "commit": "893e1580b705d81f113c30c7a05734e09a08050e",
+    "commit_date": "2026-10-16",
+    "note": "\u57fa\u7ebf\u56fa\u5b9a\u4e3a\u672c\u5730\u5de5\u4f5c\u533a HEAD\uff0c\u4e0d\u7528 XiangShan-internal\u3002origin/kunminghu-v3 \u5728\u5176\u540e\u6709 7 \u4e2a\u63d0\u4ea4\uff0c\u4ec5 c31e76d0a \u89e6\u53ca NewStoreUnit\uff0c\u4e0d\u5f71\u54cd Sbuffer/SbufferData\u3002"
+  },
+  "rtl": {
+    "directory_relative_to_verification_root": "../../soc-split/rtl",
+    "declared_source_commit": "893e1580b705d81f113c30c7a05734e09a08050e",
+    "declared_configuration": "DefaultConfig",
+    "declared_num_cores": 1,
+    "declared_generator": "top.TopMain",
+    "firtool_version_from_generated_header": "1.149.0",
+    "generation_profile_from_existing_metadata": [
+      "--fpga-platform",
+      "--reset-gen",
+      "--default-layer-specialization=disable"
+    ],
+    "provenance_check": "declared_and_statically_inspected_not_regenerated"
+  },
+  "parameters": {
+    "StoreBufferSize": 16,
+    "VLEN": 128,
+    "VDataBytes": 16,
+    "CacheLineSize": 512,
+    "CacheLineVWords": 4,
+    "VWordsWidth": 2,
+    "EnsbufferWidth": 2,
+    "NumDcacheWriteResp": 1,
+    "EvictCycles": 1048576
+  },
+  "hierarchy": {
+    "parent_top": "Sbuffer",
+    "child_top": "SbufferData",
+    "relationship": "Sbuffer \u53ea\u5b9e\u4f8b\u5316\u4e00\u4e2a SbufferData\uff08dataModule\uff09\uff0c\u5176 writeReq \u7531 Sbuffer \u7684\u5165\u961f\u4e24\u7ea7\u6d41\u6c34\u9a71\u52a8\uff0cmaskFlushReq \u7531 DCache hit \u54cd\u5e94\u9a71\u52a8\u3002StorePfWrapper \u7531\u5176\u4ed6\u6e90\u6587\u4ef6\u5b9a\u4e49\uff0c\u4e0d\u5c5e\u4e8e\u672c\u6b21\u4e24\u4e2a DUT\u3002",
+    "source_evidence": [
+      "src/main/scala/xiangshan/mem/sbuffer/Sbuffer.scala:191 Sbuffer",
+      "src/main/scala/xiangshan/mem/sbuffer/Sbuffer.scala:97 SbufferData",
+      "src/main/scala/xiangshan/mem/sbuffer/Sbuffer.scala:218 val dataModule = Module(new SbufferData)",
+      "soc-split/rtl/Sbuffer.sv:16742 SbufferData dataModule"
+    ]
+  },
+  "scope": {
+    "duts": [
+      "SbufferData",
+      "Sbuffer"
+    ],
+    "order": [
+      "SbufferData",
+      "Sbuffer"
+    ],
+    "excluded": [
+      "StorePfWrapper\uff08\u6e90\u7801\u5728 StorePrefetchBursts.scala\uff0cSbuffer \u5185\u5b9e\u4f8b\u5316\uff1b\u672c\u8f6e\u53ea\u5728 Sbuffer \u9876\u5c42\u4f5c\u4e3a\u5173\u95ed/\u65c1\u8def\u73af\u5883\uff0c\u4e0d\u5355\u5217\u4e3a DUT\uff09",
+      "DataSource/DCache/SQ \u7b49\u7236\u7ea7\u73af\u5883",
+      "\u6574\u5757 MemBlock"
+    ]
+  },
+  "verification_status": {
+    "source_and_rtl_hierarchy_inspected": true,
+    "rtl_copied_to_this_project": true,
+    "toolchain_runtime_versions_validated_for_this_project": true,
+    "picker_duts_exported_for_this_project": true,
+    "functional_tests_run_for_this_project": true,
+    "functional_coverage_closed": true,
+    "native_coverage_closed": false,
+    "verified_dut_keys": [
+      "sbuffer_data",
+      "sbuffer"
+    ],
+    "evidence_reports": [
+      "docs/reports/sbuffer-data-20261024.md",
+      "docs/reports/sbuffer-top-20261024.md",
+      "docs/reports/coverage-loop-20261024.md",
+      "docs/reports/flush-contract-review-20261024.md"
+    ],
+    "known_issues": [
+      "FLUSH-EMPTY-TWO-LEVELS-REVIEWED",
+      "WLINE-ZERO-PAYLOAD-ONLY",
+      "SBD-TIME0-INIT",
+      "SBT-SAMEBLOCK-SLOT-SWEEP",
+      "SBD-SAME-LANE-PORT-HALVES",
+      "SBT-TOGGLE-RESIDUAL",
+      "PICKER-DEFAULT-DUMPFILE",
+      "NO-VPI-NO-INTERNAL-CFG",
+      "NO-PER-CYCLE-DUMP"
+    ],
+    "scope_note": "SbufferData \u72ec\u7acb DUT\uff1a15 PASS\uff0c\u529f\u80fd\u8986\u76d6 100%\uff0cDUT LCOV 8518/8518\uff0ctoggle 100%\uff0cbranch 2115/2116\u3002Sbuffer \u9876\u5c42\uff08\u5355 DUT\uff0c\u5185\u90e8\u771f\u5b9e SbufferData\uff09\uff1a16 PASS\uff0c\u529f\u80fd\u8986\u76d6 100%\uff0cDUT LCOV 12648/13191=95.88%\uff0ctoggle 70275/85706=82.0%\uff0cbranch 2690/2724=98.8%\u3002flush/empty \u4e24\u7ea7\u8bed\u4e49\u5df2\u7531 RISC-V CMO \u89c4\u8303\u3001PR #6183 \u548c\u6d88\u8d39\u8005\u63a5\u7ebf\u590d\u6838\uff0c\u4e0d\u662f\u7f3a\u9677\u3002\u5269\u4f59\u7f3a\u53e3\u89c1 known-issues\u3002",
+    "active_sbuffer_run": "sbuffer-top-contract-03",
+    "contract_review": "docs/reports/flush-contract-review-20261024.md"
+  },
+  "scope_note": "SbufferData \u5df2\u901a\u8fc7 Picker \u5bfc\u51fa\uff1bSbuffer \u5c1a\u672a\u5bfc\u51fa\u3002\u5b50\u5757\u901a\u8fc7\u4e0d\u66ff\u4ee3 Sbuffer \u9876\u5c42\u7ec4\u5408\u9a8c\u8bc1\u3002",
+  "dut_build": {
+    "active_dut": "sbuffer",
+    "active_dut_directory": "dut/sbuffer",
+    "build_report": "results/builds/20261024T024302843131Z-sbuffer/report.json",
+    "picker_flags": [
+      "--rw mem_direct",
+      "-w memory-direct.fst",
+      "-c"
+    ],
+    "vpi": false,
+    "internal_signal_config": false,
+    "runtime_waveform": "off; conftest changes pytest cwd to a temporary dir and tools/run.py removes Picker's default dumpfile",
+    "per_cycle_dump": false,
+    "verilator_seed": 1,
+    "submodule_dut": "dut/sbuffer_data (standalone submodule phase; 15 tests, DUT LCOV 100%)"
+  }
+}

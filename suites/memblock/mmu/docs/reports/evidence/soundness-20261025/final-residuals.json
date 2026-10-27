@@ -1,0 +1,219 @@
+{
+  "format": "mmu-soundness-residuals-v1",
+  "modules": {
+    "tlbfa": {
+      "run": "soundness-final-tlbfa-01",
+      "uncovered_lines": 0,
+      "uncovered_procedural_lines": 0,
+      "uncovered_toggles": 0,
+      "uncovered_branches": 2,
+      "toggle_heuristic_classes": {},
+      "disposition": "OPEN unless supported individually by cited structural evidence. Heuristic other/initial classes are not reachability proof.",
+      "evidence": "results/soundness-final-tlbfa-01/coverage-audit.json"
+    },
+    "wrapper": {
+      "run": "soundness-final-wrapper-01",
+      "uncovered_lines": 0,
+      "uncovered_procedural_lines": 0,
+      "uncovered_toggles": 0,
+      "uncovered_branches": 3,
+      "toggle_heuristic_classes": {},
+      "disposition": "OPEN unless supported individually by cited structural evidence. Heuristic other/initial classes are not reachability proof.",
+      "evidence": "results/soundness-final-wrapper-01/coverage-audit.json"
+    },
+    "tlb": {
+      "run": "soundness-final-tlb-01",
+      "uncovered_lines": 2,
+      "uncovered_procedural_lines": 2,
+      "uncovered_toggles": 4289,
+      "uncovered_branches": 10,
+      "toggle_heuristic_classes": {
+        "other": 4289
+      },
+      "disposition": "OPEN unless supported individually by cited structural evidence. Heuristic other/initial classes are not reachability proof.",
+      "evidence": "results/soundness-final-tlb-01/coverage-audit.json"
+    },
+    "tlbn": {
+      "run": "soundness-final-tlbn-01",
+      "uncovered_lines": 117,
+      "uncovered_procedural_lines": 107,
+      "uncovered_toggles": 16936,
+      "uncovered_branches": 144,
+      "toggle_heuristic_classes": {
+        "other": 16936
+      },
+      "disposition": "OPEN unless supported individually by cited structural evidence. Heuristic other/initial classes are not reachability proof.",
+      "evidence": "results/soundness-final-tlbn-01/coverage-audit.json"
+    },
+    "l2mq": {
+      "run": "soundness-final-l2mq-01",
+      "uncovered_lines": 0,
+      "uncovered_procedural_lines": 0,
+      "uncovered_toggles": 25,
+      "uncovered_branches": 1,
+      "toggle_heuristic_classes": {
+        "other": 25
+      },
+      "disposition": "OPEN unless supported individually by cited structural evidence. Heuristic other/initial classes are not reachability proof.",
+      "evidence": "results/soundness-final-l2mq-01/coverage-audit.json"
+    },
+    "l2pf": {
+      "run": "soundness-final-l2pf-01",
+      "uncovered_lines": 0,
+      "uncovered_procedural_lines": 0,
+      "uncovered_toggles": 127,
+      "uncovered_branches": 1,
+      "toggle_heuristic_classes": {
+        "other": 127
+      },
+      "disposition": "OPEN unless supported individually by cited structural evidence. Heuristic other/initial classes are not reachability proof.",
+      "evidence": "results/soundness-final-l2pf-01/coverage-audit.json"
+    },
+    "ptwrepeater": {
+      "run": "soundness-final-ptwrepeater-01",
+      "uncovered_lines": 0,
+      "uncovered_procedural_lines": 0,
+      "uncovered_toggles": 0,
+      "uncovered_branches": 1,
+      "toggle_heuristic_classes": {},
+      "disposition": "OPEN unless supported individually by cited structural evidence. Heuristic other/initial classes are not reachability proof.",
+      "evidence": "results/soundness-final-ptwrepeater-01/coverage-audit.json"
+    },
+    "ptwfilter": {
+      "run": "soundness-final-ptwfilter-01",
+      "uncovered_lines": 0,
+      "uncovered_procedural_lines": 0,
+      "uncovered_toggles": 2,
+      "uncovered_branches": 1,
+      "toggle_heuristic_classes": {
+        "other": 2
+      },
+      "disposition": "OPEN unless supported individually by cited structural evidence. Heuristic other/initial classes are not reachability proof.",
+      "evidence": "results/soundness-final-ptwfilter-01/coverage-audit.json"
+    },
+    "hptw": {
+      "run": "soundness-final-hptw-01",
+      "uncovered_lines": 0,
+      "uncovered_procedural_lines": 0,
+      "uncovered_toggles": 201,
+      "uncovered_branches": 1,
+      "toggle_heuristic_classes": {
+        "other": 201
+      },
+      "disposition": "OPEN unless supported individually by cited structural evidence. Heuristic other/initial classes are not reachability proof.",
+      "evidence": "results/soundness-final-hptw-01/coverage-audit.json"
+    },
+    "ptw": {
+      "run": "soundness-final-ptw-01",
+      "uncovered_lines": 0,
+      "uncovered_procedural_lines": 0,
+      "uncovered_toggles": 3131,
+      "uncovered_branches": 2,
+      "toggle_heuristic_classes": {
+        "other": 3131
+      },
+      "disposition": "OPEN unless supported individually by cited structural evidence. Heuristic other/initial classes are not reachability proof.",
+      "evidence": "results/soundness-final-ptw-01/coverage-audit.json"
+    },
+    "pmp": {
+      "run": "soundness-final-pmp-01",
+      "uncovered_lines": 0,
+      "uncovered_procedural_lines": 0,
+      "uncovered_toggles": 3724,
+      "uncovered_branches": 33,
+      "toggle_heuristic_classes": {
+        "other": 3724
+      },
+      "disposition": "OPEN unless supported individually by cited structural evidence. Heuristic other/initial classes are not reachability proof.",
+      "evidence": "results/soundness-final-pmp-01/coverage-audit.json"
+    },
+    "bitmapcache": {
+      "run": "soundness-final-bitmapcache-01",
+      "uncovered_lines": 9,
+      "uncovered_procedural_lines": 9,
+      "uncovered_toggles": 7221,
+      "uncovered_branches": 24,
+      "toggle_heuristic_classes": {
+        "other": 6313,
+        "initial_random_state": 908
+      },
+      "disposition": "OPEN unless supported individually by cited structural evidence. Heuristic other/initial classes are not reachability proof.",
+      "evidence": "results/soundness-final-bitmapcache-01/coverage-audit.json"
+    },
+    "bitmap": {
+      "run": "soundness-final-bitmap-01",
+      "uncovered_lines": 421,
+      "uncovered_procedural_lines": 421,
+      "uncovered_toggles": 4498,
+      "uncovered_branches": 108,
+      "toggle_heuristic_classes": {
+        "other": 4498
+      },
+      "disposition": "OPEN unless supported individually by cited structural evidence. Heuristic other/initial classes are not reachability proof.",
+      "evidence": "results/soundness-final-bitmap-01/coverage-audit.json"
+    },
+    "ptwcache": {
+      "run": "soundness-final-ptwcache-01",
+      "uncovered_lines": 4,
+      "uncovered_procedural_lines": 0,
+      "uncovered_toggles": 15276,
+      "uncovered_branches": 44,
+      "toggle_heuristic_classes": {
+        "other": 15254,
+        "initial_random_state": 22
+      },
+      "disposition": "OPEN unless supported individually by cited structural evidence. Heuristic other/initial classes are not reachability proof.",
+      "evidence": "results/soundness-final-ptwcache-01/coverage-audit.json"
+    },
+    "llptw": {
+      "run": "soundness-final-llptw-01",
+      "uncovered_lines": 295,
+      "uncovered_procedural_lines": 295,
+      "uncovered_toggles": 16440,
+      "uncovered_branches": 48,
+      "toggle_heuristic_classes": {
+        "other": 16440
+      },
+      "disposition": "OPEN unless supported individually by cited structural evidence. Heuristic other/initial classes are not reachability proof.",
+      "evidence": "results/soundness-final-llptw-01/coverage-audit.json"
+    },
+    "l2tlb": {
+      "run": "soundness-final-l2tlb-02",
+      "uncovered_lines": 5170,
+      "uncovered_procedural_lines": 5086,
+      "uncovered_toggles": 158450,
+      "uncovered_branches": 1974,
+      "toggle_heuristic_classes": {
+        "other": 152774,
+        "initial_random_state": 5676
+      },
+      "disposition": "OPEN unless supported individually by cited structural evidence. Heuristic other/initial classes are not reachability proof.",
+      "evidence": "results/soundness-final-l2tlb-02/coverage-audit.json"
+    },
+    "l2tlbwrapper": {
+      "run": "soundness-final-l2tlbwrapper-02",
+      "uncovered_lines": 4829,
+      "uncovered_procedural_lines": 4734,
+      "uncovered_toggles": 164036,
+      "uncovered_branches": 1874,
+      "toggle_heuristic_classes": {
+        "other": 158360,
+        "initial_random_state": 5676
+      },
+      "disposition": "OPEN unless supported individually by cited structural evidence. Heuristic other/initial classes are not reachability proof.",
+      "evidence": "results/soundness-final-l2tlbwrapper-02/coverage-audit.json"
+    }
+  },
+  "open_semantics": [
+    "fake-PTE architectural fault/GPA effects",
+    "no-fence liveness with corrected harness",
+    "HFENCE.GVMA address-targeted GPA path",
+    "A/D update concurrency and full privilege/fault priority cross coverage",
+    "PtwCache functional signal data-pattern/way-sequence enumeration"
+  ],
+  "excluded": [
+    "MBIST/DFT functional acceptance",
+    "whole MMU/SoC acceptance"
+  ],
+  "policy": "Retain all measured denominators; no blanket functional waiver from absence of direct-way selectors."
+}

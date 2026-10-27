@@ -1,0 +1,32 @@
+{
+  "format": "human-semantic-requirement-and-native-evidence-contract",
+  "event": "多个前驱进入同一条件分支，学习按原提前读取身份保留；旁路轮换后仍能从SRAM消费，并在方向上下界及保护上界正确保持。",
+  "effects": [
+    "读取索引属于前驱PC及其历史，匹配tag属于目的分支PC及其历史，不互相代替。",
+    "新身份建立自己的方向和保护；后续正确且与基础方向相反的反馈累计自己的计数及保护。",
+    "奖励达到方向上/下界及保护上界不绕回；与基础方向一致的正确反馈保持保护。",
+    "保留位置复用时，对旧版本的清理不能取消新版本的持久化义务。暂时能从shadow读到新值不能代替实际SRAM一致。",
+    "前驱轮换超过shadow容量后，原经验仍能由新的真实查询消费，未参与分支和旧metadata保持。"
+  ],
+  "source_gap": {
+    "file": "rtl/utage/BypassShadowBuffer.sv",
+    "latest_full_missing": 1903,
+    "meaning": "分配、奖励和保护边界在多前驱/双祖先/完整轮换组合下缺少闭环；不为每个物理副本新增功能点。",
+    "read_index_is_not_match_tag": true,
+    "not_all_missing_rows_promised": true
+  },
+  "programs": "8/9/17个真实逻辑前驱分别对应完整保留、首个淘汰和完整轮换；两种执行方向、串行及相邻反馈。代码块按固定布局产生，不读取覆盖率选择地址。",
+  "oracle": "复用UtageReference、ProtectionState、PersistenceLedger及既有完整SRAM/service/metadata检查；不增加预测器算法。",
+  "observation": "完整公开原输入、实际shadow版本、实际写回服务和memory-direct SRAM数据分别验证。无内部写、VPI、固定周期等待或DUT状态初始化golden。",
+  "case": "tests/utage/testcase/test_predecessor_retention.py",
+  "coverage_family": "kunminghu_v3.utage.predecessor-retention",
+  "declared_obligations": 96,
+  "features": ["BPU-UTAGE-003", "BPU-UTAGE-004", "BPU-UTAGE-016", "BPU-UTAGE-020", "BPU-UTAGE-021", "BPU-UTAGE-022", "BPU-UTAGE-023"],
+  "scope": [
+    "独立UTAGE双祖先合法输入切点，不声称完整BPU/FTQ路径可达性。",
+    "目的分支完整tag在本批为0；保持15位参考算法，不替代已有高tag普通FAIL。",
+    "本批不包括错误反馈产生长表分配或全局老化。",
+    "预期值与实际SRAM不同即普通FAIL，未到达的义务不授予checked覆盖。",
+    "原完整功能合同与分母不变，局部结果不提升完整功能点或全量行覆盖率。"
+  ]
+}

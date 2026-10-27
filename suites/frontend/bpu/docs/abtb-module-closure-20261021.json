@@ -1,0 +1,58 @@
+{
+  "title": "AheadBTB 模块闭环：修复 redirect 死开关、补多命中 way 对矩阵、65 个 arm 的结构归因",
+  "status": "module execution and coverage triage complete; one documented write-ownership difference and three combination gaps remain open",
+  "module": "AheadBtb",
+  "run": "results/abtb-module-qualification-20261021-v3",
+  "baseline_run": "results/abtb-module-baseline-20261021-v1",
+  "tests": "75 PASS / 1 FAIL / 0 XFAIL / 0 ERROR / 0 SKIP",
+  "functional_points": "50 PASS / 1 FAIL of 54; new BPU-ABTB-054",
+  "functional_groups": "59/60 full",
+  "coverage": {
+    "lines": "17854/17854 (already saturated)",
+    "branches": "4811/4876",
+    "toggles": "11984/16320",
+    "baseline": {"branches": "4810/4876", "toggles": "11982/16320"},
+    "delta": {"lines": 0, "branches": 1, "toggles": 2},
+    "honest_attribution": "the one new branch is AbtbDut.v:21642, reached by the new way-pair matrix; no line growth is claimed"
+  },
+  "dead_knob": {
+    "signal": "io.redirect",
+    "problem": "bound in AbtbPorts and consumed by monitor/model, but both agent encoders hard-coded 0",
+    "fix": "AbtbLookup.redirect plus explicit bool validation and real encoding",
+    "case": "tests/abtb/testcase/test_redirect_flush.py (PASS)",
+    "obligation": "the revoked in-flight window publishes a complete flush; the learned entry still serves the next lookup with its original target/position/type"
+  },
+  "checker_change": {
+    "kind": "narrowing",
+    "detail": "no valid model frame now requires a complete flush response instead of raising 'no owned read transaction'; any published prediction still fails"
+  },
+  "multi_hit_matrix": {
+    "case": "tests/abtb/testcase/test_multi_hit_cleanup_pairs.py (2 PASS)",
+    "pairs_observed": [[0, 2], [2, 3], [1, 3], [0, 3]],
+    "obligation": "after cleanup exactly one copy survives and it is the newly written copy",
+    "closed_arm": "dut/abtb/AbtbDut.v:21642"
+  },
+  "residual_arms": {
+    "count": 65,
+    "replacer_plru_chain_tails": 64,
+    "writebuffer_ternary_else": 1,
+    "audit": "results/abtb-module-qualification-20261021-v3/replacer-branch-audit.json",
+    "proof": "per-set guard union makes the fall-through unsatisfiable; the WriteBuffer ternary sits inside its own false branch",
+    "negative_controls": "7 pure checks reject weakened structure without editing the source",
+    "denominator": "retained; no functional credit and no whole-design formal claim"
+  },
+  "open": {
+    "BPU-ABTB-053": "write buffer merge keys on set/tag so a pending correction for another way is replaced; same FAIL node as baseline",
+    "combinations": [
+      "C x D: override and redirect on the same beat",
+      "A x F: readValid & writeValid in the same set, PLRU update order",
+      "A x C and B x C same-beat variants"
+    ]
+  },
+  "constraints": [
+    "No RTL, DUT or system SDK change.",
+    "No new XFAIL, no skip.",
+    "The selected run does not replace the retained full regression (24776 PASS / 88 FAIL / 3 XFAIL)."
+  ],
+  "goal_complete": false
+}

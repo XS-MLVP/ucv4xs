@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "dut": "new_store_unit",
+  "top": "NewStoreUnit",
+  "run": "new-store-unit-final-02",
+  "metrics": {
+    "line": {
+      "hit": 242,
+      "total": 257,
+      "note": "15 uncovered lines are all declarative wire/assign lines; procedural uncovered = 0"
+    },
+    "branch": {
+      "hit": 111,
+      "total": 119
+    },
+    "toggle": {
+      "hit": 13231,
+      "total": 13964
+    },
+    "functional": {
+      "coverage": 100.0,
+      "cases": 22
+    }
+  },
+  "uncovered": [
+    {
+      "id": "NSU-TOGGLE-PREFETCH-TRAIN",
+      "kind": "unreachable",
+      "points": [
+        "io_prefetchTrain_bits_vaddr (100)",
+        "io_prefetchTrain_bits_paddr (96)",
+        "io_prefetchTrain_bits_robIdx_value (16)"
+      ],
+      "evidence": [
+        "NewStoreUnit.sv:912-916 assigns every io_prefetchTrain_bits_* to a literal zero",
+        "S1's prefetchTrain is not present in the generated S1 (no such port), so this configuration has no prefetch trainer"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "NSU-TOGGLE-TAIL-CONSTANTS",
+      "kind": "unreachable",
+      "points": [
+        "io_unalignTail_bits_mask[15:7] (36 in parent)",
+        "io_unalignTail_bits_vaddr[3:0]",
+        "io_unalignTail_bits_fullva[3:0]",
+        "io_in_0_bits_mask high bits"
+      ],
+      "evidence": [
+        "StoreUnitS1.sv:620-624 builds the tail address with 4'h0 low bits and the mask as {9'h0, shifted[22:16]}"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "NSU-TOGGLE-VECTOR-INSTRTYPE",
+      "kind": "unreachable",
+      "points": [
+        "pipeOutBits_accessType_instrType[1] / [2] in several stages"
+      ],
+      "evidence": [
+        "S0 always synthesises instrType = scalar (1) for the scalar source",
+        "the only other source is the unalign tail, which inherits the head's scalar type",
+        "no vector or prefetch store can reach this unit in this configuration"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "NSU-BRANCH-INITIAL-RESET",
+      "kind": "tool_boundary",
+      "points": [
+        "initial if(reset) in S0/S1/S2/S3/DelayPipeline (5 points)"
+      ],
+      "evidence": [
+        "Picker's InitClock executes all initial blocks before reset can be asserted"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "NSU-BRANCH-VECTOR-TRIGGER",
+      "kind": "unreachable",
+      "points": [
+        "MemTrigger_3.sv:58 / 82 / 106 vector unit-stride arms"
+      ],
+      "evidence": [
+        "isVectorUnitStride = instrType[1] && fuOpType[6:5]==0 and instrType[1] is constant 0 at this unit's S1"
+      ],
+      "required_supplement": false
+    }
+  ],
+  "semantic_findings": [
+    {
+      "id": "NSU-TAIL-STEALS-ARBITER",
+      "finding": "S1's combinational tail injection wins S0's arbiter in the head cycle",
+      "evidence": [
+        "NewStoreUnit.sv: `s0.io.unalignTail <> s1.io.unalignTail` is a combinational loop through S0's arbiter",
+        "measured: with an 8B store at 0x100C, stin_ready=0 and tlb_req=0x1010 in the head cycle"
+      ],
+      "impact": "the tail's TLB request precedes its own S1 cycle; the parent UT pins this behaviour",
+      "defect_claim": false
+    },
+    {
+      "id": "NSU-CROSSPAGE-NEEDS-ADDRREADY",
+      "finding": "a cross-page head is killed unless its SQ slot is the address-ready pointer",
+      "evidence": [
+        "StoreUnitS1.sv: `youngCrossHead = valid & instrType[0] & unalignHead & cross4KPage & ~isAddrReadyHead`"
+      ],
+      "impact": "cross-page directed tests must drive sqAddrReadyPtr to the store's sqIdx",
+      "defect_claim": false
+    },
+    {
+      "id": "NSU-FEEDBACK-HIT-DONTCARE",
+      "finding": "feedBackSlow.bits.hit holds its old value while valid is low",
+      "evidence": [
+        "NewStoreUnit.scala uses RegEnable(bits, valid) for the parent-level feedback"
+      ],
+      "impact": "the parent UT compares hit only when valid is high",
+      "defect_claim": false
+    }
+  ],
+  "failures": [],
+  "status": "PASS_WITH_CLASSIFIED_GAPS",
+  "rtl_sha256": {
+    "NewStoreUnit.sv": "85e1526532be065e62606d906bcd46f48a9f477de6d6a5b834c0d5a75671407d"
+  }
+}

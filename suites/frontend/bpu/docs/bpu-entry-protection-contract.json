@@ -1,0 +1,34 @@
+{
+  "format": "semantic-requirement-before-native-case",
+  "title": "块内入口的原条件纠正基础方向后获得保护，原预测错误时仍应失去自己的保护",
+  "event": "从压缩指令对齐入口或条件分支自身入口建立真实短历史NT经验；另一历史将同一Ahead基础方向学成T，原NT指导依然正确。随后Main实际改为T，从新后继路径原件恢复，原NT与基础NT一致却同时错误。",
+  "owner": "完整入口PC、区域内条件位置、真实S1读取祖先和S3原件拥有贡献与错误。不能用当前查询或同PC另一历史代替；原预测与base一致不豁免已经发生的错误。",
+  "effect": "正确原NT纠正使自己的usefulness增加；原NT错误使该保护精确下降一步。各次实际变化必须属于声明原件，并在下一完整实际状态比较后确认。",
+  "observation": "复用EarlyDirectionSources/UtageReference及完整PipelineChecker。比较全PHR、实际原件和全部1024保护单元；命名S3收据、原反馈、预期学习和下一实际确认逐一配对，最后获得奖惩之后的新完整Main预测。",
+  "preservation": "另一历史偏置与Main-only准备不改受保护短身份；原预测快照和其他保护单元保持。合法更长分配仍由既有模型产生，不强求继续由短表提供最高优先预测。",
+  "scope": "两个入口各覆盖贡献闭环和贡献后原错误闭环，共4个独立程序。不声明错误后短表方向计数已由新短消费者验证，也不授予新长项持久消费者通过；这两项仍是后续义务。恢复使用实际区域内后继地址并先形成新路径原件，不复制旧块首偏移假设，不枚举bank/set。",
+  "existing_feature": "BPU-INT-066",
+  "event_catalog": "useful.change",
+  "gap_basis": {
+    "review": "results/block-entry-learning-development-20261018-v1/post-entry-source-gap-review.json",
+    "remaining_short_zero_rows": 4186,
+    "remaining_integrated_low_zero_rows": 509,
+    "allocated_contexts_without_useful_update": 17,
+    "missing_useful_update_rows": 51,
+    "missing_semantics": "已建立块内入口方向不等于已经验证该入口的原贡献和错误。方向计数学习与替换保护更新是两个不同事件；需要实际相反基础以及原一致但错误反馈。",
+    "limit": "不声称51行均由本批造成，不预减分母；新行由单例PASS和LCOV归因确认。"
+  },
+  "source_chain": [
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:259",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/BypassShadowBuffer.scala:204",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/history/phr/Helpers.scala:60"
+  ],
+  "profiles": ["compressed-entry.contribution", "compressed-entry.contradiction", "conditional-entry.contribution", "conditional-entry.contradiction"],
+  "required_rejection_controls": ["贡献或错误改绑同PC其他原件", "只按base分歧判断惩罚", "没有下一实际确认即计功", "后续预测目标错误或过早", "遗漏真实奖惩收据或原快照变更", "污染未选中的保护单元"],
+  "new_feature_IDs": 0,
+  "new_reference_algorithms": 0,
+  "no_bank_set_way_sweep": true,
+  "no_fixed_native_settling_delay": true,
+  "no_RTL_DUT_SDK_changes": true,
+  "hardware_or_functional_credit_before_DUT_execution": false
+}

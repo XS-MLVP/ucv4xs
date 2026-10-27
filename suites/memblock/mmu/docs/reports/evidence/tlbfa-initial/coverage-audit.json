@@ -1,0 +1,2405 @@
+{
+  "format": "mmu-coverage-audit-v2",
+  "generated_at": "2026-10-24T11:47:43.761155+00:00",
+  "run": "results/tlbfa-baseline-replay-01",
+  "coverage_dat_sha256": "53c231b36556f0420a7114e529e236e819c226e5ce2bf14f430f44d2d1111723",
+  "coverage_info_sha256": "d1a1b453010b76163514696eca751b7ca01ee41780582efbbe72a17309b2d526",
+  "source_files": {
+    "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut.v": {
+      "sha256": "64265d13369363936fe0f74c7baf03fbaed922d41181f36ead55df35d616195a",
+      "lines": 13023
+    },
+    "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv": {
+      "sha256": "fb93c7746cccfe86d922a4169e0500029b419d846c9593f543f705ee376da599",
+      "lines": 1172
+    }
+  },
+  "verilator_point_metrics": {
+    "metrics": {
+      "line": {
+        "percent": 2.4,
+        "hit": 4,
+        "total": 166
+      },
+      "toggle": {
+        "percent": 100.0,
+        "hit": 17766,
+        "total": 17766
+      },
+      "branch": {
+        "percent": 99.8,
+        "hit": 920,
+        "total": 922
+      },
+      "expr": {
+        "percent": 0.0,
+        "hit": 0,
+        "total": 0
+      },
+      "fsm_state": {
+        "percent": 0.0,
+        "hit": 0,
+        "total": 0
+      },
+      "fsm_arc": {
+        "percent": 0.0,
+        "hit": 0,
+        "total": 0
+      }
+    },
+    "analyzer": "/opt/verilator-5.052/bin/verilator_coverage --report summary /home/xyl/kmh-v3-test/memblock-hash/mmu/results/tlbfa-baseline-replay-01/native/82c614b97b365db2a97db33fd886ad23d39e47c22aa5304811d66ef97d90e746/coverage.dat"
+  },
+  "lcov_lines": {
+    "unique_lines": 3836,
+    "covered_lines": 3422,
+    "uncovered": 414,
+    "procedural_uncovered": 324,
+    "coverage_percent": 89.2075
+  },
+  "lcov_lines_dut_only": {
+    "unique_lines": 3419,
+    "covered_lines": 3419,
+    "uncovered": 0,
+    "procedural_uncovered": 0,
+    "coverage_percent": 100.0
+  },
+  "lcov_lines_per_file": {
+    "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut.v": {
+      "role": "dut",
+      "unique_lines": 3419,
+      "covered_lines": 3419,
+      "coverage_percent": 100.0,
+      "uncovered": 0,
+      "uncovered_procedural": 0,
+      "uncovered_declarative": 0,
+      "procedural_lines": 3394,
+      "procedural_covered": 3394,
+      "uncovered_procedural_lines": [],
+      "uncovered_declarative_lines": []
+    },
+    "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv": {
+      "role": "picker_harness",
+      "unique_lines": 417,
+      "covered_lines": 3,
+      "coverage_percent": 0.7194,
+      "uncovered": 414,
+      "uncovered_procedural": 324,
+      "uncovered_declarative": 90,
+      "procedural_lines": 327,
+      "procedural_covered": 3,
+      "uncovered_procedural_lines": [
+        {
+          "line": 354,
+          "source": "function void get_clockxxGyPLQfZUasU;"
+        },
+        {
+          "line": 356,
+          "source": "value=clock;"
+        },
+        {
+          "line": 359,
+          "source": "function void set_clockxxGyPLQfZUasU;"
+        },
+        {
+          "line": 361,
+          "source": "clock=value;"
+        },
+        {
+          "line": 364,
+          "source": "function void get_resetxxGyPLQfZUasU;"
+        },
+        {
+          "line": 366,
+          "source": "value=reset;"
+        },
+        {
+          "line": 369,
+          "source": "function void set_resetxxGyPLQfZUasU;"
+        },
+        {
+          "line": 371,
+          "source": "reset=value;"
+        },
+        {
+          "line": 374,
+          "source": "function void get_io_sfence_validxxGyPLQfZUasU;"
+        },
+        {
+          "line": 376,
+          "source": "value=io_sfence_valid;"
+        },
+        {
+          "line": 379,
+          "source": "function void set_io_sfence_validxxGyPLQfZUasU;"
+        },
+        {
+          "line": 381,
+          "source": "io_sfence_valid=value;"
+        },
+        {
+          "line": 384,
+          "source": "function void get_io_sfence_bits_rs1xxGyPLQfZUasU;"
+        },
+        {
+          "line": 386,
+          "source": "value=io_sfence_bits_rs1;"
+        },
+        {
+          "line": 389,
+          "source": "function void set_io_sfence_bits_rs1xxGyPLQfZUasU;"
+        },
+        {
+          "line": 391,
+          "source": "io_sfence_bits_rs1=value;"
+        },
+        {
+          "line": 394,
+          "source": "function void get_io_sfence_bits_rs2xxGyPLQfZUasU;"
+        },
+        {
+          "line": 396,
+          "source": "value=io_sfence_bits_rs2;"
+        },
+        {
+          "line": 399,
+          "source": "function void set_io_sfence_bits_rs2xxGyPLQfZUasU;"
+        },
+        {
+          "line": 401,
+          "source": "io_sfence_bits_rs2=value;"
+        },
+        {
+          "line": 404,
+          "source": "function void get_io_sfence_bits_addrxxGyPLQfZUasU;"
+        },
+        {
+          "line": 406,
+          "source": "value=io_sfence_bits_addr;"
+        },
+        {
+          "line": 409,
+          "source": "function void set_io_sfence_bits_addrxxGyPLQfZUasU;"
+        },
+        {
+          "line": 411,
+          "source": "io_sfence_bits_addr=value;"
+        },
+        {
+          "line": 414,
+          "source": "function void get_io_sfence_bits_idxxGyPLQfZUasU;"
+        },
+        {
+          "line": 416,
+          "source": "value=io_sfence_bits_id;"
+        },
+        {
+          "line": 419,
+          "source": "function void set_io_sfence_bits_idxxGyPLQfZUasU;"
+        },
+        {
+          "line": 421,
+          "source": "io_sfence_bits_id=value;"
+        },
+        {
+          "line": 424,
+          "source": "function void get_io_sfence_bits_hvxxGyPLQfZUasU;"
+        },
+        {
+          "line": 426,
+          "source": "value=io_sfence_bits_hv;"
+        },
+        {
+          "line": 429,
+          "source": "function void set_io_sfence_bits_hvxxGyPLQfZUasU;"
+        },
+        {
+          "line": 431,
+          "source": "io_sfence_bits_hv=value;"
+        },
+        {
+          "line": 434,
+          "source": "function void get_io_sfence_bits_hgxxGyPLQfZUasU;"
+        },
+        {
+          "line": 436,
+          "source": "value=io_sfence_bits_hg;"
+        },
+        {
+          "line": 439,
+          "source": "function void set_io_sfence_bits_hgxxGyPLQfZUasU;"
+        },
+        {
+          "line": 441,
+          "source": "io_sfence_bits_hg=value;"
+        },
+        {
+          "line": 444,
+          "source": "function void get_io_csr_satp_asidxxGyPLQfZUasU;"
+        },
+        {
+          "line": 446,
+          "source": "value=io_csr_satp_asid;"
+        },
+        {
+          "line": 449,
+          "source": "function void set_io_csr_satp_asidxxGyPLQfZUasU;"
+        },
+        {
+          "line": 451,
+          "source": "io_csr_satp_asid=value;"
+        },
+        {
+          "line": 454,
+          "source": "function void get_io_csr_vsatp_asidxxGyPLQfZUasU;"
+        },
+        {
+          "line": 456,
+          "source": "value=io_csr_vsatp_asid;"
+        },
+        {
+          "line": 459,
+          "source": "function void set_io_csr_vsatp_asidxxGyPLQfZUasU;"
+        },
+        {
+          "line": 461,
+          "source": "io_csr_vsatp_asid=value;"
+        },
+        {
+          "line": 464,
+          "source": "function void get_io_csr_hgatp_vmidxxGyPLQfZUasU;"
+        },
+        {
+          "line": 466,
+          "source": "value=io_csr_hgatp_vmid;"
+        },
+        {
+          "line": 469,
+          "source": "function void set_io_csr_hgatp_vmidxxGyPLQfZUasU;"
+        },
+        {
+          "line": 471,
+          "source": "io_csr_hgatp_vmid=value;"
+        },
+        {
+          "line": 474,
+          "source": "function void get_io_csr_mbmc_BMExxGyPLQfZUasU;"
+        },
+        {
+          "line": 476,
+          "source": "value=io_csr_mbmc_BME;"
+        },
+        {
+          "line": 479,
+          "source": "function void set_io_csr_mbmc_BMExxGyPLQfZUasU;"
+        },
+        {
+          "line": 481,
+          "source": "io_csr_mbmc_BME=value;"
+        },
+        {
+          "line": 484,
+          "source": "function void get_io_csr_mbmc_CMODExxGyPLQfZUasU;"
+        },
+        {
+          "line": 486,
+          "source": "value=io_csr_mbmc_CMODE;"
+        },
+        {
+          "line": 489,
+          "source": "function void set_io_csr_mbmc_CMODExxGyPLQfZUasU;"
+        },
+        {
+          "line": 491,
+          "source": "io_csr_mbmc_CMODE=value;"
+        },
+        {
+          "line": 494,
+          "source": "function void get_io_csr_priv_virtxxGyPLQfZUasU;"
+        },
+        {
+          "line": 496,
+          "source": "value=io_csr_priv_virt;"
+        },
+        {
+          "line": 499,
+          "source": "function void set_io_csr_priv_virtxxGyPLQfZUasU;"
+        },
+        {
+          "line": 501,
+          "source": "io_csr_priv_virt=value;"
+        },
+        {
+          "line": 504,
+          "source": "function void get_io_r_req_0_validxxGyPLQfZUasU;"
+        },
+        {
+          "line": 506,
+          "source": "value=io_r_req_0_valid;"
+        },
+        {
+          "line": 509,
+          "source": "function void set_io_r_req_0_validxxGyPLQfZUasU;"
+        },
+        {
+          "line": 511,
+          "source": "io_r_req_0_valid=value;"
+        },
+        {
+          "line": 514,
+          "source": "function void get_io_r_req_0_bits_vpnxxGyPLQfZUasU;"
+        },
+        {
+          "line": 516,
+          "source": "value=io_r_req_0_bits_vpn;"
+        },
+        {
+          "line": 519,
+          "source": "function void set_io_r_req_0_bits_vpnxxGyPLQfZUasU;"
+        },
+        {
+          "line": 521,
+          "source": "io_r_req_0_bits_vpn=value;"
+        },
+        {
+          "line": 524,
+          "source": "function void get_io_r_req_0_bits_s2xlatexxGyPLQfZUasU;"
+        },
+        {
+          "line": 526,
+          "source": "value=io_r_req_0_bits_s2xlate;"
+        },
+        {
+          "line": 529,
+          "source": "function void set_io_r_req_0_bits_s2xlatexxGyPLQfZUasU;"
+        },
+        {
+          "line": 531,
+          "source": "io_r_req_0_bits_s2xlate=value;"
+        },
+        {
+          "line": 534,
+          "source": "function void get_io_r_resp_0_bits_hitxxGyPLQfZUasU;"
+        },
+        {
+          "line": 536,
+          "source": "value=io_r_resp_0_bits_hit;"
+        },
+        {
+          "line": 539,
+          "source": "function void get_io_r_resp_0_bits_ppn_0xxGyPLQfZUasU;"
+        },
+        {
+          "line": 541,
+          "source": "value=io_r_resp_0_bits_ppn_0;"
+        },
+        {
+          "line": 544,
+          "source": "function void get_io_r_resp_0_bits_pbmt_0xxGyPLQfZUasU;"
+        },
+        {
+          "line": 546,
+          "source": "value=io_r_resp_0_bits_pbmt_0;"
+        },
+        {
+          "line": 549,
+          "source": "function void get_io_r_resp_0_bits_g_pbmt_0xxGyPLQfZUasU;"
+        },
+        {
+          "line": 551,
+          "source": "value=io_r_resp_0_bits_g_pbmt_0;"
+        },
+        {
+          "line": 554,
+          "source": "function void get_io_r_resp_0_bits_perm_0_pfxxGyPLQfZUasU;"
+        },
+        {
+          "line": 556,
+          "source": "value=io_r_resp_0_bits_perm_0_pf;"
+        },
+        {
+          "line": 559,
+          "source": "function void get_io_r_resp_0_bits_perm_0_afxxGyPLQfZUasU;"
+        },
+        {
+          "line": 561,
+          "source": "value=io_r_resp_0_bits_perm_0_af;"
+        },
+        {
+          "line": 564,
+          "source": "function void get_io_r_resp_0_bits_perm_0_vxxGyPLQfZUasU;"
+        },
+        {
+          "line": 566,
+          "source": "value=io_r_resp_0_bits_perm_0_v;"
+        },
+        {
+          "line": 569,
+          "source": "function void get_io_r_resp_0_bits_perm_0_axxGyPLQfZUasU;"
+        },
+        {
+          "line": 571,
+          "source": "value=io_r_resp_0_bits_perm_0_a;"
+        },
+        {
+          "line": 574,
+          "source": "function void get_io_r_resp_0_bits_perm_0_uxxGyPLQfZUasU;"
+        },
+        {
+          "line": 576,
+          "source": "value=io_r_resp_0_bits_perm_0_u;"
+        },
+        {
+          "line": 579,
+          "source": "function void get_io_r_resp_0_bits_perm_0_xxxGyPLQfZUasU;"
+        },
+        {
+          "line": 581,
+          "source": "value=io_r_resp_0_bits_perm_0_x;"
+        },
+        {
+          "line": 584,
+          "source": "function void get_io_r_resp_0_bits_perm_0_wxxGyPLQfZUasU;"
+        },
+        {
+          "line": 586,
+          "source": "value=io_r_resp_0_bits_perm_0_w;"
+        },
+        {
+          "line": 589,
+          "source": "function void get_io_r_resp_0_bits_perm_0_rxxGyPLQfZUasU;"
+        },
+        {
+          "line": 591,
+          "source": "value=io_r_resp_0_bits_perm_0_r;"
+        },
+        {
+          "line": 594,
+          "source": "function void get_io_r_resp_0_bits_g_perm_0_pfxxGyPLQfZUasU;"
+        },
+        {
+          "line": 596,
+          "source": "value=io_r_resp_0_bits_g_perm_0_pf;"
+        },
+        {
+          "line": 599,
+          "source": "function void get_io_r_resp_0_bits_g_perm_0_afxxGyPLQfZUasU;"
+        },
+        {
+          "line": 601,
+          "source": "value=io_r_resp_0_bits_g_perm_0_af;"
+        },
+        {
+          "line": 604,
+          "source": "function void get_io_r_resp_0_bits_g_perm_0_axxGyPLQfZUasU;"
+        },
+        {
+          "line": 606,
+          "source": "value=io_r_resp_0_bits_g_perm_0_a;"
+        },
+        {
+          "line": 609,
+          "source": "function void get_io_r_resp_0_bits_g_perm_0_xxxGyPLQfZUasU;"
+        },
+        {
+          "line": 611,
+          "source": "value=io_r_resp_0_bits_g_perm_0_x;"
+        },
+        {
+          "line": 614,
+          "source": "function void get_io_r_resp_0_bits_s2xlate_0xxGyPLQfZUasU;"
+        },
+        {
+          "line": 616,
+          "source": "value=io_r_resp_0_bits_s2xlate_0;"
+        },
+        {
+          "line": 619,
+          "source": "function void get_io_w_validxxGyPLQfZUasU;"
+        },
+        {
+          "line": 621,
+          "source": "value=io_w_valid;"
+        },
+        {
+          "line": 624,
+          "source": "function void set_io_w_validxxGyPLQfZUasU;"
+        },
+        {
+          "line": 626,
+          "source": "io_w_valid=value;"
+        },
+        {
+          "line": 629,
+          "source": "function void get_io_w_bits_wayIdxxxGyPLQfZUasU;"
+        },
+        {
+          "line": 631,
+          "source": "value=io_w_bits_wayIdx;"
+        },
+        {
+          "line": 634,
+          "source": "function void set_io_w_bits_wayIdxxxGyPLQfZUasU;"
+        },
+        {
+          "line": 636,
+          "source": "io_w_bits_wayIdx=value;"
+        },
+        {
+          "line": 639,
+          "source": "function void get_io_w_bits_data_s2xlatexxGyPLQfZUasU;"
+        },
+        {
+          "line": 641,
+          "source": "value=io_w_bits_data_s2xlate;"
+        },
+        {
+          "line": 644,
+          "source": "function void set_io_w_bits_data_s2xlatexxGyPLQfZUasU;"
+        },
+        {
+          "line": 646,
+          "source": "io_w_bits_data_s2xlate=value;"
+        },
+        {
+          "line": 649,
+          "source": "function void get_io_w_bits_data_s1_entry_tagxxGyPLQfZUasU;"
+        },
+        {
+          "line": 651,
+          "source": "value=io_w_bits_data_s1_entry_tag;"
+        },
+        {
+          "line": 654,
+          "source": "function void set_io_w_bits_data_s1_entry_tagxxGyPLQfZUasU;"
+        },
+        {
+          "line": 656,
+          "source": "io_w_bits_data_s1_entry_tag=value;"
+        },
+        {
+          "line": 659,
+          "source": "function void get_io_w_bits_data_s1_entry_asidxxGyPLQfZUasU;"
+        },
+        {
+          "line": 661,
+          "source": "value=io_w_bits_data_s1_entry_asid;"
+        },
+        {
+          "line": 664,
+          "source": "function void set_io_w_bits_data_s1_entry_asidxxGyPLQfZUasU;"
+        },
+        {
+          "line": 666,
+          "source": "io_w_bits_data_s1_entry_asid=value;"
+        },
+        {
+          "line": 669,
+          "source": "function void get_io_w_bits_data_s1_entry_vmidxxGyPLQfZUasU;"
+        },
+        {
+          "line": 671,
+          "source": "value=io_w_bits_data_s1_entry_vmid;"
+        },
+        {
+          "line": 674,
+          "source": "function void set_io_w_bits_data_s1_entry_vmidxxGyPLQfZUasU;"
+        },
+        {
+          "line": 676,
+          "source": "io_w_bits_data_s1_entry_vmid=value;"
+        },
+        {
+          "line": 679,
+          "source": "function void get_io_w_bits_data_s1_entry_nxxGyPLQfZUasU;"
+        },
+        {
+          "line": 681,
+          "source": "value=io_w_bits_data_s1_entry_n;"
+        },
+        {
+          "line": 684,
+          "source": "function void set_io_w_bits_data_s1_entry_nxxGyPLQfZUasU;"
+        },
+        {
+          "line": 686,
+          "source": "io_w_bits_data_s1_entry_n=value;"
+        },
+        {
+          "line": 689,
+          "source": "function void get_io_w_bits_data_s1_entry_pbmtxxGyPLQfZUasU;"
+        },
+        {
+          "line": 691,
+          "source": "value=io_w_bits_data_s1_entry_pbmt;"
+        },
+        {
+          "line": 694,
+          "source": "function void set_io_w_bits_data_s1_entry_pbmtxxGyPLQfZUasU;"
+        },
+        {
+          "line": 696,
+          "source": "io_w_bits_data_s1_entry_pbmt=value;"
+        },
+        {
+          "line": 699,
+          "source": "function void get_io_w_bits_data_s1_entry_perm_axxGyPLQfZUasU;"
+        },
+        {
+          "line": 701,
+          "source": "value=io_w_bits_data_s1_entry_perm_a;"
+        },
+        {
+          "line": 704,
+          "source": "function void set_io_w_bits_data_s1_entry_perm_axxGyPLQfZUasU;"
+        },
+        {
+          "line": 706,
+          "source": "io_w_bits_data_s1_entry_perm_a=value;"
+        },
+        {
+          "line": 709,
+          "source": "function void get_io_w_bits_data_s1_entry_perm_gxxGyPLQfZUasU;"
+        },
+        {
+          "line": 711,
+          "source": "value=io_w_bits_data_s1_entry_perm_g;"
+        },
+        {
+          "line": 714,
+          "source": "function void set_io_w_bits_data_s1_entry_perm_gxxGyPLQfZUasU;"
+        },
+        {
+          "line": 716,
+          "source": "io_w_bits_data_s1_entry_perm_g=value;"
+        },
+        {
+          "line": 719,
+          "source": "function void get_io_w_bits_data_s1_entry_perm_uxxGyPLQfZUasU;"
+        },
+        {
+          "line": 721,
+          "source": "value=io_w_bits_data_s1_entry_perm_u;"
+        },
+        {
+          "line": 724,
+          "source": "function void set_io_w_bits_data_s1_entry_perm_uxxGyPLQfZUasU;"
+        },
+        {
+          "line": 726,
+          "source": "io_w_bits_data_s1_entry_perm_u=value;"
+        },
+        {
+          "line": 729,
+          "source": "function void get_io_w_bits_data_s1_entry_perm_xxxGyPLQfZUasU;"
+        },
+        {
+          "line": 731,
+          "source": "value=io_w_bits_data_s1_entry_perm_x;"
+        },
+        {
+          "line": 734,
+          "source": "function void set_io_w_bits_data_s1_entry_perm_xxxGyPLQfZUasU;"
+        },
+        {
+          "line": 736,
+          "source": "io_w_bits_data_s1_entry_perm_x=value;"
+        },
+        {
+          "line": 739,
+          "source": "function void get_io_w_bits_data_s1_entry_perm_wxxGyPLQfZUasU;"
+        },
+        {
+          "line": 741,
+          "source": "value=io_w_bits_data_s1_entry_perm_w;"
+        },
+        {
+          "line": 744,
+          "source": "function void set_io_w_bits_data_s1_entry_perm_wxxGyPLQfZUasU;"
+        },
+        {
+          "line": 746,
+          "source": "io_w_bits_data_s1_entry_perm_w=value;"
+        },
+        {
+          "line": 749,
+          "source": "function void get_io_w_bits_data_s1_entry_perm_rxxGyPLQfZUasU;"
+        },
+        {
+          "line": 751,
+          "source": "value=io_w_bits_data_s1_entry_perm_r;"
+        },
+        {
+          "line": 754,
+          "source": "function void set_io_w_bits_data_s1_entry_perm_rxxGyPLQfZUasU;"
+        },
+        {
+          "line": 756,
+          "source": "io_w_bits_data_s1_entry_perm_r=value;"
+        },
+        {
+          "line": 759,
+          "source": "function void get_io_w_bits_data_s1_entry_levelxxGyPLQfZUasU;"
+        },
+        {
+          "line": 761,
+          "source": "value=io_w_bits_data_s1_entry_level;"
+        },
+        {
+          "line": 764,
+          "source": "function void set_io_w_bits_data_s1_entry_levelxxGyPLQfZUasU;"
+        },
+        {
+          "line": 766,
+          "source": "io_w_bits_data_s1_entry_level=value;"
+        },
+        {
+          "line": 769,
+          "source": "function void get_io_w_bits_data_s1_entry_vxxGyPLQfZUasU;"
+        },
+        {
+          "line": 771,
+          "source": "value=io_w_bits_data_s1_entry_v;"
+        },
+        {
+          "line": 774,
+          "source": "function void set_io_w_bits_data_s1_entry_vxxGyPLQfZUasU;"
+        },
+        {
+          "line": 776,
+          "source": "io_w_bits_data_s1_entry_v=value;"
+        },
+        {
+          "line": 779,
+          "source": "function void get_io_w_bits_data_s1_entry_ppnxxGyPLQfZUasU;"
+        },
+        {
+          "line": 781,
+          "source": "value=io_w_bits_data_s1_entry_ppn;"
+        },
+        {
+          "line": 784,
+          "source": "function void set_io_w_bits_data_s1_entry_ppnxxGyPLQfZUasU;"
+        },
+        {
+          "line": 786,
+          "source": "io_w_bits_data_s1_entry_ppn=value;"
+        },
+        {
+          "line": 789,
+          "source": "function void get_io_w_bits_data_s1_ppn_low_0xxGyPLQfZUasU;"
+        },
+        {
+          "line": 791,
+          "source": "value=io_w_bits_data_s1_ppn_low_0;"
+        },
+        {
+          "line": 794,
+          "source": "function void set_io_w_bits_data_s1_ppn_low_0xxGyPLQfZUasU;"
+        },
+        {
+          "line": 796,
+          "source": "io_w_bits_data_s1_ppn_low_0=value;"
+        },
+        {
+          "line": 799,
+          "source": "function void get_io_w_bits_data_s1_ppn_low_1xxGyPLQfZUasU;"
+        },
+        {
+          "line": 801,
+          "source": "value=io_w_bits_data_s1_ppn_low_1;"
+        },
+        {
+          "line": 804,
+          "source": "function void set_io_w_bits_data_s1_ppn_low_1xxGyPLQfZUasU;"
+        },
+        {
+          "line": 806,
+          "source": "io_w_bits_data_s1_ppn_low_1=value;"
+        },
+        {
+          "line": 809,
+          "source": "function void get_io_w_bits_data_s1_ppn_low_2xxGyPLQfZUasU;"
+        },
+        {
+          "line": 811,
+          "source": "value=io_w_bits_data_s1_ppn_low_2;"
+        },
+        {
+          "line": 814,
+          "source": "function void set_io_w_bits_data_s1_ppn_low_2xxGyPLQfZUasU;"
+        },
+        {
+          "line": 816,
+          "source": "io_w_bits_data_s1_ppn_low_2=value;"
+        },
+        {
+          "line": 819,
+          "source": "function void get_io_w_bits_data_s1_ppn_low_3xxGyPLQfZUasU;"
+        },
+        {
+          "line": 821,
+          "source": "value=io_w_bits_data_s1_ppn_low_3;"
+        },
+        {
+          "line": 824,
+          "source": "function void set_io_w_bits_data_s1_ppn_low_3xxGyPLQfZUasU;"
+        },
+        {
+          "line": 826,
+          "source": "io_w_bits_data_s1_ppn_low_3=value;"
+        },
+        {
+          "line": 829,
+          "source": "function void get_io_w_bits_data_s1_ppn_low_4xxGyPLQfZUasU;"
+        },
+        {
+          "line": 831,
+          "source": "value=io_w_bits_data_s1_ppn_low_4;"
+        },
+        {
+          "line": 834,
+          "source": "function void set_io_w_bits_data_s1_ppn_low_4xxGyPLQfZUasU;"
+        },
+        {
+          "line": 836,
+          "source": "io_w_bits_data_s1_ppn_low_4=value;"
+        },
+        {
+          "line": 839,
+          "source": "function void get_io_w_bits_data_s1_ppn_low_5xxGyPLQfZUasU;"
+        },
+        {
+          "line": 841,
+          "source": "value=io_w_bits_data_s1_ppn_low_5;"
+        },
+        {
+          "line": 844,
+          "source": "function void set_io_w_bits_data_s1_ppn_low_5xxGyPLQfZUasU;"
+        },
+        {
+          "line": 846,
+          "source": "io_w_bits_data_s1_ppn_low_5=value;"
+        },
+        {
+          "line": 849,
+          "source": "function void get_io_w_bits_data_s1_ppn_low_6xxGyPLQfZUasU;"
+        },
+        {
+          "line": 851,
+          "source": "value=io_w_bits_data_s1_ppn_low_6;"
+        },
+        {
+          "line": 854,
+          "source": "function void set_io_w_bits_data_s1_ppn_low_6xxGyPLQfZUasU;"
+        },
+        {
+          "line": 856,
+          "source": "io_w_bits_data_s1_ppn_low_6=value;"
+        },
+        {
+          "line": 859,
+          "source": "function void get_io_w_bits_data_s1_ppn_low_7xxGyPLQfZUasU;"
+        },
+        {
+          "line": 861,
+          "source": "value=io_w_bits_data_s1_ppn_low_7;"
+        },
+        {
+          "line": 864,
+          "source": "function void set_io_w_bits_data_s1_ppn_low_7xxGyPLQfZUasU;"
+        },
+        {
+          "line": 866,
+          "source": "io_w_bits_data_s1_ppn_low_7=value;"
+        },
+        {
+          "line": 869,
+          "source": "function void get_io_w_bits_data_s1_valididx_0xxGyPLQfZUasU;"
+        },
+        {
+          "line": 871,
+          "source": "value=io_w_bits_data_s1_valididx_0;"
+        },
+        {
+          "line": 874,
+          "source": "function void set_io_w_bits_data_s1_valididx_0xxGyPLQfZUasU;"
+        },
+        {
+          "line": 876,
+          "source": "io_w_bits_data_s1_valididx_0=value;"
+        },
+        {
+          "line": 879,
+          "source": "function void get_io_w_bits_data_s1_valididx_1xxGyPLQfZUasU;"
+        },
+        {
+          "line": 881,
+          "source": "value=io_w_bits_data_s1_valididx_1;"
+        },
+        {
+          "line": 884,
+          "source": "function void set_io_w_bits_data_s1_valididx_1xxGyPLQfZUasU;"
+        },
+        {
+          "line": 886,
+          "source": "io_w_bits_data_s1_valididx_1=value;"
+        },
+        {
+          "line": 889,
+          "source": "function void get_io_w_bits_data_s1_valididx_2xxGyPLQfZUasU;"
+        },
+        {
+          "line": 891,
+          "source": "value=io_w_bits_data_s1_valididx_2;"
+        },
+        {
+          "line": 894,
+          "source": "function void set_io_w_bits_data_s1_valididx_2xxGyPLQfZUasU;"
+        },
+        {
+          "line": 896,
+          "source": "io_w_bits_data_s1_valididx_2=value;"
+        },
+        {
+          "line": 899,
+          "source": "function void get_io_w_bits_data_s1_valididx_3xxGyPLQfZUasU;"
+        },
+        {
+          "line": 901,
+          "source": "value=io_w_bits_data_s1_valididx_3;"
+        },
+        {
+          "line": 904,
+          "source": "function void set_io_w_bits_data_s1_valididx_3xxGyPLQfZUasU;"
+        },
+        {
+          "line": 906,
+          "source": "io_w_bits_data_s1_valididx_3=value;"
+        },
+        {
+          "line": 909,
+          "source": "function void get_io_w_bits_data_s1_valididx_4xxGyPLQfZUasU;"
+        },
+        {
+          "line": 911,
+          "source": "value=io_w_bits_data_s1_valididx_4;"
+        },
+        {
+          "line": 914,
+          "source": "function void set_io_w_bits_data_s1_valididx_4xxGyPLQfZUasU;"
+        },
+        {
+          "line": 916,
+          "source": "io_w_bits_data_s1_valididx_4=value;"
+        },
+        {
+          "line": 919,
+          "source": "function void get_io_w_bits_data_s1_valididx_5xxGyPLQfZUasU;"
+        },
+        {
+          "line": 921,
+          "source": "value=io_w_bits_data_s1_valididx_5;"
+        },
+        {
+          "line": 924,
+          "source": "function void set_io_w_bits_data_s1_valididx_5xxGyPLQfZUasU;"
+        },
+        {
+          "line": 926,
+          "source": "io_w_bits_data_s1_valididx_5=value;"
+        },
+        {
+          "line": 929,
+          "source": "function void get_io_w_bits_data_s1_valididx_6xxGyPLQfZUasU;"
+        },
+        {
+          "line": 931,
+          "source": "value=io_w_bits_data_s1_valididx_6;"
+        },
+        {
+          "line": 934,
+          "source": "function void set_io_w_bits_data_s1_valididx_6xxGyPLQfZUasU;"
+        },
+        {
+          "line": 936,
+          "source": "io_w_bits_data_s1_valididx_6=value;"
+        },
+        {
+          "line": 939,
+          "source": "function void get_io_w_bits_data_s1_valididx_7xxGyPLQfZUasU;"
+        },
+        {
+          "line": 941,
+          "source": "value=io_w_bits_data_s1_valididx_7;"
+        },
+        {
+          "line": 944,
+          "source": "function void set_io_w_bits_data_s1_valididx_7xxGyPLQfZUasU;"
+        },
+        {
+          "line": 946,
+          "source": "io_w_bits_data_s1_valididx_7=value;"
+        },
+        {
+          "line": 949,
+          "source": "function void get_io_w_bits_data_s1_pteidx_0xxGyPLQfZUasU;"
+        },
+        {
+          "line": 951,
+          "source": "value=io_w_bits_data_s1_pteidx_0;"
+        },
+        {
+          "line": 954,
+          "source": "function void set_io_w_bits_data_s1_pteidx_0xxGyPLQfZUasU;"
+        },
+        {
+          "line": 956,
+          "source": "io_w_bits_data_s1_pteidx_0=value;"
+        },
+        {
+          "line": 959,
+          "source": "function void get_io_w_bits_data_s1_pteidx_1xxGyPLQfZUasU;"
+        },
+        {
+          "line": 961,
+          "source": "value=io_w_bits_data_s1_pteidx_1;"
+        },
+        {
+          "line": 964,
+          "source": "function void set_io_w_bits_data_s1_pteidx_1xxGyPLQfZUasU;"
+        },
+        {
+          "line": 966,
+          "source": "io_w_bits_data_s1_pteidx_1=value;"
+        },
+        {
+          "line": 969,
+          "source": "function void get_io_w_bits_data_s1_pteidx_2xxGyPLQfZUasU;"
+        },
+        {
+          "line": 971,
+          "source": "value=io_w_bits_data_s1_pteidx_2;"
+        },
+        {
+          "line": 974,
+          "source": "function void set_io_w_bits_data_s1_pteidx_2xxGyPLQfZUasU;"
+        },
+        {
+          "line": 976,
+          "source": "io_w_bits_data_s1_pteidx_2=value;"
+        },
+        {
+          "line": 979,
+          "source": "function void get_io_w_bits_data_s1_pteidx_3xxGyPLQfZUasU;"
+        },
+        {
+          "line": 981,
+          "source": "value=io_w_bits_data_s1_pteidx_3;"
+        },
+        {
+          "line": 984,
+          "source": "function void set_io_w_bits_data_s1_pteidx_3xxGyPLQfZUasU;"
+        },
+        {
+          "line": 986,
+          "source": "io_w_bits_data_s1_pteidx_3=value;"
+        },
+        {
+          "line": 989,
+          "source": "function void get_io_w_bits_data_s1_pteidx_4xxGyPLQfZUasU;"
+        },
+        {
+          "line": 991,
+          "source": "value=io_w_bits_data_s1_pteidx_4;"
+        },
+        {
+          "line": 994,
+          "source": "function void set_io_w_bits_data_s1_pteidx_4xxGyPLQfZUasU;"
+        },
+        {
+          "line": 996,
+          "source": "io_w_bits_data_s1_pteidx_4=value;"
+        },
+        {
+          "line": 999,
+          "source": "function void get_io_w_bits_data_s1_pteidx_5xxGyPLQfZUasU;"
+        },
+        {
+          "line": 1001,
+          "source": "value=io_w_bits_data_s1_pteidx_5;"
+        },
+        {
+          "line": 1004,
+          "source": "function void set_io_w_bits_data_s1_pteidx_5xxGyPLQfZUasU;"
+        },
+        {
+          "line": 1006,
+          "source": "io_w_bits_data_s1_pteidx_5=value;"
+        },
+        {
+          "line": 1009,
+          "source": "function void get_io_w_bits_data_s1_pteidx_6xxGyPLQfZUasU;"
+        },
+        {
+          "line": 1011,
+          "source": "value=io_w_bits_data_s1_pteidx_6;"
+        },
+        {
+          "line": 1014,
+          "source": "function void set_io_w_bits_data_s1_pteidx_6xxGyPLQfZUasU;"
+        },
+        {
+          "line": 1016,
+          "source": "io_w_bits_data_s1_pteidx_6=value;"
+        },
+        {
+          "line": 1019,
+          "source": "function void get_io_w_bits_data_s1_pteidx_7xxGyPLQfZUasU;"
+        },
+        {
+          "line": 1021,
+          "source": "value=io_w_bits_data_s1_pteidx_7;"
+        },
+        {
+          "line": 1024,
+          "source": "function void set_io_w_bits_data_s1_pteidx_7xxGyPLQfZUasU;"
+        },
+        {
+          "line": 1026,
+          "source": "io_w_bits_data_s1_pteidx_7=value;"
+        },
+        {
+          "line": 1029,
+          "source": "function void get_io_w_bits_data_s1_pfxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1031,
+          "source": "value=io_w_bits_data_s1_pf;"
+        },
+        {
+          "line": 1034,
+          "source": "function void set_io_w_bits_data_s1_pfxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1036,
+          "source": "io_w_bits_data_s1_pf=value;"
+        },
+        {
+          "line": 1039,
+          "source": "function void get_io_w_bits_data_s1_afxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1041,
+          "source": "value=io_w_bits_data_s1_af;"
+        },
+        {
+          "line": 1044,
+          "source": "function void set_io_w_bits_data_s1_afxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1046,
+          "source": "io_w_bits_data_s1_af=value;"
+        },
+        {
+          "line": 1049,
+          "source": "function void get_io_w_bits_data_s2_entry_tagxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1051,
+          "source": "value=io_w_bits_data_s2_entry_tag;"
+        },
+        {
+          "line": 1054,
+          "source": "function void set_io_w_bits_data_s2_entry_tagxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1056,
+          "source": "io_w_bits_data_s2_entry_tag=value;"
+        },
+        {
+          "line": 1059,
+          "source": "function void get_io_w_bits_data_s2_entry_vmidxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1061,
+          "source": "value=io_w_bits_data_s2_entry_vmid;"
+        },
+        {
+          "line": 1064,
+          "source": "function void set_io_w_bits_data_s2_entry_vmidxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1066,
+          "source": "io_w_bits_data_s2_entry_vmid=value;"
+        },
+        {
+          "line": 1069,
+          "source": "function void get_io_w_bits_data_s2_entry_nxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1071,
+          "source": "value=io_w_bits_data_s2_entry_n;"
+        },
+        {
+          "line": 1074,
+          "source": "function void set_io_w_bits_data_s2_entry_nxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1076,
+          "source": "io_w_bits_data_s2_entry_n=value;"
+        },
+        {
+          "line": 1079,
+          "source": "function void get_io_w_bits_data_s2_entry_pbmtxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1081,
+          "source": "value=io_w_bits_data_s2_entry_pbmt;"
+        },
+        {
+          "line": 1084,
+          "source": "function void set_io_w_bits_data_s2_entry_pbmtxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1086,
+          "source": "io_w_bits_data_s2_entry_pbmt=value;"
+        },
+        {
+          "line": 1089,
+          "source": "function void get_io_w_bits_data_s2_entry_ppnxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1091,
+          "source": "value=io_w_bits_data_s2_entry_ppn;"
+        },
+        {
+          "line": 1094,
+          "source": "function void set_io_w_bits_data_s2_entry_ppnxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1096,
+          "source": "io_w_bits_data_s2_entry_ppn=value;"
+        },
+        {
+          "line": 1099,
+          "source": "function void get_io_w_bits_data_s2_entry_perm_axxGyPLQfZUasU;"
+        },
+        {
+          "line": 1101,
+          "source": "value=io_w_bits_data_s2_entry_perm_a;"
+        },
+        {
+          "line": 1104,
+          "source": "function void set_io_w_bits_data_s2_entry_perm_axxGyPLQfZUasU;"
+        },
+        {
+          "line": 1106,
+          "source": "io_w_bits_data_s2_entry_perm_a=value;"
+        },
+        {
+          "line": 1109,
+          "source": "function void get_io_w_bits_data_s2_entry_perm_xxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1111,
+          "source": "value=io_w_bits_data_s2_entry_perm_x;"
+        },
+        {
+          "line": 1114,
+          "source": "function void set_io_w_bits_data_s2_entry_perm_xxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1116,
+          "source": "io_w_bits_data_s2_entry_perm_x=value;"
+        },
+        {
+          "line": 1119,
+          "source": "function void get_io_w_bits_data_s2_entry_levelxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1121,
+          "source": "value=io_w_bits_data_s2_entry_level;"
+        },
+        {
+          "line": 1124,
+          "source": "function void set_io_w_bits_data_s2_entry_levelxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1126,
+          "source": "io_w_bits_data_s2_entry_level=value;"
+        },
+        {
+          "line": 1129,
+          "source": "function void get_io_w_bits_data_s2_gpfxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1131,
+          "source": "value=io_w_bits_data_s2_gpf;"
+        },
+        {
+          "line": 1134,
+          "source": "function void set_io_w_bits_data_s2_gpfxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1136,
+          "source": "io_w_bits_data_s2_gpf=value;"
+        },
+        {
+          "line": 1139,
+          "source": "function void get_io_w_bits_data_s2_gafxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1141,
+          "source": "value=io_w_bits_data_s2_gaf;"
+        },
+        {
+          "line": 1144,
+          "source": "function void set_io_w_bits_data_s2_gafxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1146,
+          "source": "io_w_bits_data_s2_gaf=value;"
+        },
+        {
+          "line": 1149,
+          "source": "function void get_io_access_0_touch_ways_validxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1151,
+          "source": "value=io_access_0_touch_ways_valid;"
+        },
+        {
+          "line": 1154,
+          "source": "function void get_io_access_0_touch_ways_bitsxxGyPLQfZUasU;"
+        },
+        {
+          "line": 1156,
+          "source": "value=io_access_0_touch_ways_bits;"
+        },
+        {
+          "line": 1167,
+          "source": "function void finish_GyPLQfZUasU;"
+        },
+        {
+          "line": 1168,
+          "source": "$finish;"
+        }
+      ],
+      "uncovered_declarative_lines": [
+        {
+          "line": 355,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 365,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 375,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 385,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 395,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 405,
+          "source": "output logic [49:0] value;"
+        },
+        {
+          "line": 415,
+          "source": "output logic [15:0] value;"
+        },
+        {
+          "line": 425,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 435,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 445,
+          "source": "output logic [15:0] value;"
+        },
+        {
+          "line": 455,
+          "source": "output logic [15:0] value;"
+        },
+        {
+          "line": 465,
+          "source": "output logic [15:0] value;"
+        },
+        {
+          "line": 475,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 485,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 495,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 505,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 515,
+          "source": "output logic [37:0] value;"
+        },
+        {
+          "line": 525,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 535,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 540,
+          "source": "output logic [35:0] value;"
+        },
+        {
+          "line": 545,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 550,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 555,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 560,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 565,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 570,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 575,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 580,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 585,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 590,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 595,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 600,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 605,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 610,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 615,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 620,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 630,
+          "source": "output logic [5:0] value;"
+        },
+        {
+          "line": 640,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 650,
+          "source": "output logic [34:0] value;"
+        },
+        {
+          "line": 660,
+          "source": "output logic [15:0] value;"
+        },
+        {
+          "line": 670,
+          "source": "output logic [13:0] value;"
+        },
+        {
+          "line": 680,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 690,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 700,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 710,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 720,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 730,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 740,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 750,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 760,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 770,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 780,
+          "source": "output logic [40:0] value;"
+        },
+        {
+          "line": 790,
+          "source": "output logic [2:0] value;"
+        },
+        {
+          "line": 800,
+          "source": "output logic [2:0] value;"
+        },
+        {
+          "line": 810,
+          "source": "output logic [2:0] value;"
+        },
+        {
+          "line": 820,
+          "source": "output logic [2:0] value;"
+        },
+        {
+          "line": 830,
+          "source": "output logic [2:0] value;"
+        },
+        {
+          "line": 840,
+          "source": "output logic [2:0] value;"
+        },
+        {
+          "line": 850,
+          "source": "output logic [2:0] value;"
+        },
+        {
+          "line": 860,
+          "source": "output logic [2:0] value;"
+        },
+        {
+          "line": 870,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 880,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 890,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 900,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 910,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 920,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 930,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 940,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 950,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 960,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 970,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 980,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 990,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1000,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1010,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1020,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1030,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1040,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1050,
+          "source": "output logic [37:0] value;"
+        },
+        {
+          "line": 1060,
+          "source": "output logic [13:0] value;"
+        },
+        {
+          "line": 1070,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1080,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 1090,
+          "source": "output logic [37:0] value;"
+        },
+        {
+          "line": 1100,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1110,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1120,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 1130,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1140,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1150,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 1155,
+          "source": "output logic [5:0] value;"
+        }
+      ]
+    }
+  },
+  "uncovered_procedural_lines": [],
+  "uncovered_declarative_lines": [
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 355,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 365,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 375,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 385,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 395,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 405,
+      "source": "output logic [49:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 415,
+      "source": "output logic [15:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 425,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 435,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 445,
+      "source": "output logic [15:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 455,
+      "source": "output logic [15:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 465,
+      "source": "output logic [15:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 475,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 485,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 495,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 505,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 515,
+      "source": "output logic [37:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 525,
+      "source": "output logic [1:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 535,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 540,
+      "source": "output logic [35:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 545,
+      "source": "output logic [1:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 550,
+      "source": "output logic [1:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 555,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 560,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 565,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 570,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 575,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 580,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 585,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 590,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 595,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 600,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 605,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 610,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 615,
+      "source": "output logic [1:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 620,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 630,
+      "source": "output logic [5:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 640,
+      "source": "output logic [1:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 650,
+      "source": "output logic [34:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 660,
+      "source": "output logic [15:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 670,
+      "source": "output logic [13:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 680,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 690,
+      "source": "output logic [1:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 700,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 710,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 720,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 730,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 740,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 750,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 760,
+      "source": "output logic [1:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 770,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 780,
+      "source": "output logic [40:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 790,
+      "source": "output logic [2:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 800,
+      "source": "output logic [2:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 810,
+      "source": "output logic [2:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 820,
+      "source": "output logic [2:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 830,
+      "source": "output logic [2:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 840,
+      "source": "output logic [2:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 850,
+      "source": "output logic [2:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 860,
+      "source": "output logic [2:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 870,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 880,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 890,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 900,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 910,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 920,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 930,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 940,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 950,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 960,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 970,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 980,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 990,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 1000,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 1010,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 1020,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 1030,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 1040,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 1050,
+      "source": "output logic [37:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 1060,
+      "source": "output logic [13:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 1070,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 1080,
+      "source": "output logic [1:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 1090,
+      "source": "output logic [37:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 1100,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 1110,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 1120,
+      "source": "output logic [1:0] value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 1130,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 1140,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 1150,
+      "source": "output logic  value;"
+    },
+    {
+      "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut_top.sv",
+      "line": 1155,
+      "source": "output logic [5:0] value;"
+    }
+  ],
+  "branches": {
+    "total": 1018,
+    "covered": 1016,
+    "uncovered": [
+      {
+        "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut.v",
+        "line": 7151,
+        "branch": "cond_then",
+        "construct": "always",
+        "construct_line": 4622,
+        "source": ": s2_exception & _allStage_level_T_3 ? 2'h3 : _GEN_338[io_w_bits_data_s2xlate];"
+      },
+      {
+        "file": "/home/xyl/kmh-v3-test/memblock-hash/mmu/dut/tlbfa/TlbfaDut.v",
+        "line": 12532,
+        "branch": "else",
+        "construct": "initial",
+        "construct_line": 10215,
+        "source": "if (reset) begin"
+      }
+    ]
+  },
+  "toggles": {
+    "total": 17766,
+    "covered": 17766,
+    "uncovered": 0,
+    "classes": {},
+    "uncovered_points": []
+  },
+  "functional_coverage": {
+    "coverage": 100.0,
+    "covered": true,
+    "groups": [
+      {
+        "instance": "tlbfa.lookup",
+        "coverage": 100.0,
+        "samples": 353,
+        "points": [
+          {
+            "name": "translation_context",
+            "coverage": 100.0,
+            "samples": 353
+          },
+          {
+            "name": "outcome",
+            "coverage": 100.0,
+            "samples": 353
+          },
+          {
+            "name": "hit_page_level",
+            "coverage": 100.0,
+            "samples": 353
+          },
+          {
+            "name": "reject_reason",
+            "coverage": 100.0,
+            "samples": 353
+          },
+          {
+            "name": "hit_qualifier",
+            "coverage": 100.0,
+            "samples": 353
+          }
+        ],
+        "crosses": [
+          {
+            "name": "context_x_outcome",
+            "coverage": 100.0
+          }
+        ]
+      },
+      {
+        "instance": "tlbfa.refill",
+        "coverage": 100.0,
+        "samples": 232,
+        "points": [
+          {
+            "name": "refill_kind",
+            "coverage": 100.0,
+            "samples": 232
+          },
+          {
+            "name": "refill_page",
+            "coverage": 100.0,
+            "samples": 232
+          },
+          {
+            "name": "way_slot",
+            "coverage": 100.0,
+            "samples": 232
+          },
+          {
+            "name": "refill_timing",
+            "coverage": 100.0,
+            "samples": 232
+          }
+        ],
+        "crosses": [
+          {
+            "name": "kind_x_page",
+            "coverage": 100.0
+          }
+        ]
+      },
+      {
+        "instance": "tlbfa.ppn",
+        "coverage": 100.0,
+        "samples": 150,
+        "points": [
+          {
+            "name": "ppn_page",
+            "coverage": 100.0,
+            "samples": 150
+          },
+          {
+            "name": "ppn_low_slot",
+            "coverage": 100.0,
+            "samples": 150
+          }
+        ],
+        "crosses": []
+      },
+      {
+        "instance": "tlbfa.payload",
+        "coverage": 100.0,
+        "samples": 240,
+        "points": [
+          {
+            "name": "payload_kind",
+            "coverage": 100.0,
+            "samples": 240
+          }
+        ],
+        "crosses": []
+      },
+      {
+        "instance": "tlbfa.sfence",
+        "coverage": 100.0,
+        "samples": 28,
+        "points": [
+          {
+            "name": "fence_kind",
+            "coverage": 100.0,
+            "samples": 28
+          },
+          {
+            "name": "fence_effect",
+            "coverage": 100.0,
+            "samples": 28
+          },
+          {
+            "name": "fence_timing",
+            "coverage": 100.0,
+            "samples": 28
+          }
+        ],
+        "crosses": []
+      },
+      {
+        "instance": "tlbfa.timing",
+        "coverage": 100.0,
+        "samples": 401,
+        "points": [
+          {
+            "name": "response_timing",
+            "coverage": 100.0,
+            "samples": 401
+          }
+        ],
+        "crosses": []
+      },
+      {
+        "instance": "tlbfa.touch",
+        "coverage": 100.0,
+        "samples": 380,
+        "points": [
+          {
+            "name": "touch_kind",
+            "coverage": 100.0,
+            "samples": 380
+          }
+        ],
+        "crosses": []
+      },
+      {
+        "instance": "tlbfa.reset",
+        "coverage": 100.0,
+        "samples": 33,
+        "points": [
+          {
+            "name": "reset_context",
+            "coverage": 100.0,
+            "samples": 33
+          }
+        ],
+        "crosses": []
+      }
+    ]
+  },
+  "limits": "Verilator point summaries are not semantic checks. LCOV DA hits are summed per line (duplicate shadow points included) and every denominator is retained. Declarative wire/reg/end lines are separated by source text, not deleted; procedural lines are still listed if uncovered. Files are kept separate so a parent DUT does not hide a child's own gaps."
+}

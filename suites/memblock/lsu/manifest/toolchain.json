@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "validated_date": "2026-10-25",
+  "source": {
+    "repository": "/home/xyl/kmh-v3-test/XiangShan",
+    "branch": "kunminghu-v3",
+    "commit": "893e1580b705d81f113c30c7a05734e09a08050e",
+    "commit_date": "2026-10-16",
+    "rtl_generation": "soc-split split-verilog (firtool-1.149.0)"
+  },
+  "rtl_root": "/home/xyl/kmh-v3-test/soc-split/rtl",
+  "picker": {
+    "executable": "/usr/local/bin/picker",
+    "version": "2.0.0-HEAD-4dd442c-2026-10-12",
+    "commit": "4dd442c4a80c92549381e417c608836e3b78a8e9"
+  },
+  "verilator": {
+    "root": "/opt/verilator-5.052",
+    "version": "5.052",
+    "coverage_processor": "/opt/verilator-5.052/bin/verilator_coverage"
+  },
+  "toffee": {
+    "package": "pytoffee",
+    "package_version": "2.0.0.dev12+g3017293a7",
+    "branch": "migration/toffee",
+    "checkout": "/home/xyl/xreactor/output/toffee-migration/toffee",
+    "runner_command": "/home/xyl/xreactor/output/toffee-migration/venv/bin/toffee run",
+    "pytest": "9.1.1",
+    "pytest_asyncio": "1.4.0",
+    "pytest_xdist": "3.8.0"
+  },
+  "xspcomm": {
+    "package_version": "0.3.0.dev3",
+    "native_abi": 3,
+    "coverage_protocol": 5
+  },
+  "coverage": {
+    "picker_flag": "-c",
+    "extra_verilator_flags": [
+      "--no-coverage-expr",
+      "--no-coverage-fsm"
+    ],
+    "metrics_required": [
+      "line",
+      "toggle",
+      "branch"
+    ],
+    "merge_granularity": "per DUT build identity"
+  },
+  "runtime": {
+    "verilator_seed": 1,
+    "waveform": "off; tests run from a temporary cwd and never call SetWaveform",
+    "per_cycle_dump": false
+  },
+  "project_root": "/home/xyl/kmh-v3-test/memblock-hash/lsu"
+}

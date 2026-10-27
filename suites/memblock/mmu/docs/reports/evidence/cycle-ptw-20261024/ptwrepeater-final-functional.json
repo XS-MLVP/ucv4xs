@@ -1,0 +1,322 @@
+{
+  "format": "xreactor-functional-coverage",
+  "version": 2,
+  "coverage": 100.0,
+  "covered": true,
+  "groups": [
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "ptwrepeater",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "event",
+            "source": "event",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "accept",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "accept"
+                  ]
+                }
+              },
+              {
+                "name": "flush",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "flush"
+                  ]
+                }
+              },
+              {
+                "name": "issue",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "issue"
+                  ]
+                }
+              },
+              {
+                "name": "response",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "response"
+                  ]
+                }
+              }
+            ],
+            "description": "请求接收、向 PTW 发出、响应持有和 flush 取消。"
+          },
+          {
+            "name": "hold",
+            "source": "hold",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "held",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "held"
+                  ]
+                }
+              },
+              {
+                "name": "released",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "released"
+                  ]
+                }
+              }
+            ],
+            "description": "PTW 响应在输出未 ready 时保持，ready 后释放。"
+          },
+          {
+            "name": "stage",
+            "source": "stage",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "0",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    0
+                  ]
+                }
+              },
+              {
+                "name": "1",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    1
+                  ]
+                }
+              },
+              {
+                "name": "2",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    2
+                  ]
+                }
+              },
+              {
+                "name": "3",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    3
+                  ]
+                }
+              }
+            ],
+            "description": "透传的翻译阶段编码。"
+          }
+        ],
+        "crosses": [],
+        "description": "PTWRepeaterNB 单条非阻塞重复/保持。"
+      },
+      "schema_digest": "a19f3f0ac3df925306e22e39cddae700da74d2fa5237f48c6d71aff91c51d7e1",
+      "instance": "ptwrepeater",
+      "illegal_policy": "raise",
+      "samples": 9,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 9,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "accept": 1,
+            "flush": 1,
+            "issue": 1,
+            "response": 6
+          },
+          "provenance": {
+            "accept": {
+              "1a29494ac164487794f17a36d3b476ee": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "issue": {
+              "1a29494ac164487794f17a36d3b476ee": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "response": {
+              "1a29494ac164487794f17a36d3b476ee": {
+                "count": 6,
+                "first": null,
+                "last": null
+              }
+            },
+            "flush": {
+              "1a29494ac164487794f17a36d3b476ee": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "event",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 9,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "0": 2,
+            "1": 1,
+            "2": 5,
+            "3": 1
+          },
+          "provenance": {
+            "2": {
+              "1a29494ac164487794f17a36d3b476ee": {
+                "count": 5,
+                "first": null,
+                "last": null
+              }
+            },
+            "0": {
+              "1a29494ac164487794f17a36d3b476ee": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "1": {
+              "1a29494ac164487794f17a36d3b476ee": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "3": {
+              "1a29494ac164487794f17a36d3b476ee": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "stage",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 9,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "held": 1,
+            "released": 8
+          },
+          "provenance": {
+            "released": {
+              "1a29494ac164487794f17a36d3b476ee": {
+                "count": 8,
+                "first": null,
+                "last": null
+              }
+            },
+            "held": {
+              "1a29494ac164487794f17a36d3b476ee": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "hold",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "1a29494ac164487794f17a36d3b476ee": {
+          "run_id": "1a29494ac164487794f17a36d3b476ee",
+          "instance": "ptwrepeater",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "1a29494ac164487794f17a36d3b476ee",
+      "snapshot_id": "900b057312d71b56118e1d34668b939e4a57c08921f966814038776f9891ed9c"
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+#!/usr/bin/env python3
+"""In-memory corrupted input/effect + matching expected must still be rejected."""
+import argparse
+import copy
+import json
+from pathlib import Path
+import shutil
+import traceback
+
+from audit_lsq_joint_history_v4 import JointAudit
+from audit_lsq_population_v1 import events, paths_by_node
+from audit_sq_initial import ROOT, sha
+
+
+def check(rows):
+    audit = JointAudit()
+    for row in rows:
+        audit.step(row)
+    return audit.finish()
+
+
+def audit(name):
+    assert name=="lsq-normal-cbo-03"
+    run = ROOT/"results"/name
+    paths = paths_by_node(run)
+    positive = next(p for n,p in sorted(paths.items()) if "::test_normal_cbo_joint_" in n and "[none-29200]" in n)
+    redirect = next(p for n,p in sorted(paths.items()) if "::test_normal_cbo_joint_" in n and "[redirect-29200]" in n)
+    sources = {str(p.relative_to(run)):sha(p) for p in (positive,redirect)}
+    base = {p:list(events(p)) for p in (positive,redirect)}
+    for rows in base.values():
+        check(rows)
+    results = []
+
+    def reject(label,path,index,mutate):
+        rows = list(base[path])
+        row = rows[index] = copy.deepcopy(rows[index])
+        changed = mutate(row)
+        assert changed
+        try:
+            check(rows)
+        except AssertionError as exc:
+            location = traceback.extract_tb(exc.__traceback__)[-1]
+            assert location.filename.endswith("audit_lsq_joint_history_v4.py"), "not an independent semantic rejection"
+            results.append(dict(case=label,source=str(path.relative_to(run)),mutated_tick=row["post_tick"],changes=changed,
+                                in_memory_only=True,rejected=True,semantic_location=f"{Path(location.filename).name}:{location.lineno}",reason=str(exc)))
+        else:
+            raise AssertionError(("corrupted original obligation was accepted",label))
+
+    rows = base[positive]
+    index,lane = next((n,lane) for n,row in enumerate(rows) for lane,q in enumerate(row["input"]["loads"]) if q["execution"]["valid"] and q["execution"]["replay_feedback"])
+
+    def wrong_slot(row):
+        q = row["input"]["loads"][lane]["execution"]
+        old = q["slot"]
+        q["slot"] = (old+3) % 120  # Same bank, different original slot.
+        pins = [k for k in row["pins"] if k.startswith(f"io_ldu_ldin_{lane}_") and k.endswith("_schedIndex")]
+        assert len(pins)==1
+        row["pins"][pins[0]]=row["post_pins"][pins[0]]=q["slot"]
+        return [dict(field="input_and_both_raw_pins_original_slot",old=old,new=q["slot"],expected_outputs_unchanged=True)]
+    reject("same_bank_wrong_original_replay_feedback_slot",positive,index,wrong_slot)
+
+    index = next(n for n,r in enumerate(rows) if r["before"]["io_cmoOpReq_valid"] and r["input"]["cache_ready"])
+
+    def wrong_opcode(row):
+        pin = "io_cmoOpReq_bits_opcode"
+        old = row["before"][pin]
+        row["before"][pin]=row["expected_before"][pin]=old ^ 1
+        return [dict(field=pin,old=old,new=old ^ 1,matching_expected_also_polluted=True)]
+    reject("original_CBO_opcode_even_with_matching_expected",positive,index,wrong_opcode)
+
+    index,lane = next((n,lane) for n,r in enumerate(rows) for lane in range(2) if r["before"][f"io_sbuffer_req_{lane}_valid"] and r["input"]["sbuffer_ready"][lane] and r["before"][f"io_sbuffer_req_{lane}_bits_wline"])
+
+    def wrong_zero(row):
+        pin = f"io_sbuffer_req_{lane}_bits_data"
+        old = row["before"][pin]
+        row["before"][pin]=row["expected_before"][pin]=old ^ (1<<120)
+        return [dict(field=pin,old=old,new=old ^ (1<<120),matching_expected_also_polluted=True,changed_byte=15)]
+    reject("actual_original_zero_byte15_even_with_matching_expected",positive,index,wrong_zero)
+
+    index,lane=next((n,lane) for n,r in enumerate(rows) for lane,a in enumerate(r["input"]["addresses"]) if a["valid"] and a["fu_op"]&1)
+
+    def bad_producer(row):
+        a=row["input"]["addresses"][lane]
+        old=[a["size"],a["mask"],a["wline"]]
+        a.update(size=3,mask=255,wline=False)
+        p=f"io_sta_storeAddrIn_{lane}_bits_"
+        for pins in(row["pins"],row["post_pins"]):
+            pins[p+"size"],pins[p+"mask"],pins[p+"wlineflag"]=3,255,0
+        return [dict(field="original_CBO_metadata_and_both_actual_pin_maps",old=old,new=[3,255,False],
+                     all_staged_expected_outputs_retained=True,obligation="legacy interface CBO metadata cannot be promoted to normal StoreUnit traffic")]
+    reject("non_normal_CBO_package_with_matching_both_actual_pin_maps",positive,index,bad_producer)
+
+    rr = base[redirect]
+    cut = next(n for n,r in enumerate(rr) if r["input"]["redirect"]["valid"])
+    index = next(n for n,r in enumerate(rr) if n>cut and r["input"]["bus"]["response"])
+
+    def missing_cancelled_response(row):
+        row["input"]["bus"]["response"]=False
+        row["pins"]["io_uncache_resp_valid"]=row["post_pins"]["io_uncache_resp_valid"]=0
+        return [dict(field="input_and_raw_resp_valid",old=True,new=False,matching_expected_retained_as_original_actual=True,
+                     obligation="a cancelled original accepted request still owes its real response; no redirect waiver")]
+    reject("cancel_cannot_erase_one_unreturned_original_external_job",redirect,index,missing_cancelled_response)
+    assert len(results)==5 and sources=={str(p.relative_to(run)):sha(p) for p in (positive,redirect)}
+    dest = run/"evidence-auditors"
+    dest.mkdir(exist_ok=True)
+    file = Path(__file__)
+    target = dest/file.name
+    if target.exists():
+        assert sha(file)==sha(target)
+    else:
+        shutil.copy2(file,target)
+    report = dict(run=name,status="five_NORMAL_original_obligation_mutants_rejected_without_altering_evidence",original_journals_sha256=sources,
+                  mutations=results,auditor_sha256=sha(target),semantic_auditor_sha256=sha(ROOT/"tools/audit_lsq_joint_history_v4.py"),
+                  limits="Only in-memory copies. Actual pre effect+matching expected co-polluted for CBO opcode/zero BYTE15, proving16-byte zero checking not old8-byte-only evidence. Replay feedback/missing cancelled response/old non-normal CBO metadata co-pollute input and both raw maps. Staged checked/masks remain green, yet independent UID/normal producer semantics reject. Actual evidence/results/RTL unchanged; this is sensitivity, not DUT coverage or full random/STRESS signoff.")
+    report["preserved_v1_rejection"]="v1's mutant builder incorrectly searched a replayQueueIdx input name; actual original feedback input is schedIndex (the output uses replayQueueIdx). v2 changes only this matcher, semantic audit unchanged. v1 retained; it never reached a negative semantic verdict."
+    rejected = ROOT/"tools/audit_lsq_joint_negative_v2.py"
+    old_target = dest/rejected.name
+    if old_target.exists():
+        assert sha(rejected)==sha(old_target)
+    else:
+        shutil.copy2(rejected,old_target)
+    report["v3_scope_extension"]="New normal QB/fullmask/wline joint histories use semantic-v4; zero mutant targets byte15 and adds non-normal producer/input-pin mutation. Old four-mutant v2 and all old evidence retained."
+    out = run/"joint-negative-audit-v3.json"
+    if out.exists():
+        assert json.loads(out.read_text())==report
+    else:
+        out.write_text(json.dumps(report,indent=2,ensure_ascii=False)+"\n")
+    print(json.dumps(report,indent=2,ensure_ascii=False))
+
+
+if __name__=="__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("name")
+    audit(parser.parse_args().name)

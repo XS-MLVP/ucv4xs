@@ -1,0 +1,100 @@
+{
+  "format": "mmu-coverage-audit-summary",
+  "generated_at": "2026-10-24T14:41:30.052278+00:00",
+  "run": "results/llptw-tests-02",
+  "coverage_dat_sha256": "6d08f6790675cad74a88bedeba0b13800a9e8fe0661147c8b402af06da21ddbb",
+  "coverage_info_sha256": "df419a8ae7785f368a8f062464b804c997547bc54d6109f6ca1a24eac0ecf68a",
+  "lcov_lines": {
+    "unique_lines": 2614,
+    "covered_lines": 958,
+    "uncovered": 1656,
+    "procedural_uncovered": 1495,
+    "coverage_percent": 36.6488
+  },
+  "lcov_lines_dut_only": {
+    "unique_lines": 1955,
+    "covered_lines": 955,
+    "uncovered": 1000,
+    "procedural_uncovered": 999,
+    "coverage_percent": 48.8491
+  },
+  "lcov_lines_per_file": {
+    "LlptwDut.v": {
+      "covered_lines": 906,
+      "unique_lines": 1906,
+      "uncovered": 1000,
+      "coverage_percent": 47.5341
+    },
+    "LlptwDut_top.sv": {
+      "covered_lines": 3,
+      "unique_lines": 659,
+      "uncovered": 656,
+      "coverage_percent": 0.4552
+    },
+    "Arbiter2_LLPTW_Anon.sv": {
+      "covered_lines": 3,
+      "unique_lines": 3,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "FastArbiter.sv": {
+      "covered_lines": 15,
+      "unique_lines": 15,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "RRArbiterInit_1.sv": {
+      "covered_lines": 17,
+      "unique_lines": 17,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "TwoLevelRRArbiter.sv": {
+      "covered_lines": 14,
+      "unique_lines": 14,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    }
+  },
+  "branches": {
+    "total": 407,
+    "covered": 224,
+    "uncovered_count": 183
+  },
+  "toggles": {
+    "total": 20770,
+    "covered": 1342,
+    "uncovered_count": 19428
+  },
+  "functional_coverage": {
+    "coverage": 62.5,
+    "covered": false,
+    "groups": [
+      {
+        "instance": "llptw",
+        "coverage": 62.5,
+        "samples": 5,
+        "points": [
+          {
+            "name": "event",
+            "coverage": 62.5,
+            "samples": 5
+          },
+          {
+            "name": "lane",
+            "coverage": 25.0,
+            "samples": 5
+          },
+          {
+            "name": "result",
+            "coverage": 100.0,
+            "samples": 5
+          }
+        ],
+        "crosses": []
+      }
+    ]
+  },
+  "limits": "Verilator point summaries are not semantic checks. LCOV DA hits are summed per line (duplicate shadow points included) and every denominator is retained. Declarative wire/reg/end lines are separated by source text, not deleted; procedural lines are still listed if uncovered. Files are kept separate so a parent DUT does not hide a child's own gaps.",
+  "note": "Compact summary; the final run keeps the full audit and coverage database."
+}

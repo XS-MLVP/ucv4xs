@@ -1,0 +1,284 @@
+{
+  "format": "xreactor-functional-coverage",
+  "version": 2,
+  "coverage": 100.0,
+  "covered": true,
+  "groups": [
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "l2tlb",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "event",
+            "source": "event",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "cache_hit",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "cache_hit"
+                  ]
+                }
+              },
+              {
+                "name": "fault",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "fault"
+                  ]
+                }
+              },
+              {
+                "name": "sfence",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "sfence"
+                  ]
+                }
+              },
+              {
+                "name": "walk",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "walk"
+                  ]
+                }
+              }
+            ],
+            "description": "经过真实 PTW/PtwCache 的走表、缓存命中、故障和失效后重走。"
+          },
+          {
+            "name": "page",
+            "source": "page",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "1g",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "1g"
+                  ]
+                }
+              },
+              {
+                "name": "fault",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "fault"
+                  ]
+                }
+              }
+            ],
+            "description": "顶层响应代表的页大小或故障结果。"
+          },
+          {
+            "name": "port",
+            "source": "port",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "0",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    0
+                  ]
+                }
+              },
+              {
+                "name": "1",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    1
+                  ]
+                }
+              }
+            ],
+            "description": "两个 TLB 请求端口都能完成翻译路径。"
+          }
+        ],
+        "crosses": [],
+        "description": "L2TLB 顶层集成语义。"
+      },
+      "schema_digest": "6e11703bdd656832881c465d862add6a3ddf32463e2a31bcad77261446beb49e",
+      "instance": "l2tlb",
+      "illegal_policy": "raise",
+      "samples": 6,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 6,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "cache_hit": 1,
+            "fault": 2,
+            "sfence": 1,
+            "walk": 2
+          },
+          "provenance": {
+            "walk": {
+              "e31f0869a5ed41f9aa7caf288fc6a01a": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "fault": {
+              "e31f0869a5ed41f9aa7caf288fc6a01a": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "cache_hit": {
+              "e31f0869a5ed41f9aa7caf288fc6a01a": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "sfence": {
+              "e31f0869a5ed41f9aa7caf288fc6a01a": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "event",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 6,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "1g": 4,
+            "fault": 2
+          },
+          "provenance": {
+            "1g": {
+              "e31f0869a5ed41f9aa7caf288fc6a01a": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            },
+            "fault": {
+              "e31f0869a5ed41f9aa7caf288fc6a01a": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "page",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 6,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "0": 5,
+            "1": 1
+          },
+          "provenance": {
+            "0": {
+              "e31f0869a5ed41f9aa7caf288fc6a01a": {
+                "count": 5,
+                "first": null,
+                "last": null
+              }
+            },
+            "1": {
+              "e31f0869a5ed41f9aa7caf288fc6a01a": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "port",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "e31f0869a5ed41f9aa7caf288fc6a01a": {
+          "run_id": "e31f0869a5ed41f9aa7caf288fc6a01a",
+          "instance": "l2tlb",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "e31f0869a5ed41f9aa7caf288fc6a01a",
+      "snapshot_id": "ed97264f4b5c8c8136c4999895f4b207e69861d43dd638f208075845b329396c"
+    }
+  ]
+}

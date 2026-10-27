@@ -1,0 +1,34 @@
+{
+  "format": "semantic-requirement-before-native-case",
+  "title": "长历史经验接管后，另一较老路径仍能消费原短历史错误后保留的方向",
+  "event": "块内原短NT被Main的T结果纠正，同时更新短项并分配长T项。先复用该次真正的读取祖先消费新长项；再从较老条件/后继分支两条路径接相同最近后继边，消费原短项。",
+  "owner": "长项由原读取祖先给索引、原匹配历史给tag，不能用错误反馈的S3原件替代读取祖先。短项属于原入口/条件位置/最近6bit历史；新的较老路径改变12bit长历史而非最近短历史。",
+  "effect": "二者都匹配时，新长T4优先于仍在的短NT1；较长项不匹配的新路径中，原短NT1仍被真实新查询消费。长项学习和路径准备不得覆盖这个短学习版本。",
+  "observation": "命名输入读取祖先、原短错误、同原件长分配、下一完整实际保护确认、新长T4消费者、每个真实路径checkpoint和新短NT1消费者。复用自主PHR/Main/Ahead/MicroTAGE和全部1024保护状态比较；不将第一个同PC响应当作重访。",
+  "preservation": "长分配仍按共同前态初始化为保护2，短保护来自自己的惩罚。最近三次后继边由6bit历史/每次2bit语义更新推导，准备时禁用早级学习而不直接写表。所有原件metadata与语义快照保持，长表保持启用，优先级不被人为关闭。",
+  "scope": "两个入口各使用较老条件边/较老后继边，共4个代表程序。完整FTQ后端执行真值仍未证明；不声明全物理副本、全部长项持久性或任意历史均可达。不使用无来源非分支重放或伪造metadata强求命中。",
+  "existing_feature": "BPU-INT-066",
+  "event_catalog": "useful.change",
+  "gap_basis": {
+    "review": "results/entry-protection-development-20261018-v1/post-protection-source-gap-review.json",
+    "remaining_short_zero_rows": 4177,
+    "remaining_integrated_low_zero_rows": 500,
+    "missing_semantics": "原奖惩已确认，但错误后的短方向及新长项均缺真实消费者；单个Main正确不能证明这两份学习。需要完整读/匹配祖先链，而不是再增加饱和或地址小变体。",
+    "limit": "语义闭环不意味着全部500行均由此造成；是否新增原生行仅由DUT/LCOV归因决定。"
+  },
+  "profiles": ["compressed-entry.older-conditional", "compressed-entry.older-fallback", "conditional-entry.older-conditional", "conditional-entry.older-fallback"],
+  "source_chain": [
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:56",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:93",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/BypassShadowBuffer.scala:198",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/history/phr/Helpers.scala:60"
+  ],
+  "required_rejection_controls": ["同数值历史但不同原件替代读取祖先", "长项匹配却选择短项", "短结果退回原计数0", "只有Main正确而短/长消费者缺失", "路径后缀或checkpoint不属于声明原件", "改写原始metadata或语义快照"],
+  "pure_feasibility": "results/short-revisit-pure-feasibility-20261018-v3.json",
+  "new_reference_algorithms": 0,
+  "new_feature_IDs": 0,
+  "no_bank_set_way_sweep": true,
+  "no_fixed_native_settling_delay": true,
+  "no_RTL_DUT_SDK_changes": true,
+  "hardware_or_functional_credit_before_DUT_execution": false
+}

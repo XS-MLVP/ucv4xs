@@ -1,0 +1,71 @@
+{
+  "format": "human-semantic-integration-contract",
+  "event": "原SC已使用的预测收到真实执行反馈，同时另一分支持续预测；原资格和实际资源占用共同决定是否等待。",
+  "programs": [
+    "原SC错误、资源冲突：完整反馈稳定保持，不提前学习；解除占用后只接纳一次。",
+    "原SC正确且与原TAGE方向一致：同资源持续预测不使该无需读取的反馈额外等待，权重及阈值保持。",
+    "原SC错误、资源独立：反馈与真实预测同边界接纳，signed权重与阈值按原资格学习。"
+  ],
+  "directions": ["condition-taken", "condition-not-taken"],
+  "setup": "从reset和真实反馈建立Main/TAGE/SC来源；正常学习的MicroBTB循环提供稳定早级预测。学习前建立真实近期恢复原件，不扩大21条边的保留预算。流量启动后不为多取一份循环收据而暂停/重启预测。",
+  "model": "复用StatisticalJointSources及全部既有子模块语义算法，所有原来源与独立CommonHR/IMLI视图保持。",
+  "observation_boundary": "XReactor公开ReadyValid.fire和producer均在DriveStable准备下一RisingEdge的接纳。观察器冻结该握手，再关联上升边沿；不能把Rise控制在边沿后改变的ready当作前一拍接纳。后沿组合ready仍用于比较当前仲裁。",
+  "observation_boundary_source": "dependencies/xreactor/src/xreactor/interfaces.py:106",
+  "checks": [
+    "同一真实SC-used来源与完整公开metadata。",
+    "实际S0读取与输入提案重叠，而非Python任务名义并行。",
+    "每个拒绝/接纳机会均比较完整输入身份、分支前缀及仲裁资格。",
+    "冲突至少有两次真实拒绝见证；解除后公开driver收据与实际唯一接纳相同。",
+    "逐笔比较完整signed补丁/掩码/地址和阈值，随后同特征的新查询消费更新或保持。",
+    "旧来源和未参与项保持；八项义务全部完成后原子结算checked覆盖。"
+  ],
+  "case": "tests/bpu/testcase/test_sc_admission.py",
+  "coverage_family": "kunminghu_v3.bpu.sc-admission",
+  "obligations": 48,
+  "features": ["BPU-INT-029", "BPU-INT-030", "BPU-INT-060"],
+  "correct_disagreement_extension": {
+    "event": "SC已经正确纠正原TAGE方向，执行反馈仍要按原分歧取得读取资源，但不得再次学习或修改阈值。",
+    "source_preparation": "从reset和真实反馈校准共享特征；使用五份taken或六份NT独立教导原件，使改变provider方向/bias选择后仍有足够统计证据。暂时关闭SC，用正常反馈跨过TAGE方向边界，再重新开启并取得新的真实SC-used原件。",
+    "programs": "taken/not-taken各有同资源等待和独立资源并行两个对照，不扫描物理坐标。",
+    "checks": [
+      "原SC-used、SC方向、原raw TAGE方向与真实执行结果明确构成正确但分歧。",
+      "读取资格与写入资格分开推导；实际接纳时读取所属三个合法历史家族，地址和bank来自独立原反馈历史。",
+      "同资源仍须等待，解除后只接纳一次；资源独立时预测继续。",
+      "完整权重/阈值保持且无实际学习补丁，新查询仍按既有经验完成预测。"
+    ],
+    "observation_boundary": "实际SC训练读请求与公开训练握手同在DriveStable冻结，再与下一RisingEdge实际接纳关联；不拿控制改变后的组合电平代替前一拍读取。",
+    "coverage_family": "kunminghu_v3.bpu.sc-read-no-write",
+    "obligations": 32,
+    "source_gap_scope": "补齐INT-060三类资格中的真实正确分歧组合；SC336个局部守卫缺行与这项语义不同，原生行增量仍以实测差集报告。",
+    "limits": "公共历史无效，不声称有效CommonHR下五家族学习或完整FTQ执行模型。"
+  },
+  "queued_feedback_extension": {
+    "event": "多份旧预测的真实执行反馈排队，遇到新预测占用后仍按原来源依次接纳、学习并由新查询消费。",
+    "program": "三份不同原件按目标分支、另一分支、目标分支提交。目标分支两份used错误反馈与中间unused低置信正确反馈具有不同执行前缀，不能以最后一份覆盖前两份。",
+    "profiles": "两个实际方向，各有同资源等待后释放及独立资源持续并发两个对照；不枚举地址或物理坐标。",
+    "requirements": [
+      "三份真实公开原件和完整metadata独立保留，首尾同PC但不是同一原件。",
+      "反馈与实际预测流重叠；冲突期间首份payload稳定，全部driver收据尚未接纳。",
+      "释放后逐份相邻接纳，实际来源、前缀、次序与driver收据一致，不丢、不重、不越过首份。",
+      "每份读资格取自原预测；三份完整signed学习提案与阈值由同一周期参考模型独立计算。",
+      "两条分支分别以fresh查询消费结果；不要求相邻读更新等价于暂停排空后的串行更新。",
+      "全部旧查询快照不被后续学习重算；完整程序成功才授予checked覆盖。"
+    ],
+    "coverage_family": "kunminghu_v3.bpu.sc-feedback-burst",
+    "obligations": 32,
+    "source_refs": [
+      "XiangShan/src/main/scala/xiangshan/frontend/bpu/sc/Sc.scala:386",
+      "XiangShan/src/main/scala/xiangshan/frontend/bpu/sc/Sc.scala:395",
+      "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:198"
+    ],
+    "coverage_gap_scope": "此前单笔仲裁证明不涵盖多原件相邻学习；SC剩余336行是局部守卫副本，不将其冒充为本场景行增量。",
+    "scope_limit": "公共反馈切点的真实原件，不是完整FTQ执行路径。首尾相同历史编码，不能替代BPU-INT-031原合同的不同PHR上下文。"
+  },
+  "scope_limits": [
+    "单笔原反馈；多份不同原来源排队的BPU-INT-031保持未新增证明，不用本批通过替代。",
+    "029/030旧合同的TAGE双来源等要求不变，本批补充SC子需求，不据局部通过提升完整功能点状态。",
+    "学习反馈公共历史无效，三个合格特征家族；不声称五家族或任意IMLI历史学习完成。",
+    "不修改RTL、DUT、SDK，不授予纯模型测试硬件覆盖信用。",
+    "SC剩余336行的局部守卫约束与本批并发语义不同，不承诺靠该场景命中那些行。"
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "format": "human-semantic-original-lifetime-contract",
+  "title": "同一原预测先纠正方向再纠正间接目标，恢复与早级方向学习仍属于原路径",
+  "existing_features": [
+    "BPU-INT-032",
+    "BPU-INT-034",
+    "BPU-INT-044",
+    "BPU-INT-048"
+  ],
+  "prototype_requirement": {
+    "format": "candidate-semantic-requirement-with-independent-reference",
+    "title": "同一预测先纠正分支方向、再纠正间接目标时，恢复与方向学习都归属原路径",
+    "event": "早级条件预测选择一个后继；方向精化确认该条件不跳，转而选择较晚间接分支的Main目标；随后间接历史预测把该目标改回另一真实后继。",
+    "owner": "条件方向的原始早级来源、独立TAGE读版本、独立ITTAGE读版本和路径检查点属于同一个被接纳的原件。错误中间目标产生的年轻原件是另一主人，不能借用旧原件。",
+    "effect": "取消错误后继，按原检查点和最终间接边恢复历史；最终间接结果只把原件中实际经过的较早条件教导为不跳。新的原路径查询能消费这份方向学习。",
+    "oracle": "从reset组合已有MicroBTB、MainBTB、AheadBTB、MicroTAGE、TAGE、ITTAGE六个独立语义模型，每组件每边界仅推进一次。比较公开完整预测、原metadata、全部PHR和1024个短表保护状态；原学习在下一次完整实际比较中确认后，再被fresh原件消费。",
+    "preservation": "错误后继的全部来源域被释放；六种原件快照和公共metadata不随后来学习重算。获取恢复A和新B的回执不能在二者之间暂停流水线，监控只做被动收集。",
+    "boundary": "两个合法指令入口，以及末级纠正时接收方流动/背压两种语义条件。不枚举bank、set或way；不包含SC/RAS、完整FTQ提交资格或全部历史轨道。",
+    "existing_feature_evidence_candidates": [
+      "BPU-INT-032",
+      "BPU-INT-034",
+      "BPU-INT-044",
+      "BPU-INT-048"
+    ],
+    "new_feature_IDs": 0,
+    "source_chain": [
+      "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:172",
+      "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:195",
+      "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:208",
+      "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:440",
+      "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:142",
+      "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:271",
+      "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:288"
+    ],
+    "native_gap_causality_limit": "原生短表零行对应原分支历史的分配、改变和保护语义，之前缺少早级资格与联合方向/目标纠正的同原件证明。但这些候选不能解释全部短表零行；本次命中须与先前已执行增量逐键去重，不把同义物理副本当新功能点。",
+    "production_promotion": false,
+    "formal_functional_credit": false,
+    "full_execution_still_frozen": true
+  },
+  "new_feature_IDs": 0,
+  "independent_components": 6,
+  "source_adapter": "bpuverify/bpu/model/early_joint_sources.py",
+  "no_new_prediction_algorithm": true,
+  "no_bank_set_way_sweep": true,
+  "no_RTL_DUT_SDK_changes": true,
+  "ordinary_failures_not_waived": true,
+  "old_joint_profile_excludes_Ahead_scope_retained": true,
+  "coverage_family": "kunminghu_v3.bpu.indirect-path-ownership",
+  "source_chain": [
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:440",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:449"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "title": "迟到结果只能按原件的组件参与资格学习，不能借用别人的预测载荷",
+  "status": "candidate-with-unresolved-learning-policy",
+  "human_event": "一条真实取指窗口由Main预测并发布时，ITTAGE没有参与；之后ITTAGE恢复服务，原窗口的合法执行结果才到达。Main原件仍可学习，但ITTAGE没有该窗口自己的provider或分配快照。",
+  "gap_family": "late-feedback/original-qualification-current-learning",
+  "missing_line_relation": "迟到反馈家族仍有999个未命中行，含87个集成TAGE写缓冲开放行；本候选揭示的是相同家族内尚未建模的原件资格条件，不声称这些行都由ITTAGE使能转换导致。ITTAGE本身累计行覆盖已满，更不能把行命中等同于功能验证完整。",
+  "source_facts": [
+    "Ittage.scala的公开meta.valid来自当前S3_fire和当前enable，不等于S1读取、S2解析与S3发布三个阶段都参与。",
+    "Ittage.scala的t0_fire按当前enable接纳反馈，updateValid来自合法间接分支及寄存的t0_fire；源码没有把原t0_meta.valid并入学习资格。",
+    "IndirectSources.feedback_for允许非间接分支返回None，但间接反馈没有原预测对象或published_enabled为False时抛NotImplementedError。",
+    "因此不能直接把RTL现状当作正确策略，也不能用实际残留provider构造金值。"
+  ],
+  "policy_alternatives_requiring_confirmation": [
+    "跳过该组件学习，其他具有合法原件的组件仍正常学习。",
+    "按无provider的冷启动结果重新分配，使用独立定义的当前分配规则，不借用无效原metadata。",
+    "上层协议禁止这种跨参与资格的反馈；若选择此项，必须给出可检查的环境合同，不能默认假定。"
+  ],
+  "planned_diagnostic_before_policy_adoption": {
+    "profiles": ["cold-direct-control", "cold-indirect-gap", "warm-indirect-gap"],
+    "stimulus": "正常driver、真实原metadata、排空后禁用与重新启用ITTAGE；分别取得未参与的旧原件与重新参与的新原件，不伪造metadata。",
+    "control": "非间接结果不应教导ITTAGE，但Main应学习并由新的同源查询消费。",
+    "unresolved_cases": "两个间接场景只验证来源与当前参考的拒绝边界，不向DUT提交尚未确定策略的反馈，不给予该功能通过信用。",
+    "no_component_payload_used_as_golden": true,
+    "no_new_functional_coverage_group": true,
+    "no_default_reference_or_RTL_change": true
+  },
+  "rejected_duplicate_candidates": {
+    "maintenance_learning_overlap": "独立UT的短/长表分配、奖励、惩罚六程序已存在；集成128失败后的下一学习机会另有父流水线约束分析，不重命名重复。",
+    "PHR_cursor_residue": "已有所有游标写者的源码校核及有原件假设的闭包，1404行继续保留条件归因，不假称新无条件不可达证明。",
+    "tag_learning_first_failure": "MiniConfig要求6/12历史及15位tag，实际条目8位；旧四完整Ahead程序保留，不能通过截tag或换PC绕开。"
+  },
+  "new_feature_IDs": 0,
+  "functional_credit_before_policy_confirmation": 0,
+  "goal_complete": false
+}

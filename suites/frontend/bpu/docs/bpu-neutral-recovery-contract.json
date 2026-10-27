@@ -1,0 +1,30 @@
+{
+  "format": "semantic-requirement-before-native-case",
+  "title": "真实短历史预测在保护边界接受一致指导后，方向仍学习且后续奖惩仍可生效",
+  "event": "集成BPU通过真实Main/Ahead预测建立短历史T来源。错误使方向翻转且保护见底后，一致且正确的NT指导返回；另一条链则在保护最强时接受一致且正确的T指导。",
+  "owner": "每个指定阶段属于确切S1接纳、完整S3收据和其原始FastTrain指导。读取、匹配、恢复历史不可用同PC当前状态代替；不通过UT自由索引或伪造metadata构造资格。",
+  "effect": "下界链由T4/保护1经错误到NT3/0，一致指导到NT2/0，再经两个真实错误到NT3/0及T4/0，最后有效纠正到T5/1。上界链由T7/1经有效纠正到7/2、7/3，一致指导保持7/3，随后错误仍到6/2。",
+  "observation": "复用自主PHR、Main/Ahead/MicroTAGE参考、原始源窗口driver及全状态monitor。显式声明阶段前态，只将确切窗口原来源的实际效果和下一完整实际状态确认关联为证据；再比较新的原身份消费者。",
+  "preservation": "基础预测的独立历史学习不能污染受保护记录；合法长表分配仍按共同前态单独比较，全部1024保护单元和原来源快照保持。准备与最终消费者期间的其他合法指导继续比较，但不冒领指定阶段信用。",
+  "scope": "集成BPU受控短provider程序；不外推完整FTQ后端真值、不把两个语义边界当作物理遍历，不将任意同名行认作已覆盖。",
+  "existing_feature": "BPU-INT-066",
+  "event_catalog": "useful.hold",
+  "gap_basis": {
+    "review": "results/delayed-agreement-development-20261018-v1/short-source-qualification-partition.json",
+    "integrated_low_region_native_zero_rows": 515,
+    "role_counts": {"allocation-choice":93,"allocation-initialize":93,"saturation-choice":107,"saturation-preserve":115,"counter-change":107},
+    "missing_combination": "已有10个集成边界/恢复场景PASS，T4→7的一致指导在保护1的前态也已验证；缺少保护0时一致指导仍改变方向并随后恢复，以及保护3时一致指导后仍可被错误削弱的联合闭环。",
+    "limit": "发现语义组合不等于515行都由该组合导致；不预先承诺行增量，也不取消同语义展开路径的原生缺口。"
+  },
+  "profiles": ["neutral-lower", "neutral-upper"],
+  "pure_feasibility": "results/integrated-neutral-recovery-feasibility-20261018-v1.json",
+  "reference": "复用EarlyDirectionSources、UtageReference与ProtectionLedger；只增加语义阶段及原来源关联，不增加信号级黄金算法。",
+  "source_chain": ["XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:362", "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:370", "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/BypassShadowBuffer.scala:258"],
+  "required_rejection_controls": ["准备期间的其他指导冒充指定窗口", "保护不变却方向停学", "无保护后不能恢复或最强保护不能削弱", "等PC但原来源/历史不一致", "遗漏完整实际确认或最终fresh消费者", "改写原始快照或污染非目标保护单元"],
+  "new_predictor_reference_algorithms": 0,
+  "new_feature_IDs": 0,
+  "no_bank_set_way_enumeration": true,
+  "no_fixed_native_settling_delay": true,
+  "no_RTL_DUT_SDK_changes": true,
+  "hardware_or_functional_credit_before_DUT_execution": false
+}

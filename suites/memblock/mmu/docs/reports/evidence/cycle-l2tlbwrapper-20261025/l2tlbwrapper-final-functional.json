@@ -1,0 +1,558 @@
+{
+  "format": "xreactor-functional-coverage",
+  "version": 2,
+  "coverage": 100.0,
+  "covered": true,
+  "groups": [
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "l2tlbwrapper",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "event",
+            "source": "event",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "backpressure",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "backpressure"
+                  ]
+                }
+              },
+              {
+                "name": "bitmap",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "bitmap"
+                  ]
+                }
+              },
+              {
+                "name": "cache_hit",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "cache_hit"
+                  ]
+                }
+              },
+              {
+                "name": "csr",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "csr"
+                  ]
+                }
+              },
+              {
+                "name": "fault",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "fault"
+                  ]
+                }
+              },
+              {
+                "name": "perf",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "perf"
+                  ]
+                }
+              },
+              {
+                "name": "pmp",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "pmp"
+                  ]
+                }
+              },
+              {
+                "name": "reset",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "reset"
+                  ]
+                }
+              },
+              {
+                "name": "sfence",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "sfence"
+                  ]
+                }
+              },
+              {
+                "name": "walk",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "walk"
+                  ]
+                }
+              },
+              {
+                "name": "wfi",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "wfi"
+                  ]
+                }
+              }
+            ],
+            "description": "组合包装层的透明翻译、故障、缓存、失效、性能计数、WFI、背压、PMP、bitmap 和 CSR 通路。"
+          },
+          {
+            "name": "page",
+            "source": "page",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "1g",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "1g"
+                  ]
+                }
+              },
+              {
+                "name": "2m",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "2m"
+                  ]
+                }
+              },
+              {
+                "name": "4k",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "4k"
+                  ]
+                }
+              },
+              {
+                "name": "fault",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "fault"
+                  ]
+                }
+              }
+            ],
+            "description": "包装层返回的页大小或故障结果。"
+          },
+          {
+            "name": "port",
+            "source": "port",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "0",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    0
+                  ]
+                }
+              },
+              {
+                "name": "1",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    1
+                  ]
+                }
+              }
+            ],
+            "description": "两个 TLB 端口都通过包装层完成翻译。"
+          },
+          {
+            "name": "stage",
+            "source": "stage",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "0",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    0
+                  ]
+                }
+              },
+              {
+                "name": "1",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    1
+                  ]
+                }
+              },
+              {
+                "name": "2",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    2
+                  ]
+                }
+              },
+              {
+                "name": "3",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    3
+                  ]
+                }
+              }
+            ],
+            "description": "noS2、onlyStage1、onlyStage2、allStage 四类翻译。"
+          }
+        ],
+        "crosses": [],
+        "description": "L2TLBWrapper 对内部 L2TLB 的组合包装语义。"
+      },
+      "schema_digest": "c2880053556ff41b7174b628f688a158cde0aaadc175d2425088b004b06c4cfe",
+      "instance": "l2tlbwrapper",
+      "illegal_policy": "raise",
+      "samples": 238,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 238,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "backpressure": 2,
+            "bitmap": 1,
+            "cache_hit": 1,
+            "csr": 1,
+            "fault": 21,
+            "perf": 2,
+            "pmp": 2,
+            "reset": 1,
+            "sfence": 1,
+            "walk": 204,
+            "wfi": 2
+          },
+          "provenance": {
+            "walk": {
+              "d9871ea0fd324aeeb01f00e034c2ac06": {
+                "count": 204,
+                "first": null,
+                "last": null
+              }
+            },
+            "fault": {
+              "d9871ea0fd324aeeb01f00e034c2ac06": {
+                "count": 21,
+                "first": null,
+                "last": null
+              }
+            },
+            "cache_hit": {
+              "d9871ea0fd324aeeb01f00e034c2ac06": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "sfence": {
+              "d9871ea0fd324aeeb01f00e034c2ac06": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "backpressure": {
+              "d9871ea0fd324aeeb01f00e034c2ac06": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "reset": {
+              "d9871ea0fd324aeeb01f00e034c2ac06": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "perf": {
+              "d9871ea0fd324aeeb01f00e034c2ac06": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "wfi": {
+              "d9871ea0fd324aeeb01f00e034c2ac06": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "csr": {
+              "d9871ea0fd324aeeb01f00e034c2ac06": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "pmp": {
+              "d9871ea0fd324aeeb01f00e034c2ac06": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "bitmap": {
+              "d9871ea0fd324aeeb01f00e034c2ac06": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "event",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 238,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "1g": 17,
+            "2m": 5,
+            "4k": 195,
+            "fault": 21
+          },
+          "provenance": {
+            "1g": {
+              "d9871ea0fd324aeeb01f00e034c2ac06": {
+                "count": 17,
+                "first": null,
+                "last": null
+              }
+            },
+            "fault": {
+              "d9871ea0fd324aeeb01f00e034c2ac06": {
+                "count": 21,
+                "first": null,
+                "last": null
+              }
+            },
+            "4k": {
+              "d9871ea0fd324aeeb01f00e034c2ac06": {
+                "count": 195,
+                "first": null,
+                "last": null
+              }
+            },
+            "2m": {
+              "d9871ea0fd324aeeb01f00e034c2ac06": {
+                "count": 5,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "page",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 238,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "0": 236,
+            "1": 2
+          },
+          "provenance": {
+            "0": {
+              "d9871ea0fd324aeeb01f00e034c2ac06": {
+                "count": 236,
+                "first": null,
+                "last": null
+              }
+            },
+            "1": {
+              "d9871ea0fd324aeeb01f00e034c2ac06": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "port",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 238,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "0": 234,
+            "1": 1,
+            "2": 1,
+            "3": 2
+          },
+          "provenance": {
+            "0": {
+              "d9871ea0fd324aeeb01f00e034c2ac06": {
+                "count": 234,
+                "first": null,
+                "last": null
+              }
+            },
+            "1": {
+              "d9871ea0fd324aeeb01f00e034c2ac06": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "2": {
+              "d9871ea0fd324aeeb01f00e034c2ac06": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "3": {
+              "d9871ea0fd324aeeb01f00e034c2ac06": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "stage",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "d9871ea0fd324aeeb01f00e034c2ac06": {
+          "run_id": "d9871ea0fd324aeeb01f00e034c2ac06",
+          "instance": "l2tlbwrapper",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "d9871ea0fd324aeeb01f00e034c2ac06",
+      "snapshot_id": "b5b4b07af41a18cfdeb70b02341dc0b5c42e9425c279ddce53cbe44dfc144aae"
+    }
+  ]
+}

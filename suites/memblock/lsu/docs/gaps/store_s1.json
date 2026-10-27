@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "dut": "store_s1",
+  "top": "StoreUnitS1",
+  "run": "store-s1-initial-02",
+  "rtl_sha256": {
+    "StoreUnitS1.sv": "ba911ea4743489f78507af7aba673e5bc33b05e8d078c34230990224400a4ef8",
+    "MemTrigger_3.sv": "a7eef0e3dac021db9f9cafc9ad80106b456a433544eefb5406213bcb270c0f70"
+  },
+  "metrics": {
+    "line_dut_only": {"hit": 86, "total": 86, "percent": 100.0},
+    "branch": {"hit": 30, "total": 31, "percent": 96.77},
+    "toggle_dut_only": {"hit": 3836, "total": 3872, "percent": 99.07},
+    "functional": {"groups": 1, "coverage": 100.0, "checked": true, "cases": 63}
+  },
+  "uncovered": [
+    {
+      "id": "S1-BRANCH-INITIAL-RESET",
+      "kind": "tool_boundary",
+      "points": ["StoreUnitS1.sv:364 `if (reset)`"],
+      "classification": "initial-block reset assignment",
+      "evidence": ["inside ENABLE_INITIAL_REG_; Picker's InitClock runs it before reset can be asserted"],
+      "required_supplement": false
+    },
+    {
+      "id": "S1-TOGGLE-TAIL-LOW-ADDRESS-BITS",
+      "kind": "unreachable",
+      "points": ["io_unalignTail_bits_vaddr[3:0] (8 points)", "io_unalignTail_bits_fullva[3:0] (8 points)"],
+      "classification": "structurally constant zero",
+      "evidence": [
+        "StoreUnitS1.sv:620-621: vaddr = {46'(vaddr[49:4] + 1), 4'h0}; fullva = {60'(fullva[63:4] + 1), 4'h0}",
+        "the low four bits are literal zeros, so a 16B-aligned tail address can never toggle them"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "S1-TOGGLE-TAIL-MASK-HIGH-BITS",
+      "kind": "unreachable",
+      "points": ["io_unalignTail_bits_mask[15:7] (18 direction points)"],
+      "classification": "structurally constant zero",
+      "evidence": [
+        "StoreUnitS1.sv:624: mask = {9'h0, shifted[22:16]}",
+        "only the low seven bytes of the second 16B word can be covered by a single store, so bits 7..15 are constant"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "S1-TOGGLE-NUKE-MATCHTYPE-BIT0",
+      "kind": "unreachable",
+      "points": ["io_staNukeQueryReq_bits_matchType[0] (2 points)"],
+      "classification": "structurally constant zero",
+      "evidence": [
+        "StoreUnitS1.sv:497: matchType = {io_pipeIn_bits_accessType_isCbo, 1'h0}",
+        "bit 0 is a literal zero; only 0 (16B) and 2 (cache line) are reachable"
+      ],
+      "required_supplement": false
+    }
+  ],
+  "semantic_findings": [
+    {
+      "id": "S1-KILL-WITHOUT-VALID",
+      "finding": "the redirect-kill term of `kill` is not gated by pipeIn.valid",
+      "evidence": [
+        "StoreUnitS1.sv:245-256: kill = io_redirect_valid & (...) | illegalIssue | youngCrossHead",
+        "illegalIssue and youngCrossHead each include io_pipeIn_valid, the redirect term does not",
+        "RobPtr.needFlush (RobBundles.scala:355-358) has no valid input"
+      ],
+      "impact": "tlbReqKill can assert on an idle cycle whose stale robIdx payload is younger than the redirect target; the model reproduces it so random traffic does not produce false failures",
+      "defect_claim": false
+    },
+    {
+      "id": "S1-TAIL-MASK-SIZE-TRUNCATION",
+      "finding": "the unaligned-tail mask uses genVWmask with size[1:0], so Q sizes alias to B/H/W/D bases",
+      "evidence": [
+        "NewStoreUnit.scala:376: unalignTail.mask := genVWmask(vaddr, LSUOpType.size(fuOpType)) >> DCacheVWordBytes",
+        "MemCommon.scala:46-57: genVWmask does LookupTree(sizeEncode.take(2), ...)",
+        "StoreUnitS1.sv:283-292 confirms the two-bit selector in the generated RTL"
+      ],
+      "impact": "a 16B store that crosses a 16B boundary gets a smaller tail mask than its size would suggest; the model mirrors it and the tail-mask test pins the reachable values",
+      "defect_claim": false
+    },
+    {
+      "id": "S1-ENTRANCE-VECTOR-BOUNDARY",
+      "finding": "entrance=0x4 (vectorIssue) has no producer in this configuration but is a plain input",
+      "evidence": [
+        "StoreUnitS0 only emits 0x1 and 0x8 (see the store_arbiter audit)",
+        "StoreUnitS1.sv:305-311 only tests entrance[0] for the tail path"
+      ],
+      "impact": "the boundary test drives 0x4 and records the actual non-tail behaviour; it is not counted as normal traffic",
+      "defect_claim": false
+    }
+  ],
+  "failures": [],
+  "status": "PASS_WITH_CLASSIFIED_GAPS"
+}

@@ -1,0 +1,57 @@
+{
+  "format": "semantic-requirement-before-case",
+  "version": 1,
+  "existing_features": [
+    "BPU-MBTB-027"
+  ],
+  "title": "未命中的旧payload没有方向学习权限；新身份分配也只能初始化自己的计数器",
+  "event": "正常训练一个驻留条件分支，再从另一真实PC读取同一行但不同tag。完整原始metadata保持不变。分别发送不请求分配的正确not-taken反馈、以及请求新身份分配的taken反馈，并使用相同/不同分支位置作判别对照。",
+  "owner": "方向更新属于原始命中的条件分支；新身份初始化属于实际分配owner。未命中metadata中的旧位置、旧类型和旧计数都不授予权限。",
+  "effect": "无分配反馈不改任何方向计数；有分配只初始化新owner为弱taken。原驻留记录及其方向保持。",
+  "preservation": "完整metadata和所有训练字段原封不动，后续独立消费者保持旧记录且在需要时看到新记录；不通过清零miss字段、改变黄金模型或跳过检查掩盖问题。",
+  "source_basis": {
+    "counter_qualification": "XiangShan/src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtbAlignBank.scala:258",
+    "entry_ownership": "XiangShan/src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtbAlignBank.scala:264",
+    "semantic_reference": "bpuverify/mbtb/model/semantic.py:347",
+    "known_UT_defect": "docs/semantic-reference-models.md:1570",
+    "finding": "counter hitMask缺少rawHit和原来源类型资格；既有MBTB-027已覆盖无分配形式，本批补集成BPU及有分配形式，不宣称新RTL缺陷。"
+  },
+  "gap_relation": {
+    "prior_review": "results/semantic-gap-followup-20261018-v20.json",
+    "blocked_programs": "四个BPU前级替换程序均在新cohort首次学习时出现Main mask expected1/actual3，仍未到达Ahead强旧身份重新初始化证明。",
+    "limit": "先证明是否同一Main源资格问题，不能把Ahead零行全部归因于此，也不扩大工作集/地址矩阵。"
+  },
+  "source_lifetime": "复用实际S1限额接纳和原始反馈门禁，最多8个环境窗口；不把train当commit，不证明完整FTQ后端可达性。",
+  "cold_configuration": "TAGE仅在首个冷helper读时使能以定义既有fast路径，此后训练前关闭；保留已有cold-disabled普通失败，不把它混进本源资格试验。",
+  "new_predictor_reference_algorithms": 0,
+  "new_feature_IDs": 0,
+  "physical_enumeration": false,
+  "RTL_DUT_SDK_changes": false,
+  "historical_stage_feature_markers": [
+    "BPU-MBTB-027",
+    "BPU-INT-100"
+  ],
+  "feature_scope_correction": "INT100 is a natural working-set/replacement contract; this bounded authority family binds onlyMBTB027;all oldINT100cases remain",
+  "existing_ordinary_failures_preserved": 2,
+  "production_layout": {
+    "bpu_window_lifetime/model": "bpuverify/bpu/model/window_lifetime.py",
+    "bpu_window_event/monitor": "bpuverify/bpu/monitor/window_lifetime.py",
+    "bpu_feedback_gate/model": "bpuverify/bpu/model/feedback_gate.py",
+    "bpu_feedback_gate/checker": "bpuverify/bpu/checker/feedback_gate.py",
+    "bpu_feedback_gate/env": "bpuverify/bpu/env/feedback_gate.py",
+    "bpu_bounded_sibling/window": "bpuverify/bpu/monitor/admission_window.py",
+    "bpu_bounded_sibling/binding": "bpuverify/bpu/bundle/bounded_sources.py",
+    "bpu_bounded_sibling/env": "bpuverify/bpu/env/bounded_sources.py",
+    "bpu_miss_authority/program": "bpuverify/bpu/model/miss_authority.py",
+    "bpu_miss_authority/checker": "bpuverify/bpu/checker/miss_authority.py",
+    "bpu_miss_authority/env": "bpuverify/bpu/env/miss_authority.py",
+    "bpu_miss_authority/coverage": "bpuverify/bpu/coverage/miss_authority.py",
+    "bpu_miss_authority/test_dut": "tests/bpu/testcase/test_miss_authority.py",
+    "bpu_miss_authority/test_model": "tests/bpu/scoreboard/test_miss_authority_model.py",
+    "bpu_miss_authority/test_controls": "tests/bpu/scoreboard/test_miss_authority_checks.py",
+    "bpu_window_lifetime/test_model": "tests/bpu/scoreboard/test_window_lifetime.py",
+    "bpu_feedback_gate/test_model": "tests/bpu/scoreboard/test_feedback_gate.py",
+    "bpu_window_event/test_monitor": "tests/bpu/monitors/test_window_lifetime.py",
+    "bpu_bounded_sibling/test_window": "tests/bpu/monitors/test_admission_window.py"
+  }
+}

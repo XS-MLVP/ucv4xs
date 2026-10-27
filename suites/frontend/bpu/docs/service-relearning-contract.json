@@ -1,0 +1,36 @@
+{
+  "format": "semantic-requirement-before-native-case",
+  "version": 1,
+  "title": "旧学习正在写回时，新反馈不能被当成已经完成，未执行分支和独立邻居仍保持",
+  "event": "两个独立分支历史各有尚未写回的学习结果。第三份真实原预测反馈的新学习，与一对旧结果的实际写回在同一边界发生。",
+  "owner": "反馈始终属于原始查询及其已执行分支；写回只完成所携带的旧版本，不能完成同一身份的新学习。",
+  "effect": "先前2/5的原始预测各学习到当前1/6。旧服务必须携带1/6；新反馈将目标历史继续学成0/7，或只将已执行的较早不跳转分支学成0而保留未反馈分支的6。新版本仍应待写，并最终由新查询消费。",
+  "preservation": "旧服务无论属于目标历史还是另一个历史，都不能吞掉新版本；没有返回反馈的兄弟分支和独立历史不能被错误训练。原始预测快照始终不变。",
+  "observation": "公开driver发送真实反馈；memory-direct只读bundle和@on观察实际提议与旧服务同边界；SDK monitor确认完整旧写回及后续剩余写回；新消费者分别检查中间可见值和最终值。",
+  "existing_feature": "BPU-INT-087",
+  "event_catalog": "pending.rewrite",
+  "gap_basis": {
+    "review": "results/shared-saturation-development-20261018-v1/semantic-worklist-after-shared-saturation.json",
+    "source_role_group": 26,
+    "remaining_native_zero_rows": 98,
+    "missing_combination": "已有partial-reuse在旧服务结束并恢复读竞争后才送新反馈；没有证明旧版本完成和新版本学习在同一边界相遇。",
+    "limit": "只据此发现语义组合缺口，不预先断言98行都能被该功能覆盖，也不扩展物理枚举。"
+  },
+  "profiles": ["same-identity.both-branches", "same-identity.executed-prefix-only", "other-identity.both-branches", "other-identity.executed-prefix-only"],
+  "reference": "复用自主DirectionSources和TAGE语义参考；新程序仅描述身份关系、执行前缀和闭式结果。原预测计数均为2/5，不依赖尚待裁定的原饱和值省写策略。",
+  "pure_feasibility": "results/service-relearning-feasibility-20261018-v1.json",
+  "source_chain": ["XiangShan/src/main/scala/xiangshan/frontend/bpu/WriteBuffer.scala:115", "XiangShan/src/main/scala/xiangshan/frontend/bpu/WriteBuffer.scala:231"],
+  "required_case_phases": [
+    "先比较两个历史的真实准备结果，保留三份不同原预测；初始反馈形成两个独立的1/6待写结果。",
+    "保持真实读竞争，两个新查询仍消费旧存储2/5；不能把发送成功当成学习完成。",
+    "通过独立模型的学习里程碑开启服务窗口，公开准备事件调度关闭；必须观察新学习提议与旧结果的实际服务同边界，否则普通失败。",
+    "恢复读竞争后，完整当前身份、新计数、待写资格以及两个中间消费者均比较；不能只比较最终0/7。",
+    "实际SDK服务全部剩余版本，两个最终消费者分别检查目标和邻居；原始快照不变、无额外服务且无未完成义务后才授予checked。"
+  ],
+  "required_rejection_controls": ["同拍只有候选而无实际SDK服务", "新学习被旧服务清掉", "旧服务偷带新计数", "未执行兄弟被训练", "邻居丢失或身份串用", "原始快照篡改", "缺少中间或最终消费者"],
+  "scope": "BPU组件切点的真实原预测与执行前缀；不声称完整FTQ来源寿命已证明，不覆盖flush或新身份替换。",
+  "no_bank_set_way_enumeration": true,
+  "no_fixed_native_settling_delay": true,
+  "no_RTL_DUT_SDK_changes": true,
+  "hardware_or_functional_credit_before_DUT_execution": false
+}

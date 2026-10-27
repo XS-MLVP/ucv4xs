@@ -1,0 +1,377 @@
+{
+  "format": "xreactor-functional-coverage",
+  "version": 2,
+  "coverage": 77.77777777777777,
+  "covered": false,
+  "groups": [
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "hptw",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "event",
+            "source": "event",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "bitmap",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "bitmap"
+                  ]
+                }
+              },
+              {
+                "name": "fault",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "fault"
+                  ]
+                }
+              },
+              {
+                "name": "hit",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "hit"
+                  ]
+                }
+              },
+              {
+                "name": "mask",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "mask"
+                  ]
+                }
+              },
+              {
+                "name": "sfence",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "sfence"
+                  ]
+                }
+              },
+              {
+                "name": "walk",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "walk"
+                  ]
+                }
+              }
+            ],
+            "description": "G-stage 走表、故障、失效、缓存命中提示、bitmap 和内存 mask。"
+          },
+          {
+            "name": "hit",
+            "source": "hit",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "l1",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "l1"
+                  ]
+                }
+              },
+              {
+                "name": "l2",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "l2"
+                  ]
+                }
+              },
+              {
+                "name": "l3",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "l3"
+                  ]
+                }
+              },
+              {
+                "name": "none",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "none"
+                  ]
+                }
+              }
+            ],
+            "description": "请求携带的 level cache 命中提示。"
+          },
+          {
+            "name": "page",
+            "source": "page",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "1g",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "1g"
+                  ]
+                }
+              },
+              {
+                "name": "2m",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "2m"
+                  ]
+                }
+              },
+              {
+                "name": "4k",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "4k"
+                  ]
+                }
+              },
+              {
+                "name": "fault",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "fault"
+                  ]
+                }
+              }
+            ],
+            "description": "G-stage 响应页大小或故障。"
+          }
+        ],
+        "crosses": [],
+        "description": "HPTW 独立 G-stage 走表语义。"
+      },
+      "schema_digest": "047b6217845e799fc621dfba5d5e108a89e80f7ad45841dfeb903c3915790122",
+      "instance": "hptw",
+      "illegal_policy": "raise",
+      "samples": 14,
+      "gated": 0,
+      "coverage": 77.77777777777777,
+      "goal": 100.0,
+      "covered": false,
+      "goal_met": false,
+      "items_goal_met": false,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 14,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "bitmap": 0,
+            "fault": 3,
+            "hit": 1,
+            "mask": 1,
+            "sfence": 1,
+            "walk": 8
+          },
+          "provenance": {
+            "walk": {
+              "3c220f30ae2d419a98c916e29654cd4f": {
+                "count": 8,
+                "first": null,
+                "last": null
+              }
+            },
+            "fault": {
+              "3c220f30ae2d419a98c916e29654cd4f": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "mask": {
+              "3c220f30ae2d419a98c916e29654cd4f": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "sfence": {
+              "3c220f30ae2d419a98c916e29654cd4f": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "hit": {
+              "3c220f30ae2d419a98c916e29654cd4f": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "event",
+          "coverage": 83.33333333333333,
+          "goal": 100.0,
+          "goal_met": false,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 14,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "1g": 1,
+            "2m": 1,
+            "4k": 9,
+            "fault": 3
+          },
+          "provenance": {
+            "4k": {
+              "3c220f30ae2d419a98c916e29654cd4f": {
+                "count": 9,
+                "first": null,
+                "last": null
+              }
+            },
+            "2m": {
+              "3c220f30ae2d419a98c916e29654cd4f": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "1g": {
+              "3c220f30ae2d419a98c916e29654cd4f": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "fault": {
+              "3c220f30ae2d419a98c916e29654cd4f": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "page",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 14,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "l1": 1,
+            "l2": 0,
+            "l3": 0,
+            "none": 13
+          },
+          "provenance": {
+            "none": {
+              "3c220f30ae2d419a98c916e29654cd4f": {
+                "count": 13,
+                "first": null,
+                "last": null
+              }
+            },
+            "l1": {
+              "3c220f30ae2d419a98c916e29654cd4f": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "hit",
+          "coverage": 50.0,
+          "goal": 100.0,
+          "goal_met": false,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "3c220f30ae2d419a98c916e29654cd4f": {
+          "run_id": "3c220f30ae2d419a98c916e29654cd4f",
+          "instance": "hptw",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "3c220f30ae2d419a98c916e29654cd4f",
+      "snapshot_id": "d87b6d4f5f2b39a39a1edb6918dd900400cafb6417172e205948ef2709f023ea"
+    }
+  ]
+}

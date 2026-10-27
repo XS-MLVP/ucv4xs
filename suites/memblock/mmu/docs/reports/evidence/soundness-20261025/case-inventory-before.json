@@ -1,0 +1,5867 @@
+{
+  "cases": [
+    {
+      "file": "tests/l2/test_bitmap.py",
+      "name": "test_cache_hit_pass_and_fail",
+      "line": 26,
+      "assertions": [
+        "resp['cf'] == 0 and resp['cfs'] == [0] * 8 and (resp['id'] == 1)",
+        "resp['cf'] == 1 and resp['cfs'][0] == 1 and (resp['id'] == 2)"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmap.py",
+      "name": "test_cache_hit_selects_bit",
+      "line": 43,
+      "assertions": [
+        "resp['cf'] == 1 and resp['cfs'] == [1 << bit >> j & 1 for j in range(8)]"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmap.py",
+      "name": "test_cache_miss_reads_and_refills",
+      "line": 58,
+      "assertions": [
+        "resp['cf'] == 1 and resp['cfs'] == [0, 1, 0, 0, 0, 0, 0, 0]",
+        "env.mem_requests and env.mem_requests[0]['addr'] == BASE + (ppn >> 6) * 8",
+        "env.mem_requests[0]['id'] == 8",
+        "env.refills and env.refills[0]['tag'] == ppn",
+        "env.refills[0]['data'] == 1 << 9"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmap.py",
+      "name": "test_pmp_denied",
+      "line": 77,
+      "assertions": [
+        "resp['cf'] == 1 and resp['cfs'] == [1] * 8 and (resp['id'] == 4)",
+        "env.cache_requests == [] and env.mem_requests == []"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmap.py",
+      "name": "test_level_merge",
+      "line": 90,
+      "assertions": [
+        "(await env.wait_resp(note=f'level {level}'))['id'] == level",
+        "env.cache_requests[0]['tag'] == expected"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmap.py",
+      "name": "test_napot_merge",
+      "line": 111,
+      "assertions": [
+        "(await env.wait_resp(note='napot'))['id'] == 6",
+        "env.cache_requests[0]['tag'] == expected"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmap.py",
+      "name": "test_multiple_outstanding",
+      "line": 124,
+      "assertions": [
+        "seen == {index: 1 for index in range(7)}"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmap.py",
+      "name": "test_duplicate_requests",
+      "line": 146,
+      "assertions": [
+        "{r0['id'], r1['id']} == {0, 1}",
+        "r0['cf'] == 1 and r1['cf'] == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmap.py",
+      "name": "test_flush",
+      "line": 163,
+      "assertions": [
+        "env.read(env.req['ready']) == 1",
+        "(await env.wait_resp(note='after flush'))['id'] == 7"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmap.py",
+      "name": "test_wakeup",
+      "line": 184,
+      "assertions": [
+        "resp['id'] == 2 and resp['cf'] == 0",
+        "env.wakeup_events",
+        "event['ok'] == 1",
+        "event['way'] == 5 and event['s2xlate'] == 2",
+        "event['pteidx'] == 5",
+        "env.wakeup_events and env.wakeup_events[-1]['ok'] == 0",
+        "env.wakeup_events == []"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmap.py",
+      "name": "test_wakeup_backpressure",
+      "line": 215,
+      "assertions": [
+        "env.read(env.wakeup['valid']) == 1",
+        "env.read(env.resp['valid']) == 0",
+        "resp['id'] == 1 and resp['cf'] == 0",
+        "{key: env.read(sig) for key, sig in env.wakeup.items()} == snap"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmap.py",
+      "name": "test_memory_extremes",
+      "line": 238,
+      "assertions": [
+        "resp['cf'] == endpoint",
+        "resp['cfs'] == [endpoint] * 8"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmap.py",
+      "name": "test_back_to_back_requests",
+      "line": 258,
+      "assertions": [
+        "len(env.cache_requests) == 2"
+      ],
+      "decorators": [
+        "pytest.mark.xfail(strict=True, reason='BITMAP-PMP-BACKTOBACK-LOST: back-to-back PMP check aliases entries')"
+      ],
+      "risks": [
+        "xfail_scope_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmap.py",
+      "name": "test_all_words_and_capacity",
+      "line": 273,
+      "assertions": [
+        "len(env.mem_requests) == 8",
+        "env.read(env.req['ready']) == 0",
+        "env.read(env.req['ready']) == 1",
+        "resp['id'] == index and resp['cf'] == 0",
+        "env.mem_requests[-1]['addr'] == BASE + (ppn >> 6 << 3)"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmap.py",
+      "name": "test_wakeup_variants",
+      "line": 301,
+      "assertions": [
+        "(await env.wait_resp(note='wakeup variants'))['id'] == index",
+        "event['pteidx'] == index",
+        "event['s2xlate'] == index % 4",
+        "event['way'] == index"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmap.py",
+      "name": "test_napot_variants",
+      "line": 320,
+      "assertions": [
+        "env.cache_requests[0]['tag'] == 524288 & ~15 | low"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmap.py",
+      "name": "test_level_variants",
+      "line": 335,
+      "assertions": [
+        "(await env.wait_resp(note=f'level {level}'))['id'] == level",
+        "env.cache_requests[0]['tag'] == expected"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmap.py",
+      "name": "test_multi_miss",
+      "line": 360,
+      "assertions": [
+        "seen == {0: 1, 1: 1}",
+        "len(env.mem_requests) >= 2",
+        "len(env.refills) >= 1"
+      ],
+      "decorators": [
+        "pytest.mark.xfail(strict=True, reason='BITMAP-MULTI-MISS-STALL: second concurrent miss stalls after the first memory read')"
+      ],
+      "risks": [
+        "manual_coverage_sampling_review",
+        "xfail_scope_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmapcache.py",
+      "name": "test_refill_then_hit_selects_byte",
+      "line": 10,
+      "assertions": [
+        "resp['hit'] == 1",
+        "resp['order'] == index",
+        "resp['cfs'] == [expected >> bit & 1 for bit in range(8)]"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmapcache.py",
+      "name": "test_miss_before_refill",
+      "line": 26,
+      "assertions": [
+        "resp['hit'] == 0",
+        "resp['order'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmapcache.py",
+      "name": "test_two_tags_same_set",
+      "line": 37,
+      "assertions": [
+        "first['hit'] == 1 and first['cfs'] == [0, 1, 0, 1, 0, 1, 0, 1]",
+        "second['hit'] == 1 and second['cfs'] == [1, 0, 1, 0, 1, 0, 1, 0]"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmapcache.py",
+      "name": "test_four_ways_and_eviction",
+      "line": 51,
+      "assertions": [
+        "hits == 4"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmapcache.py",
+      "name": "test_bclear_invalidates",
+      "line": 67,
+      "assertions": [
+        "(await env.wait_resp())['hit'] == 1",
+        "(await env.wait_resp())['hit'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmapcache.py",
+      "name": "test_sfence_keeps_cache_and_bclear_invalidates",
+      "line": 83,
+      "assertions": [
+        "(await env.wait_resp())['hit'] == 1",
+        "(await env.wait_resp())['hit'] == 0",
+        "(await env.wait_resp())['hit'] == 1",
+        "(await env.wait_resp())['hit'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmapcache.py",
+      "name": "test_response_backpressure",
+      "line": 114,
+      "assertions": [
+        "env.read(env.resp['valid']) == 0",
+        "{key: env.read(sig) for key, sig in env.resp.items()} == snap",
+        "[env.read(sig) for sig in env.cfs] == cfs"
+      ],
+      "decorators": [],
+      "risks": [
+        "while_loop_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmapcache.py",
+      "name": "test_all_orders",
+      "line": 134,
+      "assertions": [
+        "[r['order'] for r in results] == list(range(8))",
+        "all((r['hit'] == 1 for r in results))"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmapcache.py",
+      "name": "test_data_extremes",
+      "line": 150,
+      "assertions": [
+        "resp['hit'] == 1",
+        "resp['cfs'] == [endpoint] * 8"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmapcache.py",
+      "name": "test_all_sets_and_bytes",
+      "line": 164,
+      "assertions": [
+        "resp['hit'] == 1",
+        "resp['order'] == byte_index",
+        "resp['cfs'] == [expected >> bit & 1 for bit in range(8)]"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmapcache.py",
+      "name": "test_tag_extremes",
+      "line": 186,
+      "assertions": [
+        "resp['hit'] == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_bitmapcache.py",
+      "name": "test_all_ways_and_data_patterns",
+      "line": 198,
+      "assertions": [
+        "hits == 3",
+        "resp['hit'] == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_hptw.py",
+      "name": "test_hptw_4k_walk",
+      "line": 26,
+      "assertions": [
+        "resp['valid'] == 1",
+        "resp['tag'] == 196608",
+        "resp['vmid'] == 5",
+        "resp['ppn'] == 589824",
+        "resp['level'] == 0",
+        "resp['gpf'] == 0 and resp['gaf'] == 0",
+        "[r.address for r in env.requests] == [2181038080, 2181045248, 2181046272]"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_hptw.py",
+      "name": "test_hptw_2m_leaf",
+      "line": 44,
+      "assertions": [
+        "resp['ppn'] == 16384",
+        "resp['level'] == 1",
+        "resp['gpf'] == 0 and resp['gaf'] == 0",
+        "len(env.requests) == 2"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_hptw.py",
+      "name": "test_hptw_1g_leaf",
+      "line": 59,
+      "assertions": [
+        "resp['ppn'] == 262144",
+        "resp['level'] == 2",
+        "resp['gpf'] == 0 and resp['gaf'] == 0",
+        "len(env.requests) == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_hptw.py",
+      "name": "test_hptw_invalid_root",
+      "line": 73,
+      "assertions": [
+        "resp['gpf'] == 1",
+        "resp['gaf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_hptw.py",
+      "name": "test_hptw_misaligned_2m",
+      "line": 86,
+      "assertions": [
+        "resp['gpf'] == 1",
+        "resp['gaf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_hptw.py",
+      "name": "test_hptw_pmp_denied",
+      "line": 99,
+      "assertions": [
+        "resp['gaf'] == 1",
+        "env.requests == []"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_hptw.py",
+      "name": "test_hptw_mem_mask_stall",
+      "line": 113,
+      "assertions": [
+        "env.requests == []",
+        "resp['ppn'] == 589824 and resp['gpf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_hptw.py",
+      "name": "test_hptw_sfence_mid_walk",
+      "line": 137,
+      "assertions": [
+        "resp['ppn'] == 589824 and resp['gpf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_hptw.py",
+      "name": "test_hptw_csr_change",
+      "line": 161,
+      "assertions": [
+        "(await env.wait_response(note='before csr'))['ppn'] == 589824",
+        "resp['ppn'] == 589825",
+        "len(env.requests) > before"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_hptw.py",
+      "name": "test_hptw_response_backpressure",
+      "line": 185,
+      "assertions": [
+        "env.read(env.resp['valid']) == 0",
+        "env.read(sig) == snap[key]"
+      ],
+      "decorators": [],
+      "risks": [
+        "while_loop_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_hptw.py",
+      "name": "test_hptw_level_hit_hint",
+      "line": 205,
+      "assertions": [
+        "resp['ppn'] == 589824 and resp['level'] == 0",
+        "len(env.requests) == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_hptw.py",
+      "name": "test_hptw_l2_hit_hint",
+      "line": 222,
+      "assertions": [
+        "resp['gpf'] == 0 and resp['gaf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_hptw.py",
+      "name": "test_hptw_bitmap_check",
+      "line": 235,
+      "assertions": [
+        "resp['ppn'] == 589824",
+        "resp['level'] == 0",
+        "resp['gpf'] == 0 and resp['gaf'] == 0",
+        "env.bitmap_requests"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_hptw.py",
+      "name": "test_hptw_bit_sweep",
+      "line": 255,
+      "assertions": [],
+      "decorators": [],
+      "risks": [
+        "no_direct_assert",
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_hptw.py",
+      "name": "test_hptw_l3_hit_hint",
+      "line": 292,
+      "assertions": [
+        "resp['gpf'] == 0 and resp['gaf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_hptw.py",
+      "name": "test_hptw_bit_sweep",
+      "line": 327,
+      "assertions": [
+        "first['tag'] == 17179869183 and first['vmid'] == 0",
+        "second['tag'] == 0 and second['vmid'] == 16383",
+        "low['ppn'] == 0 and low['perm_d'] == 1 and (low['perm_w'] == 1)",
+        "high['ppn'] == (1 << 36) - 1",
+        "high['perm_d'] == 0 and high['perm_w'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_hptw.py",
+      "name": "test_hptw_bitmap_ptes_vector",
+      "line": 370,
+      "assertions": [
+        "resp['ppn'] == 589824 and resp['level'] == 0",
+        "resp['gpf'] == 0 and resp['gaf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_hptw.py",
+      "name": "test_hptw_pmp_mmio_fault",
+      "line": 388,
+      "assertions": [
+        "resp['gaf'] == 1",
+        "env.requests == []"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_hptw.py",
+      "name": "test_hptw_csr_sources",
+      "line": 401,
+      "assertions": [
+        "resp['ppn'] == 589824 and resp['gpf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_hptw.py",
+      "name": "test_hptw_high_address",
+      "line": 417,
+      "assertions": [
+        "resp['ppn'] == 262144 and resp['gpf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_hptw.py",
+      "name": "test_hptw_napot_pbmt",
+      "line": 432,
+      "assertions": [
+        "resp['gpf'] == 0 and resp['gaf'] == 0",
+        "resp['pbmt'] == 1 and resp['n'] == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_hptw.py",
+      "name": "test_hptw_reset_without_flush_observation",
+      "line": 454,
+      "assertions": [
+        "first['gaf'] == 0 and first['gpf'] == 0",
+        "[r.address for r in env.requests] == [2181038080, 2181045248, 2181046272]",
+        "denied['gaf'] == 1 and env.requests == []",
+        "second['gaf'] == 0 and second['gpf'] == 0",
+        "[r.address for r in env.requests] == [2181038080, 2181045248, 2181046272]"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2mq.py",
+      "name": "test_miss_queue_fifo_and_capacity",
+      "line": 10,
+      "assertions": [
+        "env.model.full",
+        "env.read(env.in_ready) == 0",
+        "env.read(env.out_valid) == 1",
+        "env.read(env.out_valid) == 0",
+        "env.read(env.in_ready) == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2mq.py",
+      "name": "test_miss_queue_flush_clears_all_entries",
+      "line": 34,
+      "assertions": [
+        "env.read(env.out_valid) == 1",
+        "env.read(env.out_valid) == 0",
+        "env.read(env.in_ready) == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2mq.py",
+      "name": "test_miss_queue_simultaneous_enqueue_and_dequeue",
+      "line": 49,
+      "assertions": [],
+      "decorators": [],
+      "risks": [
+        "no_direct_assert"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2mq.py",
+      "name": "test_miss_queue_input_bit_patterns",
+      "line": 64,
+      "assertions": [],
+      "decorators": [],
+      "risks": [
+        "no_direct_assert"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2mq.py",
+      "name": "test_miss_queue_flush_source_bits",
+      "line": 83,
+      "assertions": [],
+      "decorators": [],
+      "risks": [
+        "no_direct_assert"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2pf.py",
+      "name": "test_prefetch_next_line_and_history_suppression",
+      "line": 9,
+      "assertions": [
+        "env.read(env.out_valid) == 1",
+        "env.read(env.out_vpn) == next_line(vpn)",
+        "env.read(env.out_valid) == 0",
+        "env.read(env.out_valid) == 1",
+        "env.read(env.out_vpn) == next_line(vpn + 8)"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2pf.py",
+      "name": "test_prefetch_flush_and_s2xlate_classes",
+      "line": 32,
+      "assertions": [
+        "env.read(env.out_s2) == expect",
+        "env.read(env.out_valid) == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2pf.py",
+      "name": "test_prefetch_next_line_wrap",
+      "line": 47,
+      "assertions": [
+        "env.read(env.out_vpn) == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2pf.py",
+      "name": "test_prefetch_history_all_slots_and_index_wrap",
+      "line": 62,
+      "assertions": [
+        "env.read(env.out_vpn) == next_line(vpn)",
+        "env.read(env.out_valid) == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2pf.py",
+      "name": "test_prefetch_input_and_csr_bits_toggle",
+      "line": 80,
+      "assertions": [
+        "env.read(env.out_valid) == 1",
+        "env.read(env.out_vpn) == 0",
+        "env.read(env.out_s2) == 3"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2pf.py",
+      "name": "test_prefetch_output_and_history_high_bits",
+      "line": 104,
+      "assertions": [],
+      "decorators": [],
+      "risks": [
+        "no_direct_assert"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_1g_leaf_through_real_walk",
+      "line": 24,
+      "assertions": [
+        "resp['valid'] == 1",
+        "resp['s2xlate'] == 0",
+        "resp['s1_v'] == 1",
+        "resp['s1_level'] == 2",
+        "resp['s1_ppn'] == 262144 >> 3",
+        "resp['s1_pf'] == 0 and resp['s1_af'] == 0",
+        "len(env.requests) == 1",
+        "env.requests[0].address == 524288 << 12"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_invalid_root_pte_reports_fault",
+      "line": 45,
+      "assertions": [
+        "resp['valid'] == 1",
+        "resp['s1_v'] == 0",
+        "resp['s1_pf'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_pbmt_without_enable_faults",
+      "line": 62,
+      "assertions": [
+        "resp['valid'] == 1",
+        "resp['s1_pf'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_repeat_request_hits_pwt_cache",
+      "line": 78,
+      "assertions": [
+        "first['s1_v'] == 1 and first['s1_pf'] == 0",
+        "second['s1_v'] == 1 and second['s1_pf'] == 0",
+        "second['s1_ppn'] == first['s1_ppn']",
+        "len(env.requests) == before"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_sfence_forces_walk",
+      "line": 97,
+      "assertions": [
+        "(await env.wait_response(note='before fence'))['s1_v'] == 1",
+        "resp['s1_v'] == 1",
+        "len(env.requests) >= 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_second_port_translation",
+      "line": 123,
+      "assertions": [
+        "resp['valid'] == 1",
+        "resp['s1_v'] == 1",
+        "resp['s1_ppn'] == 262144 >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_4k_page_through_level0_walk",
+      "line": 138,
+      "assertions": [
+        "resp['valid'] == 1",
+        "resp['s1_v'] == 1",
+        "resp['s1_level'] == 0",
+        "resp['s1_ppn'] == 2748 >> 3",
+        "resp['s1_pf'] == 0 and resp['s1_af'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_2m_page_through_level1_walk",
+      "line": 155,
+      "assertions": [
+        "resp['valid'] == 1",
+        "resp['s1_v'] == 1",
+        "resp['s1_level'] == 1",
+        "resp['s1_ppn'] == 16384 >> 3",
+        "resp['s1_pf'] == 0 and resp['s1_af'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_memory_image_4k_walk",
+      "line": 174,
+      "assertions": [
+        "resp['valid'] == 1",
+        "resp['s1_v'] == 1",
+        "resp['s1_level'] == 0",
+        "resp['s1_ppn'] == 2748 >> 3",
+        "resp['s1_pf'] == 0 and resp['s1_af'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_two_4k_translations",
+      "line": 197,
+      "assertions": [
+        "first['s1_v'] == 1 and first['s1_ppn'] == 2748 >> 3",
+        "second['s1_v'] == 1 and second['s1_ppn'] == 3567 >> 3"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_root_index_variants",
+      "line": 213,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == ppn >> 3"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_2m_leaf_memory_image",
+      "line": 229,
+      "assertions": [
+        "resp['valid'] == 1",
+        "resp['s1_v'] == 1 and resp['s1_level'] == 1",
+        "resp['s1_ppn'] == 16384 >> 3",
+        "resp['s1_pf'] == 0 and resp['s1_af'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_misaligned_2m_leaf_faults",
+      "line": 244,
+      "assertions": [
+        "resp['valid'] == 1 and resp['s1_pf'] == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_reserved_bits_fault",
+      "line": 256,
+      "assertions": [
+        "resp['valid'] == 1 and resp['s1_pf'] == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_pmp_denied_access_fault",
+      "line": 270,
+      "assertions": [
+        "resp['valid'] == 1",
+        "resp['s1_af'] == 1 and resp['s1_v'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_only_stage1_uses_vsatp",
+      "line": 286,
+      "assertions": [
+        "resp['s2xlate'] == 1",
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0",
+        "resp['s1_asid'] == 2",
+        "resp['s1_ppn'] == 2748 >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review",
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_only_stage2_uses_hgatp",
+      "line": 306,
+      "assertions": [
+        "resp['s2xlate'] == 2",
+        "resp['s2_gpf'] == 0 and resp['s2_gaf'] == 0",
+        "resp['s2_ppn'] == 589824",
+        "resp['s2_vmid'] == 5"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review",
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_all_stage_identity_gstage",
+      "line": 327,
+      "assertions": [
+        "resp['s2xlate'] == 3",
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0",
+        "resp['s1_ppn'] == 524320 >> 3",
+        "resp['s2_gpf'] == 0 and resp['s2_gaf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review",
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_pmp_configuration_sweep",
+      "line": 353,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_many_translations",
+      "line": 372,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0",
+        "resp['s1_ppn'] == ppn >> 3",
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == ppn >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_cache_resident_replays",
+      "line": 397,
+      "assertions": [
+        "after_ptw == before_ptw",
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == ppn >> 3",
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == ppn >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_response_backpressure",
+      "line": 422,
+      "assertions": [
+        "snap['s1_v'] == 1 and snap['s1_ppn'] == 2748 >> 3",
+        "env.read(env.resp['valid']) == 0",
+        "env.read(signal) == snap[key]"
+      ],
+      "decorators": [],
+      "risks": [
+        "while_loop_review",
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_sfence_during_walk",
+      "line": 445,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == 2748 >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_satp_change_with_sfence_rewalks",
+      "line": 472,
+      "assertions": [
+        "first['s1_v'] == 1 and first['s1_ppn'] == 2748 >> 3",
+        "second['s1_v'] == 1 and second['s1_ppn'] == 3567 >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_shared_leaf_line_hits",
+      "line": 500,
+      "assertions": [
+        "first['s1_v'] == 1 and first['s1_ppn'] == 2748 >> 3",
+        "second['s1_v'] == 1 and second['s1_ppn'] == 3567 >> 3",
+        "after_ptw == before_ptw"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_pmp_tor_allow",
+      "line": 519,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_csr_decode_sweep",
+      "line": 536,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_bitmap_enabled_walk",
+      "line": 553,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0",
+        "any((req.source >= 8 for req in env.requests))"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_bitmap_clear",
+      "line": 573,
+      "assertions": [
+        "(await env.wait_response(note='bitmap fill'))['s1_v'] == 1",
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == 3567 >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_memory_latency_and_two_outstanding",
+      "line": 598,
+      "assertions": [
+        "seen.get(401408 >> 3) == 2748 >> 3",
+        "seen.get(409600 >> 3) == 3567 >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_sfence_scoped_variants",
+      "line": 622,
+      "assertions": [
+        "(await env.wait_response(note='scoped-fill'))['s1_v'] == 1",
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == 2748 >> 3",
+        "after > before"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_pmp_high_entries",
+      "line": 650,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_bitmap_many_walks",
+      "line": 669,
+      "assertions": [
+        "any((req.source >= 8 for req in env.requests))",
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == ppn >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_all_stage_with_bitmap",
+      "line": 692,
+      "assertions": [
+        "resp['s2xlate'] == 3",
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0",
+        "resp['s2_gpf'] == 0 and resp['s2_gaf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_four_outstanding_translations",
+      "line": 720,
+      "assertions": [
+        "len(seen) == len(cases)",
+        "seen.get(vpn >> 3) == ppn >> 3"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_only_stage1_uses_vsatp",
+      "line": 748,
+      "assertions": [
+        "resp['s2xlate'] == 1",
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0",
+        "resp['s1_asid'] == 2",
+        "resp['s1_ppn'] == 2748 >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review",
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_only_stage2_uses_hgatp",
+      "line": 768,
+      "assertions": [
+        "resp['s2xlate'] == 2",
+        "resp['s2_gpf'] == 0 and resp['s2_gaf'] == 0",
+        "resp['s2_ppn'] == 589824",
+        "resp['s2_vmid'] == 5"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review",
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_all_stage_identity_gstage",
+      "line": 789,
+      "assertions": [
+        "resp['s2xlate'] == 3",
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0",
+        "resp['s1_ppn'] == 524320 >> 3",
+        "resp['s2_gpf'] == 0 and resp['s2_gaf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review",
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_pmp_configuration_sweep",
+      "line": 815,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_many_translations",
+      "line": 834,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0",
+        "resp['s1_ppn'] == ppn >> 3",
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == ppn >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_cache_resident_replays",
+      "line": 859,
+      "assertions": [
+        "after_ptw == before_ptw",
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == ppn >> 3",
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == ppn >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_response_backpressure",
+      "line": 884,
+      "assertions": [
+        "snap['s1_v'] == 1 and snap['s1_ppn'] == 2748 >> 3",
+        "env.read(env.resp['valid']) == 0",
+        "env.read(signal) == snap[key]"
+      ],
+      "decorators": [],
+      "risks": [
+        "while_loop_review",
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_sfence_during_walk",
+      "line": 907,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == 2748 >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_satp_change_with_sfence_rewalks",
+      "line": 934,
+      "assertions": [
+        "first['s1_v'] == 1 and first['s1_ppn'] == 2748 >> 3",
+        "second['s1_v'] == 1 and second['s1_ppn'] == 3567 >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_shared_leaf_line_hits",
+      "line": 962,
+      "assertions": [
+        "first['s1_v'] == 1 and first['s1_ppn'] == 2748 >> 3",
+        "second['s1_v'] == 1 and second['s1_ppn'] == 3567 >> 3",
+        "after_ptw == before_ptw"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_pmp_tor_allow",
+      "line": 981,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_csr_decode_sweep",
+      "line": 998,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_bitmap_enabled_walk",
+      "line": 1015,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0",
+        "any((req.source >= 8 for req in env.requests))"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_bitmap_clear",
+      "line": 1035,
+      "assertions": [
+        "(await env.wait_response(note='bitmap fill'))['s1_v'] == 1",
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == 3567 >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_memory_latency_and_two_outstanding",
+      "line": 1060,
+      "assertions": [
+        "seen.get(401408 >> 3) == 2748 >> 3",
+        "seen.get(409600 >> 3) == 3567 >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_sfence_scoped_variants",
+      "line": 1084,
+      "assertions": [
+        "(await env.wait_response(note='scoped-fill'))['s1_v'] == 1",
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == 2748 >> 3",
+        "after > before"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_pmp_high_entries",
+      "line": 1112,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_bitmap_many_walks",
+      "line": 1131,
+      "assertions": [
+        "any((req.source >= 8 for req in env.requests))",
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == ppn >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_all_stage_with_bitmap",
+      "line": 1154,
+      "assertions": [
+        "resp['s2xlate'] == 3",
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0",
+        "resp['s2_gpf'] == 0 and resp['s2_gaf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "shadowed_duplicate"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_bitmap_deny_and_allow",
+      "line": 1179,
+      "assertions": [
+        "deny['s1_af'] == 1",
+        "allow['s1_af'] == 0 and allow['s1_v'] == 1",
+        "allow['s1_ppn'] == 2748 >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_sfence_all_rewalks_after_pte_change",
+      "line": 1216,
+      "assertions": [
+        "first['s1_ppn'] == 2748 >> 3",
+        "second['s1_ppn'] == 3567 >> 3",
+        "len(env.requests) > before"
+      ],
+      "decorators": [
+        "pytest.mark.xfail(strict=True, reason='L2TLB-SFENCE-RS1RS2-ZERO-NO-REWALK: all-address sfence returns stale PPN without re-walk')"
+      ],
+      "risks": [
+        "xfail_scope_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_sfence_scoped_rewalks_after_pte_change",
+      "line": 1245,
+      "assertions": [
+        "first['s1_ppn'] == 2748 >> 3",
+        "second['s1_ppn'] == 3567 >> 3",
+        "len(env.requests) > before"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_pma_cacheable_page_tables_walk",
+      "line": 1296,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0",
+        "resp['s1_af'] == 0",
+        "resp['s1_ppn'] == 1110 >> 3",
+        "[req.address for req in env.requests] == [2147483648, 2147970688, 2147971072]"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_pma_non_cacheable_page_tables_fault",
+      "line": 1310,
+      "assertions": [
+        "resp['s1_af'] == 1 and resp['s1_v'] == 0",
+        "env.requests == []"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_pma_unreadable_page_tables_fault",
+      "line": 1320,
+      "assertions": [
+        "resp['s1_af'] == 1 and resp['s1_v'] == 0",
+        "env.requests == []"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_1g_leaf_through_real_walk",
+      "line": 24,
+      "assertions": [
+        "resp['valid'] == 1",
+        "resp['s2xlate'] == 0",
+        "resp['s1_v'] == 1",
+        "resp['s1_level'] == 2",
+        "resp['s1_ppn'] == 262144 >> 3",
+        "resp['s1_pf'] == 0 and resp['s1_af'] == 0",
+        "len(env.requests) == 1",
+        "env.requests[0].address == 524288 << 12"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_invalid_root_pte_reports_fault",
+      "line": 45,
+      "assertions": [
+        "resp['valid'] == 1",
+        "resp['s1_v'] == 0",
+        "resp['s1_pf'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_pbmt_without_enable_faults",
+      "line": 62,
+      "assertions": [
+        "resp['valid'] == 1",
+        "resp['s1_pf'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_repeat_request_hits_pwt_cache",
+      "line": 78,
+      "assertions": [
+        "first['s1_v'] == 1 and first['s1_pf'] == 0",
+        "second['s1_v'] == 1 and second['s1_pf'] == 0",
+        "second['s1_ppn'] == first['s1_ppn']",
+        "len(env.requests) == before"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_sfence_forces_walk",
+      "line": 97,
+      "assertions": [
+        "(await env.wait_response(note='before fence'))['s1_v'] == 1",
+        "resp['s1_v'] == 1",
+        "len(env.requests) >= 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_second_port_translation",
+      "line": 123,
+      "assertions": [
+        "resp['valid'] == 1",
+        "resp['s1_v'] == 1",
+        "resp['s1_ppn'] == 262144 >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_4k_page_through_level0_walk",
+      "line": 138,
+      "assertions": [
+        "resp['valid'] == 1",
+        "resp['s1_v'] == 1",
+        "resp['s1_level'] == 0",
+        "resp['s1_ppn'] == 2748 >> 3",
+        "resp['s1_pf'] == 0 and resp['s1_af'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_2m_page_through_level1_walk",
+      "line": 155,
+      "assertions": [
+        "resp['valid'] == 1",
+        "resp['s1_v'] == 1",
+        "resp['s1_level'] == 1",
+        "resp['s1_ppn'] == 16384 >> 3",
+        "resp['s1_pf'] == 0 and resp['s1_af'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_memory_image_4k_walk",
+      "line": 174,
+      "assertions": [
+        "resp['valid'] == 1",
+        "resp['s1_v'] == 1",
+        "resp['s1_level'] == 0",
+        "resp['s1_ppn'] == 2748 >> 3",
+        "resp['s1_pf'] == 0 and resp['s1_af'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_two_4k_translations",
+      "line": 197,
+      "assertions": [
+        "first['s1_v'] == 1 and first['s1_ppn'] == 2748 >> 3",
+        "second['s1_v'] == 1 and second['s1_ppn'] == 3567 >> 3"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_root_index_variants",
+      "line": 213,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == ppn >> 3"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_2m_leaf_memory_image",
+      "line": 229,
+      "assertions": [
+        "resp['valid'] == 1",
+        "resp['s1_v'] == 1 and resp['s1_level'] == 1",
+        "resp['s1_ppn'] == 16384 >> 3",
+        "resp['s1_pf'] == 0 and resp['s1_af'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_misaligned_2m_leaf_faults",
+      "line": 244,
+      "assertions": [
+        "resp['valid'] == 1 and resp['s1_pf'] == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_reserved_bits_fault",
+      "line": 256,
+      "assertions": [
+        "resp['valid'] == 1 and resp['s1_pf'] == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_pmp_denied_access_fault",
+      "line": 270,
+      "assertions": [
+        "resp['valid'] == 1",
+        "resp['s1_af'] == 1 and resp['s1_v'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_only_stage1_uses_vsatp",
+      "line": 286,
+      "assertions": [
+        "resp['s2xlate'] == 1",
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0",
+        "resp['s1_asid'] == 2",
+        "resp['s1_ppn'] == 2748 >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_only_stage2_uses_hgatp",
+      "line": 306,
+      "assertions": [
+        "resp['s2xlate'] == 2",
+        "resp['s2_gpf'] == 0 and resp['s2_gaf'] == 0",
+        "resp['s2_ppn'] == 589824",
+        "resp['s2_vmid'] == 5"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_all_stage_identity_gstage",
+      "line": 327,
+      "assertions": [
+        "resp['s2xlate'] == 3",
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0",
+        "resp['s1_ppn'] == 524320 >> 3",
+        "resp['s2_gpf'] == 0 and resp['s2_gaf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_pmp_configuration_sweep",
+      "line": 353,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_many_translations",
+      "line": 372,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0",
+        "resp['s1_ppn'] == ppn >> 3",
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == ppn >> 3"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_cache_resident_replays",
+      "line": 397,
+      "assertions": [
+        "after_ptw == before_ptw",
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == ppn >> 3",
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == ppn >> 3"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_response_backpressure",
+      "line": 422,
+      "assertions": [
+        "snap['s1_v'] == 1 and snap['s1_ppn'] == 2748 >> 3",
+        "env.read(env.resp['valid']) == 0",
+        "env.read(signal) == snap[key]"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review",
+        "while_loop_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_sfence_during_walk",
+      "line": 447,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == 2748 >> 3"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_satp_change_with_sfence_rewalks",
+      "line": 474,
+      "assertions": [
+        "first['s1_v'] == 1 and first['s1_ppn'] == 2748 >> 3",
+        "second['s1_v'] == 1 and second['s1_ppn'] == 3567 >> 3"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_shared_leaf_line_hits",
+      "line": 502,
+      "assertions": [
+        "first['s1_v'] == 1 and first['s1_ppn'] == 2748 >> 3",
+        "second['s1_v'] == 1 and second['s1_ppn'] == 3567 >> 3",
+        "after_ptw == before_ptw"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_pmp_tor_allow",
+      "line": 521,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_csr_decode_sweep",
+      "line": 538,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_bitmap_enabled_walk",
+      "line": 555,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0",
+        "any((req.source >= 8 for req in env.requests))"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_bitmap_clear",
+      "line": 575,
+      "assertions": [
+        "(await env.wait_response(note='bitmap fill'))['s1_v'] == 1",
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == 3567 >> 3"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_memory_latency_and_two_outstanding",
+      "line": 600,
+      "assertions": [
+        "seen.get(401408 >> 3) == 2748 >> 3",
+        "seen.get(409600 >> 3) == 3567 >> 3"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_sfence_scoped_variants",
+      "line": 624,
+      "assertions": [
+        "(await env.wait_response(note='scoped-fill'))['s1_v'] == 1",
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == 2748 >> 3",
+        "after > before"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_pmp_high_entries",
+      "line": 652,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_bitmap_many_walks",
+      "line": 671,
+      "assertions": [
+        "any((req.source >= 8 for req in env.requests))",
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == ppn >> 3"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_all_stage_with_bitmap",
+      "line": 694,
+      "assertions": [
+        "resp['s2xlate'] == 3",
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0",
+        "resp['s2_gpf'] == 0 and resp['s2_gaf'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_wrapper_reset_and_idle_pipeline",
+      "line": 762,
+      "assertions": [
+        "env.read(env.a['valid']) == 0",
+        "env.read(env.resp['valid']) == 0",
+        "env.read(env.wfi['safe']) == 0",
+        "all((value in (0, 1) for value in perf))",
+        "perf[14] == 1",
+        "perf[index] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_wrapper_perf_event_semantics",
+      "line": 783,
+      "assertions": [
+        "_pulse_cycles(first, 4) == [7, 11]",
+        "_pulse_cycles(first, 12) == [11]",
+        "_pulse_cycles(first, 16) == [13]",
+        "len(_pulse_cycles(first, 17)) == 2",
+        "_high_cycles(first, 13) == [12, 13, 14, 15, 16]",
+        "_pulse_cycles(first, 8) == [] and _pulse_cycles(first, 9) == []",
+        "all((value in (0, 1) for row in first for value in row['perf']))",
+        "_pulse_cycles(second, 4) == [7]",
+        "_pulse_cycles(second, 8) == [7]",
+        "_pulse_cycles(second, 9) == [7]",
+        "_pulse_cycles(second, 12) == [] and _pulse_cycles(second, 16) == []",
+        "_high_cycles(second, 13) == []",
+        "env.read(env.resp['ready']) == 1",
+        "len(pulse) == len(set(pulse))"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_wrapper_perf_llptw_and_cache_hit_events",
+      "line": 816,
+      "assertions": [
+        "len(_pulse_cycles(first, 0)) == 1",
+        "len(_pulse_cycles(first, 2)) == 1",
+        "len(_pulse_cycles(first, 3)) >= 1",
+        "len(_pulse_cycles(first, 4)) >= 1",
+        "len(_pulse_cycles(first, 12)) == 1",
+        "len(_pulse_cycles(first, 16)) >= 1",
+        "any((_pulse_cycles(second, index) for index in (5, 6)))",
+        "len(_pulse_cycles(second, 0)) == 1",
+        "len(_pulse_cycles(second, 2)) == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_wrapper_backpressure_event_pipeline",
+      "line": 845,
+      "assertions": [
+        "rows[-1]['resp_valid'] == 1",
+        "all((row['resp_valid'] == 1 for row in rows[-held:]))",
+        "len({(row['resp_ppn'], row['resp_level']) for row in rows[-held:]}) == 1",
+        "by_index[0] and by_index[2]"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_wrapper_wfi_idle_and_outstanding",
+      "line": 891,
+      "assertions": [
+        "safe[0] == 1 and all((value == 0 for value in safe[1:]))",
+        "env.requests",
+        "env.read(env.resp['valid']) == 0",
+        "env.read(env.resp['valid']) == 1",
+        "waiting_safe and all((value == 0 for value in waiting_safe))",
+        "after[-1] == 1",
+        "env.read(env.wfi['safe']) == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_wrapper_wfi_blocks_memory_request",
+      "line": 941,
+      "assertions": [
+        "env.requests == []",
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == 2748 >> 3",
+        "env.read(env.a['valid']) == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_wrapper_distributed_csr_pmp",
+      "line": 965,
+      "assertions": [
+        "denied['s1_af'] == 1 and denied['s1_v'] == 0",
+        "allowed['s1_v'] == 1 and allowed['s1_pf'] == 0",
+        "allowed['s1_ppn'] == 12288 >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_wrapper_pmp_denied",
+      "line": 994,
+      "assertions": [
+        "resp['s1_af'] == 1 and resp['s1_v'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_wrapper_bitmap_enabled_walk",
+      "line": 1010,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0",
+        "resp['s1_ppn'] == 2748 >> 3",
+        "any((req.source >= 8 for req in env.requests))"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_wrapper_64_page_working_set",
+      "line": 1032,
+      "assertions": [
+        "len(env.requests) == before",
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0",
+        "resp['s1_ppn'] == ppn >> 3",
+        "resp['s1_v'] == 1 and resp['s1_ppn'] == ppn >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_wrapper_back_to_back_shared_leaf_miss",
+      "line": 1077,
+      "assertions": [
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0",
+        "resp['s1_ppn'] == ppn >> 3"
+      ],
+      "decorators": [
+        "pytest.mark.xfail(strict=True, reason='L2TLB-PREFETCH-SHARED-LEAF-STALL: zero-gap third demand is replaced by adjacent-line prefetch; one idle cycle avoids the stall')"
+      ],
+      "risks": [
+        "xfail_scope_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_wrapper_four_outstanding",
+      "line": 1100,
+      "assertions": [
+        "len(seen) == len(cases)",
+        "seen.get(vpn >> 3) == ppn >> 3"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "name": "test_wrapper_shared_leaf_one_cycle_gap",
+      "line": 1129,
+      "assertions": [
+        "any((req.address == 2148147328 for req in env.requests))",
+        "resp['s1_v'] == 1 and resp['s1_pf'] == 0",
+        "resp['s1_ppn'] == ppn >> 3"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_normal_walk",
+      "line": 27,
+      "assertions": [
+        "snap['vpn'] == 196608",
+        "snap['source'] == 1 and snap['s2xlate'] == 0",
+        "snap['af'] == 0 and snap['first_s2_fault'] == 0",
+        "snap['h']['gpf'] == 0 and snap['h']['gaf'] == 0",
+        "env.mem_requests and env.mem_requests[0]['addr'] == 524290 << 12",
+        "len(env.mem_requests) == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_vpn_low_offset",
+      "line": 45,
+      "assertions": [
+        "snap['af'] == 0",
+        "env.mem_requests[0]['addr'] == (524290 << 12) + 5 * 8"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_pmp_fault",
+      "line": 57,
+      "assertions": [
+        "snap['af'] == 1",
+        "env.mem_requests == []"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_sequential_requests",
+      "line": 74,
+      "assertions": [
+        "first['vpn'] == 196608 and first['source'] == 1",
+        "second['vpn'] == 327680 and second['source'] == 2"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_duplicate_request",
+      "line": 89,
+      "assertions": [
+        "a['vpn'] == 196608",
+        "len(env.mem_requests) == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_out_backpressure",
+      "line": 105,
+      "assertions": [
+        "env.read(env.out['valid']) == 0",
+        "{key: env.read(sig) for key, sig in env.out.items()} == snap",
+        "[env.read(sig) for sig in env.out_ptes] == ptes"
+      ],
+      "decorators": [],
+      "risks": [
+        "while_loop_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_flush_mid_walk",
+      "line": 125,
+      "assertions": [
+        "env.read(env.out['valid']) == 0",
+        "env.read(env.inp['ready']) == 1",
+        "(await env.wait_out(note='after flush'))['vpn'] == 196608"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_mem_req_mask",
+      "line": 145,
+      "assertions": [
+        "env.mem_requests == []",
+        "snap['af'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_bitmap_jump",
+      "line": 167,
+      "assertions": [
+        "snap['jmp_bitmap'] == 1",
+        "snap['ptes'] == ptes",
+        "snap['cfs'] == [0, 0, 0, 0, 1, 0, 0, 0]",
+        "env.mem_requests == []",
+        "env.bitmap_requests",
+        "snap['af'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_capacity",
+      "line": 193,
+      "assertions": [
+        "env.read(env.inp['ready']) == 0",
+        "sorted(seen) == sorted((262144 + index * 8192 for index in range(6)))",
+        "env.read(env.inp['ready']) == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_lane_offsets",
+      "line": 214,
+      "assertions": [
+        "snap['af'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_stage2_identity_translation",
+      "line": 231,
+      "assertions": [
+        "snap['h']['ppn'] == 4096",
+        "snap['h']['level'] == 0",
+        "snap['h']['gpf'] == 0 and snap['h']['gaf'] == 0",
+        "snap['h']['perm_r'] == 1 and snap['h']['perm_w'] == 1",
+        "snap['h']['perm_x'] == 1 and snap['h']['perm_a'] == 1",
+        "snap['first_s2_fault'] == 0 and snap['af'] == 0",
+        "len(env.hptw_requests) == 2",
+        "env.hptw_requests[0]['gvpn'] == 524290",
+        "env.hptw_requests[1]['gvpn'] == 4096",
+        "env.mem_requests[0]['addr'] == 524290 << 12",
+        "len(env.mem_requests) == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_stage2_first_fault_gpf",
+      "line": 258,
+      "assertions": [
+        "snap['h']['gpf'] == 1 and snap['h']['gaf'] == 0",
+        "snap['first_s2_fault'] == 1",
+        "snap['af'] == 0",
+        "env.mem_requests == []"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_stage2_first_fault_gaf",
+      "line": 279,
+      "assertions": [
+        "snap['h']['gaf'] == 1 and snap['h']['gpf'] == 0",
+        "snap['first_s2_fault'] == 1",
+        "snap['af'] == 0",
+        "env.mem_requests == []"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_stage2_last_fault_gpf",
+      "line": 301,
+      "assertions": [
+        "snap['h']['gpf'] == 1 and snap['h']['gaf'] == 0",
+        "snap['first_s2_fault'] == 0",
+        "snap['af'] == 0",
+        "len(env.mem_requests) == 1",
+        "len(env.hptw_requests) == 2"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_stage2_last_fault_gaf",
+      "line": 322,
+      "assertions": [
+        "snap['h']['gaf'] == 1 and snap['h']['gpf'] == 0",
+        "snap['first_s2_fault'] == 0",
+        "snap['af'] == 0",
+        "len(env.mem_requests) == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_only_stage2_walk",
+      "line": 343,
+      "assertions": [
+        "snap['s2xlate'] == 2",
+        "snap['af'] == 0 and snap['first_s2_fault'] == 0",
+        "snap['h']['gpf'] == 0 and snap['h']['gaf'] == 0",
+        "env.hptw_requests == []",
+        "len(env.mem_requests) == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_cache_retry_on_duplicate",
+      "line": 362,
+      "assertions": [
+        "env.read(env.out['valid']) == 1",
+        "len(env.mem_requests) == 1",
+        "env.cache_requests",
+        "cache['vpn'] == 196608 and cache['s2xlate'] == 0",
+        "cache['source'] == 1",
+        "len(env.mem_requests) == 1",
+        "env.read(env.out['valid']) == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_stage2_in_every_entry_slot",
+      "line": 419,
+      "assertions": [
+        "[item[0] for item in seen] == list(range(count + 1))",
+        "seen[-1][1] == 327680 + count * 8192",
+        "seen[-1][2] == 3 and seen[-1][3] == leaf",
+        "len(env.hptw_requests) == 2"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_bitmap_in_every_entry_slot",
+      "line": 451,
+      "assertions": [
+        "env.bitmap_requests",
+        "request['id'] == count",
+        "request['vpn'] == vpn and request['way_info'] == 3",
+        "[item[0] for item in seen] == list(range(count + 1))",
+        "seen[-1][1] == vpn and seen[-1][4] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_cache_retry_in_every_entry_slot",
+      "line": 485,
+      "assertions": [
+        "env.cache_requests",
+        "cache['vpn'] == held[0][0] and cache['source'] == 1",
+        "[item[0] for item in seen] == list(range(count))",
+        "len(env.mem_requests) == before_mem",
+        "env.read(env.out['valid']) == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_stage2_first_perm_fault",
+      "line": 514,
+      "assertions": [
+        "snap['h']['gpf'] == 1",
+        "snap['first_s2_fault'] == 1",
+        "snap['af'] == 0",
+        "env.mem_requests == []"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_stage2_first_perm_mxr_pass",
+      "line": 536,
+      "assertions": [
+        "snap['h']['gpf'] == 0 and snap['h']['gaf'] == 0",
+        "snap['first_s2_fault'] == 0 and snap['af'] == 0",
+        "len(env.mem_requests) == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_llptw.py",
+      "name": "test_two_concurrent_all_stage",
+      "line": 563,
+      "assertions": [
+        "sorted(outs) == [196608, 204800]"
+      ],
+      "decorators": [
+        "pytest.mark.xfail(strict=True, reason='LLPTW-MULTI-STAGE2-STALL: two concurrent allStage entries stall after partial HPTW/PTE activity')"
+      ],
+      "risks": [
+        "xfail_scope_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_pmp.py",
+      "name": "test_reset_defaults",
+      "line": 30,
+      "assertions": [
+        "all((entry['mask'] == 4095 for entry in env.snapshot('pma')[:19]))",
+        "all((not any((v for k, v in entry.items() if k != 'mask')) for entry in env.snapshot('pmp')))"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_pmp.py",
+      "name": "test_cfg_coarsening_and_wr_mask",
+      "line": 42,
+      "assertions": [
+        "entry0['a'] == 3 and entry0['w'] == 0 and (entry0['r'] == 0)",
+        "entry2['a'] == 1 and entry2['x'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_pmp.py",
+      "name": "test_addr_modes_and_masks",
+      "line": 60,
+      "assertions": [
+        "env.read_entry('pmp', 0)['mask'] == 4095",
+        "env.read_entry('pmp', 1)['mask'] == 8191"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_pmp.py",
+      "name": "test_napot_cfg_write_recomputes_mask",
+      "line": 80,
+      "assertions": [
+        "env.read_entry('pmp', 0)['addr'] == 2048"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_pmp.py",
+      "name": "test_cfg_lock",
+      "line": 97,
+      "assertions": [
+        "env.read_entry('pmp', 0)['l'] == 1 and env.read_entry('pmp', 0)['a'] == 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_pmp.py",
+      "name": "test_addr_lock_and_tor_next_lock",
+      "line": 114,
+      "assertions": [
+        "env.read_entry('pmp', 0)['addr'] == 0",
+        "env.read_entry('pmp', 1)['addr'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_pmp.py",
+      "name": "test_all_pmp_entries",
+      "line": 135,
+      "assertions": [],
+      "decorators": [],
+      "risks": [
+        "no_direct_assert",
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_pmp.py",
+      "name": "test_all_pma_entries",
+      "line": 158,
+      "assertions": [
+        "env.read_entry('pma', 2)['c'] == 1",
+        "env.read_entry('pma', 3)['atomic'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_pmp.py",
+      "name": "test_invalid_csr_ignored",
+      "line": 184,
+      "assertions": [
+        "env.snapshot('pmp') == before"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_pmp.py",
+      "name": "test_mask_reference_sweep",
+      "line": 199,
+      "assertions": [],
+      "decorators": [],
+      "risks": [
+        "no_direct_assert"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_pmp.py",
+      "name": "test_all_bits_sweep",
+      "line": 215,
+      "assertions": [],
+      "decorators": [],
+      "risks": [
+        "no_direct_assert"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_pmp.py",
+      "name": "test_pma_cfg_byte_semantics",
+      "line": 253,
+      "assertions": [
+        "entry['c'] == 1 and entry['atomic'] == 0",
+        "entry['a'] == 3 and entry['x'] == 1",
+        "entry['w'] == 1 and entry['r'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_1g_leaf",
+      "line": 21,
+      "assertions": [
+        "resp['valid'] == 1",
+        "resp['source'] == 1",
+        "resp['s2xlate'] == 0",
+        "resp['0_v'] == 1 and resp['0_pf'] == 0 and (resp['0_af'] == 0)",
+        "resp['0_level'] == 2",
+        "resp['0_ppn'] == 262144 >> 3",
+        "resp['0_tag'] == 74565 >> 3",
+        "resp['0_asid'] == 0",
+        "[r.address for r in env.requests] == [2147483648]",
+        "resp['pteidx'] == [0, 0, 0, 0, 0, 1, 0, 0]"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_2m_leaf",
+      "line": 43,
+      "assertions": [
+        "resp['0_v'] == 1 and resp['0_level'] == 1",
+        "resp['0_ppn'] == 16384 >> 3",
+        "resp['0_pf'] == 0 and resp['0_af'] == 0",
+        "len(env.requests) == 2",
+        "env.requests[0].address == 2147483648",
+        "env.requests[1].address == (524289 << 12) + (74565 >> 9 & 511) * 8"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_4k_hands_to_llptw",
+      "line": 61,
+      "assertions": [
+        "resp is None",
+        "env.llptw_requests",
+        "ll['vpn'] == 74565",
+        "ll['source'] == 2",
+        "ll['s2xlate'] == 0",
+        "len(env.requests) == 2"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_invalid_root_pte_fault",
+      "line": 80,
+      "assertions": [
+        "resp['0_v'] == 0 and resp['0_pf'] == 1",
+        "resp['0_af'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_pbmt_without_enable_fault",
+      "line": 95,
+      "assertions": [
+        "resp['0_pf'] == 1 and resp['0_af'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_ppn_high_access_fault",
+      "line": 108,
+      "assertions": [
+        "resp['0_af'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_pmp_denied",
+      "line": 121,
+      "assertions": [
+        "resp['0_af'] == 1",
+        "resp['0_v'] == 0",
+        "env.requests == []"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_l2_hit_hint",
+      "line": 137,
+      "assertions": [
+        "resp['0_v'] == 1 and resp['0_level'] == 1",
+        "resp['0_ppn'] == 16384 >> 3",
+        "len(env.requests) == 1",
+        "env.requests[0].address == (524304 << 12) + (74565 >> 9 & 511) * 8"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_l3_hit_hint_sv48",
+      "line": 153,
+      "assertions": [
+        "resp['0_v'] == 1 and resp['0_level'] == 2",
+        "resp['0_ppn'] == 262144 >> 3",
+        "len(env.requests) == 1",
+        "env.requests[0].address == (524320 << 12) + (74565 >> 18 & 511) * 8"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_sfence_mid_walk",
+      "line": 170,
+      "assertions": [
+        "resp is None or resp.get('0_pf') == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_response_backpressure",
+      "line": 192,
+      "assertions": [
+        "env.read(env.resp['valid']) == 0",
+        "env.read(sig) == snap[key]"
+      ],
+      "decorators": [],
+      "risks": [
+        "while_loop_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_bitmap_check",
+      "line": 214,
+      "assertions": [
+        "resp['0_v'] == 1 and resp['0_cf'] == 0",
+        "env.bitmap_requests",
+        "req['level'] == 2",
+        "req['s2xlate'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_bitmap_failure_flag",
+      "line": 232,
+      "assertions": [
+        "resp['0_v'] == 1",
+        "resp['0_cf'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_only_stage2",
+      "line": 249,
+      "assertions": [
+        "resp['s2xlate'] == 2",
+        "resp['h_gpf'] == 0 and resp['h_gaf'] == 0",
+        "resp['h_ppn'] == 262144",
+        "resp['h_level'] == 2",
+        "resp['h_vmid'] == 5",
+        "env.hptw_requests"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_stage1_hit_merge",
+      "line": 275,
+      "assertions": [
+        "resp['s2xlate'] == 3",
+        "resp['0_tag'] == 24576",
+        "resp['0_tag'] == 24576 and resp['0_ppn'] == 2748 >> 3",
+        "resp['0_level'] == 0 and resp['0_v'] == 1",
+        "env.hptw_requests and env.requests == []"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_sv48_512g_leaf",
+      "line": 307,
+      "assertions": [
+        "resp['0_v'] == 1 and resp['0_level'] == 3",
+        "resp['0_ppn'] == final >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_sfence_mid_2m_walk",
+      "line": 324,
+      "assertions": [
+        "resp['0_v'] == 1 and resp['0_level'] == 1",
+        "resp['0_ppn'] == 16384 >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_llptw_backpressure",
+      "line": 346,
+      "assertions": [
+        "env.read(env.llptw['valid']) == 1",
+        "env.read(env.llptw['valid']) == 0",
+        "env.read(env.llptw['valid']) == 1",
+        "(env.read(env.llptw['vpn']), env.read(env.llptw['source'])) == snap"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_request_while_busy",
+      "line": 369,
+      "assertions": [
+        "env.read(env.req['ready']) == 0",
+        "resp['0_v'] == 1",
+        "env.read(env.req['ready']) == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_mem_mask_stall",
+      "line": 387,
+      "assertions": [
+        "env.requests == []",
+        "resp['0_v'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_satp_changed_rewalk",
+      "line": 410,
+      "assertions": [
+        "first['0_ppn'] == 262144 >> 3",
+        "second['0_ppn'] == 524288 >> 3"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_pmp_mmio_fault",
+      "line": 430,
+      "assertions": [
+        "resp['0_af'] == 1",
+        "env.requests == []"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_csr_change_sources",
+      "line": 443,
+      "assertions": [
+        "(await env.wait_response(note=key))['0_v'] == 1",
+        "env.read(env.req['ready']) == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_bitmap_cached_pte",
+      "line": 459,
+      "assertions": [
+        "resp['0_v'] == 1 and resp['0_level'] == 2",
+        "resp['0_ppn'] == 262144 >> 3",
+        "env.requests == []",
+        "env.bitmap_requests"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_only_stage2_gpf",
+      "line": 478,
+      "assertions": [
+        "resp['h_gpf'] == 1 and resp['h_gaf'] == 0",
+        "env.requests == []"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_only_stage2_gaf",
+      "line": 493,
+      "assertions": [
+        "resp['h_gaf'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_allstage_gpa_high_fault",
+      "line": 508,
+      "assertions": [
+        "resp['h_gpf'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_bit_sweep",
+      "line": 541,
+      "assertions": [],
+      "decorators": [],
+      "risks": [
+        "no_direct_assert"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_stage1_hit_full_gvpn_levels",
+      "line": 567,
+      "assertions": [
+        "len(env.hptw_requests) >= len(combos)",
+        "fault is not None and fault['h_gpf'] == 1",
+        "resp is not None",
+        "resp['0_v'] == 1",
+        "resp['0_level'] == s1level",
+        "resp['0_n'] == napot",
+        "resp['h_level'] == hlevel"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptw.py",
+      "name": "test_normal_all_stage_identity_hptw",
+      "line": 621,
+      "assertions": [
+        "resp is not None",
+        "resp['valid'] == 1 and resp['s2xlate'] == 3",
+        "resp['0_v'] == 1 and resp['0_level'] == 1",
+        "resp['0_ppn'] == 262144 >> 3",
+        "resp['0_pf'] == 0 and resp['0_af'] == 0",
+        "resp['h_gpf'] == 0 and resp['h_gaf'] == 0",
+        "resp['h_ppn'] == 262144 and resp['h_level'] == 0",
+        "[req.address for req in env.requests] == [2147549184, 2147556352]",
+        "[req['gvpn'] for req in env.hptw_requests] == [524304, 524305, 262144]"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_l0_hit_payload",
+      "line": 34,
+      "assertions": [
+        "snap['valid'] == 1 and snap['hit'] == 1",
+        "snap['vpn'] == 196608 and snap['source'] == 1",
+        "snap['is_first'] == 1",
+        "snap['not_super'] == 1",
+        "snap['e0_tag'] == 196608 >> 3",
+        "snap['e0_level'] == 0 and snap['e0_v'] == 1",
+        "snap['e0_ppn'] == 524288 >> 3 if 'e0_ppn' in snap else True",
+        "snap['pteidx_0'] == 1",
+        "snap[f'pteidx_{index}'] == (1 if index == 0 else 0)",
+        "snap[f'e{index}_v'] == 1",
+        "snap[f'e{index}_perm_r'] == 1",
+        "snap[f'e{index}_perm_w'] == 1",
+        "snap[f'e{index}_perm_x'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_l0_sector_selection",
+      "line": 62,
+      "assertions": [
+        "snap['hit'] == 1",
+        "snap['pteidx_'] if False else True",
+        "snap[f'e{low}_ppn_low'] == expected_ppn & 7",
+        "snap[f'e{low}_ppn'] == expected_ppn >> 3",
+        "snap[f'pteidx_{index}'] == (1 if index == low else 0)"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_miss_then_refill_hit",
+      "line": 84,
+      "assertions": [
+        "miss['hit'] == 0",
+        "hit['hit'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_l1_nonleaf_hit",
+      "line": 103,
+      "assertions": [
+        "snap['hit'] == 0",
+        "snap['l1hit'] == 1",
+        "snap['l2hit'] == 0 and snap['l3hit'] == 0",
+        "snap['ppn'] == target"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_l2_nonleaf_hit",
+      "line": 122,
+      "assertions": [
+        "snap['l2hit'] == 1 and snap['l1hit'] == 0",
+        "snap['ppn'] == target"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_l3_nonleaf_hit",
+      "line": 139,
+      "assertions": [
+        "snap['l3hit'] == 1 and snap['l2hit'] == 0",
+        "snap['ppn'] == target"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_sp_2m_hit",
+      "line": 156,
+      "assertions": [
+        "snap['hit'] == 1",
+        "snap['not_super'] == 0",
+        "snap['e0_level'] == 1",
+        "snap['e0_ppn'] == ppn >> 3",
+        "snap['e0_ppn_low'] == 0",
+        "snap['e0_v'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_sp_1g_hit",
+      "line": 177,
+      "assertions": [
+        "snap['hit'] == 1 and snap['not_super'] == 0",
+        "snap['e0_level'] == 2",
+        "snap['e0_ppn'] == ppn >> 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_sp_512g_hit",
+      "line": 194,
+      "assertions": [
+        "snap['hit'] == 1 and snap['not_super'] == 0",
+        "snap['e0_level'] == 3"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_asid_filtering",
+      "line": 210,
+      "assertions": [
+        "(await env.wait_resp())['hit'] == 1",
+        "(await env.wait_resp())['hit'] == 0",
+        "(await env.wait_resp())['hit'] == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_only_stage1_asid",
+      "line": 235,
+      "assertions": [
+        "(await env.wait_resp())['hit'] == 1",
+        "(await env.wait_resp())['hit'] == 0",
+        "(await env.wait_resp())['hit'] == 0",
+        "(await env.wait_resp())['hit'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_only_stage2_vmid",
+      "line": 258,
+      "assertions": [
+        "(await env.wait_resp())['hit'] == 1",
+        "(await env.wait_resp())['hit'] == 1",
+        "(await env.wait_resp())['hit'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_allstage_stage1_hit",
+      "line": 278,
+      "assertions": [
+        "snap['hit'] == 0",
+        "snap['stage1hit'] == 1",
+        "snap['e0_v'] == 1 and snap['e0_level'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_fault_entry_caching",
+      "line": 295,
+      "assertions": [
+        "snap['hit'] == 1",
+        "snap['stage1hit'] == 0",
+        "snap['e0_v'] == 0 and snap['e0_pf'] == 1",
+        "(await env.wait_resp())['hit'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_prefetch_flag",
+      "line": 314,
+      "assertions": [
+        "(await env.wait_resp())['prefetch'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_hptw_path",
+      "line": 327,
+      "assertions": [
+        "snap['is_hptw'] == 1",
+        "snap['h_id'] == 3",
+        "snap['h_bypassed'] == 0",
+        "snap['toHptw']['tag'] == vpn",
+        "snap['toHptw']['level'] == 0",
+        "snap['toHptw']['gpf'] == 0",
+        "snap['toHptw']['fromSP'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_bitmap_jump",
+      "line": 349,
+      "assertions": [
+        "snap['hit'] == 0",
+        "snap['jmp_bitmap'] == 1",
+        "snap['tollptw'] == 1",
+        "snap['splevel'] == 0",
+        "snap['bitmap_ptes'] == ptes",
+        "snap['toHptw']['jmp'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_bitmap_allstage",
+      "line": 371,
+      "assertions": [
+        "snap['jmp_bitmap'] == 0",
+        "snap['stage1hit'] == 1",
+        "snap['jmp_bitmap'] == 1",
+        "snap['is_hptw'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_full_sfence",
+      "line": 392,
+      "assertions": [
+        "(await env.wait_resp())['hit'] == 1",
+        "(await env.wait_resp())['hit'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_scoped_sfence",
+      "line": 410,
+      "assertions": [
+        "(await env.wait_resp())['hit'] == 1",
+        "(await env.wait_resp())['hit'] == 1",
+        "(await env.wait_resp())['hit'] == 0",
+        "(await env.wait_resp())['hit'] == 1",
+        "(await env.wait_resp())['hit'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_hfence_paths",
+      "line": 434,
+      "assertions": [
+        "(await env.wait_resp())['hit'] == 1",
+        "(await env.wait_resp())['hit'] == 0",
+        "(await env.wait_resp())['hit'] == 1",
+        "(await env.wait_resp())['hit'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_resp_backpressure",
+      "line": 454,
+      "assertions": [
+        "env.read(env.resp['valid']) == 0",
+        "{k: env.read(v) for k, v in env.resp.items() if not isinstance(v, (dict, list))} == snap"
+      ],
+      "decorators": [],
+      "risks": [
+        "while_loop_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_l0_ways_and_sets",
+      "line": 475,
+      "assertions": [
+        "hits == 5",
+        "set_hits == 8"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_bit_sweep",
+      "line": 502,
+      "assertions": [],
+      "decorators": [],
+      "risks": [
+        "no_direct_assert",
+        "broad_exception"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_l0_sets_ways_sweep",
+      "line": 529,
+      "assertions": [
+        "hits == 64",
+        "(await env.wait_resp())['hit'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_l1_sets_ways",
+      "line": 552,
+      "assertions": [
+        "snap['l1hit'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_l2_l3_capacity",
+      "line": 568,
+      "assertions": [
+        "l2_hits == 16",
+        "l3_hits == 16"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_sp_capacity",
+      "line": 592,
+      "assertions": [
+        "hits == 16"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_bitmap_wakeup_update",
+      "line": 609,
+      "assertions": [
+        "snap['bitmap_cfs'] == [1] * 8",
+        "after['bitmap_cfs'] == expected",
+        "after[f'e{index}_cf'] == (0 if index == 5 else 1)"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_refill_bypass",
+      "line": 641,
+      "assertions": [
+        "snap['bypassed'] == 1",
+        "snap['hit'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_prefetch_levels",
+      "line": 655,
+      "assertions": [
+        "snap['hit'] == 1 and snap['prefetch'] == 1",
+        "snap['l1hit'] == 1 and snap['prefetch'] == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_invalid_per_stage",
+      "line": 673,
+      "assertions": [
+        "(await env.wait_resp())['hit'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_is_first_passthrough",
+      "line": 686,
+      "assertions": [
+        "snap['is_first'] == 0 and snap['hit'] == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_hptw_upper_levels",
+      "line": 699,
+      "assertions": [
+        "snap['is_hptw'] == 1",
+        "snap['h_l2hit'] == 1",
+        "snap['h_ppn'] == 9472",
+        "snap['h_id'] == 5"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_l0_all_ways_all_sets",
+      "line": 715,
+      "assertions": [
+        "(await env.wait_resp())['hit'] == 1",
+        "survivors == 3",
+        "len(set(ways)) == 4",
+        "snap['hit'] == 1",
+        "snap['hit'] == 1",
+        "snap[f'e{index}_ppn_low'] == index"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_l1_two_ways",
+      "line": 755,
+      "assertions": [
+        "snap['l1hit'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_l2_l3_fill_and_sweep",
+      "line": 775,
+      "assertions": [
+        "(await env.wait_resp())['l2hit'] == 1",
+        "(await env.wait_resp())['l3hit'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_sp_fill_and_sweep",
+      "line": 797,
+      "assertions": [
+        "(await env.wait_resp())['hit'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_pbmt_and_perms",
+      "line": 812,
+      "assertions": [
+        "snap['hit'] == 1",
+        "snap[f'e{index}_pbmt'] == pbmt",
+        "snap[f'e{index}_perm_r'] == index & 1",
+        "snap[f'e{index}_perm_w'] == index >> 1 & 1",
+        "snap[f'e{index}_perm_x'] == index >> 2 & 1",
+        "snap[f'e{index}_perm_u'] == 1",
+        "snap[f'e{index}_perm_g'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_flush_all_caches",
+      "line": 838,
+      "assertions": [
+        "(await env.wait_resp())['hit'] == 0",
+        "(await env.wait_resp())['l1hit'] == 1",
+        "(await env.wait_resp())['l2hit'] == 1",
+        "(await env.wait_resp())['l3hit'] == 1",
+        "(await env.wait_resp())['hit'] == 0",
+        "(await env.wait_resp())[field] == 1",
+        "(await env.wait_resp())[field] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_hfencev_all_levels",
+      "line": 877,
+      "assertions": [
+        "snap['hit'] == 1 or snap['l1hit'] or snap['l2hit'] or snap['l3hit']",
+        "(await env.wait_resp())[field] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_hfenceg_all_levels",
+      "line": 902,
+      "assertions": [
+        "snap[field] == 1",
+        "(await env.wait_resp())[field] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_pipeline_stall_ram_fallback",
+      "line": 928,
+      "assertions": [
+        "len(accepted) >= 3",
+        "len(snaps) == len(accepted)",
+        "[snap['vpn'] for snap in snaps] == accepted",
+        "all((snap['hit'] == 1 for snap in snaps))"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_virt_sfence_all_levels",
+      "line": 971,
+      "assertions": [
+        "(await env.wait_resp())[field] == 1",
+        "(await env.wait_resp())[field] == 0",
+        "(await env.wait_resp())[field] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_hfence_scope_variants",
+      "line": 1008,
+      "assertions": [
+        "(await env.wait_resp())['hit'] == 0",
+        "(await env.wait_resp())['hit'] == 0",
+        "(await env.wait_resp())['hit'] == 0",
+        "(await env.wait_resp())['hit'] == 1",
+        "(await env.wait_resp())['hit'] == 0",
+        "(await env.wait_resp())[field] == 1",
+        "(await env.wait_resp())[field] == 0",
+        "(await env.wait_resp())[field] == expect"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_bitmap_reg_exhaustive",
+      "line": 1082,
+      "assertions": [
+        "snap['bitmap_cfs'] == [expected_cf] * 8"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_flush_mask_sweep",
+      "line": 1119,
+      "assertions": [
+        "(await env.wait_resp())['hit'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_field_polarity_sweep",
+      "line": 1136,
+      "assertions": [
+        "snap['jmp_bitmap'] == 1",
+        "snap['bitmap_ptes'][0] == expected_pte",
+        "snap['hit'] == 1",
+        "snap['l1hit'] == 1",
+        "snap['ppn'] == (0 if pass_index == 0 else (1 << 36) - 1)",
+        "snap[field] == 1",
+        "snap['ppn'] == (0 if pass_index == 0 else (1 << 36) - 1)",
+        "snap['hit'] == 1",
+        "snap['e0_ppn_low'] == all_ones_44 & 7",
+        "snap['hit'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_bitmap_wakeup_allstage",
+      "line": 1256,
+      "assertions": [
+        "snap['stage1hit'] == 1",
+        "after['bitmap_cfs'][vpn & 7] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwcache.py",
+      "name": "test_napot_64k_hit",
+      "line": 1285,
+      "assertions": [
+        "(await env.wait_resp())['hit'] == 0",
+        "snap['hit'] == 1",
+        "snap['not_super'] == 0",
+        "snap['e0_level'] == 0",
+        "snap['e0_n'] == 1",
+        "snap['e0_ppn_low'] == ppn & 7",
+        "snap['splevel'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwfilter.py",
+      "name": "test_single_request_issue_match_and_release",
+      "line": 40,
+      "assertions": [
+        "env.read(env.req_ready) == 1",
+        "(vpn, stage) == (65536, 0)",
+        "resp['valid'] == 1",
+        "resp['s2xlate'] == 0",
+        "resp['s1_entry_tag'] == 65536 >> 3 & (1 << 35) - 1",
+        "resp['s1_entry_ppn'] == 74565",
+        "resp['valididx'] == [1] * 8",
+        "resp['ppn_low'] == list(range(8))",
+        "await env.wait_ptw_req('re-issue') == (65536, 0)"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwfilter.py",
+      "name": "test_mismatched_response_does_not_complete_request",
+      "line": 70,
+      "assertions": [
+        "bad['valid'] == 0",
+        "resp['valid'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwfilter.py",
+      "name": "test_duplicate_request_is_merged",
+      "line": 92,
+      "assertions": [
+        "vpn == 73728",
+        "resp['valid'] == 1",
+        "env.read(env.req_ready) == 1",
+        "env.read(env.ptw_valid) == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwfilter.py",
+      "name": "test_capacity_eight_and_drain",
+      "line": 116,
+      "assertions": [
+        "env.read(env.req_ready) == 0",
+        "env.read(env.req_ready) == 1",
+        "resp['valid'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review",
+        "while_loop_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwfilter.py",
+      "name": "test_flush_clears_pending_entries",
+      "line": 153,
+      "assertions": [
+        "env.read(env.req_ready) == 1",
+        "await env.wait_ptw_req('after flush') == (266240, 0)"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwfilter.py",
+      "name": "test_getgpa_flag_is_returned_with_matching_response",
+      "line": 170,
+      "assertions": [
+        "resp['valid'] == 1",
+        "resp['getgpa'] == 1",
+        "resp['valid'] == 1 and resp['getgpa'] == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwfilter.py",
+      "name": "test_stage_classes_match",
+      "line": 229,
+      "assertions": [
+        "resp['valid'] == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review",
+        "while_loop_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwfilter.py",
+      "name": "test_response_payload_extremes",
+      "line": 255,
+      "assertions": [
+        "resp['valid'] == 1",
+        "resp['s1_entry_ppn'] == values['s1_entry_ppn']",
+        "resp['s2_gpf'] == endpoint"
+      ],
+      "decorators": [],
+      "risks": [
+        "while_loop_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwfilter.py",
+      "name": "test_all_bits_toggle",
+      "line": 311,
+      "assertions": [],
+      "decorators": [],
+      "risks": [
+        "no_direct_assert"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwfilter.py",
+      "name": "test_response_suppresses_same_cycle_issue",
+      "line": 363,
+      "assertions": [
+        "resp['valid'] == 1",
+        "env.read(env.ptw_valid) == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwfilter.py",
+      "name": "test_csr_change_flush_sources",
+      "line": 385,
+      "assertions": [
+        "env.read(env.ptw_valid) == 1",
+        "env.read(env.ptw_valid) == 0",
+        "env.read(env.req_ready) == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwfilter.py",
+      "name": "test_inflight_counter_eight",
+      "line": 405,
+      "assertions": [
+        "sorted(issued) == sorted((req.vpn for req in reqs))",
+        "env.read(env.req_ready) == 1",
+        "resp['valid'] == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwfilter.py",
+      "name": "test_high_tag_match_directions",
+      "line": 432,
+      "assertions": [
+        "(vpn, stage) == (req.vpn, 0)",
+        "bad['valid'] == 0",
+        "good['valid'] == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwfilter.py",
+      "name": "test_only_s2_high_tag_match",
+      "line": 474,
+      "assertions": [
+        "(vpn, stage) == (req.vpn, 2)",
+        "resp['valid'] == 0",
+        "good['valid'] == 1 and good['s2xlate'] == 2"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwrepeater.py",
+      "name": "test_request_to_ptw_and_response_hold",
+      "line": 17,
+      "assertions": [
+        "env.read(env.req_ready) == 1",
+        "env.read(env.ptw_valid) == 1",
+        "env.read(env.ptw_vpn) == 74565",
+        "env.read(env.ptw_s2) == 2",
+        "env.read(env.req_ready) == 0",
+        "env.read(env.ptw_valid) == 0",
+        "env.read(env.ptw_resp_ready) == 1",
+        "env.read(env.resp_valid) == 1",
+        "env.read(env.resp_tag) == 43981",
+        "env.read(env.resp_ppn) == 214375",
+        "env.read(env.resp_s2) == 2",
+        "env.read(env.ptw_resp_ready) == 0",
+        "env.read(env.resp_valid) == 1",
+        "env.read(env.resp_valid) == 0",
+        "env.read(env.req_ready) == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwrepeater.py",
+      "name": "test_second_request_is_blocked_until_first_completes",
+      "line": 64,
+      "assertions": [
+        "env.read(env.ptw_valid) == 1",
+        "env.read(env.req_ready) == 0",
+        "env.read(env.ptw_vpn) == 273",
+        "env.read(env.ptw_valid) == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwrepeater.py",
+      "name": "test_flush_cancels_request_and_response_phases",
+      "line": 85,
+      "assertions": [
+        "env.read(env.ptw_valid) == 1",
+        "env.read(env.ptw_valid) == 0",
+        "env.read(env.req_ready) == 1",
+        "env.read(env.resp_valid) == 1",
+        "env.read(env.resp_valid) == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwrepeater.py",
+      "name": "test_stage_encodings_pass_through",
+      "line": 126,
+      "assertions": [
+        "env.read(env.ptw_s2) == stage",
+        "env.read(env.ptw_vpn) == 1792 + stage",
+        "env.read(env.resp_s2) == stage"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwrepeater.py",
+      "name": "test_payload_extremes",
+      "line": 152,
+      "assertions": [
+        "env.read(env.resp_tag) == tag",
+        "env.read(env.resp_ppn) == ppn"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwrepeater.py",
+      "name": "test_flush_sources",
+      "line": 175,
+      "assertions": [
+        "env.read(env.ptw_valid) == 1",
+        "env.read(env.ptw_valid) == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/l2/test_ptwrepeater.py",
+      "name": "test_all_payload_bits_toggle",
+      "line": 208,
+      "assertions": [
+        "env.read(env.ptw_valid) == 0",
+        "env.read(env.resp_valid) == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_bare_mode_passes_address_without_ptw",
+      "line": 34,
+      "assertions": [
+        "snap.miss == 0 and snap.ptw.valid == 0",
+        "snap.paddr == 305419896"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_m_mode_disables_translation_even_with_satp",
+      "line": 46,
+      "assertions": [
+        "snap.paddr == 572666675",
+        "snap.miss == 0 and snap.ptw.valid == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_sv39_miss_requests_ptw_with_vpn",
+      "line": 58,
+      "assertions": [
+        "snap.miss == 1",
+        "snap.ptw.valid == 1",
+        "snap.ptw.vpn == vaddr >> 12",
+        "snap.ptw.s2xlate == NO_S2"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_ptw_refill_then_hit",
+      "line": 74,
+      "assertions": [
+        "miss.miss == 1 and miss.ptw.valid == 1",
+        "hit.miss == 0 and hit.ptw.valid == 0",
+        "hit.paddr & 4095 == vaddr & 4095",
+        "hit2.paddr == hit.paddr & ~4095 | 2748"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_ptw_response_for_a_different_tag_does_not_satisfy_miss",
+      "line": 95,
+      "assertions": [
+        "miss.miss == 1",
+        "snap.miss == 1 and snap.ptw.valid == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_sfence_all_invalidates_refilled_stage1",
+      "line": 112,
+      "assertions": [
+        "(await env.issue(vaddr, note='miss')).miss == 1",
+        "(await env.issue(vaddr, note='hit')).miss == 0",
+        "snap.miss == 1 and snap.ptw.valid == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_virtualized_stage2_miss_requests_all_stage",
+      "line": 128,
+      "assertions": [
+        "snap.miss == 1",
+        "snap.ptw.valid == 1",
+        "snap.ptw.s2xlate == 3"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_instruction_page_fault_on_missing_x_permission",
+      "line": 152,
+      "assertions": [
+        "hit.pf == 1 and hit.af == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_instruction_page_fault_on_user_bit_mismatch",
+      "line": 164,
+      "assertions": [
+        "hit.pf == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_instruction_page_fault_when_accessed_bit_is_clear",
+      "line": 176,
+      "assertions": [
+        "hit.pf == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_access_fault_has_priority_over_page_fault",
+      "line": 188,
+      "assertions": [
+        "hit.af == 1 and hit.pf == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_fake_pte_is_reported_as_nonleaf_like",
+      "line": 200,
+      "assertions": [
+        "hit.fake_or_nonleaf == 1",
+        "hit.pf == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_nonleaf_pte_does_not_raise_a_leaf_page_fault",
+      "line": 213,
+      "assertions": [
+        "hit.fake_or_nonleaf == 1 and hit.pf == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_clean_hit_and_sv48_mode",
+      "line": 227,
+      "assertions": [
+        "hit.pf == 0 and hit.af == 0 and (hit.gpf == 0)"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_two_stage_refill_and_hit",
+      "line": 241,
+      "assertions": [
+        "miss.miss == 1 and miss.ptw.s2xlate == 3",
+        "hit.miss == 0 and hit.ptw.valid == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_sfence_all_asid_and_address_forms",
+      "line": 266,
+      "assertions": [
+        "miss_a.miss == 1",
+        "hit_b.miss == 0",
+        "(await env.issue(b, note='B cleared by address')).miss == 1",
+        "(await env.issue(c, note='C survives address')).miss == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_hfence_forms_do_not_clear_no_s2_entries",
+      "line": 300,
+      "assertions": [
+        "(await env.issue(vaddr, note='no-s2 survives hfencev')).miss == 0",
+        "(await env.issue(vaddr, note='no-s2 survives hfenceg')).miss == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_sfence_and_hfence_forms",
+      "line": 319,
+      "assertions": [
+        "(await env.issue(vaddr, note='addr')).miss == 1",
+        "(await env.issue(vaddr, note='hfencev')).miss == 0",
+        "(await env.issue(vaddr, note='hfencev asid')).miss == 0",
+        "(await env.issue(vaddr, note='hfenceg')).miss == 0",
+        "(await env.issue(vaddr, note='hfenceg vmid')).miss == 0",
+        "(await env.issue(vaddr, note='addr all asid')).miss == 1",
+        "(await env.issue(vaddr, note=form)).miss == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_many_ptw_refills_cover_all_storage_ways",
+      "line": 357,
+      "assertions": [
+        "env.model.storage.tlbfa.valid.count(0) == 0",
+        "miss.miss == 1",
+        "entry is not None",
+        "hit.miss == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_parent_storage_toggle_through_ptw",
+      "line": 381,
+      "assertions": [
+        "(await env.issue(vaddr, note=f'ones miss {index}')).miss == 1",
+        "(await env.issue(vaddr, note=f'zeros miss {index}')).miss == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_only_stage1_and_only_stage2_ptw_classes",
+      "line": 417,
+      "assertions": [
+        "s1.miss == 1 and s1.ptw.valid == 1 and (s1.ptw.s2xlate == 1)",
+        "s2.miss == 1 and s2.ptw.valid == 1 and (s2.ptw.s2xlate == 2)"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_only_stage2_refill_and_hit",
+      "line": 436,
+      "assertions": [
+        "miss.miss == 1 and miss.ptw.s2xlate == 2",
+        "hit.miss == 0 and hit.ptw.valid == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_ptw_response_completes_outstanding_request",
+      "line": 459,
+      "assertions": [
+        "miss.miss == 1",
+        "snap.miss == expected.miss",
+        "snap.paddr == expected.paddr"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_two_stage_ptw_response_completes_outstanding_request",
+      "line": 481,
+      "assertions": [
+        "miss.miss == 1 and miss.ptw.s2xlate == 3",
+        "snap.miss == expected.miss",
+        "snap.paddr == expected.paddr"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlb/test_tlb.py",
+      "name": "test_gpa_replay_for_all_stage_gpf",
+      "line": 510,
+      "assertions": [
+        "miss.miss == 1",
+        "saw_get_gpa",
+        "gpf is not None",
+        "gpf.gpf == 1",
+        "gpf.gpaddr == expected_gpa"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_basic.py",
+      "name": "test_reset_makes_storage_empty_and_idle",
+      "line": 11,
+      "assertions": [
+        "env.observe_valid(4660, NO_S2) == 0",
+        "snap.hit == 0",
+        "env.observe_valid(4660, NO_S2) == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_basic.py",
+      "name": "test_reset_removes_previous_translations",
+      "line": 24,
+      "assertions": [
+        "env.observe_valid(lookup_vpn(NO_S2, 256), NO_S2) == 1",
+        "env.observe_valid(lookup_vpn(NO_S2, 257), NO_S2) == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_basic.py",
+      "name": "test_refill_install_and_next_cycle_hit",
+      "line": 42,
+      "assertions": [
+        "snap.hit == 1",
+        "snap.ppn == env.model.gen_ppn(env.model.entries[7], lookup_vpn(NO_S2, 512))",
+        "snap.pbmt == 2",
+        "snap.perm['pf'] == 1 and snap.perm['af'] == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_basic.py",
+      "name": "test_refill_is_invisible_in_the_same_cycle",
+      "line": 56,
+      "assertions": [
+        "snap.hit == 0",
+        "access.valid == 1 and access.bits == 9",
+        "hit.hit == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_basic.py",
+      "name": "test_refill_changes_only_target_way",
+      "line": 72,
+      "assertions": [
+        "hit_a.hit and hit_a.access_bits == 2",
+        "hit_b.hit and hit_b.access_bits == 3",
+        "hit_a.ppn != hit_b.ppn"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_pages.py",
+      "name": "test_4k_ppn_low_slot_selection",
+      "line": 17,
+      "assertions": [
+        "len(seen) == 8",
+        "snap.hit == 1",
+        "entry is not None",
+        "snap.ppn == expected",
+        "snap.ppn & 7 == low[index]"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_pages.py",
+      "name": "test_page_size_boundaries",
+      "line": 40,
+      "assertions": [
+        "hit.hit == 1",
+        "miss.hit == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_pages.py",
+      "name": "test_valididx_gates_small_pages_and_superpages_use_all_sectors",
+      "line": 64,
+      "assertions": [
+        "hit.hit == 1",
+        "miss.hit == 0",
+        "snap.hit == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_pages.py",
+      "name": "test_napot_uses_vpn_low_four_bits",
+      "line": 85,
+      "assertions": [
+        "len(seen) == 16",
+        "miss.hit == 0",
+        "snap.hit == 1",
+        "entry is not None",
+        "snap.ppn == TlbfaModel.gen_ppn(entry, vpn)",
+        "snap.ppn & 15 == low4"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_pages.py",
+      "name": "test_stage2_pte_index_gates_only_stage2_forms",
+      "line": 109,
+      "assertions": [
+        "hit.hit == 1",
+        "miss.hit == 0",
+        "hit1.hit == 1",
+        "hit2.hit == 1 and miss2.hit == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_pages.py",
+      "name": "test_translation_stage_and_context_are_part_of_the_cam_key",
+      "line": 140,
+      "assertions": [
+        "miss.hit == 0",
+        "miss.hit == 0",
+        "miss.hit == 0",
+        "miss.hit == 0",
+        "snap.hit == 1",
+        "snap.hit == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_pages.py",
+      "name": "test_global_bit_only_relaxes_asid_and_stage2_ignores_stage1_asid",
+      "line": 180,
+      "assertions": [
+        "(await env.lookup(lookup_vpn(ALL_STAGE, 3344), ALL_STAGE, 'global vmid ok')).hit == 1",
+        "(await env.lookup(lookup_vpn(ALL_STAGE, 3344), ALL_STAGE, 'global vmid bad')).hit == 0",
+        "(await env.lookup(3360 << 3 | 6, ONLY_S2, 'only2 asid ignored')).hit == 1",
+        "snap.hit == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_pages.py",
+      "name": "test_payload_metadata_is_returned_from_selected_entry",
+      "line": 206,
+      "assertions": [
+        "snap.hit == 1",
+        "snap.pbmt == 3 and snap.g_pbmt == 2",
+        "snap.perm['pf'] == 1 and snap.perm['af'] == 1",
+        "snap.g_perm['pf'] == 1 and snap.g_perm['af'] == 1",
+        "snap.perm['w'] == 1 and snap.perm['x'] == 1 and (snap.perm['r'] == 0)",
+        "snap.g_perm['a'] == 0 and snap.g_perm['x'] == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_pages.py",
+      "name": "test_all_stage_fake_pte_with_stage2_exception_uses_s1_level",
+      "line": 229,
+      "assertions": [
+        "entry is not None and entry.level == 0",
+        "snap.hit == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_refill.py",
+      "name": "test_all_48_ways_are_independently_addressable",
+      "line": 13,
+      "assertions": [
+        "miss.hit == 0",
+        "snap.hit == 1",
+        "snap.access_bits == way",
+        "env.model.valid[way] == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_refill.py",
+      "name": "test_every_stage_and_page_form_can_be_installed",
+      "line": 35,
+      "assertions": [
+        "way == 20",
+        "snap.hit == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_refill.py",
+      "name": "test_invalidated_way_can_be_refilled_with_a_new_translation",
+      "line": 74,
+      "assertions": [
+        "env.observe_valid(lookup_vpn(NO_S2, 6144), NO_S2) == 0",
+        "snap.hit == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_sfence.py",
+      "name": "test_sfence_all_address_all_asid_clears_no_s2_only",
+      "line": 15,
+      "assertions": [
+        "(await env.lookup(lookup_vpn(NO_S2, 131072), NO_S2, 'A cleared')).hit == 0",
+        "(await env.lookup(lookup_vpn(NO_S2, 131328), NO_S2, 'B cleared')).hit == 0",
+        "(await env.lookup(lookup_vpn(ONLY_S1, 131584), ONLY_S1, 'C survives')).hit == 1",
+        "(await env.lookup(131840 << 3, ONLY_S2, 'D survives')).hit == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_sfence.py",
+      "name": "test_sfence_all_address_specific_asid_preserves_global_and_other_asid",
+      "line": 37,
+      "assertions": [
+        "(await env.lookup(lookup_vpn(NO_S2, 135168), NO_S2, 'A cleared')).hit == 0",
+        "(await env.lookup(lookup_vpn(NO_S2, 135424), NO_S2, 'B survives')).hit == 1",
+        "(await env.lookup(lookup_vpn(NO_S2, 135680), NO_S2, 'C survives')).hit == 1",
+        "(await env.lookup(lookup_vpn(ONLY_S1, 135936), ONLY_S1, 'D survives')).hit == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_sfence.py",
+      "name": "test_sfence_exact_address_specific_asid_and_global_survival",
+      "line": 64,
+      "assertions": [
+        "(await env.lookup(lookup_vpn(NO_S2, x), NO_S2, 'A cleared, D does not match asid 1')).hit == 0",
+        "(await env.lookup(lookup_vpn(NO_S2, z), NO_S2, 'C survives')).hit == 1",
+        "(await env.lookup(lookup_vpn(NO_S2, y), NO_S2, 'B global survives')).hit == 1",
+        "(await env.lookup(lookup_vpn(NO_S2, x), NO_S2, 'D survives')).hit == 1",
+        "(await env.lookup(lookup_vpn(NO_S2, x), NO_S2, 'global at X before fence')).hit == 1",
+        "(await env.lookup(lookup_vpn(NO_S2, x), NO_S2, 'global at X cleared')).hit == 0",
+        "(await env.lookup(lookup_vpn(NO_S2, z), NO_S2, 'C still survives')).hit == 1",
+        "(await env.lookup(lookup_vpn(NO_S2, x), NO_S2, 'D cleared by address-only all-ASID form')).hit == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_sfence.py",
+      "name": "test_hfencev_all_clears_current_vmid_stage2",
+      "line": 102,
+      "assertions": [
+        "(await env.lookup(143360 << 3, ONLY_S2, 'D1 cleared')).hit == 0",
+        "(await env.lookup(lookup_vpn(ALL_STAGE, 143872), ALL_STAGE, 'E cleared')).hit == 0",
+        "(await env.lookup(143616 << 3, ONLY_S2, 'D2 survives')).hit == 1",
+        "(await env.lookup(lookup_vpn(NO_S2, 144128), NO_S2, 'A survives')).hit == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_sfence.py",
+      "name": "test_hfencev_specific_asid_keeps_other_asid_and_global",
+      "line": 125,
+      "assertions": [
+        "(await env.lookup(lookup_vpn(ALL_STAGE, 147456), ALL_STAGE, 'E1 cleared')).hit == 0",
+        "(await env.lookup(lookup_vpn(ALL_STAGE, 147968), ALL_STAGE, 'E3 global survives')).hit == 1",
+        "(await env.lookup(lookup_vpn(ALL_STAGE, 147712), ALL_STAGE, 'E2 survives')).hit == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_sfence.py",
+      "name": "test_hfenceg_all_and_vmid_selection",
+      "line": 145,
+      "assertions": [
+        "(await env.lookup(151808 << 3, ONLY_S2, 'D2 cleared')).hit == 0",
+        "(await env.lookup(151552 << 3, ONLY_S2, 'D1 survives')).hit == 1",
+        "(await env.lookup(lookup_vpn(ALL_STAGE, 152064), ALL_STAGE, 'E survives')).hit == 1",
+        "(await env.lookup(lookup_vpn(NO_S2, 152320), NO_S2, 'A survives')).hit == 1",
+        "(await env.lookup(151552 << 3, ONLY_S2, 'D1 cleared')).hit == 0",
+        "(await env.lookup(lookup_vpn(ALL_STAGE, 152064), ALL_STAGE, 'E cleared')).hit == 0",
+        "(await env.lookup(lookup_vpn(NO_S2, 152320), NO_S2, 'A survives')).hit == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_sfence.py",
+      "name": "test_virtualized_sfence_uses_all_address_stage2_path",
+      "line": 172,
+      "assertions": [
+        "(await env.lookup(155648 << 3, ONLY_S2, 'D1 cleared')).hit == 0",
+        "(await env.lookup(lookup_vpn(NO_S2, 156160), NO_S2, 'A survives')).hit == 1",
+        "(await env.lookup(lookup_vpn(ONLY_S1, 156416), ONLY_S1, 'E stage1-only is in the vs-stage class and is cleared')).hit == 0",
+        "(await env.lookup(155904 << 3, ONLY_S2, 'D2 survives')).hit == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_sfence.py",
+      "name": "test_bme_address_path_and_cmode_gate",
+      "line": 196,
+      "assertions": [
+        "(await env.lookup(lookup_vpn(NO_S2, 159744), NO_S2, 'A cleared')).hit == 0",
+        "(await env.lookup(lookup_vpn(NO_S2, 160000), NO_S2, 'B cleared')).hit == 0",
+        "(await env.lookup(lookup_vpn(ONLY_S1, 160256), ONLY_S1, 'E survives')).hit == 1",
+        "(await env.lookup(lookup_vpn(NO_S2, 160512), NO_S2, 'C survives')).hit == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_sfence.py",
+      "name": "test_sfence_has_priority_over_same_cycle_refill",
+      "line": 221,
+      "assertions": [
+        "env.observe_valid(lookup_vpn(NO_S2, 163840), NO_S2) == 0",
+        "env.observe_valid(lookup_vpn(NO_S2, 164096), NO_S2) == 0",
+        "(await env.lookup(lookup_vpn(NO_S2, 164096), NO_S2, 'new invisible')).hit == 0",
+        "(await env.lookup(lookup_vpn(NO_S2, 164096), NO_S2, 'new visible')).hit == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_sfence.py",
+      "name": "test_address_specific_sfence_matches_every_translation_stage",
+      "line": 252,
+      "assertions": [
+        "(await env.lookup(lookup_vpn(ONLY_S1, x), ONLY_S1, 'only-s1 cleared')).hit == 0",
+        "(await env.lookup(lookup_vpn(ALL_STAGE, x), ALL_STAGE, 'two-stage cleared')).hit == 0",
+        "(await env.lookup(lookup_vpn(NO_S2, x), NO_S2, 'other asid survives')).hit == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_toggle.py",
+      "name": "test_all_storage_bits_toggle_in_every_way",
+      "line": 15,
+      "assertions": [],
+      "decorators": [],
+      "risks": [
+        "no_direct_assert"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_toggle.py",
+      "name": "test_request_vpn_and_stage_bits_toggle",
+      "line": 76,
+      "assertions": [
+        "snap.hit == (1 if vpn == lookup_vpn(NO_S2, 200704) else 0)"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_toggle.py",
+      "name": "test_context_input_bits_toggle",
+      "line": 90,
+      "assertions": [
+        "env.read(env.csr['satp_asid']) == 65535",
+        "env.read(env.csr['vsatp_asid']) == 65535",
+        "env.read(env.csr['hgatp_vmid']) == 65535"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbfa/test_tlbfa_toggle.py",
+      "name": "test_sfence_address_and_asid_bits_toggle",
+      "line": 107,
+      "assertions": [
+        "snap.hit == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_reset_and_bare_mode",
+      "line": 32,
+      "assertions": [
+        "snap.valid == 1",
+        "snap.miss == 0 and snap.ptw.valid == 0",
+        "snap.paddr_0 == 305419896",
+        "snap.pf_ld == 0 and snap.af_ld == 0 and (snap.gpf_ld == 0)",
+        "env.read(env.ports[port]['resp']['valid']) == 0",
+        "env.read(env.ports[port]['ptw']['valid']) == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_no_translate_uses_pmp_addr",
+      "line": 50,
+      "assertions": [
+        "snap.valid == 1",
+        "snap.miss == 0 and snap.ptw.valid == 0",
+        "snap.paddr_0 == 4478310",
+        "snap.pmp['valid'] == 1 and snap.pmp['addr'] == 4478310",
+        "snap.pmp['cmd'] == WRITE",
+        "snap.pf_ld == 0 and snap.pf_st == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_miss_and_refill_hit",
+      "line": 68,
+      "assertions": [
+        "miss.miss == 1 and miss.ptw.valid == 1",
+        "miss.ptw.vpn == vaddr >> 12 & (1 << 38) - 1",
+        "miss.ptw.s2xlate == NO_S2 and miss.ptw.get_gpa == 0",
+        "hit.miss == 0 and hit.ptw.valid == 0",
+        "hit.pmp['valid'] == 1 and hit.pmp['addr'] == hit.paddr_0",
+        "hit.pmp['cmd'] == READ",
+        "hit2.miss == 0 and hit2.paddr_0 == hit.paddr_0 & ~4095 | 2748"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_superpage_ppn_merge",
+      "line": 94,
+      "assertions": [
+        "miss.miss == 1",
+        "hit.miss == 0",
+        "hit.paddr_0 == expected_paddr(data, vaddr)"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_asid_and_sfence",
+      "line": 114,
+      "assertions": [
+        "(await env.issue(0, vaddr)).miss == 1",
+        "(await env.issue(0, vaddr)).miss == 0",
+        "(await env.issue(0, vaddr)).miss == 1",
+        "(await env.issue(0, vaddr)).miss == 0",
+        "(await env.issue(0, vaddr)).miss == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_load_permissions",
+      "line": 136,
+      "assertions": [
+        "hit.miss == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_store_permissions",
+      "line": 166,
+      "assertions": [
+        "amo.miss == 0 and amo.pf_st == 1",
+        "hit.miss == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_ad_and_access_fault_priority",
+      "line": 203,
+      "assertions": [
+        "hit.af_ld == 1 and hit.pf_ld == 0",
+        "hit.pf_ld == want_ld",
+        "hit.pf_st == want_st"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_pbmt_composition",
+      "line": 234,
+      "assertions": [
+        "hit.pbmt == 2",
+        "hit.miss == 0",
+        "hit.pbmt == want"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_only_stage1",
+      "line": 261,
+      "assertions": [
+        "miss.ptw.s2xlate == ONLY_S1",
+        "hit.miss == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_only_stage2",
+      "line": 280,
+      "assertions": [
+        "miss.ptw.s2xlate == ONLY_S2",
+        "hit.miss == 0",
+        "hit.gpaddr == vaddr"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_all_stage_clean",
+      "line": 300,
+      "assertions": [
+        "miss.ptw.s2xlate == ALL_STAGE",
+        "hit.miss == 0",
+        "first.miss == 1 and first.gpf_ld == 1",
+        "first.ptw.valid == 1 and first.ptw.get_gpa == 1",
+        "fault.miss == 0 and fault.gpf_ld == 1",
+        "fault.gpaddr == expected_gpaddr(bad, v2)"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_all_stage_gpa_replay",
+      "line": 338,
+      "assertions": [
+        "(await env.issue(0, vaddr)).miss == 1",
+        "gpf.miss == 1 and gpf.gpf_ld == 1",
+        "gpf.ptw.valid == 1 and gpf.ptw.get_gpa == 1",
+        "gpf.is_for_vs_nonleaf == 0",
+        "replay.miss == 0",
+        "replay.ptw.valid == 0",
+        "replay.gpf_ld == 1",
+        "replay.gpaddr == expected_gpaddr(data, vaddr)"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_fake_and_nonleaf_marker",
+      "line": 366,
+      "assertions": [
+        "hit.is_for_vs_nonleaf == 1",
+        "hit.pf_ld == 0 and hit.pf_st == 0",
+        "leaf.is_for_vs_nonleaf == 0",
+        "leaf.pf_ld == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_four_port_concurrency",
+      "line": 393,
+      "assertions": [
+        "resp['valid'] == 1",
+        "resp['miss'] == 1",
+        "ptw.valid == 1 and ptw.vpn == vaddrs[port] >> 12",
+        "extra['pmp']['valid'] == 1",
+        "hit['valid'] == 1 and hit['miss'] == 0",
+        "hit['paddr_0'] == expected_paddr(data, vaddr)"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_response_duplicates",
+      "line": 444,
+      "assertions": [
+        "hit.valid == 1 and hit.miss == 0",
+        "hit.paddr_1 == hit.paddr_0",
+        "hit.paddr_1 == expected_paddr(data, vaddr)"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_pmp_outputs",
+      "line": 462,
+      "assertions": [
+        "hit.miss == 0",
+        "hit.pmp['valid'] == 1",
+        "hit.pmp['addr'] == hit.paddr_0",
+        "hit.pmp['cmd'] == WRITE"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_perf_events",
+      "line": 482,
+      "assertions": [
+        "(await env.issue(0, vaddr)).miss == 1",
+        "any((value[1] for value in samples))",
+        "(await env.issue(0, vaddr)).miss == 0",
+        "any((value[0] for value in samples))"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_killed_request_is_dropped",
+      "line": 504,
+      "assertions": [
+        "snap.valid == 0",
+        "snap.ptw.valid == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_ports_two_and_three",
+      "line": 517,
+      "assertions": [
+        "miss.valid == 1 and miss.miss == 1",
+        "miss.ptw.valid == 1 and miss.ptw.vpn == vaddr >> 12",
+        "hit.valid == 1 and hit.miss == 0",
+        "store.pmp['cmd'] == WRITE"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_sector_valididx_lane",
+      "line": 539,
+      "assertions": [
+        "hit.miss == 0",
+        "miss.miss == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_sector_all_lanes",
+      "line": 563,
+      "assertions": [
+        "hit.miss == 0",
+        "hit.paddr_0 >> 12 == 614400 + lane"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_sfence_forms",
+      "line": 585,
+      "assertions": [
+        "(await env.issue(0, a)).miss == 0",
+        "(await env.issue(0, b)).miss == 0",
+        "(await env.issue(0, a)).miss == 1",
+        "(await env.issue(0, b)).miss == 0",
+        "(await env.issue(0, b)).miss == 1",
+        "(await env.issue(0, a)).miss == 0",
+        "(await env.issue(0, a)).miss == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_only_stage2_vmid_filtering",
+      "line": 617,
+      "assertions": [
+        "(await env.issue(0, vaddr)).miss == 0",
+        "(await env.issue(0, vaddr)).miss == 1",
+        "(await env.issue(0, vaddr)).miss == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_storage_capacity",
+      "line": 638,
+      "assertions": [
+        "hits >= 46",
+        "snap.miss == 0 and snap.paddr_0 == 2097152 << 12",
+        "snap.paddr_0 == ppn << 12 | vaddr & 4095"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_all_stage_store_fault",
+      "line": 669,
+      "assertions": [
+        "first.miss == 1 and first.gpf_st == 1",
+        "first.ptw.get_gpa == 1",
+        "second.miss == 0 and second.gpf_st == 1",
+        "second.pf_st == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_sfence_after_fill",
+      "line": 692,
+      "assertions": [
+        "hits >= 40",
+        "remaining == 0",
+        "remaining == 0",
+        "surviving >= 6"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_gpa_replay_port_two",
+      "line": 742,
+      "assertions": [
+        "first.miss == 1 and first.gpf_ld == 1",
+        "first.ptw.get_gpa == 1",
+        "replay.miss == 0 and replay.gpf_ld == 1",
+        "replay.gpaddr == expected_gpaddr(data, vaddr)"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_redirect_clears_need_gpa",
+      "line": 766,
+      "assertions": [
+        "first.miss == 1 and first.gpf_ld == 1",
+        "first.ptw.get_gpa == 1",
+        "after.miss == 1"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/tlbn/test_tlbn.py",
+      "name": "test_hfence_asid_vmid_scoped",
+      "line": 792,
+      "assertions": [
+        "before >= 6",
+        "after == 0",
+        "before >= 6",
+        "after == 0"
+      ],
+      "decorators": [],
+      "risks": [
+        "manual_coverage_sampling_review"
+      ],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/wrapper/test_wrapper.py",
+      "name": "test_reset_and_initial_plru_victim_sequence",
+      "line": 26,
+      "assertions": [
+        "victims[0] == 0",
+        "victims[1] == 32",
+        "steer is not None",
+        "(await env.lookup(steer[0], steer[1], 'steer way 32')).hit == 1",
+        "set(victims) == set(range(48))",
+        "env.model.tlbfa.valid.count(0) == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/wrapper/test_wrapper.py",
+      "name": "test_read_hit_changes_next_plru_victim",
+      "line": 67,
+      "assertions": [
+        "live",
+        "snap.hit == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/wrapper/test_wrapper.py",
+      "name": "test_refill_is_visible_next_cycle_and_same_cycle_read_is_suppressed",
+      "line": 93,
+      "assertions": [
+        "snap.hit == 0",
+        "hit.hit == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/wrapper/test_wrapper.py",
+      "name": "test_contexts_and_stage_forms_pass_through",
+      "line": 106,
+      "assertions": [
+        "miss.hit == 0",
+        "snap.hit == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/wrapper/test_wrapper.py",
+      "name": "test_sfence_and_hfence_pass_through_without_resetting_plru",
+      "line": 130,
+      "assertions": [
+        "(await env.lookup(lookup_vpn(NO_S2, 344064), NO_S2, 's1 before')).hit == 1",
+        "(await env.lookup(344320 << 3, ONLY_S2, 's2 before')).hit == 1",
+        "(await env.lookup(lookup_vpn(NO_S2, 344064), NO_S2, 's1 cleared')).hit == 0",
+        "(await env.lookup(344320 << 3, ONLY_S2, 's2 cleared')).hit == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/wrapper/test_wrapper.py",
+      "name": "test_address_sfence_and_hfenceg_pass_through",
+      "line": 164,
+      "assertions": [
+        "(await env.lookup(lookup_vpn(NO_S2, x), NO_S2, 'X before')).hit == 1",
+        "(await env.lookup(lookup_vpn(NO_S2, y), NO_S2, 'Y before')).hit == 1",
+        "(await env.lookup(lookup_vpn(NO_S2, x), NO_S2, 'X cleared')).hit == 0",
+        "(await env.lookup(lookup_vpn(NO_S2, y), NO_S2, 'Y survived')).hit == 1",
+        "(await env.lookup(348672 << 3, ONLY_S2, 'D3 before')).hit == 1",
+        "(await env.lookup(348928 << 3, ONLY_S2, 'D4 before')).hit == 1",
+        "(await env.lookup(348928 << 3, ONLY_S2, 'D4 cleared')).hit == 0",
+        "(await env.lookup(348672 << 3, ONLY_S2, 'D3 survived')).hit == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/wrapper/test_wrapper.py",
+      "name": "test_wrapper_storage_bits_toggle_in_every_selected_way",
+      "line": 196,
+      "assertions": [
+        "env.model.tlbfa.valid.count(0) == 0",
+        "env.model.tlbfa.valid.count(0) == 0"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    },
+    {
+      "file": "tests/wrapper/test_wrapper.py",
+      "name": "test_wrapper_context_and_fence_input_bits_toggle",
+      "line": 226,
+      "assertions": [
+        "snap.hit == 1"
+      ],
+      "decorators": [],
+      "risks": [],
+      "review_status": "pending"
+    }
+  ],
+  "duplicates": [
+    {
+      "file": "tests/l2/test_hptw.py",
+      "name": "test_hptw_bit_sweep",
+      "lines": [
+        255,
+        327
+      ]
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_only_stage1_uses_vsatp",
+      "lines": [
+        286,
+        748
+      ]
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_only_stage2_uses_hgatp",
+      "lines": [
+        306,
+        768
+      ]
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_all_stage_identity_gstage",
+      "lines": [
+        327,
+        789
+      ]
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_pmp_configuration_sweep",
+      "lines": [
+        353,
+        815
+      ]
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_many_translations",
+      "lines": [
+        372,
+        834
+      ]
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_cache_resident_replays",
+      "lines": [
+        397,
+        859
+      ]
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_response_backpressure",
+      "lines": [
+        422,
+        884
+      ]
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_sfence_during_walk",
+      "lines": [
+        445,
+        907
+      ]
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_satp_change_with_sfence_rewalks",
+      "lines": [
+        472,
+        934
+      ]
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_shared_leaf_line_hits",
+      "lines": [
+        500,
+        962
+      ]
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_pmp_tor_allow",
+      "lines": [
+        519,
+        981
+      ]
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_csr_decode_sweep",
+      "lines": [
+        536,
+        998
+      ]
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_bitmap_enabled_walk",
+      "lines": [
+        553,
+        1015
+      ]
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_bitmap_clear",
+      "lines": [
+        573,
+        1035
+      ]
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_memory_latency_and_two_outstanding",
+      "lines": [
+        598,
+        1060
+      ]
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_sfence_scoped_variants",
+      "lines": [
+        622,
+        1084
+      ]
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_pmp_high_entries",
+      "lines": [
+        650,
+        1112
+      ]
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_bitmap_many_walks",
+      "lines": [
+        669,
+        1131
+      ]
+    },
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "name": "test_all_stage_with_bitmap",
+      "lines": [
+        692,
+        1154
+      ]
+    }
+  ],
+  "commented_out_cases": [
+    {
+      "file": "tests/l2/test_l2tlb.py",
+      "line": 283,
+      "text": "# L2TLB-PORT-02: both ports request concurrently and both complete.\\nasync def test_two_ports_same_cycle(l2tlb_env):\\n    env = l2tlb_env\\n    async with execution(env.dut):\\n        await _prepare(env)\\n        env.walk_script = None\\n        _build(env, 0x28000, 0x111, mid=0x80009, leaf=0x8000A)\\n        _build(env, 0x2A000, 0x222, mid=0x80009, leaf=0x8000B)\\n        env.resp[\"ready\"].Set(1)\\n        env.req[\"valid\"].Set(1)\\n        env.req[\"vpn\"].Set(0x28000)\\n        env.req1[\"valid\"].Set(1)\\n        env.req1[\"vpn\"].Set(0x2A000)\\n        accepted0 = accepted1 = False\\n        for _ in range(20):\\n            if not accepted0 and env.read(env.req[\"ready\"]):\\n                accepted0 = True\\n                env.req[\"valid\"].Set(0)\\n            if not accepted1 and env.read(env.req1[\"ready\"]):\\n                accepted1 = True\\n                env.req1[\"valid\"].Set(0)\\n            if accepted0 and accepted1:\\n                break\\n            await env.edge()\\n        assert accepted0 and accepted1\\n        env.req[\"valid\"].Set(0)\\n        env.req1[\"valid\"].Set(0)\\n        seen = {}\\n        for _ in range(4000):\\n            await env.service_memory(1)\\n            if env.read(env.resp[\"valid\"]):\\n                seen[\"p0\"] = env.read(env.resp[\"s1_ppn\"])\\n            if env.read(env.resp1[\"valid\"]):\\n                seen[\"p1\"] = env.read(env.resp1[\"s1_ppn\"])\\n            if seen.get(\"p0\") is not None and seen.get(\"p1\") is not None:\\n                break\\n        assert seen.get(\"p0\") == (0x111 >> 3), seen\\n        assert seen.get(\"p1\") == (0x222 >> 3), seen\\n"
+    },
+    {
+      "file": "tests/l2/test_l2tlbwrapper.py",
+      "line": 283,
+      "text": "# L2TLB-PORT-02: both ports request concurrently and both complete.\\nasync def test_two_ports_same_cycle(l2tlbwrapper_env):\\n    env = l2tlbwrapper_env\\n    async with execution(env.dut):\\n        await _prepare(env)\\n        env.walk_script = None\\n        _build(env, 0x28000, 0x111, mid=0x80009, leaf=0x8000A)\\n        _build(env, 0x2A000, 0x222, mid=0x80009, leaf=0x8000B)\\n        env.resp[\"ready\"].Set(1)\\n        env.req[\"valid\"].Set(1)\\n        env.req[\"vpn\"].Set(0x28000)\\n        env.req1[\"valid\"].Set(1)\\n        env.req1[\"vpn\"].Set(0x2A000)\\n        accepted0 = accepted1 = False\\n        for _ in range(20):\\n            if not accepted0 and env.read(env.req[\"ready\"]):\\n                accepted0 = True\\n                env.req[\"valid\"].Set(0)\\n            if not accepted1 and env.read(env.req1[\"ready\"]):\\n                accepted1 = True\\n                env.req1[\"valid\"].Set(0)\\n            if accepted0 and accepted1:\\n                break\\n            await env.edge()\\n        assert accepted0 and accepted1\\n        env.req[\"valid\"].Set(0)\\n        env.req1[\"valid\"].Set(0)\\n        seen = {}\\n        for _ in range(4000):\\n            await env.service_memory(1)\\n            if env.read(env.resp[\"valid\"]):\\n                seen[\"p0\"] = env.read(env.resp[\"s1_ppn\"])\\n            if env.read(env.resp1[\"valid\"]):\\n                seen[\"p1\"] = env.read(env.resp1[\"s1_ppn\"])\\n            if seen.get(\"p0\") is not None and seen.get(\"p1\") is not None:\\n                break\\n        assert seen.get(\"p0\") == (0x111 >> 3), seen\\n        assert seen.get(\"p1\") == (0x222 >> 3), seen\\n"
+    }
+  ]
+}

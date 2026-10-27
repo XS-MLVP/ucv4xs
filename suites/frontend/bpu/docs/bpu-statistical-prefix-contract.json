@@ -1,0 +1,45 @@
+{
+  "format": "human-semantic-requirement-before-integrated-DUT-case",
+  "title": "统计校正改变较早条件方向后，后续目标和学习仍服从实际执行前缀",
+  "event": "同一原窗口中，较早条件分支的TAGE方向与足够可信的SC方向相反，同时较晚间接分支保有自己的历史目标。另以SC置信不足或禁用作对照。",
+  "owner": "SC权重读取、TAGE提供者、Main分支位置、ITTAGE读取和路径检查点必须属于同一真实原预测。相同PC、相同历史编码或相同数值不能替代原件身份。",
+  "effect": "有效SC方向优先于TAGE；SC决定较早条件taken时，只能选择该条件自己的完整目标，未执行间接分支没有学习资格。SC决定not-taken时，较晚间接分支使用其原历史目标而非Main静态目标。SC未使用时维持TAGE选择。",
+  "learning": "反馈按实际已执行前缀构造，允许真实结果与原预测相反；不能把预测前缀当成执行真值。SC学习使用原选择时的provider角色、方向、使用资格和历史，而非当前线上版本。",
+  "preservation": "较年轻SC学习或阈值变化不能重算已完成的旧原件。条件目标、间接目标、TAGE元数据、SC元数据及所有原读取保持；独立组件不能因为组合选择而被额外推进。",
+  "independent_oracle": "复用现有ScReference的五类signed权重、阈值、可见性与学习算法，以及现有TAGE/ITTAGE和最终选择语义。新增层只管理原件身份与不可变组合结果，不增加另一份SC算法或基础预测器。",
+  "gap_basis": {
+    "measurement": "results/production-competing-correction-semantics-20261018-v1",
+    "review": "results/joint-path-production-promotion-20261018-v1/current-human-semantic-gap-ledger.json",
+    "missing_integrated_short_history_rows": 2260,
+    "existing_early_joint_profile_excludes_SC": true,
+    "missing_proof": "现有联合方向/间接目标程序只证明TAGE决定的执行前缀，尚未证明SC改变这个前缀时的来源、恢复及早级学习。不能用SC独立UT通过或TAGE联合程序通过替代这项组合证明。",
+    "all2260rows_caused_by_this_combination": false,
+    "physical_copies_are_not_new_functions": true,
+    "native_denominators_unchanged": true
+  },
+  "source_chain": [
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:241",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:385",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:417",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:435",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:440"
+  ],
+  "required_controls": [
+    "SC正向否决TAGE负向",
+    "SC负向否决TAGE正向",
+    "SC置信不足不取得方向权限",
+    "SC禁用不取得方向权限",
+    "相同PC的年轻来源不得冒领SC、TAGE或间接读取",
+    "旧SC读取跨过年轻学习提交仍使用旧权重",
+    "SC选择冻结后不能被当前阈值或权重重算",
+    "实际taken前缀不得包含未执行年轻间接分支",
+    "实际结果不同于原预测仍能正常学习"
+  ],
+  "implementation_boundary": "先完成可独立验证的SC原件与组合来源层。完整集成还需要从独立CommonHR/IMLI模型提供每个实际S0查询的原历史，以及SC读写冲突对接纳的控制；缺失时必须明确拒绝，不能用实际debug索引或观察值播种golden。",
+  "existing_feature_evidence_candidates": ["BPU-INT-032", "BPU-INT-043", "BPU-INT-044", "BPU-INT-048", "BPU-INT-060"],
+  "old_feature_contracts_and_verdicts_unchanged": true,
+  "new_feature_IDs": 0,
+  "hardware_or_functional_credit_from_pure_tests": false,
+  "no_RTL_DUT_SDK_changes": true,
+  "no_bank_set_way_sweep": true
+}

@@ -1,0 +1,34 @@
+{
+  "format": "semantic-obligation-before-test-design",
+  "subject": "同份迟到结果同时延续仍驻留的分支经验，并重建已经失驻的同伴",
+  "existing_feature": "BPU-INT-098",
+  "why_this_is_not_another_way_matrix": "已有驻留/失驻程序明确令同伴不写，或者令两笔替换先后发生；这不能证明同一反馈中两个有效学习结果竞争同一目的时的行为。",
+  "gap_origin": {
+    "source": "rtl/bpu/WriteBuffer_8.sv",
+    "integrated_open_rows": 87,
+    "relationship": "缺失的并发保留/复制路径要求检查输入的来源和组合资格，而不只是枚举物理位置。本项来自对原件迁移、失驻重建和并发目的唯一性的审查。",
+    "not_claimed": "不能将87行全部归因于该组合，也不能在没有实际原生见证时报告新增命中。"
+  },
+  "declared_program": [
+    "复用现有正常预测与反馈准备：原件内A为负方向计数2、B为正方向计数5，二者属于同次原预测。",
+    "正常替换后A仍以自身身份驻留、计数2，但位置已迁移；B已经失驻。保存的原件保持不变。",
+    "一次提交原件对应的完整已执行前缀：A不跳转、B跳转，均与原预测一致，不伪造错误标记以触发重读。",
+    "A应提出从当前2继续到1的学习，B应提出从原5重建到6的学习；先检查两者是否竞争同一保留目的。"
+  ],
+  "requirements": {
+    "do-not-confuse-composition-with-independence": "分别通过驻留更新、失驻重建和顺序替换，不代表两个有效结果同时竞争时已验证。",
+    "explicit-arbitration-boundary": "若合法原件组合形成资源冲突，参考必须明确报告原件、两个完整提案、当前居民和冲突位置；不能静默漏掉一笔，也不能用无关联的新metadata替代旧原件。",
+    "atomic-rejection": "仲裁策略尚未定义时可以显式拒绝，但拒绝不能先退休旧版本、改变计数、清除待写、刷新近期关系或推进该参考组件的时间。",
+    "separate-policy-from-observation": "当前生成RTL中的后端口赋值优先不自动等于已确认的功能策略。未决前保留默认拒绝，不新增XFAIL，不授予该组合功能通过信用。"
+  },
+  "test_design": {
+    "semantic_preparation": "复用partial_residency的resident-only正常准备，仅把后续A-only结果换成同一原件的完整PAIR结果。",
+    "reference_controls": "比较拒绝前后完整TAGE参考状态，并以没有资源竞争的双分支结果作为正控制；不只检查异常类型。",
+    "hardware_next": "先确认真实BPU接纳与当前居民，再单独记录仲裁结果。不得通过关闭默认检查器或伪造内部存储来取得PASS。"
+  },
+  "policy_status": "unresolved; no new default survivor policy",
+  "new_feature_IDs": 0,
+  "hardware_credit": 0,
+  "native_credit": 0,
+  "goal_complete": false
+}

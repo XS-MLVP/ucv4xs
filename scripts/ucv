@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+UCV_SCRIPT_ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+if [ -x "$UCV_SCRIPT_ROOT/.venv/bin/ucv" ]; then
+  exec "$UCV_SCRIPT_ROOT/.venv/bin/ucv" --root "$UCV_SCRIPT_ROOT" "$@"
+fi
+export PYTHONPATH="$UCV_SCRIPT_ROOT/src${PYTHONPATH:+:$PYTHONPATH}"
+exec python3 -m ucv --root "$UCV_SCRIPT_ROOT" "$@"

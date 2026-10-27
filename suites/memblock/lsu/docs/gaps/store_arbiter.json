@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "dut": "store_arbiter",
+  "top": "Arbiter3_StoreStageIO",
+  "run": "store-arbiter-initial-03",
+  "rtl_sha256": {
+    "Arbiter3_StoreStageIO.sv": "d5e0a679e8c5c5bed880c1c63dfe27297e07870e052695ed74325ab401b9bf15"
+  },
+  "metrics": {
+    "line_dut_only": {"hit": 32, "total": 32, "percent": 100.0,
+      "scope": "LCOV original source, Picker harness excluded"},
+    "branch": {"hit": 62, "total": 62, "percent": 100.0},
+    "toggle_dut_only": {"hit": 1126, "total": 1128, "percent": 99.82},
+    "functional": {"groups": 3, "coverage": 100.0, "checked": true,
+      "samples": 3876}
+  },
+  "uncovered": [
+    {
+      "id": "ARB3-TOGGLE-ENTRANCE-BIT2",
+      "kind": "unreachable",
+      "points": [
+        "io_out_bits_entrance[2]:0->1",
+        "io_out_bits_entrance[2]:1->0"
+      ],
+      "classification": "structurally unreachable in this build",
+      "evidence": [
+        "Arbiter3_StoreStageIO.sv:69-70: entrance is produced only by the three arms 4'h1 / 4'h8 / 4'h2",
+        "package.scala:190-201: StoreEntrance.vectorIssue would be 4'h4, the only value with bit 2 set",
+        "there is no io_in_* port that can select vectorIssue in this module, and StoreUnitS0 has no vector-issue source at the arbitration node"
+      ],
+      "required_supplement": false
+    }
+  ],
+  "functional_bins_removed_before_closure": [
+    {
+      "id": "ARB3-SELECTION-CROSS-BINS",
+      "bin_count_removed": 12,
+      "reason": "the earlier covergroup crossed valid_class with entrance/ready, but entrance and ready are functions of the same arbitration decision; 8 of 16 crossed bins were structurally impossible",
+      "action": "collapsed into four legal beat_kind bins, each asserting valid+entrance+ready together"
+    },
+    {
+      "id": "ARB3-ENTRANCE-UNKNOWN",
+      "bin_count_removed": 1,
+      "reason": "defensive classification branch, not a hardware behaviour",
+      "action": "removed from the declared bin inventory; entrance value is still compared exactly by the reference"
+    }
+  ],
+  "failures": [],
+  "status": "PASS_WITH_CLASSIFIED_TOGGLE_GAP"
+}

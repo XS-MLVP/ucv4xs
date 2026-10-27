@@ -1,0 +1,32 @@
+{
+  "format": "semantic-history-ownership-before-SC-integration",
+  "title": "每次统计查询持有自己的历史版本，恢复不得把年轻历史接到旧原件",
+  "event": "预测窗口在正常推进、暂停、中级/末级修正和真实后端恢复之间切换；S0查询需要选择自己的条件历史和循环计数。",
+  "owner": "路径检查点、查询接纳身份、条件历史读取版本、循环计数和最终公开metadata视图共同关联同一原查询，不能仅靠PC或相同历史数值配对。",
+  "effect": "SC读取使用实际S0时的独立历史版本。恢复当拍的无效占位和下一拍的恢复结果分开；下一拍可修正在途年轻级携带的历史metadata，但不能回写改变原SC权重读取。已经发表的原公开快照保持不可变。",
+  "preservation": "暂停不制造新的条件结果或循环迭代；较老修正胜过年轻修正。恢复只追加实际执行前缀，未执行后缀不进入历史；循环计数仍使用原来源而非当前年轻计数。",
+  "independent_oracle": "逻辑预测窗口日志保存已完成条件结果和有待恢复的历史版本，不使用RTL环形游标或采样数据。复用Block/Value的条件事件算法和LoopIterationReference的原件迭代算法。",
+  "required_checks": [
+    "每个实际S0查询的valid/GHR/BW/IMLI",
+    "每个公开metadata的完整历史及原件身份",
+    "正常流水和停顿中的历史版本保持",
+    "S2修正复用被替换年轻窗口的历史",
+    "S3修正与年轻工作同时存在时的历史重放",
+    "恢复当拍占位与下一拍恢复结果分离",
+    "恢复覆盖年轻metadata不重算原SC读取",
+    "外层原件在年轻循环饱和后仍恢复自己的计数"
+  ],
+  "source_chain": [
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/history/commonhr/CommonHR.scala:270",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/history/commonhr/CommonHR.scala:310",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/history/commonhr/CommonHR.scala:396"
+  ],
+  "existing_scope_not_inherited": "旧CommonHistoryChecks仅在历史固定点认证查询来源；旧IMLI检查不能代替CommonHR窗口选择；本项完成也不等于SC权重/读冲突或完整FTQ组合已验证。",
+  "related_requirements": ["docs/bpu-statistical-prefix-contract.json"],
+  "existing_feature_evidence_candidates": ["BPU-INT-043", "BPU-INT-094", "BPU-INT-099"],
+  "new_feature_IDs": 0,
+  "old_contracts_and_verdicts_unchanged": true,
+  "no_RTL_DUT_SDK_changes": true,
+  "no_bank_set_way_sweep": true,
+  "native_gap_denominators_unchanged": true
+}

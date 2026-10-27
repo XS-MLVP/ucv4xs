@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "dut": "load_s1",
+  "top": "LoadUnitS1",
+  "run": "load-s1-final-01",
+  "rtl_sha256": {
+    "LoadUnitS1.sv": "f1bae6d3f10f14dbcd86eab2f4ee3265cdba70744f5f49ae4f6f194945b0be63",
+    "MemTrigger.sv": "65b29b2adecce7226c2ddc011642042d3fbb0d96bbec84142a220db6fa49c541"
+  },
+  "metrics": {
+    "line_dut_only": {
+      "hit": 128,
+      "total": 128,
+      "percent": 100.0
+    },
+    "branch": {
+      "hit": 33,
+      "total": 34,
+      "percent": 97.06
+    },
+    "toggle_dut_only": {
+      "hit": 6338,
+      "total": 6376,
+      "percent": 99.4
+    },
+    "functional": {
+      "coverage": 100.0,
+      "cases": 36,
+      "checked": true
+    }
+  },
+  "uncovered": [
+    {
+      "id": "LS1-PERF-WIDTH",
+      "kind": "unreachable_structural",
+      "points": [
+        "io_perf_0_value[1..5]",
+        "io_perf_1_value[1..5]"
+      ],
+      "evidence": [
+        "LoadUnitS1.sv:294-295 assign io_perf_0/1_value = {5'h0, REG_1}",
+        "the counters carry one boolean delayed by two cycles; the upper bits are zero-extended"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "LS1-TAIL-ALIGNED-LOW-BITS",
+      "kind": "unreachable_structural",
+      "points": [
+        "io_unalignTail_bits_vaddr[0..3]",
+        "io_unalignTail_bits_fullva[0..3]"
+      ],
+      "evidence": [
+        "LoadUnitS1.sv:229-230 assign ..._vaddr = {46'(vaddr[49:4]+1), 4'h0} / {60'(fullva[63:4]+1), 4'h0}",
+        "the tail address is line-aligned; the low four bits are literal zeros"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "LS1-TAIL-MASK-MSB",
+      "kind": "unreachable_structural",
+      "points": [
+        "io_unalignTail_bits_mask[15]"
+      ],
+      "evidence": [
+        "LoadUnitS1.sv:231 assign ..._mask = {1'h0, _unalignTail_mask_T_21[30:16]}",
+        "bit 15 is a literal zero; only the 15 spilled bytes are representable"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "LS1-BRANCH-INITIAL-RESET",
+      "kind": "tool_boundary",
+      "points": [
+        "LoadUnitS1.sv:654 if (reset)"
+      ],
+      "evidence": [
+        "the reset arm lives inside ENABLE_INITIAL_REG_ and runs before the first test cycle",
+        "reset is still exercised: pipeOutValid/redirectNext/NextNext are cleared and the model tracks them"
+      ],
+      "required_supplement": false
+    }
+  ],
+  "semantic_findings": [
+    {
+      "id": "LS1-KILL-PHASE-SPLIT",
+      "finding": "the registered kill and the combinational kill observe different redirect pipeline states in the Picker post-Step sampling point",
+      "evidence": [
+        "LoadUnitS1.sv: kill is combinational over the redirect/redirectNext/redirectNextNext registers",
+        "post-edge sampling moves a redirect from redirectNext to redirectNextNext, whose term is gated by pipeIn.entrance[0]",
+        "tests kill.one_cycle_delayed_redirect and kill.two_cycle_delayed_redirect_tail_only pin both windows"
+      ],
+      "impact": "documented; the reference computes kill twice (register update / combinational output)",
+      "defect_claim": false
+    },
+    {
+      "id": "LS1-TAIL-NOT-KILL-GATED",
+      "finding": "a killed head still injects its unaligned tail",
+      "evidence": [
+        "LoadUnitS1.sv: unalignTail.valid = pipeIn.valid & pipeIn.unalignHead (no kill term)",
+        "the second redirect slot re-kills the injected tail one cycle later (entrance[0] gate)",
+        "test tail.emitted_even_when_killed"
+      ],
+      "impact": "intentional two-cycle redirect window; no leak because the tail carries the same robIdx",
+      "defect_claim": false
+    },
+    {
+      "id": "LS1-BP-DOES-NOT-KILL-DCACHE",
+      "finding": "a trigger breakpoint raises exceptionVec_3 but does not kill the DCache access",
+      "evidence": [
+        "LoadUnitS1.sv: killDCache = kill | tlbMiss | tlbException | specialRequest (bp absent)",
+        "test exception.breakpoint_from_trigger asserts dcacheKill==0"
+      ],
+      "impact": "the load still executes and the breakpoint is taken at the ROB head",
+      "defect_claim": false
+    },
+    {
+      "id": "LS1-CAUSE11-REQUIRES-HIT",
+      "finding": "nuke (cause_11) is only reported on a TLB hit or a noQuery access",
+      "evidence": [
+        "LoadUnitS1.sv: cause_11 = |nuke_matches & (tlbHit | noQuery)",
+        "test replay.cause_11_requires_hit_or_noquery"
+      ],
+      "impact": "a miss cannot report a store-load nuke before translation is available",
+      "defect_claim": false
+    }
+  ],
+  "failures": [],
+  "status": "PASS_WITH_CLASSIFIED_STRUCTURAL_BOUNDARIES"
+}

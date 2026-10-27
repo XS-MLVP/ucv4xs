@@ -1,0 +1,35 @@
+{
+  "format": "semantic-requirement-before-native-case",
+  "title": "跨块跳转后，方向经验只影响真正到达的分支，不能串用跳转前的经验",
+  "event": "真实前驱A直接到达B，B的条件分支最初返回A；随后B条件被解析为不跳，并发现B内较晚直接分支仍返回A。学习与后续消费均沿真实A到B边。",
+  "owner": "提前读取的PC属于A，但旧历史由更早的B原件拥有；B的tag匹配历史属于随后发布的A原件，快速反馈又属于到达B的新原件。三个原件及其完整Checkpoint身份分别保存，不能以当前B的PC或新A历史替代原读取。",
+  "effect": "B的条件方向被学习为不跳，并被新的实际跨块查询消费，最终选择B内较晚分支返回A。暂停预测或推进预测时接收旧B结果，均不能借用当前年轻请求。",
+  "observation": "沿用独立Pipeline/PathHistory/Ahead/Main/MicroTAGE参考和公开memory-direct monitor；逐周期比较完整1024个保护单元与原快速反馈。分配还须跨下一完整实际状态比较，再由新原件消费。",
+  "preservation": "所有冷发现、条件和后继来源的metadata及语义快照不可重绑定；原读取拥有者必须也是已发布的实际A原件，不接受同数值复制token。每次恢复先验证52bit物理历史窗口，并通过真实新A原件刷新来源；推进时先确认反馈接纳/逻辑成熟，再暂停提供SRAM服务窗口，不把写缓冲未落盘误判为未接纳。",
+  "scope": "两个入口分别位于压缩指令之后及条件分支本身；各有暂停/推进时反馈，共4个代表场景。固定前驱在另一块内，不扫描bank/set。使用控制生效后的标准冷复位取入口，不虚构启动分支。末级TAGE纠正和完整FTQ执行真值仍未证明。",
+  "existing_feature": "BPU-INT-044",
+  "event_catalog": "useful.allocate",
+  "gap_basis": {
+    "review": "results/short-revisit-development-20261018-v1/post-revisit-source-gap-review.json",
+    "short_zero_rows": 4177,
+    "coherent_PC_provider_restriction_rows": 2269,
+    "high_allocation_rows_not_explained_by_tag_matching": 1408,
+    "missing_semantics": "先前同目标块循环不能证明真实跨块读取与匹配归属。独立UT可自由指定读PC，但集成BPU必须由真实分支/修正产生，不能据同PC约束外推高区全局不可达。",
+    "limit": "模型已形成高区短项消费者，但新增原生行只能由DUT/LCOV实测并减去旧57行并集；不预报覆盖率或豁免任何零行。"
+  },
+  "profiles": ["compressed-entry.held-feedback", "compressed-entry.flowing-feedback", "conditional-entry.held-feedback", "conditional-entry.flowing-feedback"],
+  "source_chain": [
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:190",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:205",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:56",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:93",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:141"
+  ],
+  "required_rejection_controls": ["当前B查表冒充A的提前读取", "同值复制原件", "旧B反馈借用年轻原件", "只有预期分配没有下一实际状态", "只有Main正确而无短方向消费者", "原件metadata或快照被修改", "超出物理历史窗口的旧原件在驱动前拒绝"],
+  "pure_feasibility": "results/cross-block-learning-pure-feasibility-20261018-v5.json",
+  "new_reference_algorithms": 0,
+  "new_feature_IDs": 0,
+  "no_bank_set_way_sweep": true,
+  "no_RTL_DUT_SDK_changes": true,
+  "hardware_or_functional_credit_before_DUT_execution": false
+}

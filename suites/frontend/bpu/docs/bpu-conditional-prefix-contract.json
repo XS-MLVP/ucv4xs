@@ -1,0 +1,53 @@
+{
+  "format": "human-semantic-original-lifetime-contract",
+  "title": "较早条件确定跳转时保留自己的完整目标，未执行间接分支不能抢占目标或获得学习",
+  "existing_features": [
+    "BPU-INT-032",
+    "BPU-INT-034",
+    "BPU-INT-044",
+    "BPU-INT-048"
+  ],
+  "prototype_requirement": {
+    "format": "candidate-human-semantic-gap-before-new-cases",
+    "title": "较早条件分支确定跳转后，未执行间接分支不能抢占目标或获得学习",
+    "event": "原窗口同时存在一个真实条件分支和一个较晚间接分支。间接历史表仍命中旧目标，但较早条件的最新方向和独立目标确定该条件先跳转。",
+    "owner": "条件方向、条件完整目标和间接目标各自有独立原件。执行前缀截止于较早条件，不能把晚于它的间接分支写进已解析反馈。",
+    "effect": "最终选择条件自己的完整目标；未执行间接分支不获训练，原间接provider/置信/目标保持，随后通过合法执行前缀重访仍能消费它。",
+    "oracle": "复用已组合的六个独立模型和准确checkpoint来源，条件目标必须不同于ITTAGE目标和Main静态间接目标；核对完整实际选择、反馈资格、保持状态及新原件。",
+    "preservation": "允许实现提前读取间接表，不能把不该学习误写成不允许读取。取消路径不贡献学习；六个原始snapshot域和public metadata保持。",
+    "boundary": "补强现有JointLateSources已声明的条件T/NT分流，把它与真实Ahead/MicroTAGE学习资格组合。不是新的物理bank/set/way矩阵，也不外推SC/RAS或完整FTQ提交资格。",
+    "existing_feature_IDs": [
+      "BPU-INT-032",
+      "BPU-INT-034",
+      "BPU-INT-044",
+      "BPU-INT-048"
+    ],
+    "source_gap_origin": "branch-sibling-preservation的93条剩余原生行和owned-history-recovery的组合证据缺口都要求区分执行前缀与读取命中。当前候选只实际闭合条件NT放行间接，不足以授予反向条件T组合通过；不能据此认定93行全部由该组合造成。",
+    "source_chain": [
+      "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:440",
+      "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:449",
+      "XiangShan/src/main/scala/xiangshan/frontend/bpu/ittage/Ittage.scala:85",
+      "XiangShan/src/main/scala/xiangshan/frontend/bpu/ittage/Ittage.scala:157",
+      "XiangShan/src/main/scala/xiangshan/frontend/bpu/ittage/Ittage.scala:167"
+    ],
+    "independent_reference_available": true,
+    "pure_feasibility_proved": false,
+    "native_cases_implemented": false,
+    "hardware_or_functional_credit": false,
+    "new_feature_IDs": 0,
+    "no_uncovered_native_rows_waived": true
+  },
+  "new_feature_IDs": 0,
+  "independent_components": 6,
+  "source_adapter": "bpuverify/bpu/model/early_joint_sources.py",
+  "no_new_prediction_algorithm": true,
+  "no_bank_set_way_sweep": true,
+  "no_RTL_DUT_SDK_changes": true,
+  "ordinary_failures_not_waived": true,
+  "old_joint_profile_excludes_Ahead_scope_retained": true,
+  "coverage_family": "kunminghu_v3.bpu.conditional-prefix",
+  "source_chain": [
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:440",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:449"
+  ]
+}

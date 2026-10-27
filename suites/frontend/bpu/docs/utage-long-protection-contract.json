@@ -1,0 +1,34 @@
+{
+  "format": "semantic-requirement-before-case",
+  "version": 1,
+  "title": "更长历史成为预测依据后，纠错和保护仍各归原来的分支历史",
+  "event": "两个完整读取身份具有相同匹配信息，各自从短历史误预测自然升入长历史，形成相反方向。用各次新查询分别强化、削弱、纠错和恢复；在保护见底的方向翻转前、同拍、之后混合查询两个身份。",
+  "owner": "学习属于真实原查询的完整读取索引、原提供者和原匹配历史；不能因低位索引相等或长提供者优先而串到另一身份或共同短经验。每个发生只反馈一次。",
+  "effect": "长提供者的初始保护为2；保护见底不阻止方向跨阈值；基础与提供者一致不得虚增保护。长提供者被证伪时没有更长表可分配，但其方向和保护学习仍必须完成。",
+  "preservation": "另一完整身份、所有非目标保护单元和原始metadata保持；长表学习期间短经验不被无关反馈改变，拒绝长表的fresh消费者仍得到原短经验。",
+  "gap_basis": {
+    "source_review": "results/owned-state-full-measurement-audit-20261018-v1/current-source-event-review.json",
+    "groups": [35, 36, 37, 38, 39],
+    "baseline_zero_rows": 1903,
+    "existing_short_combination": "docs/utage-selective-protection-contract.json",
+    "existing_single_provider_events": "bpuverify/utage/model/usefulness_events.py",
+    "missing_cross": "已有完整索引选择性保护程序只验证短提供者；单身份长表奖惩不能证明双身份交错下的长表下界纠错、原查询年龄以及短经验保持。",
+    "source_instance_correction": "35至39组的1903个零行仅属于短表BypassShadowBuffer；长表BypassShadowBuffer_1在最近完整测量已行全满。长表组合是独立的验证质量缺口，不是这1903行的直接成因。",
+    "direct_zero_row_causality_claimed": false,
+    "no_promise_of_line_increment": true
+  },
+  "source_chain": [
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:329",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:346",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:362",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/BypassShadowBuffer.scala:187",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/BypassShadowBuffer.scala:198"
+  ],
+  "profiles": {"first_correction": ["not-taken-identity", "taken-identity"], "communication": ["serial", "adjacent"], "consumer_lifetime": ["recent-version-retained", "after-unrelated-version-turnover"]},
+  "persistence_cross": "通过一次无关完整身份的正常短转长和后续新来源奖励产生8个长表版本，使两个目标身份完全离开容量为8的最近缓存，再消费原目标。无关身份的读请求也提供正常写回机会；不是重复教导目标、固定空等或物理槽位遍历。实际全缓存快照必须确认离开；不冒称已经直接观察SRAM写回握手。",
+  "reference": "复用独立UtageReference和ProtectionState；另以逻辑身份状态表逐次推导两级提供者、完整保护状态与实际版本义务，不从DUT取值初始化或追随其输出。",
+  "observation": "既有公共driver、monitor与原来源账本验证完整输入、实际反馈间隔、所有1024个保护单元、全部实际保留版本和fresh双提供者消费者。",
+  "scope": "独立UT的读/匹配祖先分离合同，不外推完整FTQ可达性；不枚举bank/set/槽位，不写内部信号，不改RTL/DUT/SDK。",
+  "features": ["BPU-UTAGE-021", "BPU-UTAGE-023", "BPU-UTAGE-024"],
+  "new_feature_IDs": 0
+}

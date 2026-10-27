@@ -1,0 +1,267 @@
+{
+  "banked_data_array": {
+    "files": {
+      "BankedDataArray.sv": "c02181f339bffb9e22f52d86c148960b411d87b8a2bcb1b2d3a8cde942b0e6db",
+      "ClockGate.sv": "da7f23bc71410e8f05f5a7d53585530c2cb6dfe16dde763b4844333f57d16e95",
+      "DataSRAMBank.sv": "51b9d6cf7efe021f692c5ddd18af99fb81254cc0f6432baa6816d4b6602d42e3",
+      "DataSRAMBank_16.sv": "1a102259c694b77d2b769fcaeec02d1f8e63d5668b96392f80a9710ec3628026",
+      "DataSRAMBank_2.sv": "4706ce4b231717782423beb519e8a7412ff89b539a18697efb397aeb1416fccc",
+      "DataSRAMBank_4.sv": "83d44e0913f93c8488ddb73f83b53654988603e42857fc5fbaf86bd36b8fe4ac",
+      "DataSRAMBank_8.sv": "e0eb460b9d88e67c16b8b639e0c06814b593caf5d4d871ba1c794fda685ca999",
+      "MbistClockGateCell.sv": "f81831605a76cc0ea9bde908d7b844b7b3ab7fb52dc2234bf62ef7148467c588",
+      "MbistPipeDCacheData.sv": "9d9f118e4185fa8037a1af854ef6dac9b619e744acdb550759f4f259c4cca659",
+      "SRAMTemplate_246.sv": "8ee237be7736dbc468c7e63f2110038a016528817799529d7519b8eae818dff8",
+      "SRAMTemplate_248.sv": "ab00e13e4dcfad74b2ffd84dfc51ecfd444a47fc46c7bf8c9afe0447c92c0b6a",
+      "SRAMTemplate_250.sv": "083ff210db5e610c000b650906f7f5ec5e5f52f15ced00f05b1e40ec42ee3036",
+      "SRAMTemplate_254.sv": "3f6f9581d7ce7f4bc2cc4e625c1e6674b05be6e894d65b8f86611f092e3abcb8",
+      "SRAMTemplate_262.sv": "533fe3853fc01500a9e1ee765d75279a964909885da770cdd8abd9b1a70274b5",
+      "array_256x88.sv": "a354028f93945a9ab21c0de71c122d7fa795d44c8ff66de54e25e50ca7f5916b",
+      "sram_array_1p256x88m1s1h0l1b_dcsh_dat.sv": "e6e8e13c4aeb06a9cb80916a8770c543e732e1aa451f980668b0bbae2907489a"
+    },
+    "layer": "mid-path",
+    "source_directory": "/home/xyl/kmh-v3-test/soc-split/rtl",
+    "top": "BankedDataArray"
+  },
+  "counter_filter": {
+    "files": {
+      "ClockGate.sv": "da7f23bc71410e8f05f5a7d53585530c2cb6dfe16dde763b4844333f57d16e95",
+      "CounterFilter.sv": "66fdc81dcb50b94f3a91e4785f40843983b9baf81f559f61282e92efa75d2127"
+    },
+    "layer": "leaf-control",
+    "source_directory": "/home/xyl/kmh-v3-test/soc-split/rtl",
+    "top": "CounterFilter"
+  },
+  "ctrl_unit": {
+    "files": {
+      "ClockGate.sv": "da7f23bc71410e8f05f5a7d53585530c2cb6dfe16dde763b4844333f57d16e95",
+      "CtrlUnit.sv": "7222f339c563cadb9ce9c244047909d178456b845f447f38b52593641f059657",
+      "NewPipelineConnectPipe_9.sv": "8d0c39e55b715f307dfd7c050865e90dd18fcecccb9726dfd29112e16b8aadb1",
+      "Queue1_RegMapperInput_6.sv": "046add418fdedba3784d27ff601ad60b93919f4e00db5d6462bbd776e0ed1d11"
+    },
+    "layer": "leaf-control",
+    "source_directory": "/home/xyl/kmh-v3-test/soc-split/rtl",
+    "top": "CtrlUnit"
+  },
+  "dcache": {
+    "files": {
+      "AMOALU.sv": "bc7d10891f80919d1a50aa5c2a2053277cfa3156dc2005f8318385bf4d0409ae",
+      "Arbiter16_MainPipeReq.sv": "0ef96e23172b60a16a4fd2436c8a4d19263a997bf62357a7639964c971a6c60d",
+      "Arbiter1_L1BankedDataWriteReq.sv": "b903133527cb2b3d75d31ac64ffa107a92af0014b3a3a18bec5b1abbc2c130eb",
+      "Arbiter1_L1BankedDataWriteReqCtrl.sv": "dc1eb09278f3c599bfeea0a536e220ee9c6a93661e865ac6e46fbdd18f2f111d",
+      "Arbiter1_TagWriteReq.sv": "68af96afa9bb98b48b2efb4311adaac5f7075dccbce1a8009cc32c0cd0375450",
+      "Arbiter5_MainPipeReq.sv": "640722fd536ac47fc0d7e0defbaf33f47c499d610d5c3a30675eddcef6e1ec5f",
+      "Arbiter8_MainPipeReq.sv": "bd0a1d5022e3c8b4fddf01df36e5abdda001cc73ca7c37399446abe6615b2a5e",
+      "BankedDataArray.sv": "c02181f339bffb9e22f52d86c148960b411d87b8a2bcb1b2d3a8cde942b0e6db",
+      "CMOUnit.sv": "0f730102b1a0931cb83782d1e02a45808f786212a75d6ad27b64eba67e6e4e32",
+      "ClockGate.sv": "da7f23bc71410e8f05f5a7d53585530c2cb6dfe16dde763b4844333f57d16e95",
+      "CounterFilter.sv": "66fdc81dcb50b94f3a91e4785f40843983b9baf81f559f61282e92efa75d2127",
+      "CtrlUnit.sv": "7222f339c563cadb9ce9c244047909d178456b845f447f38b52593641f059657",
+      "DCache.sv": "3c512dfc26cd4b74c7b4612f5593b1c5ac1d35e2b1017ff8f05737b410255ab5",
+      "DataSRAMBank.sv": "51b9d6cf7efe021f692c5ddd18af99fb81254cc0f6432baa6816d4b6602d42e3",
+      "DataSRAMBank_16.sv": "1a102259c694b77d2b769fcaeec02d1f8e63d5668b96392f80a9710ec3628026",
+      "DataSRAMBank_2.sv": "4706ce4b231717782423beb519e8a7412ff89b539a18697efb397aeb1416fccc",
+      "DataSRAMBank_4.sv": "83d44e0913f93c8488ddb73f83b53654988603e42857fc5fbaf86bd36b8fe4ac",
+      "DataSRAMBank_8.sv": "e0eb460b9d88e67c16b8b639e0c06814b593caf5d4d871ba1c794fda685ca999",
+      "DuplicatedTagArray.sv": "35b0b3c09c868be2818816e7686e457d596c2b4ebf9a4cfec45d211d6961f547",
+      "L1CohMetaArray.sv": "1f3bbbab6b8dbba1a4d4b70bd1c6ae5889dcf044caedf58804017a1b318c5bcb",
+      "L1ErrorMetaArray.sv": "94855604ddd81166c36e96f4cf236bd0008cf6e169f4bba0ffb02c3953b1d5fc",
+      "L1FlagMetaArray.sv": "16694523487edcf3a45f2240f012f19e76f51c3538ea75777238ae68caa031ce",
+      "L1PrefetchMonitor.sv": "2395daf953826514922e4419d0d9b24105139f8ff34d35def848d7b9c1479760",
+      "L1PrefetchMonitor_1.sv": "63c3ef09d909e741edde2a60ecfec61031cf66d1737edac0a7d26a847ae89c59",
+      "L1PrefetchSourceArray.sv": "7fece9e7817c0d5e83bb735d3976427f72eac752fb86becb1a29fb9826ae0982",
+      "L1RefillLatencyArray.sv": "431501fa2e80a6abcb1e8cfbb71135222b772fd3e88a109070bac05f20e8536a",
+      "LoadPipe.sv": "995a0ee70dcdb95084862210febb48fb746fc5421e9237b1fb07d4d9b820a1f9",
+      "MainPipe.sv": "77969e8552d9fc6c329ca361a2b84566bfa6896e0a208d9e3381b8a3e1aebe4a",
+      "MbistClockGateCell.sv": "f81831605a76cc0ea9bde908d7b844b7b3ab7fb52dc2234bf62ef7148467c588",
+      "MbistPipeDCacheData.sv": "9d9f118e4185fa8037a1af854ef6dac9b619e744acdb550759f4f259c4cca659",
+      "MbistPipeDcacheTag.sv": "9e0f15acaf97f56c7f1b17b8094f514974eab4f5dd7253624355fc530599e8f7",
+      "MissEntry.sv": "7ba79627b58618651dec27669224b7ee7c663e4859a6e7ac11012f598bab07fc",
+      "MissQueue.sv": "c73dff96e38f7720b4b0785df54f4434a06da5c059523cccd0e723e2aa3f5ff2",
+      "MissReadyGen.sv": "bf13dbb41c467d3a64d459d778c8afe5e60854b4fb34d3690d196bdaf7056dcd",
+      "MissTrack.sv": "649098323be875b33fc64aae27efcef5890c06c3dc74bda880244e55631ce371",
+      "NewPipelineConnectPipe_9.sv": "8d0c39e55b715f307dfd7c050865e90dd18fcecccb9726dfd29112e16b8aadb1",
+      "PrefetcherMonitor.sv": "76b25e64ecadcbfb490526ad7178d669c2bedbe4bd7b28a586b48aeac0288cb5",
+      "ProbeEntry.sv": "bc5a6d48e181b3965f06a9ded8c9d8b436b867b0d6024ab5cd8a2d73c24c3018",
+      "ProbeQueue.sv": "892b1b4b6591b99aeab2c3d248eac6d40c2006138fca30497defbfa4d40e6d69",
+      "Queue1_RegMapperInput_6.sv": "046add418fdedba3784d27ff601ad60b93919f4e00db5d6462bbd776e0ed1d11",
+      "RRArbiter8_MissTrackEntry.sv": "481fb9772c4519834578b5f653b6fbd25b9cce4c5990f5fb7f06dafb9b479805",
+      "SRAMTemplate_246.sv": "8ee237be7736dbc468c7e63f2110038a016528817799529d7519b8eae818dff8",
+      "SRAMTemplate_248.sv": "ab00e13e4dcfad74b2ffd84dfc51ecfd444a47fc46c7bf8c9afe0447c92c0b6a",
+      "SRAMTemplate_250.sv": "083ff210db5e610c000b650906f7f5ec5e5f52f15ced00f05b1e40ec42ee3036",
+      "SRAMTemplate_254.sv": "3f6f9581d7ce7f4bc2cc4e625c1e6674b05be6e894d65b8f86611f092e3abcb8",
+      "SRAMTemplate_262.sv": "533fe3853fc01500a9e1ee765d75279a964909885da770cdd8abd9b1a70274b5",
+      "SRAMTemplate_278.sv": "de1578804d41e4500e2bc6fec969f4996bd8c95ca83bb549eeed304912440885",
+      "SpecMissGrantRegister.sv": "a2cd4714c0d2a9278cd9917e6e8f6db062be1a426f777290c76ee3234faf682b",
+      "TagArray.sv": "0ab8e7408af74d805bb048194f7d1c9424de476274af4f6589ddde98ac89c96e",
+      "TagSRAMBank.sv": "50cb21896d08c2a766fd67d4ea98b22418285e8b7fefc05f51e2423334a97a1a",
+      "WritebackEntry.sv": "4c1532e0f4d9797af84d9f3598ffa876418ce1e3e2df64b8b58d4691661f88f3",
+      "WritebackEntry_15.sv": "a0ee25c9e17d104891592ff0b01cc1561e319509a0c4ca77b9be6292c7c19747",
+      "WritebackQueue.sv": "ae98393cc73e7a2c097b8fd35064cf7265beadbb96ee2939007e5fefbf9b1a42",
+      "array_256x86.sv": "29985321da78b64122eecdc1c846f1774e976de7080a030df9ef5e6ace6082af",
+      "array_256x88.sv": "a354028f93945a9ab21c0de71c122d7fa795d44c8ff66de54e25e50ca7f5916b",
+      "skidBufferConnect.sv": "efdc3f30c6fe559988c08092325a4286b1f82c2b72410de3fabd85a52ef5b57a",
+      "sram_array_1p256x86m43s1h0l1b_dcsh_tag.sv": "704818c44d1ba0e8d9e5438432ede40382fbaf9b517bcda6e912fae933f0ddf4",
+      "sram_array_1p256x88m1s1h0l1b_dcsh_dat.sv": "e6e8e13c4aeb06a9cb80916a8770c543e732e1aa451f980668b0bbae2907489a"
+    },
+    "layer": "top",
+    "source_directory": "/home/xyl/kmh-v3-test/soc-split/rtl",
+    "top": "DCache"
+  },
+  "dcache_wrapper": {
+    "files": {
+      "AMOALU.sv": "bc7d10891f80919d1a50aa5c2a2053277cfa3156dc2005f8318385bf4d0409ae",
+      "Arbiter16_MainPipeReq.sv": "0ef96e23172b60a16a4fd2436c8a4d19263a997bf62357a7639964c971a6c60d",
+      "Arbiter1_L1BankedDataWriteReq.sv": "b903133527cb2b3d75d31ac64ffa107a92af0014b3a3a18bec5b1abbc2c130eb",
+      "Arbiter1_L1BankedDataWriteReqCtrl.sv": "dc1eb09278f3c599bfeea0a536e220ee9c6a93661e865ac6e46fbdd18f2f111d",
+      "Arbiter1_TagWriteReq.sv": "68af96afa9bb98b48b2efb4311adaac5f7075dccbce1a8009cc32c0cd0375450",
+      "Arbiter5_MainPipeReq.sv": "640722fd536ac47fc0d7e0defbaf33f47c499d610d5c3a30675eddcef6e1ec5f",
+      "Arbiter8_MainPipeReq.sv": "bd0a1d5022e3c8b4fddf01df36e5abdda001cc73ca7c37399446abe6615b2a5e",
+      "BankedDataArray.sv": "c02181f339bffb9e22f52d86c148960b411d87b8a2bcb1b2d3a8cde942b0e6db",
+      "CMOUnit.sv": "0f730102b1a0931cb83782d1e02a45808f786212a75d6ad27b64eba67e6e4e32",
+      "ClockGate.sv": "da7f23bc71410e8f05f5a7d53585530c2cb6dfe16dde763b4844333f57d16e95",
+      "CounterFilter.sv": "66fdc81dcb50b94f3a91e4785f40843983b9baf81f559f61282e92efa75d2127",
+      "CtrlUnit.sv": "7222f339c563cadb9ce9c244047909d178456b845f447f38b52593641f059657",
+      "DCache.sv": "3c512dfc26cd4b74c7b4612f5593b1c5ac1d35e2b1017ff8f05737b410255ab5",
+      "DCacheWrapper.sv": "05af7afc19f86c22d0711c801f602b072e50c710b43619b840237f5d2640ab08",
+      "DataSRAMBank.sv": "51b9d6cf7efe021f692c5ddd18af99fb81254cc0f6432baa6816d4b6602d42e3",
+      "DataSRAMBank_16.sv": "1a102259c694b77d2b769fcaeec02d1f8e63d5668b96392f80a9710ec3628026",
+      "DataSRAMBank_2.sv": "4706ce4b231717782423beb519e8a7412ff89b539a18697efb397aeb1416fccc",
+      "DataSRAMBank_4.sv": "83d44e0913f93c8488ddb73f83b53654988603e42857fc5fbaf86bd36b8fe4ac",
+      "DataSRAMBank_8.sv": "e0eb460b9d88e67c16b8b639e0c06814b593caf5d4d871ba1c794fda685ca999",
+      "DuplicatedTagArray.sv": "35b0b3c09c868be2818816e7686e457d596c2b4ebf9a4cfec45d211d6961f547",
+      "L1CohMetaArray.sv": "1f3bbbab6b8dbba1a4d4b70bd1c6ae5889dcf044caedf58804017a1b318c5bcb",
+      "L1ErrorMetaArray.sv": "94855604ddd81166c36e96f4cf236bd0008cf6e169f4bba0ffb02c3953b1d5fc",
+      "L1FlagMetaArray.sv": "16694523487edcf3a45f2240f012f19e76f51c3538ea75777238ae68caa031ce",
+      "L1PrefetchMonitor.sv": "2395daf953826514922e4419d0d9b24105139f8ff34d35def848d7b9c1479760",
+      "L1PrefetchMonitor_1.sv": "63c3ef09d909e741edde2a60ecfec61031cf66d1737edac0a7d26a847ae89c59",
+      "L1PrefetchSourceArray.sv": "7fece9e7817c0d5e83bb735d3976427f72eac752fb86becb1a29fb9826ae0982",
+      "L1RefillLatencyArray.sv": "431501fa2e80a6abcb1e8cfbb71135222b772fd3e88a109070bac05f20e8536a",
+      "LoadPipe.sv": "995a0ee70dcdb95084862210febb48fb746fc5421e9237b1fb07d4d9b820a1f9",
+      "MainPipe.sv": "77969e8552d9fc6c329ca361a2b84566bfa6896e0a208d9e3381b8a3e1aebe4a",
+      "MbistClockGateCell.sv": "f81831605a76cc0ea9bde908d7b844b7b3ab7fb52dc2234bf62ef7148467c588",
+      "MbistPipeDCacheData.sv": "9d9f118e4185fa8037a1af854ef6dac9b619e744acdb550759f4f259c4cca659",
+      "MbistPipeDcacheTag.sv": "9e0f15acaf97f56c7f1b17b8094f514974eab4f5dd7253624355fc530599e8f7",
+      "MissEntry.sv": "7ba79627b58618651dec27669224b7ee7c663e4859a6e7ac11012f598bab07fc",
+      "MissQueue.sv": "c73dff96e38f7720b4b0785df54f4434a06da5c059523cccd0e723e2aa3f5ff2",
+      "MissReadyGen.sv": "bf13dbb41c467d3a64d459d778c8afe5e60854b4fb34d3690d196bdaf7056dcd",
+      "MissTrack.sv": "649098323be875b33fc64aae27efcef5890c06c3dc74bda880244e55631ce371",
+      "NewPipelineConnectPipe_9.sv": "8d0c39e55b715f307dfd7c050865e90dd18fcecccb9726dfd29112e16b8aadb1",
+      "PrefetcherMonitor.sv": "76b25e64ecadcbfb490526ad7178d669c2bedbe4bd7b28a586b48aeac0288cb5",
+      "ProbeEntry.sv": "bc5a6d48e181b3965f06a9ded8c9d8b436b867b0d6024ab5cd8a2d73c24c3018",
+      "ProbeQueue.sv": "892b1b4b6591b99aeab2c3d248eac6d40c2006138fca30497defbfa4d40e6d69",
+      "Queue1_RegMapperInput_6.sv": "046add418fdedba3784d27ff601ad60b93919f4e00db5d6462bbd776e0ed1d11",
+      "RRArbiter8_MissTrackEntry.sv": "481fb9772c4519834578b5f653b6fbd25b9cce4c5990f5fb7f06dafb9b479805",
+      "SRAMTemplate_246.sv": "8ee237be7736dbc468c7e63f2110038a016528817799529d7519b8eae818dff8",
+      "SRAMTemplate_248.sv": "ab00e13e4dcfad74b2ffd84dfc51ecfd444a47fc46c7bf8c9afe0447c92c0b6a",
+      "SRAMTemplate_250.sv": "083ff210db5e610c000b650906f7f5ec5e5f52f15ced00f05b1e40ec42ee3036",
+      "SRAMTemplate_254.sv": "3f6f9581d7ce7f4bc2cc4e625c1e6674b05be6e894d65b8f86611f092e3abcb8",
+      "SRAMTemplate_262.sv": "533fe3853fc01500a9e1ee765d75279a964909885da770cdd8abd9b1a70274b5",
+      "SRAMTemplate_278.sv": "de1578804d41e4500e2bc6fec969f4996bd8c95ca83bb549eeed304912440885",
+      "SpecMissGrantRegister.sv": "a2cd4714c0d2a9278cd9917e6e8f6db062be1a426f777290c76ee3234faf682b",
+      "TagArray.sv": "0ab8e7408af74d805bb048194f7d1c9424de476274af4f6589ddde98ac89c96e",
+      "TagSRAMBank.sv": "50cb21896d08c2a766fd67d4ea98b22418285e8b7fefc05f51e2423334a97a1a",
+      "WritebackEntry.sv": "4c1532e0f4d9797af84d9f3598ffa876418ce1e3e2df64b8b58d4691661f88f3",
+      "WritebackEntry_15.sv": "a0ee25c9e17d104891592ff0b01cc1561e319509a0c4ca77b9be6292c7c19747",
+      "WritebackQueue.sv": "ae98393cc73e7a2c097b8fd35064cf7265beadbb96ee2939007e5fefbf9b1a42",
+      "array_256x86.sv": "29985321da78b64122eecdc1c846f1774e976de7080a030df9ef5e6ace6082af",
+      "array_256x88.sv": "a354028f93945a9ab21c0de71c122d7fa795d44c8ff66de54e25e50ca7f5916b",
+      "skidBufferConnect.sv": "efdc3f30c6fe559988c08092325a4286b1f82c2b72410de3fabd85a52ef5b57a",
+      "sram_array_1p256x86m43s1h0l1b_dcsh_tag.sv": "704818c44d1ba0e8d9e5438432ede40382fbaf9b517bcda6e912fae933f0ddf4",
+      "sram_array_1p256x88m1s1h0l1b_dcsh_dat.sv": "e6e8e13c4aeb06a9cb80916a8770c543e732e1aa451f980668b0bbae2907489a"
+    },
+    "layer": "top",
+    "source_directory": "/home/xyl/kmh-v3-test/soc-split/rtl",
+    "top": "DCacheWrapper"
+  },
+  "duplicated_tag_array": {
+    "files": {
+      "ClockGate.sv": "da7f23bc71410e8f05f5a7d53585530c2cb6dfe16dde763b4844333f57d16e95",
+      "DuplicatedTagArray.sv": "35b0b3c09c868be2818816e7686e457d596c2b4ebf9a4cfec45d211d6961f547",
+      "MbistClockGateCell.sv": "f81831605a76cc0ea9bde908d7b844b7b3ab7fb52dc2234bf62ef7148467c588",
+      "MbistPipeDcacheTag.sv": "9e0f15acaf97f56c7f1b17b8094f514974eab4f5dd7253624355fc530599e8f7",
+      "SRAMTemplate_278.sv": "de1578804d41e4500e2bc6fec969f4996bd8c95ca83bb549eeed304912440885",
+      "TagArray.sv": "0ab8e7408af74d805bb048194f7d1c9424de476274af4f6589ddde98ac89c96e",
+      "TagSRAMBank.sv": "50cb21896d08c2a766fd67d4ea98b22418285e8b7fefc05f51e2423334a97a1a",
+      "array_256x86.sv": "29985321da78b64122eecdc1c846f1774e976de7080a030df9ef5e6ace6082af",
+      "sram_array_1p256x86m43s1h0l1b_dcsh_tag.sv": "704818c44d1ba0e8d9e5438432ede40382fbaf9b517bcda6e912fae933f0ddf4"
+    },
+    "layer": "leaf-control",
+    "source_directory": "/home/xyl/kmh-v3-test/soc-split/rtl",
+    "top": "DuplicatedTagArray"
+  },
+  "load_pipe": {
+    "files": {
+      "ClockGate.sv": "da7f23bc71410e8f05f5a7d53585530c2cb6dfe16dde763b4844333f57d16e95",
+      "LoadPipe.sv": "995a0ee70dcdb95084862210febb48fb746fc5421e9237b1fb07d4d9b820a1f9"
+    },
+    "layer": "mid-path",
+    "source_directory": "/home/xyl/kmh-v3-test/soc-split/rtl",
+    "top": "LoadPipe"
+  },
+  "main_pipe": {
+    "files": {
+      "AMOALU.sv": "bc7d10891f80919d1a50aa5c2a2053277cfa3156dc2005f8318385bf4d0409ae",
+      "Arbiter5_MainPipeReq.sv": "640722fd536ac47fc0d7e0defbaf33f47c499d610d5c3a30675eddcef6e1ec5f",
+      "ClockGate.sv": "da7f23bc71410e8f05f5a7d53585530c2cb6dfe16dde763b4844333f57d16e95",
+      "MainPipe.sv": "77969e8552d9fc6c329ca361a2b84566bfa6896e0a208d9e3381b8a3e1aebe4a",
+      "skidBufferConnect.sv": "efdc3f30c6fe559988c08092325a4286b1f82c2b72410de3fabd85a52ef5b57a"
+    },
+    "layer": "upper",
+    "source_directory": "/home/xyl/kmh-v3-test/soc-split/rtl",
+    "top": "MainPipe"
+  },
+  "miss_queue": {
+    "files": {
+      "Arbiter16_MainPipeReq.sv": "0ef96e23172b60a16a4fd2436c8a4d19263a997bf62357a7639964c971a6c60d",
+      "CMOUnit.sv": "0f730102b1a0931cb83782d1e02a45808f786212a75d6ad27b64eba67e6e4e32",
+      "ClockGate.sv": "da7f23bc71410e8f05f5a7d53585530c2cb6dfe16dde763b4844333f57d16e95",
+      "MissEntry.sv": "7ba79627b58618651dec27669224b7ee7c663e4859a6e7ac11012f598bab07fc",
+      "MissQueue.sv": "c73dff96e38f7720b4b0785df54f4434a06da5c059523cccd0e723e2aa3f5ff2",
+      "SpecMissGrantRegister.sv": "a2cd4714c0d2a9278cd9917e6e8f6db062be1a426f777290c76ee3234faf682b"
+    },
+    "layer": "upper",
+    "source_directory": "/home/xyl/kmh-v3-test/soc-split/rtl",
+    "top": "MissQueue"
+  },
+  "miss_ready_gen": {
+    "files": {
+      "ClockGate.sv": "da7f23bc71410e8f05f5a7d53585530c2cb6dfe16dde763b4844333f57d16e95",
+      "MissReadyGen.sv": "bf13dbb41c467d3a64d459d778c8afe5e60854b4fb34d3690d196bdaf7056dcd"
+    },
+    "layer": "leaf-control",
+    "source_directory": "/home/xyl/kmh-v3-test/soc-split/rtl",
+    "top": "MissReadyGen"
+  },
+  "miss_track": {
+    "files": {
+      "ClockGate.sv": "da7f23bc71410e8f05f5a7d53585530c2cb6dfe16dde763b4844333f57d16e95",
+      "MissTrack.sv": "649098323be875b33fc64aae27efcef5890c06c3dc74bda880244e55631ce371",
+      "RRArbiter8_MissTrackEntry.sv": "481fb9772c4519834578b5f653b6fbd25b9cce4c5990f5fb7f06dafb9b479805"
+    },
+    "layer": "mid-path",
+    "source_directory": "/home/xyl/kmh-v3-test/soc-split/rtl",
+    "top": "MissTrack"
+  },
+  "probe_queue": {
+    "files": {
+      "Arbiter8_MainPipeReq.sv": "bd0a1d5022e3c8b4fddf01df36e5abdda001cc73ca7c37399446abe6615b2a5e",
+      "ClockGate.sv": "da7f23bc71410e8f05f5a7d53585530c2cb6dfe16dde763b4844333f57d16e95",
+      "ProbeEntry.sv": "bc5a6d48e181b3965f06a9ded8c9d8b436b867b0d6024ab5cd8a2d73c24c3018",
+      "ProbeQueue.sv": "892b1b4b6591b99aeab2c3d248eac6d40c2006138fca30497defbfa4d40e6d69"
+    },
+    "layer": "upper",
+    "source_directory": "/home/xyl/kmh-v3-test/soc-split/rtl",
+    "top": "ProbeQueue"
+  },
+  "writeback_queue": {
+    "files": {
+      "ClockGate.sv": "da7f23bc71410e8f05f5a7d53585530c2cb6dfe16dde763b4844333f57d16e95",
+      "WritebackEntry.sv": "4c1532e0f4d9797af84d9f3598ffa876418ce1e3e2df64b8b58d4691661f88f3",
+      "WritebackEntry_15.sv": "a0ee25c9e17d104891592ff0b01cc1561e319509a0c4ca77b9be6292c7c19747",
+      "WritebackQueue.sv": "ae98393cc73e7a2c097b8fd35064cf7265beadbb96ee2939007e5fefbf9b1a42"
+    },
+    "layer": "upper",
+    "source_directory": "/home/xyl/kmh-v3-test/soc-split/rtl",
+    "top": "WritebackQueue"
+  }
+}

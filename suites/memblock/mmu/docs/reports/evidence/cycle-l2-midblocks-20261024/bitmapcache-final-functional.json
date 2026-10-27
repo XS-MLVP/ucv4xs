@@ -1,0 +1,531 @@
+{
+  "format": "xreactor-functional-coverage",
+  "version": 2,
+  "coverage": 100.0,
+  "covered": true,
+  "groups": [
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "bitmapcache",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "byte",
+            "source": "byte",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "0",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    0
+                  ]
+                }
+              },
+              {
+                "name": "1",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    1
+                  ]
+                }
+              },
+              {
+                "name": "2",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    2
+                  ]
+                }
+              },
+              {
+                "name": "3",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    3
+                  ]
+                }
+              },
+              {
+                "name": "4",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    4
+                  ]
+                }
+              },
+              {
+                "name": "5",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    5
+                  ]
+                }
+              },
+              {
+                "name": "6",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    6
+                  ]
+                }
+              },
+              {
+                "name": "7",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    7
+                  ]
+                }
+              }
+            ],
+            "description": "命中时按 PPN 低 3 位选择数据字节。"
+          },
+          {
+            "name": "event",
+            "source": "event",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "clear",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "clear"
+                  ]
+                }
+              },
+              {
+                "name": "flush",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "flush"
+                  ]
+                }
+              },
+              {
+                "name": "hit",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "hit"
+                  ]
+                }
+              },
+              {
+                "name": "miss",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "miss"
+                  ]
+                }
+              },
+              {
+                "name": "refill",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "refill"
+                  ]
+                }
+              }
+            ],
+            "description": "bitmap cache 回填、命中、缺失、BCLEAR 和 flush。"
+          },
+          {
+            "name": "order",
+            "source": "order",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "0",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    0
+                  ]
+                }
+              },
+              {
+                "name": "1",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    1
+                  ]
+                }
+              },
+              {
+                "name": "2",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    2
+                  ]
+                }
+              },
+              {
+                "name": "3",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    3
+                  ]
+                }
+              },
+              {
+                "name": "4",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    4
+                  ]
+                }
+              },
+              {
+                "name": "5",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    5
+                  ]
+                }
+              },
+              {
+                "name": "6",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    6
+                  ]
+                }
+              },
+              {
+                "name": "7",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    7
+                  ]
+                }
+              }
+            ],
+            "description": "请求 order 原样返回。"
+          }
+        ],
+        "crosses": [],
+        "description": "BitmapCache 64 位位图字缓存语义。"
+      },
+      "schema_digest": "7686a13b5471fc52068738c25adc33d52db0d16cc79a9af02de4f555f50ad3d3",
+      "instance": "bitmapcache",
+      "illegal_policy": "raise",
+      "samples": 454,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 454,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "clear": 2,
+            "flush": 1,
+            "hit": 272,
+            "miss": 1,
+            "refill": 178
+          },
+          "provenance": {
+            "refill": {
+              "e24efc1ad1e5416d8c3cfe7d8f7b81e7": {
+                "count": 178,
+                "first": null,
+                "last": null
+              }
+            },
+            "hit": {
+              "e24efc1ad1e5416d8c3cfe7d8f7b81e7": {
+                "count": 272,
+                "first": null,
+                "last": null
+              }
+            },
+            "miss": {
+              "e24efc1ad1e5416d8c3cfe7d8f7b81e7": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "clear": {
+              "e24efc1ad1e5416d8c3cfe7d8f7b81e7": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "flush": {
+              "e24efc1ad1e5416d8c3cfe7d8f7b81e7": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "event",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 454,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "0": 214,
+            "1": 34,
+            "2": 35,
+            "3": 34,
+            "4": 34,
+            "5": 34,
+            "6": 34,
+            "7": 35
+          },
+          "provenance": {
+            "0": {
+              "e24efc1ad1e5416d8c3cfe7d8f7b81e7": {
+                "count": 214,
+                "first": null,
+                "last": null
+              }
+            },
+            "1": {
+              "e24efc1ad1e5416d8c3cfe7d8f7b81e7": {
+                "count": 34,
+                "first": null,
+                "last": null
+              }
+            },
+            "2": {
+              "e24efc1ad1e5416d8c3cfe7d8f7b81e7": {
+                "count": 35,
+                "first": null,
+                "last": null
+              }
+            },
+            "3": {
+              "e24efc1ad1e5416d8c3cfe7d8f7b81e7": {
+                "count": 34,
+                "first": null,
+                "last": null
+              }
+            },
+            "4": {
+              "e24efc1ad1e5416d8c3cfe7d8f7b81e7": {
+                "count": 34,
+                "first": null,
+                "last": null
+              }
+            },
+            "5": {
+              "e24efc1ad1e5416d8c3cfe7d8f7b81e7": {
+                "count": 34,
+                "first": null,
+                "last": null
+              }
+            },
+            "6": {
+              "e24efc1ad1e5416d8c3cfe7d8f7b81e7": {
+                "count": 34,
+                "first": null,
+                "last": null
+              }
+            },
+            "7": {
+              "e24efc1ad1e5416d8c3cfe7d8f7b81e7": {
+                "count": 35,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "byte",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 454,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "0": 215,
+            "1": 35,
+            "2": 34,
+            "3": 34,
+            "4": 34,
+            "5": 34,
+            "6": 34,
+            "7": 34
+          },
+          "provenance": {
+            "0": {
+              "e24efc1ad1e5416d8c3cfe7d8f7b81e7": {
+                "count": 215,
+                "first": null,
+                "last": null
+              }
+            },
+            "1": {
+              "e24efc1ad1e5416d8c3cfe7d8f7b81e7": {
+                "count": 35,
+                "first": null,
+                "last": null
+              }
+            },
+            "2": {
+              "e24efc1ad1e5416d8c3cfe7d8f7b81e7": {
+                "count": 34,
+                "first": null,
+                "last": null
+              }
+            },
+            "3": {
+              "e24efc1ad1e5416d8c3cfe7d8f7b81e7": {
+                "count": 34,
+                "first": null,
+                "last": null
+              }
+            },
+            "4": {
+              "e24efc1ad1e5416d8c3cfe7d8f7b81e7": {
+                "count": 34,
+                "first": null,
+                "last": null
+              }
+            },
+            "5": {
+              "e24efc1ad1e5416d8c3cfe7d8f7b81e7": {
+                "count": 34,
+                "first": null,
+                "last": null
+              }
+            },
+            "6": {
+              "e24efc1ad1e5416d8c3cfe7d8f7b81e7": {
+                "count": 34,
+                "first": null,
+                "last": null
+              }
+            },
+            "7": {
+              "e24efc1ad1e5416d8c3cfe7d8f7b81e7": {
+                "count": 34,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "order",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "e24efc1ad1e5416d8c3cfe7d8f7b81e7": {
+          "run_id": "e24efc1ad1e5416d8c3cfe7d8f7b81e7",
+          "instance": "bitmapcache",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "e24efc1ad1e5416d8c3cfe7d8f7b81e7",
+      "snapshot_id": "e569637400f8c6f126d018b5081e7ca847d77dccf99ba090f7170907cd164861"
+    }
+  ]
+}

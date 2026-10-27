@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "dut": "load_s3",
+  "top": "LoadUnitS3",
+  "run": "load-s3-final-03",
+  "rtl_sha256": {
+    "LoadUnitS3.sv": "01a54f7a7abe7e1d20dc45081c7469c1e767c6ae5a8efee9d29d3e6c64d0ef21"
+  },
+  "metrics": {
+    "line_dut_only": {
+      "hit": 84,
+      "total": 84,
+      "percent": 100.0
+    },
+    "branch": {
+      "hit": 55,
+      "total": 56,
+      "percent": 98.21
+    },
+    "toggle_dut_only": {
+      "hit": 5400,
+      "total": 5408,
+      "percent": 99.85
+    },
+    "functional": {
+      "coverage": 100.0,
+      "cases": 40,
+      "checked": true
+    }
+  },
+  "uncovered": [
+    {
+      "id": "LS3-CAUSE7-12-NOT-ENCODED",
+      "kind": "unreachable_structural",
+      "points": [
+        "io_lqWrite_bits_rep_info_cause_7 0->1/1->0",
+        "io_lqWrite_bits_rep_info_cause_12 0->1/1->0",
+        "lqWriteCauseOH_enc[7] 0->1/1->0",
+        "lqWriteCauseOH_enc[12] 0->1/1->0"
+      ],
+      "evidence": [
+        "LoadUnitS3.sv: lqWriteCauseOH_enc selects one of 13'h1,2,4,8,10,20,40,100,200,400,{1'h0,cause_11,11'h0}",
+        "bit 7 (0x80) and bit 12 (0x1000) are never produced: the replay-cause set is {0,1,2,3,4,5,6,8,9,10,11}",
+        "LoadUnitS2.sv defines no cause_7 and no cause_12; the LQ field is 13 bits wide but only 11 are live",
+        "the directed cause sweep drives every encodable cause and observes exactly one bit set"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "LS3-BRANCH-INITIAL-RESET",
+      "kind": "tool_boundary",
+      "points": [
+        "LoadUnitS3.sv:711 if (reset)"
+      ],
+      "evidence": [
+        "the reset arm lives inside ENABLE_INITIAL_REG_ and executes before the first test cycle"
+      ],
+      "required_supplement": false
+    }
+  ],
+  "semantic_findings": [
+    {
+      "id": "LS3-PIPEOUT-ONLY-ON-MERGE",
+      "finding": "pipeOutValid is only high when a tail cancels the present head",
+      "evidence": [
+        "LoadUnitS3.sv: pipeOutValid <= ~(_kill_T_6 | ~_cancel_T) & io_pipeIn_valid",
+        "algebraically this is ~kill & cancel & valid",
+        "test cancel.head_cancelled_by_tail asserts valid on the merged beat and reg.payload_holds asserts the hold path"
+      ],
+      "impact": "S4 only carries the unaligned head+tail merge; ordinary loads leave S3 through ldout/vldout",
+      "defect_claim": false
+    },
+    {
+      "id": "LS3-RF-WRITE-NOT-ARMED",
+      "finding": "the register-file write enable ignores the writeback arming and only needs shouldWakeup",
+      "evidence": [
+        "LoadUnitS3.sv: io_ldout_toIntRf_valid = rfWen & pipeIn_valid & ~cancel & shouldWakeup",
+        "writebackArmed gates ldoutValid/vldoutValid separately"
+      ],
+      "impact": "a clean unaligned head can write its RF before the tail arrives; the LQ/ROB write is deferred",
+      "defect_claim": false
+    },
+    {
+      "id": "LS3-EXCEPTION-MASKS-RAR",
+      "finding": "an exception on the beat suppresses both the RAR violation and the match-invalid flags",
+      "evidence": [
+        "s3RarViolation = rarNuke & ldldEnable & ~s3Exception",
+        "s3MatchInvalid = pipeIn.matchInvalid & ~s3Exception",
+        "the status test drives each flag on a clean beat because an exception masks them"
+      ],
+      "impact": "an exception takes priority over a replay/rollback request for the same beat",
+      "defect_claim": false
+    },
+    {
+      "id": "LS3-LQ-CAUSE-ONEHOT",
+      "finding": "the LQ replay-cause field is a 13-bit one-hot with only 11 encodable causes",
+      "evidence": [
+        "the encoding chain maps 11 causes onto bits 0..6 and 8..11; bit 7 and bit 12 are tied to 0"
+      ],
+      "impact": "no functional effect; documented so the two missing toggle points are not treated as a test gap",
+      "defect_claim": false
+    }
+  ],
+  "failures": [],
+  "status": "PASS_WITH_CLASSIFIED_STRUCTURAL_BOUNDARIES"
+}

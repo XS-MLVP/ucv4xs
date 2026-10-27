@@ -1,0 +1,658 @@
+{
+  "files": 15,
+  "collection_note": "188 `def test_*` + 25 tests re-collected in tests/dcache_wrapper via importlib = the same 25 DCache scenarios run against the wrapper DUT; no parametrize is used",
+  "defined_tests": 188,
+  "collected_nodeids": 213,
+  "duplicate_names": [],
+  "defined_but_not_collected": [],
+  "collected_but_not_defined": [],
+  "tautology_assert_true": 0,
+  "tautology_or_true": 0,
+  "if_false": 0,
+  "except_pass": 0,
+  "tests_without_assert": [
+    {
+      "file": "tests/banked_data_array/test_banked_data_array.py",
+      "test": "test_random_traffic",
+      "delegates_to": [
+        "Random",
+        "addr_of",
+        "choice",
+        "commit_write",
+        "getrandbits",
+        "payload",
+        "prime",
+        "random",
+        "randrange",
+        "range",
+        "read_line",
+        "read_port",
+        "window_mask"
+      ],
+      "allowlisted": true,
+      "allowlist_reason": "compare the 8-bank window against the model"
+    },
+    {
+      "file": "tests/banked_data_array/test_banked_data_array.py",
+      "test": "test_mask_class_matrix",
+      "delegates_to": [
+        "addr_of",
+        "commit_write",
+        "dcache_bank",
+        "payload",
+        "prime",
+        "read_port",
+        "window_mask"
+      ],
+      "allowlisted": true,
+      "allowlist_reason": "window compared to the model after each write class"
+    },
+    {
+      "file": "tests/counter_filter/test_counter_filter.py",
+      "test": "test_random_legal_traffic",
+      "delegates_to": [
+        "Random",
+        "append",
+        "choice",
+        "loads",
+        "queries",
+        "random",
+        "randrange",
+        "range",
+        "reset",
+        "step"
+      ],
+      "allowlisted": true,
+      "allowlist_reason": "raises on any query/occupancy mismatch"
+    },
+    {
+      "file": "tests/duplicated_tag_array/test_duplicated_tag_array.py",
+      "test": "test_set_independence_and_boundaries",
+      "delegates_to": [
+        "execution",
+        "items",
+        "read_all_ports",
+        "read_every_set",
+        "reset",
+        "write"
+      ],
+      "allowlisted": true,
+      "allowlist_reason": "raises on model mismatch per set"
+    },
+    {
+      "file": "tests/duplicated_tag_array/test_duplicated_tag_array.py",
+      "test": "test_random_legal_traffic",
+      "delegates_to": [
+        "Random",
+        "add",
+        "choice",
+        "execution",
+        "getrandbits",
+        "random",
+        "randrange",
+        "range",
+        "read",
+        "read_every_set",
+        "reset",
+        "set",
+        "write"
+      ],
+      "allowlisted": true,
+      "allowlist_reason": "raises on model mismatch per access"
+    },
+    {
+      "file": "tests/load_pipe/test_load_pipe.py",
+      "test": "test_random_hits_and_misses",
+      "delegates_to": [
+        "Random",
+        "choice",
+        "getrandbits",
+        "random",
+        "randrange",
+        "range",
+        "transaction"
+      ],
+      "allowlisted": true,
+      "allowlist_reason": "raises on data/index/handled mismatch"
+    },
+    {
+      "file": "tests/load_pipe/test_load_pipe.py",
+      "test": "test_outcome_way_matrix",
+      "delegates_to": [
+        "range",
+        "transaction"
+      ],
+      "allowlisted": true,
+      "allowlist_reason": "raises on data/index/handled mismatch"
+    },
+    {
+      "file": "tests/miss_ready_gen/test_miss_ready_gen.py",
+      "test": "test_zero_vector_is_transparent",
+      "delegates_to": [
+        "check",
+        "drive",
+        "drive_ready",
+        "eval",
+        "range",
+        "sample_field",
+        "sample_independence"
+      ],
+      "allowlisted": true,
+      "allowlist_reason": "raises on any valid/ready/payload mismatch"
+    },
+    {
+      "file": "tests/miss_ready_gen/test_miss_ready_gen.py",
+      "test": "test_walking_bit_all_payload_fields",
+      "delegates_to": [
+        "check",
+        "drive",
+        "drive_ready",
+        "eval",
+        "items",
+        "range",
+        "sample_field",
+        "sample_independence"
+      ],
+      "allowlisted": true,
+      "allowlist_reason": "raises on any valid/ready/payload mismatch"
+    },
+    {
+      "file": "tests/miss_ready_gen/test_miss_ready_gen.py",
+      "test": "test_random_vectors",
+      "delegates_to": [
+        "Random",
+        "check",
+        "drive",
+        "drive_ready",
+        "eval",
+        "getrandbits",
+        "narrow_payload",
+        "random",
+        "randrange",
+        "range",
+        "sample_field",
+        "wide_payload"
+      ],
+      "allowlisted": true,
+      "allowlist_reason": "raises on any valid/ready/payload mismatch"
+    },
+    {
+      "file": "tests/miss_track/test_miss_track.py",
+      "test": "test_install_produces_resident_entry",
+      "delegates_to": [
+        "install",
+        "query"
+      ],
+      "allowlisted": true,
+      "allowlist_reason": "raises unless the entry classifies as expected"
+    },
+    {
+      "file": "tests/miss_track/test_miss_track.py",
+      "test": "test_alloc_pending_and_owner_retirement",
+      "delegates_to": [
+        "Alloc",
+        "cycle",
+        "owners_for",
+        "query",
+        "range",
+        "sample_lifecycle"
+      ],
+      "allowlisted": true,
+      "allowlist_reason": "cycle compares spec; query raises on class mismatch"
+    },
+    {
+      "file": "tests/miss_track/test_miss_track.py",
+      "test": "test_s2_hit_training",
+      "delegates_to": [
+        "Load",
+        "cycle",
+        "query",
+        "range"
+      ],
+      "allowlisted": true,
+      "allowlist_reason": "raises unless the entry classifies as expected"
+    },
+    {
+      "file": "tests/miss_track/test_miss_track.py",
+      "test": "test_invalidate_resident_and_not_pending",
+      "delegates_to": [
+        "Alloc",
+        "Invalidate",
+        "cycle",
+        "index",
+        "install",
+        "owners_for",
+        "query",
+        "range",
+        "sample_lifecycle"
+      ],
+      "allowlisted": true,
+      "allowlist_reason": "raises unless the entry classifies as expected"
+    },
+    {
+      "file": "tests/miss_track/test_miss_track.py",
+      "test": "test_event_priority_and_coalescing",
+      "delegates_to": [
+        "Alloc",
+        "Install",
+        "Load",
+        "cycle",
+        "owners_for",
+        "query",
+        "range"
+      ],
+      "allowlisted": true,
+      "allowlist_reason": "raises unless the entry classifies as expected"
+    },
+    {
+      "file": "tests/miss_track/test_miss_track.py",
+      "test": "test_random_traffic",
+      "delegates_to": [
+        "Alloc",
+        "Install",
+        "Invalidate",
+        "Load",
+        "Owner",
+        "Random",
+        "append",
+        "cycle",
+        "getrandbits",
+        "random",
+        "randrange",
+        "range"
+      ],
+      "allowlisted": true,
+      "allowlist_reason": "cycle compares every lane against the model"
+    },
+    {
+      "file": "tests/miss_track/test_miss_track.py",
+      "test": "test_datapath_bit_sweep",
+      "delegates_to": [
+        "Install",
+        "Owner",
+        "Random",
+        "cycle",
+        "fill",
+        "getrandbits",
+        "paddr_of",
+        "query",
+        "range"
+      ],
+      "allowlisted": true,
+      "allowlist_reason": "raises unless the entry classifies as expected"
+    }
+  ],
+  "unallowlisted_no_assert": [],
+  "markers": [
+    {
+      "test": "test_two_partial_stores_same_missing_line_merge_data",
+      "decorator": "pytest.mark.rtl_defect",
+      "lineno": 711,
+      "file": "tests/dcache/test_dcache.py"
+    },
+    {
+      "test": "test_two_partial_stores_same_missing_line_merge_data",
+      "decorator": "pytest.mark.xfail(strict=True, reason='MQ-STORE-MERGE-DATA-PENDING: a second partial store to the same missing line is acknowledged but its data is lost (the merged line is 0x00AA instead of 0xBBAA)')",
+      "lineno": 711,
+      "file": "tests/dcache/test_dcache.py"
+    },
+    {
+      "test": "test_second_store_merge_carries_its_bytes",
+      "decorator": "pytest.mark.rtl_defect",
+      "lineno": 518,
+      "file": "tests/miss_queue/test_miss_queue.py"
+    },
+    {
+      "test": "test_second_store_merge_carries_its_bytes",
+      "decorator": "pytest.mark.xfail(strict=True, reason=\"MQ-STORE-MERGE-DATA-PENDING: the second merged store's bytes never reach refill_and_store_data; the refill line keeps the L2 byte or is zeroed instead of the store byte\")",
+      "lineno": 518,
+      "file": "tests/miss_queue/test_miss_queue.py"
+    }
+  ],
+  "per_file": [
+    {
+      "file": "tests/banked_data_array/test_banked_data_array.py",
+      "defs": 21,
+      "duplicates": [],
+      "top_level_asserts": 0,
+      "helper_asserts": 0,
+      "findings": {
+        "no_assert_in_test": [
+          "test_random_traffic",
+          "test_mask_class_matrix"
+        ]
+      },
+      "delegated_checks": {
+        "test_random_traffic": [
+          "Random",
+          "addr_of",
+          "choice",
+          "commit_write",
+          "getrandbits",
+          "payload",
+          "prime",
+          "random",
+          "randrange",
+          "range",
+          "read_line",
+          "read_port",
+          "window_mask"
+        ],
+        "test_mask_class_matrix": [
+          "addr_of",
+          "commit_write",
+          "dcache_bank",
+          "payload",
+          "prime",
+          "read_port",
+          "window_mask"
+        ]
+      }
+    },
+    {
+      "file": "tests/counter_filter/test_counter_filter.py",
+      "defs": 7,
+      "duplicates": [],
+      "top_level_asserts": 0,
+      "helper_asserts": 0,
+      "findings": {
+        "no_assert_in_test": [
+          "test_random_legal_traffic"
+        ]
+      },
+      "delegated_checks": {
+        "test_random_legal_traffic": [
+          "Random",
+          "append",
+          "choice",
+          "loads",
+          "queries",
+          "random",
+          "randrange",
+          "range",
+          "reset",
+          "step"
+        ]
+      }
+    },
+    {
+      "file": "tests/ctrl_unit/test_ctrl_unit.py",
+      "defs": 13,
+      "duplicates": [],
+      "top_level_asserts": 0,
+      "helper_asserts": 0,
+      "findings": {},
+      "delegated_checks": {}
+    },
+    {
+      "file": "tests/dcache/test_dcache.py",
+      "defs": 25,
+      "duplicates": [],
+      "top_level_asserts": 0,
+      "helper_asserts": 2,
+      "findings": {},
+      "delegated_checks": {}
+    },
+    {
+      "file": "tests/dcache/test_dcache_probe.py",
+      "defs": 1,
+      "duplicates": [],
+      "top_level_asserts": 0,
+      "helper_asserts": 0,
+      "findings": {},
+      "delegated_checks": {}
+    },
+    {
+      "file": "tests/dcache_wrapper/test_dcache_wrapper.py",
+      "defs": 9,
+      "duplicates": [],
+      "top_level_asserts": 0,
+      "helper_asserts": 0,
+      "findings": {},
+      "delegated_checks": {}
+    },
+    {
+      "file": "tests/dcache_wrapper/test_wrapper_dcache_regression.py",
+      "defs": 0,
+      "duplicates": [],
+      "top_level_asserts": 0,
+      "helper_asserts": 0,
+      "findings": {},
+      "delegated_checks": {}
+    },
+    {
+      "file": "tests/duplicated_tag_array/test_duplicated_tag_array.py",
+      "defs": 9,
+      "duplicates": [],
+      "top_level_asserts": 0,
+      "helper_asserts": 0,
+      "findings": {
+        "no_assert_in_test": [
+          "test_set_independence_and_boundaries",
+          "test_random_legal_traffic"
+        ]
+      },
+      "delegated_checks": {
+        "test_set_independence_and_boundaries": [
+          "execution",
+          "items",
+          "read_all_ports",
+          "read_every_set",
+          "reset",
+          "write"
+        ],
+        "test_random_legal_traffic": [
+          "Random",
+          "add",
+          "choice",
+          "execution",
+          "getrandbits",
+          "random",
+          "randrange",
+          "range",
+          "read",
+          "read_every_set",
+          "reset",
+          "set",
+          "write"
+        ]
+      }
+    },
+    {
+      "file": "tests/load_pipe/test_load_pipe.py",
+      "defs": 7,
+      "duplicates": [],
+      "top_level_asserts": 0,
+      "helper_asserts": 0,
+      "findings": {
+        "no_assert_in_test": [
+          "test_random_hits_and_misses",
+          "test_outcome_way_matrix"
+        ]
+      },
+      "delegated_checks": {
+        "test_random_hits_and_misses": [
+          "Random",
+          "choice",
+          "getrandbits",
+          "random",
+          "randrange",
+          "range",
+          "transaction"
+        ],
+        "test_outcome_way_matrix": [
+          "range",
+          "transaction"
+        ]
+      }
+    },
+    {
+      "file": "tests/main_pipe/test_main_pipe.py",
+      "defs": 36,
+      "duplicates": [],
+      "top_level_asserts": 0,
+      "helper_asserts": 0,
+      "findings": {},
+      "delegated_checks": {}
+    },
+    {
+      "file": "tests/miss_queue/test_miss_queue.py",
+      "defs": 31,
+      "duplicates": [],
+      "top_level_asserts": 0,
+      "helper_asserts": 0,
+      "findings": {},
+      "delegated_checks": {}
+    },
+    {
+      "file": "tests/miss_ready_gen/test_miss_ready_gen.py",
+      "defs": 5,
+      "duplicates": [],
+      "top_level_asserts": 0,
+      "helper_asserts": 0,
+      "findings": {
+        "no_assert_in_test": [
+          "test_zero_vector_is_transparent",
+          "test_walking_bit_all_payload_fields",
+          "test_random_vectors"
+        ]
+      },
+      "delegated_checks": {
+        "test_zero_vector_is_transparent": [
+          "check",
+          "drive",
+          "drive_ready",
+          "eval",
+          "range",
+          "sample_field",
+          "sample_independence"
+        ],
+        "test_walking_bit_all_payload_fields": [
+          "check",
+          "drive",
+          "drive_ready",
+          "eval",
+          "items",
+          "range",
+          "sample_field",
+          "sample_independence"
+        ],
+        "test_random_vectors": [
+          "Random",
+          "check",
+          "drive",
+          "drive_ready",
+          "eval",
+          "getrandbits",
+          "narrow_payload",
+          "random",
+          "randrange",
+          "range",
+          "sample_field",
+          "wide_payload"
+        ]
+      }
+    },
+    {
+      "file": "tests/miss_track/test_miss_track.py",
+      "defs": 13,
+      "duplicates": [],
+      "top_level_asserts": 0,
+      "helper_asserts": 0,
+      "findings": {
+        "no_assert_in_test": [
+          "test_install_produces_resident_entry",
+          "test_alloc_pending_and_owner_retirement",
+          "test_s2_hit_training",
+          "test_invalidate_resident_and_not_pending",
+          "test_event_priority_and_coalescing",
+          "test_random_traffic",
+          "test_datapath_bit_sweep"
+        ]
+      },
+      "delegated_checks": {
+        "test_install_produces_resident_entry": [
+          "install",
+          "query"
+        ],
+        "test_alloc_pending_and_owner_retirement": [
+          "Alloc",
+          "cycle",
+          "owners_for",
+          "query",
+          "range",
+          "sample_lifecycle"
+        ],
+        "test_s2_hit_training": [
+          "Load",
+          "cycle",
+          "query",
+          "range"
+        ],
+        "test_invalidate_resident_and_not_pending": [
+          "Alloc",
+          "Invalidate",
+          "cycle",
+          "index",
+          "install",
+          "owners_for",
+          "query",
+          "range",
+          "sample_lifecycle"
+        ],
+        "test_event_priority_and_coalescing": [
+          "Alloc",
+          "Install",
+          "Load",
+          "cycle",
+          "owners_for",
+          "query",
+          "range"
+        ],
+        "test_random_traffic": [
+          "Alloc",
+          "Install",
+          "Invalidate",
+          "Load",
+          "Owner",
+          "Random",
+          "append",
+          "cycle",
+          "getrandbits",
+          "random",
+          "randrange",
+          "range"
+        ],
+        "test_datapath_bit_sweep": [
+          "Install",
+          "Owner",
+          "Random",
+          "cycle",
+          "fill",
+          "getrandbits",
+          "paddr_of",
+          "query",
+          "range"
+        ]
+      }
+    },
+    {
+      "file": "tests/probe_queue/test_probe_queue.py",
+      "defs": 3,
+      "duplicates": [],
+      "top_level_asserts": 0,
+      "helper_asserts": 0,
+      "findings": {},
+      "delegated_checks": {}
+    },
+    {
+      "file": "tests/writeback_queue/test_writeback_queue.py",
+      "defs": 8,
+      "duplicates": [],
+      "top_level_asserts": 0,
+      "helper_asserts": 0,
+      "findings": {},
+      "delegated_checks": {}
+    }
+  ]
+}

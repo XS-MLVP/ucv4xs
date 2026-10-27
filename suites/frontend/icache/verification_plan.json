@@ -1,0 +1,857 @@
+{
+  "version": 1,
+  "features": [
+    {
+      "id": "ICACHE-WAYLOOKUP-001",
+      "component": "ICacheWayLookup",
+      "title": "Queue residency and read order",
+      "description": "Entries written on the prefetch ports are returned by the main pipe exactly once, in write order, with payload preserved."
+    },
+    {
+      "id": "ICACHE-WAYLOOKUP-002",
+      "component": "ICacheWayLookup",
+      "title": "Dual-port enqueue",
+      "description": "Two prefetch ports firing together enqueue two adjacent entries and both are returned in port order."
+    },
+    {
+      "id": "ICACHE-WAYLOOKUP-003",
+      "component": "ICacheWayLookup",
+      "title": "Capacity and backpressure",
+      "description": "The queue accepts up to PrefetchDepth entries and stops advertising write ready when fewer than FetchPorts slots remain."
+    },
+    {
+      "id": "ICACHE-WAYLOOKUP-004",
+      "component": "ICacheWayLookup",
+      "title": "Full flush",
+      "description": "flush rewinds both pointers, clears tailFtqIdx and prevents any stale entry from being read."
+    },
+    {
+      "id": "ICACHE-WAYLOOKUP-005",
+      "component": "ICacheWayLookup",
+      "title": "Stage-3 flush drop",
+      "description": "A BPU stage-3 flush drops exactly the youngest entry when the flushed FTQ index is not younger than the entry's tail index, otherwise it keeps the queue intact."
+    },
+    {
+      "id": "ICACHE-WAYLOOKUP-006",
+      "component": "ICacheWayLookup",
+      "title": "Exception latch stalls writes",
+      "description": "An entry carrying an I-TLB exception latches exceptionEntry, blocks write ready until a flush clears it, and is not readable while latched."
+    },
+    {
+      "id": "ICACHE-WAYLOOKUP-007",
+      "component": "ICacheWayLookup",
+      "title": "Circular wrap-around",
+      "description": "The queue is a circular buffer: after the write pointer passes the last slot it must wrap to slot 0 with the flag bit flipped, and entries written before and after the wrap must still be returned in order."
+    },
+    {
+      "id": "ICACHE-WAYLOOKUP-008",
+      "component": "ICacheWayLookup",
+      "title": "Fill-completion metadata update",
+      "description": "When a miss response fills a line, a resident entry with the same set and physical tag adopts the filled waymask and maybeRvcMap; a resident entry whose way was taken by a different tag must be invalidated (waymask cleared) because it no longer owns that way; unrelated updates change nothing."
+    },
+    {
+      "id": "ICACHE-WAYLOOKUP-009",
+      "component": "ICacheWayLookup",
+      "title": "Update/read hazard",
+      "description": "An entry whose metadata is being rewritten this cycle must not be presented on the read port, otherwise the main pipe would consume a stale or torn waymask."
+    },
+    {
+      "id": "ICACHE-WAYLOOKUP-010",
+      "component": "ICacheWayLookup",
+      "title": "A correction to one entry never changes another entry",
+      "description": "The ring keeps an independent memo per slot and per fetch port; updating or invalidating the way of one queued fetch must leave every other queued fetch's way mask untouched until its own refill arrives."
+    },
+    {
+      "id": "ICACHE-WAYLOOKUP-011",
+      "component": "ICacheWayLookup",
+      "title": "A refill corrects the queued fetch wherever it sits in the ring",
+      "description": "A refill adopts its way into the entry with the same tag and invalidates the entry whose way the new tag took, for every ring position, so a fetch that is still queued never reads a line that has been replaced."
+    },
+    {
+      "id": "ICACHE-WAYLOOKUP-012",
+      "component": "ICacheWayLookup",
+      "title": "Concurrent refill and prefetch write",
+      "description": "A refill completing in the same cycle as a prefetch write must both take effect: the write lands in its slot with the written payload, and the refill corrects a different resident slot. The newly written entry must not be retro-actively updated by the same refill."
+    },
+    {
+      "id": "ICACHE-WAYLOOKUP-013",
+      "component": "ICacheWayLookup",
+      "title": "Update path under both write states",
+      "description": "A refill must correct a resident memo regardless of whether the prefetch side writes in that same cycle: the correction applies to any slot other than the one being written, and to every slot when no write occurs. All 32 slots must accept the correction in both states."
+    },
+    {
+      "id": "ICACHE-REPLACER-001",
+      "component": "ICacheReplacer",
+      "title": "Tree-PLRU victim order",
+      "description": "For a 4-way set, the victim follows the published tree-PLRU older-pointer walk: touching a way marks it newer along the root-to-leaf path, and the victim is the way every node points at as older."
+    },
+    {
+      "id": "ICACHE-REPLACER-002",
+      "component": "ICacheReplacer",
+      "title": "Per-set independence",
+      "description": "Each set keeps its own PLRU state: touching one set must not change the victim of any other set."
+    },
+    {
+      "id": "ICACHE-REPLACER-003",
+      "component": "ICacheReplacer",
+      "title": "Fetch-port dispatch",
+      "description": "The low bit of vSetIdx selects which of the two replacer instances serves the request, and the remaining bits are the set index, so the two ports never share policy state."
+    },
+    {
+      "id": "ICACHE-REPLACER-004",
+      "component": "ICacheReplacer",
+      "title": "Victim feedback touch",
+      "description": "The way the victim port selects in cycle N is replayed as a touch in cycle N+1, so back-to-back refills into the same set cannot select the same way twice."
+    },
+    {
+      "id": "ICACHE-REPLACER-005",
+      "component": "ICacheReplacer",
+      "title": "Dual touch ordering",
+      "description": "When two candidate ways are presented on the same port in one cycle, both are applied in request order; the later request is the more recent one."
+    },
+    {
+      "id": "ICACHE-REPLACER-006",
+      "component": "ICacheReplacer",
+      "title": "Idle cycle stability",
+      "description": "A cycle with no valid touch leaves every set's policy state unchanged, and the combinational victim of an untouched set equals the pre-cycle victim."
+    },
+    {
+      "id": "ICACHE-REPLACER-007",
+      "component": "ICacheReplacer",
+      "title": "Per-set and per-port replacement state is independent",
+      "description": "Recency learned by one set or one fetch port must not change another set's or port's victim; after an access in one set, an untouched set still returns the victim predicted by its own history."
+    },
+    {
+      "id": "ICACHE-MSHR-001",
+      "component": "ICacheMshr",
+      "title": "Single outstanding miss",
+      "description": "The MSHR holds at most one block request: while an entry is live it refuses new requests, and it accepts again only after completion."
+    },
+    {
+      "id": "ICACHE-MSHR-002",
+      "component": "ICacheMshr",
+      "title": "Secondary miss lookup",
+      "description": "While live, a lookup hits only when both the physical block and the cache set match, because the same physical block may be reached through different virtual sets; a set mismatch is a miss."
+    },
+    {
+      "id": "ICACHE-MSHR-003",
+      "component": "ICacheMshr",
+      "title": "Victim way captured at issue",
+      "description": "The replacement way is sampled on the edge the memory request is issued, not at allocation, so the refill writes the way the replacer actually chose."
+    },
+    {
+      "id": "ICACHE-MSHR-004",
+      "component": "ICacheMshr",
+      "title": "Bypass information",
+      "description": "A live entry publishes its block, set and captured way to the refill path and stops publishing as soon as the entry is no longer usable."
+    },
+    {
+      "id": "ICACHE-MSHR-005",
+      "component": "ICacheMshr",
+      "title": "Fence.i before issue drops the request",
+      "description": "A fence.i (or flush) that arrives before the acquire is issued invalidates the entry immediately, because nothing is outstanding."
+    },
+    {
+      "id": "ICACHE-MSHR-006",
+      "component": "ICacheMshr",
+      "title": "Fence.i after issue drains",
+      "description": "A fence.i after the acquire was issued keeps the entry live until completion so the outstanding transaction is not lost, but it stops reporting hits and stops publishing bypass information."
+    },
+    {
+      "id": "ICACHE-MSHR-007",
+      "component": "ICacheMshr",
+      "title": "WFI safety",
+      "description": "Entering WFI is only reported safe when no issued memory request is outstanding, and an outstanding WFI request blocks issuing a new acquire."
+    },
+    {
+      "id": "ICACHE-MSHR-008",
+      "component": "ICacheMshr",
+      "title": "Completion frees the entry",
+      "description": "Once the miss unit signals completion the entry becomes free, drops bypass publication, and accepts the next block."
+    },
+    {
+      "id": "ICACHE-DATABANK-001",
+      "component": "ICacheDataBank",
+      "title": "Way-masked write",
+      "description": "A write updates only the ways selected by waymask; every other way in the same set keeps its previous data and code."
+    },
+    {
+      "id": "ICACHE-DATABANK-002",
+      "component": "ICacheDataBank",
+      "title": "Full-way read-back",
+      "description": "A read returns the stored entry for every way of the addressed set, independent of the waymask, because the hit decision is made downstream."
+    },
+    {
+      "id": "ICACHE-DATABANK-003",
+      "component": "ICacheDataBank",
+      "title": "Set isolation",
+      "description": "Writes to one set never disturb another set's contents, across the whole 256-set range."
+    },
+    {
+      "id": "ICACHE-DATABANK-004",
+      "component": "ICacheDataBank",
+      "title": "Data and ECC code travel together",
+      "description": "The parity/ECC code is stored and returned exactly as written; the bank never recomputes it, which is what makes an injected error observable downstream."
+    },
+    {
+      "id": "ICACHE-DATABANK-005",
+      "component": "ICacheDataBank",
+      "title": "Single-port mutual exclusion",
+      "description": "The macro is single-ported: read ready must drop while a write is offered so a read and a write are never accepted in the same cycle."
+    },
+    {
+      "id": "ICACHE-METABANK-001",
+      "component": "ICacheMetaInterleavedBank",
+      "title": "Way-masked fill sets validity",
+      "description": "A refill writes only the ways selected by waymask and marks exactly those ways valid; ways outside the mask keep both their metadata and their previous valid bit."
+    },
+    {
+      "id": "ICACHE-METABANK-002",
+      "component": "ICacheMetaInterleavedBank",
+      "title": "Validity gates the hit decision",
+      "description": "A read returns each way's stored metadata together with its valid bit, so a way that was never written or was invalidated reads as invalid even though its stored tag may be non-zero."
+    },
+    {
+      "id": "ICACHE-METABANK-003",
+      "component": "ICacheMetaInterleavedBank",
+      "title": "Full invalidate",
+      "description": "flushAll (fence.i) clears every way's valid bit across all sets; subsequent reads report every way invalid, and metadata may remain since validity alone decides a hit."
+    },
+    {
+      "id": "ICACHE-METABANK-004",
+      "component": "ICacheMetaInterleavedBank",
+      "title": "Set isolation",
+      "description": "Writes and invalidates affect only the addressed set; the whole 128-set range keeps independent metadata and valid bits."
+    },
+    {
+      "id": "ICACHE-METABANK-005",
+      "component": "ICacheMetaInterleavedBank",
+      "title": "Metadata and parity stored verbatim",
+      "description": "The physical tag, RVC map and parity code are stored and returned exactly as written, so a corrupted code remains observable downstream."
+    },
+    {
+      "id": "ICACHE-METABANK-006",
+      "component": "ICacheMetaInterleavedBank",
+      "title": "Single-port mutual exclusion",
+      "description": "Read ready drops while a write is offered, so the single-ported macro never accepts a read and a write in the same cycle."
+    },
+    {
+      "id": "ICACHE-METAARRAY-001",
+      "component": "ICacheMetaArray",
+      "title": "Way-masked fill sets validity",
+      "description": "A refill writes only the ways selected by waymask and marks exactly those valid; other ways in the same set keep their metadata and valid bit."
+    },
+    {
+      "id": "ICACHE-METAARRAY-002",
+      "component": "ICacheMetaArray",
+      "title": "Single-line read",
+      "description": "A single-line read returns all four ways of the requested set with their valid bits and stored metadata."
+    },
+    {
+      "id": "ICACHE-METAARRAY-003",
+      "component": "ICacheMetaArray",
+      "title": "Double-line read preserves request order",
+      "description": "A double-line read returns two sets concurrently; each line must come back on the line index that requested it even though the two sets are served by different interleaved banks, so a caller cannot observe the banking."
+    },
+    {
+      "id": "ICACHE-METAARRAY-004",
+      "component": "ICacheMetaArray",
+      "title": "Interleaved-bank assignment",
+      "description": "Even sets reside in bank 0 and odd sets in bank 1; writing a set through one access does not alias onto the neighbouring set that shares the other bank."
+    },
+    {
+      "id": "ICACHE-METAARRAY-005",
+      "component": "ICacheMetaArray",
+      "title": "Full invalidate",
+      "description": "flushAll clears every valid bit across both banks; subsequent reads report every way invalid while stored metadata may remain."
+    },
+    {
+      "id": "ICACHE-METAARRAY-006",
+      "component": "ICacheMetaArray",
+      "title": "Metadata and parity stored verbatim",
+      "description": "Physical tag, RVC map and parity code are stored and returned unchanged, so a corrupted code stays observable."
+    },
+    {
+      "id": "ICACHE-METAARRAY-007",
+      "component": "ICacheMetaArray",
+      "title": "Single-port mutual exclusion",
+      "description": "Read ready drops while a write is offered, so the macro never accepts both in one cycle."
+    },
+    {
+      "id": "ICACHE-DATAARRAY-001",
+      "component": "ICacheDataArray",
+      "title": "Bank-interleaved write and read-back",
+      "description": "A refill writes one entry per bank into the ways selected by waymask; reading the same set returns each bank's own entry, so a bank mix-up is visible as data on the wrong bank."
+    },
+    {
+      "id": "ICACHE-DATAARRAY-002",
+      "component": "ICacheDataArray",
+      "title": "Way selection per request",
+      "description": "A request selects exactly one way per covered bank through its per-line waymask, and the response carries that way's data and code."
+    },
+    {
+      "id": "ICACHE-DATAARRAY-003",
+      "component": "ICacheDataArray",
+      "title": "Two-line request routing",
+      "description": "One request may name two cache lines with different set indices and disjoint bank masks; every bank serves the line that covers it, so a 32-byte-aligned fetch reads both halves of a line in one access."
+    },
+    {
+      "id": "ICACHE-DATAARRAY-004",
+      "component": "ICacheDataArray",
+      "title": "Two requests share the array",
+      "description": "Two fetch requests are served concurrently; disjoint bank groups stay independent, and two requests may read different ways of the same bank when their set indices are equal."
+    },
+    {
+      "id": "ICACHE-DATAARRAY-005",
+      "component": "ICacheDataArray",
+      "title": "Uncovered banks read as zero",
+      "description": "A bank outside a request's bank mask contributes zero to that request's response, so a consumer can tell a covered bank from an uncovered one."
+    },
+    {
+      "id": "ICACHE-DATAARRAY-006",
+      "component": "ICacheDataArray",
+      "title": "Set isolation",
+      "description": "Writes to one set never disturb another set across the whole 256-set range, on every bank."
+    },
+    {
+      "id": "ICACHE-DATAARRAY-007",
+      "component": "ICacheDataArray",
+      "title": "Single-port mutual exclusion",
+      "description": "Read ready drops while a write is offered, so the macro never accepts a read and a write in the same cycle."
+    },
+    {
+      "id": "ICACHE-METAARRAY-008",
+      "component": "ICacheMetaArray",
+      "title": "The set-index decode has no aliasing across the set space",
+      "description": "Two different set indices must address two independent metadata entries in their interleaved banks; a refill of one set never changes another set's tag or valid bits, even for the highest indices."
+    },
+    {
+      "id": "ICACHE-METABANK-007",
+      "component": "ICacheMetaInterleavedBank",
+      "title": "The set-index decode has no aliasing inside the bank",
+      "description": "A way-masked refill of one set leaves every other set's tag and valid bits unchanged, and the read path returns the entry of the addressed set for the whole index range."
+    },
+    {
+      "id": "ICACHE-DATAARRAY-008",
+      "component": "ICacheDataArray",
+      "title": "The read router selects exactly the addressed bank and way",
+      "description": "For every (request slot, bank, way) combination the router reads the entry belonging to that bank and way of the addressed set and no other, so a selector gap cannot silently return the wrong way's data."
+    },
+    {
+      "id": "ICACHE-MISSUNIT-001",
+      "component": "ICacheMissUnit",
+      "title": "Two MSHR pools with separate capacity",
+      "description": "Four fetch MSHRs and ten prefetch MSHRs: a fetch request can only occupy a fetch MSHR and a prefetch request only a prefetch MSHR, so prefetch traffic can never consume fetch capacity."
+    },
+    {
+      "id": "ICACHE-MISSUNIT-002",
+      "component": "ICacheMissUnit",
+      "title": "Duplicate suppression",
+      "description": "A request for a block and set already tracked by any MSHR is accepted without allocating a second entry, including a prefetch naming the same block as the fetch request in the same cycle."
+    },
+    {
+      "id": "ICACHE-MISSUNIT-003",
+      "component": "ICacheMissUnit",
+      "title": "Fetch has acquire priority",
+      "description": "When both pools hold an unissued entry, the fetch MSHR owns the memory channel first; fetch is the architecturally critical path."
+    },
+    {
+      "id": "ICACHE-MISSUNIT-004",
+      "component": "ICacheMissUnit",
+      "title": "Prefetch serves in arrival order",
+      "description": "Prefetch MSHRs are served in the order they were allocated, not by index, so an older prefetch cannot be starved by a younger one."
+    },
+    {
+      "id": "ICACHE-MISSUNIT-005",
+      "component": "ICacheMissUnit",
+      "title": "Victim request at issue",
+      "description": "When the acquire fires the DUT asks the replacer for a victim way for that entry's set, and the refill writes exactly that way."
+    },
+    {
+      "id": "ICACHE-MISSUNIT-006",
+      "component": "ICacheMissUnit",
+      "title": "Refill completion publishes response and arrays write",
+      "description": "After the last refill beat the response is published with the entry's block, set and victim waymask, and the metadata and data arrays are written."
+    },
+    {
+      "id": "ICACHE-MISSUNIT-007",
+      "component": "ICacheMissUnit",
+      "title": "Corrupt refill is reported but not cached",
+      "description": "A corrupt or denied refill is still reported to the pipeline so it can raise an access fault, but the arrays are not written and the waymask is not treated as a valid hit."
+    },
+    {
+      "id": "ICACHE-MISSUNIT-008",
+      "component": "ICacheMissUnit",
+      "title": "Flush drops prefetch only",
+      "description": "A pipeline flush clears the prefetch pool but leaves fetch entries, because a fetch miss is on the architectural path and must not be lost."
+    },
+    {
+      "id": "ICACHE-MISSUNIT-009",
+      "component": "ICacheMissUnit",
+      "title": "Fence.i drops both pools",
+      "description": "fence.i invalidates unissued entries in both pools; an issued entry stays until its refill completes so the memory transaction is not leaked."
+    },
+    {
+      "id": "ICACHE-MISSUNIT-010",
+      "component": "ICacheMissUnit",
+      "title": "WFI safety",
+      "description": "It is WFI safe only when no MSHR has an issued request outstanding, and a pending WFI request blocks issuing a new acquire."
+    },
+    {
+      "id": "ICACHE-MISSUNIT-011",
+      "component": "ICacheMissUnit",
+      "title": "Every MSHR slot is independently usable",
+      "description": "All four fetch MSHRs and all ten prefetch MSHRs must be able to own and complete a memory transaction: filling the pools and servicing every slot proves the per-instance state (valid/issue/way/block) is not aliased between slots, and exercises the prefetch priority FIFO through a full wrap."
+    },
+    {
+      "id": "ICACHE-MAINPIPE-001",
+      "component": "ICacheMainPipe",
+      "title": "Hit path returns array data and touches the replacer",
+      "description": "A line whose waymask names a way is read from the data array, its data and fetch metadata are returned to the IFU in one response, and the replacer is touched once for that set/way."
+    },
+    {
+      "id": "ICACHE-MAINPIPE-002",
+      "component": "ICacheMainPipe",
+      "title": "Miss request and refill completion",
+      "description": "A line with an empty waymask produces exactly one miss request with the block address and set index of that line; the pipeline holds the IFU response until the refill arrives, then returns the refilled data. A cross-line fetch requests the second line separately."
+    },
+    {
+      "id": "ICACHE-MAINPIPE-003",
+      "component": "ICacheMainPipe",
+      "title": "ITLB exception suppresses the fetch",
+      "description": "An ITLB page-fault/guest-page-fault entry reports the exception to the IFU and never issues a miss request; the guest physical address is forwarded."
+    },
+    {
+      "id": "ICACHE-MAINPIPE-004",
+      "component": "ICacheMainPipe",
+      "title": "PMP access fault is reported",
+      "description": "A PMP instruction-fetch violation is reported as an access fault to the IFU instead of a miss request."
+    },
+    {
+      "id": "ICACHE-MAINPIPE-005",
+      "component": "ICacheMainPipe",
+      "title": "MMIO and uncacheable memory are not fetched",
+      "description": "pmp.mmio or an uncacheable PBMT memory type suppresses the miss request and sets the MMIO flag on the IFU response."
+    },
+    {
+      "id": "ICACHE-MAINPIPE-006",
+      "component": "ICacheMainPipe",
+      "title": "Corrupt/denied refill raises an exception",
+      "description": "A corrupt refill completes the fetch with a hardware-error exception; a denied refill raises an access fault. Neither is silently returned as valid data."
+    },
+    {
+      "id": "ICACHE-MAINPIPE-007",
+      "component": "ICacheMainPipe",
+      "title": "Two-fetch validity",
+      "description": "The second fetch is real only when it is valid, its way-lookup entry is valid, and it does not collide with the first fetch on a data-array bank with the same way but a different set; MMIO and ITLB exceptions also suppress it. Both real fetches are returned in one IFU response with the combined range."
+    },
+    {
+      "id": "ICACHE-MAINPIPE-008",
+      "component": "ICacheMainPipe",
+      "title": "Flush suppresses the response",
+      "description": "A pipeline flush kills the in-flight fetch: no IFU response and no miss request are produced, and the pipe accepts a new request afterwards."
+    },
+    {
+      "id": "ICACHE-MAINPIPE-009",
+      "component": "ICacheMainPipe",
+      "title": "maybeRvcMap alignment and fetch ranges",
+      "description": "The returned maybeRvcMap is aligned to the fetch coordinate, stitched from both lines of a cross-line fetch, masked to the actual fetch range, and the taken-control-flow offset and size are reported per fetch request."
+    },
+    {
+      "id": "ICACHE-MAINPIPE-010",
+      "component": "ICacheMainPipe",
+      "title": "ECC error reporting",
+      "description": "With ECC enabled, a data or metadata code mismatch sets toIfu.corrupt for the affected request/port and raises io.error one cycle later."
+    },
+    {
+      "id": "ICACHE-MAINPIPE-011",
+      "component": "ICacheMainPipe",
+      "title": "Second fetch cross-line, miss and refill exception",
+      "description": "Request 1 can itself cross a cache line: both of its lines are tracked independently, may each be requested from the miss unit, and a corrupt refill raises the exception for request 1 only."
+    },
+    {
+      "id": "ICACHE-MAINPIPE-012",
+      "component": "ICacheMainPipe",
+      "title": "ECC covers all data banks of both fetches",
+      "description": "With ECC enabled, a full-line fetch selects all eight data banks; a code mismatch on any bank of either request sets the corrupt flag for that request/port and reports one BEU error."
+    },
+    {
+      "id": "ICACHE-PREFETCHPIPE-001",
+      "component": "ICachePrefetchPipe",
+      "title": "Meta hit produces a way-lookup entry",
+      "description": "A prefetch whose page tag matches a metadata way writes one way-lookup entry with the per-line set indices, waymasks, RVC maps, ECC codes and the shared page tag."
+    },
+    {
+      "id": "ICACHE-PREFETCHPIPE-002",
+      "component": "ICachePrefetchPipe",
+      "title": "Meta miss requests the line from the miss unit",
+      "description": "A read port with no metadata hit (and no exception or MMIO) issues one miss request with the block address and set index of that line; a cross-line prefetch reads and can request both lines."
+    },
+    {
+      "id": "ICACHE-PREFETCHPIPE-003",
+      "component": "ICachePrefetchPipe",
+      "title": "ITLB miss stalls and resends",
+      "description": "An ITLB miss keeps the prefetch in stage 1, asserts pendingItlbMiss, keeps issuing the translation request and only writes the way lookup once the translation completes."
+    },
+    {
+      "id": "ICACHE-PREFETCHPIPE-004",
+      "component": "ICachePrefetchPipe",
+      "title": "Metadata read is resent after an ITLB miss",
+      "description": "If the metadata array is not ready when the translation finally completes, the pipe re-issues the metadata read and completes only after it is accepted."
+    },
+    {
+      "id": "ICACHE-PREFETCHPIPE-005",
+      "component": "ICachePrefetchPipe",
+      "title": "csrPfEnable gates the miss request only",
+      "description": "With prefetching disabled the way-lookup entry is still written (it must keep the main-pipe metadata coherent) but no miss request is issued."
+    },
+    {
+      "id": "ICACHE-PREFETCHPIPE-006",
+      "component": "ICachePrefetchPipe",
+      "title": "Soft prefetch does not steer the main pipe",
+      "description": "A software prefetch is not written to the way lookup and produces no miss request."
+    },
+    {
+      "id": "ICACHE-PREFETCHPIPE-007",
+      "component": "ICachePrefetchPipe",
+      "title": "Exceptions and MMIO are carried but not fetched",
+      "description": "ITLB page-fault/guest-page-fault/access-fault and pmp.mmio or an uncacheable PBMT are carried in the way-lookup entry (exception entry / MMIO flag) and suppress the miss request."
+    },
+    {
+      "id": "ICACHE-PREFETCHPIPE-008",
+      "component": "ICachePrefetchPipe",
+      "title": "Flush clears the pipe and the ITLB pipe",
+      "description": "A flush asserts itlbFlushPipe, prevents any way-lookup write for the killed request, and the pipe accepts and serves a new prefetch afterwards."
+    },
+    {
+      "id": "ICACHE-PREFETCHPIPE-009",
+      "component": "ICachePrefetchPipe",
+      "title": "Two-prefetch cases select the metadata reads",
+      "description": "The twoPrefetchCase encoding selects which two lines are read from the metadata array (same-line, overlap or interleave) and broadcasts the results to the two fetch blocks; both way-lookup ports are written when the case is valid."
+    },
+    {
+      "id": "ICACHE-PREFETCHPIPE-010",
+      "component": "ICachePrefetchPipe",
+      "title": "Miss-unit response updates the stage-1 metadata",
+      "description": "A refill seen while the prefetch is in stage 1 updates the metadata waymask (matching block) or clears a stale way (same way, different tag), and the way-lookup entry that follows carries the updated map."
+    },
+    {
+      "id": "ICACHE-PREFETCHPIPE-011",
+      "component": "ICachePrefetchPipe",
+      "title": "Miss-unit backpressure is honoured",
+      "description": "When the miss unit is not ready the prefetch waits in the request stage without losing the way-lookup entry, and completes once the miss request is accepted."
+    },
+    {
+      "id": "ICACHE-ICACHE-001",
+      "component": "ICache",
+      "title": "Cold miss refills and is returned to the IFU",
+      "description": "The first fetch of a block misses, issues exactly one TileLink acquire for that block, receives the line and returns the instruction bytes and fetch metadata to the IFU."
+    },
+    {
+      "id": "ICACHE-ICACHE-002",
+      "component": "ICache",
+      "title": "Resident line hits without a bus transaction",
+      "description": "A second fetch of a block that is already cached is served from the array without any TileLink acquire, and reports the raw hit to the IFU perf port."
+    },
+    {
+      "id": "ICACHE-ICACHE-003",
+      "component": "ICache",
+      "title": "Cross-line fetch fetches both lines",
+      "description": "A 64-byte fetch block that starts at offset 0x20 spans two cache lines; both are requested, and the IFU data takes line 0's high banks and line 1's low banks."
+    },
+    {
+      "id": "ICACHE-ICACHE-004",
+      "component": "ICache",
+      "title": "Two fetches are issued and returned together",
+      "description": "Two FTQ fetch requests in the same issue are both looked up, both refilled if missing, and returned in one IFU response with their own start addresses and FTQ indices."
+    },
+    {
+      "id": "ICACHE-ICACHE-005",
+      "component": "ICache",
+      "title": "RVC map and taken offset follow the fetch window",
+      "description": "The maybeRvcMap reported to the IFU is aligned to the fetch coordinate, the taken control-flow offset becomes the block size, and the map reflects the 32-bit instruction markers of the fetched line."
+    },
+    {
+      "id": "ICACHE-ICACHE-006",
+      "component": "ICache",
+      "title": "Set-associative replacement follows tree-PLRU",
+      "description": "Filling every way of a set and then fetching another block evicts exactly the tree-PLRU victim; a recently touched block stays resident and other sets are unaffected."
+    },
+    {
+      "id": "ICACHE-ICACHE-007",
+      "component": "ICache",
+      "title": "fence.i invalidates the instruction cache",
+      "description": "After fence.i every previously cached block must be fetched from memory again, and the new fetch returns the correct instructions."
+    },
+    {
+      "id": "ICACHE-ICACHE-008",
+      "component": "ICache",
+      "title": "Redirect flush drops an in-flight fetch",
+      "description": "A redirect asserted while a fetch is waiting for its refill suppresses the IFU response and the array write; the next fetch of that block misses and completes normally."
+    },
+    {
+      "id": "ICACHE-ICACHE-009",
+      "component": "ICache",
+      "title": "ITLB and back-end exceptions are reported",
+      "description": "Instruction page fault, guest page fault and access fault from the ITLB are forwarded to the IFU with the guest physical address and suppress the memory request; a back-end exception flag is carried separately."
+    },
+    {
+      "id": "ICACHE-ICACHE-010",
+      "component": "ICache",
+      "title": "PMP fault, MMIO and uncacheable memory bypass the cache",
+      "description": "A PMP instruction fault is reported as an access fault; pmp.mmio and an uncacheable PBMT memory type set the MMIO flag and never issue a refill."
+    },
+    {
+      "id": "ICACHE-ICACHE-011",
+      "component": "ICache",
+      "title": "Corrupt and denied refills raise exceptions",
+      "description": "A corrupt refill completes the fetch with a hardware-error exception and a denied refill with an access fault, instead of returning bad instructions as valid."
+    },
+    {
+      "id": "ICACHE-ICACHE-012",
+      "component": "ICache",
+      "title": "Software prefetch warms the array",
+      "description": "A prefetch.i request fetches its line through the miss unit without entering the way lookup; the following demand fetch of that block hits without any memory transaction."
+    },
+    {
+      "id": "ICACHE-ICACHE-013",
+      "component": "ICache",
+      "title": "WFI safety reflects outstanding misses",
+      "description": "The cache is WFI safe when idle, unsafe while a miss owns the memory channel, and safe again after the refill; a pending wfiReq holds back new acquires."
+    },
+    {
+      "id": "ICACHE-ICACHE-014",
+      "component": "ICache",
+      "title": "ECC control registers and error reporting",
+      "description": "The ECC control register can be read and written through the TileLink register interface (enable bit and injection errors); injecting a data-array ECC error makes the next fetch of that line report toIfu.corrupt and raise io.error with the faulting physical address."
+    },
+    {
+      "id": "ICACHE-ICACHE-015",
+      "component": "ICache",
+      "title": "Hardware prefetch owns the fill for the demand path",
+      "description": "The prefetch pipe looks up the metadata and issues the miss for the same FTQ fetch issue; the line is filled by a prefetch MSHR and the demand fetch that follows hits from the array without any further memory transaction."
+    },
+    {
+      "id": "ICACHE-ICACHE-016",
+      "component": "ICache",
+      "title": "Each physical line maps to exactly one set",
+      "description": "A cache line belongs to exactly one set (address bits above the block offset), so fetching one line never evicts or aliases a line of another set, and every set can hold and return its own line through the full address range."
+    },
+    {
+      "id": "ICACHE-ICACHE-017",
+      "component": "ICache",
+      "title": "A dual fetch updates replacement recency for both of its lines",
+      "description": "When one fetch issue carries two blocks, both blocks' recency is updated in their own replacer instances; the second request's touch never rewrites the first request's state, so later victims follow each set's own history."
+    },
+    {
+      "id": "ICACHE-ICACHE-018",
+      "component": "ICache",
+      "title": "The second fetch can cross a cache line",
+      "description": "Request 1 of a two-fetch issue may span two cache lines: its first line can hit while its second line is refilled, and the returned data takes the high banks from the resident line and the low banks from the refill."
+    },
+    {
+      "id": "ICACHE-ICACHE-019",
+      "component": "ICache",
+      "title": "Refill corrects a queued way-lookup entry",
+      "description": "When a prefetch request misses, the refill response rewrites the queued way-lookup entry in place, so the same tag adopts the filled way and the main-pipe fetch that consumes it hits without any further memory transaction."
+    },
+    {
+      "id": "ICACHE-ICACHE-020",
+      "component": "ICache",
+      "title": "Eviction invalidates a queued way-lookup entry",
+      "description": "When a refill lands in the way named by a queued way-lookup entry but for a different tag, the entry's waymask is cleared; the main pipe then misses and refetches instead of reading the block that stole the way."
+    },
+    {
+      "id": "ICACHE-ICACHE-021",
+      "component": "ICache",
+      "title": "Each SRAM can be tested independently through the BIST port",
+      "description": "The memory BIST port selects one SRAM array at a time (or all arrays together), the addressed array captures the read/write command and acknowledges it, so array test access does not depend on the cache pipeline being active."
+    },
+    {
+      "id": "ICACHE-ICACHE-022",
+      "component": "ICache",
+      "title": "The way-lookup queue preserves fetch order across the whole ring",
+      "description": "Single and dual enqueues advance the circular write pointer and the main pipe drains entries in fetch order at every pointer position; the second port of a dual fetch stores a full entry rather than aliasing the first one."
+    },
+    {
+      "id": "ICACHE-ICACHE-023",
+      "component": "ICache",
+      "title": "BPU stage-3 flush releases the way-lookup tail",
+      "description": "A BPU stage-3 redirect pointing at or beyond the queue tail drops the speculative way-lookup entry, while a redirect younger than the tail leaves it queued."
+    },
+    {
+      "id": "ICACHE-ICACHE-024",
+      "component": "ICache",
+      "title": "A way hit on the second half reads the right data banks",
+      "description": "A fetch starting at offset 0x20 reads banks 4..7 of the line; hitting each of the four ways in turn proves the per-way, per-bank read select of the data array."
+    },
+    {
+      "id": "ICACHE-ICACHE-025",
+      "component": "ICache",
+      "title": "RVC maps stitch when the second fetch starts after the first block",
+      "description": "In an Overlap2 two-fetch issue whose second request starts beyond the first fetch block's size, the first request's second-line RVC map is shifted right and stitched with the second request's map."
+    },
+    {
+      "id": "ICACHE-ICACHE-026",
+      "component": "ICache",
+      "title": "The prefetch MSHR pool holds the full population of outstanding lines",
+      "description": "Each outstanding prefetch line owns a distinct MSHR entry with its own issue and completion state; filling the pool and completing every entry independently shows that no two misses share tag/way state."
+    },
+    {
+      "id": "ICACHE-ICACHE-027",
+      "component": "ICache",
+      "title": "An ITLB miss stalls and resends the prefetch request",
+      "description": "While the ITLB reports a miss the prefetch pipe keeps re-issuing the translation request; once released, the fetch completes and returns the correct instructions."
+    },
+    {
+      "id": "ICACHE-ICACHE-028",
+      "component": "ICache",
+      "title": "Both lines of a cross-line miss are tracked as independent misses",
+      "description": "A fetch block that spans two lines issues one miss per line, and the two misses carry independent block addresses, set indices and completion state, so one line can return before the other."
+    },
+    {
+      "id": "ICACHE-DATABANK-006",
+      "component": "ICacheDataBank",
+      "title": "Each data-bank way is testable through the MBIST port",
+      "description": "The memory-BIST port selects one of the bank's four way macros at a time (or all together), the selected macro captures the test write, and the word written through the test port is what the cache's functional read path returns for that way."
+    },
+    {
+      "id": "ICACHE-METABANK-008",
+      "component": "ICacheMetaInterleavedBank",
+      "title": "The tag macro is testable through the MBIST port",
+      "description": "A memory-BIST write is captured by the bank's tag macro and read back through the test port, so the tag array can be tested without running the cache pipeline."
+    },
+    {
+      "id": "ICACHE-METAARRAY-009",
+      "component": "ICacheMetaArray",
+      "title": "Each interleaved tag macro is testable through the MBIST port",
+      "description": "The two interleaved banks are separate testable macros: a word written through one bank's test port is read back from that bank's test port and not from the other bank."
+    },
+    {
+      "id": "ICACHE-DATAARRAY-009",
+      "component": "ICacheDataArray",
+      "title": "Every data bank and way is testable through the MBIST port",
+      "description": "The memory-BIST port selects each of the eight banks and four ways independently; a test-written word reads back through the test port and, for the sampled bank/way, is also what a functional read of that set returns."
+    },
+    {
+      "id": "ICACHE-METABANK-009",
+      "component": "ICacheMetaInterleavedBank",
+      "title": "Every set and way marks and clears its own valid bit",
+      "description": "A refill of way w in set s sets exactly that (set, way) valid bit; the other 511 bits keep their state. flushAll clears every one of the 512 bits, so each bit is exercised in both directions."
+    },
+    {
+      "id": "ICACHE-METAARRAY-010",
+      "component": "ICacheMetaArray",
+      "title": "Every set and way marks and clears its own valid bit",
+      "description": "A refill of way w in set s sets exactly that (set, way) valid bit in the interleaved bank that owns s; the full flushAll clears all 1024 bits, so every valid bit is exercised in both directions."
+    },
+    {
+      "id": "ICACHE-ICACHE-029",
+      "component": "ICache",
+      "title": "Software prefetch is accepted from every load-unit port",
+      "description": "A retired prefetch.i hint can arrive on any of the three load-unit request ports; the port priority is 0 > 1 > 2, and the selected hint must request the cache line named by that port's virtual address."
+    },
+    {
+      "id": "ICACHE-MAINPIPE-013",
+      "component": "ICacheMainPipe",
+      "title": "A BPU redirect suppresses fetches at or younger than its target",
+      "description": "A stage-2 or stage-3 BPU redirect names an FTQ pointer; a fetch whose FTQ index is at or before that pointer is on the wrong path and must not be accepted, must not request a miss and must not return to the IFU, while a fetch older than the redirect proceeds normally."
+    },
+    {
+      "id": "ICACHE-MAINPIPE-014",
+      "component": "ICacheMainPipe",
+      "title": "Fetch metadata carries the FTQ's satp-flush tag and taken flag",
+      "description": "The IFU request must publish the FTQ's hasSatpFlush tag and, for the second fetch, its taken-CFI-valid flag unchanged, because the IFU uses them to decide when a page-table change and a taken control transfer take effect."
+    },
+    {
+      "id": "ICACHE-PREFETCHPIPE-012",
+      "component": "ICachePrefetchPipe",
+      "title": "A BPU redirect suppresses speculative prefetches at or younger than its target",
+      "description": "A stage-2 redirect kills a prefetch request in stage 0 and a stage-3 redirect kills one waiting in stage 1 (flushing the ITLB pipe with it). A retired software prefetch is not on the fetched path and is exempt from this speculative-redirect filter."
+    },
+    {
+      "id": "ICACHE-WAYLOOKUP-014",
+      "component": "ICacheWayLookup",
+      "title": "A corrupt refill does not rewrite queued results",
+      "description": "A refill carrying the TileLink corrupt flag is not installed in the cache, so it must not adopt its way mask or RVC map into a queued lookup result; the queued entry keeps its previous metadata."
+    },
+    {
+      "id": "ICACHE-PREFETCHPIPE-013",
+      "component": "ICachePrefetchPipe",
+      "title": "A corrupt refill is not a hit and does not revise stage-1 metadata",
+      "description": "A corrupt refill is not a valid cache fill: it must not be treated as a hit for the in-flight prefetch, must not suppress the miss request, and must not update the way mask or RVC map that is written to the way lookup."
+    },
+    {
+      "id": "ICACHE-WAYLOOKUP-015",
+      "component": "ICacheWayLookup",
+      "title": "A real two-fetch consumes two queued results in one cycle",
+      "description": "When the main pipe reports a real two-fetch, both output slots hold consecutive lookup results and one handshake pops both of them; the read pointer advances by two, so the next cycle presents the following pair and no entry is skipped or replayed."
+    },
+    {
+      "id": "ICACHE-PREFETCHPIPE-014",
+      "component": "ICachePrefetchPipe",
+      "title": "A refill in stage 2 satisfies the request without a new miss",
+      "description": "If the miss unit's response for the requested line arrives while the request is in stage 2 (before its own miss request is accepted), the prefetch must treat it as a hit, finish without a second miss request, and accept the next request."
+    },
+    {
+      "id": "ICACHE-DATABANK-007",
+      "component": "ICacheDataBank",
+      "title": "Reset restores every data way to its initial contents",
+      "description": "The macro's power-on reset sweep writes every set of every way array, so after reset a read of any set returns the initialized data and code rather than stale instruction bytes."
+    },
+    {
+      "id": "ICACHE-METABANK-010",
+      "component": "ICacheMetaInterleavedBank",
+      "title": "Reset invalidates every tag way",
+      "description": "Reset clears the validity array for all 128 sets and four ways, so no stale tag can produce a hit immediately after power-on or a warm reset."
+    },
+    {
+      "id": "ICACHE-METAARRAY-011",
+      "component": "ICacheMetaArray",
+      "title": "Reset invalidates both interleaved banks",
+      "description": "Both interleaved tag banks perform the reset clear, so every (set, way) in the full 256-set space is invalid after reset."
+    },
+    {
+      "id": "ICACHE-DATAARRAY-010",
+      "component": "ICacheDataArray",
+      "title": "Reset restores all eight data banks to zero",
+      "description": "Each bank's macro performs its own reset sweep; after reset every set of every bank reads back zero data and zero code, so no stale line survives a reset."
+    },
+    {
+      "id": "ICACHE-ICACHE-030",
+      "component": "ICache",
+      "title": "A pending software prefetch must not consume an unaccepted FTQ prefetch issue",
+      "description": "The FTQ prefetch channel is a decoupled request: a block may only be prefetched after the issue's handshake completes. A software prefetch pending at the same time must not be merged into that issue in a way that processes its second block (or translates it with the wrong page), because the issue may still be waiting and will be presented again."
+    },
+    {
+      "id": "ICACHE-METABANK-011",
+      "component": "ICacheMetaInterleavedBank",
+      "title": "The full invalidate wins over a refill in the same cycle",
+      "description": "flushAll is the fence.i path: after it no previously valid line may remain valid. A refill presented in the same cycle must be discarded rather than re-validating an entry, and a read sampled in that cycle still returns the entry that was valid when it was sampled."
+    },
+    {
+      "id": "ICACHE-METAARRAY-012",
+      "component": "ICacheMetaArray",
+      "title": "The full invalidate wins over a refill across both interleaved banks",
+      "description": "A refill and flushAll arriving together must leave every set of both interleaved banks invalid; the invalidate has priority, and the write port remains usable on the following cycle."
+    },
+    {
+      "id": "ICACHE-DATAARRAY-011",
+      "component": "ICacheDataArray",
+      "title": "A write in the read-response cycle preserves the accepted read",
+      "description": "The array macro registers the read address and drives the response in the following cycle. A refill write accepted on that edge updates the address register only for the cycle after it, so the read already accepted must still return its original word and the write must land afterwards."
+    },
+    {
+      "id": "ICACHE-WAYLOOKUP-020",
+      "component": "ICacheWayLookup",
+      "title": "A flush cancels the same-cycle write and its exception memo",
+      "description": "A write presented on the same edge as the unconditional flush is not enqueued; the queue must end empty, keep write.ready high, and must not retain the cancelled entry's ITLB exception memo. XFAIL: the RTL latches exceptionEntry from the cancelled write, so the empty queue never re-advertises write.ready and the prefetch pipe stalls until another full flush. The stale pointer itself does not leak into later entries."
+    },
+    {
+      "id": "ICACHE-MAINPIPE-015",
+      "component": "ICacheMainPipe",
+      "title": "The miss bubble reports exactly the fetches that wait for a refill",
+      "description": "perf.pendingMiss is high while an accepted fetch still has a line to fetch, including the wait for a miss to be issued and the refill it triggers, and low once the response can be formed. It is a stage-1 level rather than a response field, so it is asserted on every cycle the miss port is blocked, where the expected level is unambiguous; a response-cycle comparison would always read low."
+    }
+  ]
+}

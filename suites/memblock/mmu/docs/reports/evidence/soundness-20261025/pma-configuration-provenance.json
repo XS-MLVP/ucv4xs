@@ -1,0 +1,7 @@
+{
+  "reference": "manifest/pma-reset-reference.json",
+  "reference_sha256": "b8dd6342e3dc0275d180af8dc1878dd1df01e5f9fe7d5f11c53cd37fdeee9cb8",
+  "configuration_source": "/home/xyl/kmh-v3-test/XiangShan/src/main/scala/system/SoC.scala",
+  "configuration_source_sha256": "b17d00d3ad67fa991627150c358ccb5c5b3f8241b3e59e59aaa9e97a65908016",
+  "scope": "Pinned platform configuration source; not independent architecture proof."
+}

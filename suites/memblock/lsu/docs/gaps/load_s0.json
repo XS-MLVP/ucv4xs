@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "dut": "load_s0",
+  "top": "LoadUnitS0",
+  "run": "load-s0-final-01",
+  "rtl_sha256": {
+    "LoadUnitS0.sv": "154820ba63209a73bac57d08d51f007ce68d1f023cd358617c9406f508275986"
+  },
+  "metrics": {
+    "line_dut_only": {
+      "hit": 285,
+      "total": 285,
+      "percent": 100.0
+    },
+    "branch": {
+      "hit": 387,
+      "total": 388,
+      "percent": 99.74
+    },
+    "toggle_dut_only": {
+      "hit": 8546,
+      "total": 8582,
+      "percent": 99.58
+    },
+    "functional": {
+      "coverage": 100.0,
+      "cases": 35,
+      "checked": true
+    }
+  },
+  "uncovered": [
+    {
+      "id": "LS0-CMD-TIED-BITS",
+      "kind": "unreachable_structural",
+      "points": [
+        "io_dcacheReq_bits_cmd[0]",
+        "io_dcacheReq_bits_cmd[2]",
+        "io_dcacheReq_bits_cmd[3]",
+        "io_dcacheReq_bits_cmd[4]"
+      ],
+      "evidence": [
+        "LoadUnitS0.sv:1164 assign io_dcacheReq_bits_cmd = {3'h0, arb.accessType_instrType[2], 1'h0}",
+        "only bit 1 (prefetch) is driven; bits 0,2,3,4 are literal zeros"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "LS0-INSTRTYPE-TIED-BITS",
+      "kind": "unreachable_structural",
+      "points": [
+        "io_dcacheReq_bits_instrtype[2]",
+        "io_dcacheReq_bits_instrtype[3]"
+      ],
+      "evidence": [
+        "LoadUnitS0.sv:1169 assign io_dcacheReq_bits_instrtype = {2'h0, {2{instrType[2]}}}",
+        "the value is 0 or 3, so bits 2..3 are literal zeros"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "LS0-PERF-WIDTH",
+      "kind": "unreachable_structural",
+      "points": [
+        "io_perf_0_value[1..5]",
+        "io_perf_1_value[1..5]"
+      ],
+      "evidence": [
+        "LoadUnitS0.sv:1244-1245 assign io_perf_0/1_value = {5'h0, REG_1}",
+        "the counters carry a single boolean delayed by two cycles; the upper 5 bits are zero-extended"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "LS0-SCALAR-INSTRTYPE-ENC",
+      "kind": "unreachable_structural",
+      "points": [
+        "io_in_5_bits_accessType_instrType[1]"
+      ],
+      "evidence": [
+        "LoadUnitS0.sv:955 (io_ldin_bits_fuOpType[0] ? 3'h4 : 3'h1)",
+        "only 0b001 and 0b100 are produced, bit 1 is constant 0"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "LS0-SCALAR-PFT-HIGH-BIT",
+      "kind": "unreachable_structural",
+      "points": [
+        "io_in_5_bits_accessType_pftType[1]"
+      ],
+      "evidence": [
+        "LoadUnitS0.sv:957 ({1'h1, scalarIssue_bits_noQuery})",
+        "the high bit is the literal sw (1); only bit 0 tracks noQuery"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "LS0-FAST-ENTRANCE-BIT2",
+      "kind": "unreachable_structural",
+      "points": [
+        "io_in_2_bits_entrance[2]"
+      ],
+      "evidence": [
+        "LoadUnitS0.sv:812-813 ({entrance[7:3], entrance[2:0] | 3'h4})",
+        "bit 2 is OR'ed with 1, so it can never fall"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "LS0-BRANCH-INITIAL-RESET",
+      "kind": "tool_boundary",
+      "points": [
+        "LoadUnitS0.sv:657 if (reset)"
+      ],
+      "evidence": [
+        "the reset arm is inside ENABLE_INITIAL_REG_ and executes before the first test cycle",
+        "reset was still exercised: pipeOutValid is 0 after reset and the model clears with it"
+      ],
+      "required_supplement": false
+    }
+  ],
+  "semantic_findings": [
+    {
+      "id": "LS0-FAST-REPLAY-NO-TLB",
+      "finding": "the fastReplay lane is absent from tlbReq.valid and from the TLB address chain",
+      "evidence": [
+        "LoadUnitS0.sv:1138 tlbReq.valid = |{unalignTail, replayHi, replayLo, ldin} & dcacheReq.ready (fastReplay missing)",
+        "LoadUnitS0.sv:1141 the address mux falls through to the synthesized scalar vaddr",
+        "test tlb.excludes_fast_replay drives both cases"
+      ],
+      "impact": "documented as intended: a fast replay reads the DCache, it does not re-translate",
+      "defect_claim": false
+    },
+    {
+      "id": "LS0-YOUNG-REPLAY-DROPPED",
+      "finding": "a low-priority replay that is younger than the same-cycle ldin is dropped for that cycle",
+      "evidence": [
+        "LoadUnitS0.sv: replayIsLoPrio gating; replay_ready=0 in test order.younger_replay_dropped"
+      ],
+      "impact": "the LRQ keeps the replay pending; no data loss, one-cycle delay",
+      "defect_claim": false
+    },
+    {
+      "id": "LS0-NO-FLUSH-PORT",
+      "finding": "S0 has no redirect/flush input; the output register only advances on pipeIn_valid",
+      "evidence": [
+        "input list contains only 4 valids + dcacheReq_ready",
+        "LoadUnitS0.sv: pipeOutValid <= pipeIn_valid with reset only"
+      ],
+      "impact": "a backpressured beat is dropped by the upstream lane (ready low); S1 owns the kill",
+      "defect_claim": false
+    }
+  ],
+  "failures": [],
+  "status": "PASS_WITH_CLASSIFIED_STRUCTURAL_BOUNDARIES"
+}

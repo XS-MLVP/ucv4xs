@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "dut": "store_trigger",
+  "top": "MemTrigger_3",
+  "run": "store-trigger-initial-02",
+  "rtl_sha256": {"MemTrigger_3.sv": "a7eef0e3dac021db9f9cafc9ad80106b456a433544eefb5406213bcb270c0f70"},
+  "metrics": {
+    "line_dut_only": {"hit": 48, "total": 48, "percent": 100.0},
+    "branch": {"hit": 16, "total": 16, "percent": 100.0},
+    "toggle_dut_only": {"hit": 762, "total": 762, "percent": 100.0},
+    "functional": {"groups": 1, "coverage": 100.0, "checked": true, "samples": 32}
+  },
+  "uncovered": [],
+  "contract_corrections": [
+    {
+      "id": "MT-MATCHTYPE-WIDTH",
+      "finding": "matchType is a 2-bit field at this interface, not the 4-bit TrigMatchEnum",
+      "evidence": ["MemTrigger_3.sv:3 declares input [1:0] ..._matchType",
+                   "Trigger.scala:157-166 defines the 4-bit enum, but the distributed tdataVec field is truncated"],
+      "impact": "only EQ(0)=supported, NAPOT(1)=unsupported, GE(2), LT(3) exist; the 'reserved encoding' case was removed from the case inventory because it cannot be expressed at this port"
+    }
+  ],
+  "failures": [],
+  "status": "PASS"
+}

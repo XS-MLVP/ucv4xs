@@ -1,0 +1,46 @@
+{
+  "format": "human-event-and-bounded-native-evidence",
+  "title": "SC纠正较早条件方向后，执行前缀决定完整目标和学习资格",
+  "event": "同一真实查询的SC获得足够置信，与TAGE最终方向相反，包括弱provider改用Main基础方向的情形。SC方向不必与原provider符号相反。",
+  "effects": [
+    "条件最终跳转时选择条件目标，不得借用未执行间接分支的目标，也不得为它产生训练或目录更新。",
+    "条件最终不跳转时，较晚间接分支使用其自己的ITTAGE完整目标，并可接纳真实执行结果。",
+    "其他真实分支的共享SC特征学习可改变该决定，但不能偷偷训练目标分支的TAGE身份，也不能改写旧查询证据。"
+  ],
+  "native_programs": "bpuverify/bpu/case/statistical_prefix.py",
+  "original_requirement": "docs/bpu-statistical-prefix-contract.json",
+  "coverage_family": "kunminghu_v3.bpu.statistical-prefix",
+  "profiles": "两个合法指令入口类别各验证taken/not-taken，不枚举bank/set/way。",
+  "obligations_per_program": 8,
+  "new_feature_IDs": 0,
+  "model": "bpuverify/bpu/model/statistical_joint_sources.py",
+  "algorithm_ownership": "复用七个已有子模块算法和独立CommonHR/IMLI查询历史；每个预测器每拍只推进一次；没有第二份Main或SC算法。",
+  "weight_read": "按原S0查询冻结权重；公共反馈历史另行冻结，不能以R1修复后的历史重新读取旧权重。",
+  "learning_boundary": "SC T0接受训练读，下一边界T1学习的阈值和T2提案是post-edge可见量；提案在随后边界进入写缓冲。用纯preview预测，不移动真实驱动时钟或等待一拍匹配观察值。",
+  "undefined_payload": "独立Main原件中不存在候选时，其位置及派生SC数据不是零值约定；仍必须比较所有槽的SC使用资格、provider有效性和无资格阈值状态。真实候选的全部SC元数据和完整写掩码/有符号数据仍比较。禁止依据DUT valid决定是否检查。",
+  "gap_attribution": {
+    "measurement": "results/production-competing-correction-semantics-20261018-v1",
+    "BPU_and_SC_top_level_native_rows_already_hit": true,
+    "missing_composed_semantic_proof_before_this_batch": true,
+    "integrated_short_history_missing_rows": 2260,
+    "all2260rows_attributed_to_SC": false,
+    "source_chain": [
+      "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:385",
+      "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:417",
+      "XiangShan/src/main/scala/xiangshan/frontend/bpu/sc/Sc.scala:396",
+      "XiangShan/src/main/scala/xiangshan/frontend/bpu/sc/Sc.scala:426",
+      "XiangShan/src/main/scala/xiangshan/frontend/bpu/sc/Sc.scala:609"
+    ],
+    "native_line_gain": "由实际LCOV差集报告，不由定义、纯测试数量或模型复杂度推算。"
+  },
+  "scope": {
+    "original_nonzero_path": true,
+    "native_SC_learning_commonHR": "恢复后的invalid原历史；global/backward不学习，其他三类权重正常学习。",
+    "all_five_family_weight_learning_proven": false,
+    "early_learning": "本程序早级实际为fallthrough；不能把七算法组合等同于真实Ahead/MicroTAGE教导及fresh消费者闭环。",
+    "prediction_training_conflict": "检查每次实际提交的SC ready约束；本批暂停预测训练，没有授予真实冲突拒绝的覆盖。",
+    "complete_FTQ": false,
+    "RAS": false
+  },
+  "preservation": "保留349个旧功能合同、所有旧用例、普通FAIL及三个严格XFAIL；不修改RTL、DUT、系统SDK或原生分母。"
+}

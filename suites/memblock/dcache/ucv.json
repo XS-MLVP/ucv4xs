@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "suite": "dcache",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "duplicated_tag_array": {
+      "top": "DuplicatedTagArray",
+      "export_name": "DuplicatedTagArrayDut"
+    },
+    "ctrl_unit": {
+      "top": "CtrlUnit",
+      "export_name": "CtrlUnitDut"
+    },
+    "miss_ready_gen": {
+      "top": "MissReadyGen",
+      "export_name": "MissReadyGenDut"
+    },
+    "counter_filter": {
+      "top": "CounterFilter",
+      "export_name": "CounterFilterDut"
+    },
+    "miss_track": {
+      "top": "MissTrack",
+      "export_name": "MissTrackDut"
+    },
+    "load_pipe": {
+      "top": "LoadPipe",
+      "export_name": "LoadPipeDut"
+    },
+    "banked_data_array": {
+      "top": "BankedDataArray",
+      "export_name": "BankedDataArrayDut"
+    },
+    "main_pipe": {
+      "top": "MainPipe",
+      "export_name": "MainPipeDut"
+    },
+    "miss_queue": {
+      "top": "MissQueue",
+      "export_name": "MissQueueDut"
+    },
+    "probe_queue": {
+      "top": "ProbeQueue",
+      "export_name": "ProbeQueueDut"
+    },
+    "writeback_queue": {
+      "top": "WritebackQueue",
+      "export_name": "WritebackQueueDut"
+    },
+    "dcache": {
+      "top": "DCache",
+      "export_name": "DcacheDut"
+    },
+    "dcache_wrapper": {
+      "top": "DCacheWrapper",
+      "export_name": "DcacheWrapperDut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "tests"
+  ],
+  "process_isolation": "suite"
+}

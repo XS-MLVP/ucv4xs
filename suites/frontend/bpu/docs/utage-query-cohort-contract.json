@@ -1,0 +1,79 @@
+{
+  "format": "semantic-cohort-version-requirement-before-case",
+  "version": 1,
+  "existing_features": [
+    "BPU-UTAGE-006",
+    "BPU-UTAGE-015",
+    "BPU-UTAGE-022"
+  ],
+  "title": "相邻原查询分别消费自己读取的新旧分支版本，后续周转不能改写已经返回的原来源",
+  "event": "五个相邻并发查询跨过一次实际学习效果，读取发生在效果之前、同拍或之后；之后每次用一个新真实查询教导，累计产生一次保留容量的版本周转。",
+  "owner": "每个原查询独立的发生身份、读取祖先、匹配祖先和不可变读取元组；内容相等或相同PC不合并查询。",
+  "effect": "旧查询返回其旧版本，同拍读取保留旧版本，写后查询返回新版本。provider晋升改变方向，不同身份替换不能借用新身份；同向强化也必须保留正确原计数版本。",
+  "preservation": "已完成响应和原metadata保持不变；每个后续学习用新来源且只用一次，独立邻居和全部1024保护单元保持声明语义。",
+  "observation": "复用独立UtageReference、已有driver/monitor绑定和Scoreboard.drain；按实际接纳/读取/响应及native学习变化关联全部五个查询。实际保留写入逐次验证逻辑身份和计数，容量周转由真实写入与保留状态证明，而不是循环次数。",
+  "profiles": [
+    "同方向计数强化",
+    "长历史provider晋升并改变方向",
+    "另一逻辑身份替换"
+  ],
+  "ancestry_modes": [
+    "自身读取/匹配",
+    "不同读取与匹配祖先的代数对照"
+  ],
+  "gap_basis": {
+    "measurement": "results/production-semantic-lifetimes-20261018-v1",
+    "UTAGE_missing_native_rows": 1908,
+    "prior_proofs": [
+      "results/utage_read_lifetime_stage_20261018",
+      "results/utage_ancestor_lifetime_stage_20261018",
+      "bpuverify/utage/model/read_ownership.py"
+    ],
+    "new_obligation": "同一个实际并发burst必须直接区分before/same/after查询年龄，并在后续真实新来源周转后保留全部原响应，而不能把几个独立单查询用例拼成多年龄证明。",
+    "causal_limit": "不是全部1908零行的原因，不承诺新增行，也不把每个保留位置作为功能点。",
+    "zero_row_roles": {
+      "allocation-choice": {
+        "rows": 381,
+        "event": "新学习决定保护状态从分配值开始，而非继承旧身份",
+        "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/BypassShadowBuffer.scala:199"
+      },
+      "allocation-initialize": {
+        "rows": 381,
+        "event": "替换后的新分支获得本历史层级的初始保护强度",
+        "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/BypassShadowBuffer.scala:202"
+      },
+      "counter-change": {
+        "rows": 382,
+        "event": "有效教导使保护强度按贡献增减，不能影响其他逻辑上下文",
+        "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/BypassShadowBuffer.scala:203"
+      },
+      "saturation-choice": {
+        "rows": 382,
+        "event": "学习方向遇到保护强度边界时必须选择保持，不能回绕",
+        "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/SaturateCounter.scala:45"
+      },
+      "saturation-preserve": {
+        "rows": 382,
+        "event": "边界上的重复强化或削弱保留原保护状态",
+        "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/SaturateCounter.scala:65"
+      }
+    },
+    "new_case_relation": "本用例检查三种版本变更中保护状态与并发消费者的组合，并检查真实周转后所有非目标上下文保留；不把相同生成模板的所有零行视为已经执行。"
+  },
+  "scope": "独立UT的正常原始FastTrain教导语义；查询在其真实两周期响应窗内并发，周转后保留的是已完成响应快照，不声称硬件仍挂住这些查询。不是后端提交执行真值、完整FTQ年龄证明或所有物理位置。",
+  "new_predictor_reference_algorithms": 0,
+  "new_feature_IDs": 0,
+  "physical_enumeration": false,
+  "RTL_DUT_SDK_changes": false,
+  "production_layout": {
+    "model": "bpuverify/utage/model/query_cohort.py",
+    "checker": "bpuverify/utage/checker/query_cohort.py",
+    "case": "bpuverify/utage/case/query_cohort.py",
+    "testcase": "tests/utage/testcase/test_query_cohort.py",
+    "coverage": {
+      "factory": "bpuverify.utage.coverage.query_cohort",
+      "instance": "kunminghu_v3.utage.query-cohort-turnover"
+    },
+    "historical_stage": "results/utage_cohort_turnover_stage_20261018"
+  }
+}

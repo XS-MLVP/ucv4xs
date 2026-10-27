@@ -1,0 +1,108 @@
+{
+  "title": "UTAGE 模块闭环：有界放行恢复三个严格 XFAIL、修复文件系统假失败、补上表恢复情况、1099 行按 cell 归因",
+  "status": "module execution and coverage triage complete; 35 documented RTL differences and several combination gaps remain open",
+  "module": "MicroTage (Utage)",
+  "run": "results/utage-module-qualification-20261021-v8",
+  "baseline_run": "results/utage-module-baseline-20261020-v1",
+  "tests": "212 PASS / 35 FAIL / 3 XFAIL / 0 ERROR / 0 SKIP",
+  "functional_points": "12 PASS / 12 FAIL / 1 XFAIL of 25",
+  "functional_groups": "57/74 full",
+  "coverage": {
+    "lines": "9954/11053 (90.06%)",
+    "branches": "3248/3746 (86.71%)",
+    "toggles": "9144/13376 (68.36%)",
+    "baseline": {"lines": "9224/11053", "branches": "2882/3746", "toggles": "8369/13376"},
+    "delta": {"lines": 730, "branches": 366, "toggles": 775},
+    "honest_attribution": "all +730 lines are the per-cell useful-allocation arm and its if-head (365+365), now executed because the 512x2 update matrix completes instead of aborting at the first high-tag address; no new function and no denominator change"
+  },
+  "bounded_allowance": {
+    "why": "the independent semantic reference detected three already-declared defects earlier than the scenario's own exception, so the strict markers no longer matched and the scenarios either reported ordinary FAIL or aborted at the first difference",
+    "api": [
+      "allow_known_miss(pc, position): only an expected-hit/actual-miss at that exact logical address",
+      "allow_known_counter_difference(table, index): only the counter field of that exact cell"
+    ],
+    "properties": [
+      "event-set scoped, not a time window",
+      "only the declared field set is dropped; tag/position/base/other slots and cells are still compared",
+      "every use is recorded with tick, address/cell, expected/observed and reason",
+      "the scenario's own collector still decides the verdict and raises its declared exception",
+      "strict markers unchanged"
+    ],
+    "negative_controls": "tests/utage/scoreboard/test_bounded_allowances.py: 7 PASS",
+    "defects": {
+      "BPU-UTAGE-007": "tag width 8 bits in training/SRAM vs wider prediction tag; genuine allocated cell still checked",
+      "BPU-UTAGE-016": "ring-slot reuse clears the newly enqueued dirty entry; 112 failing cells retained and recorded",
+      "BPU-UTAGE-021": "768 lower high-address provider contexts blocked by 007; full matrix now completes"
+    }
+  },
+  "harness_fix": {
+    "symptom": "FileNotFoundError on the per-case isolated output directory turned strict XFAIL into FAIL",
+    "cause": "output_path().write_text() assumed the parent existed; the defect scenario writes evidence before raising",
+    "fix": [
+      "bpuverify/common/pytest/managed.py and evidence.py create the per-case directory before the test",
+      "bpuverify/common/env/artifacts.write_output() creates only the routed parent",
+      "5 direct write_text sites converted"
+    ],
+    "evidence": "tests/framework/test_artifact_paths.py: 20 PASS; targeted 3-case run yields 3 XFAIL"
+  },
+  "new_case": {
+    "file": "tests/utage/testcase/test_override_upper.py",
+    "points": ["BPU-UTAGE-008", "BPU-UTAGE-009"],
+    "kind": "missing case enumeration",
+    "matrix": "S2/S3 x positions 5/7",
+    "result": "4 PASS",
+    "distinction": "the saved snapshot carried tableId=1 (upper provider), so replay cannot be satisfied by re-reading an equal lower entry; a changed overrideStartPc changes only hit, while direction still comes from the saved snapshot",
+    "closed_arm": "dut/utage/UtageDut.v:1121"
+  },
+  "coverage_triage": {
+    "uncovered_lines": {
+      "count": 1099,
+      "file": "rtl/utage/BypassShadowBuffer.sv",
+      "second_table": "rtl/utage/BypassShadowBuffer_1.sv fully covered",
+      "templates": {"reward-increase": 367, "penalty-decrease": 366, "increase-head": 366},
+      "audit": "bpuverify/utage/coverage/useful_cell_audit.py: 1099/1099 matched, 0 unclassified, denominator unchanged, no functional credit",
+      "meaning": "per-cell copies of one allocation/reward/penalty template for cells updated in only one direction"
+    },
+    "uncovered_branches": {
+      "count": 498,
+      "aging_decrement_else": 497,
+      "aging_note": "one copy per (bank,set); 15 cells reached the decrement arm; BPU-UTAGE-017 verifies the semantics across 4 banks x 3 strengths",
+      "utage_dut_1133": {
+        "semantic": "saved upper-table provider supplies the taken bit for AheadBTB slot 2 in override",
+        "probe": "positions 6/7/8 x base 0/1 x S2/S3 did not select it",
+        "disposition": "open"
+      }
+    }
+  },
+  "combination_matrix": {
+    "document": "docs/utage-combination-matrix-20261020.md",
+    "verified": ["A x B read/feedback same beat", "A x A overlapping lookups", "B x B adjacent feedback", "B x C aging plus learning same beat", "B x D disable boundary", "B x I two tables", "B x H ring wrap and same slot", "A x H same-index bypass", "J x any reset"],
+    "open": [
+      "io.redirect is a dead knob: model expresses it and RTL gates a2 hit vectors with ~io_redirect, but UtagePorts never binds it and no case drives it",
+      "single-port SRAM force-write/read same-bank conflict degrades a read to miss; the model does not express this",
+      "feedback with S2/S3 override on the same beat",
+      "aging with disable on the same beat"
+    ]
+  },
+  "existing_failures": {
+    "count": 35,
+    "same_nodes_as_baseline": true,
+    "new_failures": [],
+    "note": "the four nodes that left the FAIL set are exactly the three strict XFAILs plus the allocation matrix that was blocked by 007"
+  },
+  "false_positive_false_negative_checks": [
+    "35 FAIL nodes are the exact baseline set; nothing was renamed, skipped or moved to XFAIL",
+    "the bounded allowance is negative-controlled for undeclared address, reverse difference, mixed fields, wrong cell and invalid declaration",
+    "the case-own collector still counts 112 failing cells for 016 and 768 blocked contexts for 021",
+    "coverage growth is attributed to per-cell allocation copies, not to new semantics",
+    "the 1099 rows are classified by exact templates and reject weakened source",
+    "the harness failure was fixed in the harness rather than by widening the strict marker"
+  ],
+  "constraints": [
+    "No RTL, DUT or system SDK change.",
+    "No new XFAIL, no skip.",
+    "No internal signal writes and no VPI seeding.",
+    "The selected run does not replace the retained full regression (24776 PASS / 88 FAIL / 3 XFAIL)."
+  ],
+  "goal_complete": false
+}

@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "dut": "load_s4",
+  "top": "LoadUnitS4",
+  "run": "load-s4-initial-02",
+  "rtl_sha256": {
+    "LoadUnitS4.sv": "0d0414322c44542f784f7f638357a51975b8e3d04c1ac02245410b72c3c4ba80"
+  },
+  "metrics": {
+    "line": {
+      "hit": 0,
+      "total": 0,
+      "note": "pure continuous assigns; Verilator line coverage instruments only procedural statements"
+    },
+    "branch": {
+      "hit": 0,
+      "total": 0
+    },
+    "toggle": {
+      "hit": 1168,
+      "total": 1168
+    },
+    "functional": {
+      "coverage": 100.0,
+      "cases": 6
+    }
+  },
+  "uncovered": [],
+  "failures": [],
+  "status": "PASS",
+  "semantic_findings": [
+    {
+      "id": "LS4-PURE-PASSTHROUGH",
+      "finding": "LoadUnitS4 contains no state and no logic beyond continuous assigns",
+      "evidence": [
+        "LoadUnitS4.sv:89-134 all assigns"
+      ],
+      "impact": "the UT proves 41 fields are forwarded bit-exactly; any future change that delays a field would break the head/tail merge and is caught here",
+      "defect_claim": false
+    }
+  ]
+}

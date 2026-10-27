@@ -1,0 +1,13 @@
+{
+  "features": ["BPU-UTAGE-008", "BPU-UTAGE-009"],
+  "title": "恢复整份原预测：两条分支的方向经验不能拼接不同年龄",
+  "missing_combination": "旧恢复程序只有单个短来源，旧双来源程序只检查学习。二者独立通过不能证明恢复整份温态短/长向量时，每条分支同时保留正确的读取年龄。",
+  "event": "三个真实来路依次查询同一取指窗口，每个来路都有两条已正常学习的条件分支；中级或晚级纠正选择其中一个仍存活原预测。可同时接受这份来路此前实际取得的完整反馈。",
+  "owner": "整份快照的短/长读取、各自指令位置及原计数共同属于一个读取发生，不得把年轻短经验与较老长经验拼接，也不得重读最新存储。",
+  "effect": "恢复使用指定原年龄的全部数据，再按恢复历史判断每个身份是否仍匹配；若同拍学习改变当前两个计数，恢复仍消费旧计数，新查询消费新计数。",
+  "observation": "三份原快照在两条分支上的计数都可区分。比较全部有效槽的provider/计数/方向、完整读取索引和匹配历史，检查实际公开输入顺序、原读取对象归属、全部原生写入及1024保护状态；随后逐一重新查询三个来路。",
+  "preservation": "查询及恢复本身不学习；并发反馈只教导原来路一次，另外两个来路及已完成的原件不变。空洞不取得有效来源。",
+  "programs": "中级/晚级恢复 × 短经验服务较早/较晚分支 × 原历史匹配/历史改变而拒绝 × 无学习/同时学习，共16个完整程序。沿用既有PC和三种历史，不枚举bank/set。",
+  "rules": ["normally-learned-three-vectors", "both-providers-discriminate-ages", "actual-four-input-lineage", "one-owned-read-for-whole-vector", "complete-recovery-vector", "independent-rematch-history", "current-versus-saved-content", "complete-native-write-mask", "all-protection-and-neighbors", "fresh-three-vector-consumers", "immutable-originals"],
+  "scope": "独立UTAGE公开输入切点，不证明完整BPU/FTQ调度可达性；不借此关闭4043个Ahead集成缺口或4022个保护缺口。无RTL、DUT、SDK或既有独立参考修改，不新增XFAIL/skip；case没有IO、边沿、固定等待或gather。"
+}

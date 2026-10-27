@@ -1,0 +1,2054 @@
+{
+  "nodeids": [
+    "tests/l2/test_bitmap.py::test_cache_hit_pass_and_fail",
+    "tests/l2/test_bitmap.py::test_cache_hit_selects_bit",
+    "tests/l2/test_bitmap.py::test_cache_miss_reads_and_refills",
+    "tests/l2/test_bitmap.py::test_pmp_denied",
+    "tests/l2/test_bitmap.py::test_level_merge",
+    "tests/l2/test_bitmap.py::test_napot_merge",
+    "tests/l2/test_bitmap.py::test_multiple_outstanding",
+    "tests/l2/test_bitmap.py::test_duplicate_requests",
+    "tests/l2/test_bitmap.py::test_flush",
+    "tests/l2/test_bitmap.py::test_wakeup",
+    "tests/l2/test_bitmap.py::test_wakeup_backpressure",
+    "tests/l2/test_bitmap.py::test_memory_extremes",
+    "tests/l2/test_bitmap.py::test_back_to_back_requests",
+    "tests/l2/test_bitmap.py::test_all_words_and_capacity",
+    "tests/l2/test_bitmap.py::test_wakeup_variants",
+    "tests/l2/test_bitmap.py::test_napot_variants",
+    "tests/l2/test_bitmap.py::test_level_variants",
+    "tests/l2/test_bitmap.py::test_multi_miss",
+    "tests/l2/test_bitmap.py::test_distinct_bitmap_misses_are_not_coalesced",
+    "tests/l2/test_bitmapcache.py::test_refill_then_hit_selects_byte",
+    "tests/l2/test_bitmapcache.py::test_miss_before_refill",
+    "tests/l2/test_bitmapcache.py::test_two_tags_same_set",
+    "tests/l2/test_bitmapcache.py::test_four_ways_and_eviction",
+    "tests/l2/test_bitmapcache.py::test_bclear_invalidates",
+    "tests/l2/test_bitmapcache.py::test_sfence_keeps_cache_and_bclear_invalidates",
+    "tests/l2/test_bitmapcache.py::test_response_backpressure",
+    "tests/l2/test_bitmapcache.py::test_all_orders",
+    "tests/l2/test_bitmapcache.py::test_data_extremes",
+    "tests/l2/test_bitmapcache.py::test_all_sets_and_bytes",
+    "tests/l2/test_bitmapcache.py::test_tag_extremes",
+    "tests/l2/test_bitmapcache.py::test_all_ways_and_data_patterns",
+    "tests/l2/test_hptw.py::test_hptw_4k_walk",
+    "tests/l2/test_hptw.py::test_hptw_2m_leaf",
+    "tests/l2/test_hptw.py::test_hptw_1g_leaf",
+    "tests/l2/test_hptw.py::test_hptw_invalid_root",
+    "tests/l2/test_hptw.py::test_hptw_misaligned_2m",
+    "tests/l2/test_hptw.py::test_hptw_pmp_denied",
+    "tests/l2/test_hptw.py::test_hptw_mem_mask_stall",
+    "tests/l2/test_hptw.py::test_hptw_sfence_mid_walk",
+    "tests/l2/test_hptw.py::test_hptw_csr_change",
+    "tests/l2/test_hptw.py::test_hptw_response_backpressure",
+    "tests/l2/test_hptw.py::test_hptw_level_hit_hint",
+    "tests/l2/test_hptw.py::test_hptw_l2_hit_hint",
+    "tests/l2/test_hptw.py::test_hptw_bitmap_check",
+    "tests/l2/test_hptw.py::test_hptw_l3_hit_hint",
+    "tests/l2/test_hptw.py::test_hptw_bit_sweep",
+    "tests/l2/test_hptw.py::test_hptw_bitmap_ptes_vector",
+    "tests/l2/test_hptw.py::test_hptw_pmp_mmio_fault",
+    "tests/l2/test_hptw.py::test_hptw_csr_sources",
+    "tests/l2/test_hptw.py::test_hptw_high_address",
+    "tests/l2/test_hptw.py::test_hptw_napot_pbmt",
+    "tests/l2/test_hptw.py::test_hptw_reset_without_flush_observation",
+    "tests/l2/test_l2mq.py::test_miss_queue_fifo_and_capacity",
+    "tests/l2/test_l2mq.py::test_miss_queue_flush_clears_all_entries",
+    "tests/l2/test_l2mq.py::test_miss_queue_simultaneous_enqueue_and_dequeue",
+    "tests/l2/test_l2mq.py::test_miss_queue_input_bit_patterns",
+    "tests/l2/test_l2mq.py::test_miss_queue_flush_source_bits",
+    "tests/l2/test_l2pf.py::test_prefetch_next_line_and_history_suppression",
+    "tests/l2/test_l2pf.py::test_prefetch_flush_and_s2xlate_classes",
+    "tests/l2/test_l2pf.py::test_prefetch_next_line_wrap",
+    "tests/l2/test_l2pf.py::test_prefetch_history_all_slots_and_index_wrap",
+    "tests/l2/test_l2pf.py::test_prefetch_input_and_csr_bits_toggle",
+    "tests/l2/test_l2pf.py::test_prefetch_output_and_history_high_bits",
+    "tests/l2/test_l2tlb.py::test_isa_misaligned_1g_leaf_is_page_fault",
+    "tests/l2/test_l2tlb.py::test_address_fence_preserves_neighbor",
+    "tests/l2/test_l2tlb.py::test_1g_leaf_through_real_walk",
+    "tests/l2/test_l2tlb.py::test_invalid_root_pte_reports_fault",
+    "tests/l2/test_l2tlb.py::test_pbmt_without_enable_faults",
+    "tests/l2/test_l2tlb.py::test_repeat_request_hits_pwt_cache",
+    "tests/l2/test_l2tlb.py::test_sfence_forces_walk",
+    "tests/l2/test_l2tlb.py::test_second_port_translation",
+    "tests/l2/test_l2tlb.py::test_4k_page_through_level0_walk",
+    "tests/l2/test_l2tlb.py::test_2m_page_through_level1_walk",
+    "tests/l2/test_l2tlb.py::test_memory_image_4k_walk",
+    "tests/l2/test_l2tlb.py::test_two_4k_translations",
+    "tests/l2/test_l2tlb.py::test_root_index_variants",
+    "tests/l2/test_l2tlb.py::test_2m_leaf_memory_image",
+    "tests/l2/test_l2tlb.py::test_misaligned_2m_leaf_faults",
+    "tests/l2/test_l2tlb.py::test_reserved_bits_fault",
+    "tests/l2/test_l2tlb.py::test_pmp_denied_access_fault",
+    "tests/l2/test_l2tlb.py::test_two_ports_same_cycle",
+    "tests/l2/test_l2tlb.py::test_four_outstanding_translations[0]",
+    "tests/l2/test_l2tlb.py::test_four_outstanding_translations[1]",
+    "tests/l2/test_l2tlb.py::test_four_outstanding_translations[7]",
+    "tests/l2/test_l2tlb.py::test_only_stage1_uses_vsatp",
+    "tests/l2/test_l2tlb.py::test_only_stage2_uses_hgatp",
+    "tests/l2/test_l2tlb.py::test_all_stage_identity_gstage",
+    "tests/l2/test_l2tlb.py::test_pmp_configuration_sweep",
+    "tests/l2/test_l2tlb.py::test_many_translations",
+    "tests/l2/test_l2tlb.py::test_cache_resident_replays",
+    "tests/l2/test_l2tlb.py::test_response_backpressure",
+    "tests/l2/test_l2tlb.py::test_sfence_during_walk",
+    "tests/l2/test_l2tlb.py::test_satp_change_with_sfence_rewalks",
+    "tests/l2/test_l2tlb.py::test_shared_leaf_line_hits",
+    "tests/l2/test_l2tlb.py::test_pmp_tor_allow",
+    "tests/l2/test_l2tlb.py::test_csr_decode_sweep",
+    "tests/l2/test_l2tlb.py::test_bitmap_enabled_walk",
+    "tests/l2/test_l2tlb.py::test_bitmap_clear",
+    "tests/l2/test_l2tlb.py::test_memory_latency_and_two_outstanding",
+    "tests/l2/test_l2tlb.py::test_sfence_scoped_variants",
+    "tests/l2/test_l2tlb.py::test_pmp_high_entries",
+    "tests/l2/test_l2tlb.py::test_bitmap_many_walks",
+    "tests/l2/test_l2tlb.py::test_all_stage_with_bitmap",
+    "tests/l2/test_l2tlb.py::test_bitmap_deny_and_allow",
+    "tests/l2/test_l2tlb.py::test_sfence_all_rewalks_after_pte_change",
+    "tests/l2/test_l2tlb.py::test_sfence_scoped_rewalks_after_pte_change",
+    "tests/l2/test_l2tlb.py::test_pma_cacheable_page_tables_walk",
+    "tests/l2/test_l2tlb.py::test_pma_non_cacheable_page_tables_fault",
+    "tests/l2/test_l2tlb.py::test_pma_unreadable_page_tables_fault",
+    "tests/l2/test_l2tlbwrapper.py::test_isa_misaligned_1g_leaf_is_page_fault",
+    "tests/l2/test_l2tlbwrapper.py::test_address_fence_preserves_neighbor",
+    "tests/l2/test_l2tlbwrapper.py::test_1g_leaf_through_real_walk",
+    "tests/l2/test_l2tlbwrapper.py::test_invalid_root_pte_reports_fault",
+    "tests/l2/test_l2tlbwrapper.py::test_pbmt_without_enable_faults",
+    "tests/l2/test_l2tlbwrapper.py::test_repeat_request_hits_pwt_cache",
+    "tests/l2/test_l2tlbwrapper.py::test_sfence_forces_walk",
+    "tests/l2/test_l2tlbwrapper.py::test_second_port_translation",
+    "tests/l2/test_l2tlbwrapper.py::test_4k_page_through_level0_walk",
+    "tests/l2/test_l2tlbwrapper.py::test_2m_page_through_level1_walk",
+    "tests/l2/test_l2tlbwrapper.py::test_memory_image_4k_walk",
+    "tests/l2/test_l2tlbwrapper.py::test_two_4k_translations",
+    "tests/l2/test_l2tlbwrapper.py::test_root_index_variants",
+    "tests/l2/test_l2tlbwrapper.py::test_2m_leaf_memory_image",
+    "tests/l2/test_l2tlbwrapper.py::test_misaligned_2m_leaf_faults",
+    "tests/l2/test_l2tlbwrapper.py::test_reserved_bits_fault",
+    "tests/l2/test_l2tlbwrapper.py::test_pmp_denied_access_fault",
+    "tests/l2/test_l2tlbwrapper.py::test_two_ports_same_cycle",
+    "tests/l2/test_l2tlbwrapper.py::test_only_stage1_uses_vsatp",
+    "tests/l2/test_l2tlbwrapper.py::test_only_stage2_uses_hgatp",
+    "tests/l2/test_l2tlbwrapper.py::test_all_stage_identity_gstage",
+    "tests/l2/test_l2tlbwrapper.py::test_pmp_configuration_sweep",
+    "tests/l2/test_l2tlbwrapper.py::test_many_translations",
+    "tests/l2/test_l2tlbwrapper.py::test_cache_resident_replays",
+    "tests/l2/test_l2tlbwrapper.py::test_response_backpressure",
+    "tests/l2/test_l2tlbwrapper.py::test_sfence_during_walk",
+    "tests/l2/test_l2tlbwrapper.py::test_satp_change_with_sfence_rewalks",
+    "tests/l2/test_l2tlbwrapper.py::test_shared_leaf_line_hits",
+    "tests/l2/test_l2tlbwrapper.py::test_pmp_tor_allow",
+    "tests/l2/test_l2tlbwrapper.py::test_csr_decode_sweep",
+    "tests/l2/test_l2tlbwrapper.py::test_bitmap_enabled_walk",
+    "tests/l2/test_l2tlbwrapper.py::test_bitmap_clear",
+    "tests/l2/test_l2tlbwrapper.py::test_memory_latency_and_two_outstanding",
+    "tests/l2/test_l2tlbwrapper.py::test_sfence_scoped_variants",
+    "tests/l2/test_l2tlbwrapper.py::test_pmp_high_entries",
+    "tests/l2/test_l2tlbwrapper.py::test_bitmap_many_walks",
+    "tests/l2/test_l2tlbwrapper.py::test_all_stage_with_bitmap",
+    "tests/l2/test_l2tlbwrapper.py::test_wrapper_reset_and_idle_pipeline",
+    "tests/l2/test_l2tlbwrapper.py::test_wrapper_perf_event_semantics",
+    "tests/l2/test_l2tlbwrapper.py::test_wrapper_perf_llptw_and_cache_hit_events",
+    "tests/l2/test_l2tlbwrapper.py::test_wrapper_backpressure_event_pipeline",
+    "tests/l2/test_l2tlbwrapper.py::test_wrapper_wfi_idle_and_outstanding",
+    "tests/l2/test_l2tlbwrapper.py::test_wrapper_wfi_blocks_memory_request",
+    "tests/l2/test_l2tlbwrapper.py::test_wrapper_distributed_csr_pmp",
+    "tests/l2/test_l2tlbwrapper.py::test_wrapper_pmp_denied",
+    "tests/l2/test_l2tlbwrapper.py::test_wrapper_bitmap_enabled_walk",
+    "tests/l2/test_l2tlbwrapper.py::test_wrapper_64_page_working_set",
+    "tests/l2/test_l2tlbwrapper.py::test_wrapper_back_to_back_shared_leaf_miss",
+    "tests/l2/test_l2tlbwrapper.py::test_wrapper_four_outstanding[0]",
+    "tests/l2/test_l2tlbwrapper.py::test_wrapper_four_outstanding[1]",
+    "tests/l2/test_l2tlbwrapper.py::test_wrapper_four_outstanding[7]",
+    "tests/l2/test_l2tlbwrapper.py::test_wrapper_shared_leaf_one_cycle_gap",
+    "tests/l2/test_llptw.py::test_normal_walk",
+    "tests/l2/test_llptw.py::test_vpn_low_offset",
+    "tests/l2/test_llptw.py::test_pmp_fault",
+    "tests/l2/test_llptw.py::test_sequential_requests",
+    "tests/l2/test_llptw.py::test_duplicate_request",
+    "tests/l2/test_llptw.py::test_out_backpressure",
+    "tests/l2/test_llptw.py::test_flush_mid_walk",
+    "tests/l2/test_llptw.py::test_mem_req_mask",
+    "tests/l2/test_llptw.py::test_bitmap_jump",
+    "tests/l2/test_llptw.py::test_capacity",
+    "tests/l2/test_llptw.py::test_lane_offsets",
+    "tests/l2/test_llptw.py::test_stage2_identity_translation",
+    "tests/l2/test_llptw.py::test_stage2_first_fault_gpf",
+    "tests/l2/test_llptw.py::test_stage2_first_fault_gaf",
+    "tests/l2/test_llptw.py::test_stage2_last_fault_gpf",
+    "tests/l2/test_llptw.py::test_stage2_last_fault_gaf",
+    "tests/l2/test_llptw.py::test_only_stage2_walk",
+    "tests/l2/test_llptw.py::test_cache_retry_on_duplicate",
+    "tests/l2/test_llptw.py::test_stage2_in_every_entry_slot",
+    "tests/l2/test_llptw.py::test_bitmap_in_every_entry_slot",
+    "tests/l2/test_llptw.py::test_cache_retry_in_every_entry_slot",
+    "tests/l2/test_llptw.py::test_stage2_first_perm_fault",
+    "tests/l2/test_llptw.py::test_stage2_first_perm_mxr_pass",
+    "tests/l2/test_llptw.py::test_two_concurrent_all_stage[0]",
+    "tests/l2/test_llptw.py::test_two_concurrent_all_stage[1]",
+    "tests/l2/test_llptw.py::test_two_concurrent_all_stage[3]",
+    "tests/l2/test_llptw.py::test_consecutive_normal_requests_no_pmp_alias",
+    "tests/l2/test_pmp.py::test_reset_defaults",
+    "tests/l2/test_pmp.py::test_cfg_coarsening_and_wr_mask",
+    "tests/l2/test_pmp.py::test_addr_modes_and_masks",
+    "tests/l2/test_pmp.py::test_napot_cfg_write_recomputes_mask",
+    "tests/l2/test_pmp.py::test_cfg_lock",
+    "tests/l2/test_pmp.py::test_addr_lock_and_tor_next_lock",
+    "tests/l2/test_pmp.py::test_all_pmp_entries",
+    "tests/l2/test_pmp.py::test_all_pma_entries",
+    "tests/l2/test_pmp.py::test_invalid_csr_ignored",
+    "tests/l2/test_pmp.py::test_mask_reference_sweep",
+    "tests/l2/test_pmp.py::test_all_bits_sweep",
+    "tests/l2/test_pmp.py::test_pma_cfg_byte_semantics",
+    "tests/l2/test_ptw.py::test_1g_leaf",
+    "tests/l2/test_ptw.py::test_2m_leaf",
+    "tests/l2/test_ptw.py::test_4k_hands_to_llptw",
+    "tests/l2/test_ptw.py::test_invalid_root_pte_fault",
+    "tests/l2/test_ptw.py::test_pbmt_without_enable_fault",
+    "tests/l2/test_ptw.py::test_ppn_high_access_fault",
+    "tests/l2/test_ptw.py::test_pmp_denied",
+    "tests/l2/test_ptw.py::test_l2_hit_hint",
+    "tests/l2/test_ptw.py::test_l3_hit_hint_sv48",
+    "tests/l2/test_ptw.py::test_sfence_mid_walk",
+    "tests/l2/test_ptw.py::test_response_backpressure",
+    "tests/l2/test_ptw.py::test_bitmap_check",
+    "tests/l2/test_ptw.py::test_bitmap_failure_flag",
+    "tests/l2/test_ptw.py::test_only_stage2",
+    "tests/l2/test_ptw.py::test_stage1_hit_merge",
+    "tests/l2/test_ptw.py::test_sv48_512g_leaf",
+    "tests/l2/test_ptw.py::test_sfence_mid_2m_walk",
+    "tests/l2/test_ptw.py::test_llptw_backpressure",
+    "tests/l2/test_ptw.py::test_request_while_busy",
+    "tests/l2/test_ptw.py::test_mem_mask_stall",
+    "tests/l2/test_ptw.py::test_satp_changed_rewalk",
+    "tests/l2/test_ptw.py::test_pmp_mmio_fault",
+    "tests/l2/test_ptw.py::test_csr_change_sources",
+    "tests/l2/test_ptw.py::test_bitmap_cached_pte",
+    "tests/l2/test_ptw.py::test_only_stage2_gpf",
+    "tests/l2/test_ptw.py::test_only_stage2_gaf",
+    "tests/l2/test_ptw.py::test_allstage_gpa_high_fault",
+    "tests/l2/test_ptw.py::test_bit_sweep",
+    "tests/l2/test_ptw.py::test_stage1_hit_full_gvpn_levels",
+    "tests/l2/test_ptw.py::test_normal_all_stage_identity_hptw",
+    "tests/l2/test_ptwcache.py::test_l0_hit_payload",
+    "tests/l2/test_ptwcache.py::test_l0_sector_selection",
+    "tests/l2/test_ptwcache.py::test_miss_then_refill_hit",
+    "tests/l2/test_ptwcache.py::test_l1_nonleaf_hit",
+    "tests/l2/test_ptwcache.py::test_l2_nonleaf_hit",
+    "tests/l2/test_ptwcache.py::test_l3_nonleaf_hit",
+    "tests/l2/test_ptwcache.py::test_sp_2m_hit",
+    "tests/l2/test_ptwcache.py::test_sp_1g_hit",
+    "tests/l2/test_ptwcache.py::test_sp_512g_hit",
+    "tests/l2/test_ptwcache.py::test_asid_filtering",
+    "tests/l2/test_ptwcache.py::test_only_stage1_asid",
+    "tests/l2/test_ptwcache.py::test_only_stage2_vmid",
+    "tests/l2/test_ptwcache.py::test_allstage_stage1_hit",
+    "tests/l2/test_ptwcache.py::test_fault_entry_caching",
+    "tests/l2/test_ptwcache.py::test_prefetch_flag",
+    "tests/l2/test_ptwcache.py::test_hptw_path",
+    "tests/l2/test_ptwcache.py::test_bitmap_jump",
+    "tests/l2/test_ptwcache.py::test_bitmap_allstage",
+    "tests/l2/test_ptwcache.py::test_full_sfence",
+    "tests/l2/test_ptwcache.py::test_scoped_sfence",
+    "tests/l2/test_ptwcache.py::test_hfence_paths",
+    "tests/l2/test_ptwcache.py::test_resp_backpressure",
+    "tests/l2/test_ptwcache.py::test_l0_ways_and_sets",
+    "tests/l2/test_ptwcache.py::test_bit_sweep",
+    "tests/l2/test_ptwcache.py::test_l0_sets_ways_sweep",
+    "tests/l2/test_ptwcache.py::test_l1_sets_ways",
+    "tests/l2/test_ptwcache.py::test_l2_l3_capacity",
+    "tests/l2/test_ptwcache.py::test_sp_capacity",
+    "tests/l2/test_ptwcache.py::test_bitmap_wakeup_update",
+    "tests/l2/test_ptwcache.py::test_refill_bypass",
+    "tests/l2/test_ptwcache.py::test_prefetch_levels",
+    "tests/l2/test_ptwcache.py::test_invalid_per_stage",
+    "tests/l2/test_ptwcache.py::test_is_first_passthrough",
+    "tests/l2/test_ptwcache.py::test_hptw_upper_levels",
+    "tests/l2/test_ptwcache.py::test_l0_all_ways_all_sets",
+    "tests/l2/test_ptwcache.py::test_l1_two_ways",
+    "tests/l2/test_ptwcache.py::test_l2_l3_fill_and_sweep",
+    "tests/l2/test_ptwcache.py::test_sp_fill_and_sweep",
+    "tests/l2/test_ptwcache.py::test_pbmt_and_perms",
+    "tests/l2/test_ptwcache.py::test_flush_all_caches",
+    "tests/l2/test_ptwcache.py::test_hfencev_all_levels",
+    "tests/l2/test_ptwcache.py::test_hfenceg_all_levels",
+    "tests/l2/test_ptwcache.py::test_pipeline_stall_ram_fallback",
+    "tests/l2/test_ptwcache.py::test_virt_sfence_all_levels",
+    "tests/l2/test_ptwcache.py::test_hfence_scope_variants",
+    "tests/l2/test_ptwcache.py::test_bitmap_reg_exhaustive",
+    "tests/l2/test_ptwcache.py::test_flush_mask_sweep",
+    "tests/l2/test_ptwcache.py::test_field_polarity_sweep",
+    "tests/l2/test_ptwcache.py::test_bitmap_wakeup_allstage",
+    "tests/l2/test_ptwcache.py::test_napot_64k_hit",
+    "tests/l2/test_ptwfilter.py::test_single_request_issue_match_and_release",
+    "tests/l2/test_ptwfilter.py::test_mismatched_response_does_not_complete_request",
+    "tests/l2/test_ptwfilter.py::test_duplicate_request_is_merged",
+    "tests/l2/test_ptwfilter.py::test_capacity_eight_and_drain",
+    "tests/l2/test_ptwfilter.py::test_flush_clears_pending_entries",
+    "tests/l2/test_ptwfilter.py::test_getgpa_flag_is_returned_with_matching_response",
+    "tests/l2/test_ptwfilter.py::test_stage_classes_match",
+    "tests/l2/test_ptwfilter.py::test_response_payload_extremes",
+    "tests/l2/test_ptwfilter.py::test_all_bits_toggle",
+    "tests/l2/test_ptwfilter.py::test_response_suppresses_same_cycle_issue",
+    "tests/l2/test_ptwfilter.py::test_csr_change_flush_sources",
+    "tests/l2/test_ptwfilter.py::test_inflight_counter_eight",
+    "tests/l2/test_ptwfilter.py::test_high_tag_match_directions",
+    "tests/l2/test_ptwfilter.py::test_only_s2_high_tag_match",
+    "tests/l2/test_ptwrepeater.py::test_request_to_ptw_and_response_hold",
+    "tests/l2/test_ptwrepeater.py::test_second_request_is_blocked_until_first_completes",
+    "tests/l2/test_ptwrepeater.py::test_flush_cancels_request_and_response_phases",
+    "tests/l2/test_ptwrepeater.py::test_stage_encodings_pass_through",
+    "tests/l2/test_ptwrepeater.py::test_payload_extremes",
+    "tests/l2/test_ptwrepeater.py::test_flush_sources",
+    "tests/l2/test_ptwrepeater.py::test_all_payload_bits_toggle",
+    "tests/test_verification_checks.py::test_success_checker_rejects_mutations[valid-0]",
+    "tests/test_verification_checks.py::test_success_checker_rejects_mutations[s1_v-0]",
+    "tests/test_verification_checks.py::test_success_checker_rejects_mutations[s1_pf-1]",
+    "tests/test_verification_checks.py::test_success_checker_rejects_mutations[s1_af-1]",
+    "tests/test_verification_checks.py::test_success_checker_rejects_mutations[s1_ppn-0]",
+    "tests/test_verification_checks.py::test_success_checker_rejects_mutations[s1_tag-0]",
+    "tests/test_verification_checks.py::test_success_checker_rejects_mutations[s2xlate-1]",
+    "tests/test_verification_checks.py::test_allstage_checker_rejects_guest_fault[s2_gpf]",
+    "tests/test_verification_checks.py::test_allstage_checker_rejects_guest_fault[s2_gaf]",
+    "tests/test_verification_checks.py::test_success_checker_rejects_missing_field",
+    "tests/test_verification_checks.py::test_prefetch_model_can_consume_after_flush",
+    "tests/test_verification_checks.py::test_page_memory_root_leaf_is_at_root",
+    "tests/test_verification_checks.py::test_static_audit_detects_shadowing_and_discarded_response",
+    "tests/tlb/test_tlb.py::test_bare_mode_passes_address_without_ptw",
+    "tests/tlb/test_tlb.py::test_m_mode_disables_translation_even_with_satp",
+    "tests/tlb/test_tlb.py::test_sv39_miss_requests_ptw_with_vpn",
+    "tests/tlb/test_tlb.py::test_ptw_refill_then_hit",
+    "tests/tlb/test_tlb.py::test_ptw_response_for_a_different_tag_does_not_satisfy_miss",
+    "tests/tlb/test_tlb.py::test_sfence_all_invalidates_refilled_stage1",
+    "tests/tlb/test_tlb.py::test_virtualized_stage2_miss_requests_all_stage",
+    "tests/tlb/test_tlb.py::test_instruction_page_fault_on_missing_x_permission",
+    "tests/tlb/test_tlb.py::test_instruction_page_fault_on_user_bit_mismatch",
+    "tests/tlb/test_tlb.py::test_instruction_page_fault_when_accessed_bit_is_clear",
+    "tests/tlb/test_tlb.py::test_access_fault_has_priority_over_page_fault",
+    "tests/tlb/test_tlb.py::test_fake_pte_is_reported_as_nonleaf_like",
+    "tests/tlb/test_tlb.py::test_nonleaf_pte_does_not_raise_a_leaf_page_fault",
+    "tests/tlb/test_tlb.py::test_clean_hit_and_sv48_mode",
+    "tests/tlb/test_tlb.py::test_two_stage_refill_and_hit",
+    "tests/tlb/test_tlb.py::test_sfence_all_asid_and_address_forms",
+    "tests/tlb/test_tlb.py::test_hfence_forms_do_not_clear_no_s2_entries",
+    "tests/tlb/test_tlb.py::test_sfence_and_hfence_forms",
+    "tests/tlb/test_tlb.py::test_many_ptw_refills_cover_all_storage_ways",
+    "tests/tlb/test_tlb.py::test_parent_storage_toggle_through_ptw",
+    "tests/tlb/test_tlb.py::test_only_stage1_and_only_stage2_ptw_classes",
+    "tests/tlb/test_tlb.py::test_only_stage2_refill_and_hit",
+    "tests/tlb/test_tlb.py::test_ptw_response_completes_outstanding_request",
+    "tests/tlb/test_tlb.py::test_two_stage_ptw_response_completes_outstanding_request",
+    "tests/tlb/test_tlb.py::test_gpa_replay_for_all_stage_gpf",
+    "tests/tlbfa/test_tlbfa_basic.py::test_reset_makes_storage_empty_and_idle",
+    "tests/tlbfa/test_tlbfa_basic.py::test_reset_removes_previous_translations",
+    "tests/tlbfa/test_tlbfa_basic.py::test_refill_install_and_next_cycle_hit",
+    "tests/tlbfa/test_tlbfa_basic.py::test_refill_is_invisible_in_the_same_cycle",
+    "tests/tlbfa/test_tlbfa_basic.py::test_refill_changes_only_target_way",
+    "tests/tlbfa/test_tlbfa_pages.py::test_4k_ppn_low_slot_selection",
+    "tests/tlbfa/test_tlbfa_pages.py::test_page_size_boundaries",
+    "tests/tlbfa/test_tlbfa_pages.py::test_valididx_gates_small_pages_and_superpages_use_all_sectors",
+    "tests/tlbfa/test_tlbfa_pages.py::test_napot_uses_vpn_low_four_bits",
+    "tests/tlbfa/test_tlbfa_pages.py::test_stage2_pte_index_gates_only_stage2_forms",
+    "tests/tlbfa/test_tlbfa_pages.py::test_translation_stage_and_context_are_part_of_the_cam_key",
+    "tests/tlbfa/test_tlbfa_pages.py::test_global_bit_only_relaxes_asid_and_stage2_ignores_stage1_asid",
+    "tests/tlbfa/test_tlbfa_pages.py::test_payload_metadata_is_returned_from_selected_entry",
+    "tests/tlbfa/test_tlbfa_pages.py::test_all_stage_fake_pte_with_stage2_exception_uses_s1_level",
+    "tests/tlbfa/test_tlbfa_refill.py::test_all_48_ways_are_independently_addressable",
+    "tests/tlbfa/test_tlbfa_refill.py::test_every_stage_and_page_form_can_be_installed",
+    "tests/tlbfa/test_tlbfa_refill.py::test_invalidated_way_can_be_refilled_with_a_new_translation",
+    "tests/tlbfa/test_tlbfa_sfence.py::test_sfence_all_address_all_asid_clears_no_s2_only",
+    "tests/tlbfa/test_tlbfa_sfence.py::test_sfence_all_address_specific_asid_preserves_global_and_other_asid",
+    "tests/tlbfa/test_tlbfa_sfence.py::test_sfence_exact_address_specific_asid_and_global_survival",
+    "tests/tlbfa/test_tlbfa_sfence.py::test_hfencev_all_clears_current_vmid_stage2",
+    "tests/tlbfa/test_tlbfa_sfence.py::test_hfencev_specific_asid_keeps_other_asid_and_global",
+    "tests/tlbfa/test_tlbfa_sfence.py::test_hfenceg_all_and_vmid_selection",
+    "tests/tlbfa/test_tlbfa_sfence.py::test_virtualized_sfence_uses_all_address_stage2_path",
+    "tests/tlbfa/test_tlbfa_sfence.py::test_bme_address_path_and_cmode_gate",
+    "tests/tlbfa/test_tlbfa_sfence.py::test_sfence_has_priority_over_same_cycle_refill",
+    "tests/tlbfa/test_tlbfa_sfence.py::test_address_specific_sfence_matches_every_translation_stage",
+    "tests/tlbfa/test_tlbfa_toggle.py::test_all_storage_bits_toggle_in_every_way",
+    "tests/tlbfa/test_tlbfa_toggle.py::test_request_vpn_and_stage_bits_toggle",
+    "tests/tlbfa/test_tlbfa_toggle.py::test_context_input_bits_toggle",
+    "tests/tlbfa/test_tlbfa_toggle.py::test_sfence_address_and_asid_bits_toggle",
+    "tests/tlbn/test_tlbn.py::test_reset_and_bare_mode",
+    "tests/tlbn/test_tlbn.py::test_no_translate_uses_pmp_addr",
+    "tests/tlbn/test_tlbn.py::test_miss_and_refill_hit",
+    "tests/tlbn/test_tlbn.py::test_superpage_ppn_merge",
+    "tests/tlbn/test_tlbn.py::test_asid_and_sfence",
+    "tests/tlbn/test_tlbn.py::test_load_permissions",
+    "tests/tlbn/test_tlbn.py::test_store_permissions",
+    "tests/tlbn/test_tlbn.py::test_ad_and_access_fault_priority",
+    "tests/tlbn/test_tlbn.py::test_pbmt_composition",
+    "tests/tlbn/test_tlbn.py::test_only_stage1",
+    "tests/tlbn/test_tlbn.py::test_only_stage2",
+    "tests/tlbn/test_tlbn.py::test_all_stage_clean",
+    "tests/tlbn/test_tlbn.py::test_all_stage_gpa_replay",
+    "tests/tlbn/test_tlbn.py::test_fake_and_nonleaf_marker",
+    "tests/tlbn/test_tlbn.py::test_four_port_concurrency",
+    "tests/tlbn/test_tlbn.py::test_response_duplicates",
+    "tests/tlbn/test_tlbn.py::test_pmp_outputs",
+    "tests/tlbn/test_tlbn.py::test_perf_events",
+    "tests/tlbn/test_tlbn.py::test_killed_request_is_dropped",
+    "tests/tlbn/test_tlbn.py::test_ports_two_and_three",
+    "tests/tlbn/test_tlbn.py::test_sector_valididx_lane",
+    "tests/tlbn/test_tlbn.py::test_sector_all_lanes",
+    "tests/tlbn/test_tlbn.py::test_sfence_forms",
+    "tests/tlbn/test_tlbn.py::test_only_stage2_vmid_filtering",
+    "tests/tlbn/test_tlbn.py::test_storage_capacity",
+    "tests/tlbn/test_tlbn.py::test_all_stage_store_fault",
+    "tests/tlbn/test_tlbn.py::test_sfence_after_fill",
+    "tests/tlbn/test_tlbn.py::test_gpa_replay_port_two",
+    "tests/tlbn/test_tlbn.py::test_redirect_clears_need_gpa",
+    "tests/tlbn/test_tlbn.py::test_hfence_asid_vmid_scoped",
+    "tests/wrapper/test_wrapper.py::test_reset_and_initial_plru_victim_sequence",
+    "tests/wrapper/test_wrapper.py::test_read_hit_changes_next_plru_victim",
+    "tests/wrapper/test_wrapper.py::test_refill_is_visible_next_cycle_and_same_cycle_read_is_suppressed",
+    "tests/wrapper/test_wrapper.py::test_contexts_and_stage_forms_pass_through",
+    "tests/wrapper/test_wrapper.py::test_sfence_and_hfence_pass_through_without_resetting_plru",
+    "tests/wrapper/test_wrapper.py::test_address_sfence_and_hfenceg_pass_through",
+    "tests/wrapper/test_wrapper.py::test_wrapper_storage_bits_toggle_in_every_selected_way",
+    "tests/wrapper/test_wrapper.py::test_wrapper_context_and_fence_input_bits_toggle"
+  ],
+  "items": [
+    {
+      "nodeid": "tests/l2/test_bitmap.py::test_cache_hit_pass_and_fail",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmap.py::test_cache_hit_selects_bit",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmap.py::test_cache_miss_reads_and_refills",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmap.py::test_pmp_denied",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmap.py::test_level_merge",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmap.py::test_napot_merge",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmap.py::test_multiple_outstanding",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmap.py::test_duplicate_requests",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmap.py::test_flush",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmap.py::test_wakeup",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmap.py::test_wakeup_backpressure",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmap.py::test_memory_extremes",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmap.py::test_back_to_back_requests",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmap.py::test_all_words_and_capacity",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmap.py::test_wakeup_variants",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmap.py::test_napot_variants",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmap.py::test_level_variants",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmap.py::test_multi_miss",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmap.py::test_distinct_bitmap_misses_are_not_coalesced",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmapcache.py::test_refill_then_hit_selects_byte",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmapcache.py::test_miss_before_refill",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmapcache.py::test_two_tags_same_set",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmapcache.py::test_four_ways_and_eviction",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmapcache.py::test_bclear_invalidates",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmapcache.py::test_sfence_keeps_cache_and_bclear_invalidates",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmapcache.py::test_response_backpressure",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmapcache.py::test_all_orders",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmapcache.py::test_data_extremes",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmapcache.py::test_all_sets_and_bytes",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmapcache.py::test_tag_extremes",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_bitmapcache.py::test_all_ways_and_data_patterns",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_hptw.py::test_hptw_4k_walk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_hptw.py::test_hptw_2m_leaf",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_hptw.py::test_hptw_1g_leaf",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_hptw.py::test_hptw_invalid_root",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_hptw.py::test_hptw_misaligned_2m",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_hptw.py::test_hptw_pmp_denied",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_hptw.py::test_hptw_mem_mask_stall",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_hptw.py::test_hptw_sfence_mid_walk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_hptw.py::test_hptw_csr_change",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_hptw.py::test_hptw_response_backpressure",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_hptw.py::test_hptw_level_hit_hint",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_hptw.py::test_hptw_l2_hit_hint",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_hptw.py::test_hptw_bitmap_check",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_hptw.py::test_hptw_l3_hit_hint",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_hptw.py::test_hptw_bit_sweep",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_hptw.py::test_hptw_bitmap_ptes_vector",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_hptw.py::test_hptw_pmp_mmio_fault",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_hptw.py::test_hptw_csr_sources",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_hptw.py::test_hptw_high_address",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_hptw.py::test_hptw_napot_pbmt",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_hptw.py::test_hptw_reset_without_flush_observation",
+      "category": "characterization"
+    },
+    {
+      "nodeid": "tests/l2/test_l2mq.py::test_miss_queue_fifo_and_capacity",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2mq.py::test_miss_queue_flush_clears_all_entries",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2mq.py::test_miss_queue_simultaneous_enqueue_and_dequeue",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2mq.py::test_miss_queue_input_bit_patterns",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2mq.py::test_miss_queue_flush_source_bits",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2pf.py::test_prefetch_next_line_and_history_suppression",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2pf.py::test_prefetch_flush_and_s2xlate_classes",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2pf.py::test_prefetch_next_line_wrap",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2pf.py::test_prefetch_history_all_slots_and_index_wrap",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2pf.py::test_prefetch_input_and_csr_bits_toggle",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2pf.py::test_prefetch_output_and_history_high_bits",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_isa_misaligned_1g_leaf_is_page_fault",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_address_fence_preserves_neighbor",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_1g_leaf_through_real_walk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_invalid_root_pte_reports_fault",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_pbmt_without_enable_faults",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_repeat_request_hits_pwt_cache",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_sfence_forces_walk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_second_port_translation",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_4k_page_through_level0_walk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_2m_page_through_level1_walk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_memory_image_4k_walk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_two_4k_translations",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_root_index_variants",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_2m_leaf_memory_image",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_misaligned_2m_leaf_faults",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_reserved_bits_fault",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_pmp_denied_access_fault",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_two_ports_same_cycle",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_four_outstanding_translations[0]",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_four_outstanding_translations[1]",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_four_outstanding_translations[7]",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_only_stage1_uses_vsatp",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_only_stage2_uses_hgatp",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_all_stage_identity_gstage",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_pmp_configuration_sweep",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_many_translations",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_cache_resident_replays",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_response_backpressure",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_sfence_during_walk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_satp_change_with_sfence_rewalks",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_shared_leaf_line_hits",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_pmp_tor_allow",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_csr_decode_sweep",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_bitmap_enabled_walk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_bitmap_clear",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_memory_latency_and_two_outstanding",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_sfence_scoped_variants",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_pmp_high_entries",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_bitmap_many_walks",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_all_stage_with_bitmap",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_bitmap_deny_and_allow",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_sfence_all_rewalks_after_pte_change",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_sfence_scoped_rewalks_after_pte_change",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_pma_cacheable_page_tables_walk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_pma_non_cacheable_page_tables_fault",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlb.py::test_pma_unreadable_page_tables_fault",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_isa_misaligned_1g_leaf_is_page_fault",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_address_fence_preserves_neighbor",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_1g_leaf_through_real_walk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_invalid_root_pte_reports_fault",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_pbmt_without_enable_faults",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_repeat_request_hits_pwt_cache",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_sfence_forces_walk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_second_port_translation",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_4k_page_through_level0_walk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_2m_page_through_level1_walk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_memory_image_4k_walk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_two_4k_translations",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_root_index_variants",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_2m_leaf_memory_image",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_misaligned_2m_leaf_faults",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_reserved_bits_fault",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_pmp_denied_access_fault",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_two_ports_same_cycle",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_only_stage1_uses_vsatp",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_only_stage2_uses_hgatp",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_all_stage_identity_gstage",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_pmp_configuration_sweep",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_many_translations",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_cache_resident_replays",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_response_backpressure",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_sfence_during_walk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_satp_change_with_sfence_rewalks",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_shared_leaf_line_hits",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_pmp_tor_allow",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_csr_decode_sweep",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_bitmap_enabled_walk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_bitmap_clear",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_memory_latency_and_two_outstanding",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_sfence_scoped_variants",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_pmp_high_entries",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_bitmap_many_walks",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_all_stage_with_bitmap",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_wrapper_reset_and_idle_pipeline",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_wrapper_perf_event_semantics",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_wrapper_perf_llptw_and_cache_hit_events",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_wrapper_backpressure_event_pipeline",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_wrapper_wfi_idle_and_outstanding",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_wrapper_wfi_blocks_memory_request",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_wrapper_distributed_csr_pmp",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_wrapper_pmp_denied",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_wrapper_bitmap_enabled_walk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_wrapper_64_page_working_set",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_wrapper_back_to_back_shared_leaf_miss",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_wrapper_four_outstanding[0]",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_wrapper_four_outstanding[1]",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_wrapper_four_outstanding[7]",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_l2tlbwrapper.py::test_wrapper_shared_leaf_one_cycle_gap",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_normal_walk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_vpn_low_offset",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_pmp_fault",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_sequential_requests",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_duplicate_request",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_out_backpressure",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_flush_mid_walk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_mem_req_mask",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_bitmap_jump",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_capacity",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_lane_offsets",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_stage2_identity_translation",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_stage2_first_fault_gpf",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_stage2_first_fault_gaf",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_stage2_last_fault_gpf",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_stage2_last_fault_gaf",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_only_stage2_walk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_cache_retry_on_duplicate",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_stage2_in_every_entry_slot",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_bitmap_in_every_entry_slot",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_cache_retry_in_every_entry_slot",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_stage2_first_perm_fault",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_stage2_first_perm_mxr_pass",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_two_concurrent_all_stage[0]",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_two_concurrent_all_stage[1]",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_two_concurrent_all_stage[3]",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_llptw.py::test_consecutive_normal_requests_no_pmp_alias",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_pmp.py::test_reset_defaults",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_pmp.py::test_cfg_coarsening_and_wr_mask",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_pmp.py::test_addr_modes_and_masks",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_pmp.py::test_napot_cfg_write_recomputes_mask",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_pmp.py::test_cfg_lock",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_pmp.py::test_addr_lock_and_tor_next_lock",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_pmp.py::test_all_pmp_entries",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_pmp.py::test_all_pma_entries",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_pmp.py::test_invalid_csr_ignored",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_pmp.py::test_mask_reference_sweep",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_pmp.py::test_all_bits_sweep",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_pmp.py::test_pma_cfg_byte_semantics",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_1g_leaf",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_2m_leaf",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_4k_hands_to_llptw",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_invalid_root_pte_fault",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_pbmt_without_enable_fault",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_ppn_high_access_fault",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_pmp_denied",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_l2_hit_hint",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_l3_hit_hint_sv48",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_sfence_mid_walk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_response_backpressure",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_bitmap_check",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_bitmap_failure_flag",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_only_stage2",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_stage1_hit_merge",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_sv48_512g_leaf",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_sfence_mid_2m_walk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_llptw_backpressure",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_request_while_busy",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_mem_mask_stall",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_satp_changed_rewalk",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_pmp_mmio_fault",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_csr_change_sources",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_bitmap_cached_pte",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_only_stage2_gpf",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_only_stage2_gaf",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_allstage_gpa_high_fault",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_bit_sweep",
+      "category": "structural-stress"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_stage1_hit_full_gvpn_levels",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptw.py::test_normal_all_stage_identity_hptw",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_l0_hit_payload",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_l0_sector_selection",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_miss_then_refill_hit",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_l1_nonleaf_hit",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_l2_nonleaf_hit",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_l3_nonleaf_hit",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_sp_2m_hit",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_sp_1g_hit",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_sp_512g_hit",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_asid_filtering",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_only_stage1_asid",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_only_stage2_vmid",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_allstage_stage1_hit",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_fault_entry_caching",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_prefetch_flag",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_hptw_path",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_bitmap_jump",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_bitmap_allstage",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_full_sfence",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_scoped_sfence",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_hfence_paths",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_resp_backpressure",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_l0_ways_and_sets",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_bit_sweep",
+      "category": "structural-stress"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_l0_sets_ways_sweep",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_l1_sets_ways",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_l2_l3_capacity",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_sp_capacity",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_bitmap_wakeup_update",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_refill_bypass",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_prefetch_levels",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_invalid_per_stage",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_is_first_passthrough",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_hptw_upper_levels",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_l0_all_ways_all_sets",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_l1_two_ways",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_l2_l3_fill_and_sweep",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_sp_fill_and_sweep",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_pbmt_and_perms",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_flush_all_caches",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_hfencev_all_levels",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_hfenceg_all_levels",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_pipeline_stall_ram_fallback",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_virt_sfence_all_levels",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_hfence_scope_variants",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_bitmap_reg_exhaustive",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_flush_mask_sweep",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_field_polarity_sweep",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_bitmap_wakeup_allstage",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwcache.py::test_napot_64k_hit",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwfilter.py::test_single_request_issue_match_and_release",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwfilter.py::test_mismatched_response_does_not_complete_request",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwfilter.py::test_duplicate_request_is_merged",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwfilter.py::test_capacity_eight_and_drain",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwfilter.py::test_flush_clears_pending_entries",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwfilter.py::test_getgpa_flag_is_returned_with_matching_response",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwfilter.py::test_stage_classes_match",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwfilter.py::test_response_payload_extremes",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwfilter.py::test_all_bits_toggle",
+      "category": "structural-stress"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwfilter.py::test_response_suppresses_same_cycle_issue",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwfilter.py::test_csr_change_flush_sources",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwfilter.py::test_inflight_counter_eight",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwfilter.py::test_high_tag_match_directions",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwfilter.py::test_only_s2_high_tag_match",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwrepeater.py::test_request_to_ptw_and_response_hold",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwrepeater.py::test_second_request_is_blocked_until_first_completes",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwrepeater.py::test_flush_cancels_request_and_response_phases",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwrepeater.py::test_stage_encodings_pass_through",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwrepeater.py::test_payload_extremes",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwrepeater.py::test_flush_sources",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/l2/test_ptwrepeater.py::test_all_payload_bits_toggle",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/test_verification_checks.py::test_success_checker_rejects_mutations[valid-0]",
+      "category": "checker-selftest"
+    },
+    {
+      "nodeid": "tests/test_verification_checks.py::test_success_checker_rejects_mutations[s1_v-0]",
+      "category": "checker-selftest"
+    },
+    {
+      "nodeid": "tests/test_verification_checks.py::test_success_checker_rejects_mutations[s1_pf-1]",
+      "category": "checker-selftest"
+    },
+    {
+      "nodeid": "tests/test_verification_checks.py::test_success_checker_rejects_mutations[s1_af-1]",
+      "category": "checker-selftest"
+    },
+    {
+      "nodeid": "tests/test_verification_checks.py::test_success_checker_rejects_mutations[s1_ppn-0]",
+      "category": "checker-selftest"
+    },
+    {
+      "nodeid": "tests/test_verification_checks.py::test_success_checker_rejects_mutations[s1_tag-0]",
+      "category": "checker-selftest"
+    },
+    {
+      "nodeid": "tests/test_verification_checks.py::test_success_checker_rejects_mutations[s2xlate-1]",
+      "category": "checker-selftest"
+    },
+    {
+      "nodeid": "tests/test_verification_checks.py::test_allstage_checker_rejects_guest_fault[s2_gpf]",
+      "category": "checker-selftest"
+    },
+    {
+      "nodeid": "tests/test_verification_checks.py::test_allstage_checker_rejects_guest_fault[s2_gaf]",
+      "category": "checker-selftest"
+    },
+    {
+      "nodeid": "tests/test_verification_checks.py::test_success_checker_rejects_missing_field",
+      "category": "checker-selftest"
+    },
+    {
+      "nodeid": "tests/test_verification_checks.py::test_prefetch_model_can_consume_after_flush",
+      "category": "checker-selftest"
+    },
+    {
+      "nodeid": "tests/test_verification_checks.py::test_page_memory_root_leaf_is_at_root",
+      "category": "checker-selftest"
+    },
+    {
+      "nodeid": "tests/test_verification_checks.py::test_static_audit_detects_shadowing_and_discarded_response",
+      "category": "checker-selftest"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_bare_mode_passes_address_without_ptw",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_m_mode_disables_translation_even_with_satp",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_sv39_miss_requests_ptw_with_vpn",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_ptw_refill_then_hit",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_ptw_response_for_a_different_tag_does_not_satisfy_miss",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_sfence_all_invalidates_refilled_stage1",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_virtualized_stage2_miss_requests_all_stage",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_instruction_page_fault_on_missing_x_permission",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_instruction_page_fault_on_user_bit_mismatch",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_instruction_page_fault_when_accessed_bit_is_clear",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_access_fault_has_priority_over_page_fault",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_fake_pte_is_reported_as_nonleaf_like",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_nonleaf_pte_does_not_raise_a_leaf_page_fault",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_clean_hit_and_sv48_mode",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_two_stage_refill_and_hit",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_sfence_all_asid_and_address_forms",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_hfence_forms_do_not_clear_no_s2_entries",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_sfence_and_hfence_forms",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_many_ptw_refills_cover_all_storage_ways",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_parent_storage_toggle_through_ptw",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_only_stage1_and_only_stage2_ptw_classes",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_only_stage2_refill_and_hit",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_ptw_response_completes_outstanding_request",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_two_stage_ptw_response_completes_outstanding_request",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlb/test_tlb.py::test_gpa_replay_for_all_stage_gpf",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_basic.py::test_reset_makes_storage_empty_and_idle",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_basic.py::test_reset_removes_previous_translations",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_basic.py::test_refill_install_and_next_cycle_hit",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_basic.py::test_refill_is_invisible_in_the_same_cycle",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_basic.py::test_refill_changes_only_target_way",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_pages.py::test_4k_ppn_low_slot_selection",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_pages.py::test_page_size_boundaries",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_pages.py::test_valididx_gates_small_pages_and_superpages_use_all_sectors",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_pages.py::test_napot_uses_vpn_low_four_bits",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_pages.py::test_stage2_pte_index_gates_only_stage2_forms",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_pages.py::test_translation_stage_and_context_are_part_of_the_cam_key",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_pages.py::test_global_bit_only_relaxes_asid_and_stage2_ignores_stage1_asid",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_pages.py::test_payload_metadata_is_returned_from_selected_entry",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_pages.py::test_all_stage_fake_pte_with_stage2_exception_uses_s1_level",
+      "category": "characterization"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_refill.py::test_all_48_ways_are_independently_addressable",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_refill.py::test_every_stage_and_page_form_can_be_installed",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_refill.py::test_invalidated_way_can_be_refilled_with_a_new_translation",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_sfence.py::test_sfence_all_address_all_asid_clears_no_s2_only",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_sfence.py::test_sfence_all_address_specific_asid_preserves_global_and_other_asid",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_sfence.py::test_sfence_exact_address_specific_asid_and_global_survival",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_sfence.py::test_hfencev_all_clears_current_vmid_stage2",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_sfence.py::test_hfencev_specific_asid_keeps_other_asid_and_global",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_sfence.py::test_hfenceg_all_and_vmid_selection",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_sfence.py::test_virtualized_sfence_uses_all_address_stage2_path",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_sfence.py::test_bme_address_path_and_cmode_gate",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_sfence.py::test_sfence_has_priority_over_same_cycle_refill",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_sfence.py::test_address_specific_sfence_matches_every_translation_stage",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_toggle.py::test_all_storage_bits_toggle_in_every_way",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_toggle.py::test_request_vpn_and_stage_bits_toggle",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_toggle.py::test_context_input_bits_toggle",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbfa/test_tlbfa_toggle.py::test_sfence_address_and_asid_bits_toggle",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_reset_and_bare_mode",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_no_translate_uses_pmp_addr",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_miss_and_refill_hit",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_superpage_ppn_merge",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_asid_and_sfence",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_load_permissions",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_store_permissions",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_ad_and_access_fault_priority",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_pbmt_composition",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_only_stage1",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_only_stage2",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_all_stage_clean",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_all_stage_gpa_replay",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_fake_and_nonleaf_marker",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_four_port_concurrency",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_response_duplicates",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_pmp_outputs",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_perf_events",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_killed_request_is_dropped",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_ports_two_and_three",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_sector_valididx_lane",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_sector_all_lanes",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_sfence_forms",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_only_stage2_vmid_filtering",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_storage_capacity",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_all_stage_store_fault",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_sfence_after_fill",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_gpa_replay_port_two",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_redirect_clears_need_gpa",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/tlbn/test_tlbn.py::test_hfence_asid_vmid_scoped",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/wrapper/test_wrapper.py::test_reset_and_initial_plru_victim_sequence",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/wrapper/test_wrapper.py::test_read_hit_changes_next_plru_victim",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/wrapper/test_wrapper.py::test_refill_is_visible_next_cycle_and_same_cycle_read_is_suppressed",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/wrapper/test_wrapper.py::test_contexts_and_stage_forms_pass_through",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/wrapper/test_wrapper.py::test_sfence_and_hfence_pass_through_without_resetting_plru",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/wrapper/test_wrapper.py::test_address_sfence_and_hfenceg_pass_through",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/wrapper/test_wrapper.py::test_wrapper_storage_bits_toggle_in_every_selected_way",
+      "category": "functional"
+    },
+    {
+      "nodeid": "tests/wrapper/test_wrapper.py::test_wrapper_context_and_fence_input_bits_toggle",
+      "category": "functional"
+    }
+  ],
+  "count": 408,
+  "unique": 408,
+  "categories": {
+    "functional": 390,
+    "characterization": 2,
+    "structural-stress": 3,
+    "checker-selftest": 13
+  }
+}

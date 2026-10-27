@@ -1,0 +1,25 @@
+{
+  "format": "semantic-requirement-before-case",
+  "version": 1,
+  "title": "迟到的双分支反馈必须完整更新实际执行前缀，不能只保留较晚分支的学习",
+  "event": "在真实预测时期保留两条分支均为内部置信度2的不跳转来源，另保留较早分支置信度5的跳转来源。两条分支迁移后，一部分学习已服务、一部分仍待写，再按两种顺序送入这两份正确原反馈。",
+  "owner": "每份反馈拥有自己的完整原metadata和逻辑历史；不跳转的较晚分支反馈包含较早分支实际执行且不跳转的前缀。当前版本和写回义务按分支身份关联，不属于旧发送端口。",
+  "effect": "所有原提示均不在相应饱和省写边界，正常提案必须完整发出。先正后负使当前A0先增到1再回0；先负后正使当前A0先保持0再增到1。B由6减至5，无关邻分支待写结果保持。",
+  "preservation": "两种到达顺序均保留另一分支的学习、独立历史、未执行后继分支和所有原快照；实际服务及四阶段十二个fresh消费者均完整比较。",
+  "crosses": {"arrival_order": ["positive-then-negative", "negative-then-positive"], "learning_boundary": ["adjacent-acceptance", "after-first-learning"]},
+  "preparation": "只用公开真实查询/反馈把A提升到2，再关闭TAGE使Main恢复到0；重新启用后额外接纳一份A2/B2查询专门保留，用另一份查询执行准备NT反馈并恢复既有前态。保留来源不被准备反馈消费或退休，不复活已退休记录。不得修改metadata或给模型/RTL灌入状态。",
+  "schedule": "相邻接纳与第一笔实际提案已观察、独立学习已成熟后的第二次接纳分开验证；两者都保持实际读竞争，不允许任何额外服务。后一种不使用固定延时。",
+  "gap_basis": {"file": "rtl/bpu/WriteBuffer_8.sv", "measurement": "results/owned-state-full-measurement-audit-20261018-v1/current-source-event-review.json", "open_rows": 103, "event": "pending.rewrite", "limit": "103行是尚待闭合的关联集合，不保证本程序命中全部路径，也不预先豁免任何行。"},
+  "source_chain": [
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/tage/Tage.scala:421",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/tage/Tage.scala:439",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/WriteBuffer.scala:163",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/WriteBuffer.scala:231"
+  ],
+  "scope": "现有BPU预测器组件切点的真实预测来源和正确执行前缀，不外推完整FTQ年龄、取消或后端合法性。旧饱和提示shouldHold差异继续保留，不修改黄金算法、RTL或普通失败。",
+  "features": ["BPU-INT-086"],
+  "new_feature_IDs": 0,
+  "new_predictor_reference_algorithms": 0,
+  "physical_coordinate_enumeration": false,
+  "SDK_RTL_DUT_changes": false
+}

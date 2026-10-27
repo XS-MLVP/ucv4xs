@@ -1,0 +1,3949 @@
+{
+  "format": "xreactor-functional-coverage",
+  "version": 2,
+  "coverage": 100.0,
+  "covered": true,
+  "groups": [
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "tlbfa_lookup",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "hit_page_level",
+            "source": "hit_page_level",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "1g",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "1g"
+                  ]
+                }
+              },
+              {
+                "name": "2m",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "2m"
+                  ]
+                }
+              },
+              {
+                "name": "4k",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "4k"
+                  ]
+                }
+              },
+              {
+                "name": "512g",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "512g"
+                  ]
+                }
+              },
+              {
+                "name": "napot64k",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "napot64k"
+                  ]
+                }
+              },
+              {
+                "name": "not_applicable",
+                "kind": "ignore",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    -1
+                  ]
+                }
+              }
+            ],
+            "description": "命中的条目代表 4KB、2MB、1GB、512GB 或 NAPOT 64KB 页。"
+          },
+          {
+            "name": "hit_qualifier",
+            "source": "hit_qualifier",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "asid_match",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "asid_match"
+                  ]
+                }
+              },
+              {
+                "name": "global",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "global"
+                  ]
+                }
+              },
+              {
+                "name": "not_applicable",
+                "kind": "ignore",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    -1
+                  ]
+                }
+              },
+              {
+                "name": "pteidx_armed",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "pteidx_armed"
+                  ]
+                }
+              },
+              {
+                "name": "single_sector",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "single_sector"
+                  ]
+                }
+              },
+              {
+                "name": "stage2_asid_ignored",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "stage2_asid_ignored"
+                  ]
+                }
+              }
+            ],
+            "description": "命中路径依赖的语义条件：全局位、ASID 匹配、onlyStage2 忽略 ASID、PTE 索引门控或单子页有效位。"
+          },
+          {
+            "name": "outcome",
+            "source": "outcome",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "hit",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "hit"
+                  ]
+                }
+              },
+              {
+                "name": "miss",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "miss"
+                  ]
+                }
+              }
+            ],
+            "description": "VPN 与上下文是否在存储中命中。"
+          },
+          {
+            "name": "reject_reason",
+            "source": "reject_reason",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "asid",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "asid"
+                  ]
+                }
+              },
+              {
+                "name": "invalid_way",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "invalid_way"
+                  ]
+                }
+              },
+              {
+                "name": "no_candidate",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "no_candidate"
+                  ]
+                }
+              },
+              {
+                "name": "not_applicable",
+                "kind": "ignore",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    -1
+                  ]
+                }
+              },
+              {
+                "name": "pteidx",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "pteidx"
+                  ]
+                }
+              },
+              {
+                "name": "refill_same_cycle",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "refill_same_cycle"
+                  ]
+                }
+              },
+              {
+                "name": "s2xlate",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "s2xlate"
+                  ]
+                }
+              },
+              {
+                "name": "tag",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "tag"
+                  ]
+                }
+              },
+              {
+                "name": "valididx",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "valididx"
+                  ]
+                }
+              },
+              {
+                "name": "vmid",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "vmid"
+                  ]
+                }
+              }
+            ],
+            "description": "未命中时被拒绝的原因：无候选、way 无效、翻译阶段、ASID、VMID、标签、子页有效位、PTE 索引，或同拍回填屏蔽。"
+          },
+          {
+            "name": "translation_context",
+            "source": "translation_context",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "bare_no_s2",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "bare_no_s2"
+                  ]
+                }
+              },
+              {
+                "name": "stage1_only",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "stage1_only"
+                  ]
+                }
+              },
+              {
+                "name": "stage2_only",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "stage2_only"
+                  ]
+                }
+              },
+              {
+                "name": "two_stage",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "two_stage"
+                  ]
+                }
+              }
+            ],
+            "description": "查找发生在无第二阶段、仅 VS 阶段、仅 G 阶段或两阶段合并的翻译上下文中。"
+          }
+        ],
+        "crosses": [
+          {
+            "name": "context_x_outcome",
+            "points": [
+              "translation_context",
+              "outcome"
+            ],
+            "include": null,
+            "ignore": [],
+            "illegal": [],
+            "iff": null,
+            "at_least": 1,
+            "weight": 1,
+            "goal": 100.0,
+            "max_auto_bins": 4096,
+            "description": "每个翻译上下文都同时观察到命中与未命中，避免只测到单一结果。"
+          }
+        ],
+        "description": "TLBFA 查找：上下文、页大小、命中/拒绝原因与语义限定条件。"
+      },
+      "schema_digest": "1fb965912507e7f3874d3eadbd3267ffea0b28b61ed58dca95ef44d5cf8291cd",
+      "instance": "tlbfa.lookup",
+      "illegal_policy": "raise",
+      "samples": 353,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 353,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "bare_no_s2": 221,
+            "stage1_only": 28,
+            "stage2_only": 61,
+            "two_stage": 43
+          },
+          "provenance": {
+            "bare_no_s2": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 221,
+                "first": null,
+                "last": null
+              }
+            },
+            "stage2_only": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 61,
+                "first": null,
+                "last": null
+              }
+            },
+            "stage1_only": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 28,
+                "first": null,
+                "last": null
+              }
+            },
+            "two_stage": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 43,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "translation_context",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 353,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "hit": 188,
+            "miss": 165
+          },
+          "provenance": {
+            "miss": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 165,
+                "first": null,
+                "last": null
+              }
+            },
+            "hit": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 188,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "outcome",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 353,
+          "gated": 0,
+          "ignored": 165,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "1g": 6,
+            "2m": 9,
+            "4k": 146,
+            "512g": 6,
+            "napot64k": 21,
+            "not_applicable": 165
+          },
+          "provenance": {
+            "4k": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 146,
+                "first": null,
+                "last": null
+              }
+            },
+            "2m": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 9,
+                "first": null,
+                "last": null
+              }
+            },
+            "1g": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 6,
+                "first": null,
+                "last": null
+              }
+            },
+            "512g": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 6,
+                "first": null,
+                "last": null
+              }
+            },
+            "napot64k": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 21,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "hit_page_level",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 353,
+          "gated": 0,
+          "ignored": 188,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "asid": 6,
+            "invalid_way": 21,
+            "no_candidate": 3,
+            "not_applicable": 188,
+            "pteidx": 1,
+            "refill_same_cycle": 1,
+            "s2xlate": 50,
+            "tag": 76,
+            "valididx": 2,
+            "vmid": 5
+          },
+          "provenance": {
+            "no_candidate": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "refill_same_cycle": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "tag": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 76,
+                "first": null,
+                "last": null
+              }
+            },
+            "valididx": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "s2xlate": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 50,
+                "first": null,
+                "last": null
+              }
+            },
+            "pteidx": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "asid": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 6,
+                "first": null,
+                "last": null
+              }
+            },
+            "vmid": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 5,
+                "first": null,
+                "last": null
+              }
+            },
+            "invalid_way": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 21,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "reject_reason",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 353,
+          "gated": 0,
+          "ignored": 165,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "asid_match": 141,
+            "global": 9,
+            "not_applicable": 165,
+            "pteidx_armed": 17,
+            "single_sector": 9,
+            "stage2_asid_ignored": 12
+          },
+          "provenance": {
+            "asid_match": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 141,
+                "first": null,
+                "last": null
+              }
+            },
+            "single_sector": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 9,
+                "first": null,
+                "last": null
+              }
+            },
+            "stage2_asid_ignored": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 12,
+                "first": null,
+                "last": null
+              }
+            },
+            "pteidx_armed": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 17,
+                "first": null,
+                "last": null
+              }
+            },
+            "global": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 9,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "hit_qualifier",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [
+        {
+          "samples": 353,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "[\"bare_no_s2\",\"hit\"]": 116,
+            "[\"bare_no_s2\",\"miss\"]": 105,
+            "[\"stage1_only\",\"hit\"]": 10,
+            "[\"stage1_only\",\"miss\"]": 18,
+            "[\"stage2_only\",\"hit\"]": 40,
+            "[\"stage2_only\",\"miss\"]": 21,
+            "[\"two_stage\",\"hit\"]": 22,
+            "[\"two_stage\",\"miss\"]": 21
+          },
+          "provenance": {
+            "[\"bare_no_s2\",\"miss\"]": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 105,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"bare_no_s2\",\"hit\"]": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 116,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"stage2_only\",\"hit\"]": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 40,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"stage2_only\",\"miss\"]": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 21,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"stage1_only\",\"hit\"]": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 10,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"two_stage\",\"hit\"]": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 22,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"two_stage\",\"miss\"]": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 21,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"stage1_only\",\"miss\"]": {
+              "5928c6d958c14f0a871f82172143b228": {
+                "count": 18,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "context_x_outcome",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "bins": [
+            {
+              "id": "[\"bare_no_s2\",\"hit\"]",
+              "tuple": [
+                "bare_no_s2",
+                "hit"
+              ],
+              "label": "bare_no_s2 × hit",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"bare_no_s2\",\"miss\"]",
+              "tuple": [
+                "bare_no_s2",
+                "miss"
+              ],
+              "label": "bare_no_s2 × miss",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"stage1_only\",\"hit\"]",
+              "tuple": [
+                "stage1_only",
+                "hit"
+              ],
+              "label": "stage1_only × hit",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"stage1_only\",\"miss\"]",
+              "tuple": [
+                "stage1_only",
+                "miss"
+              ],
+              "label": "stage1_only × miss",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"stage2_only\",\"hit\"]",
+              "tuple": [
+                "stage2_only",
+                "hit"
+              ],
+              "label": "stage2_only × hit",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"stage2_only\",\"miss\"]",
+              "tuple": [
+                "stage2_only",
+                "miss"
+              ],
+              "label": "stage2_only × miss",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"two_stage\",\"hit\"]",
+              "tuple": [
+                "two_stage",
+                "hit"
+              ],
+              "label": "two_stage × hit",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"two_stage\",\"miss\"]",
+              "tuple": [
+                "two_stage",
+                "miss"
+              ],
+              "label": "two_stage × miss",
+              "kind": "normal",
+              "at_least": 1
+            }
+          ]
+        }
+      ],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "5928c6d958c14f0a871f82172143b228": {
+          "run_id": "5928c6d958c14f0a871f82172143b228",
+          "instance": "tlbfa.lookup",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "5928c6d958c14f0a871f82172143b228",
+      "snapshot_id": "b945b8d759e17720bfa9fff6aa5cd7f2792016d2c283826810511cf3072d0426"
+    },
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "tlbfa_refill",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "refill_kind",
+            "source": "refill_kind",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "bare_no_s2",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "bare_no_s2"
+                  ]
+                }
+              },
+              {
+                "name": "stage1_only",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "stage1_only"
+                  ]
+                }
+              },
+              {
+                "name": "stage2_only",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "stage2_only"
+                  ]
+                }
+              },
+              {
+                "name": "two_stage",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "two_stage"
+                  ]
+                }
+              }
+            ],
+            "description": "PTW 回填的翻译阶段形态。"
+          },
+          {
+            "name": "refill_page",
+            "source": "refill_page",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "1g",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "1g"
+                  ]
+                }
+              },
+              {
+                "name": "2m",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "2m"
+                  ]
+                }
+              },
+              {
+                "name": "4k",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "4k"
+                  ]
+                }
+              },
+              {
+                "name": "512g",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "512g"
+                  ]
+                }
+              },
+              {
+                "name": "napot64k",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "napot64k"
+                  ]
+                }
+              }
+            ],
+            "description": "回填条目的页大小或 NAPOT 形态。"
+          },
+          {
+            "name": "refill_timing",
+            "source": "refill_timing",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "normal",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "normal"
+                  ]
+                }
+              },
+              {
+                "name": "same_cycle_lookup",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "same_cycle_lookup"
+                  ]
+                }
+              },
+              {
+                "name": "same_cycle_sfence",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "same_cycle_sfence"
+                  ]
+                }
+              }
+            ],
+            "description": "回填与查找/失效的时序关系：普通回填、同拍查找被屏蔽、同拍失效优先。"
+          },
+          {
+            "name": "way_slot",
+            "source": "way_slot",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "0",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    0
+                  ]
+                }
+              },
+              {
+                "name": "1",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    1
+                  ]
+                }
+              },
+              {
+                "name": "10",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    10
+                  ]
+                }
+              },
+              {
+                "name": "11",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    11
+                  ]
+                }
+              },
+              {
+                "name": "12",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    12
+                  ]
+                }
+              },
+              {
+                "name": "13",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    13
+                  ]
+                }
+              },
+              {
+                "name": "14",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    14
+                  ]
+                }
+              },
+              {
+                "name": "15",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    15
+                  ]
+                }
+              },
+              {
+                "name": "16",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    16
+                  ]
+                }
+              },
+              {
+                "name": "17",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    17
+                  ]
+                }
+              },
+              {
+                "name": "18",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    18
+                  ]
+                }
+              },
+              {
+                "name": "19",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    19
+                  ]
+                }
+              },
+              {
+                "name": "2",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    2
+                  ]
+                }
+              },
+              {
+                "name": "20",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    20
+                  ]
+                }
+              },
+              {
+                "name": "21",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    21
+                  ]
+                }
+              },
+              {
+                "name": "22",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    22
+                  ]
+                }
+              },
+              {
+                "name": "23",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    23
+                  ]
+                }
+              },
+              {
+                "name": "24",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    24
+                  ]
+                }
+              },
+              {
+                "name": "25",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    25
+                  ]
+                }
+              },
+              {
+                "name": "26",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    26
+                  ]
+                }
+              },
+              {
+                "name": "27",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    27
+                  ]
+                }
+              },
+              {
+                "name": "28",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    28
+                  ]
+                }
+              },
+              {
+                "name": "29",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    29
+                  ]
+                }
+              },
+              {
+                "name": "3",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    3
+                  ]
+                }
+              },
+              {
+                "name": "30",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    30
+                  ]
+                }
+              },
+              {
+                "name": "31",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    31
+                  ]
+                }
+              },
+              {
+                "name": "32",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    32
+                  ]
+                }
+              },
+              {
+                "name": "33",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    33
+                  ]
+                }
+              },
+              {
+                "name": "34",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    34
+                  ]
+                }
+              },
+              {
+                "name": "35",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    35
+                  ]
+                }
+              },
+              {
+                "name": "36",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    36
+                  ]
+                }
+              },
+              {
+                "name": "37",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    37
+                  ]
+                }
+              },
+              {
+                "name": "38",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    38
+                  ]
+                }
+              },
+              {
+                "name": "39",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    39
+                  ]
+                }
+              },
+              {
+                "name": "4",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    4
+                  ]
+                }
+              },
+              {
+                "name": "40",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    40
+                  ]
+                }
+              },
+              {
+                "name": "41",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    41
+                  ]
+                }
+              },
+              {
+                "name": "42",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    42
+                  ]
+                }
+              },
+              {
+                "name": "43",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    43
+                  ]
+                }
+              },
+              {
+                "name": "44",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    44
+                  ]
+                }
+              },
+              {
+                "name": "45",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    45
+                  ]
+                }
+              },
+              {
+                "name": "46",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    46
+                  ]
+                }
+              },
+              {
+                "name": "47",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    47
+                  ]
+                }
+              },
+              {
+                "name": "5",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    5
+                  ]
+                }
+              },
+              {
+                "name": "6",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    6
+                  ]
+                }
+              },
+              {
+                "name": "7",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    7
+                  ]
+                }
+              },
+              {
+                "name": "8",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    8
+                  ]
+                }
+              },
+              {
+                "name": "9",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    9
+                  ]
+                }
+              }
+            ],
+            "description": "48 个 way 都能独立接收回填；替换策略不在本叶子内。"
+          }
+        ],
+        "crosses": [
+          {
+            "name": "kind_x_page",
+            "points": [
+              "refill_kind",
+              "refill_page"
+            ],
+            "include": null,
+            "ignore": [],
+            "illegal": [],
+            "iff": null,
+            "at_least": 1,
+            "weight": 1,
+            "goal": 100.0,
+            "max_auto_bins": 4096,
+            "description": "每种翻译阶段形态都检查其页大小/NAPOT 回填组合。"
+          }
+        ],
+        "description": "TLBFA 回填：阶段形态、页大小、way 覆盖与时序。"
+      },
+      "schema_digest": "111a104464dcf943d6889fda20875a5c65ea1e1f3bb703a911af3c3f5155e91d",
+      "instance": "tlbfa.refill",
+      "illegal_policy": "raise",
+      "samples": 232,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 232,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "bare_no_s2": 141,
+            "stage1_only": 12,
+            "stage2_only": 15,
+            "two_stage": 64
+          },
+          "provenance": {
+            "bare_no_s2": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 141,
+                "first": null,
+                "last": null
+              }
+            },
+            "stage2_only": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 15,
+                "first": null,
+                "last": null
+              }
+            },
+            "stage1_only": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 12,
+                "first": null,
+                "last": null
+              }
+            },
+            "two_stage": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 64,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "refill_kind",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 232,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "1g": 5,
+            "2m": 6,
+            "4k": 163,
+            "512g": 5,
+            "napot64k": 53
+          },
+          "provenance": {
+            "4k": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 163,
+                "first": null,
+                "last": null
+              }
+            },
+            "2m": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 6,
+                "first": null,
+                "last": null
+              }
+            },
+            "1g": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 5,
+                "first": null,
+                "last": null
+              }
+            },
+            "512g": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 5,
+                "first": null,
+                "last": null
+              }
+            },
+            "napot64k": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 53,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "refill_page",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 232,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "0": 28,
+            "1": 19,
+            "10": 4,
+            "11": 4,
+            "12": 4,
+            "13": 4,
+            "14": 4,
+            "15": 4,
+            "16": 4,
+            "17": 4,
+            "18": 4,
+            "19": 4,
+            "2": 18,
+            "20": 3,
+            "21": 3,
+            "22": 3,
+            "23": 3,
+            "24": 3,
+            "25": 3,
+            "26": 3,
+            "27": 3,
+            "28": 3,
+            "29": 3,
+            "3": 14,
+            "30": 3,
+            "31": 3,
+            "32": 3,
+            "33": 3,
+            "34": 3,
+            "35": 3,
+            "36": 3,
+            "37": 3,
+            "38": 3,
+            "39": 3,
+            "4": 5,
+            "40": 3,
+            "41": 3,
+            "42": 3,
+            "43": 3,
+            "44": 3,
+            "45": 3,
+            "46": 3,
+            "47": 3,
+            "5": 6,
+            "6": 4,
+            "7": 5,
+            "8": 4,
+            "9": 5
+          },
+          "provenance": {
+            "0": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 28,
+                "first": null,
+                "last": null
+              }
+            },
+            "1": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 19,
+                "first": null,
+                "last": null
+              }
+            },
+            "7": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 5,
+                "first": null,
+                "last": null
+              }
+            },
+            "9": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 5,
+                "first": null,
+                "last": null
+              }
+            },
+            "2": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 18,
+                "first": null,
+                "last": null
+              }
+            },
+            "3": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 14,
+                "first": null,
+                "last": null
+              }
+            },
+            "4": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 5,
+                "first": null,
+                "last": null
+              }
+            },
+            "5": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 6,
+                "first": null,
+                "last": null
+              }
+            },
+            "6": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            },
+            "8": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            },
+            "10": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            },
+            "11": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            },
+            "12": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            },
+            "13": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            },
+            "14": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            },
+            "15": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            },
+            "16": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            },
+            "17": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            },
+            "18": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            },
+            "19": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            },
+            "20": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "21": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "22": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "23": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "24": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "25": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "26": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "27": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "28": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "29": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "30": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "31": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "32": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "33": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "34": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "35": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "36": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "37": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "38": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "39": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "40": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "41": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "42": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "43": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "44": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "45": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "46": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "47": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "way_slot",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 232,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "normal": 230,
+            "same_cycle_lookup": 1,
+            "same_cycle_sfence": 1
+          },
+          "provenance": {
+            "normal": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 230,
+                "first": null,
+                "last": null
+              }
+            },
+            "same_cycle_lookup": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "same_cycle_sfence": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "refill_timing",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [
+        {
+          "samples": 232,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "[\"bare_no_s2\",\"1g\"]": 2,
+            "[\"bare_no_s2\",\"2m\"]": 3,
+            "[\"bare_no_s2\",\"4k\"]": 132,
+            "[\"bare_no_s2\",\"512g\"]": 2,
+            "[\"bare_no_s2\",\"napot64k\"]": 2,
+            "[\"stage1_only\",\"1g\"]": 1,
+            "[\"stage1_only\",\"2m\"]": 1,
+            "[\"stage1_only\",\"4k\"]": 8,
+            "[\"stage1_only\",\"512g\"]": 1,
+            "[\"stage1_only\",\"napot64k\"]": 1,
+            "[\"stage2_only\",\"1g\"]": 1,
+            "[\"stage2_only\",\"2m\"]": 1,
+            "[\"stage2_only\",\"4k\"]": 11,
+            "[\"stage2_only\",\"512g\"]": 1,
+            "[\"stage2_only\",\"napot64k\"]": 1,
+            "[\"two_stage\",\"1g\"]": 1,
+            "[\"two_stage\",\"2m\"]": 1,
+            "[\"two_stage\",\"4k\"]": 12,
+            "[\"two_stage\",\"512g\"]": 1,
+            "[\"two_stage\",\"napot64k\"]": 49
+          },
+          "provenance": {
+            "[\"bare_no_s2\",\"4k\"]": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 132,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"bare_no_s2\",\"2m\"]": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"bare_no_s2\",\"1g\"]": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"bare_no_s2\",\"512g\"]": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"bare_no_s2\",\"napot64k\"]": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"stage2_only\",\"4k\"]": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 11,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"stage1_only\",\"4k\"]": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 8,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"two_stage\",\"4k\"]": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 12,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"stage1_only\",\"2m\"]": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"stage1_only\",\"1g\"]": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"stage1_only\",\"512g\"]": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"stage1_only\",\"napot64k\"]": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"stage2_only\",\"2m\"]": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"stage2_only\",\"1g\"]": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"stage2_only\",\"512g\"]": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"stage2_only\",\"napot64k\"]": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"two_stage\",\"2m\"]": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"two_stage\",\"1g\"]": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"two_stage\",\"512g\"]": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "[\"two_stage\",\"napot64k\"]": {
+              "784b7bf2a82646f0ad1124dfa6509837": {
+                "count": 49,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "kind_x_page",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "bins": [
+            {
+              "id": "[\"bare_no_s2\",\"1g\"]",
+              "tuple": [
+                "bare_no_s2",
+                "1g"
+              ],
+              "label": "bare_no_s2 × 1g",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"bare_no_s2\",\"2m\"]",
+              "tuple": [
+                "bare_no_s2",
+                "2m"
+              ],
+              "label": "bare_no_s2 × 2m",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"bare_no_s2\",\"4k\"]",
+              "tuple": [
+                "bare_no_s2",
+                "4k"
+              ],
+              "label": "bare_no_s2 × 4k",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"bare_no_s2\",\"512g\"]",
+              "tuple": [
+                "bare_no_s2",
+                "512g"
+              ],
+              "label": "bare_no_s2 × 512g",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"bare_no_s2\",\"napot64k\"]",
+              "tuple": [
+                "bare_no_s2",
+                "napot64k"
+              ],
+              "label": "bare_no_s2 × napot64k",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"stage1_only\",\"1g\"]",
+              "tuple": [
+                "stage1_only",
+                "1g"
+              ],
+              "label": "stage1_only × 1g",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"stage1_only\",\"2m\"]",
+              "tuple": [
+                "stage1_only",
+                "2m"
+              ],
+              "label": "stage1_only × 2m",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"stage1_only\",\"4k\"]",
+              "tuple": [
+                "stage1_only",
+                "4k"
+              ],
+              "label": "stage1_only × 4k",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"stage1_only\",\"512g\"]",
+              "tuple": [
+                "stage1_only",
+                "512g"
+              ],
+              "label": "stage1_only × 512g",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"stage1_only\",\"napot64k\"]",
+              "tuple": [
+                "stage1_only",
+                "napot64k"
+              ],
+              "label": "stage1_only × napot64k",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"stage2_only\",\"1g\"]",
+              "tuple": [
+                "stage2_only",
+                "1g"
+              ],
+              "label": "stage2_only × 1g",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"stage2_only\",\"2m\"]",
+              "tuple": [
+                "stage2_only",
+                "2m"
+              ],
+              "label": "stage2_only × 2m",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"stage2_only\",\"4k\"]",
+              "tuple": [
+                "stage2_only",
+                "4k"
+              ],
+              "label": "stage2_only × 4k",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"stage2_only\",\"512g\"]",
+              "tuple": [
+                "stage2_only",
+                "512g"
+              ],
+              "label": "stage2_only × 512g",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"stage2_only\",\"napot64k\"]",
+              "tuple": [
+                "stage2_only",
+                "napot64k"
+              ],
+              "label": "stage2_only × napot64k",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"two_stage\",\"1g\"]",
+              "tuple": [
+                "two_stage",
+                "1g"
+              ],
+              "label": "two_stage × 1g",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"two_stage\",\"2m\"]",
+              "tuple": [
+                "two_stage",
+                "2m"
+              ],
+              "label": "two_stage × 2m",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"two_stage\",\"4k\"]",
+              "tuple": [
+                "two_stage",
+                "4k"
+              ],
+              "label": "two_stage × 4k",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"two_stage\",\"512g\"]",
+              "tuple": [
+                "two_stage",
+                "512g"
+              ],
+              "label": "two_stage × 512g",
+              "kind": "normal",
+              "at_least": 1
+            },
+            {
+              "id": "[\"two_stage\",\"napot64k\"]",
+              "tuple": [
+                "two_stage",
+                "napot64k"
+              ],
+              "label": "two_stage × napot64k",
+              "kind": "normal",
+              "at_least": 1
+            }
+          ]
+        }
+      ],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "784b7bf2a82646f0ad1124dfa6509837": {
+          "run_id": "784b7bf2a82646f0ad1124dfa6509837",
+          "instance": "tlbfa.refill",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "784b7bf2a82646f0ad1124dfa6509837",
+      "snapshot_id": "5c7187ea64e544ae34ca8ff80007f7d1fd98eaeab08ce255f838f776a80b58a2"
+    },
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "tlbfa_ppn",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "ppn_low_slot",
+            "source": "ppn_low_slot",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "0",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    0
+                  ]
+                }
+              },
+              {
+                "name": "1",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    1
+                  ]
+                }
+              },
+              {
+                "name": "2",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    2
+                  ]
+                }
+              },
+              {
+                "name": "3",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    3
+                  ]
+                }
+              },
+              {
+                "name": "4",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    4
+                  ]
+                }
+              },
+              {
+                "name": "5",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    5
+                  ]
+                }
+              },
+              {
+                "name": "6",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    6
+                  ]
+                }
+              },
+              {
+                "name": "7",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    7
+                  ]
+                }
+              },
+              {
+                "name": "not_applicable",
+                "kind": "ignore",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    -1
+                  ]
+                }
+              }
+            ],
+            "description": "4KB 非 NAPOT 条目由 vpn[2:0] 选择 8 个 ppn_low 槽之一。"
+          },
+          {
+            "name": "ppn_page",
+            "source": "ppn_page",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "1g",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "1g"
+                  ]
+                }
+              },
+              {
+                "name": "2m",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "2m"
+                  ]
+                }
+              },
+              {
+                "name": "4k",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "4k"
+                  ]
+                }
+              },
+              {
+                "name": "512g",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "512g"
+                  ]
+                }
+              },
+              {
+                "name": "napot64k",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "napot64k"
+                  ]
+                }
+              }
+            ],
+            "description": "PPN 合成使用的页大小路径。"
+          }
+        ],
+        "crosses": [],
+        "description": "TLBFA PPN：4KB 低槽选择、大页偏移替换与 NAPOT。"
+      },
+      "schema_digest": "231ab24cb276978aa020700259dfc2acdb6c34049e3c3da7116885c0bb62d9b3",
+      "instance": "tlbfa.ppn",
+      "illegal_policy": "raise",
+      "samples": 150,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 150,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "1g": 5,
+            "2m": 8,
+            "4k": 112,
+            "512g": 5,
+            "napot64k": 20
+          },
+          "provenance": {
+            "4k": {
+              "caab50ebd934406db20413bb30db71e3": {
+                "count": 112,
+                "first": null,
+                "last": null
+              }
+            },
+            "2m": {
+              "caab50ebd934406db20413bb30db71e3": {
+                "count": 8,
+                "first": null,
+                "last": null
+              }
+            },
+            "1g": {
+              "caab50ebd934406db20413bb30db71e3": {
+                "count": 5,
+                "first": null,
+                "last": null
+              }
+            },
+            "512g": {
+              "caab50ebd934406db20413bb30db71e3": {
+                "count": 5,
+                "first": null,
+                "last": null
+              }
+            },
+            "napot64k": {
+              "caab50ebd934406db20413bb30db71e3": {
+                "count": 20,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "ppn_page",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 150,
+          "gated": 0,
+          "ignored": 38,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "0": 98,
+            "1": 1,
+            "2": 2,
+            "3": 2,
+            "4": 2,
+            "5": 3,
+            "6": 2,
+            "7": 2,
+            "not_applicable": 38
+          },
+          "provenance": {
+            "0": {
+              "caab50ebd934406db20413bb30db71e3": {
+                "count": 98,
+                "first": null,
+                "last": null
+              }
+            },
+            "1": {
+              "caab50ebd934406db20413bb30db71e3": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "2": {
+              "caab50ebd934406db20413bb30db71e3": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "3": {
+              "caab50ebd934406db20413bb30db71e3": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "4": {
+              "caab50ebd934406db20413bb30db71e3": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "5": {
+              "caab50ebd934406db20413bb30db71e3": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "6": {
+              "caab50ebd934406db20413bb30db71e3": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "7": {
+              "caab50ebd934406db20413bb30db71e3": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "ppn_low_slot",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "caab50ebd934406db20413bb30db71e3": {
+          "run_id": "caab50ebd934406db20413bb30db71e3",
+          "instance": "tlbfa.ppn",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "caab50ebd934406db20413bb30db71e3",
+      "snapshot_id": "7c6aaab219e019987762ab562d0872204d16800c9a11b8548b4d0318c0345258"
+    },
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "tlbfa_payload",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "payload_kind",
+            "source": "payload_kind",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "fault_flags",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "fault_flags"
+                  ]
+                }
+              },
+              {
+                "name": "miss_zero",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "miss_zero"
+                  ]
+                }
+              },
+              {
+                "name": "pbmt",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "pbmt"
+                  ]
+                }
+              },
+              {
+                "name": "stage1_perm",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "stage1_perm"
+                  ]
+                }
+              },
+              {
+                "name": "stage2_perm",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "stage2_perm"
+                  ]
+                }
+              }
+            ],
+            "description": "命中返回 s1 权限、s2 权限/故障、PBMT；未命中 payload 不作为有效结果。"
+          }
+        ],
+        "crosses": [],
+        "description": "TLBFA 返回载荷语义。"
+      },
+      "schema_digest": "66317c66365857e5357414ab23818c00c499c79930b231abf83acc0811bf672d",
+      "instance": "tlbfa.payload",
+      "illegal_policy": "raise",
+      "samples": 240,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 240,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "fault_flags": 3,
+            "miss_zero": 50,
+            "pbmt": 2,
+            "stage1_perm": 150,
+            "stage2_perm": 35
+          },
+          "provenance": {
+            "miss_zero": {
+              "491d5e2607f7471a82a37b39f65fc344": {
+                "count": 50,
+                "first": null,
+                "last": null
+              }
+            },
+            "stage1_perm": {
+              "491d5e2607f7471a82a37b39f65fc344": {
+                "count": 150,
+                "first": null,
+                "last": null
+              }
+            },
+            "fault_flags": {
+              "491d5e2607f7471a82a37b39f65fc344": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "pbmt": {
+              "491d5e2607f7471a82a37b39f65fc344": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "stage2_perm": {
+              "491d5e2607f7471a82a37b39f65fc344": {
+                "count": 35,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "payload_kind",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "491d5e2607f7471a82a37b39f65fc344": {
+          "run_id": "491d5e2607f7471a82a37b39f65fc344",
+          "instance": "tlbfa.payload",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "491d5e2607f7471a82a37b39f65fc344",
+      "snapshot_id": "7b364f554db7b1178ae2bfae419ff111090b0d6cc45f551aa6ee07d363671fd1"
+    },
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "tlbfa_sfence",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "fence_effect",
+            "source": "fence_effect",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "global_cleared",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "global_cleared"
+                  ]
+                }
+              },
+              {
+                "name": "global_survived",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "global_survived"
+                  ]
+                }
+              },
+              {
+                "name": "other_asid_cleared",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "other_asid_cleared"
+                  ]
+                }
+              },
+              {
+                "name": "other_asid_survived",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "other_asid_survived"
+                  ]
+                }
+              },
+              {
+                "name": "other_vmid_survived",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "other_vmid_survived"
+                  ]
+                }
+              },
+              {
+                "name": "stage1_cleared",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "stage1_cleared"
+                  ]
+                }
+              },
+              {
+                "name": "stage1_survived",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "stage1_survived"
+                  ]
+                }
+              },
+              {
+                "name": "stage2_cleared",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "stage2_cleared"
+                  ]
+                }
+              },
+              {
+                "name": "stage2_survived",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "stage2_survived"
+                  ]
+                }
+              }
+            ],
+            "description": "失效的语义效果：目标阶段被清除或保留，全局/其他 ASID/其他 VMID 按规则存活。"
+          },
+          {
+            "name": "fence_kind",
+            "source": "fence_kind",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "addr_all_asid",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "addr_all_asid"
+                  ]
+                }
+              },
+              {
+                "name": "addr_asid",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "addr_asid"
+                  ]
+                }
+              },
+              {
+                "name": "all_all",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "all_all"
+                  ]
+                }
+              },
+              {
+                "name": "all_asid",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "all_asid"
+                  ]
+                }
+              },
+              {
+                "name": "bme_all",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "bme_all"
+                  ]
+                }
+              },
+              {
+                "name": "hfenceg_all",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "hfenceg_all"
+                  ]
+                }
+              },
+              {
+                "name": "hfenceg_vmid",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "hfenceg_vmid"
+                  ]
+                }
+              },
+              {
+                "name": "hfencev_all",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "hfencev_all"
+                  ]
+                }
+              },
+              {
+                "name": "hfencev_asid",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "hfencev_asid"
+                  ]
+                }
+              },
+              {
+                "name": "virt_all",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "virt_all"
+                  ]
+                }
+              }
+            ],
+            "description": "RISC-V sfence/hfence 形式以及虚拟化/MPT 触发的全地址路径。"
+          },
+          {
+            "name": "fence_timing",
+            "source": "fence_timing",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "after_cycle",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "after_cycle"
+                  ]
+                }
+              },
+              {
+                "name": "same_cycle_with_refill",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "same_cycle_with_refill"
+                  ]
+                }
+              }
+            ],
+            "description": "失效在边沿后生效；同拍回填不能绕过失效。"
+          }
+        ],
+        "crosses": [],
+        "description": "TLBFA sfence/hfence：地址/ASID/VMID 选择、阶段边界与时序。"
+      },
+      "schema_digest": "ffada117a583a49abefbbbd21155db050bd14817a231beea05175b401174c9b6",
+      "instance": "tlbfa.sfence",
+      "illegal_policy": "raise",
+      "samples": 28,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 28,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "addr_all_asid": 2,
+            "addr_asid": 3,
+            "all_all": 4,
+            "all_asid": 4,
+            "bme_all": 3,
+            "hfenceg_all": 2,
+            "hfenceg_vmid": 2,
+            "hfencev_all": 3,
+            "hfencev_asid": 2,
+            "virt_all": 3
+          },
+          "provenance": {
+            "all_all": {
+              "299c5a8f8017447aa40f1ed7efa5b06b": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            },
+            "all_asid": {
+              "299c5a8f8017447aa40f1ed7efa5b06b": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            },
+            "addr_asid": {
+              "299c5a8f8017447aa40f1ed7efa5b06b": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "addr_all_asid": {
+              "299c5a8f8017447aa40f1ed7efa5b06b": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "hfencev_all": {
+              "299c5a8f8017447aa40f1ed7efa5b06b": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "hfencev_asid": {
+              "299c5a8f8017447aa40f1ed7efa5b06b": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "hfenceg_vmid": {
+              "299c5a8f8017447aa40f1ed7efa5b06b": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "hfenceg_all": {
+              "299c5a8f8017447aa40f1ed7efa5b06b": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "virt_all": {
+              "299c5a8f8017447aa40f1ed7efa5b06b": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "bme_all": {
+              "299c5a8f8017447aa40f1ed7efa5b06b": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "fence_kind",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 28,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "global_cleared": 2,
+            "global_survived": 3,
+            "other_asid_cleared": 1,
+            "other_asid_survived": 2,
+            "other_vmid_survived": 3,
+            "stage1_cleared": 6,
+            "stage1_survived": 5,
+            "stage2_cleared": 5,
+            "stage2_survived": 1
+          },
+          "provenance": {
+            "stage1_cleared": {
+              "299c5a8f8017447aa40f1ed7efa5b06b": {
+                "count": 6,
+                "first": null,
+                "last": null
+              }
+            },
+            "stage2_survived": {
+              "299c5a8f8017447aa40f1ed7efa5b06b": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "global_survived": {
+              "299c5a8f8017447aa40f1ed7efa5b06b": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "other_asid_survived": {
+              "299c5a8f8017447aa40f1ed7efa5b06b": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "stage1_survived": {
+              "299c5a8f8017447aa40f1ed7efa5b06b": {
+                "count": 5,
+                "first": null,
+                "last": null
+              }
+            },
+            "global_cleared": {
+              "299c5a8f8017447aa40f1ed7efa5b06b": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "other_asid_cleared": {
+              "299c5a8f8017447aa40f1ed7efa5b06b": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "stage2_cleared": {
+              "299c5a8f8017447aa40f1ed7efa5b06b": {
+                "count": 5,
+                "first": null,
+                "last": null
+              }
+            },
+            "other_vmid_survived": {
+              "299c5a8f8017447aa40f1ed7efa5b06b": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "fence_effect",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 28,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "after_cycle": 27,
+            "same_cycle_with_refill": 1
+          },
+          "provenance": {
+            "after_cycle": {
+              "299c5a8f8017447aa40f1ed7efa5b06b": {
+                "count": 27,
+                "first": null,
+                "last": null
+              }
+            },
+            "same_cycle_with_refill": {
+              "299c5a8f8017447aa40f1ed7efa5b06b": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "fence_timing",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "299c5a8f8017447aa40f1ed7efa5b06b": {
+          "run_id": "299c5a8f8017447aa40f1ed7efa5b06b",
+          "instance": "tlbfa.sfence",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "299c5a8f8017447aa40f1ed7efa5b06b",
+      "snapshot_id": "01cc83712a5fa007a2ece9903020cc0daf02b470aa415a412fe4d5b1bdc9b936"
+    },
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "tlbfa_timing",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "response_timing",
+            "source": "response_timing",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "idle_hold",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "idle_hold"
+                  ]
+                }
+              },
+              {
+                "name": "one_cycle_latency",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "one_cycle_latency"
+                  ]
+                }
+              },
+              {
+                "name": "valid_drop",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "valid_drop"
+                  ]
+                }
+              }
+            ],
+            "description": "请求到响应一拍、撤销 valid 后响应撤销、无请求时条目不自发变化。"
+          }
+        ],
+        "crosses": [],
+        "description": "TLBFA 响应时序。"
+      },
+      "schema_digest": "733e6f149ddb6f3f76404dfa5d7c73550c6c0a2a026a62ba6f9ce5a6bb83fae9",
+      "instance": "tlbfa.timing",
+      "illegal_policy": "raise",
+      "samples": 401,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 401,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "idle_hold": 1,
+            "one_cycle_latency": 200,
+            "valid_drop": 200
+          },
+          "provenance": {
+            "one_cycle_latency": {
+              "99bed1c0f3c64fe592bfd437eb89df0d": {
+                "count": 200,
+                "first": null,
+                "last": null
+              }
+            },
+            "valid_drop": {
+              "99bed1c0f3c64fe592bfd437eb89df0d": {
+                "count": 200,
+                "first": null,
+                "last": null
+              }
+            },
+            "idle_hold": {
+              "99bed1c0f3c64fe592bfd437eb89df0d": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "response_timing",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "99bed1c0f3c64fe592bfd437eb89df0d": {
+          "run_id": "99bed1c0f3c64fe592bfd437eb89df0d",
+          "instance": "tlbfa.timing",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "99bed1c0f3c64fe592bfd437eb89df0d",
+      "snapshot_id": "ff7719d24a68adfb77ffa2bd88a0e9d7dd3bf2d214451486dd40695b9f9acfc8"
+    },
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "tlbfa_touch",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "touch_kind",
+            "source": "touch_kind",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "hit_touch",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "hit_touch"
+                  ]
+                }
+              },
+              {
+                "name": "refill_touch",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "refill_touch"
+                  ]
+                }
+              }
+            ],
+            "description": "命中 touch 与回填 touch 都向替换逻辑报告正确 way。"
+          }
+        ],
+        "crosses": [],
+        "description": "TLBFA touch way 报告。"
+      },
+      "schema_digest": "074b17b386d5dbed27b1f837d4c3a12d72f2e3513a717ac234088b5be77853dc",
+      "instance": "tlbfa.touch",
+      "illegal_policy": "raise",
+      "samples": 380,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 380,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "hit_touch": 150,
+            "refill_touch": 230
+          },
+          "provenance": {
+            "refill_touch": {
+              "c67d54fadcc3426c896037eeea2118fc": {
+                "count": 230,
+                "first": null,
+                "last": null
+              }
+            },
+            "hit_touch": {
+              "c67d54fadcc3426c896037eeea2118fc": {
+                "count": 150,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "touch_kind",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "c67d54fadcc3426c896037eeea2118fc": {
+          "run_id": "c67d54fadcc3426c896037eeea2118fc",
+          "instance": "tlbfa.touch",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "c67d54fadcc3426c896037eeea2118fc",
+      "snapshot_id": "8def1b68c639ae2544f6527570f402510bce8fe2a4801a1f3b16313a25006811"
+    },
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "tlbfa_reset",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "reset_context",
+            "source": "reset_context",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "empty",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "empty"
+                  ]
+                }
+              },
+              {
+                "name": "with_valid_entries",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "with_valid_entries"
+                  ]
+                }
+              }
+            ],
+            "description": "复位清空空存储，或清除已有有效条目使旧翻译不可见。"
+          }
+        ],
+        "crosses": [],
+        "description": "TLBFA 复位语义。"
+      },
+      "schema_digest": "467e294689318bd0a030afe0b4e94391a2a6dc6d7908ac386e00f090bbf44f78",
+      "instance": "tlbfa.reset",
+      "illegal_policy": "raise",
+      "samples": 33,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 33,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "empty": 31,
+            "with_valid_entries": 2
+          },
+          "provenance": {
+            "empty": {
+              "80bfd662516341168c0b91dccb005c2c": {
+                "count": 31,
+                "first": null,
+                "last": null
+              }
+            },
+            "with_valid_entries": {
+              "80bfd662516341168c0b91dccb005c2c": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "reset_context",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "80bfd662516341168c0b91dccb005c2c": {
+          "run_id": "80bfd662516341168c0b91dccb005c2c",
+          "instance": "tlbfa.reset",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "80bfd662516341168c0b91dccb005c2c",
+      "snapshot_id": "a0b58e7fbbef48c22dd924a897b41b701c641e386234be4ff7391a1952bfbdf4"
+    }
+  ]
+}

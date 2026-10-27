@@ -1,0 +1,3162 @@
+{
+  "format": "mmu-coverage-audit-summary",
+  "generated_at": "2026-10-25T03:21:50.224140+00:00",
+  "run": "results/bitmap-final-07",
+  "manifest": {
+    "state": "committed",
+    "coverage_complete": true,
+    "pytest_exitstatus": 0,
+    "tests": {
+      "PASS": 16,
+      "XFAIL": 2
+    }
+  },
+  "coverage_dat_sha256": "805b621089b2137a4de6e6f1511289f248a7ad571c921336849cd43c057f40ae",
+  "coverage_info_sha256": "d1832fb7929503940c7d429d71251b29af287ec267ab3cf1da51af224a9a6e14",
+  "lcov_lines": {
+    "unique_lines": 1735,
+    "covered_lines": 977,
+    "uncovered": 758,
+    "procedural_uncovered": 683,
+    "coverage_percent": 56.3112
+  },
+  "lcov_lines_dut_only": {
+    "unique_lines": 1415,
+    "covered_lines": 974,
+    "uncovered": 441,
+    "procedural_uncovered": 441,
+    "coverage_percent": 68.8339
+  },
+  "lcov_lines_per_file": {
+    "BitmapDut.v": {
+      "role": "dut",
+      "unique_lines": 1376,
+      "covered_lines": 935,
+      "coverage_percent": 67.9506,
+      "uncovered": 441,
+      "uncovered_procedural": 441,
+      "uncovered_declarative": 0,
+      "procedural_lines": 1288,
+      "procedural_covered": 847,
+      "uncovered_procedural_lines": [
+        {
+          "line": 1490,
+          "source": "entries_0_wait_id <="
+        },
+        {
+          "line": 1492,
+          "source": "? _mem_arb_io_chosen"
+        },
+        {
+          "line": 1493,
+          "source": ": (is_waiting_0 ? entries_0_wait_id : 3'h0)"
+        },
+        {
+          "line": 1494,
+          "source": "| (cm_dup_vec_wait_1 ? entries_1_wait_id : 3'h0)"
+        },
+        {
+          "line": 1495,
+          "source": "| (cm_dup_vec_wait_2 ? entries_2_wait_id : 3'h0)"
+        },
+        {
+          "line": 1496,
+          "source": "| (cm_dup_vec_wait_3 ? entries_3_wait_id : 3'h0)"
+        },
+        {
+          "line": 1497,
+          "source": "| (cm_dup_vec_wait_4 ? entries_4_wait_id : 3'h0)"
+        },
+        {
+          "line": 1498,
+          "source": "| (cm_dup_vec_wait_5 ? entries_5_wait_id : 3'h0)"
+        },
+        {
+          "line": 1499,
+          "source": "| (cm_dup_vec_wait_6 ? entries_6_wait_id : 3'h0)"
+        },
+        {
+          "line": 1500,
+          "source": "| (cm_dup_vec_wait_7 ? entries_7_wait_id : 3'h0);"
+        },
+        {
+          "line": 1525,
+          "source": "else if (cm_dup_wait_resp) begin"
+        },
+        {
+          "line": 1526,
+          "source": "entries_0_cf <= _entries_0_cf_T_2[0];"
+        },
+        {
+          "line": 1527,
+          "source": "entries_0_cfs_0 <= _GEN_108[0];"
+        },
+        {
+          "line": 1528,
+          "source": "entries_0_cfs_1 <= _GEN_108[1];"
+        },
+        {
+          "line": 1529,
+          "source": "entries_0_cfs_2 <= _GEN_108[2];"
+        },
+        {
+          "line": 1530,
+          "source": "entries_0_cfs_3 <= _GEN_108[3];"
+        },
+        {
+          "line": 1531,
+          "source": "entries_0_cfs_4 <= _GEN_108[4];"
+        },
+        {
+          "line": 1532,
+          "source": "entries_0_cfs_5 <= _GEN_108[5];"
+        },
+        {
+          "line": 1533,
+          "source": "entries_0_cfs_6 <= _GEN_108[6];"
+        },
+        {
+          "line": 1534,
+          "source": "entries_0_cfs_7 <= _GEN_108[7];"
+        },
+        {
+          "line": 1536,
+          "source": "else if (_GEN_50) begin"
+        },
+        {
+          "line": 1537,
+          "source": "entries_0_cf <= accessFault;"
+        },
+        {
+          "line": 1538,
+          "source": "entries_0_cfs_0 <= accessFault;"
+        },
+        {
+          "line": 1539,
+          "source": "entries_0_cfs_1 <= accessFault;"
+        },
+        {
+          "line": 1540,
+          "source": "entries_0_cfs_2 <= accessFault;"
+        },
+        {
+          "line": 1541,
+          "source": "entries_0_cfs_3 <= accessFault;"
+        },
+        {
+          "line": 1542,
+          "source": "entries_0_cfs_4 <= accessFault;"
+        },
+        {
+          "line": 1543,
+          "source": "entries_0_cfs_5 <= accessFault;"
+        },
+        {
+          "line": 1544,
+          "source": "entries_0_cfs_6 <= accessFault;"
+        },
+        {
+          "line": 1545,
+          "source": "entries_0_cfs_7 <= accessFault;"
+        },
+        {
+          "line": 1548,
+          "source": "entries_0_cf <= _GEN_97;"
+        },
+        {
+          "line": 1549,
+          "source": "entries_0_cfs_0 <= _GEN_98;"
+        },
+        {
+          "line": 1550,
+          "source": "entries_0_cfs_1 <= _GEN_99;"
+        },
+        {
+          "line": 1551,
+          "source": "entries_0_cfs_2 <= _GEN_100;"
+        },
+        {
+          "line": 1552,
+          "source": "entries_0_cfs_3 <= _GEN_101;"
+        },
+        {
+          "line": 1553,
+          "source": "entries_0_cfs_4 <= _GEN_102;"
+        },
+        {
+          "line": 1554,
+          "source": "entries_0_cfs_5 <= _GEN_103;"
+        },
+        {
+          "line": 1555,
+          "source": "entries_0_cfs_6 <= _GEN_104;"
+        },
+        {
+          "line": 1556,
+          "source": "entries_0_cfs_7 <= _GEN_105;"
+        },
+        {
+          "line": 1602,
+          "source": "entries_1_wait_id <="
+        },
+        {
+          "line": 1604,
+          "source": "? _mem_arb_io_chosen"
+        },
+        {
+          "line": 1605,
+          "source": ": (cm_dup_vec_wait_0_1 ? entries_0_wait_id : 3'h0)"
+        },
+        {
+          "line": 1606,
+          "source": "| (is_waiting_1 ? entries_1_wait_id : 3'h0)"
+        },
+        {
+          "line": 1607,
+          "source": "| (cm_dup_vec_wait_2_1 ? entries_2_wait_id : 3'h0)"
+        },
+        {
+          "line": 1608,
+          "source": "| (cm_dup_vec_wait_3_1 ? entries_3_wait_id : 3'h0)"
+        },
+        {
+          "line": 1609,
+          "source": "| (cm_dup_vec_wait_4_1 ? entries_4_wait_id : 3'h0)"
+        },
+        {
+          "line": 1610,
+          "source": "| (cm_dup_vec_wait_5_1 ? entries_5_wait_id : 3'h0)"
+        },
+        {
+          "line": 1611,
+          "source": "| (cm_dup_vec_wait_6_1 ? entries_6_wait_id : 3'h0)"
+        },
+        {
+          "line": 1612,
+          "source": "| (cm_dup_vec_wait_7_1 ? entries_7_wait_id : 3'h0);"
+        },
+        {
+          "line": 1637,
+          "source": "else if (cm_dup_wait_resp_1) begin"
+        },
+        {
+          "line": 1638,
+          "source": "entries_1_cf <= _entries_1_cf_T_2[0];"
+        },
+        {
+          "line": 1639,
+          "source": "entries_1_cfs_0 <= _GEN_124[0];"
+        },
+        {
+          "line": 1640,
+          "source": "entries_1_cfs_1 <= _GEN_124[1];"
+        },
+        {
+          "line": 1641,
+          "source": "entries_1_cfs_2 <= _GEN_124[2];"
+        },
+        {
+          "line": 1642,
+          "source": "entries_1_cfs_3 <= _GEN_124[3];"
+        },
+        {
+          "line": 1643,
+          "source": "entries_1_cfs_4 <= _GEN_124[4];"
+        },
+        {
+          "line": 1644,
+          "source": "entries_1_cfs_5 <= _GEN_124[5];"
+        },
+        {
+          "line": 1645,
+          "source": "entries_1_cfs_6 <= _GEN_124[6];"
+        },
+        {
+          "line": 1646,
+          "source": "entries_1_cfs_7 <= _GEN_124[7];"
+        },
+        {
+          "line": 1648,
+          "source": "else if (_GEN_51) begin"
+        },
+        {
+          "line": 1649,
+          "source": "entries_1_cf <= accessFault;"
+        },
+        {
+          "line": 1650,
+          "source": "entries_1_cfs_0 <= accessFault;"
+        },
+        {
+          "line": 1651,
+          "source": "entries_1_cfs_1 <= accessFault;"
+        },
+        {
+          "line": 1652,
+          "source": "entries_1_cfs_2 <= accessFault;"
+        },
+        {
+          "line": 1653,
+          "source": "entries_1_cfs_3 <= accessFault;"
+        },
+        {
+          "line": 1654,
+          "source": "entries_1_cfs_4 <= accessFault;"
+        },
+        {
+          "line": 1655,
+          "source": "entries_1_cfs_5 <= accessFault;"
+        },
+        {
+          "line": 1656,
+          "source": "entries_1_cfs_6 <= accessFault;"
+        },
+        {
+          "line": 1657,
+          "source": "entries_1_cfs_7 <= accessFault;"
+        },
+        {
+          "line": 1660,
+          "source": "entries_1_cf <= _GEN_113;"
+        },
+        {
+          "line": 1661,
+          "source": "entries_1_cfs_0 <= _GEN_114;"
+        },
+        {
+          "line": 1662,
+          "source": "entries_1_cfs_1 <= _GEN_115;"
+        },
+        {
+          "line": 1663,
+          "source": "entries_1_cfs_2 <= _GEN_116;"
+        },
+        {
+          "line": 1664,
+          "source": "entries_1_cfs_3 <= _GEN_117;"
+        },
+        {
+          "line": 1665,
+          "source": "entries_1_cfs_4 <= _GEN_118;"
+        },
+        {
+          "line": 1666,
+          "source": "entries_1_cfs_5 <= _GEN_119;"
+        },
+        {
+          "line": 1667,
+          "source": "entries_1_cfs_6 <= _GEN_120;"
+        },
+        {
+          "line": 1668,
+          "source": "entries_1_cfs_7 <= _GEN_121;"
+        },
+        {
+          "line": 1707,
+          "source": "if (_GEN_78)"
+        },
+        {
+          "line": 1708,
+          "source": "entries_2_wait_id <= _mem_arb_io_chosen;"
+        },
+        {
+          "line": 1713,
+          "source": "else if (cm_to_wait_2)"
+        },
+        {
+          "line": 1714,
+          "source": "entries_2_wait_id <="
+        },
+        {
+          "line": 1716,
+          "source": "? _mem_arb_io_chosen"
+        },
+        {
+          "line": 1717,
+          "source": ": (cm_dup_vec_wait_0_2 ? entries_0_wait_id : 3'h0)"
+        },
+        {
+          "line": 1718,
+          "source": "| (cm_dup_vec_wait_1_2 ? entries_1_wait_id : 3'h0)"
+        },
+        {
+          "line": 1719,
+          "source": "| (is_waiting_2 ? entries_2_wait_id : 3'h0)"
+        },
+        {
+          "line": 1720,
+          "source": "| (cm_dup_vec_wait_3_2 ? entries_3_wait_id : 3'h0)"
+        },
+        {
+          "line": 1721,
+          "source": "| (cm_dup_vec_wait_4_2 ? entries_4_wait_id : 3'h0)"
+        },
+        {
+          "line": 1722,
+          "source": "| (cm_dup_vec_wait_5_2 ? entries_5_wait_id : 3'h0)"
+        },
+        {
+          "line": 1723,
+          "source": "| (cm_dup_vec_wait_6_2 ? entries_6_wait_id : 3'h0)"
+        },
+        {
+          "line": 1724,
+          "source": "| (cm_dup_vec_wait_7_2 ? entries_7_wait_id : 3'h0);"
+        },
+        {
+          "line": 1725,
+          "source": "if (_GEN_86) begin"
+        },
+        {
+          "line": 1726,
+          "source": "entries_2_cf <= _entries_2_cf_T_5[0];"
+        },
+        {
+          "line": 1727,
+          "source": "entries_2_cfs_0 <= _GEN_127[0];"
+        },
+        {
+          "line": 1728,
+          "source": "entries_2_cfs_1 <= _GEN_127[1];"
+        },
+        {
+          "line": 1729,
+          "source": "entries_2_cfs_2 <= _GEN_127[2];"
+        },
+        {
+          "line": 1730,
+          "source": "entries_2_cfs_3 <= _GEN_127[3];"
+        },
+        {
+          "line": 1731,
+          "source": "entries_2_cfs_4 <= _GEN_127[4];"
+        },
+        {
+          "line": 1732,
+          "source": "entries_2_cfs_5 <= _GEN_127[5];"
+        },
+        {
+          "line": 1733,
+          "source": "entries_2_cfs_6 <= _GEN_127[6];"
+        },
+        {
+          "line": 1734,
+          "source": "entries_2_cfs_7 <= _GEN_127[7];"
+        },
+        {
+          "line": 1735,
+          "source": "entries_2_data <= _GEN_125;"
+        },
+        {
+          "line": 1749,
+          "source": "else if (cm_dup_wait_resp_2) begin"
+        },
+        {
+          "line": 1750,
+          "source": "entries_2_cf <= _entries_2_cf_T_2[0];"
+        },
+        {
+          "line": 1751,
+          "source": "entries_2_cfs_0 <= _GEN_140[0];"
+        },
+        {
+          "line": 1752,
+          "source": "entries_2_cfs_1 <= _GEN_140[1];"
+        },
+        {
+          "line": 1753,
+          "source": "entries_2_cfs_2 <= _GEN_140[2];"
+        },
+        {
+          "line": 1754,
+          "source": "entries_2_cfs_3 <= _GEN_140[3];"
+        },
+        {
+          "line": 1755,
+          "source": "entries_2_cfs_4 <= _GEN_140[4];"
+        },
+        {
+          "line": 1756,
+          "source": "entries_2_cfs_5 <= _GEN_140[5];"
+        },
+        {
+          "line": 1757,
+          "source": "entries_2_cfs_6 <= _GEN_140[6];"
+        },
+        {
+          "line": 1758,
+          "source": "entries_2_cfs_7 <= _GEN_140[7];"
+        },
+        {
+          "line": 1760,
+          "source": "else if (_GEN_52) begin"
+        },
+        {
+          "line": 1761,
+          "source": "entries_2_cf <= accessFault;"
+        },
+        {
+          "line": 1762,
+          "source": "entries_2_cfs_0 <= accessFault;"
+        },
+        {
+          "line": 1763,
+          "source": "entries_2_cfs_1 <= accessFault;"
+        },
+        {
+          "line": 1764,
+          "source": "entries_2_cfs_2 <= accessFault;"
+        },
+        {
+          "line": 1765,
+          "source": "entries_2_cfs_3 <= accessFault;"
+        },
+        {
+          "line": 1766,
+          "source": "entries_2_cfs_4 <= accessFault;"
+        },
+        {
+          "line": 1767,
+          "source": "entries_2_cfs_5 <= accessFault;"
+        },
+        {
+          "line": 1768,
+          "source": "entries_2_cfs_6 <= accessFault;"
+        },
+        {
+          "line": 1769,
+          "source": "entries_2_cfs_7 <= accessFault;"
+        },
+        {
+          "line": 1771,
+          "source": "else if (_io_pmp_req_bits_addr_T_4) begin"
+        },
+        {
+          "line": 1772,
+          "source": "entries_2_cf <= _GEN_129;"
+        },
+        {
+          "line": 1773,
+          "source": "entries_2_cfs_0 <= _GEN_130;"
+        },
+        {
+          "line": 1774,
+          "source": "entries_2_cfs_1 <= _GEN_131;"
+        },
+        {
+          "line": 1775,
+          "source": "entries_2_cfs_2 <= _GEN_132;"
+        },
+        {
+          "line": 1776,
+          "source": "entries_2_cfs_3 <= _GEN_133;"
+        },
+        {
+          "line": 1777,
+          "source": "entries_2_cfs_4 <= _GEN_134;"
+        },
+        {
+          "line": 1778,
+          "source": "entries_2_cfs_5 <= _GEN_135;"
+        },
+        {
+          "line": 1779,
+          "source": "entries_2_cfs_6 <= _GEN_136;"
+        },
+        {
+          "line": 1780,
+          "source": "entries_2_cfs_7 <= _GEN_137;"
+        },
+        {
+          "line": 1819,
+          "source": "if (_GEN_79)"
+        },
+        {
+          "line": 1820,
+          "source": "entries_3_wait_id <= _mem_arb_io_chosen;"
+        },
+        {
+          "line": 1825,
+          "source": "else if (cm_to_wait_3)"
+        },
+        {
+          "line": 1826,
+          "source": "entries_3_wait_id <="
+        },
+        {
+          "line": 1828,
+          "source": "? _mem_arb_io_chosen"
+        },
+        {
+          "line": 1829,
+          "source": ": (cm_dup_vec_wait_0_3 ? entries_0_wait_id : 3'h0)"
+        },
+        {
+          "line": 1830,
+          "source": "| (cm_dup_vec_wait_1_3 ? entries_1_wait_id : 3'h0)"
+        },
+        {
+          "line": 1831,
+          "source": "| (cm_dup_vec_wait_2_3 ? entries_2_wait_id : 3'h0)"
+        },
+        {
+          "line": 1832,
+          "source": "| (is_waiting_3 ? entries_3_wait_id : 3'h0)"
+        },
+        {
+          "line": 1833,
+          "source": "| (cm_dup_vec_wait_4_3 ? entries_4_wait_id : 3'h0)"
+        },
+        {
+          "line": 1834,
+          "source": "| (cm_dup_vec_wait_5_3 ? entries_5_wait_id : 3'h0)"
+        },
+        {
+          "line": 1835,
+          "source": "| (cm_dup_vec_wait_6_3 ? entries_6_wait_id : 3'h0)"
+        },
+        {
+          "line": 1836,
+          "source": "| (cm_dup_vec_wait_7_3 ? entries_7_wait_id : 3'h0);"
+        },
+        {
+          "line": 1837,
+          "source": "if (_GEN_87) begin"
+        },
+        {
+          "line": 1838,
+          "source": "entries_3_cf <= _entries_3_cf_T_5[0];"
+        },
+        {
+          "line": 1839,
+          "source": "entries_3_cfs_0 <= _GEN_143[0];"
+        },
+        {
+          "line": 1840,
+          "source": "entries_3_cfs_1 <= _GEN_143[1];"
+        },
+        {
+          "line": 1841,
+          "source": "entries_3_cfs_2 <= _GEN_143[2];"
+        },
+        {
+          "line": 1842,
+          "source": "entries_3_cfs_3 <= _GEN_143[3];"
+        },
+        {
+          "line": 1843,
+          "source": "entries_3_cfs_4 <= _GEN_143[4];"
+        },
+        {
+          "line": 1844,
+          "source": "entries_3_cfs_5 <= _GEN_143[5];"
+        },
+        {
+          "line": 1845,
+          "source": "entries_3_cfs_6 <= _GEN_143[6];"
+        },
+        {
+          "line": 1846,
+          "source": "entries_3_cfs_7 <= _GEN_143[7];"
+        },
+        {
+          "line": 1847,
+          "source": "entries_3_data <= _GEN_141;"
+        },
+        {
+          "line": 1861,
+          "source": "else if (cm_dup_wait_resp_3) begin"
+        },
+        {
+          "line": 1862,
+          "source": "entries_3_cf <= _entries_3_cf_T_2[0];"
+        },
+        {
+          "line": 1863,
+          "source": "entries_3_cfs_0 <= _GEN_156[0];"
+        },
+        {
+          "line": 1864,
+          "source": "entries_3_cfs_1 <= _GEN_156[1];"
+        },
+        {
+          "line": 1865,
+          "source": "entries_3_cfs_2 <= _GEN_156[2];"
+        },
+        {
+          "line": 1866,
+          "source": "entries_3_cfs_3 <= _GEN_156[3];"
+        },
+        {
+          "line": 1867,
+          "source": "entries_3_cfs_4 <= _GEN_156[4];"
+        },
+        {
+          "line": 1868,
+          "source": "entries_3_cfs_5 <= _GEN_156[5];"
+        },
+        {
+          "line": 1869,
+          "source": "entries_3_cfs_6 <= _GEN_156[6];"
+        },
+        {
+          "line": 1870,
+          "source": "entries_3_cfs_7 <= _GEN_156[7];"
+        },
+        {
+          "line": 1872,
+          "source": "else if (_GEN_53) begin"
+        },
+        {
+          "line": 1873,
+          "source": "entries_3_cf <= accessFault;"
+        },
+        {
+          "line": 1874,
+          "source": "entries_3_cfs_0 <= accessFault;"
+        },
+        {
+          "line": 1875,
+          "source": "entries_3_cfs_1 <= accessFault;"
+        },
+        {
+          "line": 1876,
+          "source": "entries_3_cfs_2 <= accessFault;"
+        },
+        {
+          "line": 1877,
+          "source": "entries_3_cfs_3 <= accessFault;"
+        },
+        {
+          "line": 1878,
+          "source": "entries_3_cfs_4 <= accessFault;"
+        },
+        {
+          "line": 1879,
+          "source": "entries_3_cfs_5 <= accessFault;"
+        },
+        {
+          "line": 1880,
+          "source": "entries_3_cfs_6 <= accessFault;"
+        },
+        {
+          "line": 1881,
+          "source": "entries_3_cfs_7 <= accessFault;"
+        },
+        {
+          "line": 1883,
+          "source": "else if (_io_pmp_req_bits_addr_T_4) begin"
+        },
+        {
+          "line": 1884,
+          "source": "entries_3_cf <= _GEN_145;"
+        },
+        {
+          "line": 1885,
+          "source": "entries_3_cfs_0 <= _GEN_146;"
+        },
+        {
+          "line": 1886,
+          "source": "entries_3_cfs_1 <= _GEN_147;"
+        },
+        {
+          "line": 1887,
+          "source": "entries_3_cfs_2 <= _GEN_148;"
+        },
+        {
+          "line": 1888,
+          "source": "entries_3_cfs_3 <= _GEN_149;"
+        },
+        {
+          "line": 1889,
+          "source": "entries_3_cfs_4 <= _GEN_150;"
+        },
+        {
+          "line": 1890,
+          "source": "entries_3_cfs_5 <= _GEN_151;"
+        },
+        {
+          "line": 1891,
+          "source": "entries_3_cfs_6 <= _GEN_152;"
+        },
+        {
+          "line": 1892,
+          "source": "entries_3_cfs_7 <= _GEN_153;"
+        },
+        {
+          "line": 1931,
+          "source": "if (_GEN_80)"
+        },
+        {
+          "line": 1932,
+          "source": "entries_4_wait_id <= _mem_arb_io_chosen;"
+        },
+        {
+          "line": 1937,
+          "source": "else if (cm_to_wait_4)"
+        },
+        {
+          "line": 1938,
+          "source": "entries_4_wait_id <="
+        },
+        {
+          "line": 1940,
+          "source": "? _mem_arb_io_chosen"
+        },
+        {
+          "line": 1941,
+          "source": ": (cm_dup_vec_wait_0_4 ? entries_0_wait_id : 3'h0)"
+        },
+        {
+          "line": 1942,
+          "source": "| (cm_dup_vec_wait_1_4 ? entries_1_wait_id : 3'h0)"
+        },
+        {
+          "line": 1943,
+          "source": "| (cm_dup_vec_wait_2_4 ? entries_2_wait_id : 3'h0)"
+        },
+        {
+          "line": 1944,
+          "source": "| (cm_dup_vec_wait_3_4 ? entries_3_wait_id : 3'h0)"
+        },
+        {
+          "line": 1945,
+          "source": "| (is_waiting_4 ? entries_4_wait_id : 3'h0)"
+        },
+        {
+          "line": 1946,
+          "source": "| (cm_dup_vec_wait_5_4 ? entries_5_wait_id : 3'h0)"
+        },
+        {
+          "line": 1947,
+          "source": "| (cm_dup_vec_wait_6_4 ? entries_6_wait_id : 3'h0)"
+        },
+        {
+          "line": 1948,
+          "source": "| (cm_dup_vec_wait_7_4 ? entries_7_wait_id : 3'h0);"
+        },
+        {
+          "line": 1949,
+          "source": "if (_GEN_88) begin"
+        },
+        {
+          "line": 1950,
+          "source": "entries_4_cf <= _entries_4_cf_T_5[0];"
+        },
+        {
+          "line": 1951,
+          "source": "entries_4_cfs_0 <= _GEN_159[0];"
+        },
+        {
+          "line": 1952,
+          "source": "entries_4_cfs_1 <= _GEN_159[1];"
+        },
+        {
+          "line": 1953,
+          "source": "entries_4_cfs_2 <= _GEN_159[2];"
+        },
+        {
+          "line": 1954,
+          "source": "entries_4_cfs_3 <= _GEN_159[3];"
+        },
+        {
+          "line": 1955,
+          "source": "entries_4_cfs_4 <= _GEN_159[4];"
+        },
+        {
+          "line": 1956,
+          "source": "entries_4_cfs_5 <= _GEN_159[5];"
+        },
+        {
+          "line": 1957,
+          "source": "entries_4_cfs_6 <= _GEN_159[6];"
+        },
+        {
+          "line": 1958,
+          "source": "entries_4_cfs_7 <= _GEN_159[7];"
+        },
+        {
+          "line": 1959,
+          "source": "entries_4_data <= _GEN_157;"
+        },
+        {
+          "line": 1973,
+          "source": "else if (cm_dup_wait_resp_4) begin"
+        },
+        {
+          "line": 1974,
+          "source": "entries_4_cf <= _entries_4_cf_T_2[0];"
+        },
+        {
+          "line": 1975,
+          "source": "entries_4_cfs_0 <= _GEN_172[0];"
+        },
+        {
+          "line": 1976,
+          "source": "entries_4_cfs_1 <= _GEN_172[1];"
+        },
+        {
+          "line": 1977,
+          "source": "entries_4_cfs_2 <= _GEN_172[2];"
+        },
+        {
+          "line": 1978,
+          "source": "entries_4_cfs_3 <= _GEN_172[3];"
+        },
+        {
+          "line": 1979,
+          "source": "entries_4_cfs_4 <= _GEN_172[4];"
+        },
+        {
+          "line": 1980,
+          "source": "entries_4_cfs_5 <= _GEN_172[5];"
+        },
+        {
+          "line": 1981,
+          "source": "entries_4_cfs_6 <= _GEN_172[6];"
+        },
+        {
+          "line": 1982,
+          "source": "entries_4_cfs_7 <= _GEN_172[7];"
+        },
+        {
+          "line": 1984,
+          "source": "else if (_GEN_54) begin"
+        },
+        {
+          "line": 1985,
+          "source": "entries_4_cf <= accessFault;"
+        },
+        {
+          "line": 1986,
+          "source": "entries_4_cfs_0 <= accessFault;"
+        },
+        {
+          "line": 1987,
+          "source": "entries_4_cfs_1 <= accessFault;"
+        },
+        {
+          "line": 1988,
+          "source": "entries_4_cfs_2 <= accessFault;"
+        },
+        {
+          "line": 1989,
+          "source": "entries_4_cfs_3 <= accessFault;"
+        },
+        {
+          "line": 1990,
+          "source": "entries_4_cfs_4 <= accessFault;"
+        },
+        {
+          "line": 1991,
+          "source": "entries_4_cfs_5 <= accessFault;"
+        },
+        {
+          "line": 1992,
+          "source": "entries_4_cfs_6 <= accessFault;"
+        },
+        {
+          "line": 1993,
+          "source": "entries_4_cfs_7 <= accessFault;"
+        },
+        {
+          "line": 1995,
+          "source": "else if (_io_pmp_req_bits_addr_T_4) begin"
+        },
+        {
+          "line": 1996,
+          "source": "entries_4_cf <= _GEN_161;"
+        },
+        {
+          "line": 1997,
+          "source": "entries_4_cfs_0 <= _GEN_162;"
+        },
+        {
+          "line": 1998,
+          "source": "entries_4_cfs_1 <= _GEN_163;"
+        },
+        {
+          "line": 1999,
+          "source": "entries_4_cfs_2 <= _GEN_164;"
+        },
+        {
+          "line": 2000,
+          "source": "entries_4_cfs_3 <= _GEN_165;"
+        },
+        {
+          "line": 2001,
+          "source": "entries_4_cfs_4 <= _GEN_166;"
+        },
+        {
+          "line": 2002,
+          "source": "entries_4_cfs_5 <= _GEN_167;"
+        },
+        {
+          "line": 2003,
+          "source": "entries_4_cfs_6 <= _GEN_168;"
+        },
+        {
+          "line": 2004,
+          "source": "entries_4_cfs_7 <= _GEN_169;"
+        },
+        {
+          "line": 2043,
+          "source": "if (_GEN_81)"
+        },
+        {
+          "line": 2044,
+          "source": "entries_5_wait_id <= _mem_arb_io_chosen;"
+        },
+        {
+          "line": 2049,
+          "source": "else if (cm_to_wait_5)"
+        },
+        {
+          "line": 2050,
+          "source": "entries_5_wait_id <="
+        },
+        {
+          "line": 2052,
+          "source": "? _mem_arb_io_chosen"
+        },
+        {
+          "line": 2053,
+          "source": ": (cm_dup_vec_wait_0_5 ? entries_0_wait_id : 3'h0)"
+        },
+        {
+          "line": 2054,
+          "source": "| (cm_dup_vec_wait_1_5 ? entries_1_wait_id : 3'h0)"
+        },
+        {
+          "line": 2055,
+          "source": "| (cm_dup_vec_wait_2_5 ? entries_2_wait_id : 3'h0)"
+        },
+        {
+          "line": 2056,
+          "source": "| (cm_dup_vec_wait_3_5 ? entries_3_wait_id : 3'h0)"
+        },
+        {
+          "line": 2057,
+          "source": "| (cm_dup_vec_wait_4_5 ? entries_4_wait_id : 3'h0)"
+        },
+        {
+          "line": 2058,
+          "source": "| (is_waiting_5 ? entries_5_wait_id : 3'h0)"
+        },
+        {
+          "line": 2059,
+          "source": "| (cm_dup_vec_wait_6_5 ? entries_6_wait_id : 3'h0)"
+        },
+        {
+          "line": 2060,
+          "source": "| (cm_dup_vec_wait_7_5 ? entries_7_wait_id : 3'h0);"
+        },
+        {
+          "line": 2061,
+          "source": "if (_GEN_89) begin"
+        },
+        {
+          "line": 2062,
+          "source": "entries_5_cf <= _entries_5_cf_T_5[0];"
+        },
+        {
+          "line": 2063,
+          "source": "entries_5_cfs_0 <= _GEN_175[0];"
+        },
+        {
+          "line": 2064,
+          "source": "entries_5_cfs_1 <= _GEN_175[1];"
+        },
+        {
+          "line": 2065,
+          "source": "entries_5_cfs_2 <= _GEN_175[2];"
+        },
+        {
+          "line": 2066,
+          "source": "entries_5_cfs_3 <= _GEN_175[3];"
+        },
+        {
+          "line": 2067,
+          "source": "entries_5_cfs_4 <= _GEN_175[4];"
+        },
+        {
+          "line": 2068,
+          "source": "entries_5_cfs_5 <= _GEN_175[5];"
+        },
+        {
+          "line": 2069,
+          "source": "entries_5_cfs_6 <= _GEN_175[6];"
+        },
+        {
+          "line": 2070,
+          "source": "entries_5_cfs_7 <= _GEN_175[7];"
+        },
+        {
+          "line": 2071,
+          "source": "entries_5_data <= _GEN_173;"
+        },
+        {
+          "line": 2085,
+          "source": "else if (cm_dup_wait_resp_5) begin"
+        },
+        {
+          "line": 2086,
+          "source": "entries_5_cf <= _entries_5_cf_T_2[0];"
+        },
+        {
+          "line": 2087,
+          "source": "entries_5_cfs_0 <= _GEN_188[0];"
+        },
+        {
+          "line": 2088,
+          "source": "entries_5_cfs_1 <= _GEN_188[1];"
+        },
+        {
+          "line": 2089,
+          "source": "entries_5_cfs_2 <= _GEN_188[2];"
+        },
+        {
+          "line": 2090,
+          "source": "entries_5_cfs_3 <= _GEN_188[3];"
+        },
+        {
+          "line": 2091,
+          "source": "entries_5_cfs_4 <= _GEN_188[4];"
+        },
+        {
+          "line": 2092,
+          "source": "entries_5_cfs_5 <= _GEN_188[5];"
+        },
+        {
+          "line": 2093,
+          "source": "entries_5_cfs_6 <= _GEN_188[6];"
+        },
+        {
+          "line": 2094,
+          "source": "entries_5_cfs_7 <= _GEN_188[7];"
+        },
+        {
+          "line": 2096,
+          "source": "else if (_GEN_55) begin"
+        },
+        {
+          "line": 2097,
+          "source": "entries_5_cf <= accessFault;"
+        },
+        {
+          "line": 2098,
+          "source": "entries_5_cfs_0 <= accessFault;"
+        },
+        {
+          "line": 2099,
+          "source": "entries_5_cfs_1 <= accessFault;"
+        },
+        {
+          "line": 2100,
+          "source": "entries_5_cfs_2 <= accessFault;"
+        },
+        {
+          "line": 2101,
+          "source": "entries_5_cfs_3 <= accessFault;"
+        },
+        {
+          "line": 2102,
+          "source": "entries_5_cfs_4 <= accessFault;"
+        },
+        {
+          "line": 2103,
+          "source": "entries_5_cfs_5 <= accessFault;"
+        },
+        {
+          "line": 2104,
+          "source": "entries_5_cfs_6 <= accessFault;"
+        },
+        {
+          "line": 2105,
+          "source": "entries_5_cfs_7 <= accessFault;"
+        },
+        {
+          "line": 2107,
+          "source": "else if (_io_pmp_req_bits_addr_T_4) begin"
+        },
+        {
+          "line": 2108,
+          "source": "entries_5_cf <= _GEN_177;"
+        },
+        {
+          "line": 2109,
+          "source": "entries_5_cfs_0 <= _GEN_178;"
+        },
+        {
+          "line": 2110,
+          "source": "entries_5_cfs_1 <= _GEN_179;"
+        },
+        {
+          "line": 2111,
+          "source": "entries_5_cfs_2 <= _GEN_180;"
+        },
+        {
+          "line": 2112,
+          "source": "entries_5_cfs_3 <= _GEN_181;"
+        },
+        {
+          "line": 2113,
+          "source": "entries_5_cfs_4 <= _GEN_182;"
+        },
+        {
+          "line": 2114,
+          "source": "entries_5_cfs_5 <= _GEN_183;"
+        },
+        {
+          "line": 2115,
+          "source": "entries_5_cfs_6 <= _GEN_184;"
+        },
+        {
+          "line": 2116,
+          "source": "entries_5_cfs_7 <= _GEN_185;"
+        },
+        {
+          "line": 2155,
+          "source": "if (_GEN_82)"
+        },
+        {
+          "line": 2156,
+          "source": "entries_6_wait_id <= _mem_arb_io_chosen;"
+        },
+        {
+          "line": 2161,
+          "source": "else if (cm_to_wait_6)"
+        },
+        {
+          "line": 2162,
+          "source": "entries_6_wait_id <="
+        },
+        {
+          "line": 2164,
+          "source": "? _mem_arb_io_chosen"
+        },
+        {
+          "line": 2165,
+          "source": ": (cm_dup_vec_wait_0_6 ? entries_0_wait_id : 3'h0)"
+        },
+        {
+          "line": 2166,
+          "source": "| (cm_dup_vec_wait_1_6 ? entries_1_wait_id : 3'h0)"
+        },
+        {
+          "line": 2167,
+          "source": "| (cm_dup_vec_wait_2_6 ? entries_2_wait_id : 3'h0)"
+        },
+        {
+          "line": 2168,
+          "source": "| (cm_dup_vec_wait_3_6 ? entries_3_wait_id : 3'h0)"
+        },
+        {
+          "line": 2169,
+          "source": "| (cm_dup_vec_wait_4_6 ? entries_4_wait_id : 3'h0)"
+        },
+        {
+          "line": 2170,
+          "source": "| (cm_dup_vec_wait_5_6 ? entries_5_wait_id : 3'h0)"
+        },
+        {
+          "line": 2171,
+          "source": "| (is_waiting_6 ? entries_6_wait_id : 3'h0)"
+        },
+        {
+          "line": 2172,
+          "source": "| (cm_dup_vec_wait_7_6 ? entries_7_wait_id : 3'h0);"
+        },
+        {
+          "line": 2173,
+          "source": "if (_GEN_90) begin"
+        },
+        {
+          "line": 2174,
+          "source": "entries_6_cf <= _entries_6_cf_T_5[0];"
+        },
+        {
+          "line": 2175,
+          "source": "entries_6_cfs_0 <= _GEN_191[0];"
+        },
+        {
+          "line": 2176,
+          "source": "entries_6_cfs_1 <= _GEN_191[1];"
+        },
+        {
+          "line": 2177,
+          "source": "entries_6_cfs_2 <= _GEN_191[2];"
+        },
+        {
+          "line": 2178,
+          "source": "entries_6_cfs_3 <= _GEN_191[3];"
+        },
+        {
+          "line": 2179,
+          "source": "entries_6_cfs_4 <= _GEN_191[4];"
+        },
+        {
+          "line": 2180,
+          "source": "entries_6_cfs_5 <= _GEN_191[5];"
+        },
+        {
+          "line": 2181,
+          "source": "entries_6_cfs_6 <= _GEN_191[6];"
+        },
+        {
+          "line": 2182,
+          "source": "entries_6_cfs_7 <= _GEN_191[7];"
+        },
+        {
+          "line": 2183,
+          "source": "entries_6_data <= _GEN_189;"
+        },
+        {
+          "line": 2197,
+          "source": "else if (cm_dup_wait_resp_6) begin"
+        },
+        {
+          "line": 2198,
+          "source": "entries_6_cf <= _entries_6_cf_T_2[0];"
+        },
+        {
+          "line": 2199,
+          "source": "entries_6_cfs_0 <= _GEN_204[0];"
+        },
+        {
+          "line": 2200,
+          "source": "entries_6_cfs_1 <= _GEN_204[1];"
+        },
+        {
+          "line": 2201,
+          "source": "entries_6_cfs_2 <= _GEN_204[2];"
+        },
+        {
+          "line": 2202,
+          "source": "entries_6_cfs_3 <= _GEN_204[3];"
+        },
+        {
+          "line": 2203,
+          "source": "entries_6_cfs_4 <= _GEN_204[4];"
+        },
+        {
+          "line": 2204,
+          "source": "entries_6_cfs_5 <= _GEN_204[5];"
+        },
+        {
+          "line": 2205,
+          "source": "entries_6_cfs_6 <= _GEN_204[6];"
+        },
+        {
+          "line": 2206,
+          "source": "entries_6_cfs_7 <= _GEN_204[7];"
+        },
+        {
+          "line": 2208,
+          "source": "else if (_GEN_56) begin"
+        },
+        {
+          "line": 2209,
+          "source": "entries_6_cf <= accessFault;"
+        },
+        {
+          "line": 2210,
+          "source": "entries_6_cfs_0 <= accessFault;"
+        },
+        {
+          "line": 2211,
+          "source": "entries_6_cfs_1 <= accessFault;"
+        },
+        {
+          "line": 2212,
+          "source": "entries_6_cfs_2 <= accessFault;"
+        },
+        {
+          "line": 2213,
+          "source": "entries_6_cfs_3 <= accessFault;"
+        },
+        {
+          "line": 2214,
+          "source": "entries_6_cfs_4 <= accessFault;"
+        },
+        {
+          "line": 2215,
+          "source": "entries_6_cfs_5 <= accessFault;"
+        },
+        {
+          "line": 2216,
+          "source": "entries_6_cfs_6 <= accessFault;"
+        },
+        {
+          "line": 2217,
+          "source": "entries_6_cfs_7 <= accessFault;"
+        },
+        {
+          "line": 2219,
+          "source": "else if (_io_pmp_req_bits_addr_T_4) begin"
+        },
+        {
+          "line": 2220,
+          "source": "entries_6_cf <= _GEN_193;"
+        },
+        {
+          "line": 2221,
+          "source": "entries_6_cfs_0 <= _GEN_194;"
+        },
+        {
+          "line": 2222,
+          "source": "entries_6_cfs_1 <= _GEN_195;"
+        },
+        {
+          "line": 2223,
+          "source": "entries_6_cfs_2 <= _GEN_196;"
+        },
+        {
+          "line": 2224,
+          "source": "entries_6_cfs_3 <= _GEN_197;"
+        },
+        {
+          "line": 2225,
+          "source": "entries_6_cfs_4 <= _GEN_198;"
+        },
+        {
+          "line": 2226,
+          "source": "entries_6_cfs_5 <= _GEN_199;"
+        },
+        {
+          "line": 2227,
+          "source": "entries_6_cfs_6 <= _GEN_200;"
+        },
+        {
+          "line": 2228,
+          "source": "entries_6_cfs_7 <= _GEN_201;"
+        },
+        {
+          "line": 2267,
+          "source": "if (_GEN_83)"
+        },
+        {
+          "line": 2268,
+          "source": "entries_7_wait_id <= _mem_arb_io_chosen;"
+        },
+        {
+          "line": 2273,
+          "source": "else if (cm_to_wait_7)"
+        },
+        {
+          "line": 2274,
+          "source": "entries_7_wait_id <="
+        },
+        {
+          "line": 2276,
+          "source": "? _mem_arb_io_chosen"
+        },
+        {
+          "line": 2277,
+          "source": ": (cm_dup_vec_wait_0_7 ? entries_0_wait_id : 3'h0)"
+        },
+        {
+          "line": 2278,
+          "source": "| (cm_dup_vec_wait_1_7 ? entries_1_wait_id : 3'h0)"
+        },
+        {
+          "line": 2279,
+          "source": "| (cm_dup_vec_wait_2_7 ? entries_2_wait_id : 3'h0)"
+        },
+        {
+          "line": 2280,
+          "source": "| (cm_dup_vec_wait_3_7 ? entries_3_wait_id : 3'h0)"
+        },
+        {
+          "line": 2281,
+          "source": "| (cm_dup_vec_wait_4_7 ? entries_4_wait_id : 3'h0)"
+        },
+        {
+          "line": 2282,
+          "source": "| (cm_dup_vec_wait_5_7 ? entries_5_wait_id : 3'h0)"
+        },
+        {
+          "line": 2283,
+          "source": "| (cm_dup_vec_wait_6_7 ? entries_6_wait_id : 3'h0)"
+        },
+        {
+          "line": 2284,
+          "source": "| (is_waiting_7 ? entries_7_wait_id : 3'h0);"
+        },
+        {
+          "line": 2285,
+          "source": "if (_GEN_91) begin"
+        },
+        {
+          "line": 2286,
+          "source": "entries_7_cf <= _entries_7_cf_T_5[0];"
+        },
+        {
+          "line": 2287,
+          "source": "entries_7_cfs_0 <= _GEN_207[0];"
+        },
+        {
+          "line": 2288,
+          "source": "entries_7_cfs_1 <= _GEN_207[1];"
+        },
+        {
+          "line": 2289,
+          "source": "entries_7_cfs_2 <= _GEN_207[2];"
+        },
+        {
+          "line": 2290,
+          "source": "entries_7_cfs_3 <= _GEN_207[3];"
+        },
+        {
+          "line": 2291,
+          "source": "entries_7_cfs_4 <= _GEN_207[4];"
+        },
+        {
+          "line": 2292,
+          "source": "entries_7_cfs_5 <= _GEN_207[5];"
+        },
+        {
+          "line": 2293,
+          "source": "entries_7_cfs_6 <= _GEN_207[6];"
+        },
+        {
+          "line": 2294,
+          "source": "entries_7_cfs_7 <= _GEN_207[7];"
+        },
+        {
+          "line": 2295,
+          "source": "entries_7_data <= _GEN_205;"
+        },
+        {
+          "line": 2297,
+          "source": "else if (_GEN_75) begin"
+        },
+        {
+          "line": 2298,
+          "source": "if (hit) begin"
+        },
+        {
+          "line": 2299,
+          "source": "entries_7_cf <= _GEN_60[entries_7_ppn[2:0]];"
+        },
+        {
+          "line": 2300,
+          "source": "entries_7_cfs_0 <= io_cache_resp_bits_cfs_0;"
+        },
+        {
+          "line": 2301,
+          "source": "entries_7_cfs_1 <= io_cache_resp_bits_cfs_1;"
+        },
+        {
+          "line": 2302,
+          "source": "entries_7_cfs_2 <= io_cache_resp_bits_cfs_2;"
+        },
+        {
+          "line": 2303,
+          "source": "entries_7_cfs_3 <= io_cache_resp_bits_cfs_3;"
+        },
+        {
+          "line": 2304,
+          "source": "entries_7_cfs_4 <= io_cache_resp_bits_cfs_4;"
+        },
+        {
+          "line": 2305,
+          "source": "entries_7_cfs_5 <= io_cache_resp_bits_cfs_5;"
+        },
+        {
+          "line": 2306,
+          "source": "entries_7_cfs_6 <= io_cache_resp_bits_cfs_6;"
+        },
+        {
+          "line": 2307,
+          "source": "entries_7_cfs_7 <= io_cache_resp_bits_cfs_7;"
+        },
+        {
+          "line": 2309,
+          "source": "else if (cm_dup_wait_resp_7) begin"
+        },
+        {
+          "line": 2310,
+          "source": "entries_7_cf <= _entries_7_cf_T_2[0];"
+        },
+        {
+          "line": 2311,
+          "source": "entries_7_cfs_0 <= _GEN_219[0];"
+        },
+        {
+          "line": 2312,
+          "source": "entries_7_cfs_1 <= _GEN_219[1];"
+        },
+        {
+          "line": 2313,
+          "source": "entries_7_cfs_2 <= _GEN_219[2];"
+        },
+        {
+          "line": 2314,
+          "source": "entries_7_cfs_3 <= _GEN_219[3];"
+        },
+        {
+          "line": 2315,
+          "source": "entries_7_cfs_4 <= _GEN_219[4];"
+        },
+        {
+          "line": 2316,
+          "source": "entries_7_cfs_5 <= _GEN_219[5];"
+        },
+        {
+          "line": 2317,
+          "source": "entries_7_cfs_6 <= _GEN_219[6];"
+        },
+        {
+          "line": 2318,
+          "source": "entries_7_cfs_7 <= _GEN_219[7];"
+        },
+        {
+          "line": 2320,
+          "source": "else if (_GEN_57) begin"
+        },
+        {
+          "line": 2321,
+          "source": "entries_7_cf <= accessFault;"
+        },
+        {
+          "line": 2322,
+          "source": "entries_7_cfs_0 <= accessFault;"
+        },
+        {
+          "line": 2323,
+          "source": "entries_7_cfs_1 <= accessFault;"
+        },
+        {
+          "line": 2324,
+          "source": "entries_7_cfs_2 <= accessFault;"
+        },
+        {
+          "line": 2325,
+          "source": "entries_7_cfs_3 <= accessFault;"
+        },
+        {
+          "line": 2326,
+          "source": "entries_7_cfs_4 <= accessFault;"
+        },
+        {
+          "line": 2327,
+          "source": "entries_7_cfs_5 <= accessFault;"
+        },
+        {
+          "line": 2328,
+          "source": "entries_7_cfs_6 <= accessFault;"
+        },
+        {
+          "line": 2329,
+          "source": "entries_7_cfs_7 <= accessFault;"
+        },
+        {
+          "line": 2331,
+          "source": "else if (_io_pmp_req_bits_addr_T_4) begin"
+        },
+        {
+          "line": 2332,
+          "source": "entries_7_cf <= _GEN_208;"
+        },
+        {
+          "line": 2333,
+          "source": "entries_7_cfs_0 <= _GEN_209;"
+        },
+        {
+          "line": 2334,
+          "source": "entries_7_cfs_1 <= _GEN_210;"
+        },
+        {
+          "line": 2335,
+          "source": "entries_7_cfs_2 <= _GEN_211;"
+        },
+        {
+          "line": 2336,
+          "source": "entries_7_cfs_3 <= _GEN_212;"
+        },
+        {
+          "line": 2337,
+          "source": "entries_7_cfs_4 <= _GEN_213;"
+        },
+        {
+          "line": 2338,
+          "source": "entries_7_cfs_5 <= _GEN_214;"
+        },
+        {
+          "line": 2339,
+          "source": "entries_7_cfs_6 <= _GEN_215;"
+        },
+        {
+          "line": 2340,
+          "source": "entries_7_cfs_7 <= _GEN_216;"
+        },
+        {
+          "line": 2365,
+          "source": "if (_GEN_75)"
+        },
+        {
+          "line": 2366,
+          "source": "entries_7_hit <= hit | cm_to_wait_7 | cm_dup_wait_resp_7;"
+        },
+        {
+          "line": 2399,
+          "source": "else if (_GEN_86)"
+        },
+        {
+          "line": 2400,
+          "source": "state_2 <= 3'h6;"
+        },
+        {
+          "line": 2401,
+          "source": "else if (_GEN_78)"
+        },
+        {
+          "line": 2402,
+          "source": "state_2 <= 3'h5;"
+        },
+        {
+          "line": 2413,
+          "source": "else if (_GEN_87)"
+        },
+        {
+          "line": 2414,
+          "source": "state_3 <= 3'h6;"
+        },
+        {
+          "line": 2415,
+          "source": "else if (_GEN_79)"
+        },
+        {
+          "line": 2416,
+          "source": "state_3 <= 3'h5;"
+        },
+        {
+          "line": 2427,
+          "source": "else if (_GEN_88)"
+        },
+        {
+          "line": 2428,
+          "source": "state_4 <= 3'h6;"
+        },
+        {
+          "line": 2429,
+          "source": "else if (_GEN_80)"
+        },
+        {
+          "line": 2430,
+          "source": "state_4 <= 3'h5;"
+        },
+        {
+          "line": 2441,
+          "source": "else if (_GEN_89)"
+        },
+        {
+          "line": 2442,
+          "source": "state_5 <= 3'h6;"
+        },
+        {
+          "line": 2443,
+          "source": "else if (_GEN_81)"
+        },
+        {
+          "line": 2444,
+          "source": "state_5 <= 3'h5;"
+        },
+        {
+          "line": 2455,
+          "source": "else if (_GEN_90)"
+        },
+        {
+          "line": 2456,
+          "source": "state_6 <= 3'h6;"
+        },
+        {
+          "line": 2457,
+          "source": "else if (_GEN_82)"
+        },
+        {
+          "line": 2458,
+          "source": "state_6 <= 3'h5;"
+        },
+        {
+          "line": 2469,
+          "source": "else if (_GEN_91)"
+        },
+        {
+          "line": 2470,
+          "source": "state_7 <= 3'h6;"
+        },
+        {
+          "line": 2471,
+          "source": "else if (_GEN_83)"
+        },
+        {
+          "line": 2472,
+          "source": "state_7 <= 3'h5;"
+        },
+        {
+          "line": 2473,
+          "source": "else if (_GEN_75)"
+        },
+        {
+          "line": 2474,
+          "source": "state_7 <= hit | cm_dup_wait_resp_7 ? 3'h6 : {2'h2, cm_to_wait_7};"
+        }
+      ],
+      "uncovered_declarative_lines": []
+    },
+    "BitmapDut_top.sv": {
+      "role": "picker_harness",
+      "unique_lines": 320,
+      "covered_lines": 3,
+      "coverage_percent": 0.9375,
+      "uncovered": 317,
+      "uncovered_procedural": 242,
+      "uncovered_declarative": 75,
+      "procedural_lines": 245,
+      "procedural_covered": 3,
+      "uncovered_procedural_lines": [
+        {
+          "line": 283,
+          "source": "function void get_clockxxNrVwXZHJM21;"
+        },
+        {
+          "line": 285,
+          "source": "value=clock;"
+        },
+        {
+          "line": 288,
+          "source": "function void set_clockxxNrVwXZHJM21;"
+        },
+        {
+          "line": 290,
+          "source": "clock=value;"
+        },
+        {
+          "line": 293,
+          "source": "function void get_resetxxNrVwXZHJM21;"
+        },
+        {
+          "line": 295,
+          "source": "value=reset;"
+        },
+        {
+          "line": 298,
+          "source": "function void set_resetxxNrVwXZHJM21;"
+        },
+        {
+          "line": 300,
+          "source": "reset=value;"
+        },
+        {
+          "line": 303,
+          "source": "function void get_io_sfence_validxxNrVwXZHJM21;"
+        },
+        {
+          "line": 305,
+          "source": "value=io_sfence_valid;"
+        },
+        {
+          "line": 308,
+          "source": "function void set_io_sfence_validxxNrVwXZHJM21;"
+        },
+        {
+          "line": 310,
+          "source": "io_sfence_valid=value;"
+        },
+        {
+          "line": 313,
+          "source": "function void get_io_csr_satp_changedxxNrVwXZHJM21;"
+        },
+        {
+          "line": 315,
+          "source": "value=io_csr_satp_changed;"
+        },
+        {
+          "line": 318,
+          "source": "function void set_io_csr_satp_changedxxNrVwXZHJM21;"
+        },
+        {
+          "line": 320,
+          "source": "io_csr_satp_changed=value;"
+        },
+        {
+          "line": 323,
+          "source": "function void get_io_csr_vsatp_changedxxNrVwXZHJM21;"
+        },
+        {
+          "line": 325,
+          "source": "value=io_csr_vsatp_changed;"
+        },
+        {
+          "line": 328,
+          "source": "function void set_io_csr_vsatp_changedxxNrVwXZHJM21;"
+        },
+        {
+          "line": 330,
+          "source": "io_csr_vsatp_changed=value;"
+        },
+        {
+          "line": 333,
+          "source": "function void get_io_csr_hgatp_changedxxNrVwXZHJM21;"
+        },
+        {
+          "line": 335,
+          "source": "value=io_csr_hgatp_changed;"
+        },
+        {
+          "line": 338,
+          "source": "function void set_io_csr_hgatp_changedxxNrVwXZHJM21;"
+        },
+        {
+          "line": 340,
+          "source": "io_csr_hgatp_changed=value;"
+        },
+        {
+          "line": 343,
+          "source": "function void get_io_csr_mbmc_BMAxxNrVwXZHJM21;"
+        },
+        {
+          "line": 345,
+          "source": "value=io_csr_mbmc_BMA;"
+        },
+        {
+          "line": 348,
+          "source": "function void set_io_csr_mbmc_BMAxxNrVwXZHJM21;"
+        },
+        {
+          "line": 350,
+          "source": "io_csr_mbmc_BMA=value;"
+        },
+        {
+          "line": 353,
+          "source": "function void get_io_csr_priv_virt_changedxxNrVwXZHJM21;"
+        },
+        {
+          "line": 355,
+          "source": "value=io_csr_priv_virt_changed;"
+        },
+        {
+          "line": 358,
+          "source": "function void set_io_csr_priv_virt_changedxxNrVwXZHJM21;"
+        },
+        {
+          "line": 360,
+          "source": "io_csr_priv_virt_changed=value;"
+        },
+        {
+          "line": 363,
+          "source": "function void get_io_mem_req_readyxxNrVwXZHJM21;"
+        },
+        {
+          "line": 365,
+          "source": "value=io_mem_req_ready;"
+        },
+        {
+          "line": 368,
+          "source": "function void set_io_mem_req_readyxxNrVwXZHJM21;"
+        },
+        {
+          "line": 370,
+          "source": "io_mem_req_ready=value;"
+        },
+        {
+          "line": 373,
+          "source": "function void get_io_mem_req_validxxNrVwXZHJM21;"
+        },
+        {
+          "line": 375,
+          "source": "value=io_mem_req_valid;"
+        },
+        {
+          "line": 378,
+          "source": "function void get_io_mem_req_bits_addrxxNrVwXZHJM21;"
+        },
+        {
+          "line": 380,
+          "source": "value=io_mem_req_bits_addr;"
+        },
+        {
+          "line": 383,
+          "source": "function void get_io_mem_req_bits_idxxNrVwXZHJM21;"
+        },
+        {
+          "line": 385,
+          "source": "value=io_mem_req_bits_id;"
+        },
+        {
+          "line": 388,
+          "source": "function void get_io_mem_resp_validxxNrVwXZHJM21;"
+        },
+        {
+          "line": 390,
+          "source": "value=io_mem_resp_valid;"
+        },
+        {
+          "line": 393,
+          "source": "function void set_io_mem_resp_validxxNrVwXZHJM21;"
+        },
+        {
+          "line": 395,
+          "source": "io_mem_resp_valid=value;"
+        },
+        {
+          "line": 398,
+          "source": "function void get_io_mem_resp_bits_idxxNrVwXZHJM21;"
+        },
+        {
+          "line": 400,
+          "source": "value=io_mem_resp_bits_id;"
+        },
+        {
+          "line": 403,
+          "source": "function void set_io_mem_resp_bits_idxxNrVwXZHJM21;"
+        },
+        {
+          "line": 405,
+          "source": "io_mem_resp_bits_id=value;"
+        },
+        {
+          "line": 408,
+          "source": "function void get_io_mem_resp_bits_valuexxNrVwXZHJM21;"
+        },
+        {
+          "line": 410,
+          "source": "value=io_mem_resp_bits_value;"
+        },
+        {
+          "line": 413,
+          "source": "function void set_io_mem_resp_bits_valuexxNrVwXZHJM21;"
+        },
+        {
+          "line": 415,
+          "source": "io_mem_resp_bits_value=value;"
+        },
+        {
+          "line": 418,
+          "source": "function void get_io_mem_req_mask_0xxNrVwXZHJM21;"
+        },
+        {
+          "line": 420,
+          "source": "value=io_mem_req_mask_0;"
+        },
+        {
+          "line": 423,
+          "source": "function void set_io_mem_req_mask_0xxNrVwXZHJM21;"
+        },
+        {
+          "line": 425,
+          "source": "io_mem_req_mask_0=value;"
+        },
+        {
+          "line": 428,
+          "source": "function void get_io_mem_req_mask_1xxNrVwXZHJM21;"
+        },
+        {
+          "line": 430,
+          "source": "value=io_mem_req_mask_1;"
+        },
+        {
+          "line": 433,
+          "source": "function void set_io_mem_req_mask_1xxNrVwXZHJM21;"
+        },
+        {
+          "line": 435,
+          "source": "io_mem_req_mask_1=value;"
+        },
+        {
+          "line": 438,
+          "source": "function void get_io_mem_req_mask_2xxNrVwXZHJM21;"
+        },
+        {
+          "line": 440,
+          "source": "value=io_mem_req_mask_2;"
+        },
+        {
+          "line": 443,
+          "source": "function void set_io_mem_req_mask_2xxNrVwXZHJM21;"
+        },
+        {
+          "line": 445,
+          "source": "io_mem_req_mask_2=value;"
+        },
+        {
+          "line": 448,
+          "source": "function void get_io_mem_req_mask_3xxNrVwXZHJM21;"
+        },
+        {
+          "line": 450,
+          "source": "value=io_mem_req_mask_3;"
+        },
+        {
+          "line": 453,
+          "source": "function void set_io_mem_req_mask_3xxNrVwXZHJM21;"
+        },
+        {
+          "line": 455,
+          "source": "io_mem_req_mask_3=value;"
+        },
+        {
+          "line": 458,
+          "source": "function void get_io_mem_req_mask_4xxNrVwXZHJM21;"
+        },
+        {
+          "line": 460,
+          "source": "value=io_mem_req_mask_4;"
+        },
+        {
+          "line": 463,
+          "source": "function void set_io_mem_req_mask_4xxNrVwXZHJM21;"
+        },
+        {
+          "line": 465,
+          "source": "io_mem_req_mask_4=value;"
+        },
+        {
+          "line": 468,
+          "source": "function void get_io_mem_req_mask_5xxNrVwXZHJM21;"
+        },
+        {
+          "line": 470,
+          "source": "value=io_mem_req_mask_5;"
+        },
+        {
+          "line": 473,
+          "source": "function void set_io_mem_req_mask_5xxNrVwXZHJM21;"
+        },
+        {
+          "line": 475,
+          "source": "io_mem_req_mask_5=value;"
+        },
+        {
+          "line": 478,
+          "source": "function void get_io_mem_req_mask_6xxNrVwXZHJM21;"
+        },
+        {
+          "line": 480,
+          "source": "value=io_mem_req_mask_6;"
+        },
+        {
+          "line": 483,
+          "source": "function void set_io_mem_req_mask_6xxNrVwXZHJM21;"
+        },
+        {
+          "line": 485,
+          "source": "io_mem_req_mask_6=value;"
+        },
+        {
+          "line": 488,
+          "source": "function void get_io_mem_req_mask_7xxNrVwXZHJM21;"
+        },
+        {
+          "line": 490,
+          "source": "value=io_mem_req_mask_7;"
+        },
+        {
+          "line": 493,
+          "source": "function void set_io_mem_req_mask_7xxNrVwXZHJM21;"
+        },
+        {
+          "line": 495,
+          "source": "io_mem_req_mask_7=value;"
+        },
+        {
+          "line": 498,
+          "source": "function void get_io_req_readyxxNrVwXZHJM21;"
+        },
+        {
+          "line": 500,
+          "source": "value=io_req_ready;"
+        },
+        {
+          "line": 503,
+          "source": "function void get_io_req_validxxNrVwXZHJM21;"
+        },
+        {
+          "line": 505,
+          "source": "value=io_req_valid;"
+        },
+        {
+          "line": 508,
+          "source": "function void set_io_req_validxxNrVwXZHJM21;"
+        },
+        {
+          "line": 510,
+          "source": "io_req_valid=value;"
+        },
+        {
+          "line": 513,
+          "source": "function void get_io_req_bits_bmppnxxNrVwXZHJM21;"
+        },
+        {
+          "line": 515,
+          "source": "value=io_req_bits_bmppn;"
+        },
+        {
+          "line": 518,
+          "source": "function void set_io_req_bits_bmppnxxNrVwXZHJM21;"
+        },
+        {
+          "line": 520,
+          "source": "io_req_bits_bmppn=value;"
+        },
+        {
+          "line": 523,
+          "source": "function void get_io_req_bits_idxxNrVwXZHJM21;"
+        },
+        {
+          "line": 525,
+          "source": "value=io_req_bits_id;"
+        },
+        {
+          "line": 528,
+          "source": "function void set_io_req_bits_idxxNrVwXZHJM21;"
+        },
+        {
+          "line": 530,
+          "source": "io_req_bits_id=value;"
+        },
+        {
+          "line": 533,
+          "source": "function void get_io_req_bits_vpnxxNrVwXZHJM21;"
+        },
+        {
+          "line": 535,
+          "source": "value=io_req_bits_vpn;"
+        },
+        {
+          "line": 538,
+          "source": "function void set_io_req_bits_vpnxxNrVwXZHJM21;"
+        },
+        {
+          "line": 540,
+          "source": "io_req_bits_vpn=value;"
+        },
+        {
+          "line": 543,
+          "source": "function void get_io_req_bits_levelxxNrVwXZHJM21;"
+        },
+        {
+          "line": 545,
+          "source": "value=io_req_bits_level;"
+        },
+        {
+          "line": 548,
+          "source": "function void set_io_req_bits_levelxxNrVwXZHJM21;"
+        },
+        {
+          "line": 550,
+          "source": "io_req_bits_level=value;"
+        },
+        {
+          "line": 553,
+          "source": "function void get_io_req_bits_way_infoxxNrVwXZHJM21;"
+        },
+        {
+          "line": 555,
+          "source": "value=io_req_bits_way_info;"
+        },
+        {
+          "line": 558,
+          "source": "function void set_io_req_bits_way_infoxxNrVwXZHJM21;"
+        },
+        {
+          "line": 560,
+          "source": "io_req_bits_way_info=value;"
+        },
+        {
+          "line": 563,
+          "source": "function void get_io_req_bits_hptw_bypassedxxNrVwXZHJM21;"
+        },
+        {
+          "line": 565,
+          "source": "value=io_req_bits_hptw_bypassed;"
+        },
+        {
+          "line": 568,
+          "source": "function void set_io_req_bits_hptw_bypassedxxNrVwXZHJM21;"
+        },
+        {
+          "line": 570,
+          "source": "io_req_bits_hptw_bypassed=value;"
+        },
+        {
+          "line": 573,
+          "source": "function void get_io_req_bits_s2xlatexxNrVwXZHJM21;"
+        },
+        {
+          "line": 575,
+          "source": "value=io_req_bits_s2xlate;"
+        },
+        {
+          "line": 578,
+          "source": "function void set_io_req_bits_s2xlatexxNrVwXZHJM21;"
+        },
+        {
+          "line": 580,
+          "source": "io_req_bits_s2xlate=value;"
+        },
+        {
+          "line": 583,
+          "source": "function void get_io_req_bits_nxxNrVwXZHJM21;"
+        },
+        {
+          "line": 585,
+          "source": "value=io_req_bits_n;"
+        },
+        {
+          "line": 588,
+          "source": "function void set_io_req_bits_nxxNrVwXZHJM21;"
+        },
+        {
+          "line": 590,
+          "source": "io_req_bits_n=value;"
+        },
+        {
+          "line": 593,
+          "source": "function void get_io_resp_readyxxNrVwXZHJM21;"
+        },
+        {
+          "line": 595,
+          "source": "value=io_resp_ready;"
+        },
+        {
+          "line": 598,
+          "source": "function void set_io_resp_readyxxNrVwXZHJM21;"
+        },
+        {
+          "line": 600,
+          "source": "io_resp_ready=value;"
+        },
+        {
+          "line": 603,
+          "source": "function void get_io_resp_validxxNrVwXZHJM21;"
+        },
+        {
+          "line": 605,
+          "source": "value=io_resp_valid;"
+        },
+        {
+          "line": 608,
+          "source": "function void get_io_resp_bits_cfxxNrVwXZHJM21;"
+        },
+        {
+          "line": 610,
+          "source": "value=io_resp_bits_cf;"
+        },
+        {
+          "line": 613,
+          "source": "function void get_io_resp_bits_cfs_0xxNrVwXZHJM21;"
+        },
+        {
+          "line": 615,
+          "source": "value=io_resp_bits_cfs_0;"
+        },
+        {
+          "line": 618,
+          "source": "function void get_io_resp_bits_cfs_1xxNrVwXZHJM21;"
+        },
+        {
+          "line": 620,
+          "source": "value=io_resp_bits_cfs_1;"
+        },
+        {
+          "line": 623,
+          "source": "function void get_io_resp_bits_cfs_2xxNrVwXZHJM21;"
+        },
+        {
+          "line": 625,
+          "source": "value=io_resp_bits_cfs_2;"
+        },
+        {
+          "line": 628,
+          "source": "function void get_io_resp_bits_cfs_3xxNrVwXZHJM21;"
+        },
+        {
+          "line": 630,
+          "source": "value=io_resp_bits_cfs_3;"
+        },
+        {
+          "line": 633,
+          "source": "function void get_io_resp_bits_cfs_4xxNrVwXZHJM21;"
+        },
+        {
+          "line": 635,
+          "source": "value=io_resp_bits_cfs_4;"
+        },
+        {
+          "line": 638,
+          "source": "function void get_io_resp_bits_cfs_5xxNrVwXZHJM21;"
+        },
+        {
+          "line": 640,
+          "source": "value=io_resp_bits_cfs_5;"
+        },
+        {
+          "line": 643,
+          "source": "function void get_io_resp_bits_cfs_6xxNrVwXZHJM21;"
+        },
+        {
+          "line": 645,
+          "source": "value=io_resp_bits_cfs_6;"
+        },
+        {
+          "line": 648,
+          "source": "function void get_io_resp_bits_cfs_7xxNrVwXZHJM21;"
+        },
+        {
+          "line": 650,
+          "source": "value=io_resp_bits_cfs_7;"
+        },
+        {
+          "line": 653,
+          "source": "function void get_io_resp_bits_idxxNrVwXZHJM21;"
+        },
+        {
+          "line": 655,
+          "source": "value=io_resp_bits_id;"
+        },
+        {
+          "line": 658,
+          "source": "function void get_io_pmp_req_bits_addrxxNrVwXZHJM21;"
+        },
+        {
+          "line": 660,
+          "source": "value=io_pmp_req_bits_addr;"
+        },
+        {
+          "line": 663,
+          "source": "function void get_io_pmp_resp_ldxxNrVwXZHJM21;"
+        },
+        {
+          "line": 665,
+          "source": "value=io_pmp_resp_ld;"
+        },
+        {
+          "line": 668,
+          "source": "function void set_io_pmp_resp_ldxxNrVwXZHJM21;"
+        },
+        {
+          "line": 670,
+          "source": "io_pmp_resp_ld=value;"
+        },
+        {
+          "line": 673,
+          "source": "function void get_io_pmp_resp_mmioxxNrVwXZHJM21;"
+        },
+        {
+          "line": 675,
+          "source": "value=io_pmp_resp_mmio;"
+        },
+        {
+          "line": 678,
+          "source": "function void set_io_pmp_resp_mmioxxNrVwXZHJM21;"
+        },
+        {
+          "line": 680,
+          "source": "io_pmp_resp_mmio=value;"
+        },
+        {
+          "line": 683,
+          "source": "function void get_io_wakeup_readyxxNrVwXZHJM21;"
+        },
+        {
+          "line": 685,
+          "source": "value=io_wakeup_ready;"
+        },
+        {
+          "line": 688,
+          "source": "function void set_io_wakeup_readyxxNrVwXZHJM21;"
+        },
+        {
+          "line": 690,
+          "source": "io_wakeup_ready=value;"
+        },
+        {
+          "line": 693,
+          "source": "function void get_io_wakeup_validxxNrVwXZHJM21;"
+        },
+        {
+          "line": 695,
+          "source": "value=io_wakeup_valid;"
+        },
+        {
+          "line": 698,
+          "source": "function void get_io_wakeup_bits_setIndexxxNrVwXZHJM21;"
+        },
+        {
+          "line": 700,
+          "source": "value=io_wakeup_bits_setIndex;"
+        },
+        {
+          "line": 703,
+          "source": "function void get_io_wakeup_bits_tagxxNrVwXZHJM21;"
+        },
+        {
+          "line": 705,
+          "source": "value=io_wakeup_bits_tag;"
+        },
+        {
+          "line": 708,
+          "source": "function void get_io_wakeup_bits_way_infoxxNrVwXZHJM21;"
+        },
+        {
+          "line": 710,
+          "source": "value=io_wakeup_bits_way_info;"
+        },
+        {
+          "line": 713,
+          "source": "function void get_io_wakeup_bits_pte_indexxxNrVwXZHJM21;"
+        },
+        {
+          "line": 715,
+          "source": "value=io_wakeup_bits_pte_index;"
+        },
+        {
+          "line": 718,
+          "source": "function void get_io_wakeup_bits_check_successxxNrVwXZHJM21;"
+        },
+        {
+          "line": 720,
+          "source": "value=io_wakeup_bits_check_success;"
+        },
+        {
+          "line": 723,
+          "source": "function void get_io_wakeup_bits_s2xlatexxNrVwXZHJM21;"
+        },
+        {
+          "line": 725,
+          "source": "value=io_wakeup_bits_s2xlate;"
+        },
+        {
+          "line": 728,
+          "source": "function void get_io_cache_req_readyxxNrVwXZHJM21;"
+        },
+        {
+          "line": 730,
+          "source": "value=io_cache_req_ready;"
+        },
+        {
+          "line": 733,
+          "source": "function void set_io_cache_req_readyxxNrVwXZHJM21;"
+        },
+        {
+          "line": 735,
+          "source": "io_cache_req_ready=value;"
+        },
+        {
+          "line": 738,
+          "source": "function void get_io_cache_req_validxxNrVwXZHJM21;"
+        },
+        {
+          "line": 740,
+          "source": "value=io_cache_req_valid;"
+        },
+        {
+          "line": 743,
+          "source": "function void get_io_cache_req_bits_orderxxNrVwXZHJM21;"
+        },
+        {
+          "line": 745,
+          "source": "value=io_cache_req_bits_order;"
+        },
+        {
+          "line": 748,
+          "source": "function void get_io_cache_req_bits_tagxxNrVwXZHJM21;"
+        },
+        {
+          "line": 750,
+          "source": "value=io_cache_req_bits_tag;"
+        },
+        {
+          "line": 753,
+          "source": "function void get_io_cache_resp_readyxxNrVwXZHJM21;"
+        },
+        {
+          "line": 755,
+          "source": "value=io_cache_resp_ready;"
+        },
+        {
+          "line": 758,
+          "source": "function void get_io_cache_resp_validxxNrVwXZHJM21;"
+        },
+        {
+          "line": 760,
+          "source": "value=io_cache_resp_valid;"
+        },
+        {
+          "line": 763,
+          "source": "function void set_io_cache_resp_validxxNrVwXZHJM21;"
+        },
+        {
+          "line": 765,
+          "source": "io_cache_resp_valid=value;"
+        },
+        {
+          "line": 768,
+          "source": "function void get_io_cache_resp_bits_hitxxNrVwXZHJM21;"
+        },
+        {
+          "line": 770,
+          "source": "value=io_cache_resp_bits_hit;"
+        },
+        {
+          "line": 773,
+          "source": "function void set_io_cache_resp_bits_hitxxNrVwXZHJM21;"
+        },
+        {
+          "line": 775,
+          "source": "io_cache_resp_bits_hit=value;"
+        },
+        {
+          "line": 778,
+          "source": "function void get_io_cache_resp_bits_cfs_0xxNrVwXZHJM21;"
+        },
+        {
+          "line": 780,
+          "source": "value=io_cache_resp_bits_cfs_0;"
+        },
+        {
+          "line": 783,
+          "source": "function void set_io_cache_resp_bits_cfs_0xxNrVwXZHJM21;"
+        },
+        {
+          "line": 785,
+          "source": "io_cache_resp_bits_cfs_0=value;"
+        },
+        {
+          "line": 788,
+          "source": "function void get_io_cache_resp_bits_cfs_1xxNrVwXZHJM21;"
+        },
+        {
+          "line": 790,
+          "source": "value=io_cache_resp_bits_cfs_1;"
+        },
+        {
+          "line": 793,
+          "source": "function void set_io_cache_resp_bits_cfs_1xxNrVwXZHJM21;"
+        },
+        {
+          "line": 795,
+          "source": "io_cache_resp_bits_cfs_1=value;"
+        },
+        {
+          "line": 798,
+          "source": "function void get_io_cache_resp_bits_cfs_2xxNrVwXZHJM21;"
+        },
+        {
+          "line": 800,
+          "source": "value=io_cache_resp_bits_cfs_2;"
+        },
+        {
+          "line": 803,
+          "source": "function void set_io_cache_resp_bits_cfs_2xxNrVwXZHJM21;"
+        },
+        {
+          "line": 805,
+          "source": "io_cache_resp_bits_cfs_2=value;"
+        },
+        {
+          "line": 808,
+          "source": "function void get_io_cache_resp_bits_cfs_3xxNrVwXZHJM21;"
+        },
+        {
+          "line": 810,
+          "source": "value=io_cache_resp_bits_cfs_3;"
+        },
+        {
+          "line": 813,
+          "source": "function void set_io_cache_resp_bits_cfs_3xxNrVwXZHJM21;"
+        },
+        {
+          "line": 815,
+          "source": "io_cache_resp_bits_cfs_3=value;"
+        },
+        {
+          "line": 818,
+          "source": "function void get_io_cache_resp_bits_cfs_4xxNrVwXZHJM21;"
+        },
+        {
+          "line": 820,
+          "source": "value=io_cache_resp_bits_cfs_4;"
+        },
+        {
+          "line": 823,
+          "source": "function void set_io_cache_resp_bits_cfs_4xxNrVwXZHJM21;"
+        },
+        {
+          "line": 825,
+          "source": "io_cache_resp_bits_cfs_4=value;"
+        },
+        {
+          "line": 828,
+          "source": "function void get_io_cache_resp_bits_cfs_5xxNrVwXZHJM21;"
+        },
+        {
+          "line": 830,
+          "source": "value=io_cache_resp_bits_cfs_5;"
+        },
+        {
+          "line": 833,
+          "source": "function void set_io_cache_resp_bits_cfs_5xxNrVwXZHJM21;"
+        },
+        {
+          "line": 835,
+          "source": "io_cache_resp_bits_cfs_5=value;"
+        },
+        {
+          "line": 838,
+          "source": "function void get_io_cache_resp_bits_cfs_6xxNrVwXZHJM21;"
+        },
+        {
+          "line": 840,
+          "source": "value=io_cache_resp_bits_cfs_6;"
+        },
+        {
+          "line": 843,
+          "source": "function void set_io_cache_resp_bits_cfs_6xxNrVwXZHJM21;"
+        },
+        {
+          "line": 845,
+          "source": "io_cache_resp_bits_cfs_6=value;"
+        },
+        {
+          "line": 848,
+          "source": "function void get_io_cache_resp_bits_cfs_7xxNrVwXZHJM21;"
+        },
+        {
+          "line": 850,
+          "source": "value=io_cache_resp_bits_cfs_7;"
+        },
+        {
+          "line": 853,
+          "source": "function void set_io_cache_resp_bits_cfs_7xxNrVwXZHJM21;"
+        },
+        {
+          "line": 855,
+          "source": "io_cache_resp_bits_cfs_7=value;"
+        },
+        {
+          "line": 858,
+          "source": "function void get_io_cache_resp_bits_orderxxNrVwXZHJM21;"
+        },
+        {
+          "line": 860,
+          "source": "value=io_cache_resp_bits_order;"
+        },
+        {
+          "line": 863,
+          "source": "function void set_io_cache_resp_bits_orderxxNrVwXZHJM21;"
+        },
+        {
+          "line": 865,
+          "source": "io_cache_resp_bits_order=value;"
+        },
+        {
+          "line": 868,
+          "source": "function void get_io_refill_validxxNrVwXZHJM21;"
+        },
+        {
+          "line": 870,
+          "source": "value=io_refill_valid;"
+        },
+        {
+          "line": 873,
+          "source": "function void get_io_refill_bits_tagxxNrVwXZHJM21;"
+        },
+        {
+          "line": 875,
+          "source": "value=io_refill_bits_tag;"
+        },
+        {
+          "line": 878,
+          "source": "function void get_io_refill_bits_dataxxNrVwXZHJM21;"
+        },
+        {
+          "line": 880,
+          "source": "value=io_refill_bits_data;"
+        },
+        {
+          "line": 891,
+          "source": "function void finish_NrVwXZHJM21;"
+        },
+        {
+          "line": 892,
+          "source": "$finish;"
+        }
+      ],
+      "uncovered_declarative_lines": [
+        {
+          "line": 284,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 294,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 304,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 314,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 324,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 334,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 344,
+          "source": "output logic [57:0] value;"
+        },
+        {
+          "line": 354,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 364,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 374,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 379,
+          "source": "output logic [47:0] value;"
+        },
+        {
+          "line": 384,
+          "source": "output logic [3:0] value;"
+        },
+        {
+          "line": 389,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 399,
+          "source": "output logic [3:0] value;"
+        },
+        {
+          "line": 409,
+          "source": "output logic [511:0] value;"
+        },
+        {
+          "line": 419,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 429,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 439,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 449,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 459,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 469,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 479,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 489,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 499,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 504,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 514,
+          "source": "output logic [35:0] value;"
+        },
+        {
+          "line": 524,
+          "source": "output logic [2:0] value;"
+        },
+        {
+          "line": 534,
+          "source": "output logic [37:0] value;"
+        },
+        {
+          "line": 544,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 554,
+          "source": "output logic [3:0] value;"
+        },
+        {
+          "line": 564,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 574,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 584,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 594,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 604,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 609,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 614,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 619,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 624,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 629,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 634,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 639,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 644,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 649,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 654,
+          "source": "output logic [2:0] value;"
+        },
+        {
+          "line": 659,
+          "source": "output logic [47:0] value;"
+        },
+        {
+          "line": 664,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 674,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 684,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 694,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 699,
+          "source": "output logic [5:0] value;"
+        },
+        {
+          "line": 704,
+          "source": "output logic [37:0] value;"
+        },
+        {
+          "line": 709,
+          "source": "output logic [3:0] value;"
+        },
+        {
+          "line": 714,
+          "source": "output logic [2:0] value;"
+        },
+        {
+          "line": 719,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 724,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 729,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 739,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 744,
+          "source": "output logic [7:0] value;"
+        },
+        {
+          "line": 749,
+          "source": "output logic [35:0] value;"
+        },
+        {
+          "line": 754,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 759,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 769,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 779,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 789,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 799,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 809,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 819,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 829,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 839,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 849,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 859,
+          "source": "output logic [7:0] value;"
+        },
+        {
+          "line": 869,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 874,
+          "source": "output logic [35:0] value;"
+        },
+        {
+          "line": 879,
+          "source": "output logic [63:0] value;"
+        }
+      ]
+    },
+    "Arbiter8_bitmapCacheReqBundle.sv": {
+      "role": "dut",
+      "unique_lines": 17,
+      "covered_lines": 17,
+      "coverage_percent": 100.0,
+      "uncovered": 0,
+      "uncovered_procedural": 0,
+      "uncovered_declarative": 0,
+      "procedural_lines": 17,
+      "procedural_covered": 17,
+      "uncovered_procedural_lines": [],
+      "uncovered_declarative_lines": []
+    },
+    "RRArbiterInit.sv": {
+      "role": "dut",
+      "unique_lines": 22,
+      "covered_lines": 22,
+      "coverage_percent": 100.0,
+      "uncovered": 0,
+      "uncovered_procedural": 0,
+      "uncovered_declarative": 0,
+      "procedural_lines": 22,
+      "procedural_covered": 22,
+      "uncovered_procedural_lines": [],
+      "uncovered_declarative_lines": []
+    }
+  },
+  "branches": {
+    "total": 398,
+    "covered": 279,
+    "uncovered_count": 119
+  },
+  "toggles": {
+    "total": 6636,
+    "covered": 2190,
+    "uncovered_count": 4446,
+    "classes": {
+      "other": 4446
+    }
+  },
+  "functional_coverage": {
+    "coverage": 100.0,
+    "covered": true,
+    "groups": [
+      {
+        "instance": "bitmap",
+        "coverage": 100.0,
+        "samples": 38,
+        "points": [
+          {
+            "name": "event",
+            "coverage": 100.0,
+            "samples": 38
+          },
+          {
+            "name": "level",
+            "coverage": 100.0,
+            "samples": 38
+          },
+          {
+            "name": "result",
+            "coverage": 100.0,
+            "samples": 38
+          }
+        ]
+      }
+    ]
+  },
+  "limits": "Verilator point summaries are not semantic checks. LCOV DA hits are summed per line (duplicate shadow points included) and every denominator is retained. Declarative wire/reg/end lines are separated by source text, not deleted; procedural lines are still listed if uncovered. Files are kept separate so a parent DUT does not hide a child's own gaps.",
+  "note": "Compact summary; the final run keeps the full audit and coverage database."
+}

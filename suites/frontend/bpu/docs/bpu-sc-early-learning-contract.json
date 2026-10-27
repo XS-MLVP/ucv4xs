@@ -1,0 +1,29 @@
+{
+  "format": "human-semantic-integration-contract",
+  "event": "早级预测条件跳转，SC在同一原查询的末级纠正为不跳；早级学习该次指导，恢复路径中的新查询自然消费相同短历史经验。",
+  "expected_effects": [
+    "独立模型从reset和真实执行反馈建立预测器状态，不以DUT状态初始化期望。",
+    "原SC不跳放行该窗口较晚间接分支的原ITTAGE完整目标，冲刷年轻预测并恢复原历史。",
+    "原预测的内部指导被接纳，分配及保护在下一完整实际状态确认，不能只比较期望写入。",
+    "新查询不靠追加redirect伪造消费者；其早级条件不跳并选择完整间接后继。",
+    "新查询拥有不同长历史，允许它自己的末级选择条件跳转；其独立指导导致的保护降低必须单独归属并实际确认。"
+  ],
+  "source_gap": {
+    "file": "rtl/bpu/BypassShadowBuffer.sv",
+    "meaning": "后级指导建立短历史经验、经验被新查询使用，以及新上下文分歧时失去保护。不是bank/set遍历。",
+    "original_missing_rows": 2260,
+    "all_rows_caused_by_SC": false
+  },
+  "profiles": ["compressed-entry.held", "compressed-entry.flowing", "conditional-entry.held", "conditional-entry.flowing"],
+  "case": "tests/bpu/testcase/test_sc_early_learning.py",
+  "checker": "bpuverify/bpu/checker/sc_early_learning.py",
+  "models": "复用StatisticalJointSources及已有各子模块语义算法，不增加预测器算法。",
+  "coverage_family": "kunminghu_v3.bpu.sc-early-learning",
+  "atomic_obligations_per_profile": 14,
+  "evidence_limits": [
+    "FastTrain是S3预测对早级的内部指导，不是后端执行或提交真值。",
+    "早级经验被消费不等于新长历史下的末级预测也选择相同目标。",
+    "模型自测不给硬件覆盖信用，旧普通FAIL和严格XFAIL保持。",
+    "不证明完整FTQ、RAS联合行为、SC全部学习家族或所有物理副本。"
+  ]
+}

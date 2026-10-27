@@ -1,0 +1,558 @@
+{
+  "format": "xreactor-functional-coverage",
+  "version": 2,
+  "coverage": 100.0,
+  "covered": true,
+  "groups": [
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "tlbn",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "event",
+            "source": "event",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "bare",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "bare"
+                  ]
+                }
+              },
+              {
+                "name": "fault",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "fault"
+                  ]
+                }
+              },
+              {
+                "name": "fence",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "fence"
+                  ]
+                }
+              },
+              {
+                "name": "hit",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "hit"
+                  ]
+                }
+              },
+              {
+                "name": "kill",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "kill"
+                  ]
+                }
+              },
+              {
+                "name": "miss",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "miss"
+                  ]
+                }
+              },
+              {
+                "name": "pmp",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "pmp"
+                  ]
+                }
+              }
+            ],
+            "description": "DTLB 命中、缺失/PTW、权限故障、失效、无翻译、PMP 和 kill。"
+          },
+          {
+            "name": "port",
+            "source": "port",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "0",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    0
+                  ]
+                }
+              },
+              {
+                "name": "1",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    1
+                  ]
+                }
+              },
+              {
+                "name": "2",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    2
+                  ]
+                }
+              },
+              {
+                "name": "3",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    3
+                  ]
+                }
+              }
+            ],
+            "description": "四个 DTLB 请求端口。"
+          },
+          {
+            "name": "result",
+            "source": "result",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "af",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "af"
+                  ]
+                }
+              },
+              {
+                "name": "bare",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "bare"
+                  ]
+                }
+              },
+              {
+                "name": "clean",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "clean"
+                  ]
+                }
+              },
+              {
+                "name": "gpf",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "gpf"
+                  ]
+                }
+              },
+              {
+                "name": "miss",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "miss"
+                  ]
+                }
+              },
+              {
+                "name": "pf",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "pf"
+                  ]
+                }
+              }
+            ],
+            "description": "响应结果类别。"
+          },
+          {
+            "name": "stage",
+            "source": "stage",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "0",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    0
+                  ]
+                }
+              },
+              {
+                "name": "1",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    1
+                  ]
+                }
+              },
+              {
+                "name": "2",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    2
+                  ]
+                }
+              },
+              {
+                "name": "3",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    3
+                  ]
+                }
+              }
+            ],
+            "description": "noS2、onlyStage1、onlyStage2、allStage 四类翻译。"
+          }
+        ],
+        "crosses": [],
+        "description": "TLBNonBlock 多端口 DTLB 语义。"
+      },
+      "schema_digest": "43e88621baac277e2eb91741ec41364ab1756e18a4a24c2c711ffabe175401a7",
+      "instance": "tlbn",
+      "illegal_policy": "raise",
+      "samples": 629,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 629,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "bare": 2,
+            "fault": 19,
+            "fence": 3,
+            "hit": 157,
+            "kill": 2,
+            "miss": 445,
+            "pmp": 1
+          },
+          "provenance": {
+            "hit": {
+              "b0faa81c8e934d72b248751aa464f75e": {
+                "count": 157,
+                "first": null,
+                "last": null
+              }
+            },
+            "bare": {
+              "b0faa81c8e934d72b248751aa464f75e": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "miss": {
+              "b0faa81c8e934d72b248751aa464f75e": {
+                "count": 445,
+                "first": null,
+                "last": null
+              }
+            },
+            "fence": {
+              "b0faa81c8e934d72b248751aa464f75e": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "fault": {
+              "b0faa81c8e934d72b248751aa464f75e": {
+                "count": 19,
+                "first": null,
+                "last": null
+              }
+            },
+            "pmp": {
+              "b0faa81c8e934d72b248751aa464f75e": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "kill": {
+              "b0faa81c8e934d72b248751aa464f75e": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "event",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 629,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "0": 620,
+            "1": 1,
+            "2": 5,
+            "3": 3
+          },
+          "provenance": {
+            "0": {
+              "b0faa81c8e934d72b248751aa464f75e": {
+                "count": 620,
+                "first": null,
+                "last": null
+              }
+            },
+            "1": {
+              "b0faa81c8e934d72b248751aa464f75e": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "2": {
+              "b0faa81c8e934d72b248751aa464f75e": {
+                "count": 5,
+                "first": null,
+                "last": null
+              }
+            },
+            "3": {
+              "b0faa81c8e934d72b248751aa464f75e": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "port",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 629,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "0": 547,
+            "1": 26,
+            "2": 31,
+            "3": 25
+          },
+          "provenance": {
+            "0": {
+              "b0faa81c8e934d72b248751aa464f75e": {
+                "count": 547,
+                "first": null,
+                "last": null
+              }
+            },
+            "3": {
+              "b0faa81c8e934d72b248751aa464f75e": {
+                "count": 25,
+                "first": null,
+                "last": null
+              }
+            },
+            "1": {
+              "b0faa81c8e934d72b248751aa464f75e": {
+                "count": 26,
+                "first": null,
+                "last": null
+              }
+            },
+            "2": {
+              "b0faa81c8e934d72b248751aa464f75e": {
+                "count": 31,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "stage",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 629,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "af": 2,
+            "bare": 2,
+            "clean": 158,
+            "gpf": 7,
+            "miss": 450,
+            "pf": 10
+          },
+          "provenance": {
+            "clean": {
+              "b0faa81c8e934d72b248751aa464f75e": {
+                "count": 158,
+                "first": null,
+                "last": null
+              }
+            },
+            "bare": {
+              "b0faa81c8e934d72b248751aa464f75e": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "miss": {
+              "b0faa81c8e934d72b248751aa464f75e": {
+                "count": 450,
+                "first": null,
+                "last": null
+              }
+            },
+            "pf": {
+              "b0faa81c8e934d72b248751aa464f75e": {
+                "count": 10,
+                "first": null,
+                "last": null
+              }
+            },
+            "af": {
+              "b0faa81c8e934d72b248751aa464f75e": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "gpf": {
+              "b0faa81c8e934d72b248751aa464f75e": {
+                "count": 7,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "result",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "b0faa81c8e934d72b248751aa464f75e": {
+          "run_id": "b0faa81c8e934d72b248751aa464f75e",
+          "instance": "tlbn",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "b0faa81c8e934d72b248751aa464f75e",
+      "snapshot_id": "d947b0fd1c0d0466d38e4b6ef82c359861d07db5fbd3e7b2596f61b0d396ffcd"
+    }
+  ]
+}

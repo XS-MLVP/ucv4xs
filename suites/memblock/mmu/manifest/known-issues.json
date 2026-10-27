@@ -1,0 +1,852 @@
+{
+  "schema_version": 1,
+  "validated_date": "2026-10-25",
+  "dut": "TLB/MMU verification workspace",
+  "issues": [
+    {
+      "id": "TLBFA-LEVEL3-FAKE-PTE-UNREACHABLE",
+      "severity": "candidate-rtl-defect",
+      "status": "open",
+      "file": "soc-split/rtl/TLBFA.sv",
+      "generated_file": "dut/tlbfa/TlbfaDut.v",
+      "line": 7151,
+      "construct": "inner_level nested ternary",
+      "observed": "s1 fake PTE + s2 exception selects s1_level, never the documented level 3 arm",
+      "evidence": [
+        "allStage fake PTE has s1_v=0, so s1_leaf=((r|x|w)&s1_v)=0",
+        "first condition s2_exception && !s1_leaf is already true whenever s2_exception is true",
+        "therefore the later s2_exception && s1_fake ? 3 arm is dead",
+        "test_all_stage_fake_pte_with_stage2_exception_uses_s1_level observes level 0"
+      ],
+      "impact": "MMUBundle.scala comment says fake s1 PTE with s2 exception should force level 3; generated behavior differs. Designer review required; RTL was not modified.",
+      "coverage": "branch TlbfaDut.v:7151 cond_then stays 0 by construction",
+      "isa_confirmation": "ISA specifies translation/fault behavior, not this internal fake-PTE encoding. Dead ternary arm is structural; downstream architectural fault/GPA impact remains unverified.",
+      "historical_before_finalization": {
+        "status": "open",
+        "observed": "s1 fake PTE + s2 exception selects s1_level, never the documented level 3 arm",
+        "impact": "MMUBundle.scala comment says fake s1 PTE with s2 exception should force level 3; generated behavior differs. Designer review required; RTL was not modified.",
+        "evidence": [
+          "allStage fake PTE has s1_v=0, so s1_leaf=((r|x|w)&s1_v)=0",
+          "first condition s2_exception && !s1_leaf is already true whenever s2_exception is true",
+          "therefore the later s2_exception && s1_fake ? 3 arm is dead",
+          "test_all_stage_fake_pte_with_stage2_exception_uses_s1_level observes level 0"
+        ]
+      }
+    },
+    {
+      "id": "TLBFA-INITIAL-RESET-ELSE",
+      "severity": "tool-initialization-artifact",
+      "status": "accepted-nonfunctional",
+      "generated_file": "dut/tlbfa/TlbfaDut.v",
+      "line": 12532,
+      "construct": "initial if (reset)",
+      "observed": "implicit else branch is not exercised",
+      "reason": "The block executes once at time zero; runtime tests start with reset asserted. No functional state transition is associated with the implicit else.",
+      "coverage": "branch TlbfaDut.v:12532 else stays 0",
+      "evidence": [],
+      "historical_before_finalization": {
+        "status": "accepted-nonfunctional",
+        "observed": "implicit else branch is not exercised",
+        "evidence": []
+      }
+    },
+    {
+      "id": "TLBFA-PUBLIC-PORTS-ONLY",
+      "severity": "scope-boundary",
+      "status": "by-design",
+      "observed": "The Picker build has no VPI and no internal signal configuration.",
+      "impact": "Functional checks use only the public read/refill/sfence/access ports; internal entry visibility is inferred from responses and touch ways.",
+      "evidence": [],
+      "historical_before_finalization": {
+        "status": "by-design",
+        "observed": "The Picker build has no VPI and no internal signal configuration.",
+        "impact": "Functional checks use only the public read/refill/sfence/access ports; internal entry visibility is inferred from responses and touch ways.",
+        "evidence": []
+      }
+    },
+    {
+      "id": "WRAPPER-PLRU-NO-INVALID-PRIORITY",
+      "severity": "performance-risk",
+      "status": "open",
+      "file": "soc-split/rtl/TlbStorageWrapper.sv",
+      "observed": "Internal refill_idx is pure tree-PLRU; it does not prioritize invalid ways. From reset, the first 60 refills cover only 46 of 48 ways; ways 15 and 31 remain invalid until later refills (indices 60 and 62).",
+      "evidence": [
+        "test_reset_and_initial_plru_victim_sequence records victims and asserts the 0,32,16,40 initial sequence",
+        "test_wrapper_storage_bits_toggle_in_every_selected_way writes 63 all-ones entries and observes all 48 ways selected",
+        "functional coverage victim_way reaches 48/48 only after the 63-refill/steer sequence"
+      ],
+      "impact": "Cold-start TLB can evict valid ways while invalid ways remain; this is a performance/aging inefficiency, not a functional correctness failure. The generated design uses pure PLRU; replaceWrapper's invalid-first helper is not applied in this wrapper.",
+      "coverage": "No functional failure; victim_way coverage is 100% after the steering test.",
+      "isa_confirmation": "ISA does not prescribe TLB capacity, PLRU order or invalid-way preference; performance observation only.",
+      "historical_before_finalization": {
+        "status": "open",
+        "observed": "Internal refill_idx is pure tree-PLRU; it does not prioritize invalid ways. From reset, the first 60 refills cover only 46 of 48 ways; ways 15 and 31 remain invalid until later refills (indices 60 and 62).",
+        "impact": "Cold-start TLB can evict valid ways while invalid ways remain; this is a performance/aging inefficiency, not a functional correctness failure. The generated design uses pure PLRU; replaceWrapper's invalid-first helper is not applied in this wrapper.",
+        "evidence": [
+          "test_reset_and_initial_plru_victim_sequence records victims and asserts the 0,32,16,40 initial sequence",
+          "test_wrapper_storage_bits_toggle_in_every_selected_way writes 63 all-ones entries and observes all 48 ways selected",
+          "functional coverage victim_way reaches 48/48 only after the 63-refill/steer sequence"
+        ]
+      }
+    },
+    {
+      "id": "WRAPPER-INITIAL-RESET-ELSE",
+      "severity": "tool-initialization-artifact",
+      "status": "accepted-nonfunctional",
+      "generated_file": "dut/wrapper/TlbStorageWrapperDut.v",
+      "line": 299,
+      "construct": "initial if (reset) for refill_idx_state_reg",
+      "observed": "implicit else branch is not exercised",
+      "reason": "The block executes once at time zero; runtime tests start with reset asserted.",
+      "coverage": "branch line 299 else stays 0",
+      "evidence": [],
+      "historical_before_finalization": {
+        "status": "accepted-nonfunctional",
+        "observed": "implicit else branch is not exercised",
+        "evidence": []
+      }
+    },
+    {
+      "id": "TLB-GPA-REPLAY-UNVERIFIED",
+      "severity": "scope-gap",
+      "status": "resolved",
+      "file": "soc-split/rtl/TLB.sv",
+      "observed": "13 TLB top-level procedural lines in need_gpa/getGpa/GPA replay and onlyStage2 gpaddr remain uncovered.",
+      "evidence": [
+        "results/tlb-gpa-tests-06/coverage-audit.json",
+        "docs/reports/evidence/cycle-tlb-gpa-20261025/"
+      ],
+      "impact": "Resolved by tlb-gpa-tests-06: test_gpa_replay_for_all_stage_gpf verifies getGpa request, GPA response, gpf/gpaddr and no normal walk; TLB line coverage rose to 3655/3657.",
+      "resolution": "Resolved by tlb-gpa-tests-06: test_gpa_replay_for_all_stage_gpf verifies getGpa request, GPA response, gpf/gpaddr and no normal walk; TLB line coverage rose to 3655/3657.",
+      "historical_impact": "ITLB noS2, clean stage2, PTW request classification, permissions and fences are verified; guest-page-fault GPA replay is not.",
+      "historical_before_finalization": {
+        "status": "resolved",
+        "observed": "13 TLB top-level procedural lines in need_gpa/getGpa/GPA replay and onlyStage2 gpaddr remain uncovered.",
+        "impact": "Resolved by tlb-gpa-tests-06: test_gpa_replay_for_all_stage_gpf verifies getGpa request, GPA response, gpf/gpaddr and no normal walk; TLB line coverage rose to 3655/3657.",
+        "resolution": "Resolved by tlb-gpa-tests-06: test_gpa_replay_for_all_stage_gpf verifies getGpa request, GPA response, gpf/gpaddr and no normal walk; TLB line coverage rose to 3655/3657.",
+        "evidence": [
+          "results/tlb-gpa-tests-06/coverage-audit.json",
+          "docs/reports/evidence/cycle-tlb-gpa-20261025/"
+        ]
+      }
+    },
+    {
+      "id": "L2MQ-CONSTANT-HPTW",
+      "severity": "structural-constant",
+      "status": "accepted",
+      "file": "soc-split/rtl/Queue40_L2TlbMQBundle.sv",
+      "observed": "isHptwReq and hptwId are hardwired to zero in the queue payload.",
+      "impact": "toggle 0->1 for these bits is unreachable; HPTW ID routing is not exercised by this leaf.",
+      "evidence": [],
+      "historical_before_finalization": {
+        "status": "accepted",
+        "observed": "isHptwReq and hptwId are hardwired to zero in the queue payload.",
+        "impact": "toggle 0->1 for these bits is unreachable; HPTW ID routing is not exercised by this leaf.",
+        "evidence": []
+      }
+    },
+    {
+      "id": "L2TLB-TOP-PARTIAL",
+      "severity": "scope-gap",
+      "status": "open",
+      "file": "soc-split/rtl/L2TLB.sv",
+      "observed": "Current soundness-final-l2tlb-02: 46 PASS, line 17079/22249, toggle 96980/255430, branch 4330/6304. Residual functional state/data-pattern enumeration remains open; sampled bins are not semantic closure.",
+      "evidence": [
+        "results/soundness-final-l2tlb-02/coverage-audit.json",
+        "docs/reports/evidence/soundness-20261025/final-residuals.json",
+        "docs/reports/verification-soundness-20261025.md"
+      ],
+      "impact": "No blanket unreachable/nonfunctional classification. Every remaining point stays open unless individually supported by structural evidence; independent leaf and integration scopes remain separate.",
+      "historical_before_finalization": {
+        "status": "open",
+        "observed": "L2TLB top remains partially covered despite functional closure: line 17081/22249=76.772%, branch 4329/6304, toggle 96615/255430. Residual is concentrated in PtwCache/LLPTW/Bitmap internal states and prefetch/arbitration, not in the added PMA/bitmap/fence points.",
+        "impact": "Functional points added in phase 2 are verified; the top-level coverage number alone is not a complete acceptance of all internal states.",
+        "evidence": [
+          "results/l2tlb-final-12/coverage-audit.json",
+          "docs/reports/l2tlb-20261024.md section 4",
+          "docs/reports/evidence/cycle-l2tlb-20261024/"
+        ]
+      }
+    },
+    {
+      "id": "L2TLB-SATP-NO-SFENCE-STALE",
+      "severity": "verification-scope",
+      "status": "needs-valid-stimulus-recheck",
+      "file": "soc-split/rtl/L2TLB.sv",
+      "observed": "satp write does not implicitly order stores or invalidate translation caches. ISA 11.1.1.11 also permits a translation begun while satp was active not to complete/terminate after satp becomes inactive without a matching fence. The historical timeout used an invalid responder and does not establish which condition applied.",
+      "evidence": [
+        "docs/reports/isa-confirmation-20261026.md",
+        "tests/l2/test_l2tlb.py::test_satp_change_with_sfence_rewalks",
+        "docs/reports/evidence/soundness-20261025/isa-sources.json"
+      ],
+      "impact": "Neither blanket timeout waiver nor blanket mandatory-completion claim is justified. Separate old inflight translations, effective privilege/satp active state, and newly issued requests.",
+      "resolution": "Retain needs-valid-stimulus-recheck; supported satp+sfence positive does not establish qualified no-fence liveness.",
+      "historical_before_finalization": {
+        "status": "needs-valid-stimulus-recheck",
+        "observed": "Writing satp does not itself order page-table stores or invalidate translation caches. Old/new cached mappings may be permitted without a subsuming fence, with separate immediate rules for ASID/Bare. The previous no-fence timeout used a now-invalidated responder and is not validated RTL evidence.",
+        "impact": "ISA permission to use an old/new mapping does not license a permanent stall. No-fence liveness is not proven by the supported satp+sfence positive test.",
+        "resolution": "Retract blanket outside-software-contract waiver; retain no-fence liveness as unverified rather than an accepted DUT limitation.",
+        "evidence": [
+          "docs/reports/isa-confirmation-20261026.md",
+          "tests/l2/test_l2tlb.py::test_satp_change_with_sfence_rewalks",
+          "docs/reports/evidence/soundness-20261025/isa-sources.json"
+        ]
+      }
+    },
+    {
+      "id": "L2TLB-SFENCE-RS1RS2-ZERO-NO-REWALK",
+      "severity": "verification-false-positive",
+      "status": "resolved",
+      "file": "soc-split/rtl/L2TLB.sv",
+      "observed": "RTL rs1/rs2 are register-is-x0 flags, not operand-present flags. Both 1 means all VA/all ASID; both 0 means scoped VA+ASID. The old test drove both 0 with addr=0 for a nonzero VPN and incorrectly expected global flush. Correct all-address and byte-address scoped controls pass.",
+      "evidence": [
+        "tests/l2/test_l2tlb.py::test_sfence_all_rewalks_after_pte_change",
+        "docs/reports/verification-soundness-20261025.md",
+        "docs/reports/evidence/soundness-20261025/"
+      ],
+      "impact": "Prior DUT defect/limitation claim withdrawn; regression checks the intended behavior.",
+      "previous_attribution": {
+        "status": "open",
+        "severity": "candidate-behavior-gap",
+        "observed": "After rewriting a leaf PTE from 0xABC to 0xDEF, sfence.vma with rs1=0/rs2=0 returns the old PPN and performs no new table read, both with sfence.addr=0 and with sfence.addr=vpn. The same rewrite followed by a scoped sfence (rs1=1,rs2=0,addr) re-walks and returns 0xDEF. PtwCache flush still uses sfence.addr-derived set/vpn masks for the all-address encoding; strict XFAIL records the gap.",
+        "impact": "All-address sfence invalidation is not closed and can return a stale translation after page-table modification. Designer review required; not waived.",
+        "resolution": null
+      },
+      "classification": "false-positive-wrong-contract",
+      "resolution": "RTL rs1/rs2 are register-is-x0 flags, not operand-present flags. Both 1 means all VA/all ASID; both 0 means scoped VA+ASID. The old test drove both 0 with addr=0 for a nonzero VPN and incorrectly expected global flush. Correct all-address and byte-address scoped controls pass.",
+      "isa_confirmation": "Operand x0 identity maps to local is-x0=1. A non-x0 register containing zero is not x0. Over-fencing is allowed; exact neighbor preservation is implementation-specific, not ISA-required.",
+      "historical_before_finalization": {
+        "status": "resolved",
+        "observed": "RTL rs1/rs2 are register-is-x0 flags, not operand-present flags. Both 1 means all VA/all ASID; both 0 means scoped VA+ASID. The old test drove both 0 with addr=0 for a nonzero VPN and incorrectly expected global flush. Correct all-address and byte-address scoped controls pass.",
+        "impact": "Prior DUT defect/limitation claim withdrawn; regression checks the intended behavior.",
+        "resolution": "RTL rs1/rs2 are register-is-x0 flags, not operand-present flags. Both 1 means all VA/all ASID; both 0 means scoped VA+ASID. The old test drove both 0 with addr=0 for a nonzero VPN and incorrectly expected global flush. Correct all-address and byte-address scoped controls pass.",
+        "evidence": [
+          "tests/l2/test_l2tlb.py::test_sfence_all_rewalks_after_pte_change",
+          "docs/reports/verification-soundness-20261025.md",
+          "docs/reports/evidence/soundness-20261025/"
+        ]
+      }
+    },
+    {
+      "id": "L2TLB-BITMAP-DENY-UNVERIFIED",
+      "severity": "scope-gap",
+      "status": "resolved",
+      "file": "soc-split/rtl/Bitmap.sv",
+      "observed": "Bitmap deny polarity established: an all-ones bitmap (cf=1) denies with s1_af=1, while an all-zero bitmap (cf=0) allows and returns s1_ppn. The earlier all-ones \"success\" observation was a checker omission (s1_af was not asserted).",
+      "evidence": [
+        "tests/l2/test_l2tlb.py::test_bitmap_deny_and_allow",
+        "results/l2tlb-final-12/coverage-audit.json"
+      ],
+      "impact": "deny/allow polarity is now asserted on s1_af and s1_ppn; resolved.",
+      "resolution": "deny/allow polarity is now asserted on s1_af and s1_ppn; resolved.",
+      "historical_impact": "Only the bitmap allow/read/cache-clear path is claimed. Deny/permission-failure semantics are unverified.",
+      "historical_before_finalization": {
+        "status": "resolved",
+        "observed": "Bitmap deny polarity established: an all-ones bitmap (cf=1) denies with s1_af=1, while an all-zero bitmap (cf=0) allows and returns s1_ppn. The earlier all-ones \"success\" observation was a checker omission (s1_af was not asserted).",
+        "impact": "deny/allow polarity is now asserted on s1_af and s1_ppn; resolved.",
+        "resolution": "deny/allow polarity is now asserted on s1_af and s1_ppn; resolved.",
+        "evidence": [
+          "tests/l2/test_l2tlb.py::test_bitmap_deny_and_allow",
+          "results/l2tlb-final-12/coverage-audit.json"
+        ]
+      }
+    },
+    {
+      "id": "L2TLB-PMA-UNVERIFIED",
+      "severity": "scope-gap",
+      "status": "resolved",
+      "file": "soc-split/rtl/PMP.sv",
+      "observed": "PMA CSR semantics are verified at the PMP leaf (cfg/addr/mask for 0x7C0..0x7C8, exhaustive cfg bytes) and the L2TLB top now verifies the observable PMA/PMP interaction: page tables covered by a cacheable/readable TOR entry translate; C=0 or R=0 causes af before any table read. PMA attribute outputs are internal and not exposed at the L2TLB response boundary.",
+      "evidence": [
+        "tests/l2/test_pmp.py::test_all_pma_entries",
+        "tests/l2/test_pmp.py::test_pma_cfg_byte_semantics",
+        "tests/l2/test_l2tlb.py::test_pma_cacheable_page_tables_walk",
+        "tests/l2/test_l2tlb.py::test_pma_non_cacheable_page_tables_fault",
+        "tests/l2/test_l2tlb.py::test_pma_unreadable_page_tables_fault",
+        "results/pmp-final-04/coverage-audit.json",
+        "results/l2tlb-final-12/coverage-audit.json"
+      ],
+      "impact": "PMA range semantics and PMA/PMP page-table interaction are verified; top-level PMA attributes remain internal and are not claimed as a response field.",
+      "resolution": "PMA range semantics and PMA/PMP page-table interaction are verified; top-level PMA attributes remain internal and are not claimed as a response field.",
+      "historical_impact": "PMA mapping and PMP/PMA interaction are not verified.",
+      "historical_before_finalization": {
+        "status": "resolved",
+        "observed": "PMA CSR semantics are verified at the PMP leaf (cfg/addr/mask for 0x7C0..0x7C8, exhaustive cfg bytes) and the L2TLB top now verifies the observable PMA/PMP interaction: page tables covered by a cacheable/readable TOR entry translate; C=0 or R=0 causes af before any table read. PMA attribute outputs are internal and not exposed at the L2TLB response boundary.",
+        "impact": "PMA range semantics and PMA/PMP page-table interaction are verified; top-level PMA attributes remain internal and are not claimed as a response field.",
+        "resolution": "PMA range semantics and PMA/PMP page-table interaction are verified; top-level PMA attributes remain internal and are not claimed as a response field.",
+        "evidence": [
+          "tests/l2/test_pmp.py::test_all_pma_entries",
+          "tests/l2/test_pmp.py::test_pma_cfg_byte_semantics",
+          "tests/l2/test_l2tlb.py::test_pma_cacheable_page_tables_walk",
+          "tests/l2/test_l2tlb.py::test_pma_non_cacheable_page_tables_fault",
+          "tests/l2/test_l2tlb.py::test_pma_unreadable_page_tables_fault",
+          "results/pmp-final-04/coverage-audit.json",
+          "results/l2tlb-final-12/coverage-audit.json"
+        ]
+      }
+    },
+    {
+      "id": "L2TLB-INDEPENDENT-SUBBLOCKS-MISSING",
+      "severity": "scope-gap",
+      "status": "resolved",
+      "observed": "HPTW, PTW, PMP, Bitmap, BitmapCache, PtwCache and LLPTW all have independent DUTs. L2TLBWrapper has an independent combination DUT. LLPTW reached functional 100% with residual per-entry case enumeration; multiple concurrent allStage requests remain unverified.",
+      "impact": "All targeted L2 leaf DUTs and L2TLBWrapper now have independent committed runs: PTW, HPTW, PMP, Bitmap, BitmapCache, PtwCache, LLPTW and L2TLBWrapper. Remaining LLPTW multi-allStage and TLBNonBlock are tracked by separate issues.",
+      "resolution": "All targeted L2 leaf DUTs and L2TLBWrapper now have independent committed runs: PTW, HPTW, PMP, Bitmap, BitmapCache, PtwCache, LLPTW and L2TLBWrapper. Remaining LLPTW multi-allStage and TLBNonBlock are tracked by separate issues.",
+      "evidence": [],
+      "historical_impact": "Independent leaf and wrapper evidence is no longer missing. Multiple concurrent allStage LLPTW requests and TLBNonBlock remain unverified; no claim covers the whole MMU.",
+      "historical_before_finalization": {
+        "status": "resolved",
+        "observed": "HPTW, PTW, PMP, Bitmap, BitmapCache, PtwCache and LLPTW all have independent DUTs. L2TLBWrapper has an independent combination DUT. LLPTW reached functional 100% with residual per-entry case enumeration; multiple concurrent allStage requests remain unverified.",
+        "impact": "All targeted L2 leaf DUTs and L2TLBWrapper now have independent committed runs: PTW, HPTW, PMP, Bitmap, BitmapCache, PtwCache, LLPTW and L2TLBWrapper. Remaining LLPTW multi-allStage and TLBNonBlock are tracked by separate issues.",
+        "resolution": "All targeted L2 leaf DUTs and L2TLBWrapper now have independent committed runs: PTW, HPTW, PMP, Bitmap, BitmapCache, PtwCache, LLPTW and L2TLBWrapper. Remaining LLPTW multi-allStage and TLBNonBlock are tracked by separate issues.",
+        "evidence": []
+      }
+    },
+    {
+      "id": "L2TLB-MBIST-UNVERIFIED",
+      "severity": "scope-gap",
+      "status": "accepted-nonfunctional",
+      "observed": "MbistBitmapCache, MbistPipePtwL0 and MbistPipePtwL1 DFT ports are tied inactive; 8 lines per module remain uncovered. No functional DUT or functional point is claimed for MBIST/DFT in phase 2; this is an explicit exclusion, not a failed functional test.",
+      "impact": "MBIST/DFT remains outside the UT functional scope; all functional ports affected by these blocks are covered in non-MBIST mode.",
+      "evidence": [],
+      "historical_before_finalization": {
+        "status": "accepted-nonfunctional",
+        "observed": "MbistBitmapCache, MbistPipePtwL0 and MbistPipePtwL1 DFT ports are tied inactive; 8 lines per module remain uncovered. No functional DUT or functional point is claimed for MBIST/DFT in phase 2; this is an explicit exclusion, not a failed functional test.",
+        "impact": "MBIST/DFT remains outside the UT functional scope; all functional ports affected by these blocks are covered in non-MBIST mode.",
+        "evidence": []
+      }
+    },
+    {
+      "id": "L2TLB-PTWCACHE-LLPTW-GAPS",
+      "severity": "case-enumeration-gap",
+      "status": "open-residual-enumeration",
+      "observed": "Independent PtwCache/LLPTW suites pass but neither all coverage nor all functional data/state enumerations are closed.",
+      "impact": "Historical resolved label applied too broadly. Track PTWCACHE-RESIDUAL-STRUCTURAL and LLPTW-PARTIAL-COVERAGE; concurrent allStage symptom itself was a verification false positive.",
+      "resolution": "Retain independent DUT evidence; retract only unsupported residual-closure claims, not disproved RTL defects.",
+      "evidence": [
+        "docs/reports/evidence/soundness-20261025/final-residuals.json"
+      ],
+      "historical_impact": "The PtwCache case-enumeration gap is closed. The LLPTW part of this issue remains open and is tracked by LLPTW-STAGE2-CACHE-UNVERIFIED and LLPTW-PARTIAL-COVERAGE.",
+      "historical_before_finalization": {
+        "status": "resolved",
+        "observed": "PtwCache is now independently closed: 50 PASS, line 13741/13748, branch 3179/3226, functional 100% (ptwcache-final-02). LLPTW remains partial with ~916 uncovered lines (multi-entry wait/HPTW response fields).",
+        "impact": "PtwCache closed at ptwcache-final-02; LLPTW closed main functionality at llptw-final-03 (functional 100%, line 84.706%). Residual LLPTW per-entry case enumeration is tracked by LLPTW-PARTIAL-COVERAGE and LLPTW-MULTI-STAGE2-UNVERIFIED.",
+        "resolution": "PtwCache closed at ptwcache-final-02; LLPTW closed main functionality at llptw-final-03 (functional 100%, line 84.706%). Residual LLPTW per-entry case enumeration is tracked by LLPTW-PARTIAL-COVERAGE and LLPTW-MULTI-STAGE2-UNVERIFIED.",
+        "evidence": []
+      }
+    },
+    {
+      "id": "PTWFILTER-RESIDUAL-TOGGLE",
+      "severity": "case-enumeration-gap",
+      "status": "open",
+      "file": "soc-split/rtl/PTWFilter.sv",
+      "observed": "Current soundness-final-ptwfilter-01: 4412/4414 toggles; remaining polarity points unverified, not automatically unreachable.",
+      "impact": "Only 3 case-enumeration toggle points remain; no functional line/branch gap.",
+      "evidence": [
+        "results/ptwfilter-final-16/coverage-audit.json",
+        "tests/l2/test_ptwfilter.py::test_high_tag_match_directions",
+        "tests/l2/test_ptwfilter.py::test_only_s2_high_tag_match",
+        "docs/functional-points-l2-leaves.md"
+      ],
+      "historical_before_finalization": {
+        "status": "open",
+        "observed": "PTWFilter final toggle is 4411/4414 (99.93%); only 3 points remain: issue_filtered_vmid_hit 1->0 and ptwResp_newMatchVec_onlyS2_hit_tag_match_1/2 1->0. Line 206/206, branch 91/92, functional 100%. The high-tag/onlyStage2 per-way tests added in ptwfilter-final-16 raised toggle from 4380 to 4411.",
+        "impact": "Only 3 case-enumeration toggle points remain; no functional line/branch gap.",
+        "evidence": [
+          "results/ptwfilter-final-16/coverage-audit.json",
+          "tests/l2/test_ptwfilter.py::test_high_tag_match_directions",
+          "tests/l2/test_ptwfilter.py::test_only_s2_high_tag_match",
+          "docs/functional-points-l2-leaves.md"
+        ]
+      }
+    },
+    {
+      "id": "PTW-LEAVES-INITIAL-ELSE",
+      "severity": "tool-initialization-artifact",
+      "status": "accepted-nonfunctional",
+      "generated_file": "dut/ptwrepeater/PtwRepeaterNBDut.v; dut/ptwfilter/PtwFilterDut.v",
+      "observed": "Each block has one uncovered branch: the implicit else of the time-zero initial reset block (line 371 / 1654).",
+      "reason": "The block executes once at time zero; runtime tests start with reset asserted.",
+      "coverage": "branch 7/8 and 91/92 respectively",
+      "evidence": [],
+      "historical_before_finalization": {
+        "status": "accepted-nonfunctional",
+        "observed": "Each block has one uncovered branch: the implicit else of the time-zero initial reset block (line 371 / 1654).",
+        "evidence": []
+      }
+    },
+    {
+      "id": "HPTW-INITIAL-RESET-ELSE",
+      "severity": "tool-initialization-artifact",
+      "status": "accepted-nonfunctional",
+      "generated_file": "dut/hptw/HptwDut.v",
+      "line": 420,
+      "observed": "The implicit else of the time-zero initial reset block is not exercised.",
+      "reason": "The block executes once at time zero; runtime tests start with reset asserted.",
+      "coverage": "branch 97/98",
+      "evidence": [],
+      "historical_before_finalization": {
+        "status": "accepted-nonfunctional",
+        "observed": "The implicit else of the time-zero initial reset block is not exercised.",
+        "evidence": []
+      }
+    },
+    {
+      "id": "HPTW-RESIDUAL-TOGGLE",
+      "severity": "case-enumeration-gap",
+      "status": "open",
+      "file": "soc-split/rtl/HPTW.sv",
+      "observed": "HPTW final toggle is 5069/5270=96.19%; residual 201 points are high-bit/polarity combinations of cache_pte_ppn/req_ppn/gpaddr, io_mem_req_bits_addr[0..2] (structurally aligned zero), refill/bitmap vpn[36], bitmap way_info[3], cache_pte_n, fromSP/l2Hit and initial state. All event/page/hit functional bins are 100% and line coverage is 100%.",
+      "impact": "All event/page/hit functional bins are 100% and line coverage is 100%. Residual points are classified as case-enumeration or structurally constant; not filled with fabricated stimuli.",
+      "evidence": [
+        "results/hptw-final-02/coverage-audit.json",
+        "docs/functional-points-hptw.md"
+      ],
+      "historical_before_finalization": {
+        "status": "open",
+        "observed": "HPTW final toggle is 5069/5270=96.19%; residual 201 points are high-bit/polarity combinations of cache_pte_ppn/req_ppn/gpaddr, io_mem_req_bits_addr[0..2] (structurally aligned zero), refill/bitmap vpn[36], bitmap way_info[3], cache_pte_n, fromSP/l2Hit and initial state. All event/page/hit functional bins are 100% and line coverage is 100%.",
+        "impact": "All event/page/hit functional bins are 100% and line coverage is 100%. Residual points are classified as case-enumeration or structurally constant; not filled with fabricated stimuli.",
+        "evidence": [
+          "results/hptw-final-02/coverage-audit.json",
+          "docs/functional-points-hptw.md"
+        ]
+      }
+    },
+    {
+      "id": "HPTW-ACCESSFAULT-NOT-RESET",
+      "severity": "rtl-hygiene-observation",
+      "status": "accepted",
+      "file": "soc-split/rtl/HPTW.sv",
+      "observed": "Structural: HPTW.sv accessFault is assigned in a clocked always block without a reset branch and has a random initial value. With the fixed test seed 1 (and seeds 2..8), a first walk after reset without the usual post-reset sfence returns gaf=0 and performs three table reads; a PMP-denied walk sets gaf=1/no reads, and a subsequent reset+valid walk succeeds. No functional spurious first-walk fault was reproduced in this build/seed.",
+      "evidence": [
+        "rtl/hptw/HPTW.sv accessFault assignment (no reset)",
+        "tests/l2/test_hptw.py::test_hptw_reset_without_flush_observation",
+        "results/hptw-final-02/coverage-audit.json",
+        "seed probes 1..8 (pruned; results summarized here)"
+      ],
+      "impact": "No synchronous reset is a structural observation, not sufficient to infer a spurious fault. accessFault is assigned every clock and may be overwritten before use. Fixed-seed observations are not exhaustive reset proof; no functional defect has been demonstrated.",
+      "resolution": "Keep observation only; retract implied mandatory post-reset sfence workaround. Reset-without-flush test is characterized separately from architectural acceptance.",
+      "historical_before_finalization": {
+        "status": "accepted",
+        "observed": "Structural: HPTW.sv accessFault is assigned in a clocked always block without a reset branch and has a random initial value. With the fixed test seed 1 (and seeds 2..8), a first walk after reset without the usual post-reset sfence returns gaf=0 and performs three table reads; a PMP-denied walk sets gaf=1/no reads, and a subsequent reset+valid walk succeeds. No functional spurious first-walk fault was reproduced in this build/seed.",
+        "impact": "No synchronous reset is a structural observation, not sufficient to infer a spurious fault. accessFault is assigned every clock and may be overwritten before use. Fixed-seed observations are not exhaustive reset proof; no functional defect has been demonstrated.",
+        "resolution": "Keep observation only; retract implied mandatory post-reset sfence workaround. Reset-without-flush test is characterized separately from architectural acceptance.",
+        "evidence": [
+          "rtl/hptw/HPTW.sv accessFault assignment (no reset)",
+          "tests/l2/test_hptw.py::test_hptw_reset_without_flush_observation",
+          "results/hptw-final-02/coverage-audit.json",
+          "seed probes 1..8 (pruned; results summarized here)"
+        ]
+      }
+    },
+    {
+      "id": "BITMAP-PMP-BACKTOBACK-LOST",
+      "severity": "verification-false-positive",
+      "status": "resolved",
+      "file": "soc-split/rtl/Bitmap.sv",
+      "observed": "The second cache request could fire with ready high while the service loop handled another pending response. The old monitor did not record it. Edge-wide cache/memory monitoring makes back-to-back requests complete with both IDs and clean cfs; no PMP alias is established.",
+      "evidence": [
+        "tests/l2/test_bitmap.py::test_back_to_back_requests",
+        "docs/reports/verification-soundness-20261025.md",
+        "docs/reports/evidence/soundness-20261025/"
+      ],
+      "impact": "Prior DUT defect/limitation claim withdrawn; regression checks the intended behavior.",
+      "previous_attribution": {
+        "status": "open",
+        "severity": "candidate-rtl-defect",
+        "observed": "Two Bitmap requests firing in consecutive cycles lose the second PMP check: need_addr_check/enq_ptr_reg alias the first entry, the second entry stays in addr_check, and only one cache request is issued. The multi-miss XFAIL reproduces the same stall class.",
+        "impact": "Back-to-back/multi-miss Bitmap checks can stall; RTL not modified, designer review required.",
+        "resolution": null
+      },
+      "classification": "false-positive-harness",
+      "resolution": "The second cache request could fire with ready high while the service loop handled another pending response. The old monitor did not record it. Edge-wide cache/memory monitoring makes back-to-back requests complete with both IDs and clean cfs; no PMP alias is established.",
+      "historical_before_finalization": {
+        "status": "resolved",
+        "observed": "The second cache request could fire with ready high while the service loop handled another pending response. The old monitor did not record it. Edge-wide cache/memory monitoring makes back-to-back requests complete with both IDs and clean cfs; no PMP alias is established.",
+        "impact": "Prior DUT defect/limitation claim withdrawn; regression checks the intended behavior.",
+        "resolution": "The second cache request could fire with ready high while the service loop handled another pending response. The old monitor did not record it. Edge-wide cache/memory monitoring makes back-to-back requests complete with both IDs and clean cfs; no PMP alias is established.",
+        "evidence": [
+          "tests/l2/test_bitmap.py::test_back_to_back_requests",
+          "docs/reports/verification-soundness-20261025.md",
+          "docs/reports/evidence/soundness-20261025/"
+        ]
+      }
+    },
+    {
+      "id": "LLPTW-PMP-BACKTOBACK-GAP",
+      "severity": "verification-false-positive",
+      "status": "resolved",
+      "file": "soc-split/rtl/LLPTW.sv",
+      "observed": "Consecutive normal input fires now complete without inserted service gaps after the responder capture fix. No RTL requirement for >=3 idle cycles is established. The old spacing requirement and PMP-alias attribution are withdrawn.",
+      "evidence": [
+        "tests/l2/test_llptw.py::test_consecutive_normal_requests_no_pmp_alias",
+        "docs/reports/verification-soundness-20261025.md",
+        "docs/reports/evidence/soundness-20261025/"
+      ],
+      "impact": "Prior DUT defect/limitation claim withdrawn; regression checks the intended behavior.",
+      "previous_attribution": {
+        "status": "open",
+        "severity": "candidate-behavior-gap",
+        "observed": "Consecutive LLPTW input fire requires at least 3 idle cycles; back-to-back issue can alias the PMP check. Current tests insert spacing; this is distinct from the multi-allStage stall.",
+        "impact": "Possible same-class PMP-check aliasing as Bitmap. Not proven at RTL level; tests document the required spacing.",
+        "resolution": null
+      },
+      "classification": "false-positive-harness",
+      "resolution": "Consecutive normal input fires now complete without inserted service gaps after the responder capture fix. No RTL requirement for >=3 idle cycles is established. The old spacing requirement and PMP-alias attribution are withdrawn.",
+      "historical_before_finalization": {
+        "status": "resolved",
+        "observed": "Consecutive normal input fires now complete without inserted service gaps after the responder capture fix. No RTL requirement for >=3 idle cycles is established. The old spacing requirement and PMP-alias attribution are withdrawn.",
+        "impact": "Prior DUT defect/limitation claim withdrawn; regression checks the intended behavior.",
+        "resolution": "Consecutive normal input fires now complete without inserted service gaps after the responder capture fix. No RTL requirement for >=3 idle cycles is established. The old spacing requirement and PMP-alias attribution are withdrawn.",
+        "evidence": [
+          "tests/l2/test_llptw.py::test_consecutive_normal_requests_no_pmp_alias",
+          "docs/reports/verification-soundness-20261025.md",
+          "docs/reports/evidence/soundness-20261025/"
+        ]
+      }
+    },
+    {
+      "id": "BITMAP-MULTI-MISS-UNVERIFIED",
+      "severity": "verification-false-positive",
+      "status": "resolved",
+      "file": "soc-split/rtl/Bitmap.sv",
+      "observed": "With correct channel monitoring both request IDs return. PPN 0x80000 and 0x80008 belong to one bitmap fetch block and legitimately coalesce into one memory read; the old >=2 read assertion was wrong and hidden by broad XFAIL. Distinct-block misses separately require and observe two reads.",
+      "impact": "Prior DUT defect/limitation claim withdrawn; regression checks the intended behavior.",
+      "evidence": [
+        "tests/l2/test_bitmap.py::test_multi_miss",
+        "docs/reports/verification-soundness-20261025.md",
+        "docs/reports/evidence/soundness-20261025/"
+      ],
+      "previous_attribution": {
+        "status": "open",
+        "severity": "candidate-behavior-gap",
+        "observed": "Back-to-back misses: only one check completes. With an 8-cycle gap, both memory reads and refills occur, but only one response is observable. Single miss/hit/refill and deny/allow polarity are closed; multi-miss response/back-to-back PMP alias remains candidate behavior/harness boundary.",
+        "impact": "Multi-outstanding Bitmap misses are not claimed; single-miss path and deny polarity are closed.",
+        "resolution": null
+      },
+      "classification": "false-positive-harness-and-expectation",
+      "resolution": "With correct channel monitoring both request IDs return. PPN 0x80000 and 0x80008 belong to one bitmap fetch block and legitimately coalesce into one memory read; the old >=2 read assertion was wrong and hidden by broad XFAIL. Distinct-block misses separately require and observe two reads.",
+      "historical_before_finalization": {
+        "status": "resolved",
+        "observed": "With correct channel monitoring both request IDs return. PPN 0x80000 and 0x80008 belong to one bitmap fetch block and legitimately coalesce into one memory read; the old >=2 read assertion was wrong and hidden by broad XFAIL. Distinct-block misses separately require and observe two reads.",
+        "impact": "Prior DUT defect/limitation claim withdrawn; regression checks the intended behavior.",
+        "resolution": "With correct channel monitoring both request IDs return. PPN 0x80000 and 0x80008 belong to one bitmap fetch block and legitimately coalesce into one memory read; the old >=2 read assertion was wrong and hidden by broad XFAIL. Distinct-block misses separately require and observe two reads.",
+        "evidence": [
+          "tests/l2/test_bitmap.py::test_multi_miss",
+          "docs/reports/verification-soundness-20261025.md",
+          "docs/reports/evidence/soundness-20261025/"
+        ]
+      }
+    },
+    {
+      "id": "LLPTW-STAGE2-CACHE-UNVERIFIED",
+      "severity": "scope-gap",
+      "status": "resolved",
+      "file": "soc-split/rtl/LLPTW.sv",
+      "observed": "The standalone LLPTW harness cannot pre-drive the first HPTW response in the same cycle as input fire; stage2/allStage responses and the post-result cache-retry path are not captured. Functional coverage event.cache=0 and event.stage2=0.",
+      "evidence": [
+        "results/llptw-final-03/coverage-audit.json",
+        "results/llptw-final-03/functional-coverage.json",
+        "docs/reports/llptw-20261025.md",
+        "docs/reports/evidence/cycle-llptw-20261025/"
+      ],
+      "impact": "Resolved by llptw-final-03: allStage first/last HPTW, gpf/gaf, permission/MXR, onlyStage2 and cache retry are verified; functional coverage reached 100% (38 samples).",
+      "resolution": "Resolved by llptw-final-03: allStage first/last HPTW, gpf/gaf, permission/MXR, onlyStage2 and cache retry are verified; functional coverage reached 100% (38 samples).",
+      "historical_impact": "LLPTW is PARTIAL. L2TLB top-level allStage tests exercise the real LLPTW, but this is integration evidence, not standalone leaf acceptance.",
+      "historical_before_finalization": {
+        "status": "resolved",
+        "observed": "The standalone LLPTW harness cannot pre-drive the first HPTW response in the same cycle as input fire; stage2/allStage responses and the post-result cache-retry path are not captured. Functional coverage event.cache=0 and event.stage2=0.",
+        "impact": "Resolved by llptw-final-03: allStage first/last HPTW, gpf/gaf, permission/MXR, onlyStage2 and cache retry are verified; functional coverage reached 100% (38 samples).",
+        "resolution": "Resolved by llptw-final-03: allStage first/last HPTW, gpf/gaf, permission/MXR, onlyStage2 and cache retry are verified; functional coverage reached 100% (38 samples).",
+        "evidence": [
+          "results/llptw-final-03/coverage-audit.json",
+          "results/llptw-final-03/functional-coverage.json",
+          "docs/reports/llptw-20261025.md",
+          "docs/reports/evidence/cycle-llptw-20261025/"
+        ]
+      }
+    },
+    {
+      "id": "LLPTW-PARTIAL-COVERAGE",
+      "severity": "case-enumeration-gap",
+      "status": "open",
+      "file": "soc-split/rtl/LLPTW.sv",
+      "observed": "Current soundness-final-llptw-01: 27 PASS, line 1660/1955, toggle 4330/20770, branch 359/407. Residual functional state/data-pattern enumeration remains open; sampled bins are not semantic closure.",
+      "impact": "No blanket unreachable/nonfunctional classification. Every remaining point stays open unless individually supported by structural evidence; independent leaf and integration scopes remain separate.",
+      "evidence": [
+        "results/soundness-final-llptw-01/coverage-audit.json",
+        "docs/reports/evidence/soundness-20261025/final-residuals.json",
+        "docs/reports/verification-soundness-20261025.md"
+      ],
+      "historical_before_finalization": {
+        "status": "open",
+        "observed": "LLPTW final line is 1656/1955=84.706%, branch 359/407, toggle 4329/20770; functional 100%. Residual 299 lines are per-entry duplicate-wait/last-HPTW state enumeration. Multi-allStage concurrency is a separate strict XFAIL.",
+        "impact": "Single-entry/allStage slot behavior is functionally closed; per-entry residual and multi-allStage are not claimed.",
+        "evidence": [
+          "results/llptw-final-04/coverage-audit.json",
+          "docs/reports/llptw-20261025.md",
+          "docs/functional-points-l2-midblocks.md"
+        ]
+      }
+    },
+    {
+      "id": "PTW-FULL-GVPN-GAP",
+      "severity": "case-enumeration-gap",
+      "status": "resolved",
+      "file": "soc-split/rtl/PTW.sv",
+      "observed": "Resolved in ptw-final-06: stage1Hit allStage covers S1/S2 levels 0..3, NAPOT and stage1hit gpf; normal allStage covers identity-mapped root/mid/final HPTW requests. Line 530/530, branch 418/420.",
+      "impact": "full_gvpn reconstruction and normal allStage HPTW interleaving are exercised; PTW line coverage is 100%.",
+      "evidence": [
+        "tests/l2/test_ptw.py::test_stage1_hit_full_gvpn_levels",
+        "tests/l2/test_ptw.py::test_normal_all_stage_identity_hptw",
+        "results/ptw-final-06/coverage-audit.json"
+      ],
+      "resolution": "full_gvpn reconstruction and normal allStage HPTW interleaving are exercised; PTW line coverage is 100%.",
+      "historical_impact": "Sv39/Sv48, hints, faults, bitmap, onlyS2 and stage1 merge are verified; the full_gvpn path is not claimed.",
+      "historical_before_finalization": {
+        "status": "resolved",
+        "observed": "Resolved in ptw-final-06: stage1Hit allStage covers S1/S2 levels 0..3, NAPOT and stage1hit gpf; normal allStage covers identity-mapped root/mid/final HPTW requests. Line 530/530, branch 418/420.",
+        "impact": "full_gvpn reconstruction and normal allStage HPTW interleaving are exercised; PTW line coverage is 100%.",
+        "resolution": "full_gvpn reconstruction and normal allStage HPTW interleaving are exercised; PTW line coverage is 100%.",
+        "evidence": [
+          "tests/l2/test_ptw.py::test_stage1_hit_full_gvpn_levels",
+          "tests/l2/test_ptw.py::test_normal_all_stage_identity_hptw",
+          "results/ptw-final-06/coverage-audit.json"
+        ]
+      }
+    },
+    {
+      "id": "PMP-PMA-DEFAULTS-FROM-RTL",
+      "severity": "observation",
+      "status": "accepted",
+      "file": "soc-split/rtl/PMP.sv",
+      "observed": "Previous PMA expected reset table was sampled from the live DUT, so the comparison could not detect wrong defaults. The environment now uses a checked-in build-specific table; its source hash and configuration provenance are explicit.",
+      "impact": "Reset checks are no longer self-referential. The table remains a configuration regression oracle, not an independent proof of all PMA architecture semantics.",
+      "evidence": [
+        "manifest/pma-reset-reference.json",
+        "mmuverify/l2/pmp.py",
+        "tests/l2/test_pmp.py::test_reset_defaults"
+      ],
+      "historical_before_finalization": {
+        "status": "accepted",
+        "observed": "Previous PMA expected reset table was sampled from the live DUT, so the comparison could not detect wrong defaults. The environment now uses a checked-in build-specific table; its source hash and configuration provenance are explicit.",
+        "impact": "Reset checks are no longer self-referential. The table remains a configuration regression oracle, not an independent proof of all PMA architecture semantics.",
+        "evidence": [
+          "manifest/pma-reset-reference.json",
+          "mmuverify/l2/pmp.py",
+          "tests/l2/test_pmp.py::test_reset_defaults"
+        ]
+      }
+    },
+    {
+      "id": "BITMAPCACHE-RESIDUAL",
+      "severity": "structural-remainder",
+      "status": "partially-reviewed",
+      "file": "soc-split/rtl/BitmapCache.sv",
+      "observed": "BitmapCache line 314/323; 9 uncovered lines are MBIST registers and time-zero initial. 24 branches are split-SRAM stageDelay/bypass or reset structure.",
+      "impact": "MBIST/DFT explicitly excluded. Do not waive all 24 residual branch points solely as SRAM structure; functional bypass/reset cases require individual evidence.",
+      "evidence": [
+        "results/soundness-final-bitmapcache-01/coverage-audit.json",
+        "docs/reports/evidence/soundness-20261025/final-residuals.json"
+      ],
+      "historical_before_finalization": {
+        "status": "accepted-nonfunctional",
+        "observed": "BitmapCache line 314/323; 9 uncovered lines are MBIST registers and time-zero initial. 24 branches are split-SRAM stageDelay/bypass or reset structure.",
+        "impact": "Functional cache behavior is closed; DFT/SRAM structure is outside this UT scope.",
+        "evidence": []
+      }
+    },
+    {
+      "id": "PTWCACHE-RESIDUAL-STRUCTURAL",
+      "severity": "coverage-gap",
+      "status": "partially-reviewed",
+      "file": "soc-split/rtl/PtwCache.sv",
+      "observed": "Current soundness-final-ptwcache-01: 50 PASS, line 13744/13748, toggle 95616/110892, branch 3182/3226. Residual functional state/data-pattern enumeration remains open; sampled bins are not semantic closure.",
+      "evidence": [
+        "results/soundness-final-ptwcache-01/coverage-audit.json",
+        "docs/reports/evidence/soundness-20261025/final-residuals.json",
+        "docs/reports/verification-soundness-20261025.md"
+      ],
+      "impact": "No blanket unreachable/nonfunctional classification. Every remaining point stays open unless individually supported by structural evidence; independent leaf and integration scopes remain separate.",
+      "resolution": "Retracted blanket no-functional-gap/unreachable claim; keep per-point coverage data and open legal-sequence gaps.",
+      "historical_before_finalization": {
+        "status": "partially-reviewed",
+        "observed": "PtwCache line 13741/13748=99.949%; the 3 uncovered procedural lines are SRAMTemplate respReg reset branches behind clock gating and 4 declarative lines are L3 one-hot priority-mux false arms. Branch 3179/3226 and toggle 87398/110892 remain dominated by MBIST/DFT (6994), SRAM macros/initial state (6703), Picker harness (1220) and DUT data-polarity/way-placement (7577).",
+        "impact": "MBIST exclusion is explicit. Lack of a public direct-way selector does NOT prove legal functional sequences cannot reach a way or polarity. The 7577 functional signal points remain case/data-pattern gaps, not a structural waiver. Clock-gated reset and one-hot false-arm unreachability remain hypotheses unless justified per point.",
+        "resolution": "Retracted blanket no-functional-gap/unreachable claim; keep per-point coverage data and open legal-sequence gaps.",
+        "evidence": [
+          "results/ptwcache-final-02/coverage-audit.json",
+          "docs/reports/evidence/cycle-ptwcache-20261025/",
+          "docs/reports/ptwcache-20261025.md"
+        ]
+      }
+    },
+    {
+      "id": "L2TLB-PREFETCH-SHARED-LEAF-STALL",
+      "severity": "verification-false-positive",
+      "status": "resolved",
+      "file": "soc-split/rtl/L2TLB.sv",
+      "observed": "The old memory service skipped A monitoring while sending D beats although A.ready remained high. The supposed missing demand versus adjacent prefetch distinction was incomplete observation, not proof of replacement. Fixed all-edge A capture completes zero-gap shared-leaf requests. The prefetch/LLPTW root-cause claim is withdrawn.",
+      "evidence": [
+        "tests/l2/test_l2tlbwrapper.py::test_wrapper_back_to_back_shared_leaf_miss",
+        "docs/reports/verification-soundness-20261025.md",
+        "docs/reports/evidence/soundness-20261025/"
+      ],
+      "impact": "Prior DUT defect/limitation claim withdrawn; regression checks the intended behavior.",
+      "previous_attribution": {
+        "status": "open",
+        "severity": "candidate-behavior-gap",
+        "observed": "Zero-gap back-to-back shared-leaf misses: the third demand for leaf line 0x800A2080 is replaced by a prefetch request for the adjacent line 0x800A20C0 (source 2); the demand never issues. With one idle service cycle between requests, the demand line 0x800A2080 issues (source 1) and all three pages complete. This isolates the trigger to the zero-gap prefetch/LLPTW handoff.",
+        "impact": "Zero-gap shared-leaf misses can stall; one idle cycle avoids it. Designer review required to decide whether this is an RTL scheduling bug or a turnover constraint; not waived.",
+        "resolution": null
+      },
+      "classification": "false-positive-harness",
+      "resolution": "The old memory service skipped A monitoring while sending D beats although A.ready remained high. The supposed missing demand versus adjacent prefetch distinction was incomplete observation, not proof of replacement. Fixed all-edge A capture completes zero-gap shared-leaf requests. The prefetch/LLPTW root-cause claim is withdrawn.",
+      "historical_before_finalization": {
+        "status": "resolved",
+        "observed": "The old memory service skipped A monitoring while sending D beats although A.ready remained high. The supposed missing demand versus adjacent prefetch distinction was incomplete observation, not proof of replacement. Fixed all-edge A capture completes zero-gap shared-leaf requests. The prefetch/LLPTW root-cause claim is withdrawn.",
+        "impact": "Prior DUT defect/limitation claim withdrawn; regression checks the intended behavior.",
+        "resolution": "The old memory service skipped A monitoring while sending D beats although A.ready remained high. The supposed missing demand versus adjacent prefetch distinction was incomplete observation, not proof of replacement. Fixed all-edge A capture completes zero-gap shared-leaf requests. The prefetch/LLPTW root-cause claim is withdrawn.",
+        "evidence": [
+          "tests/l2/test_l2tlbwrapper.py::test_wrapper_back_to_back_shared_leaf_miss",
+          "docs/reports/verification-soundness-20261025.md",
+          "docs/reports/evidence/soundness-20261025/"
+        ]
+      }
+    },
+    {
+      "id": "L2TLBWRAPPER-PERF-NO-RESET",
+      "severity": "observation",
+      "status": "accepted-nonfunctional",
+      "file": "soc-split/rtl/L2TLBWrapper.sv",
+      "observed": "The 19 wrapper perf outputs are two extra RegNext stages over L2TLB perf outputs. Neither stage has a synchronous reset, so the first cycles after reset can expose Verilator random initial values; they flush after four cycles. Functional TLB state is reset normally.",
+      "evidence": [
+        "tests/l2/test_l2tlbwrapper.py::test_wrapper_reset_and_idle_pipeline",
+        "docs/reports/evidence/cycle-l2tlbwrapper-20261025/perf-trace-comparison.json"
+      ],
+      "impact": "Performance event values are not valid until four cycles after reset. No functional translation path is affected.",
+      "historical_before_finalization": {
+        "status": "accepted-nonfunctional",
+        "observed": "The 19 wrapper perf outputs are two extra RegNext stages over L2TLB perf outputs. Neither stage has a synchronous reset, so the first cycles after reset can expose Verilator random initial values; they flush after four cycles. Functional TLB state is reset normally.",
+        "impact": "Performance event values are not valid until four cycles after reset. No functional translation path is affected.",
+        "evidence": [
+          "tests/l2/test_l2tlbwrapper.py::test_wrapper_reset_and_idle_pipeline",
+          "docs/reports/evidence/cycle-l2tlbwrapper-20261025/perf-trace-comparison.json"
+        ]
+      }
+    },
+    {
+      "id": "L2TLBWRAPPER-MULTI-OUTSTANDING-UNVERIFIED",
+      "severity": "verification-false-positive",
+      "status": "resolved",
+      "file": "soc-split/rtl/L2TLB.sv",
+      "observed": "Four outstanding requests pass through the wrapper at mem_latency 0/1/7. The prior latency-7 workaround masked lost A request monitoring; zero-latency is supported by the corrected harness.",
+      "evidence": [
+        "tests/l2/test_l2tlbwrapper.py::test_wrapper_four_outstanding",
+        "docs/reports/verification-soundness-20261025.md",
+        "docs/reports/evidence/soundness-20261025/"
+      ],
+      "impact": "Prior DUT defect/limitation claim withdrawn; regression checks the intended behavior.",
+      "resolution": "Four outstanding requests pass through the wrapper at mem_latency 0/1/7. The prior latency-7 workaround masked lost A request monitoring; zero-latency is supported by the corrected harness.",
+      "previous_attribution": {
+        "status": "resolved",
+        "severity": "resolved",
+        "observed": "Four outstanding translations through L2TLBWrapper complete with mem_latency=7; wrapper test_wrapper_four_outstanding passes.",
+        "impact": "More than two outstanding requests are not claimed. The 8-request probe is a scope gap, not classified as an RTL defect.",
+        "resolution": ">2 outstanding verified through wrapper with realistic memory latency."
+      },
+      "classification": "false-positive-harness",
+      "historical_before_finalization": {
+        "status": "resolved",
+        "observed": "Four outstanding requests pass through the wrapper at mem_latency 0/1/7. The prior latency-7 workaround masked lost A request monitoring; zero-latency is supported by the corrected harness.",
+        "impact": "Prior DUT defect/limitation claim withdrawn; regression checks the intended behavior.",
+        "resolution": "Four outstanding requests pass through the wrapper at mem_latency 0/1/7. The prior latency-7 workaround masked lost A request monitoring; zero-latency is supported by the corrected harness.",
+        "evidence": [
+          "tests/l2/test_l2tlbwrapper.py::test_wrapper_four_outstanding",
+          "docs/reports/verification-soundness-20261025.md",
+          "docs/reports/evidence/soundness-20261025/"
+        ]
+      }
+    },
+    {
+      "id": "LLPTW-MULTI-STAGE2-UNVERIFIED",
+      "severity": "verification-false-positive",
+      "status": "resolved",
+      "file": "soc-split/rtl/LLPTW.sv",
+      "observed": "Old priority/continue responder ignored other ready-high request channels while driving responses. Every edge now independently records all valid&&ready fires. Two allStage entries complete with correct VPN/source/PPN/faults at HPTW latency 0/1/3. The prior RTL scheduling attribution is withdrawn.",
+      "evidence": [
+        "tests/l2/test_llptw.py::test_two_concurrent_all_stage",
+        "docs/reports/verification-soundness-20261025.md",
+        "docs/reports/evidence/soundness-20261025/"
+      ],
+      "impact": "Prior DUT defect/limitation claim withdrawn; regression checks the intended behavior.",
+      "previous_attribution": {
+        "status": "open",
+        "severity": "candidate-behavior-gap",
+        "observed": "Two allStage entries in different slots: exactly one completes; the other stalls after its first-stage HPTW response and never issues its PTE read. Reproducible with zero-gap, one-request stagger, different slot orders, and HPTW response latency 1..3; single allStage in every slot 1..5 passes.",
+        "impact": "Multiple concurrent allStage entries are not claimed; exact public-port sequence recorded.",
+        "resolution": null
+      },
+      "classification": "false-positive-harness",
+      "resolution": "Old priority/continue responder ignored other ready-high request channels while driving responses. Every edge now independently records all valid&&ready fires. Two allStage entries complete with correct VPN/source/PPN/faults at HPTW latency 0/1/3. The prior RTL scheduling attribution is withdrawn.",
+      "historical_before_finalization": {
+        "status": "resolved",
+        "observed": "Old priority/continue responder ignored other ready-high request channels while driving responses. Every edge now independently records all valid&&ready fires. Two allStage entries complete with correct VPN/source/PPN/faults at HPTW latency 0/1/3. The prior RTL scheduling attribution is withdrawn.",
+        "impact": "Prior DUT defect/limitation claim withdrawn; regression checks the intended behavior.",
+        "resolution": "Old priority/continue responder ignored other ready-high request channels while driving responses. Every edge now independently records all valid&&ready fires. Two allStage entries complete with correct VPN/source/PPN/faults at HPTW latency 0/1/3. The prior RTL scheduling attribution is withdrawn.",
+        "evidence": [
+          "tests/l2/test_llptw.py::test_two_concurrent_all_stage",
+          "docs/reports/verification-soundness-20261025.md",
+          "docs/reports/evidence/soundness-20261025/"
+        ]
+      }
+    },
+    {
+      "id": "L2TLB-MULTI-OUTSTANDING-STALL",
+      "severity": "verification-false-positive",
+      "status": "resolved",
+      "file": "soc-split/rtl/L2TLB.sv",
+      "observed": "Four distinct outstanding requests pass at mem_latency 0/1/7 after the all-edge A capture fix. D has no exported ready input and the old code never demonstrated a dropped second D beat. Actual defect: A fire was unrecorded during D service branches; the old double-D-beat explanation is withdrawn.",
+      "evidence": [
+        "tests/l2/test_l2tlb.py::test_four_outstanding_translations",
+        "docs/reports/verification-soundness-20261025.md",
+        "docs/reports/evidence/soundness-20261025/"
+      ],
+      "impact": "Prior DUT defect/limitation claim withdrawn; regression checks the intended behavior.",
+      "resolution": "Four distinct outstanding requests pass at mem_latency 0/1/7 after the all-edge A capture fix. D has no exported ready input and the old code never demonstrated a dropped second D beat. Actual defect: A fire was unrecorded during D service branches; the old double-D-beat explanation is withdrawn.",
+      "previous_attribution": {
+        "status": "resolved",
+        "severity": "resolved",
+        "observed": "Four distinct 4KB translations issued back-to-back complete when the page-table memory service uses a non-zero latency (mem_latency=7). The earlier zero-latency probe lost a second D beat before the walker consumed the first, which was a harness timing artifact, not an RTL outstanding limit.",
+        "impact": "Two outstanding requests are verified; >2 outstanding are not claimed. Cause (miss queue/walker arbitration vs harness) is not isolated.",
+        "resolution": "4 outstanding requests pass with mem_latency=7; zero-latency double-beat loss isolated to the test memory model."
+      },
+      "classification": "false-positive-harness",
+      "historical_before_finalization": {
+        "status": "resolved",
+        "observed": "Four distinct outstanding requests pass at mem_latency 0/1/7 after the all-edge A capture fix. D has no exported ready input and the old code never demonstrated a dropped second D beat. Actual defect: A fire was unrecorded during D service branches; the old double-D-beat explanation is withdrawn.",
+        "impact": "Prior DUT defect/limitation claim withdrawn; regression checks the intended behavior.",
+        "resolution": "Four distinct outstanding requests pass at mem_latency 0/1/7 after the all-edge A capture fix. D has no exported ready input and the old code never demonstrated a dropped second D beat. Actual defect: A fire was unrecorded during D service branches; the old double-D-beat explanation is withdrawn.",
+        "evidence": [
+          "tests/l2/test_l2tlb.py::test_four_outstanding_translations",
+          "docs/reports/verification-soundness-20261025.md",
+          "docs/reports/evidence/soundness-20261025/"
+        ]
+      }
+    }
+  ],
+  "phase2": {
+    "completed": "Historical phase2 claims superseded by verification-soundness-20261025.md and ISA confirmation.",
+    "open": "Architectural fake-PTE fault/GPA effects; no-fence liveness with corrected harness; functional case/data-pattern and cross-coverage. Original five XFAIL symptoms were verification-side false positives.",
+    "excluded": "MBIST/DFT ports; PtwCache physical way placement/SRAM/DFT residual.",
+    "seed": 1,
+    "rtl_policy": "byte-for-byte copies, no RTL edits"
+  },
+  "soundness_review": {
+    "date": "2026-10-26",
+    "run_index": "docs/reports/evidence/soundness-20261025/final-runs.json",
+    "status": "regression-complete-with-open-scope",
+    "historical_five_xfails": "verification-side false positives; markers removed and current tests pass",
+    "isa_report": "docs/reports/isa-confirmation-20261026.md"
+  }
+}

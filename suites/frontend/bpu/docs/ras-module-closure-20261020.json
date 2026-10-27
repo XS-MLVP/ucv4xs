@@ -1,0 +1,131 @@
+{
+  "title": "RAS 模块语义闭环：组合动作与启用门控的两个既有差异，以及未覆盖项的源码归因",
+  "status": "module-loop-closed-for-current-RTL; two RTL differences remain ordinary FAIL/XFAIL",
+  "module": "Ras",
+  "scope": "独立 Ras DUT 的 16 个功能点与 26 个选测用例；不是完整 BPU 或完整 FTQ 证明",
+  "human_events": [
+    {
+      "id": "BPU-RAS-017",
+      "event": "已提交 A、B 两个调用者后，一个真实 C 调用来源以原始 pre-operation metadata 接收 resolved return-and-call（先返回再调用）：应弹出 B，压入 C，保留 A，净深度不变。",
+      "owner": "组合动作属于该原件的提交属性与该次 retired 程序前缀，不属于之后仍然活跃的推测 C，也不是三个独立事件。",
+      "observed_difference": "RTL 把组合动作当 neutral：spec/redirect/commit 三个入口都只匹配编码 2（call）或 1（return）。",
+      "evidence": [
+        "tests/ras/testcase/test_semantic_reference.py::test_speculative_return_and_call_replaces_only_the_youngest_frame",
+        "tests/ras/testcase/test_semantic_reference.py::test_recovery_return_and_call_restores_before_redo",
+        "tests/ras/testcase/test_semantic_reference.py::test_resolved_return_and_call_retires_real_source_address",
+        "tests/ras/testcase/test_commit_action.py::test_real_original_commit_applies_its_resolved_stack_action[return-and-call]"
+      ]
+    },
+    {
+      "id": "BPU-RAS-008",
+      "event": "RAS 已学习一个调用后，全局 enable 关闭，再接收一个真实调用；关闭期间不得改变任何栈或指针状态，重新启用后原顶部仍可消费。",
+      "owner": "使用资格属于当前事件的 enable 门控，不因为同一拍仍有 valid 或更早的推送而部分生效。",
+      "observed_difference": "RTL 的 spec.pushValid/popValid 不含 io.enable，只有 spec.fire 含；因此关闭的调用仍推进 ssp/sctr/tosw。",
+      "evidence": [
+        "tests/ras/testcase/test_restore.py::test_disable_gate_preserves_stack",
+        "tests/ras/testcase/test_coverage.py::test_ras_functional_coverage_closes_defined_bins"
+      ]
+    }
+  ],
+  "source_facts": {
+    "pop_and_push": [
+      "XiangShan/.../bpu/Bundles.scala:56-58 定义 isCall == RasAction.Push(2)、isReturn == RasAction.Pop(1)、isReturnAndCall == PopAndPush(3)。",
+      "XiangShan/.../bpu/Bundles.scala:61-62 另有 hasPop/hasPush 位测试，能识别编码 3 的两个位；Ras.scala 没有使用它们。",
+      "XiangShan/.../bpu/ras/Ras.scala:67-68 的 specPush/specPop 只使用 isCall/isReturn，编码 3 两者都不匹配。",
+      "XiangShan/.../bpu/ras/Ras.scala:98-99 的 redirect.isCall/isRet 同样只匹配 2/1。",
+      "XiangShan/.../bpu/ras/Ras.scala:109-110 的 commit.pushValid/popValid 同样只匹配 2/1。",
+      "因此三个公开入口都把 PopAndPush 落入 neutral；这不是 reference 把编码 3 当 neutral 的假象。"
+    ],
+    "enable_gate": [
+      "XiangShan/.../bpu/ras/Ras.scala:71-72 的 spec.pushValid/popValid 不含 io.enable。",
+      "XiangShan/.../bpu/ras/Ras.scala:73 的 stack.spec.fire 含 io.enable，但 RasStack.scala:317/321 的 specPush/specPop 由 pushValid/popValid 触发，不等待 fire。",
+      "因此 enable=0 时公开 top 可能暂时保持，但 ssp/sctr/tosw/tosr 已经推进；重新启用后原顶部不再可信。"
+    ]
+  },
+  "coverage_attribution": {
+    "final_run": "results/ras-module-qualification-20261020-v4",
+    "baseline_run": "results/ras-module-baseline-20261020-v1",
+    "ittage_note": "RAS 的 16 行/16 branch 缺口不是缺测试，而是 RTL 组合动作缺失的直接指纹。",
+    "lines": {
+      "final": "569/585",
+      "uncovered": 16,
+      "items": "RasStack.sv:508,512,516,520,524,528,532,536 与 542,546,550,554,558,562,566,570",
+      "source": "全部是 commitStack_N_ctr <= commitTop.ctr - 1，位于 pushValid 块内、由 popValid 条件选择的组合写。",
+      "meaning": "只有同一 commit 拍同时 pushValid=1 且 popValid=1 才会进入。公开 commit 只有一个 rasAction，编码 3 才会同时为真；RTL 对 3 解码为 neutral，所以这些行在当前公开输入下不可达。"
+    },
+    "branches": {
+      "final": "200/216",
+      "uncovered": 16,
+      "items": "RasStack.sv:507,511,515,519,523,527,531,535 与 541,545,549,553,557,561,565,569 的 if 臂",
+      "meaning": "与上述 16 行一一对应，是 8 个提交栈格 × 两种 nspUpdate 选择路径。"
+    },
+    "closed_by_this_round": {
+      "RasStack.sv:854": "新增相邻 call→neutral 用例后命中；单次 act 之间的空拍会落入 writeBypass 分支，无法覆盖该臂，必须用 act_many 保证相邻。"
+    },
+    "toggles": {
+      "final": "3382/7720",
+      "classification": {
+        "io_train_* 未使用的训练元数据/训练向量": 2988,
+        "宽地址/数据载荷位": 988,
+        "RAS 指针/元数据总线（ssp/tosr/tosw/topRetAddr 等）": 100,
+        "内部帧存储载荷位": 22,
+        "其他": 240
+      },
+      "other_details": [
+        "io_stageCtrl_s0..t0_fire、io_redirect_bits_taken、io_redirect_bits_meta_phr_*/commonHRMeta_*：Ras.scala 不消费这些输入，属于无关 bundle。",
+        "io_sramResetDone、io_trainReady 在 Ras.scala:56,58 被常量置 true，1->0 结构性不可达。",
+        "tosw/tosr flag 在 MinimalConfig 的 16 项推测队列与 near-overflow 阈值 14 下不会跨过第 16 项，flag 永不置 1；属于容量保护的有界行为。",
+        "io_specIn_bits_attribute_branchType[1]:1->0 是无效拍上的 don't-care 编码，不影响功能。"
+      ],
+      "control_used_by_ras": "enable、valid、fire、pushValid/popValid、near-overflow、ssp/sctr、commit/redirect 有效位均已覆盖。"
+    },
+    "functional_groups": {
+      "kunminghu_v3.ras.pop_and_push.reached": 100.0,
+      "kunminghu_v3.ras.pop_and_push.checked": 0.0,
+      "kunminghu_v3.ras.original-commit-action.reached": 85.71428571428571,
+      "kunminghu_v3.ras.original-commit-action.checked": 66.66666666666667,
+      "kunminghu_v3.ras.enable_integrity": 0.0,
+      "kunminghu_v3.ras": 87.5
+    },
+    "functional_interpretation": "return-and-call 的 3 个角色都真实到达（reached=100%），但一个也没有 checked；18/21 与 14/21 分别对应组合动作在 retained-effect 处失败、两个正确动作闭合。reached 不是 PASS。",
+    "preceding_identical_run": "results/ras-module-qualification-20261020-v3"
+  },
+  "supplementary_cases": [
+    {
+      "test": "tests/ras/testcase/test_push_pop.py::test_neutral_beat_after_call_keeps_the_just_pushed_return_address",
+      "point": "BPU-RAS-002",
+      "kind": "缺失情况枚举",
+      "effect": "相邻 call→neutral 仍暴露刚压入的返回地址，下一次 return 消费该帧；覆盖 RasStack.sv:854。"
+    },
+    {
+      "test": "tests/ras/testcase/test_push_pop.py::test_deep_nesting_crosses_pointer_wrap_and_unwinds_in_lifo_order",
+      "point": "BPU-RAS-003",
+      "kind": "缺失情况枚举",
+      "effect": "12 层不同调用跨越三比特栈指针回绕，逐次返回仍保持原 LIFO 顺序。"
+    },
+    {
+      "test": "tests/ras/testcase/test_restore.py::test_restore_checkpoint_whose_stack_pointer_already_wrapped",
+      "point": "BPU-RAS-007",
+      "kind": "缺失情况枚举",
+      "effect": "恢复九层、ssp 已回绕的真实检查点后再展开，顶部与全部较老帧正确。"
+    }
+  ],
+  "false_positive_and_false_negative_checks": [
+    "深度 LIFO 用例初版把 pop() 的返回值当成被弹出的帧，实际它返回弹出后的新顶部；该初版在第一次返回失败。独立参考 checker 没有报错，证明是测试期望写错而不是 RTL 缺陷；修正期望后 PASS。若不核对参考，会误报一个不存在的 RAS 缺陷。",
+    "相邻中性拍用例必须用 act_many；用单次 act 之间的空拍不会命中 RasStack.sv:854，因为空拍走 writeBypass 臂。这一点解释了旧套件为何漏掉该臂。",
+    "覆盖率达到 100% 的 pop_and_push.reached 只说明三个角色都尝试过，checked=0 说明没有一项通过；没有把尝试信用当成 PASS。",
+    "禁用门控是严格 XFAIL：若未来 RTL 修复而测试意外通过，strict 会转为失败，不会静默变成普通 PASS。",
+    "没有为覆盖 16 个不可达 commit 组合写而直接驱动内部 pushValid/popValid；这些引脚不是公开合同，伪造它们会制造假阳性。"
+  ],
+  "constraints": [
+    "不修改 RTL、DUT 或系统 SDK。",
+    "不新增 XFAIL；原 strict XFAIL 保持。",
+    "不把 reached 覆盖当作功能通过，不把不可达行当作缺测试。",
+    "选测 26 项不替代保留的完整回归。"
+  ],
+  "remaining": [
+    "组合动作 PopAndPush 需要 RTL 修复或明确的规格裁决；在其解决前 16 行/16 branch 保持未覆盖，不作为测试缺口。",
+    "enable 门控需要 RTL 修复；目前只有 strict XFAIL 与一个普通 FAIL 覆盖率用例。",
+    "RAS 的深层 FTQ 生命周期、与 BPU 主 RAS 的集成、其他指针约束仍不在本模块选测范围内。"
+  ]
+}

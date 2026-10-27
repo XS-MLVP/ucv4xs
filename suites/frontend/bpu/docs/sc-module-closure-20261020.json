@@ -1,0 +1,95 @@
+{
+  "title": "SC 模块闭环：全 PASS 下的 336 行重复发射点、148 臂按副本归因与全脏写缓冲开放候选",
+  "status": "module execution and coverage triage complete; one public-observation gap remains open",
+  "module": "Sc",
+  "scope": "独立 Sc DUT 的 23 个功能点与 51 个选测用例；不证明完整 BPU 或完整 FTQ",
+  "run": "results/sc-module-qualification-20261020-v2",
+  "baseline_run": "results/sc-module-baseline-20261020-v1",
+  "tests": "51 PASS / 0 FAIL / 0 XFAIL / 0 ERROR / 0 SKIP",
+  "functional_points": "23 PASS",
+  "functional_groups": "28/28 full",
+  "coverage": {
+    "lines": "3145/3481",
+    "branches": "890/1038",
+    "toggles": "10518/15076",
+    "delta": "0/0/0 vs baseline"
+  },
+  "uncovered_lines": {
+    "count": 336,
+    "files": {
+      "rtl/sc/WriteBuffer.sv": 72,
+      "rtl/sc/WriteBuffer_8.sv": 264
+    },
+    "guard_classification": {
+      "artifact": "results/sc-module-qualification-20261020-v2/guard-classification.json",
+      "raw_missing": 336,
+      "locally_classified": 336,
+      "unclassified": 0,
+      "native_producers": 16,
+      "native_denominator_unchanged": true,
+      "functional_pass_credit": false,
+      "whole_design_formal_claim": false
+    },
+    "semantic": "Each field assignment is emitted three times. The two uncovered sites are inner ~hit arms nested under an outer if (hit); hit && ~hit is unsatisfiable. The third site, inside the else of if (hit), is covered.",
+    "grouping": "2 blocks x 4 entries x 9 or 33 fields; not 336 functions",
+    "no_denominator_change": true
+  },
+  "uncovered_branches": {
+    "count": 148,
+    "ScDut": {
+      "count": 128,
+      "bias_index_bank_copies": 4,
+      "mbtb_entry_to_sc_index_priority": 17,
+      "threshold_endpoint_clamps": 8,
+      "path_weight_endpoint_clamps": 6,
+      "bias_weight_endpoint_clamps": 29,
+      "correct_wrong_slot_to_way_priority": 46,
+      "global_weight_endpoint_clamps": 18
+    },
+    "WriteBuffer": {
+      "count": 20,
+      "all_dirty_victim": 2,
+      "dead_ternary_else": 2,
+      "dead_guard_heads": 16
+    },
+    "threshold_clamp_proof": {
+      "accepted_range": "640..5040 via ScDut.v:1684",
+      "per_beat_delta": "at most 15 from the 4-bit inc/dec aggregate",
+      "upper": "requires stored threshold > 8175, unreachable above 5040",
+      "lower": "requires stored threshold <= 15, unreachable below 640",
+      "kind": "bounded arithmetic and outer-guard proof, not whole-design formal"
+    },
+    "weight_and_priority_copies": "Per-row/per-way instances of the same SignedSaturateCounter or selection; behavior is verified on the exercised instances by BPU-SC-005/007/008/012/013/014/019. This is a per-copy classification, not a claim that every instance was exercised."
+  },
+  "open_candidates": {
+    "write_buffer_full_victim": {
+      "signal": "victim = replacerWay_0 when all four buffer entries are dirty",
+      "lines": [
+        "rtl/sc/WriteBuffer.sv:291",
+        "rtl/sc/WriteBuffer_8.sv:687"
+      ],
+      "source_contract": "A miss on a full row overwrites a dirty victim",
+      "why_open": "overwrite/full are not top-level Sc ports; the training agent serializes each batch to idle, so coexistence of four pending writes was not established",
+      "disposition": "not PASS, not claimed unreachable; needs a read-only monitor or an explicit contract exclusion"
+    }
+  },
+  "no_new_case_reason": [
+    "No missing statistical, threshold, bias, eligibility or pipeline case was found in the existing 23 points.",
+    "The 336 lines are duplicate emission sites, with the reachable copy covered.",
+    "The remaining arms are saturation endpoints and priority-matrix cells already verified on exercised copies.",
+    "The only unobserved semantic path lacks public observation; inventing bank/set sweeps or internal writes is not acceptable evidence."
+  ],
+  "false_positive_false_negative_checks": [
+    "All 51 PASS and 28/28 groups do not close the module; an all-dirty write-buffer path remains unobserved.",
+    "Guard classification uses exact native producer/span association for the current epoch, not line-text similarity.",
+    "The threshold endpoints are proven unreachable by accepted range and per-beat delta, not by 'we did not reach them'.",
+    "No XFAIL was added and no existing verdict was relaxed.",
+    "No RTL, DUT or system SDK change."
+  ],
+  "constraints": [
+    "The selected run does not replace the retained full regression (24776 PASS / 88 FAIL / 3 XFAIL).",
+    "No internal signal writes and no physical bank/set sweep.",
+    "Full FTQ lifetime and composed BPU arbitration remain outside the module scope."
+  ],
+  "goal_complete": false
+}

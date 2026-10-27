@@ -1,0 +1,23 @@
+{
+  "title": "已强化的旧分支被新身份替换后，新分支从自己的初始置信度开始学习，邻居与幸存分支保持各自结果",
+  "existing_feature": "BPU-INT-100",
+  "event": "五批、每批十六个真实分支依次建立 Main 预测并自然闭环运行；后续批次的逻辑身份使 Ahead 容量发生竞争。最后重新消费前一批的幸存分支。",
+  "owner": "奖励、替换和初始化属于完整逻辑分支及其原前驱历史；真实反馈与恢复必须使用不可变的原始预测来源。",
+  "effect": "条件分支先强化到上界，非条件分支保持自己的初态。新身份实际写入时不能继承旧身份的上界置信度；自然消费者仍返回自己的目标、位置、类型与方向。",
+  "preservation": "每个实际观测边界比较全部 Ahead 方向计数和替换关系，检查未参与居民不被污染，并重新消费预先声明的旧批次幸存者。",
+  "geometry_precondition": "用一份声明式分支程序使 Main 的全部八十个身份在容量上可共存，而 Ahead 的十六组各经历五个不同身份。这里只选择一种合法代码布局，不遍历 bank/set。",
+  "missing_evidence": "旧自然工作集的四个 replacing 用例都先遇到已知 Main 未命中反馈资格缺陷，尚未到达 Ahead 强旧身份替换事件；已有两分支别名循环不等同于这批多分支工作集的完整自主比较。",
+  "distinction": "这不是修复或替换原来的四个失败用例；它们和 MBTB-027 继续保留。只有本新程序实际到达并比较的语义义务可获信用。",
+  "scope": "Main/Ahead/MicroTAGE 的已支持自主组成，不声称全预测器、全部地址或完整 FTQ 提交生命周期。复用现有独立参考模型、driver、monitor、checker，不改 RTL、SDK 或 DUT。",
+  "production_layout": {
+    "model": "bpuverify/bpu/model/working_set_replacement.py",
+    "checker": "bpuverify/bpu/checker/working_set_replacement.py",
+    "case": "bpuverify/bpu/case/working_set_replacement.py",
+    "testcase": "tests/bpu/testcase/test_working_set_replacement.py",
+    "coverage": {
+      "factory": "bpuverify.bpu.coverage.working_set_replacement",
+      "instance": "kunminghu_v3.bpu.ahead-identity-replacement"
+    },
+    "historical_stage": "results/ahead_identity_replacement_stage_20261018"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "baseline": "public-893e1580b",
+  "suites": {
+    "bpu": "suites/frontend/bpu",
+    "icache": "suites/frontend/icache",
+    "lsq": "suites/memblock/lsq",
+    "dcache": "suites/memblock/dcache",
+    "mmu": "suites/memblock/mmu",
+    "sbuffer": "suites/memblock/sbuffer",
+    "lsu": "suites/memblock/lsu",
+    "vagq": "suites/vector/vagq"
+  },
+  "profiles": {
+    "public": [
+      "bpu",
+      "icache",
+      "lsq",
+      "dcache",
+      "mmu",
+      "sbuffer",
+      "lsu"
+    ],
+    "full": [
+      "bpu",
+      "icache",
+      "lsq",
+      "dcache",
+      "mmu",
+      "sbuffer",
+      "lsu",
+      "vagq"
+    ]
+  },
+  "build_options": {
+    "vflag": "--no-coverage-expr --no-coverage-fsm",
+    "access": "mem_direct",
+    "native_line_coverage": true
+  }
+}

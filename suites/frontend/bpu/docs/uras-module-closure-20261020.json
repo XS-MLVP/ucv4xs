@@ -1,0 +1,114 @@
+{
+  "title": "MicroRAS 模块语义闭环：PopAndPush 三个入口、启用资格的新功能点、以及最后一条 branch 的情况枚举",
+  "status": "module-loop-closed-for-current-RTL; BPU-URAS-016/017 remain ordinary FAIL",
+  "module": "MicroRas",
+  "scope": "独立 Uras DUT 的 17 个功能点与 27 个选测用例；不证明完整 BPU CSR 路由或完整 FTQ",
+  "human_events": [
+    {
+      "id": "BPU-URAS-016",
+      "event": "一个真实 return-and-call 操作在 S1 被接受，或作为 S2/S3 的权威修正到达：应先弹出前驱栈顶，再压入它自己的返回地址。",
+      "owner": "组合动作属于该原操作及其修正年龄，不属于之后的普通 call 或 return。",
+      "observed_difference": "MicroRas 的 specPush/specPop 与 s2/s3 realPush/realPop 只匹配编码 2/1，编码 3 落入 neutral，三个入口都返回前驱地址或 main top。",
+      "evidence": [
+        "tests/uras/testcase/test_semantic_reference.py::test_return_and_call_replaces_top_instead_of_becoming_neutral[speculation]",
+        "tests/uras/testcase/test_semantic_reference.py::test_return_and_call_replaces_top_instead_of_becoming_neutral[pending-correction]",
+        "tests/uras/testcase/test_semantic_reference.py::test_return_and_call_replaces_top_instead_of_becoming_neutral[retiring-correction]"
+      ]
+    },
+    {
+      "id": "BPU-URAS-017",
+      "event": "MicroRAS 已由一个真实 S1 调用建立可用目标；父级 CSR 拉低 RAS 使用资格，保持若干空闲拍后再拉高。",
+      "owner": "使用资格属于当前拍的父级 enable，而不是武装调用时的 enable；待决调用本身仍是原操作。",
+      "observed_difference": "MicroRas.scala 完全没有引用 io.enable；enable=0 时公开 usable 仍为 1 并持续输出 0x40000804。",
+      "evidence": [
+        "tests/uras/testcase/test_enable_gate.py::test_disabled_micro_ras_withholds_the_armed_return_target",
+        "tests/uras/diagnostics/probe_enable.py"
+      ]
+    }
+  ],
+  "source_facts": {
+    "pop_and_push": [
+      "MicroRas.scala:67-68 的 specPush/specPop 只使用 attribute.isCall/isReturn。",
+      "MicroRas.scala:85-90 的 s2_realPush/s2_realPop 与 s3_realPush/s3_realPop 同样只匹配编码 2/1。",
+      "Bundles.scala:56-58 定义编码 3 为 isReturnAndCall/PopAndPush；MicroRas 没有使用 hasPop/hasPush。",
+      "因此 S1 接受、S2 修正、S3 修正三个入口都把组合动作当作 neutral。"
+    ],
+    "enable_gate": [
+      "MicroRas.scala 没有任何 io.enable 的使用；该端口从 Bpu.scala:101 的 ctrl.rasEnable && ctrl.mbtbEnable 接入。",
+      "主 RAS 的 Ras.scala:71-73 至少用 enable 门控 spec.fire、并在 s3_useRas 处门控使用；MicroRAS 没有对应门控。",
+      "父级在 Bpu.scala:284-285、321-322、551-558 直接使用 uras.io.specOut.isCanUse 与 retTarget，没有额外 enable 条件。",
+      "因此关闭 RAS 的 CSR 不会抑制 MicroRAS 提供的返回目标。"
+    ]
+  },
+  "coverage_closure": {
+    "baseline_run": "results/uras-module-baseline-20261020-v1",
+    "qualification_run": "results/uras-module-qualification-20261020-v3",
+    "denominator": {"lines": 91, "branches": 24, "toggles": 3976},
+    "baseline": {"lines": "91/91", "branches": "23/24", "toggles": "381/3976"},
+    "final": {"lines": "91/91", "branches": "24/24", "toggles": "382/3976"},
+    "delta": {"lines": 0, "branches": 1, "toggles": 1, "new_cases": 2, "new_point": "BPU-URAS-017"},
+    "closed_branch": {
+      "point": "UrasDut.v:484 inner s3_hasPop ? 0 : fullRetAddr",
+      "case": "tests/uras/testcase/test_pipeline_advance.py::test_s1_return_with_s2_call_and_older_s3_return_has_no_known_top",
+      "why_it_was_missed": "需要 S1 return、S2 call、S3 return 同拍共存；S2 call 抵消 S1 return，但 S3 的较早 return 使深度未知。旧套件没有这个三阶段组合。"
+    },
+    "toggle_classification": {
+      "uncovered": 3594,
+      "unused_train_metadata": 2988,
+      "address_data_payload": 548,
+      "other": 58,
+      "notes": [
+        "io_train_* 是 MicroRAS 不消费的训练元数据；io_redirect_bits_meta_* 的 PHR/commonHR 字段同样不被消费。",
+        "io_sramResetDone、io_trainReady 在 MicroRas.scala 中常量置 true，1->0 结构性不可达。",
+        "io_enable、s1/s2/s3 fire、s2/s3 valid、三个 action、has_redirect、usable 均已覆盖；启用门控用例补上了 io_enable:1->0。",
+        "剩余 address/data 位是 fullRetAddr/specOut 载荷模式，不是控制功能。"
+      ]
+    },
+    "functional_groups": {
+      "kunminghu_v3.uras": 100.0,
+      "kunminghu_v3.uras.semantic_events.reached": 100.0,
+      "kunminghu_v3.uras.semantic_events.checked": 91.66666666666667,
+      "kunminghu_v3.uras.enable-gate.reached": 33.333333333333336,
+      "kunminghu_v3.uras.enable-gate.checked": 0.0,
+      "kunminghu_v3.uras.held_call_repair.reached": 100.0,
+      "kunminghu_v3.uras.held_call_repair.checked": 100.0,
+      "kunminghu_v3.uras.pending_s2_priority": 100.0,
+      "kunminghu_v3.uras.neutral_override": 100.0
+    },
+    "functional_interpretation": "MicroRAS 的行和 branch 都达到 100%，但功能仍有 2 个普通 FAIL。覆盖饱和不能替代功能判断；enable-gate 的 reached 只有 1/3，因为参考在第一个 disable 拍就发现 DUT 违约，后续两个阶段没有获得尝试信用。"
+  },
+  "supplementary_cases": [
+    {
+      "test": "tests/uras/testcase/test_pipeline_advance.py::test_s1_return_with_s2_call_and_older_s3_return_has_no_known_top",
+      "status": "PASS",
+      "point": "BPU-URAS-014",
+      "kind": "缺失情况枚举",
+      "effect": "三阶段 S1 return / S2 call / S3 return 共存时，S2 call 抵消 S1 return，但较早 S3 return 使深度未知，公开 usable=0；命中最后一条 branch。"
+    },
+    {
+      "test": "tests/uras/testcase/test_enable_gate.py::test_disabled_micro_ras_withholds_the_armed_return_target",
+      "status": "FAIL",
+      "point": "BPU-URAS-017",
+      "kind": "整体功能点缺失",
+      "effect": "enable=0 时 DUT 仍返回 usable=1、target=0x40000804；参考按父级使用资格期望 usable=0。"
+    }
+  ],
+  "false_positive_false_negative_checks": [
+    "UrasDut.v:484 在覆盖数据中有两个同线号 branch point（外层 s3_hasPush 与内层 s3_hasPop）。只看报告行号会误判为 s3_hasPush 未覆盖；读取原始 DAT 的 n=28/n=58 后才确认缺失的是内层 s3_hasPop=1。",
+    "第一个三阶段用例只覆盖了已经被覆盖的 s3_hasPush 臂，输出断言通过但没有新增覆盖；随后改成 S3 return 序列才真正命中缺口。",
+    "enable 门控是在明确证据下新定义的契约：端口存在并被父级 CSR 驱动、主 RAS 有门控、父级无条件消费 URAS 输出。没有把 RTL 的“不使用 enable”当规范；失败保持普通 FAIL。",
+    "模型新增 enabled 字段只门控公开 result，不宣称关闭期间内部流水线是否推进；该边界写在合同 scope 中。",
+    "disable 用例的参考在第一个关闭拍就报错，未把后续 re-enable 阶段算作已尝试；reached=33.33%、checked=0 如实保留。"
+  ],
+  "constraints": [
+    "不修改 RTL、DUT 或系统 SDK。",
+    "不新增 XFAIL；原 RAS strict XFAIL 不受影响。",
+    "不把 100% 行/branch 覆盖当作功能通过。",
+    "选测 27 项不替代完整回归。"
+  ],
+  "remaining": [
+    "PopAndPush 需要 RTL 修复或规格裁决；三个入口的 FAIL 保留。",
+    "enable 门控需要 RTL 在公开输出或父级消费处实现；新功能点 017 保留 FAIL。",
+    "完整 BPU CSR 路由、其他 enable 切换边界、完整 FTQ 生命周期仍开放。"
+  ]
+}

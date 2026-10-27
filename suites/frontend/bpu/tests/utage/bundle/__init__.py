@@ -1,0 +1,1 @@
+"""MicroTAGE interface contract tests."""

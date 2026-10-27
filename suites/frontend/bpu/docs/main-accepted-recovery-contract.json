@@ -1,0 +1,34 @@
+{
+  "format": "semantic-requirement-before-case",
+  "version": 1,
+  "title": "已经接纳的学习副本不随后续预测恢复而丢失",
+  "event": "一个真实年轻预测在仍有效时提交完整目标修正；随后从它自己或更老原检查点恢复，学习的发布或保留与恢复发生重叠。",
+  "owner": "训练接纳前属于仍有效的原预测；接纳后完整条目与独立方向成为已接纳学习自己的义务，不再借用当前预测的存活资格。",
+  "effect": "恢复保留或取消原预测不会重复、取消或重新绑定已经接纳的学习；新的查询看到声明的新目标。",
+  "preservation": "未执行后继的独立不跳方向和全部原始metadata保持，所有实际S1进入有界寿命账本，不推断后端提交。",
+  "observation": "比较完整输入门禁、真实接纳、恢复拥有者和取消后缀、实际学习提案、自然读优先下完整保留版本、SDK条目/方向服务及两个fresh消费者。",
+  "crosses": {
+    "source_fate": ["source-preserved", "source-cancelled"],
+    "learning_phase": ["publication-overlap", "retained-record"]
+  },
+  "phase_proof": "publication-overlap必须满足恢复早于或同时于首次完整待写状态；retained-record必须先观察完整待写状态再恢复。由实际事件比较先后关系，不用周期常量近似。",
+  "source_supported_contract": [
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtb.scala:108",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtb.scala:122",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtbInternalBank.scala:169"
+  ],
+  "source_gap": {
+    "measurement": "results/owned-state-full-measurement-audit-20261018-v1/semantic-worklist.json",
+    "family": "branch-sibling-preservation",
+    "related_native_zero_rows": 93,
+    "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/WriteBuffer.scala:115",
+    "association_is_not_a_promise_to_hit_or_close_every_row": true,
+    "raw_denominator_and_guards_retained": true
+  },
+  "reference": "复用独立BPU/PHR/Main语义模型、窗口寿命模型和完整输入门禁；预期由原学习与恢复的语义顺序声明，不能由实际存储或输出初始化。",
+  "scope": "16窗口有界BPU输入合同；原学习接纳严格早于恢复，不扩展尚不支持的同拍训练接纳+外部恢复，不证明整个FTQ/后端。未接纳且已取消的来源仍必须被门禁拒绝。",
+  "features": ["BPU-INT-005", "BPU-INT-093"],
+  "new_feature_IDs": 0,
+  "physical_coordinate_enumeration": false,
+  "SDK_RTL_DUT_changes": false
+}

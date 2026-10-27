@@ -1,0 +1,92 @@
+{
+  "sources": [
+    {
+      "name": "supervisor",
+      "url": "https://docs.riscv.org/reference/isa/v20260120/priv/supervisor.html",
+      "edition": "v20260120",
+      "chapter_version": "1.13",
+      "verified_date": "2026-10-26",
+      "verification": "Official fixed-version page retrieved and normative clauses cross-checked via server web tool on 2026-10-26. Client raw fetch timed out; no raw-document hash claimed.",
+      "raw_content_sha256": null,
+      "sections": [
+        "11.1.1.11 satp",
+        "11.1.2.1 SFENCE.VMA",
+        "11.1.3.2 translation algorithm step 5",
+        "11.1.4 Sv39",
+        "11.1.3.1 A/D handling"
+      ],
+      "confirmed_rules": {
+        "title": "11.1. Supervisor-Level ISA, Version 1.13",
+        "rules": [
+          "satp-active/inactive completion exception: paragraph beginning Translations that began while satp was active",
+          "SFENCE.VMA operand identity, virtual byte address and permitted over-fencing",
+          "translation step 5 misaligned superpage page fault; Sv39 lower 18/9 PPN alignment",
+          "Svade versus hardware A/D update scheme"
+        ]
+      }
+    },
+    {
+      "name": "hypervisor",
+      "url": "https://docs.riscv.org/reference/isa/v20260120/priv/hypervisor.html",
+      "edition": "v20260120",
+      "chapter_version": "1.0",
+      "verified_date": "2026-10-26",
+      "verification": "Official fixed-version page retrieved and normative clauses cross-checked via server web tool on 2026-10-26. Client raw fetch timed out; no raw-document hash claimed.",
+      "raw_content_sha256": null,
+      "sections": [
+        "14.1.3.2 HFENCE.VVMA/GVMA",
+        "14.1.2.8 htval",
+        "14.1.5.3 memory-management fences"
+      ],
+      "confirmed_rules": {
+        "title": "14.1. H Extension for Hypervisor Support, Version 1.0",
+        "rules": [
+          "14.1.3.2 HFENCE.VVMA/GVMA domains and GPA shifted right 2",
+          "14.1.2.8 htval zero or GPA shifted right 2 and implicit VS page-table access GPA",
+          "14.1.5.3 memory-management fences"
+        ]
+      }
+    },
+    {
+      "name": "machine",
+      "url": "https://docs.riscv.org/reference/isa/v20260120/priv/machine.html",
+      "edition": "v20260120",
+      "chapter_version": "1.13",
+      "verified_date": "2026-10-26",
+      "verification": "Official fixed-version page retrieved and normative clauses cross-checked via server web tool on 2026-10-26. Client raw fetch timed out; no raw-document hash claimed.",
+      "raw_content_sha256": null,
+      "sections": [
+        "2.1.7.1 PMP configuration/granularity",
+        "2.1.7.2 PMP and paging"
+      ],
+      "confirmed_rules": {
+        "title": "2.1. Machine-Level ISA, Version 1.13",
+        "rules": [
+          "2.1.7.1.1 platform granularity and G>=1 disables NA4",
+          "2.1.7.2 PMP applies to implicit page-table accesses with effective privilege S",
+          "2.1.6 platform physical memory attributes"
+        ]
+      }
+    }
+  ],
+  "limits": "Versioned official pages and sections were checked; raw page content is not stored/hashed. Metadata digest is not document digest. Target RTL ISA version/optional extensions still require design declaration.",
+  "local_encoding": [
+    {
+      "path": "/home/xyl/kmh-v3-test/XiangShan/src/main/scala/xiangshan/backend/fu/Fence.scala",
+      "sha256": "78ad4cd15476c8e7e664a8a0df723cc112d4a69504d8495bc0872585d4c6e0b0"
+    },
+    {
+      "path": "/home/xyl/kmh-v3-test/XiangShan-internal/src/main/scala/xiangshan/backend/fu/Fence.scala",
+      "sha256": "b510fbff02de789f6150a5f0d1246ec031d2be56b647ca3ecf9bd79fe1b708b5"
+    }
+  ],
+  "confirmation_method": "Server web tool opened all three fixed-version official pages and read relevant rules. Successful fixed-version retrieval followed transient access errors; raw HTML was not archived or hashed.",
+  "verified_topics": [
+    "SFENCE.VMA x0 register identity, virtual byte address, and over-fencing",
+    "satp ordering and exact active-to-inactive inflight translation exception",
+    "Sv39 superpage alignment and page-fault requirement",
+    "HFENCE.GVMA GPA>>2 and VMID scope",
+    "PMP platform grain and implicit page-table access protection",
+    "Svade versus hardware A/D update behavior"
+  ]
+}

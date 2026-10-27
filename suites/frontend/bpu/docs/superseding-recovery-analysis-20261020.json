@@ -1,0 +1,93 @@
+{
+  "title": "年轻恢复尚未完成时，更老原件的恢复接着到达：只继承最后存活的执行前缀",
+  "contract_defined_before_implementation": "docs/superseding-recovery-contract-20261020.json",
+  "requirements": ["path-recovery/owned-checkpoint", "path-recovery/loop-original", "conditional-context/executed-condition-prefix", "conditional-context/read-versus-feedback"],
+  "existing_features_extended": ["BPU-INT-034", "BPU-INT-043", "BPU-INT-094", "BPU-INT-099"],
+  "prior_missing_proof": "此前单次恢复、与年轻预测纠正同拍竞争、循环原件恢复和恢复后查找各有证据，但不能代替两个不同真实原件在相邻周期按年轻到更老顺序恢复的组合。",
+  "human_event": "更老分支发现真实路径错误时，应取消已经开始的年轻恢复。年轻恢复可以短暂注册，但不能在最终历史或新消费者中复活，也不能把两份执行前缀相加。",
+  "source_legality": "正常学习的条件循环取得两份不同真实公开原件。独立计数分别为16/17，后接纳的恢复引用更老原件，它不在第一次年轻恢复取消的后缀中。完整metadata不改写，不伪造检查点。",
+  "programs": ["older-not-taken", "older-forward-taken", "older-backward-taken", "older-direct-after-prefix"],
+  "reference": {
+    "closed_expectation": "bpuverify/bpu/model/superseding_recovery.py",
+    "existing_independent_algorithms": ["CommonQueryReference", "LoopIterationReference", "PathHistoryReference", "MicroBTB/MainBTB references"],
+    "expected_outputs": "中间前缀、最终GHR/BW与原迭代由原件及实际分支种类/方向推导；更老的后向条件只从原16到17，其余终止循环。之后无条件保持路径的fresh消费者保留赢者GHR/BW、循环计数为0。",
+    "actual_DUT_state_never_seeds_gold": true
+  },
+  "implementation": {
+    "test": "tests/bpu/testcase/test_superseding_recovery.py",
+    "layers": ["model", "checker", "coverage", "env", "case"],
+    "public_agent_extension": "BpuAgent.redirect_many",
+    "driver": "已有PulseDriver.send_many，不新增或修改框架实现",
+    "receipt": "BpuPhrObservation.redirect_many逐个比较完整实际输入、相邻接纳tick和最后完成契约，不从相同PC或完成时刻猜测原接纳。",
+    "case_has_no_edge_pin_wait_or_asyncio_gather": true,
+    "pure_input_wrong_order_missing_extra_wrong_payload_nonadjacent_and_wrong_completion_rejected": true
+  },
+  "qualification": "results/superseding-recovery-native-20261020-v1/qualification-analysis.json",
+  "measurements": {
+    "main": {"PASS": 16405, "FAIL": 2},
+    "native_BPU": {"PASS": 31, "FAIL": 2},
+    "pure_models_and_drivers": {"PASS": 16374},
+    "new_pure_checks": 41,
+    "complete_framework_gates": {"PASS": 1000},
+    "new_semantic_programs": {"PASS": 4},
+    "independent_final_source_replay": {"PASS": 4},
+    "main_elapsed_seconds": 297.09128326177597,
+    "gate_elapsed_seconds": 283.60682878270745,
+    "old_full_overlapping_verdicts_exactly_preserved": 14630,
+    "new_full_regression": false
+  },
+  "functional_evidence": {
+    "reached": 32,
+    "checked": 32,
+    "denominator": 32,
+    "actual_adjacent_recovery_acceptances": 8,
+    "fresh_complete_consumers": 4,
+    "original_source_age_and_metadata_immutable": true,
+    "intermediate_and_final_GHR_BW_and_iteration_checked": true,
+    "original_PHR_full_passive_checks_remain_active": true,
+    "pure_partition_native_inputs": 0,
+    "pure_partition_functional_groups": 0,
+    "scope": "两份仍存活、年龄可区分的公开原件，不是任意深度FTQ退休/取消/容量证明。"
+  },
+  "preserved_RTL_differences": {
+    "later_conditional_committed_state": {"expected": [254, 14], "actual": [252, 12]},
+    "later_conditional_public_consumer": {"expected": [253, 12], "actual": [249, 8]},
+    "both_were_FAIL_in_the_original_full_run": true,
+    "BPU_INT_094_remains_FAIL": true,
+    "new_pair_PASS_does_not_waive_original_later_conditional_requirement": true
+  },
+  "implementation_diagnostics": "results/superseding-recovery-development-20261020-v1/implementation-diagnostics.json",
+  "diagnostic_distinction": "首轮纯负对照构造和DUT试点的valid检查错误属于验证代码本身，原件及原因保留。最后强检查版本和独立重放都经过显式中间快照验证，不能把原试点的四个失败当成新增RTL差异或抹除记录。",
+  "native_coverage": {
+    "new_rows_in_main": 0,
+    "new_rows_in_independent_all_PASS_run": 0,
+    "BPU_cumulative_hit": 38130,
+    "BPU_denominator": 46541,
+    "BPU_missing": 8411,
+    "all_module_missing": 10761,
+    "denominators_removed": 0,
+    "access": "MEM_DIRECT",
+    "same_DUT_build_as_full_baseline": true,
+    "VPI": false
+  },
+  "line_gap_review": {
+    "Ahead_4043": "四个既有完整多分支程序的首错是原NT短历史提供者预期命中而实际未命中；Ahead完整计数及近期关系在此前比较中一致。继续保留高tag根因及程序，不换PC或截tag绕开。",
+    "PHR_1404": "只使用同复位epoch真实检查点时的游标轨道前提；新相邻恢复不会自动证明所有副本或任意外部检查点。",
+    "CommonHR_3": "869-871外层和内层r1条件互斥已有源码解释；不把新组合冒充这些行的命中。",
+    "replacement_MBTB_49": "精确源码为同一替换规则未访问的indexed状态写入；现有别名、独立邻居及相邻最新年龄行为已有测试，不按剩余索引发明49个新功能。"
+  },
+  "collection": {"before": 29573, "after": 29624, "added": 51, "removed": 0},
+  "definitions": {"identities": 353, "new_identities": 0, "old_contracts_unchanged": true, "matrix_groups": 324, "source_lifetime_groups": 164, "bounded_proof_bundles": 59},
+  "retention": {
+    "receipt": "results/current/superseding-recovery-retention-completed.json",
+    "deleted_files": 223,
+    "reclaimed_allocated_bytes": 334757888,
+    "results_allocated_bytes_at_cleanup": 208048128,
+    "archived_logical_facts": 1509,
+    "historical_causes_and_exact_verdicts_preserved": true,
+    "old_raw_measurements_require_rerun": true
+  },
+  "RTL_DUT_SDK_unchanged": true,
+  "new_XFAIL_or_skip": 0,
+  "goal_complete": false
+}

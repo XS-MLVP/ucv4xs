@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "dut": "store_s2",
+  "top": "StoreUnitS2",
+  "run": "store-s2-initial-01",
+  "metrics": {
+    "line": {
+      "hit": 32,
+      "total": 32
+    },
+    "branch": {
+      "hit": 5,
+      "total": 6
+    },
+    "toggle": {
+      "hit": 1042,
+      "total": 1042
+    },
+    "functional": {
+      "coverage": 100.0,
+      "cases": 28
+    }
+  },
+  "uncovered": [
+    {
+      "id": "S2-BRANCH-INITIAL-RESET",
+      "kind": "tool_boundary",
+      "points": [
+        "StoreUnitS2.sv:241 if (reset)"
+      ],
+      "evidence": [
+        "initial-block reset assignment runs before any test can assert reset"
+      ],
+      "required_supplement": false
+    }
+  ],
+  "failures": [],
+  "status": "PASS_WITH_CLASSIFIED_TOOL_BOUNDARY",
+  "rtl_sha256": {
+    "StoreUnitS2.sv": "05fd714a721e28fdcd05a818cc80acb58a778e1297595f9d4555d67d3e92d7d1"
+  }
+}

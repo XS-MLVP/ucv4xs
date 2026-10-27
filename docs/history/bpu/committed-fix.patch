@@ -1,0 +1,48 @@
+From 9dc66e497a0de5d5e83371b6f17840f139c9246a Mon Sep 17 00:00:00 2001
+From: bpu-verify <bpu-verify@local>
+Date: Thu, 22 Oct 2026 18:59:17 +0800
+Subject: [PATCH] fix(mbtb): qualify direction-counter update by tag hit
+
+MainBtbAlignBank updated a way's direction counter whenever the stored
+7-bit position equalled the trained branch's cfiPosition, without
+requiring the entry's tag to match. A set conflict that leaves another
+block in the same way with an equal position therefore fed this branch's
+outcome into a foreign entry's counter, corrupting that branch's
+direction history and, through later predictions, its target/position.
+
+The entry-write path (t1_hitMask) and the replacer touch
+(t1_actualTakenMask) already require the tag hit; only the counter update
+skipped it. Qualify the counter hit mask with meta.rawHit as well.
+
+Found by tests/bpu/testcase/test_ahead_working_set.py and
+test_main_cold_original_order.py, whose checkers name the invariant
+"requires original hit": the DUT proposed a direction for a way that
+never hit.
+---
+ .../xiangshan/frontend/bpu/mbtb/MainBtbAlignBank.scala | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtbAlignBank.scala b/src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtbAlignBank.scala
+index 240d92171..df473e552 100644
+--- a/src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtbAlignBank.scala
++++ b/src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtbAlignBank.scala
+@@ -256,8 +256,16 @@ class MainBtbAlignBank(
+   private val t1_counterWayMask = Wire(Vec(NumWay, Bool()))
+ 
+   t1_meta.zipWithIndex.foreach { case (meta, i) =>
++    // A direction counter belongs to the entry that stores it. Matching the
++    // three-bit position alone is not enough: another block may occupy this way
++    // in the same set with an equal position, and feeding this branch's outcome
++    // into that entry's counter would corrupt a foreign identity. `rawHit` is
++    // the entry's tag match, i.e. "this way holds *this* block"; the entry-write
++    // path below (`t1_hitMask`) and the replacer touch (`t1_actualTakenMask`)
++    // already qualify the same way.
+     val hitMask = t1_branches.map { branch =>
+-      branch.valid && branch.bits.attribute.isConditional && meta.position === branch.bits.cfiPosition
++      branch.valid && branch.bits.attribute.isConditional && meta.rawHit &&
++        meta.position === branch.bits.cfiPosition
+     }
+     val actualTaken = Mux1H(hitMask, t1_branches.map(_.bits.taken))
+ 
+-- 
+2.43.0

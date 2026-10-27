@@ -1,0 +1,26 @@
+{
+  "format": "semantic-environment-requirement-before-case",
+  "version": 1,
+  "title": "来源仍有效才可学习；取消可继续，驱动异常必须严格停止",
+  "event": "同一PC的两个真实预测先后发布，年轻来源可以先解析；恢复、复位、准备后突变、未发射取消和暂缓发射分别形成资格边界。",
+  "owner": "来源发生身份、原始完整metadata、同一个准备任务及实际接纳事件；不是相同PC、相等数值或保存下来的Python对象。",
+  "effect": "合法旧来源可晚到；无效或被篡改来源不写引脚。显式取消尚未发射任务后可处理新任务，驱动内资格异常按SDK合同终止driver并保留原异常。",
+  "observation": "复用实际全部S1接纳、S3发布、公开redirect/reset、driver.admit_when与XTransfer.cancel；完整输入在实际接受时比较，暂缓时比较完整输入引脚保持，合法学习用独立Main/Micro/PHR与fresh消费者闭合。",
+  "preservation": "原始来源metadata保持；年轻来源的恢复不误杀仍有效旧来源；旧reset epoch不复活；不能把取消和失败都当成可恢复或把软件receipt释放当提交。",
+  "existing_environment_point": "ENV-DRV-004",
+  "hardware_feature_PASS_granted": false,
+  "scope": "有界BPU-only上游来源合同，容量8明确作为环境假设；不是完整FTQ/后端执行可达性证明，不覆盖已接受任务的响应期撤销。",
+  "source_gap_relation": "Main版本取代/未执行后继的历史93个零行要求先满足来源资格。本组只证明该前提，不解释全部93行，不授予MBTB028/INT093/INT095通过。",
+  "SDK_basis": [
+    "xreactor.protocols.drive_ready_valid(admit=...)",
+    "xreactor.AsyncDriver._run_one documented fail-stop behavior",
+    "xreactor.XTransfer.cancel",
+    "bpuverify.bpu.driver.training.BpuTrainingDriver.admit_when"
+  ],
+  "predecessor": "results/bpu-feedback-gate-qualified-20261018-v1/qualification-analysis.json",
+  "new_cross": "真实reset前后来源资格、取消后fresh合法学习、暂缓时不编码/不写入、发射期异常后严格拒绝后续工作",
+  "new_predictor_reference_algorithms": 0,
+  "new_feature_IDs": 0,
+  "physical_enumeration": false,
+  "SDK_RTL_DUT_changes": false
+}

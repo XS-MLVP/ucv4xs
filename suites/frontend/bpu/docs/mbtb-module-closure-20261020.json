@@ -1,0 +1,156 @@
+{
+  "title": "MainBTB 模块语义闭环：完整分支属性中的 RAS 提示位、57 个未覆盖 arm 的逐项归因，以及既有差异的证据边界",
+  "status": "module-loop-closed-for-current-RTL; BPU-MBTB-017/025/026/027/028/029 remain ordinary FAIL",
+  "module": "MainBtb",
+  "scope": "独立 Mbtb DUT 的 30 个功能点与 120 个选测用例；不证明完整 BPU 或完整 FTQ",
+  "human_events": [
+    {
+      "id": "BPU-MBTB-003",
+      "event": "一个真实分支反馈带有分支类型、目标、位置与 RAS 提示位（none/call/return/return-and-call）；随后从原 PC 查询。",
+      "owner": "完整分支属性属于该原始指令位置；RAS 提示位与分支类型是同一个属性字的两个字段，不是可丢弃的旁带。",
+      "effect": "预测条目与原始 metadata 都原样返回该提示位；四个提示编码各自只属于自己的位置。",
+      "evidence": [
+        "tests/mbtb/testcase/test_attribute_ras_action.py::test_ras_action_hint_round_trips_with_the_rest_of_the_attribute"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "BPU-MBTB-014",
+      "event": "同一位置已有一个直接跳转；重新解码为同一位置、同一目标但带直接调用提示（仅 rasAction 0→2）。",
+      "owner": "属性修正属于原位置命中的记录，不是一次新分配。",
+      "effect": "原 way 被就地重写为新属性并恢复弱 taken 初态；邻居的 way、目标与方向不变；有效条目数仍为 2。",
+      "evidence": [
+        "tests/mbtb/testcase/test_attribute_ras_action.py::test_changing_only_the_ras_hint_rewrites_the_resident_way"
+      ],
+      "status": "PASS"
+    }
+  ],
+  "source_facts": {
+    "full_attribute": [
+      "XiangShan/.../bpu/mbtb/MainBtbAlignBank.scala:225-231：t1_entryNeedWrite 在命中时还要求 needIttage 或 attribute 变化。",
+      "XiangShan/.../bpu/mbtb/Bundles.scala:67：BranchAttribute 的相等比较同时包含 branchType 与 rasAction。",
+      "因此仅 rasAction 变化就会触发原 way 的整条重写；此前所有测试向量的 ras_action 都是 0，该路径未被观察。"
+    ],
+    "known_position_only_counter": [
+      "XiangShan/.../bpu/mbtb/MainBtbAlignBank.scala:255-267：计数器 hitMask 只按 branch.valid & isConditional & meta.position 匹配，不检查 meta.rawHit 或 tag owner。",
+      "同位置但不同 tag 的陈旧 metadata 因此可以递减/递增另一记录的计数器；这正是 017/025/027/028 共同的首错。",
+      "参考模型只允许真实命中记录拥有方向更新；未为通过而复刻该实现分支。"
+    ]
+  },
+  "coverage_closure": {
+    "baseline_run": "results/mbtb-module-baseline-20261020-v1",
+    "qualification_run": "results/mbtb-module-qualification-20261020-v1",
+    "denominator": {"lines": 1056, "branches": 442, "toggles": 11830},
+    "baseline": {"lines": "1007/1056", "branches": "385/442", "toggles": "7300/11830", "tests": "108 PASS / 10 FAIL"},
+    "final": {"lines": "1007/1056", "branches": "385/442", "toggles": "7328/11830", "tests": "110 PASS / 10 FAIL"},
+    "delta": {"lines": 0, "branches": 0, "toggles": 28, "new_cases": 2, "new_points": 0},
+    "closed_by_this_round": {
+      "kind": "toggle",
+      "signals": "RAS hint bits on training, metadata, prediction and both align-bank response paths",
+      "count": 28,
+      "examples": [
+        "dut/mbtb/MbtbDut.v:62 io_train_branches_0_bits_attribute_rasAction[1]",
+        "dut/mbtb/MbtbDut.v:345 io_result_0_bits_attribute_rasAction[1]",
+        "rtl/mbtb/MainBtbAlignBank.sv:62 io_read_resp_predictions_0_bits_attribute_rasAction[1]",
+        "rtl/mbtb/MainBtbAlignBank_1.sv:62/73 and the second-align-bank metadata path"
+      ]
+    },
+    "uncovered_lines": {
+      "count": 49,
+      "items": "rtl/mbtb/ReplacerState.sv:272,276,278,...,372,374",
+      "source": "each line is if (io_write_1_valid & io_write_1_bits_setIdx == N) states_N <= io_write_1_bits_state",
+      "classification": "physical set replicas of one replacement-state update",
+      "reason": "training only touches a representative set of 64 physical sets in the production profile; the physical profile intentionally sweeps coordinates. This is replica enumeration, not 49 functions. The module's own definition review already calls them replacement-state copies."
+    },
+    "uncovered_branches": {
+      "count": 57,
+      "breakdown": {
+        "physical_set_replicas": 49,
+        "structurally_unreachable": 8
+      },
+      "structural_proof": {
+        "tool": "python3 -m bpuverify.mbtb.coverage.branch_audit",
+        "artifact": "results/mbtb-module-qualification-20261020-v1/branch-unreachable-proof.json",
+        "arms": [
+          "MainBtbInternalBank.sv:151,153,155,157,159,161,163 cond_else",
+          "ram_2x12.sv:88 cond_else"
+        ],
+        "premises": [
+          "MainBtbAlignBank.sv and _1.sv define s2_multiHitMask = {multiHitMask_1, 1'h0}, so flush wayMask bit zero is permanently zero for port 0",
+          "Queue2_MainBtbCounterSramWriteReq.sv connects R0_en = 1'h1"
+        ],
+        "controls": "16 exhaustive Boolean cases plus four source mutations; each mutation is rejected by the proof",
+        "scope": "generated two-way standalone MiniConfig hierarchy only; no denominator subtraction"
+      }
+    },
+    "toggle_remaining": {
+      "count": 4502,
+      "note": "mostly FTQ train-bundle payload that the standalone DUT does not consume, plus per-set replacer state bits and data payload bits; no functional control signal is missing"
+    },
+    "functional_groups": {
+      "total": 43,
+      "full": 32,
+      "not_full": {
+        "kunminghu_v3.mbtb.cleanup_overlap": 75.0,
+        "kunminghu_v3.mbtb.depth-owner.checked": 50.0,
+        "kunminghu_v3.mbtb.entry_keys": 67.36111111111111,
+        "kunminghu_v3.mbtb.full-capacity-learning.checked": 50.0,
+        "kunminghu_v3.mbtb.full-capacity-learning.reached": 66.66666666666667,
+        "kunminghu_v3.mbtb.indexed_replacement": 67.70833333333333,
+        "kunminghu_v3.mbtb.semantic.cleanup.checked": 50.0,
+        "kunminghu_v3.mbtb.semantic.miss.checked": 50.0,
+        "kunminghu_v3.mbtb.semantic.owner.checked": 50.0,
+        "kunminghu_v3.mbtb.shared-service.checked": 50.0,
+        "kunminghu_v3.mbtb.shared-service.reached": 75.0
+      },
+      "non_full_causes": {
+        "physical_replica_groups": ["cleanup_overlap", "entry_keys", "indexed_replacement"],
+        "real_failures": ["depth-owner.checked", "full-capacity-learning", "semantic.miss.checked", "semantic.owner.checked", "semantic.cleanup.checked", "shared-service"]
+      }
+    }
+  },
+  "existing_failures": {
+    "count": 10,
+    "changed_by_this_round": 0,
+    "note": "baseline and final have the identical ten failing node IDs; the two new cases pass.",
+    "families": {
+      "position_only_counter_qualification": {
+        "tests": [
+          "test_unhit_feedback_preserves_foreign_tag_direction[same-position] (027)",
+          "test_coalesced_entry_reset_preserves_negative_conditional_peer[stale-metadata] (028)",
+          "test_second_depth_rewrite_keeps_logical_owner_and_negative_peer[real-old-cold-source] (025)",
+          "test_full_set_keeps_both_new_branches_and_their_age_without_neighbor_corruption[forward-serial|forward-adjacent|reverse-serial|reverse-adjacent] (017)"
+        ],
+        "cause": "MainBtbAlignBank.scala:256-259 qualifies the hit mask by position only, not by rawHit/tag ownership"
+      },
+      "zero_key_cleanup": {
+        "tests": ["test_duplicate_clear_owns_destination_not_zero_payload_key[zero-tag-and-position] (029)"],
+        "cause": "the conflict rule uses entry.tag == 0 with the same set index, so a joint zero tag/position clear can route the zero payload through a retained lower-way owner"
+      },
+      "shared_service_loss": {
+        "tests": ["test_relocated_correction_and_first_cleanup_both_survive_shared_service[old-miss-finds-retained-owner.ordinary-identity]", "...[zero-tag-only] (026)"],
+        "cause": "two real inputs find the same service owner; when the complete feedback and the first cleanup arrive in the same cycle, only the invalidation is observed and the target correction is lost"
+      }
+    }
+  },
+  "false_positive_false_negative_checks": [
+    "Before this round, no test varied rasAction, so a defect that dropped the hint bits would have produced a silent false negative. The new round-trip and hint-only-rewrite cases close that blind spot; both pass, so this is positive evidence, not a new failure.",
+    "The new hint-only rewrite keeps branch type, position and target identical, so the observed update can only come from rasAction being part of the attribute comparison. A branchType-only implementation would fail the case.",
+    "The 10 failures are byte-identical to the baseline node IDs; no pre-existing verdict was rewritten, and no new XFAIL was added.",
+    "The 8 unreachable arms are proven from generated hierarchy constants with mutation negative controls, not from failing to reach them.",
+    "The 49 per-set arms are classified as replicas of one replacement-state update, matching the module's own earlier definition review; they are not counted as 49 functions and the denominator is not reduced.",
+    "Functional groups at 100% do not cover the failing semantics: the 10 failures sit in paths already counted as covered, so coverage saturation is not reported as functional PASS."
+  ],
+  "constraints": [
+    "No RTL, DUT or system SDK change.",
+    "No new XFAIL.",
+    "No bank/set sweep and no forged internal signals; the new cases use the public training/lookup API.",
+    "The selected run does not replace the retained full regression."
+  ],
+  "remaining": [
+    "MainBTB position-only counter qualification needs an RTL fix or a specification decision; 017/025/027/028 stay FAIL.",
+    "The joint zero-key cleanup attribution needs an RTL fix or a specification decision; 029 stays FAIL.",
+    "The shared-service correction loss needs an RTL fix or a specification decision; 026 stays FAIL.",
+    "Full FTQ lifetime and composed BPU arbitration remain outside this module run."
+  ]
+}

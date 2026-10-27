@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "dut": "store_s0",
+  "top": "StoreUnitS0",
+  "run": "store-s0-initial-03",
+  "rtl_sha256": {
+    "StoreUnitS0.sv": "726124f0dfd0bd84f700c2f710d0951efccf127b81ec3b0187b9282028cb0f0c",
+    "Arbiter3_StoreStageIO.sv": "d5e0a679e8c5c5bed880c1c63dfe27297e07870e052695ed74325ab401b9bf15"
+  },
+  "metrics": {
+    "line_dut_only": {"hit": 83, "total": 83, "percent": 100.0},
+    "branch": {"hit": 67, "total": 68, "percent": 98.53},
+    "toggle_dut_only": {"hit": 3090, "total": 3100, "percent": 99.68},
+    "functional": {"groups": 1, "coverage": 100.0, "checked": true, "cases": 47}
+  },
+  "uncovered": [
+    {
+      "id": "S0-BRANCH-INITIAL-RESET",
+      "kind": "tool_boundary",
+      "points": ["StoreUnitS0.sv:341 `if (reset)`"],
+      "classification": "initial-block reset assignment",
+      "evidence": [
+        "the `if (reset) pipeOutValid = 1'h0;` lives inside the ENABLE_INITIAL_REG_ initial block",
+        "Picker's InitClock executes that block at time 0 before the test can assert reset",
+        "reset at the boundary is still verified by test_reset_clears_the_pipeline_register"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "S0-TOGGLE-TLB-CMD-HIGH-BITS",
+      "kind": "unreachable",
+      "points": ["io_tlbReq_bits_cmd[1] 0->1/1->0", "io_tlbReq_bits_cmd[2] 0->1/1->0"],
+      "classification": "structurally constant zero",
+      "evidence": [
+        "StoreUnitS0.sv:463-464: assign io_tlbReq_bits_cmd = {2'h0, ~isCboNoZero};",
+        "bits [2:1] are literal zeros, so only TlbCmd.read(0) and TlbCmd.write(1) are reachable"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "S0-TOGGLE-ENTRANCE-BIT2",
+      "kind": "unreachable",
+      "points": [
+        "pipeOutBits_entrance[2]", "io_pipeOut_bits_entrance[2]", "io_out_bits_entrance[2]"
+      ],
+      "classification": "structurally unreachable one-hot value",
+      "evidence": [
+        "Arbiter3_StoreStageIO.sv:69-70 emits entrance 4'h1 (unalign tail) or 4'h8 (scalar issue); 4'h2 only appears when the arbiter output is invalid",
+        "the S0 pipeline register is written only when arb.valid=1 (StoreUnitS0.sv:225), so 4'h2 never reaches pipeOut",
+        "bit 2 set would require 4'h4 = vectorIssue, which has no source at this arbitration node"
+      ],
+      "required_supplement": false
+    }
+  ],
+  "contract_corrections": [
+    {
+      "id": "S0-NO-BACKPRESSURE",
+      "finding": "S0 has no pipeOut ready and cannot stall",
+      "evidence": [
+        "StoreUnitS0.sv has no io_pipeOut_ready port; StoreUnitS1.sv has no io_pipeIn_ready port",
+        "StoreUnitS0.sv:207-217: pipeOutValid <= ~kill & arb_out_valid (no ready term)",
+        "io_stin_ready is the arbiter bit ~in_0_valid, not a downstream-ready chain"
+      ],
+      "impact": "the contract states fixed latency and single-cycle occupancy instead of a ready/valid stall protocol"
+    },
+    {
+      "id": "S0-QSIZE-REACHABLE",
+      "finding": "size 4..7 are reachable and mean a 16B Q store",
+      "evidence": [
+        "StoreUnitS0.sv:170-172: the mask base uses {16{fuOpType[3]}}, so sizes 4..7 select 0xFFFF",
+        "StoreUnitS0.sv:236-247: the byte offset uses {4{size[2]}} = 15 for sizes 4..7",
+        "MemorySize.Q.ByteOffset = 15 and MemorySize.QB.bitpat = b100"
+      ],
+      "impact": "the reference model was extended for sizes 4..7 and directed Q-size tests were added; without them 112 toggle points stayed unhit"
+    }
+  ],
+  "failures": [],
+  "status": "PASS_WITH_CLASSIFIED_GAPS"
+}

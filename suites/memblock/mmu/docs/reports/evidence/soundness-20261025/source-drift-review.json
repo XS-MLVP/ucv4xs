@@ -1,0 +1,1547 @@
+{
+  "format": "mmu-postrun-source-review-v1",
+  "review_date": "2026-10-26",
+  "runs": {
+    "tlbfa": {
+      "run": "soundness-final-tlbfa-01",
+      "command": [
+        "/home/xyl/xreactor/output/toffee-migration/venv/bin/toffee",
+        "run",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/tests/tlbfa",
+        "--workers",
+        "1",
+        "--output",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/results/soundness-final-tlbfa-01",
+        "--export-coverage-json",
+        "--native-coverage-tool",
+        "/opt/verilator-5.052/bin/verilator_coverage"
+      ],
+      "dependencies": [
+        "conftest.py",
+        "manifest/pma-reset-reference.json",
+        "manifest/toolchain.json",
+        "mmuverify/__init__.py",
+        "mmuverify/common/__init__.py",
+        "mmuverify/common/dut.py",
+        "mmuverify/common/runtime.py",
+        "mmuverify/l2/__init__.py",
+        "mmuverify/l2/bitmap.py",
+        "mmuverify/l2/coverage.py",
+        "mmuverify/l2/hptw.py",
+        "mmuverify/l2/l2pf.py",
+        "mmuverify/l2/l2tlb.py",
+        "mmuverify/l2/l2tlbwrapper.py",
+        "mmuverify/l2/llptw.py",
+        "mmuverify/l2/missqueue.py",
+        "mmuverify/l2/pmp.py",
+        "mmuverify/l2/ptw.py",
+        "mmuverify/l2/ptw_walker.py",
+        "mmuverify/l2/ptwcache.py",
+        "mmuverify/tlb/__init__.py",
+        "mmuverify/tlb/coverage.py",
+        "mmuverify/tlb/env.py",
+        "mmuverify/tlb/model.py",
+        "mmuverify/tlbfa/__init__.py",
+        "mmuverify/tlbfa/coverage.py",
+        "mmuverify/tlbfa/env.py",
+        "mmuverify/tlbfa/model.py",
+        "mmuverify/tlbn/__init__.py",
+        "mmuverify/tlbn/env.py",
+        "mmuverify/wrapper/__init__.py",
+        "mmuverify/wrapper/coverage.py",
+        "mmuverify/wrapper/env.py",
+        "mmuverify/wrapper/model.py",
+        "pytest.ini",
+        "tests/__init__.py",
+        "tests/tlbfa/__init__.py",
+        "tests/tlbfa/common.py",
+        "tests/tlbfa/test_tlbfa_basic.py",
+        "tests/tlbfa/test_tlbfa_pages.py",
+        "tests/tlbfa/test_tlbfa_refill.py",
+        "tests/tlbfa/test_tlbfa_sfence.py",
+        "tests/tlbfa/test_tlbfa_toggle.py",
+        "tools/run.py"
+      ],
+      "differences": {
+        "tests/l2/soundness_helpers.py": {
+          "old_sha256": "fc5763caa6e65641be10957d188a23e65b68a4e1254ccd8d6f686e399db5ceca",
+          "current_sha256": "0835cacb7b6b0d8c83bd63f6ed88d8b2a6511560271e70c5f8174bada758d357",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlb.py": {
+          "old_sha256": "bbbdc3665cadeed1b6267d0d12117317ec638d54433496c97b0c57073e34245c",
+          "current_sha256": "7c2a577bb69eca5b82b3813e2b2676ce6216c5655e34740064e081c2b8266397",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlbwrapper.py": {
+          "old_sha256": "16ca06671422cff5e1599a279891eca124b6b39d9a52263a7bf42cbc52e1dd35",
+          "current_sha256": "a99b96220d6544dac92988922f987914b14e1b8ad230b31a21a789c733572edf",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tools/audit_cases.py": {
+          "old_sha256": "7be4b911d99cd09b72f462414a6a9e6626632e64aa89f468a3bc1be7af511a2c",
+          "current_sha256": "bc927be6bd0989d0ed1aa18c7e3b584404b9b6e7ff56cdc9813e9c349bdfeff7",
+          "kind": "inventory-metadata-only",
+          "reason": "Only category/review output metadata changed; original source hash-matched to run snapshot. AST check logic equivalence verified after removing only those fields."
+        },
+        "tools/verify_delivery.py": {
+          "old_sha256": "5537bba7f996195d5f37b597200ebb2ac093e81207d01210c9c51e16649a944c",
+          "current_sha256": "3ded03a4a6bd9c85d08762eab28d84aa0fb17bbc68048714dbb76f72b28f8b7e",
+          "kind": "offline-delivery-check",
+          "reason": "Offline post-regression verifier; absent from run.py/conftest/selected test dependency closure."
+        }
+      }
+    },
+    "wrapper": {
+      "run": "soundness-final-wrapper-01",
+      "command": [
+        "/home/xyl/xreactor/output/toffee-migration/venv/bin/toffee",
+        "run",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/tests/wrapper",
+        "--workers",
+        "1",
+        "--output",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/results/soundness-final-wrapper-01",
+        "--export-coverage-json",
+        "--native-coverage-tool",
+        "/opt/verilator-5.052/bin/verilator_coverage"
+      ],
+      "dependencies": [
+        "conftest.py",
+        "manifest/pma-reset-reference.json",
+        "manifest/toolchain.json",
+        "mmuverify/__init__.py",
+        "mmuverify/common/__init__.py",
+        "mmuverify/common/dut.py",
+        "mmuverify/common/runtime.py",
+        "mmuverify/l2/__init__.py",
+        "mmuverify/l2/bitmap.py",
+        "mmuverify/l2/coverage.py",
+        "mmuverify/l2/hptw.py",
+        "mmuverify/l2/l2pf.py",
+        "mmuverify/l2/l2tlb.py",
+        "mmuverify/l2/l2tlbwrapper.py",
+        "mmuverify/l2/llptw.py",
+        "mmuverify/l2/missqueue.py",
+        "mmuverify/l2/pmp.py",
+        "mmuverify/l2/ptw.py",
+        "mmuverify/l2/ptw_walker.py",
+        "mmuverify/l2/ptwcache.py",
+        "mmuverify/tlb/__init__.py",
+        "mmuverify/tlb/coverage.py",
+        "mmuverify/tlb/env.py",
+        "mmuverify/tlb/model.py",
+        "mmuverify/tlbfa/__init__.py",
+        "mmuverify/tlbfa/coverage.py",
+        "mmuverify/tlbfa/env.py",
+        "mmuverify/tlbfa/model.py",
+        "mmuverify/tlbn/__init__.py",
+        "mmuverify/tlbn/env.py",
+        "mmuverify/wrapper/__init__.py",
+        "mmuverify/wrapper/coverage.py",
+        "mmuverify/wrapper/env.py",
+        "mmuverify/wrapper/model.py",
+        "pytest.ini",
+        "tests/__init__.py",
+        "tests/tlbfa/__init__.py",
+        "tests/tlbfa/common.py",
+        "tests/wrapper/__init__.py",
+        "tests/wrapper/test_wrapper.py",
+        "tools/run.py"
+      ],
+      "differences": {
+        "tests/l2/soundness_helpers.py": {
+          "old_sha256": "fc5763caa6e65641be10957d188a23e65b68a4e1254ccd8d6f686e399db5ceca",
+          "current_sha256": "0835cacb7b6b0d8c83bd63f6ed88d8b2a6511560271e70c5f8174bada758d357",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlb.py": {
+          "old_sha256": "bbbdc3665cadeed1b6267d0d12117317ec638d54433496c97b0c57073e34245c",
+          "current_sha256": "7c2a577bb69eca5b82b3813e2b2676ce6216c5655e34740064e081c2b8266397",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlbwrapper.py": {
+          "old_sha256": "16ca06671422cff5e1599a279891eca124b6b39d9a52263a7bf42cbc52e1dd35",
+          "current_sha256": "a99b96220d6544dac92988922f987914b14e1b8ad230b31a21a789c733572edf",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tools/audit_cases.py": {
+          "old_sha256": "7be4b911d99cd09b72f462414a6a9e6626632e64aa89f468a3bc1be7af511a2c",
+          "current_sha256": "bc927be6bd0989d0ed1aa18c7e3b584404b9b6e7ff56cdc9813e9c349bdfeff7",
+          "kind": "inventory-metadata-only",
+          "reason": "Only category/review output metadata changed; original source hash-matched to run snapshot. AST check logic equivalence verified after removing only those fields."
+        },
+        "tools/verify_delivery.py": {
+          "old_sha256": "5537bba7f996195d5f37b597200ebb2ac093e81207d01210c9c51e16649a944c",
+          "current_sha256": "3ded03a4a6bd9c85d08762eab28d84aa0fb17bbc68048714dbb76f72b28f8b7e",
+          "kind": "offline-delivery-check",
+          "reason": "Offline post-regression verifier; absent from run.py/conftest/selected test dependency closure."
+        }
+      }
+    },
+    "tlb": {
+      "run": "soundness-final-tlb-01",
+      "command": [
+        "/home/xyl/xreactor/output/toffee-migration/venv/bin/toffee",
+        "run",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/tests/tlb",
+        "--workers",
+        "1",
+        "--output",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/results/soundness-final-tlb-01",
+        "--export-coverage-json",
+        "--native-coverage-tool",
+        "/opt/verilator-5.052/bin/verilator_coverage"
+      ],
+      "dependencies": [
+        "conftest.py",
+        "manifest/pma-reset-reference.json",
+        "manifest/toolchain.json",
+        "mmuverify/__init__.py",
+        "mmuverify/common/__init__.py",
+        "mmuverify/common/dut.py",
+        "mmuverify/common/runtime.py",
+        "mmuverify/l2/__init__.py",
+        "mmuverify/l2/bitmap.py",
+        "mmuverify/l2/coverage.py",
+        "mmuverify/l2/hptw.py",
+        "mmuverify/l2/l2pf.py",
+        "mmuverify/l2/l2tlb.py",
+        "mmuverify/l2/l2tlbwrapper.py",
+        "mmuverify/l2/llptw.py",
+        "mmuverify/l2/missqueue.py",
+        "mmuverify/l2/pmp.py",
+        "mmuverify/l2/ptw.py",
+        "mmuverify/l2/ptw_walker.py",
+        "mmuverify/l2/ptwcache.py",
+        "mmuverify/tlb/__init__.py",
+        "mmuverify/tlb/coverage.py",
+        "mmuverify/tlb/env.py",
+        "mmuverify/tlb/model.py",
+        "mmuverify/tlbfa/__init__.py",
+        "mmuverify/tlbfa/coverage.py",
+        "mmuverify/tlbfa/env.py",
+        "mmuverify/tlbfa/model.py",
+        "mmuverify/tlbn/__init__.py",
+        "mmuverify/tlbn/env.py",
+        "mmuverify/wrapper/__init__.py",
+        "mmuverify/wrapper/coverage.py",
+        "mmuverify/wrapper/env.py",
+        "mmuverify/wrapper/model.py",
+        "pytest.ini",
+        "tests/__init__.py",
+        "tests/tlb/__init__.py",
+        "tests/tlb/test_tlb.py",
+        "tests/tlbfa/__init__.py",
+        "tests/tlbfa/common.py",
+        "tools/run.py"
+      ],
+      "differences": {
+        "tests/l2/soundness_helpers.py": {
+          "old_sha256": "fc5763caa6e65641be10957d188a23e65b68a4e1254ccd8d6f686e399db5ceca",
+          "current_sha256": "0835cacb7b6b0d8c83bd63f6ed88d8b2a6511560271e70c5f8174bada758d357",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlb.py": {
+          "old_sha256": "bbbdc3665cadeed1b6267d0d12117317ec638d54433496c97b0c57073e34245c",
+          "current_sha256": "7c2a577bb69eca5b82b3813e2b2676ce6216c5655e34740064e081c2b8266397",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlbwrapper.py": {
+          "old_sha256": "16ca06671422cff5e1599a279891eca124b6b39d9a52263a7bf42cbc52e1dd35",
+          "current_sha256": "a99b96220d6544dac92988922f987914b14e1b8ad230b31a21a789c733572edf",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tools/audit_cases.py": {
+          "old_sha256": "7be4b911d99cd09b72f462414a6a9e6626632e64aa89f468a3bc1be7af511a2c",
+          "current_sha256": "bc927be6bd0989d0ed1aa18c7e3b584404b9b6e7ff56cdc9813e9c349bdfeff7",
+          "kind": "inventory-metadata-only",
+          "reason": "Only category/review output metadata changed; original source hash-matched to run snapshot. AST check logic equivalence verified after removing only those fields."
+        },
+        "tools/verify_delivery.py": {
+          "old_sha256": "5537bba7f996195d5f37b597200ebb2ac093e81207d01210c9c51e16649a944c",
+          "current_sha256": "3ded03a4a6bd9c85d08762eab28d84aa0fb17bbc68048714dbb76f72b28f8b7e",
+          "kind": "offline-delivery-check",
+          "reason": "Offline post-regression verifier; absent from run.py/conftest/selected test dependency closure."
+        }
+      }
+    },
+    "tlbn": {
+      "run": "soundness-final-tlbn-01",
+      "command": [
+        "/home/xyl/xreactor/output/toffee-migration/venv/bin/toffee",
+        "run",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/tests/tlbn",
+        "--workers",
+        "1",
+        "--output",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/results/soundness-final-tlbn-01",
+        "--export-coverage-json",
+        "--native-coverage-tool",
+        "/opt/verilator-5.052/bin/verilator_coverage"
+      ],
+      "dependencies": [
+        "conftest.py",
+        "manifest/pma-reset-reference.json",
+        "manifest/toolchain.json",
+        "mmuverify/__init__.py",
+        "mmuverify/common/__init__.py",
+        "mmuverify/common/dut.py",
+        "mmuverify/common/runtime.py",
+        "mmuverify/l2/__init__.py",
+        "mmuverify/l2/bitmap.py",
+        "mmuverify/l2/coverage.py",
+        "mmuverify/l2/hptw.py",
+        "mmuverify/l2/l2pf.py",
+        "mmuverify/l2/l2tlb.py",
+        "mmuverify/l2/l2tlbwrapper.py",
+        "mmuverify/l2/llptw.py",
+        "mmuverify/l2/missqueue.py",
+        "mmuverify/l2/pmp.py",
+        "mmuverify/l2/ptw.py",
+        "mmuverify/l2/ptw_walker.py",
+        "mmuverify/l2/ptwcache.py",
+        "mmuverify/tlb/__init__.py",
+        "mmuverify/tlb/coverage.py",
+        "mmuverify/tlb/env.py",
+        "mmuverify/tlb/model.py",
+        "mmuverify/tlbfa/__init__.py",
+        "mmuverify/tlbfa/coverage.py",
+        "mmuverify/tlbfa/env.py",
+        "mmuverify/tlbfa/model.py",
+        "mmuverify/tlbn/__init__.py",
+        "mmuverify/tlbn/env.py",
+        "mmuverify/wrapper/__init__.py",
+        "mmuverify/wrapper/coverage.py",
+        "mmuverify/wrapper/env.py",
+        "mmuverify/wrapper/model.py",
+        "pytest.ini",
+        "tests/__init__.py",
+        "tests/tlbfa/__init__.py",
+        "tests/tlbfa/common.py",
+        "tests/tlbn/common.py",
+        "tests/tlbn/test_tlbn.py",
+        "tools/run.py"
+      ],
+      "differences": {
+        "tests/l2/soundness_helpers.py": {
+          "old_sha256": "fc5763caa6e65641be10957d188a23e65b68a4e1254ccd8d6f686e399db5ceca",
+          "current_sha256": "0835cacb7b6b0d8c83bd63f6ed88d8b2a6511560271e70c5f8174bada758d357",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlb.py": {
+          "old_sha256": "bbbdc3665cadeed1b6267d0d12117317ec638d54433496c97b0c57073e34245c",
+          "current_sha256": "7c2a577bb69eca5b82b3813e2b2676ce6216c5655e34740064e081c2b8266397",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlbwrapper.py": {
+          "old_sha256": "16ca06671422cff5e1599a279891eca124b6b39d9a52263a7bf42cbc52e1dd35",
+          "current_sha256": "a99b96220d6544dac92988922f987914b14e1b8ad230b31a21a789c733572edf",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tools/audit_cases.py": {
+          "old_sha256": "7be4b911d99cd09b72f462414a6a9e6626632e64aa89f468a3bc1be7af511a2c",
+          "current_sha256": "bc927be6bd0989d0ed1aa18c7e3b584404b9b6e7ff56cdc9813e9c349bdfeff7",
+          "kind": "inventory-metadata-only",
+          "reason": "Only category/review output metadata changed; original source hash-matched to run snapshot. AST check logic equivalence verified after removing only those fields."
+        },
+        "tools/verify_delivery.py": {
+          "old_sha256": "5537bba7f996195d5f37b597200ebb2ac093e81207d01210c9c51e16649a944c",
+          "current_sha256": "3ded03a4a6bd9c85d08762eab28d84aa0fb17bbc68048714dbb76f72b28f8b7e",
+          "kind": "offline-delivery-check",
+          "reason": "Offline post-regression verifier; absent from run.py/conftest/selected test dependency closure."
+        }
+      }
+    },
+    "l2mq": {
+      "run": "soundness-final-l2mq-01",
+      "command": [
+        "/home/xyl/xreactor/output/toffee-migration/venv/bin/toffee",
+        "run",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/tests/l2/test_l2mq.py",
+        "--workers",
+        "1",
+        "--output",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/results/soundness-final-l2mq-01",
+        "--export-coverage-json",
+        "--native-coverage-tool",
+        "/opt/verilator-5.052/bin/verilator_coverage"
+      ],
+      "dependencies": [
+        "conftest.py",
+        "manifest/pma-reset-reference.json",
+        "manifest/toolchain.json",
+        "mmuverify/__init__.py",
+        "mmuverify/common/__init__.py",
+        "mmuverify/common/dut.py",
+        "mmuverify/common/runtime.py",
+        "mmuverify/l2/__init__.py",
+        "mmuverify/l2/bitmap.py",
+        "mmuverify/l2/coverage.py",
+        "mmuverify/l2/hptw.py",
+        "mmuverify/l2/l2pf.py",
+        "mmuverify/l2/l2tlb.py",
+        "mmuverify/l2/l2tlbwrapper.py",
+        "mmuverify/l2/llptw.py",
+        "mmuverify/l2/missqueue.py",
+        "mmuverify/l2/pmp.py",
+        "mmuverify/l2/ptw.py",
+        "mmuverify/l2/ptw_walker.py",
+        "mmuverify/l2/ptwcache.py",
+        "mmuverify/tlb/__init__.py",
+        "mmuverify/tlb/coverage.py",
+        "mmuverify/tlb/env.py",
+        "mmuverify/tlb/model.py",
+        "mmuverify/tlbfa/__init__.py",
+        "mmuverify/tlbfa/coverage.py",
+        "mmuverify/tlbfa/env.py",
+        "mmuverify/tlbfa/model.py",
+        "mmuverify/tlbn/__init__.py",
+        "mmuverify/tlbn/env.py",
+        "mmuverify/wrapper/__init__.py",
+        "mmuverify/wrapper/coverage.py",
+        "mmuverify/wrapper/env.py",
+        "mmuverify/wrapper/model.py",
+        "pytest.ini",
+        "tests/l2/test_l2mq.py",
+        "tools/run.py"
+      ],
+      "differences": {
+        "tests/l2/soundness_helpers.py": {
+          "old_sha256": "fc5763caa6e65641be10957d188a23e65b68a4e1254ccd8d6f686e399db5ceca",
+          "current_sha256": "0835cacb7b6b0d8c83bd63f6ed88d8b2a6511560271e70c5f8174bada758d357",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlb.py": {
+          "old_sha256": "bbbdc3665cadeed1b6267d0d12117317ec638d54433496c97b0c57073e34245c",
+          "current_sha256": "7c2a577bb69eca5b82b3813e2b2676ce6216c5655e34740064e081c2b8266397",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlbwrapper.py": {
+          "old_sha256": "16ca06671422cff5e1599a279891eca124b6b39d9a52263a7bf42cbc52e1dd35",
+          "current_sha256": "a99b96220d6544dac92988922f987914b14e1b8ad230b31a21a789c733572edf",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tools/audit_cases.py": {
+          "old_sha256": "7be4b911d99cd09b72f462414a6a9e6626632e64aa89f468a3bc1be7af511a2c",
+          "current_sha256": "bc927be6bd0989d0ed1aa18c7e3b584404b9b6e7ff56cdc9813e9c349bdfeff7",
+          "kind": "inventory-metadata-only",
+          "reason": "Only category/review output metadata changed; original source hash-matched to run snapshot. AST check logic equivalence verified after removing only those fields."
+        },
+        "tools/verify_delivery.py": {
+          "old_sha256": "5537bba7f996195d5f37b597200ebb2ac093e81207d01210c9c51e16649a944c",
+          "current_sha256": "3ded03a4a6bd9c85d08762eab28d84aa0fb17bbc68048714dbb76f72b28f8b7e",
+          "kind": "offline-delivery-check",
+          "reason": "Offline post-regression verifier; absent from run.py/conftest/selected test dependency closure."
+        }
+      }
+    },
+    "l2pf": {
+      "run": "soundness-final-l2pf-01",
+      "command": [
+        "/home/xyl/xreactor/output/toffee-migration/venv/bin/toffee",
+        "run",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/tests/l2/test_l2pf.py",
+        "--workers",
+        "1",
+        "--output",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/results/soundness-final-l2pf-01",
+        "--export-coverage-json",
+        "--native-coverage-tool",
+        "/opt/verilator-5.052/bin/verilator_coverage"
+      ],
+      "dependencies": [
+        "conftest.py",
+        "manifest/pma-reset-reference.json",
+        "manifest/toolchain.json",
+        "mmuverify/__init__.py",
+        "mmuverify/common/__init__.py",
+        "mmuverify/common/dut.py",
+        "mmuverify/common/runtime.py",
+        "mmuverify/l2/__init__.py",
+        "mmuverify/l2/bitmap.py",
+        "mmuverify/l2/coverage.py",
+        "mmuverify/l2/hptw.py",
+        "mmuverify/l2/l2pf.py",
+        "mmuverify/l2/l2tlb.py",
+        "mmuverify/l2/l2tlbwrapper.py",
+        "mmuverify/l2/llptw.py",
+        "mmuverify/l2/missqueue.py",
+        "mmuverify/l2/pmp.py",
+        "mmuverify/l2/ptw.py",
+        "mmuverify/l2/ptw_walker.py",
+        "mmuverify/l2/ptwcache.py",
+        "mmuverify/tlb/__init__.py",
+        "mmuverify/tlb/coverage.py",
+        "mmuverify/tlb/env.py",
+        "mmuverify/tlb/model.py",
+        "mmuverify/tlbfa/__init__.py",
+        "mmuverify/tlbfa/coverage.py",
+        "mmuverify/tlbfa/env.py",
+        "mmuverify/tlbfa/model.py",
+        "mmuverify/tlbn/__init__.py",
+        "mmuverify/tlbn/env.py",
+        "mmuverify/wrapper/__init__.py",
+        "mmuverify/wrapper/coverage.py",
+        "mmuverify/wrapper/env.py",
+        "mmuverify/wrapper/model.py",
+        "pytest.ini",
+        "tests/l2/test_l2pf.py",
+        "tools/run.py"
+      ],
+      "differences": {
+        "tests/l2/soundness_helpers.py": {
+          "old_sha256": "fc5763caa6e65641be10957d188a23e65b68a4e1254ccd8d6f686e399db5ceca",
+          "current_sha256": "0835cacb7b6b0d8c83bd63f6ed88d8b2a6511560271e70c5f8174bada758d357",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlb.py": {
+          "old_sha256": "bbbdc3665cadeed1b6267d0d12117317ec638d54433496c97b0c57073e34245c",
+          "current_sha256": "7c2a577bb69eca5b82b3813e2b2676ce6216c5655e34740064e081c2b8266397",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlbwrapper.py": {
+          "old_sha256": "16ca06671422cff5e1599a279891eca124b6b39d9a52263a7bf42cbc52e1dd35",
+          "current_sha256": "a99b96220d6544dac92988922f987914b14e1b8ad230b31a21a789c733572edf",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tools/audit_cases.py": {
+          "old_sha256": "7be4b911d99cd09b72f462414a6a9e6626632e64aa89f468a3bc1be7af511a2c",
+          "current_sha256": "bc927be6bd0989d0ed1aa18c7e3b584404b9b6e7ff56cdc9813e9c349bdfeff7",
+          "kind": "inventory-metadata-only",
+          "reason": "Only category/review output metadata changed; original source hash-matched to run snapshot. AST check logic equivalence verified after removing only those fields."
+        },
+        "tools/verify_delivery.py": {
+          "old_sha256": "5537bba7f996195d5f37b597200ebb2ac093e81207d01210c9c51e16649a944c",
+          "current_sha256": "3ded03a4a6bd9c85d08762eab28d84aa0fb17bbc68048714dbb76f72b28f8b7e",
+          "kind": "offline-delivery-check",
+          "reason": "Offline post-regression verifier; absent from run.py/conftest/selected test dependency closure."
+        }
+      }
+    },
+    "ptwrepeater": {
+      "run": "soundness-final-ptwrepeater-01",
+      "command": [
+        "/home/xyl/xreactor/output/toffee-migration/venv/bin/toffee",
+        "run",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/tests/l2/test_ptwrepeater.py",
+        "--workers",
+        "1",
+        "--output",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/results/soundness-final-ptwrepeater-01",
+        "--export-coverage-json",
+        "--native-coverage-tool",
+        "/opt/verilator-5.052/bin/verilator_coverage"
+      ],
+      "dependencies": [
+        "conftest.py",
+        "manifest/pma-reset-reference.json",
+        "manifest/toolchain.json",
+        "mmuverify/__init__.py",
+        "mmuverify/common/__init__.py",
+        "mmuverify/common/dut.py",
+        "mmuverify/common/runtime.py",
+        "mmuverify/l2/__init__.py",
+        "mmuverify/l2/bitmap.py",
+        "mmuverify/l2/coverage.py",
+        "mmuverify/l2/hptw.py",
+        "mmuverify/l2/l2pf.py",
+        "mmuverify/l2/l2tlb.py",
+        "mmuverify/l2/l2tlbwrapper.py",
+        "mmuverify/l2/llptw.py",
+        "mmuverify/l2/missqueue.py",
+        "mmuverify/l2/pmp.py",
+        "mmuverify/l2/ptw.py",
+        "mmuverify/l2/ptw_walker.py",
+        "mmuverify/l2/ptwcache.py",
+        "mmuverify/tlb/__init__.py",
+        "mmuverify/tlb/coverage.py",
+        "mmuverify/tlb/env.py",
+        "mmuverify/tlb/model.py",
+        "mmuverify/tlbfa/__init__.py",
+        "mmuverify/tlbfa/coverage.py",
+        "mmuverify/tlbfa/env.py",
+        "mmuverify/tlbfa/model.py",
+        "mmuverify/tlbn/__init__.py",
+        "mmuverify/tlbn/env.py",
+        "mmuverify/wrapper/__init__.py",
+        "mmuverify/wrapper/coverage.py",
+        "mmuverify/wrapper/env.py",
+        "mmuverify/wrapper/model.py",
+        "pytest.ini",
+        "tests/l2/test_ptwrepeater.py",
+        "tools/run.py"
+      ],
+      "differences": {
+        "tests/l2/soundness_helpers.py": {
+          "old_sha256": "fc5763caa6e65641be10957d188a23e65b68a4e1254ccd8d6f686e399db5ceca",
+          "current_sha256": "0835cacb7b6b0d8c83bd63f6ed88d8b2a6511560271e70c5f8174bada758d357",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlb.py": {
+          "old_sha256": "bbbdc3665cadeed1b6267d0d12117317ec638d54433496c97b0c57073e34245c",
+          "current_sha256": "7c2a577bb69eca5b82b3813e2b2676ce6216c5655e34740064e081c2b8266397",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlbwrapper.py": {
+          "old_sha256": "16ca06671422cff5e1599a279891eca124b6b39d9a52263a7bf42cbc52e1dd35",
+          "current_sha256": "a99b96220d6544dac92988922f987914b14e1b8ad230b31a21a789c733572edf",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tools/audit_cases.py": {
+          "old_sha256": "7be4b911d99cd09b72f462414a6a9e6626632e64aa89f468a3bc1be7af511a2c",
+          "current_sha256": "bc927be6bd0989d0ed1aa18c7e3b584404b9b6e7ff56cdc9813e9c349bdfeff7",
+          "kind": "inventory-metadata-only",
+          "reason": "Only category/review output metadata changed; original source hash-matched to run snapshot. AST check logic equivalence verified after removing only those fields."
+        },
+        "tools/verify_delivery.py": {
+          "old_sha256": "5537bba7f996195d5f37b597200ebb2ac093e81207d01210c9c51e16649a944c",
+          "current_sha256": "3ded03a4a6bd9c85d08762eab28d84aa0fb17bbc68048714dbb76f72b28f8b7e",
+          "kind": "offline-delivery-check",
+          "reason": "Offline post-regression verifier; absent from run.py/conftest/selected test dependency closure."
+        }
+      }
+    },
+    "ptwfilter": {
+      "run": "soundness-final-ptwfilter-01",
+      "command": [
+        "/home/xyl/xreactor/output/toffee-migration/venv/bin/toffee",
+        "run",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/tests/l2/test_ptwfilter.py",
+        "--workers",
+        "1",
+        "--output",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/results/soundness-final-ptwfilter-01",
+        "--export-coverage-json",
+        "--native-coverage-tool",
+        "/opt/verilator-5.052/bin/verilator_coverage"
+      ],
+      "dependencies": [
+        "conftest.py",
+        "manifest/pma-reset-reference.json",
+        "manifest/toolchain.json",
+        "mmuverify/__init__.py",
+        "mmuverify/common/__init__.py",
+        "mmuverify/common/dut.py",
+        "mmuverify/common/runtime.py",
+        "mmuverify/l2/__init__.py",
+        "mmuverify/l2/bitmap.py",
+        "mmuverify/l2/coverage.py",
+        "mmuverify/l2/hptw.py",
+        "mmuverify/l2/l2pf.py",
+        "mmuverify/l2/l2tlb.py",
+        "mmuverify/l2/l2tlbwrapper.py",
+        "mmuverify/l2/llptw.py",
+        "mmuverify/l2/missqueue.py",
+        "mmuverify/l2/pmp.py",
+        "mmuverify/l2/ptw.py",
+        "mmuverify/l2/ptw_walker.py",
+        "mmuverify/l2/ptwcache.py",
+        "mmuverify/tlb/__init__.py",
+        "mmuverify/tlb/coverage.py",
+        "mmuverify/tlb/env.py",
+        "mmuverify/tlb/model.py",
+        "mmuverify/tlbfa/__init__.py",
+        "mmuverify/tlbfa/coverage.py",
+        "mmuverify/tlbfa/env.py",
+        "mmuverify/tlbfa/model.py",
+        "mmuverify/tlbn/__init__.py",
+        "mmuverify/tlbn/env.py",
+        "mmuverify/wrapper/__init__.py",
+        "mmuverify/wrapper/coverage.py",
+        "mmuverify/wrapper/env.py",
+        "mmuverify/wrapper/model.py",
+        "pytest.ini",
+        "tests/l2/test_ptwfilter.py",
+        "tools/run.py"
+      ],
+      "differences": {
+        "tests/l2/soundness_helpers.py": {
+          "old_sha256": "fc5763caa6e65641be10957d188a23e65b68a4e1254ccd8d6f686e399db5ceca",
+          "current_sha256": "0835cacb7b6b0d8c83bd63f6ed88d8b2a6511560271e70c5f8174bada758d357",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlb.py": {
+          "old_sha256": "bbbdc3665cadeed1b6267d0d12117317ec638d54433496c97b0c57073e34245c",
+          "current_sha256": "7c2a577bb69eca5b82b3813e2b2676ce6216c5655e34740064e081c2b8266397",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlbwrapper.py": {
+          "old_sha256": "16ca06671422cff5e1599a279891eca124b6b39d9a52263a7bf42cbc52e1dd35",
+          "current_sha256": "a99b96220d6544dac92988922f987914b14e1b8ad230b31a21a789c733572edf",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tools/audit_cases.py": {
+          "old_sha256": "7be4b911d99cd09b72f462414a6a9e6626632e64aa89f468a3bc1be7af511a2c",
+          "current_sha256": "bc927be6bd0989d0ed1aa18c7e3b584404b9b6e7ff56cdc9813e9c349bdfeff7",
+          "kind": "inventory-metadata-only",
+          "reason": "Only category/review output metadata changed; original source hash-matched to run snapshot. AST check logic equivalence verified after removing only those fields."
+        },
+        "tools/verify_delivery.py": {
+          "old_sha256": "5537bba7f996195d5f37b597200ebb2ac093e81207d01210c9c51e16649a944c",
+          "current_sha256": "3ded03a4a6bd9c85d08762eab28d84aa0fb17bbc68048714dbb76f72b28f8b7e",
+          "kind": "offline-delivery-check",
+          "reason": "Offline post-regression verifier; absent from run.py/conftest/selected test dependency closure."
+        }
+      }
+    },
+    "hptw": {
+      "run": "soundness-final-hptw-01",
+      "command": [
+        "/home/xyl/xreactor/output/toffee-migration/venv/bin/toffee",
+        "run",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/tests/l2/test_hptw.py",
+        "--workers",
+        "1",
+        "--output",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/results/soundness-final-hptw-01",
+        "--export-coverage-json",
+        "--native-coverage-tool",
+        "/opt/verilator-5.052/bin/verilator_coverage"
+      ],
+      "dependencies": [
+        "conftest.py",
+        "manifest/pma-reset-reference.json",
+        "manifest/toolchain.json",
+        "mmuverify/__init__.py",
+        "mmuverify/common/__init__.py",
+        "mmuverify/common/dut.py",
+        "mmuverify/common/runtime.py",
+        "mmuverify/l2/__init__.py",
+        "mmuverify/l2/bitmap.py",
+        "mmuverify/l2/coverage.py",
+        "mmuverify/l2/hptw.py",
+        "mmuverify/l2/l2pf.py",
+        "mmuverify/l2/l2tlb.py",
+        "mmuverify/l2/l2tlbwrapper.py",
+        "mmuverify/l2/llptw.py",
+        "mmuverify/l2/missqueue.py",
+        "mmuverify/l2/pmp.py",
+        "mmuverify/l2/ptw.py",
+        "mmuverify/l2/ptw_walker.py",
+        "mmuverify/l2/ptwcache.py",
+        "mmuverify/tlb/__init__.py",
+        "mmuverify/tlb/coverage.py",
+        "mmuverify/tlb/env.py",
+        "mmuverify/tlb/model.py",
+        "mmuverify/tlbfa/__init__.py",
+        "mmuverify/tlbfa/coverage.py",
+        "mmuverify/tlbfa/env.py",
+        "mmuverify/tlbfa/model.py",
+        "mmuverify/tlbn/__init__.py",
+        "mmuverify/tlbn/env.py",
+        "mmuverify/wrapper/__init__.py",
+        "mmuverify/wrapper/coverage.py",
+        "mmuverify/wrapper/env.py",
+        "mmuverify/wrapper/model.py",
+        "pytest.ini",
+        "tests/l2/test_hptw.py",
+        "tools/run.py"
+      ],
+      "differences": {
+        "tests/l2/soundness_helpers.py": {
+          "old_sha256": "fc5763caa6e65641be10957d188a23e65b68a4e1254ccd8d6f686e399db5ceca",
+          "current_sha256": "0835cacb7b6b0d8c83bd63f6ed88d8b2a6511560271e70c5f8174bada758d357",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlb.py": {
+          "old_sha256": "bbbdc3665cadeed1b6267d0d12117317ec638d54433496c97b0c57073e34245c",
+          "current_sha256": "7c2a577bb69eca5b82b3813e2b2676ce6216c5655e34740064e081c2b8266397",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlbwrapper.py": {
+          "old_sha256": "16ca06671422cff5e1599a279891eca124b6b39d9a52263a7bf42cbc52e1dd35",
+          "current_sha256": "a99b96220d6544dac92988922f987914b14e1b8ad230b31a21a789c733572edf",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tools/audit_cases.py": {
+          "old_sha256": "7be4b911d99cd09b72f462414a6a9e6626632e64aa89f468a3bc1be7af511a2c",
+          "current_sha256": "bc927be6bd0989d0ed1aa18c7e3b584404b9b6e7ff56cdc9813e9c349bdfeff7",
+          "kind": "inventory-metadata-only",
+          "reason": "Only category/review output metadata changed; original source hash-matched to run snapshot. AST check logic equivalence verified after removing only those fields."
+        },
+        "tools/verify_delivery.py": {
+          "old_sha256": "5537bba7f996195d5f37b597200ebb2ac093e81207d01210c9c51e16649a944c",
+          "current_sha256": "3ded03a4a6bd9c85d08762eab28d84aa0fb17bbc68048714dbb76f72b28f8b7e",
+          "kind": "offline-delivery-check",
+          "reason": "Offline post-regression verifier; absent from run.py/conftest/selected test dependency closure."
+        }
+      }
+    },
+    "ptw": {
+      "run": "soundness-final-ptw-01",
+      "command": [
+        "/home/xyl/xreactor/output/toffee-migration/venv/bin/toffee",
+        "run",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/tests/l2/test_ptw.py",
+        "--workers",
+        "1",
+        "--output",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/results/soundness-final-ptw-01",
+        "--export-coverage-json",
+        "--native-coverage-tool",
+        "/opt/verilator-5.052/bin/verilator_coverage"
+      ],
+      "dependencies": [
+        "conftest.py",
+        "manifest/pma-reset-reference.json",
+        "manifest/toolchain.json",
+        "mmuverify/__init__.py",
+        "mmuverify/common/__init__.py",
+        "mmuverify/common/dut.py",
+        "mmuverify/common/runtime.py",
+        "mmuverify/l2/__init__.py",
+        "mmuverify/l2/bitmap.py",
+        "mmuverify/l2/coverage.py",
+        "mmuverify/l2/hptw.py",
+        "mmuverify/l2/l2pf.py",
+        "mmuverify/l2/l2tlb.py",
+        "mmuverify/l2/l2tlbwrapper.py",
+        "mmuverify/l2/llptw.py",
+        "mmuverify/l2/missqueue.py",
+        "mmuverify/l2/pmp.py",
+        "mmuverify/l2/ptw.py",
+        "mmuverify/l2/ptw_walker.py",
+        "mmuverify/l2/ptwcache.py",
+        "mmuverify/tlb/__init__.py",
+        "mmuverify/tlb/coverage.py",
+        "mmuverify/tlb/env.py",
+        "mmuverify/tlb/model.py",
+        "mmuverify/tlbfa/__init__.py",
+        "mmuverify/tlbfa/coverage.py",
+        "mmuverify/tlbfa/env.py",
+        "mmuverify/tlbfa/model.py",
+        "mmuverify/tlbn/__init__.py",
+        "mmuverify/tlbn/env.py",
+        "mmuverify/wrapper/__init__.py",
+        "mmuverify/wrapper/coverage.py",
+        "mmuverify/wrapper/env.py",
+        "mmuverify/wrapper/model.py",
+        "pytest.ini",
+        "tests/l2/test_ptw.py",
+        "tools/run.py"
+      ],
+      "differences": {
+        "tests/l2/soundness_helpers.py": {
+          "old_sha256": "fc5763caa6e65641be10957d188a23e65b68a4e1254ccd8d6f686e399db5ceca",
+          "current_sha256": "0835cacb7b6b0d8c83bd63f6ed88d8b2a6511560271e70c5f8174bada758d357",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlb.py": {
+          "old_sha256": "bbbdc3665cadeed1b6267d0d12117317ec638d54433496c97b0c57073e34245c",
+          "current_sha256": "7c2a577bb69eca5b82b3813e2b2676ce6216c5655e34740064e081c2b8266397",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlbwrapper.py": {
+          "old_sha256": "16ca06671422cff5e1599a279891eca124b6b39d9a52263a7bf42cbc52e1dd35",
+          "current_sha256": "a99b96220d6544dac92988922f987914b14e1b8ad230b31a21a789c733572edf",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tools/audit_cases.py": {
+          "old_sha256": "7be4b911d99cd09b72f462414a6a9e6626632e64aa89f468a3bc1be7af511a2c",
+          "current_sha256": "bc927be6bd0989d0ed1aa18c7e3b584404b9b6e7ff56cdc9813e9c349bdfeff7",
+          "kind": "inventory-metadata-only",
+          "reason": "Only category/review output metadata changed; original source hash-matched to run snapshot. AST check logic equivalence verified after removing only those fields."
+        },
+        "tools/verify_delivery.py": {
+          "old_sha256": "5537bba7f996195d5f37b597200ebb2ac093e81207d01210c9c51e16649a944c",
+          "current_sha256": "3ded03a4a6bd9c85d08762eab28d84aa0fb17bbc68048714dbb76f72b28f8b7e",
+          "kind": "offline-delivery-check",
+          "reason": "Offline post-regression verifier; absent from run.py/conftest/selected test dependency closure."
+        }
+      }
+    },
+    "pmp": {
+      "run": "soundness-final-pmp-01",
+      "command": [
+        "/home/xyl/xreactor/output/toffee-migration/venv/bin/toffee",
+        "run",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/tests/l2/test_pmp.py",
+        "--workers",
+        "1",
+        "--output",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/results/soundness-final-pmp-01",
+        "--export-coverage-json",
+        "--native-coverage-tool",
+        "/opt/verilator-5.052/bin/verilator_coverage"
+      ],
+      "dependencies": [
+        "conftest.py",
+        "manifest/pma-reset-reference.json",
+        "manifest/toolchain.json",
+        "mmuverify/__init__.py",
+        "mmuverify/common/__init__.py",
+        "mmuverify/common/dut.py",
+        "mmuverify/common/runtime.py",
+        "mmuverify/l2/__init__.py",
+        "mmuverify/l2/bitmap.py",
+        "mmuverify/l2/coverage.py",
+        "mmuverify/l2/hptw.py",
+        "mmuverify/l2/l2pf.py",
+        "mmuverify/l2/l2tlb.py",
+        "mmuverify/l2/l2tlbwrapper.py",
+        "mmuverify/l2/llptw.py",
+        "mmuverify/l2/missqueue.py",
+        "mmuverify/l2/pmp.py",
+        "mmuverify/l2/ptw.py",
+        "mmuverify/l2/ptw_walker.py",
+        "mmuverify/l2/ptwcache.py",
+        "mmuverify/tlb/__init__.py",
+        "mmuverify/tlb/coverage.py",
+        "mmuverify/tlb/env.py",
+        "mmuverify/tlb/model.py",
+        "mmuverify/tlbfa/__init__.py",
+        "mmuverify/tlbfa/coverage.py",
+        "mmuverify/tlbfa/env.py",
+        "mmuverify/tlbfa/model.py",
+        "mmuverify/tlbn/__init__.py",
+        "mmuverify/tlbn/env.py",
+        "mmuverify/wrapper/__init__.py",
+        "mmuverify/wrapper/coverage.py",
+        "mmuverify/wrapper/env.py",
+        "mmuverify/wrapper/model.py",
+        "pytest.ini",
+        "tests/l2/test_pmp.py",
+        "tools/run.py"
+      ],
+      "differences": {
+        "tests/l2/soundness_helpers.py": {
+          "old_sha256": "fc5763caa6e65641be10957d188a23e65b68a4e1254ccd8d6f686e399db5ceca",
+          "current_sha256": "0835cacb7b6b0d8c83bd63f6ed88d8b2a6511560271e70c5f8174bada758d357",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlb.py": {
+          "old_sha256": "bbbdc3665cadeed1b6267d0d12117317ec638d54433496c97b0c57073e34245c",
+          "current_sha256": "7c2a577bb69eca5b82b3813e2b2676ce6216c5655e34740064e081c2b8266397",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlbwrapper.py": {
+          "old_sha256": "16ca06671422cff5e1599a279891eca124b6b39d9a52263a7bf42cbc52e1dd35",
+          "current_sha256": "a99b96220d6544dac92988922f987914b14e1b8ad230b31a21a789c733572edf",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tools/audit_cases.py": {
+          "old_sha256": "7be4b911d99cd09b72f462414a6a9e6626632e64aa89f468a3bc1be7af511a2c",
+          "current_sha256": "bc927be6bd0989d0ed1aa18c7e3b584404b9b6e7ff56cdc9813e9c349bdfeff7",
+          "kind": "inventory-metadata-only",
+          "reason": "Only category/review output metadata changed; original source hash-matched to run snapshot. AST check logic equivalence verified after removing only those fields."
+        },
+        "tools/verify_delivery.py": {
+          "old_sha256": "5537bba7f996195d5f37b597200ebb2ac093e81207d01210c9c51e16649a944c",
+          "current_sha256": "3ded03a4a6bd9c85d08762eab28d84aa0fb17bbc68048714dbb76f72b28f8b7e",
+          "kind": "offline-delivery-check",
+          "reason": "Offline post-regression verifier; absent from run.py/conftest/selected test dependency closure."
+        }
+      }
+    },
+    "bitmapcache": {
+      "run": "soundness-final-bitmapcache-01",
+      "command": [
+        "/home/xyl/xreactor/output/toffee-migration/venv/bin/toffee",
+        "run",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/tests/l2/test_bitmapcache.py",
+        "--workers",
+        "1",
+        "--output",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/results/soundness-final-bitmapcache-01",
+        "--export-coverage-json",
+        "--native-coverage-tool",
+        "/opt/verilator-5.052/bin/verilator_coverage"
+      ],
+      "dependencies": [
+        "conftest.py",
+        "manifest/pma-reset-reference.json",
+        "manifest/toolchain.json",
+        "mmuverify/__init__.py",
+        "mmuverify/common/__init__.py",
+        "mmuverify/common/dut.py",
+        "mmuverify/common/runtime.py",
+        "mmuverify/l2/__init__.py",
+        "mmuverify/l2/bitmap.py",
+        "mmuverify/l2/coverage.py",
+        "mmuverify/l2/hptw.py",
+        "mmuverify/l2/l2pf.py",
+        "mmuverify/l2/l2tlb.py",
+        "mmuverify/l2/l2tlbwrapper.py",
+        "mmuverify/l2/llptw.py",
+        "mmuverify/l2/missqueue.py",
+        "mmuverify/l2/pmp.py",
+        "mmuverify/l2/ptw.py",
+        "mmuverify/l2/ptw_walker.py",
+        "mmuverify/l2/ptwcache.py",
+        "mmuverify/tlb/__init__.py",
+        "mmuverify/tlb/coverage.py",
+        "mmuverify/tlb/env.py",
+        "mmuverify/tlb/model.py",
+        "mmuverify/tlbfa/__init__.py",
+        "mmuverify/tlbfa/coverage.py",
+        "mmuverify/tlbfa/env.py",
+        "mmuverify/tlbfa/model.py",
+        "mmuverify/tlbn/__init__.py",
+        "mmuverify/tlbn/env.py",
+        "mmuverify/wrapper/__init__.py",
+        "mmuverify/wrapper/coverage.py",
+        "mmuverify/wrapper/env.py",
+        "mmuverify/wrapper/model.py",
+        "pytest.ini",
+        "tests/l2/test_bitmapcache.py",
+        "tools/run.py"
+      ],
+      "differences": {
+        "tests/l2/soundness_helpers.py": {
+          "old_sha256": "fc5763caa6e65641be10957d188a23e65b68a4e1254ccd8d6f686e399db5ceca",
+          "current_sha256": "0835cacb7b6b0d8c83bd63f6ed88d8b2a6511560271e70c5f8174bada758d357",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlb.py": {
+          "old_sha256": "bbbdc3665cadeed1b6267d0d12117317ec638d54433496c97b0c57073e34245c",
+          "current_sha256": "7c2a577bb69eca5b82b3813e2b2676ce6216c5655e34740064e081c2b8266397",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlbwrapper.py": {
+          "old_sha256": "16ca06671422cff5e1599a279891eca124b6b39d9a52263a7bf42cbc52e1dd35",
+          "current_sha256": "a99b96220d6544dac92988922f987914b14e1b8ad230b31a21a789c733572edf",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tools/audit_cases.py": {
+          "old_sha256": "7be4b911d99cd09b72f462414a6a9e6626632e64aa89f468a3bc1be7af511a2c",
+          "current_sha256": "bc927be6bd0989d0ed1aa18c7e3b584404b9b6e7ff56cdc9813e9c349bdfeff7",
+          "kind": "inventory-metadata-only",
+          "reason": "Only category/review output metadata changed; original source hash-matched to run snapshot. AST check logic equivalence verified after removing only those fields."
+        },
+        "tools/verify_delivery.py": {
+          "old_sha256": "5537bba7f996195d5f37b597200ebb2ac093e81207d01210c9c51e16649a944c",
+          "current_sha256": "3ded03a4a6bd9c85d08762eab28d84aa0fb17bbc68048714dbb76f72b28f8b7e",
+          "kind": "offline-delivery-check",
+          "reason": "Offline post-regression verifier; absent from run.py/conftest/selected test dependency closure."
+        }
+      }
+    },
+    "bitmap": {
+      "run": "soundness-final-bitmap-01",
+      "command": [
+        "/home/xyl/xreactor/output/toffee-migration/venv/bin/toffee",
+        "run",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/tests/l2/test_bitmap.py",
+        "--workers",
+        "1",
+        "--output",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/results/soundness-final-bitmap-01",
+        "--export-coverage-json",
+        "--native-coverage-tool",
+        "/opt/verilator-5.052/bin/verilator_coverage"
+      ],
+      "dependencies": [
+        "conftest.py",
+        "manifest/pma-reset-reference.json",
+        "manifest/toolchain.json",
+        "mmuverify/__init__.py",
+        "mmuverify/common/__init__.py",
+        "mmuverify/common/dut.py",
+        "mmuverify/common/runtime.py",
+        "mmuverify/l2/__init__.py",
+        "mmuverify/l2/bitmap.py",
+        "mmuverify/l2/coverage.py",
+        "mmuverify/l2/hptw.py",
+        "mmuverify/l2/l2pf.py",
+        "mmuverify/l2/l2tlb.py",
+        "mmuverify/l2/l2tlbwrapper.py",
+        "mmuverify/l2/llptw.py",
+        "mmuverify/l2/missqueue.py",
+        "mmuverify/l2/pmp.py",
+        "mmuverify/l2/ptw.py",
+        "mmuverify/l2/ptw_walker.py",
+        "mmuverify/l2/ptwcache.py",
+        "mmuverify/tlb/__init__.py",
+        "mmuverify/tlb/coverage.py",
+        "mmuverify/tlb/env.py",
+        "mmuverify/tlb/model.py",
+        "mmuverify/tlbfa/__init__.py",
+        "mmuverify/tlbfa/coverage.py",
+        "mmuverify/tlbfa/env.py",
+        "mmuverify/tlbfa/model.py",
+        "mmuverify/tlbn/__init__.py",
+        "mmuverify/tlbn/env.py",
+        "mmuverify/wrapper/__init__.py",
+        "mmuverify/wrapper/coverage.py",
+        "mmuverify/wrapper/env.py",
+        "mmuverify/wrapper/model.py",
+        "pytest.ini",
+        "tests/l2/test_bitmap.py",
+        "tools/run.py"
+      ],
+      "differences": {
+        "tests/l2/soundness_helpers.py": {
+          "old_sha256": "fc5763caa6e65641be10957d188a23e65b68a4e1254ccd8d6f686e399db5ceca",
+          "current_sha256": "0835cacb7b6b0d8c83bd63f6ed88d8b2a6511560271e70c5f8174bada758d357",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlb.py": {
+          "old_sha256": "bbbdc3665cadeed1b6267d0d12117317ec638d54433496c97b0c57073e34245c",
+          "current_sha256": "7c2a577bb69eca5b82b3813e2b2676ce6216c5655e34740064e081c2b8266397",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlbwrapper.py": {
+          "old_sha256": "16ca06671422cff5e1599a279891eca124b6b39d9a52263a7bf42cbc52e1dd35",
+          "current_sha256": "a99b96220d6544dac92988922f987914b14e1b8ad230b31a21a789c733572edf",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tools/audit_cases.py": {
+          "old_sha256": "7be4b911d99cd09b72f462414a6a9e6626632e64aa89f468a3bc1be7af511a2c",
+          "current_sha256": "bc927be6bd0989d0ed1aa18c7e3b584404b9b6e7ff56cdc9813e9c349bdfeff7",
+          "kind": "inventory-metadata-only",
+          "reason": "Only category/review output metadata changed; original source hash-matched to run snapshot. AST check logic equivalence verified after removing only those fields."
+        },
+        "tools/verify_delivery.py": {
+          "old_sha256": "5537bba7f996195d5f37b597200ebb2ac093e81207d01210c9c51e16649a944c",
+          "current_sha256": "3ded03a4a6bd9c85d08762eab28d84aa0fb17bbc68048714dbb76f72b28f8b7e",
+          "kind": "offline-delivery-check",
+          "reason": "Offline post-regression verifier; absent from run.py/conftest/selected test dependency closure."
+        }
+      }
+    },
+    "ptwcache": {
+      "run": "soundness-final-ptwcache-01",
+      "command": [
+        "/home/xyl/xreactor/output/toffee-migration/venv/bin/toffee",
+        "run",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/tests/l2/test_ptwcache.py",
+        "--workers",
+        "1",
+        "--output",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/results/soundness-final-ptwcache-01",
+        "--export-coverage-json",
+        "--native-coverage-tool",
+        "/opt/verilator-5.052/bin/verilator_coverage"
+      ],
+      "dependencies": [
+        "conftest.py",
+        "manifest/pma-reset-reference.json",
+        "manifest/toolchain.json",
+        "mmuverify/__init__.py",
+        "mmuverify/common/__init__.py",
+        "mmuverify/common/dut.py",
+        "mmuverify/common/runtime.py",
+        "mmuverify/l2/__init__.py",
+        "mmuverify/l2/bitmap.py",
+        "mmuverify/l2/coverage.py",
+        "mmuverify/l2/hptw.py",
+        "mmuverify/l2/l2pf.py",
+        "mmuverify/l2/l2tlb.py",
+        "mmuverify/l2/l2tlbwrapper.py",
+        "mmuverify/l2/llptw.py",
+        "mmuverify/l2/missqueue.py",
+        "mmuverify/l2/pmp.py",
+        "mmuverify/l2/ptw.py",
+        "mmuverify/l2/ptw_walker.py",
+        "mmuverify/l2/ptwcache.py",
+        "mmuverify/tlb/__init__.py",
+        "mmuverify/tlb/coverage.py",
+        "mmuverify/tlb/env.py",
+        "mmuverify/tlb/model.py",
+        "mmuverify/tlbfa/__init__.py",
+        "mmuverify/tlbfa/coverage.py",
+        "mmuverify/tlbfa/env.py",
+        "mmuverify/tlbfa/model.py",
+        "mmuverify/tlbn/__init__.py",
+        "mmuverify/tlbn/env.py",
+        "mmuverify/wrapper/__init__.py",
+        "mmuverify/wrapper/coverage.py",
+        "mmuverify/wrapper/env.py",
+        "mmuverify/wrapper/model.py",
+        "pytest.ini",
+        "tests/l2/test_ptwcache.py",
+        "tools/run.py"
+      ],
+      "differences": {
+        "tests/l2/soundness_helpers.py": {
+          "old_sha256": "fc5763caa6e65641be10957d188a23e65b68a4e1254ccd8d6f686e399db5ceca",
+          "current_sha256": "0835cacb7b6b0d8c83bd63f6ed88d8b2a6511560271e70c5f8174bada758d357",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlb.py": {
+          "old_sha256": "bbbdc3665cadeed1b6267d0d12117317ec638d54433496c97b0c57073e34245c",
+          "current_sha256": "7c2a577bb69eca5b82b3813e2b2676ce6216c5655e34740064e081c2b8266397",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlbwrapper.py": {
+          "old_sha256": "16ca06671422cff5e1599a279891eca124b6b39d9a52263a7bf42cbc52e1dd35",
+          "current_sha256": "a99b96220d6544dac92988922f987914b14e1b8ad230b31a21a789c733572edf",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tools/audit_cases.py": {
+          "old_sha256": "7be4b911d99cd09b72f462414a6a9e6626632e64aa89f468a3bc1be7af511a2c",
+          "current_sha256": "bc927be6bd0989d0ed1aa18c7e3b584404b9b6e7ff56cdc9813e9c349bdfeff7",
+          "kind": "inventory-metadata-only",
+          "reason": "Only category/review output metadata changed; original source hash-matched to run snapshot. AST check logic equivalence verified after removing only those fields."
+        },
+        "tools/verify_delivery.py": {
+          "old_sha256": "5537bba7f996195d5f37b597200ebb2ac093e81207d01210c9c51e16649a944c",
+          "current_sha256": "3ded03a4a6bd9c85d08762eab28d84aa0fb17bbc68048714dbb76f72b28f8b7e",
+          "kind": "offline-delivery-check",
+          "reason": "Offline post-regression verifier; absent from run.py/conftest/selected test dependency closure."
+        }
+      }
+    },
+    "llptw": {
+      "run": "soundness-final-llptw-01",
+      "command": [
+        "/home/xyl/xreactor/output/toffee-migration/venv/bin/toffee",
+        "run",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/tests/l2/test_llptw.py",
+        "--workers",
+        "1",
+        "--output",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/results/soundness-final-llptw-01",
+        "--export-coverage-json",
+        "--native-coverage-tool",
+        "/opt/verilator-5.052/bin/verilator_coverage"
+      ],
+      "dependencies": [
+        "conftest.py",
+        "manifest/pma-reset-reference.json",
+        "manifest/toolchain.json",
+        "mmuverify/__init__.py",
+        "mmuverify/common/__init__.py",
+        "mmuverify/common/dut.py",
+        "mmuverify/common/runtime.py",
+        "mmuverify/l2/__init__.py",
+        "mmuverify/l2/bitmap.py",
+        "mmuverify/l2/coverage.py",
+        "mmuverify/l2/hptw.py",
+        "mmuverify/l2/l2pf.py",
+        "mmuverify/l2/l2tlb.py",
+        "mmuverify/l2/l2tlbwrapper.py",
+        "mmuverify/l2/llptw.py",
+        "mmuverify/l2/missqueue.py",
+        "mmuverify/l2/pmp.py",
+        "mmuverify/l2/ptw.py",
+        "mmuverify/l2/ptw_walker.py",
+        "mmuverify/l2/ptwcache.py",
+        "mmuverify/tlb/__init__.py",
+        "mmuverify/tlb/coverage.py",
+        "mmuverify/tlb/env.py",
+        "mmuverify/tlb/model.py",
+        "mmuverify/tlbfa/__init__.py",
+        "mmuverify/tlbfa/coverage.py",
+        "mmuverify/tlbfa/env.py",
+        "mmuverify/tlbfa/model.py",
+        "mmuverify/tlbn/__init__.py",
+        "mmuverify/tlbn/env.py",
+        "mmuverify/wrapper/__init__.py",
+        "mmuverify/wrapper/coverage.py",
+        "mmuverify/wrapper/env.py",
+        "mmuverify/wrapper/model.py",
+        "pytest.ini",
+        "tests/l2/test_llptw.py",
+        "tools/run.py"
+      ],
+      "differences": {
+        "tests/l2/soundness_helpers.py": {
+          "old_sha256": "fc5763caa6e65641be10957d188a23e65b68a4e1254ccd8d6f686e399db5ceca",
+          "current_sha256": "0835cacb7b6b0d8c83bd63f6ed88d8b2a6511560271e70c5f8174bada758d357",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlb.py": {
+          "old_sha256": "bbbdc3665cadeed1b6267d0d12117317ec638d54433496c97b0c57073e34245c",
+          "current_sha256": "7c2a577bb69eca5b82b3813e2b2676ce6216c5655e34740064e081c2b8266397",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlbwrapper.py": {
+          "old_sha256": "16ca06671422cff5e1599a279891eca124b6b39d9a52263a7bf42cbc52e1dd35",
+          "current_sha256": "a99b96220d6544dac92988922f987914b14e1b8ad230b31a21a789c733572edf",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tools/audit_cases.py": {
+          "old_sha256": "7be4b911d99cd09b72f462414a6a9e6626632e64aa89f468a3bc1be7af511a2c",
+          "current_sha256": "bc927be6bd0989d0ed1aa18c7e3b584404b9b6e7ff56cdc9813e9c349bdfeff7",
+          "kind": "inventory-metadata-only",
+          "reason": "Only category/review output metadata changed; original source hash-matched to run snapshot. AST check logic equivalence verified after removing only those fields."
+        },
+        "tools/verify_delivery.py": {
+          "old_sha256": "5537bba7f996195d5f37b597200ebb2ac093e81207d01210c9c51e16649a944c",
+          "current_sha256": "3ded03a4a6bd9c85d08762eab28d84aa0fb17bbc68048714dbb76f72b28f8b7e",
+          "kind": "offline-delivery-check",
+          "reason": "Offline post-regression verifier; absent from run.py/conftest/selected test dependency closure."
+        }
+      }
+    },
+    "l2tlb": {
+      "run": "soundness-final-l2tlb-02",
+      "command": [
+        "/home/xyl/xreactor/output/toffee-migration/venv/bin/toffee",
+        "run",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/tests/l2/test_l2tlb.py",
+        "--workers",
+        "1",
+        "--output",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/results/soundness-final-l2tlb-02",
+        "--export-coverage-json",
+        "--native-coverage-tool",
+        "/opt/verilator-5.052/bin/verilator_coverage"
+      ],
+      "dependencies": [
+        "conftest.py",
+        "manifest/pma-reset-reference.json",
+        "manifest/toolchain.json",
+        "mmuverify/__init__.py",
+        "mmuverify/common/__init__.py",
+        "mmuverify/common/checks.py",
+        "mmuverify/common/dut.py",
+        "mmuverify/common/runtime.py",
+        "mmuverify/l2/__init__.py",
+        "mmuverify/l2/bitmap.py",
+        "mmuverify/l2/coverage.py",
+        "mmuverify/l2/hptw.py",
+        "mmuverify/l2/l2pf.py",
+        "mmuverify/l2/l2tlb.py",
+        "mmuverify/l2/l2tlbwrapper.py",
+        "mmuverify/l2/llptw.py",
+        "mmuverify/l2/missqueue.py",
+        "mmuverify/l2/pmp.py",
+        "mmuverify/l2/ptw.py",
+        "mmuverify/l2/ptw_walker.py",
+        "mmuverify/l2/ptwcache.py",
+        "mmuverify/tlb/__init__.py",
+        "mmuverify/tlb/coverage.py",
+        "mmuverify/tlb/env.py",
+        "mmuverify/tlb/model.py",
+        "mmuverify/tlbfa/__init__.py",
+        "mmuverify/tlbfa/coverage.py",
+        "mmuverify/tlbfa/env.py",
+        "mmuverify/tlbfa/model.py",
+        "mmuverify/tlbn/__init__.py",
+        "mmuverify/tlbn/env.py",
+        "mmuverify/wrapper/__init__.py",
+        "mmuverify/wrapper/coverage.py",
+        "mmuverify/wrapper/env.py",
+        "mmuverify/wrapper/model.py",
+        "pytest.ini",
+        "tests/__init__.py",
+        "tests/l2/__init__.py",
+        "tests/l2/soundness_helpers.py",
+        "tests/l2/test_l2tlb.py",
+        "tools/run.py"
+      ],
+      "differences": {
+        "tools/audit_cases.py": {
+          "old_sha256": "7be4b911d99cd09b72f462414a6a9e6626632e64aa89f468a3bc1be7af511a2c",
+          "current_sha256": "bc927be6bd0989d0ed1aa18c7e3b584404b9b6e7ff56cdc9813e9c349bdfeff7",
+          "kind": "inventory-metadata-only",
+          "reason": "Only category/review output metadata changed; original source hash-matched to run snapshot. AST check logic equivalence verified after removing only those fields."
+        },
+        "tools/verify_delivery.py": {
+          "old_sha256": "5537bba7f996195d5f37b597200ebb2ac093e81207d01210c9c51e16649a944c",
+          "current_sha256": "3ded03a4a6bd9c85d08762eab28d84aa0fb17bbc68048714dbb76f72b28f8b7e",
+          "kind": "offline-delivery-check",
+          "reason": "Offline post-regression verifier; absent from run.py/conftest/selected test dependency closure."
+        }
+      }
+    },
+    "l2tlbwrapper": {
+      "run": "soundness-final-l2tlbwrapper-02",
+      "command": [
+        "/home/xyl/xreactor/output/toffee-migration/venv/bin/toffee",
+        "run",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/tests/l2/test_l2tlbwrapper.py",
+        "--workers",
+        "1",
+        "--output",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/results/soundness-final-l2tlbwrapper-02",
+        "--export-coverage-json",
+        "--native-coverage-tool",
+        "/opt/verilator-5.052/bin/verilator_coverage"
+      ],
+      "dependencies": [
+        "conftest.py",
+        "manifest/pma-reset-reference.json",
+        "manifest/toolchain.json",
+        "mmuverify/__init__.py",
+        "mmuverify/common/__init__.py",
+        "mmuverify/common/checks.py",
+        "mmuverify/common/dut.py",
+        "mmuverify/common/runtime.py",
+        "mmuverify/l2/__init__.py",
+        "mmuverify/l2/bitmap.py",
+        "mmuverify/l2/coverage.py",
+        "mmuverify/l2/hptw.py",
+        "mmuverify/l2/l2pf.py",
+        "mmuverify/l2/l2tlb.py",
+        "mmuverify/l2/l2tlbwrapper.py",
+        "mmuverify/l2/llptw.py",
+        "mmuverify/l2/missqueue.py",
+        "mmuverify/l2/pmp.py",
+        "mmuverify/l2/ptw.py",
+        "mmuverify/l2/ptw_walker.py",
+        "mmuverify/l2/ptwcache.py",
+        "mmuverify/tlb/__init__.py",
+        "mmuverify/tlb/coverage.py",
+        "mmuverify/tlb/env.py",
+        "mmuverify/tlb/model.py",
+        "mmuverify/tlbfa/__init__.py",
+        "mmuverify/tlbfa/coverage.py",
+        "mmuverify/tlbfa/env.py",
+        "mmuverify/tlbfa/model.py",
+        "mmuverify/tlbn/__init__.py",
+        "mmuverify/tlbn/env.py",
+        "mmuverify/wrapper/__init__.py",
+        "mmuverify/wrapper/coverage.py",
+        "mmuverify/wrapper/env.py",
+        "mmuverify/wrapper/model.py",
+        "pytest.ini",
+        "tests/__init__.py",
+        "tests/l2/__init__.py",
+        "tests/l2/soundness_helpers.py",
+        "tests/l2/test_l2tlbwrapper.py",
+        "tools/run.py"
+      ],
+      "differences": {
+        "tools/audit_cases.py": {
+          "old_sha256": "7be4b911d99cd09b72f462414a6a9e6626632e64aa89f468a3bc1be7af511a2c",
+          "current_sha256": "bc927be6bd0989d0ed1aa18c7e3b584404b9b6e7ff56cdc9813e9c349bdfeff7",
+          "kind": "inventory-metadata-only",
+          "reason": "Only category/review output metadata changed; original source hash-matched to run snapshot. AST check logic equivalence verified after removing only those fields."
+        },
+        "tools/verify_delivery.py": {
+          "old_sha256": "5537bba7f996195d5f37b597200ebb2ac093e81207d01210c9c51e16649a944c",
+          "current_sha256": "3ded03a4a6bd9c85d08762eab28d84aa0fb17bbc68048714dbb76f72b28f8b7e",
+          "kind": "offline-delivery-check",
+          "reason": "Offline post-regression verifier; absent from run.py/conftest/selected test dependency closure."
+        }
+      }
+    },
+    "checker-selftest": {
+      "run": "soundness-final-checker-selftest-01",
+      "command": [
+        "/home/xyl/xreactor/output/toffee-migration/venv/bin/toffee",
+        "run",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/tests/test_verification_checks.py",
+        "--workers",
+        "1",
+        "--output",
+        "/home/xyl/kmh-v3-test/memblock-hash/mmu/results/soundness-final-checker-selftest-01",
+        "--export-coverage-json",
+        "--native-coverage-tool",
+        "/opt/verilator-5.052/bin/verilator_coverage"
+      ],
+      "dependencies": [
+        "conftest.py",
+        "manifest/pma-reset-reference.json",
+        "manifest/toolchain.json",
+        "mmuverify/__init__.py",
+        "mmuverify/common/__init__.py",
+        "mmuverify/common/checks.py",
+        "mmuverify/common/dut.py",
+        "mmuverify/l2/__init__.py",
+        "mmuverify/l2/bitmap.py",
+        "mmuverify/l2/coverage.py",
+        "mmuverify/l2/hptw.py",
+        "mmuverify/l2/l2pf.py",
+        "mmuverify/l2/l2tlb.py",
+        "mmuverify/l2/l2tlbwrapper.py",
+        "mmuverify/l2/llptw.py",
+        "mmuverify/l2/missqueue.py",
+        "mmuverify/l2/pmp.py",
+        "mmuverify/l2/ptw.py",
+        "mmuverify/l2/ptw_walker.py",
+        "mmuverify/l2/ptwcache.py",
+        "mmuverify/tlb/__init__.py",
+        "mmuverify/tlb/coverage.py",
+        "mmuverify/tlb/env.py",
+        "mmuverify/tlb/model.py",
+        "mmuverify/tlbfa/__init__.py",
+        "mmuverify/tlbfa/coverage.py",
+        "mmuverify/tlbfa/env.py",
+        "mmuverify/tlbfa/model.py",
+        "mmuverify/tlbn/__init__.py",
+        "mmuverify/tlbn/env.py",
+        "mmuverify/wrapper/__init__.py",
+        "mmuverify/wrapper/coverage.py",
+        "mmuverify/wrapper/env.py",
+        "mmuverify/wrapper/model.py",
+        "pytest.ini",
+        "tests/test_verification_checks.py",
+        "tools/audit_cases.py",
+        "tools/run.py"
+      ],
+      "differences": {
+        "tests/l2/soundness_helpers.py": {
+          "old_sha256": "fc5763caa6e65641be10957d188a23e65b68a4e1254ccd8d6f686e399db5ceca",
+          "current_sha256": "0835cacb7b6b0d8c83bd63f6ed88d8b2a6511560271e70c5f8174bada758d357",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlb.py": {
+          "old_sha256": "bbbdc3665cadeed1b6267d0d12117317ec638d54433496c97b0c57073e34245c",
+          "current_sha256": "7c2a577bb69eca5b82b3813e2b2676ce6216c5655e34740064e081c2b8266397",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tests/l2/test_l2tlbwrapper.py": {
+          "old_sha256": "16ca06671422cff5e1599a279891eca124b6b39d9a52263a7bf42cbc52e1dd35",
+          "current_sha256": "a99b96220d6544dac92988922f987914b14e1b8ad230b31a21a789c733572edf",
+          "kind": "unselected-unimported-case",
+          "reason": "Late ISA controls belong to top suites rerun as -02. File outside this run selector and conservative import closure."
+        },
+        "tools/audit_cases.py": {
+          "old_sha256": "7be4b911d99cd09b72f462414a6a9e6626632e64aa89f468a3bc1be7af511a2c",
+          "current_sha256": "bc927be6bd0989d0ed1aa18c7e3b584404b9b6e7ff56cdc9813e9c349bdfeff7",
+          "kind": "inventory-metadata-only",
+          "reason": "Only category/review output metadata changed; original source hash-matched to run snapshot. AST check logic equivalence verified after removing only those fields."
+        },
+        "tools/verify_delivery.py": {
+          "old_sha256": "5537bba7f996195d5f37b597200ebb2ac093e81207d01210c9c51e16649a944c",
+          "current_sha256": "3ded03a4a6bd9c85d08762eab28d84aa0fb17bbc68048714dbb76f72b28f8b7e",
+          "kind": "offline-delivery-check",
+          "reason": "Offline post-regression verifier; absent from run.py/conftest/selected test dependency closure."
+        }
+      }
+    }
+  },
+  "limits": "Conservative local static import closure includes all conftest fixture imports; not a general dynamic import proof. Original run snapshots retained."
+}

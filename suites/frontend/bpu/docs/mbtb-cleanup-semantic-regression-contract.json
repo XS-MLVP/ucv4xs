@@ -1,0 +1,19 @@
+{
+  "format": "existing-human-requirement-before-case-migration",
+  "feature": "BPU-MBTB-026",
+  "human_event": "清理重复预测记录时，另一分支的完整目标纠正仍按自己的身份完成；清理只能删除重复版本，不能吞掉邻居或幸存版本。",
+  "semantic_axes": {
+    "neighbor_lifetime": ["neighbor-established-before-correction", "neighbor-arrives-with-correction"],
+    "clear_lifetime": ["clear-still-pending", "clear-already-served"],
+    "identity_boundary": ["zero-tag-only", "zero-position-only", "nonzero-identity"]
+  },
+  "obligations": ["real-duplicate-and-independent-neighbor", "complete-feedback-accepted", "clear-and-correction-both-preserved", "survivor-and-neighbor-consumers", "reverse-consumers", "originals-and-foreign-records-preserved"],
+  "existing_contract_unchanged": true,
+  "old_execution": "一个pytest项中串行运行48个程序：4份物理副本乘12种语义组合。旧物理cross为144bin，不能把其全满等同于集成BPU已有同场景见证。",
+  "new_execution": "生产默认12个独立语义程序，physical保留全部48个原程序；旧144bin分母不变，只在physical要求全满。另收集72个reached/checked义务。",
+  "gap_evidence": "前一批12个双目标纠正程序对Main72个缺失源码行的8个生产者均无见证；旧nonzero-control独立复验可见证其中一个生产者的11个行键。这说明普通纠正与重复清理的来源寿命不能混为同一功能场景。未见证不等于不可达。",
+  "independence": "沿用从reset持续推进的MbtbSemanticChecker及现有完整反馈、双效果、保留前后状态和正反向公共读取比较；不以部分信号或只看终态代替参考判断。",
+  "non_claims": "不删原生分母，不证明集成FTQ可达，不改变029联合零键普通FAIL，不声称同一服务口的延期已验证。",
+  "new_feature_IDs": 0,
+  "RTL_DUT_SDK_changes": false
+}

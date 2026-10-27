@@ -1,0 +1,24 @@
+{
+  "format": "semantic-requirement-before-production-normalization",
+  "version": 1,
+  "title": "仍有效的冷来源晚到时，方向初始化必须跟随实际保留的分支主人",
+  "event": "先发布真正未命中的旧预测，再沿更年轻的真实来源学习同一间接分支和条件后继；旧来源始终存活，随后按两种解析顺序返回不同目标。",
+  "effect": "即使旧来源重新提议分配，条目与方向仍属于同一个实际保留的逻辑分支；未执行的条件后继保持弱不跳或强不跳，不能因较早分支的初始化转为跳转。",
+  "preservation": "完整原始metadata不被改写，所有真实S1均计数，每次准备和发射都验证来源仍有效；不以保存Python对象替代资格，不推断后端提交。",
+  "observation": "独立MainBTB/LRU/BPU/PHR模型、完整原始输入接纳、被动保留状态、条目和方向真实服务及fresh消费者分段比较。首个失配即普通FAIL，未抵达的消费者无checked信用。",
+  "crosses": {
+    "arrival": ["old-then-young", "young-then-old"],
+    "visibility": ["serviced-between", "retained-under-reads"],
+    "unexecuted_sibling": ["weak-not-taken", "strong-not-taken"]
+  },
+  "evidence_before_normalization": "results/main_cold_original_lifetime_stage_20261018/qualification-analysis.json",
+  "observed_prototype": "8个来源有效的用例串行/并行均普通FAIL；6次已观察的实际方向服务写到未执行后继。该原型路径未计功能覆盖。",
+  "source_gap": "最新完整测量中Main写缓冲仍有93个零行；本组验证跨原提议主人和实际保留主人的语义，不声称执行或关闭全部93行。",
+  "failure_contract": "首个异常、异常点和原状态不可被后续采样或清理错误覆盖；读窗口清理必须在所有monitor关闭前完成。",
+  "scope": "16窗口有界BPU输入合同，不证明完整FTQ或后端可达性，不修改RTL，不豁免既有失败。",
+  "features": ["BPU-INT-093", "BPU-INT-095", "BPU-MBTB-028"],
+  "new_feature_IDs": 0,
+  "physical_coordinate_enumeration": false,
+  "new_predictor_reference_algorithms": 0,
+  "SDK_RTL_DUT_changes": false
+}

@@ -1,0 +1,379 @@
+{
+  "format": "xreactor-functional-coverage",
+  "version": 2,
+  "coverage": 100.0,
+  "covered": true,
+  "groups": [
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "bitmap",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "event",
+            "source": "event",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "cache_hit",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "cache_hit"
+                  ]
+                }
+              },
+              {
+                "name": "cache_miss",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "cache_miss"
+                  ]
+                }
+              },
+              {
+                "name": "flush",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "flush"
+                  ]
+                }
+              },
+              {
+                "name": "multi",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "multi"
+                  ]
+                }
+              },
+              {
+                "name": "pmp_fail",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "pmp_fail"
+                  ]
+                }
+              },
+              {
+                "name": "refill",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "refill"
+                  ]
+                }
+              },
+              {
+                "name": "wakeup",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "wakeup"
+                  ]
+                }
+              }
+            ],
+            "description": "bitmap 检查的缓存命中/缺失、PMP 故障、回填、wakeup、flush 和多请求。"
+          },
+          {
+            "name": "level",
+            "source": "level",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "0",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    0
+                  ]
+                }
+              },
+              {
+                "name": "1",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    1
+                  ]
+                }
+              },
+              {
+                "name": "2",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    2
+                  ]
+                }
+              },
+              {
+                "name": "3",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    3
+                  ]
+                }
+              }
+            ],
+            "description": "页表级别决定 effective PPN 的 VPN 合并方式。"
+          },
+          {
+            "name": "result",
+            "source": "result",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "fail",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "fail"
+                  ]
+                }
+              },
+              {
+                "name": "pass",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "pass"
+                  ]
+                }
+              }
+            ],
+            "description": "bitmap 检查通过或失败。"
+          }
+        ],
+        "crosses": [],
+        "description": "Bitmap 位图检查语义。"
+      },
+      "schema_digest": "3fe575aa9d0b90409750ff606e1a1e70327b84da7e681b70bb26b86448f8b679",
+      "instance": "bitmap",
+      "illegal_policy": "raise",
+      "samples": 38,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 38,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "cache_hit": 24,
+            "cache_miss": 1,
+            "flush": 1,
+            "multi": 1,
+            "pmp_fail": 1,
+            "refill": 1,
+            "wakeup": 9
+          },
+          "provenance": {
+            "cache_hit": {
+              "f0b434f4a8094cc9a18d253887971a48": {
+                "count": 24,
+                "first": null,
+                "last": null
+              }
+            },
+            "cache_miss": {
+              "f0b434f4a8094cc9a18d253887971a48": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "refill": {
+              "f0b434f4a8094cc9a18d253887971a48": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "pmp_fail": {
+              "f0b434f4a8094cc9a18d253887971a48": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "multi": {
+              "f0b434f4a8094cc9a18d253887971a48": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "flush": {
+              "f0b434f4a8094cc9a18d253887971a48": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "wakeup": {
+              "f0b434f4a8094cc9a18d253887971a48": {
+                "count": 9,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "event",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 38,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "0": 23,
+            "1": 5,
+            "2": 5,
+            "3": 5
+          },
+          "provenance": {
+            "0": {
+              "f0b434f4a8094cc9a18d253887971a48": {
+                "count": 23,
+                "first": null,
+                "last": null
+              }
+            },
+            "1": {
+              "f0b434f4a8094cc9a18d253887971a48": {
+                "count": 5,
+                "first": null,
+                "last": null
+              }
+            },
+            "2": {
+              "f0b434f4a8094cc9a18d253887971a48": {
+                "count": 5,
+                "first": null,
+                "last": null
+              }
+            },
+            "3": {
+              "f0b434f4a8094cc9a18d253887971a48": {
+                "count": 5,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "level",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 38,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "fail": 13,
+            "pass": 25
+          },
+          "provenance": {
+            "fail": {
+              "f0b434f4a8094cc9a18d253887971a48": {
+                "count": 13,
+                "first": null,
+                "last": null
+              }
+            },
+            "pass": {
+              "f0b434f4a8094cc9a18d253887971a48": {
+                "count": 25,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "result",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "f0b434f4a8094cc9a18d253887971a48": {
+          "run_id": "f0b434f4a8094cc9a18d253887971a48",
+          "instance": "bitmap",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "f0b434f4a8094cc9a18d253887971a48",
+      "snapshot_id": "46f65e67d4e2c1e55909af2b7b91c45e4417b695acbd4f754e77a3f22a9d3daf"
+    }
+  ]
+}

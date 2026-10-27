@@ -1,0 +1,1955 @@
+{
+  "format": "xreactor-functional-coverage",
+  "version": 2,
+  "coverage": 100.0,
+  "covered": true,
+  "groups": [
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "wrapper_replace",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "plru_update_source",
+            "source": "plru_update_source",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "read_hit",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "read_hit"
+                  ]
+                }
+              },
+              {
+                "name": "refill",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "refill"
+                  ]
+                }
+              }
+            ],
+            "description": "PLRU 状态由回填 way 或读命中 way 更新。"
+          },
+          {
+            "name": "replacement_timing",
+            "source": "replacement_timing",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "normal",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "normal"
+                  ]
+                }
+              },
+              {
+                "name": "not_applicable",
+                "kind": "ignore",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    -1
+                  ]
+                }
+              },
+              {
+                "name": "same_cycle_lookup",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "same_cycle_lookup"
+                  ]
+                }
+              }
+            ],
+            "description": "普通回填，以及与查找同拍发生的回填。"
+          },
+          {
+            "name": "victim_state",
+            "source": "victim_state",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "invalid",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "invalid"
+                  ]
+                }
+              },
+              {
+                "name": "not_applicable",
+                "kind": "ignore",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    -1
+                  ]
+                }
+              },
+              {
+                "name": "valid",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "valid"
+                  ]
+                }
+              }
+            ],
+            "description": "替换时 victim 原本无效（首次填充或淘汰后）还是已有有效翻译。"
+          },
+          {
+            "name": "victim_way",
+            "source": "victim_way",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "0",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    0
+                  ]
+                }
+              },
+              {
+                "name": "1",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    1
+                  ]
+                }
+              },
+              {
+                "name": "10",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    10
+                  ]
+                }
+              },
+              {
+                "name": "11",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    11
+                  ]
+                }
+              },
+              {
+                "name": "12",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    12
+                  ]
+                }
+              },
+              {
+                "name": "13",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    13
+                  ]
+                }
+              },
+              {
+                "name": "14",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    14
+                  ]
+                }
+              },
+              {
+                "name": "15",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    15
+                  ]
+                }
+              },
+              {
+                "name": "16",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    16
+                  ]
+                }
+              },
+              {
+                "name": "17",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    17
+                  ]
+                }
+              },
+              {
+                "name": "18",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    18
+                  ]
+                }
+              },
+              {
+                "name": "19",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    19
+                  ]
+                }
+              },
+              {
+                "name": "2",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    2
+                  ]
+                }
+              },
+              {
+                "name": "20",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    20
+                  ]
+                }
+              },
+              {
+                "name": "21",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    21
+                  ]
+                }
+              },
+              {
+                "name": "22",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    22
+                  ]
+                }
+              },
+              {
+                "name": "23",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    23
+                  ]
+                }
+              },
+              {
+                "name": "24",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    24
+                  ]
+                }
+              },
+              {
+                "name": "25",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    25
+                  ]
+                }
+              },
+              {
+                "name": "26",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    26
+                  ]
+                }
+              },
+              {
+                "name": "27",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    27
+                  ]
+                }
+              },
+              {
+                "name": "28",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    28
+                  ]
+                }
+              },
+              {
+                "name": "29",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    29
+                  ]
+                }
+              },
+              {
+                "name": "3",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    3
+                  ]
+                }
+              },
+              {
+                "name": "30",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    30
+                  ]
+                }
+              },
+              {
+                "name": "31",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    31
+                  ]
+                }
+              },
+              {
+                "name": "32",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    32
+                  ]
+                }
+              },
+              {
+                "name": "33",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    33
+                  ]
+                }
+              },
+              {
+                "name": "34",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    34
+                  ]
+                }
+              },
+              {
+                "name": "35",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    35
+                  ]
+                }
+              },
+              {
+                "name": "36",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    36
+                  ]
+                }
+              },
+              {
+                "name": "37",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    37
+                  ]
+                }
+              },
+              {
+                "name": "38",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    38
+                  ]
+                }
+              },
+              {
+                "name": "39",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    39
+                  ]
+                }
+              },
+              {
+                "name": "4",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    4
+                  ]
+                }
+              },
+              {
+                "name": "40",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    40
+                  ]
+                }
+              },
+              {
+                "name": "41",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    41
+                  ]
+                }
+              },
+              {
+                "name": "42",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    42
+                  ]
+                }
+              },
+              {
+                "name": "43",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    43
+                  ]
+                }
+              },
+              {
+                "name": "44",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    44
+                  ]
+                }
+              },
+              {
+                "name": "45",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    45
+                  ]
+                }
+              },
+              {
+                "name": "46",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    46
+                  ]
+                }
+              },
+              {
+                "name": "47",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    47
+                  ]
+                }
+              },
+              {
+                "name": "5",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    5
+                  ]
+                }
+              },
+              {
+                "name": "6",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    6
+                  ]
+                }
+              },
+              {
+                "name": "7",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    7
+                  ]
+                }
+              },
+              {
+                "name": "8",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    8
+                  ]
+                }
+              },
+              {
+                "name": "9",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    9
+                  ]
+                }
+              },
+              {
+                "name": "not_applicable",
+                "kind": "ignore",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    -1
+                  ]
+                }
+              }
+            ],
+            "description": "PLRU 选中的 victim way；覆盖每个 way 都被实际替换选中过。"
+          }
+        ],
+        "crosses": [],
+        "description": "TlbStorageWrapper 的 PLRU victim 选择与更新来源。"
+      },
+      "schema_digest": "dca52ccff51ceb96458d3e7d8229d22f3ce9e47e73ec263d96c33b1163087ae2",
+      "instance": "wrapper.replace",
+      "illegal_policy": "raise",
+      "samples": 294,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 294,
+          "gated": 0,
+          "ignored": 80,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "0": 9,
+            "1": 3,
+            "10": 3,
+            "11": 3,
+            "12": 3,
+            "13": 3,
+            "14": 3,
+            "15": 3,
+            "16": 6,
+            "17": 3,
+            "18": 3,
+            "19": 3,
+            "2": 3,
+            "20": 4,
+            "21": 3,
+            "22": 3,
+            "23": 3,
+            "24": 4,
+            "25": 3,
+            "26": 3,
+            "27": 3,
+            "28": 3,
+            "29": 3,
+            "3": 3,
+            "30": 3,
+            "31": 3,
+            "32": 10,
+            "33": 6,
+            "34": 7,
+            "35": 6,
+            "36": 7,
+            "37": 6,
+            "38": 7,
+            "39": 6,
+            "4": 4,
+            "40": 9,
+            "41": 6,
+            "42": 7,
+            "43": 6,
+            "44": 7,
+            "45": 6,
+            "46": 6,
+            "47": 3,
+            "5": 3,
+            "6": 3,
+            "7": 3,
+            "8": 4,
+            "9": 3,
+            "not_applicable": 80
+          },
+          "provenance": {
+            "0": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 9,
+                "first": null,
+                "last": null
+              }
+            },
+            "32": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 10,
+                "first": null,
+                "last": null
+              }
+            },
+            "16": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 6,
+                "first": null,
+                "last": null
+              }
+            },
+            "40": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 9,
+                "first": null,
+                "last": null
+              }
+            },
+            "8": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            },
+            "36": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 7,
+                "first": null,
+                "last": null
+              }
+            },
+            "24": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            },
+            "44": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 7,
+                "first": null,
+                "last": null
+              }
+            },
+            "4": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            },
+            "34": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 7,
+                "first": null,
+                "last": null
+              }
+            },
+            "20": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 4,
+                "first": null,
+                "last": null
+              }
+            },
+            "42": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 7,
+                "first": null,
+                "last": null
+              }
+            },
+            "12": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "38": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 7,
+                "first": null,
+                "last": null
+              }
+            },
+            "28": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "46": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 6,
+                "first": null,
+                "last": null
+              }
+            },
+            "2": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "33": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 6,
+                "first": null,
+                "last": null
+              }
+            },
+            "18": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "41": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 6,
+                "first": null,
+                "last": null
+              }
+            },
+            "10": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "37": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 6,
+                "first": null,
+                "last": null
+              }
+            },
+            "26": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "45": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 6,
+                "first": null,
+                "last": null
+              }
+            },
+            "6": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "35": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 6,
+                "first": null,
+                "last": null
+              }
+            },
+            "22": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "43": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 6,
+                "first": null,
+                "last": null
+              }
+            },
+            "14": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "39": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 6,
+                "first": null,
+                "last": null
+              }
+            },
+            "30": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "47": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "1": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "17": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "9": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "25": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "5": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "21": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "13": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "29": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "3": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "19": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "11": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "27": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "7": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "23": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "15": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            },
+            "31": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "victim_way",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 294,
+          "gated": 0,
+          "ignored": 80,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "invalid": 168,
+            "not_applicable": 80,
+            "valid": 46
+          },
+          "provenance": {
+            "invalid": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 168,
+                "first": null,
+                "last": null
+              }
+            },
+            "valid": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 46,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "victim_state",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 294,
+          "gated": 0,
+          "ignored": 80,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "normal": 213,
+            "not_applicable": 80,
+            "same_cycle_lookup": 1
+          },
+          "provenance": {
+            "normal": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 213,
+                "first": null,
+                "last": null
+              }
+            },
+            "same_cycle_lookup": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "replacement_timing",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 294,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "read_hit": 80,
+            "refill": 214
+          },
+          "provenance": {
+            "refill": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 214,
+                "first": null,
+                "last": null
+              }
+            },
+            "read_hit": {
+              "79e731c0d526469ea49c7d3ff0b5ba36": {
+                "count": 80,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "plru_update_source",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "79e731c0d526469ea49c7d3ff0b5ba36": {
+          "run_id": "79e731c0d526469ea49c7d3ff0b5ba36",
+          "instance": "wrapper.replace",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "79e731c0d526469ea49c7d3ff0b5ba36",
+      "snapshot_id": "8f438704d8d3dac4bcbbc6a5fe35be6a8990a9d449e569119c217e1d47428841"
+    },
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "wrapper_lookup",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "context",
+            "source": "context",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "bare_no_s2",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "bare_no_s2"
+                  ]
+                }
+              },
+              {
+                "name": "stage1_only",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "stage1_only"
+                  ]
+                }
+              },
+              {
+                "name": "stage2_only",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "stage2_only"
+                  ]
+                }
+              },
+              {
+                "name": "two_stage",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "two_stage"
+                  ]
+                }
+              }
+            ],
+            "description": "wrapper 透传的真实翻译阶段上下文。"
+          },
+          {
+            "name": "hit_way_class",
+            "source": "hit_way_class",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "high_half",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "high_half"
+                  ]
+                }
+              },
+              {
+                "name": "low_half",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "low_half"
+                  ]
+                }
+              },
+              {
+                "name": "not_applicable",
+                "kind": "ignore",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    -1
+                  ]
+                }
+              }
+            ],
+            "description": "命中 way 落在 48-way 的低半区或高半区，证明内部 way 不被 wrapper 固定。"
+          },
+          {
+            "name": "outcome",
+            "source": "outcome",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "hit",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "hit"
+                  ]
+                }
+              },
+              {
+                "name": "miss",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "miss"
+                  ]
+                }
+              }
+            ],
+            "description": "查找命中或未命中。"
+          }
+        ],
+        "crosses": [],
+        "description": "wrapper 对外查找透传结果。"
+      },
+      "schema_digest": "5316fe49ead019a6503ca58ff7c2ac674686c307c14519a7059612adf83ca133",
+      "instance": "wrapper.lookup",
+      "illegal_policy": "raise",
+      "samples": 100,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 100,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "bare_no_s2": 91,
+            "stage1_only": 1,
+            "stage2_only": 7,
+            "two_stage": 1
+          },
+          "provenance": {
+            "bare_no_s2": {
+              "fcd7de0ca97e4fd8b77dd14b18aeae1a": {
+                "count": 91,
+                "first": null,
+                "last": null
+              }
+            },
+            "stage1_only": {
+              "fcd7de0ca97e4fd8b77dd14b18aeae1a": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "stage2_only": {
+              "fcd7de0ca97e4fd8b77dd14b18aeae1a": {
+                "count": 7,
+                "first": null,
+                "last": null
+              }
+            },
+            "two_stage": {
+              "fcd7de0ca97e4fd8b77dd14b18aeae1a": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "context",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 100,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "hit": 80,
+            "miss": 20
+          },
+          "provenance": {
+            "hit": {
+              "fcd7de0ca97e4fd8b77dd14b18aeae1a": {
+                "count": 80,
+                "first": null,
+                "last": null
+              }
+            },
+            "miss": {
+              "fcd7de0ca97e4fd8b77dd14b18aeae1a": {
+                "count": 20,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "outcome",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 100,
+          "gated": 0,
+          "ignored": 20,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "high_half": 40,
+            "low_half": 40,
+            "not_applicable": 20
+          },
+          "provenance": {
+            "high_half": {
+              "fcd7de0ca97e4fd8b77dd14b18aeae1a": {
+                "count": 40,
+                "first": null,
+                "last": null
+              }
+            },
+            "low_half": {
+              "fcd7de0ca97e4fd8b77dd14b18aeae1a": {
+                "count": 40,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "hit_way_class",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "fcd7de0ca97e4fd8b77dd14b18aeae1a": {
+          "run_id": "fcd7de0ca97e4fd8b77dd14b18aeae1a",
+          "instance": "wrapper.lookup",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "fcd7de0ca97e4fd8b77dd14b18aeae1a",
+      "snapshot_id": "d78078ee2c21f56e1330812611cf69e45c6b366820c3f5bc17e1d343b8f46cae"
+    },
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "wrapper_fence",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "fence_effect",
+            "source": "fence_effect",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "cleared",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "cleared"
+                  ]
+                }
+              },
+              {
+                "name": "survived",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "survived"
+                  ]
+                }
+              }
+            ],
+            "description": "失效目标被清除、非目标保留。"
+          },
+          {
+            "name": "fence_kind",
+            "source": "fence_kind",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "addr_asid",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "addr_asid"
+                  ]
+                }
+              },
+              {
+                "name": "all_all",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "all_all"
+                  ]
+                }
+              },
+              {
+                "name": "hfenceg",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "hfenceg"
+                  ]
+                }
+              },
+              {
+                "name": "hfencev",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "hfencev"
+                  ]
+                }
+              }
+            ],
+            "description": "wrapper 对普通/虚拟化失效的透传。"
+          }
+        ],
+        "crosses": [],
+        "description": "wrapper 失效透传语义。"
+      },
+      "schema_digest": "7fec9e8d5d9d9d23e96fbb6ef6e09c53722bd2ceffd4f7f3f27eabc3e3dd3c5f",
+      "instance": "wrapper.fence",
+      "illegal_policy": "raise",
+      "samples": 10,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 10,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 2,
+          "unknown": 0,
+          "counts": {
+            "addr_asid": 2,
+            "all_all": 1,
+            "hfenceg": 3,
+            "hfencev": 2
+          },
+          "provenance": {
+            "all_all": {
+              "2e10c95ea57a47f7bfe320b4da373826": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "hfencev": {
+              "2e10c95ea57a47f7bfe320b4da373826": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "addr_asid": {
+              "2e10c95ea57a47f7bfe320b4da373826": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            },
+            "hfenceg": {
+              "2e10c95ea57a47f7bfe320b4da373826": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "fence_kind",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 10,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "cleared": 8,
+            "survived": 2
+          },
+          "provenance": {
+            "cleared": {
+              "2e10c95ea57a47f7bfe320b4da373826": {
+                "count": 8,
+                "first": null,
+                "last": null
+              }
+            },
+            "survived": {
+              "2e10c95ea57a47f7bfe320b4da373826": {
+                "count": 2,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "fence_effect",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "2e10c95ea57a47f7bfe320b4da373826": {
+          "run_id": "2e10c95ea57a47f7bfe320b4da373826",
+          "instance": "wrapper.fence",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "2e10c95ea57a47f7bfe320b4da373826",
+      "snapshot_id": "dd355483de817bc4d87cdc09adf11c3cfdda305a92877bbc6d088b2bc720df98"
+    },
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "wrapper_reset",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "reset_context",
+            "source": "reset_context",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "empty",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "empty"
+                  ]
+                }
+              },
+              {
+                "name": "with_valid_entries",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "with_valid_entries"
+                  ]
+                }
+              }
+            ],
+            "description": "复位清空有效条目，并把 PLRU 状态归零。"
+          }
+        ],
+        "crosses": [],
+        "description": "wrapper 复位语义。"
+      },
+      "schema_digest": "5622af9d8a25dda38c6a0c55247625c641151826d85177360e23f2888e8edaca",
+      "instance": "wrapper.reset",
+      "illegal_policy": "raise",
+      "samples": 11,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 11,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "empty": 8,
+            "with_valid_entries": 3
+          },
+          "provenance": {
+            "empty": {
+              "96c2a7ac4cec4d35abf6c4d7bc0bab6c": {
+                "count": 8,
+                "first": null,
+                "last": null
+              }
+            },
+            "with_valid_entries": {
+              "96c2a7ac4cec4d35abf6c4d7bc0bab6c": {
+                "count": 3,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "reset_context",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "96c2a7ac4cec4d35abf6c4d7bc0bab6c": {
+          "run_id": "96c2a7ac4cec4d35abf6c4d7bc0bab6c",
+          "instance": "wrapper.reset",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "96c2a7ac4cec4d35abf6c4d7bc0bab6c",
+      "snapshot_id": "750f51683f8d804839cc037e5b2ef8a98532d470a8eb77614e1c25ec6f9914b9"
+    },
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "wrapper_timing",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "response",
+            "source": "response",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "one_cycle_latency",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "one_cycle_latency"
+                  ]
+                }
+              },
+              {
+                "name": "same_cycle_suppressed",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "same_cycle_suppressed"
+                  ]
+                }
+              },
+              {
+                "name": "valid_drop",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "valid_drop"
+                  ]
+                }
+              }
+            ],
+            "description": "查找响应节拍与同拍回填屏蔽。"
+          }
+        ],
+        "crosses": [],
+        "description": "wrapper 响应时序。"
+      },
+      "schema_digest": "727a22b79c3112cdab256808697dc4f628e2bc76bf4e9ae8cda6bdcd7ab55eb8",
+      "instance": "wrapper.timing",
+      "illegal_policy": "raise",
+      "samples": 201,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 201,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "one_cycle_latency": 100,
+            "same_cycle_suppressed": 1,
+            "valid_drop": 100
+          },
+          "provenance": {
+            "one_cycle_latency": {
+              "2090ddbd582e40e2be3d9c265bb5868c": {
+                "count": 100,
+                "first": null,
+                "last": null
+              }
+            },
+            "valid_drop": {
+              "2090ddbd582e40e2be3d9c265bb5868c": {
+                "count": 100,
+                "first": null,
+                "last": null
+              }
+            },
+            "same_cycle_suppressed": {
+              "2090ddbd582e40e2be3d9c265bb5868c": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "response",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "2090ddbd582e40e2be3d9c265bb5868c": {
+          "run_id": "2090ddbd582e40e2be3d9c265bb5868c",
+          "instance": "wrapper.timing",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "2090ddbd582e40e2be3d9c265bb5868c",
+      "snapshot_id": "0e831ab8311458903460a057bd42dcdbd7d21610f043c095d4c1454d6d5452d6"
+    }
+  ]
+}

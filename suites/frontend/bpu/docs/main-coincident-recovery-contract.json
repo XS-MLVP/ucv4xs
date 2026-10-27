@@ -1,0 +1,22 @@
+{
+  "format": "human-obligation-before-implementation",
+  "title": "同拍接纳的学习不被预测恢复撤销",
+  "event": "真实原反馈在训练端口实际接纳的同一拍，外部从自己或更老的真实预测检查点恢复。",
+  "owner": "恢复拥有预测窗口及其年轻后缀；接纳的完整条目和方向学习仍拥有实际训练原件。相等PC或同一metadata编码不能替代原件身份。",
+  "effect": "同拍接纳先成为不可撤销的学习义务；恢复取消年轻预测，不清除这份已经接纳的完整记录或方向效果。尚未接纳的年轻反馈仍应被取消，不能借用此规则。",
+  "observation": "独立输入门禁比较完整原metadata与全部payload字段，训练与redirect的实际monitor tick必须相等。独立模型比较各拍完整提案、保留状态、公开SDK恰好一次服务及两个fresh消费者。",
+  "preservation": "未执行的同块条件分支保持其原弱/强not-taken计数，所有原快照保持；取消不伪造后端commit或释放旧义务。",
+  "existing_features": ["BPU-INT-005", "BPU-INT-093"],
+  "missing_from_previous_scope": "main-accepted-recovery-contract.json仅支持原学习接纳严格早于恢复；FeedbackChecker也明确拒绝同拍组合。本合同新增独立子范围，旧4个程序和旧36项覆盖义务保持。",
+  "profiles": "原来源保留/取消 × 原间接分支换目标/改为直接分支 × 未执行邻居弱NT/强NT，共8个语义程序；不枚举bank/set/way。",
+  "source_gap": {
+    "files": ["rtl/bpu/WriteBuffer_4.sv", "XiangShan/src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtbAlignBank.scala"],
+    "related_open_native_rows": 72,
+    "attribution": "同属完整记录归属和双输入生命周期的独立缺失义务；不预断这72行均由同拍组合导致，也不把通过新输入门禁当行覆盖命中。",
+    "raw_denominator_unchanged": true
+  },
+  "scope": "16窗口有界BPU输入合同；训练与恢复来源在边界前都真实有效。只在明确启用本合同的环境允许同拍；默认先后合同的拒绝保护保持。不证明完整FTQ/后端提交或任意资源满载。",
+  "implementation": "复用现有AsyncDriver训练与PulseDriver恢复并行提交；任务/收据封在env，case没有边沿、逐信号赋值或gather。",
+  "new_feature_IDs": 0,
+  "RTL_DUT_SDK_changes": false
+}

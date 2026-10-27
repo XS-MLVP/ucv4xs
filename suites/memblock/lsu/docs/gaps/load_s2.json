@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "dut": "load_s2",
+  "top": "LoadUnitS2",
+  "run": "failure-recheck-final-03",
+  "rtl_sha256": {
+    "LoadUnitS2.sv": "bf12b3a3de582b101366347bbcbcd7f4afecdd163cd4ffc2ce6e49712cd49d0a"
+  },
+  "metrics": {
+    "line_dut_only": {
+      "hit": 108,
+      "total": 108,
+      "percent": 100.0
+    },
+    "branch": {
+      "hit": 5,
+      "total": 6,
+      "percent": 83.33
+    },
+    "toggle_dut_only": {
+      "hit": 4234,
+      "total": 4280,
+      "percent": 98.93
+    },
+    "functional": {
+      "coverage": 100.0,
+      "cases": 44,
+      "checked": false,
+      "note": "Tool reports 100% declared-bin sampling; independent per-bin reached/checked completeness is not proven."
+    }
+  },
+  "uncovered": [
+    {
+      "id": "LS2-PERF-WIDTH",
+      "kind": "unreachable_structural",
+      "points": [
+        "io_perf_0_value[1..5]",
+        "io_perf_1_value[1..5]",
+        "io_perf_2_value[1..5]"
+      ],
+      "evidence": [
+        "rtl/load_s2/LoadUnitS2.sv:1134-1136 exports {5'h0, boolean_REG_1}; upper bits are literal zeros, separate from the perf3 defect"
+      ],
+      "required_supplement": false
+    },
+    {
+      "id": "LS2-PERF3-CONSTANT-ZERO",
+      "kind": "rtl_defect",
+      "points": [
+        "io_perf_3_value[0..5]",
+        "io_perf_3_value_REG*",
+        "io_perf_3_value_REG_1*"
+      ],
+      "evidence": [
+        "rtl/load_s2/LoadUnitS2.sv:549-550 troubleMaker excludes instrType[2]; :573-575 cause_6 includes troubleMaker and dcacheResp.miss",
+        "rtl/load_s2/LoadUnitS2.sv:396-397 isHwPrefetch requires instrType[2]; :865-866 perf3 samples isHwPrefetch AND cause_6 through two registers; :1137 exports it",
+        "NewLoadUnit.scala:1061,1120,1280-1286 proves the same contradictory conditions; :1266 counts raw prefetch miss separately",
+        "tests/load_s2/test_spec_prefetch_miss.py: miss=1 independently expects 1 and actually reads 0; retained ordinary FAIL"
+      ],
+      "required_supplement": true,
+      "defect_id": "LSU-HWPF-MISS-001"
+    },
+    {
+      "id": "LS2-BRANCH-INITIAL-RESET",
+      "kind": "tool_boundary",
+      "points": [
+        "LoadUnitS2.sv:977 if (reset)"
+      ],
+      "evidence": [
+        "the reset arm is inside ENABLE_INITIAL_REG_ and runs before the first test cycle"
+      ],
+      "required_supplement": false
+    }
+  ],
+  "semantic_findings": [
+    {
+      "id": "LS2-FULLFORWARD-MASK-LOGIC",
+      "finding": "fullForward requires every byte of the load mask to be covered by the forward mask union",
+      "evidence": [
+        "LoadUnitS2.sv: (~({sq}|{sb}|{unc}) & pipeIn.mask) == 0 & ~sqDataInvalid",
+        "an inverted reading makes an uncovered load look complete; the initial model was corrected and the 400-cycle random run then matched"
+      ],
+      "impact": "drives needDCacheAccess and every C5/C6/C8 replay reason",
+      "defect_claim": false
+    },
+    {
+      "id": "LS2-PERF3-DEAD",
+      "finding": "the hardware-prefetch-miss performance counter can never increment",
+      "evidence": [
+        "perf_3 = Reg2(valid & isHwPrefetch & ~kill & cause_6)",
+        "cause_6 requires troubleMaker which requires ~instrType[2]; isHwPrefetch requires instrType[2]",
+        "directed test observes 0 on a hw-prefetch miss"
+      ],
+      "impact": "Confirmed performance-event defect; no data-correctness failure claimed. RTL remains unchanged.",
+      "defect_claim": true,
+      "defect_id": "LSU-HWPF-MISS-001"
+    },
+    {
+      "id": "LS2-HWPREFETCH-CONSUMED",
+      "finding": "hardware prefetches are consumed but never forwarded to S3",
+      "evidence": [
+        "pipeOutValid = ~(kill | isHwPrefetch) & pipeIn.valid",
+        "they still drive prefetchTrain for the L1 prefetcher"
+      ],
+      "impact": "intended: prefetch train path, no ROB writeback",
+      "defect_claim": false
+    },
+    {
+      "id": "LS2-SPECIAL-NOT-TROUBLE-GATED",
+      "finding": "specialModeRequest sets cause_3 even when troubleMaker is low",
+      "evidence": [
+        "cause_3 = troubleMaker & tlbAccessResult[2] | specialModeRequest",
+        "test cause.special_mode drives specialModeRequest on a clean beat and observes cause_3"
+      ],
+      "impact": "special-mode requests always replay, including prefetches",
+      "defect_claim": false
+    }
+  ],
+  "failures": [
+    {
+      "id": "LSU-HWPF-MISS-001",
+      "node": "tests/load_s2/test_spec_prefetch_miss.py::test_hw_pf_miss_event_counts_a_real_cache_miss[1]",
+      "expected": 1,
+      "actual": 0,
+      "run": "failure-recheck-final-03"
+    }
+  ],
+  "status": "KNOWN_RTL_PERFORMANCE_DEFECT_AND_EVIDENCE_LIMITS",
+  "review": {
+    "status": "CONFIRMED_RTL_DEFECT_AND_EVIDENCE_LIMITS",
+    "acceptance_passed": false,
+    "known_rtl_defects": [
+      "LSU-HWPF-MISS-001"
+    ],
+    "historical_failures_fully_attributed": false,
+    "independent_reached_checked_complete": false,
+    "report": "docs/bug-reports-20261026/README.md",
+    "evidence": "review/failure_recheck_20261026/final-audit.json"
+  }
+}

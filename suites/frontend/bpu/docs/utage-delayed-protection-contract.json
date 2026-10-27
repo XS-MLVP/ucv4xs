@@ -1,0 +1,32 @@
+{
+  "format": "semantic-requirement-before-native-case",
+  "title": "迟到反馈的奖惩依据原预测是否正确，不能被已经翻转的当前方向追溯改判",
+  "event": "两个相反方向的短历史预测分别保留自己的真实原查询。其他反馈先翻转当前方向，原来正确的预测随后返回；再让翻转期间取得的原错误预测返回，此时当前方向已再次变回。",
+  "owner": "每份反馈只教导一次，完整索引、分支位置、匹配历史、基础预测和原预测方向均属于原始查询；保护奖惩按原预测贡献判断，方向置信度则在当前保留版本上累计。",
+  "effect": "目标原方向为T时，计数4→3→4→5；另一历史为NT时，计数3→4→3→2。首次翻转使保护1→0，迟到原正确反馈使0→1，迟到原错误反馈使1→0。不能用当前方向将奖励改成惩罚，也不能把错误原预测改成正确。",
+  "observation": "公开异步预测transfer保存真实接纳/完成及独立原读取祖先；driver发送完整原metadata。现有memory-direct monitor比较所有学习版本和1024个保护单元；迟到发送前比较当前实际保留版本，发送后比较新消费者与合法长表伴随结果。",
+  "preservation": "独立历史、未反馈保护单元、合法的长历史伴随分配和所有原查询快照保持。最终短/长消费者分别消费自己的真实版本。",
+  "scope": "独立UT的原预测反馈切点，复用已有合法分离读取/匹配上下文；不声称完整FTQ来源寿命、物理副本等价或长表PASS能解释短表缺口。",
+  "existing_feature": "BPU-UTAGE-021",
+  "event_catalog": "useful.change",
+  "gap_basis": {
+    "source_review": "results/protection-source-structure-development-20261018-v1/source-structure-review.json",
+    "short_provider_native_zero_rows": 4192,
+    "standalone": 1903,
+    "integrated": 2289,
+    "source_roles": ["counter-change", "saturation-choice", "saturation-preserve", "allocation-choice", "allocation-initialize"],
+    "missing_combination": "现有选择性奖惩程序主要逐阶段取得新来源；旧lower-hold仅证明下界时旧错误来源不下溢，没有证明当前方向相反时迟到的原正确来源应恢复保护，及恢复后原错误来源仍应失去保护。",
+    "limit": "本组合增强原反馈资格的证据，不预先承诺覆盖4192行，也不能把未访问的同语义存储副本定义成新功能。"
+  },
+  "profiles": ["serial.interleaved", "serial.finish-each", "adjacent.interleaved", "adjacent.finish-each"],
+  "pure_feasibility": "results/delayed-protection-feasibility-20261018-v1.json",
+  "reference": "复用UtageReference与ProtectionState反馈语义；新程序只声明来源、实际结果和闭式阶段预期，不增加信号级黄金算法。",
+  "source_chain": ["XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:350", "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:362", "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/BypassShadowBuffer.scala:258"],
+  "required_rejection_controls": ["拿当前方向替换原预测资格", "以原计数重新初始化而非累计当前保留值", "伪造当前版本或不检查发送前方向已翻转", "原来源重复教导或改写metadata", "另一历史或长表伴随结果丢失", "缺少任一实际学习或最终消费者"],
+  "new_predictor_reference_algorithms": 0,
+  "new_feature_IDs": 0,
+  "no_bank_set_way_enumeration": true,
+  "no_fixed_native_settling_delay": true,
+  "no_RTL_DUT_SDK_changes": true,
+  "hardware_or_functional_credit_before_DUT_execution": false
+}

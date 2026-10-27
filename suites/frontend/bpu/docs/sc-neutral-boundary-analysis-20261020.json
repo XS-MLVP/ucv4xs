@@ -1,0 +1,85 @@
+{
+  "title": "共享统计参数在上下界接收相反原意见时保持中性，不因预测槽关联改变而偏置",
+  "existing_features": ["BPU-SC-005", "BPU-SC-014"],
+  "prior_gap": "SC-014原合同已保留上下界排列不变性的专属DUT证据。原冷态抵消与单分支饱和分别通过，不能证明二者组合。该功能义务不是336个受约束SC写缓冲零行的归因。",
+  "design_precedes_implementation": {
+    "historical_contract": "results/instruction-confidence-development-20261019-v1/sc-neutral-boundary-contract.json",
+    "read_via": "results/current/evidence-index.json",
+    "original_contract_is_archived_not_a_live_run": true
+  },
+  "event": "两个不同条件分支共享五家族参数和同一bias特征；在正或负权重边界，两条由原低置信来源取得资格的相反结果同拍返回，应先抵消再保留，而非逐票限幅或用当前置信度取消一票。",
+  "legality": "实际执行前缀固定位置1不跳转、位置4跳转；只交换原预测槽0/1与两条分支的关联，不交换执行次序。位置8/12未执行后缀和另一窗口保持。",
+  "independent_reference": {
+    "model": "bpuverify/sc/model/neutral_boundary.py",
+    "dependencies": ["dataclasses", "bpuverify.sc.transaction.types"],
+    "method": "显式六位有符号上下界、净票数与阈值闭式公式；不以DUT读值或周期模型状态生成金值。",
+    "discrimination": "每个边界先用独立冷原件到达并保持两次；双反馈后用32份fresh反向原件学习。第31和32次的五家族符号、完整定义metadata及阈值共同区分一单位偏置，不能只比较合计方向。"
+  },
+  "implementation": {
+    "layers": ["model", "checker", "coverage", "env", "case"],
+    "test": "tests/sc/testcase/test_neutral_boundary.py",
+    "existing_agent_driver_monitor_reused": true,
+    "case_contains_no_edge_pin_wait_or_asyncio_gather": true,
+    "coverage_credit_only_after_complete_program_and_source_ledger": true
+  },
+  "qualification": "results/sc-neutral-boundary-native-20261020-v1/qualification-analysis.json",
+  "executions": {
+    "main": {"PASS": 1278},
+    "SC_DUT": {"PASS": 52},
+    "TAGE_native_pipeline": {"PASS": 1},
+    "pure_SC_TAGE": {"PASS": 1225},
+    "complete_framework_gates": {"PASS": 994},
+    "new_semantic_programs": {"PASS": 4},
+    "main_elapsed_seconds": 136.9267111606896,
+    "gate_elapsed_seconds": 281.41872992552817,
+    "new_full_regression": false
+  },
+  "semantic_evidence": {
+    "profiles": ["lower.original-slots", "lower.exchanged-slots", "upper.original-slots", "upper.exchanged-slots"],
+    "reached": 40,
+    "checked": 40,
+    "denominator": 40,
+    "designated_original_lifetimes_consumed_once": 266,
+    "exact_crossing_consumers": 8,
+    "all_five_families_compared": true,
+    "legacy_cold_cancellation_bins_preserved_and_required": 4,
+    "pure_partition_native_inputs": 0,
+    "pure_partition_functional_groups": 0
+  },
+  "TAGE_pure_gate_repair": {
+    "cause": "只读学习预览合法使用stdlib copy，旧导入白名单漏列它。",
+    "test": "tests/tage/scoreboard/test_semantic_model.py::test_algorithm_has_no_signal_driver_or_old_partial_model_dependency",
+    "model_tests_PASS": 829,
+    "native_pipeline_PASS": 1,
+    "algorithm_unchanged": true,
+    "historical_failure_preserved": true,
+    "not_an_RTL_fix": true
+  },
+  "native_coverage": {
+    "new_rows": {"sc": 0, "tage": 0},
+    "SC_cumulative_hit": 3145,
+    "SC_denominator": 3481,
+    "SC_missing": 336,
+    "all_module_missing": 10761,
+    "same_DUT_build_as_original_full": true,
+    "access": "MEM_DIRECT",
+    "VPI": false,
+    "denominators_removed": 0,
+    "local_or_standalone_PASS_is_not_full_BPU_FTQ_proof": true
+  },
+  "collection": {"before": 29470, "after": 29573, "added": 103, "removed": 0},
+  "definitions": {"identities": 353, "new_identities": 0, "old_contracts_unchanged": true, "extended": ["BPU-SC-005", "BPU-SC-014"]},
+  "retention": {
+    "receipt": "results/current/sc-neutral-boundary-retention-completed.json",
+    "deleted_files": 217,
+    "reclaimed_allocated_bytes": 168755200,
+    "remaining_results_allocated_bytes_at_cleanup": 121950208,
+    "cause_and_reproduction_preserved": true,
+    "old_native_coverage_and_waves_not_archived": true,
+    "full_baseline_fields_and_cumulative_native_unchanged": true
+  },
+  "remaining": "最大Ahead集成缺口4043行仍有既有六窗口程序的准备阶段FAIL；不能再称缺case，也不能换PC躲开旧差异。继续按真实来源、合格学习、可区分新消费者分析最早语义不一致及其他开放优先级，不枚举物理副本。既有UTAGE跨指令计数及持久性等普通FAIL保留。",
+  "RTL_DUT_SDK_unchanged": true,
+  "new_XFAIL_or_skip": 0,
+  "goal_complete": false
+}

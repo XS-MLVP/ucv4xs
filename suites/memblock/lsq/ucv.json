@@ -1,0 +1,165 @@
+{
+  "schema": 1,
+  "suite": "lsq",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "freelist_rar": {
+      "top": "FreeList",
+      "export_name": "FreeListRarDut"
+    },
+    "freelist_raw": {
+      "top": "FreeList_1",
+      "export_name": "FreeListRawDut"
+    },
+    "freelist_replay": {
+      "top": "FreeList_2",
+      "export_name": "FreeListReplayDut"
+    },
+    "freelist_uncache": {
+      "top": "FreeList_3",
+      "export_name": "FreeListUncacheDut"
+    },
+    "cam_rar": {
+      "top": "LqPAddrModule",
+      "export_name": "CamRarDut"
+    },
+    "cam_raw": {
+      "top": "LqPAddrModule_1",
+      "export_name": "CamRawDut"
+    },
+    "cam_mask": {
+      "top": "LqMaskModule",
+      "export_name": "CamMaskDut"
+    },
+    "age_replay": {
+      "top": "AgeDetector_36",
+      "export_name": "AgeReplayDut"
+    },
+    "virtual_load_queue": {
+      "top": "VirtualLoadQueue",
+      "export_name": "VirtualLoadQueueDut"
+    },
+    "load_queue_rar": {
+      "top": "LoadQueueRAR",
+      "export_name": "LoadQueueRarDut"
+    },
+    "load_queue_raw": {
+      "top": "LoadQueueRAW",
+      "export_name": "LoadQueueRawDut"
+    },
+    "load_queue_uncache": {
+      "top": "LoadQueueUncache",
+      "export_name": "LoadQueueUncacheDut"
+    },
+    "load_queue_replay": {
+      "top": "LoadQueueReplay",
+      "export_name": "LoadQueueReplayDut"
+    },
+    "enter_sbuffer_queue": {
+      "top": "EnterSbufferQueue",
+      "export_name": "EnterSbufferQueueDut"
+    },
+    "unalign_queue": {
+      "top": "UnalignQueue",
+      "export_name": "UnalignQueueDut"
+    },
+    "forward_module": {
+      "top": "ForwardModule",
+      "export_name": "ForwardModuleDut"
+    },
+    "virtual_store_queue": {
+      "top": "VirtualStoreQueue",
+      "export_name": "VirtualStoreQueueDut"
+    },
+    "deq_module": {
+      "top": "DeqModule",
+      "export_name": "DeqModuleDut"
+    },
+    "physical_store_queue": {
+      "top": "PhysicalStoreQueue",
+      "export_name": "PhysicalStoreQueueDut"
+    },
+    "store_queue": {
+      "top": "StoreQueue",
+      "export_name": "StoreQueueDut"
+    },
+    "load_queue": {
+      "top": "LoadQueue",
+      "export_name": "LoadQueueDut"
+    },
+    "lsq_wrapper": {
+      "top": "LsqWrapper",
+      "export_name": "LsqWrapperDut"
+    },
+    "uncache_entry_0": {
+      "top": "UncacheEntry",
+      "export_name": "UncacheEntry0Dut"
+    },
+    "uncache_entry_1": {
+      "top": "UncacheEntry_1",
+      "export_name": "UncacheEntry1Dut"
+    },
+    "uncache_entry_2": {
+      "top": "UncacheEntry_2",
+      "export_name": "UncacheEntry2Dut"
+    },
+    "uncache_entry_3": {
+      "top": "UncacheEntry_3",
+      "export_name": "UncacheEntry3Dut"
+    },
+    "uncache_entry_4": {
+      "top": "UncacheEntry_4",
+      "export_name": "UncacheEntry4Dut"
+    },
+    "uncache_entry_5": {
+      "top": "UncacheEntry_5",
+      "export_name": "UncacheEntry5Dut"
+    },
+    "uncache_entry_6": {
+      "top": "UncacheEntry_6",
+      "export_name": "UncacheEntry6Dut"
+    },
+    "uncache_entry_7": {
+      "top": "UncacheEntry_7",
+      "export_name": "UncacheEntry7Dut"
+    },
+    "uncache_entry_8": {
+      "top": "UncacheEntry_8",
+      "export_name": "UncacheEntry8Dut"
+    },
+    "uncache_entry_9": {
+      "top": "UncacheEntry_9",
+      "export_name": "UncacheEntry9Dut"
+    },
+    "uncache_entry_10": {
+      "top": "UncacheEntry_10",
+      "export_name": "UncacheEntry10Dut"
+    },
+    "uncache_entry_11": {
+      "top": "UncacheEntry_11",
+      "export_name": "UncacheEntry11Dut"
+    },
+    "uncache_entry_12": {
+      "top": "UncacheEntry_12",
+      "export_name": "UncacheEntry12Dut"
+    },
+    "uncache_entry_13": {
+      "top": "UncacheEntry_13",
+      "export_name": "UncacheEntry13Dut"
+    },
+    "uncache_entry_14": {
+      "top": "UncacheEntry_14",
+      "export_name": "UncacheEntry14Dut"
+    },
+    "uncache_entry_15": {
+      "top": "UncacheEntry_15",
+      "export_name": "UncacheEntry15Dut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "tests"
+  ],
+  "process_isolation": "suite"
+}

@@ -1,0 +1,35 @@
+{
+  "format": "semantic-requirement-before-native-case",
+  "title": "从块内半字地址或条件分支入口开始的预测，仍能学习并消费该入口自己的分支方向",
+  "event": "程序从32B区域中的压缩指令对齐入口或条件分支本身进入，而不是只从区域首地址进入；真实发现条件跳转，之后确认该分支不跳转并从新原件发现后继直接跳转。",
+  "owner": "完整取指起点、区域内分支位置及该入口产生的原路径历史共同拥有预测和学习。不能把起点向下对齐后复用块首原件，也不能将同位置分支的另一入口历史作为当前原件。",
+  "effect": "原条件方向在正常FastTrain中学成NT；新的同入口请求真正消费该学习，不再选择该条件跳转，精确级仍选择后继直接跳转并返回完整块内目标。",
+  "observation": "复用自主Main/Ahead/MicroTAGE参考与全部实际状态/元数据比较；保留原预测、真实反馈接纳、新来源发现、完整15bit tag、物理分配以及新的NT消费者。先核对精确入口，再核对完整后继位置、类型、taken和目标，不以只出现NT计数授予通过。",
+  "preservation": "旧原件和其PHR快照不可重写，其他保护单元保持；原有块首及高tag程序保留，不把本批低tag块内入口PASS外推为高tag差异关闭。",
+  "scope": "两个有实际指令语义的入口：位于条件分支之前的2B对齐入口、恰在条件分支上的入口；不枚举PC/bank/set，不证明入口之前的已知分支屏蔽或完整FTQ可达。",
+  "existing_feature": "BPU-INT-044",
+  "event_catalog": "useful.allocate",
+  "source_chain": [
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/history/phr/Helpers.scala:60",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:56",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:93",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:259"
+  ],
+  "gap_basis": {
+    "review": "results/integrated-neutral-recovery-development-20261018-v1/low-region-post-neutral-closure-review.json",
+    "integrated_low_region_native_zero_rows": 515,
+    "unexecuted_allocation_and_update_contexts": 93,
+    "unexecuted_allocation_and_update_rows": 465,
+    "causal_observation": "现有块首自环的短历史来自对齐目标，仅形成少数短历史身份；无窗口流水探针虽然观察到多来源，瞬态主要为长表，不能解释短表缺口。两个块内入口的独立程序能够自然分配并消费以前未执行的短表身份。",
+    "limit": "不能推断全部515行由块首偏置造成；是否增加原生行覆盖必须由实际DUT/LCOV确认，不预减任何行。"
+  },
+  "profiles": ["compressed-entry", "conditional-entry"],
+  "reference": "复用EarlyDirectionSources、PathHistoryReference、UtageReference及完整PipelineChecker；不新写计数或信号级黄金算法。",
+  "required_rejection_controls": ["把入口对齐为块首", "同PC但伪造原件", "错误完整后继目标/位置/类型/方向", "缺少实际分配或新消费者", "原快照变更", "任一学习义务缺失"],
+  "new_predictor_reference_algorithms": 0,
+  "new_feature_IDs": 0,
+  "no_bank_set_way_enumeration": true,
+  "no_fixed_native_settling_delay": true,
+  "no_RTL_DUT_SDK_changes": true,
+  "hardware_or_functional_credit_before_DUT_execution": false
+}

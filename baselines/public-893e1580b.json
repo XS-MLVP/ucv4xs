@@ -1,0 +1,416 @@
+{
+  "schema": 1,
+  "name": "public-893e1580b",
+  "repository": "https://github.com/OpenXiangShan/XiangShan.git",
+  "commit": "893e1580b705d81f113c30c7a05734e09a08050e",
+  "visibility": "public",
+  "recursive_submodules": [
+    {
+      "path": "rocket-chip",
+      "repository": "https://github.com/OpenXiangShan/rocket-chip.git",
+      "commit": "a2df1a42399cfe2b343eeb5293796268dc2bc211"
+    },
+    {
+      "path": "rocket-chip/hardfloat",
+      "repository": "https://github.com/ucb-bar/berkeley-hardfloat.git",
+      "commit": "d93aa570806013dea479a92ba9bb33d1f2d4f69f"
+    },
+    {
+      "path": "rocket-chip/hardfloat/berkeley-softfloat-3",
+      "repository": "https://github.com/ucb-bar/berkeley-softfloat-3.git",
+      "commit": "5c06db33fc1e2130f67c045327b0ec949032df1d"
+    },
+    {
+      "path": "rocket-chip/hardfloat/berkeley-testfloat-3",
+      "repository": "https://github.com/ucb-bar/berkeley-testfloat-3.git",
+      "commit": "06b20075dd3c1a5d0dd007a93643282832221612"
+    },
+    {
+      "path": "rocket-chip/torture",
+      "repository": "https://github.com/ucb-bar/riscv-torture.git",
+      "commit": "99d8b2b441ecaa18b852505bb7718ee04e2753f5"
+    },
+    {
+      "path": "rocket-chip/torture/env",
+      "repository": "https://github.com/riscv/riscv-test-env.git",
+      "commit": "ce70afbf50a203be04bc326326cfa75831fe7f5d"
+    },
+    {
+      "path": "rocket-chip/cde",
+      "repository": "https://github.com/chipsalliance/cde.git",
+      "commit": "52768c97a27b254c0cc0ac9401feb55b29e18c28"
+    },
+    {
+      "path": "difftest",
+      "repository": "https://github.com/OpenXiangShan/difftest.git",
+      "commit": "99f77ff455766d18cd05927b144641bd9744b19a"
+    },
+    {
+      "path": "ready-to-run",
+      "repository": "https://github.com/OpenXiangShan/ready-to-run.git",
+      "commit": "4cf9983569432035d41956c65e6a58724b5954be"
+    },
+    {
+      "path": "utility",
+      "repository": "https://github.com/OpenXiangShan/Utility.git",
+      "commit": "eb8e12b00a33e4716e7778175f6dd45b7a3a9ede"
+    },
+    {
+      "path": "utility/rocket-chip",
+      "repository": "https://github.com/OpenXiangShan/rocket-chip.git",
+      "commit": "dc2d83f5511232a228e3cb90a3aeba474d8ee702"
+    },
+    {
+      "path": "utility/rocket-chip/hardfloat",
+      "repository": "https://github.com/ucb-bar/berkeley-hardfloat.git",
+      "commit": "d93aa570806013dea479a92ba9bb33d1f2d4f69f"
+    },
+    {
+      "path": "utility/rocket-chip/hardfloat/berkeley-softfloat-3",
+      "repository": "https://github.com/ucb-bar/berkeley-softfloat-3.git",
+      "commit": "5c06db33fc1e2130f67c045327b0ec949032df1d"
+    },
+    {
+      "path": "utility/rocket-chip/hardfloat/berkeley-testfloat-3",
+      "repository": "https://github.com/ucb-bar/berkeley-testfloat-3.git",
+      "commit": "06b20075dd3c1a5d0dd007a93643282832221612"
+    },
+    {
+      "path": "utility/rocket-chip/torture",
+      "repository": "https://github.com/ucb-bar/riscv-torture.git",
+      "commit": "99d8b2b441ecaa18b852505bb7718ee04e2753f5"
+    },
+    {
+      "path": "utility/rocket-chip/torture/env",
+      "repository": "https://github.com/riscv/riscv-test-env.git",
+      "commit": "ce70afbf50a203be04bc326326cfa75831fe7f5d"
+    },
+    {
+      "path": "utility/rocket-chip/cde",
+      "repository": "https://github.com/chipsalliance/cde.git",
+      "commit": "52768c97a27b254c0cc0ac9401feb55b29e18c28"
+    },
+    {
+      "path": "yunsuan",
+      "repository": "https://github.com/OpenXiangShan/YunSuan.git",
+      "commit": "267ff736e7acd8e0fe8d13710581e4902a8a8a6c"
+    },
+    {
+      "path": "ChiselAIA",
+      "repository": "https://github.com/OpenXiangShan/ChiselAIA.git",
+      "commit": "c8be865e4fa60d40831ff29e0a30d4269f5ff5b9"
+    },
+    {
+      "path": "ChiselAIA/rocket-chip",
+      "repository": "https://github.com/OpenXiangShan/rocket-chip.git",
+      "commit": "dc2d83f5511232a228e3cb90a3aeba474d8ee702"
+    },
+    {
+      "path": "ChiselAIA/rocket-chip/hardfloat",
+      "repository": "https://github.com/ucb-bar/berkeley-hardfloat.git",
+      "commit": "d93aa570806013dea479a92ba9bb33d1f2d4f69f"
+    },
+    {
+      "path": "ChiselAIA/rocket-chip/hardfloat/berkeley-softfloat-3",
+      "repository": "https://github.com/ucb-bar/berkeley-softfloat-3.git",
+      "commit": "5c06db33fc1e2130f67c045327b0ec949032df1d"
+    },
+    {
+      "path": "ChiselAIA/rocket-chip/hardfloat/berkeley-testfloat-3",
+      "repository": "https://github.com/ucb-bar/berkeley-testfloat-3.git",
+      "commit": "06b20075dd3c1a5d0dd007a93643282832221612"
+    },
+    {
+      "path": "ChiselAIA/rocket-chip/torture",
+      "repository": "https://github.com/ucb-bar/riscv-torture.git",
+      "commit": "99d8b2b441ecaa18b852505bb7718ee04e2753f5"
+    },
+    {
+      "path": "ChiselAIA/rocket-chip/torture/env",
+      "repository": "https://github.com/riscv/riscv-test-env.git",
+      "commit": "ce70afbf50a203be04bc326326cfa75831fe7f5d"
+    },
+    {
+      "path": "ChiselAIA/rocket-chip/cde",
+      "repository": "https://github.com/chipsalliance/cde.git",
+      "commit": "52768c97a27b254c0cc0ac9401feb55b29e18c28"
+    },
+    {
+      "path": "ChiselAIA/Utility",
+      "repository": "https://github.com/OpenXiangShan/Utility.git",
+      "commit": "b943a200635b6e0b06e96517aa086f4bf754c10d"
+    },
+    {
+      "path": "ChiselAIA/Utility/rocket-chip",
+      "repository": "https://github.com/OpenXiangShan/rocket-chip.git",
+      "commit": "dc2d83f5511232a228e3cb90a3aeba474d8ee702"
+    },
+    {
+      "path": "ChiselAIA/Utility/rocket-chip/hardfloat",
+      "repository": "https://github.com/ucb-bar/berkeley-hardfloat.git",
+      "commit": "d93aa570806013dea479a92ba9bb33d1f2d4f69f"
+    },
+    {
+      "path": "ChiselAIA/Utility/rocket-chip/hardfloat/berkeley-softfloat-3",
+      "repository": "https://github.com/ucb-bar/berkeley-softfloat-3.git",
+      "commit": "5c06db33fc1e2130f67c045327b0ec949032df1d"
+    },
+    {
+      "path": "ChiselAIA/Utility/rocket-chip/hardfloat/berkeley-testfloat-3",
+      "repository": "https://github.com/ucb-bar/berkeley-testfloat-3.git",
+      "commit": "06b20075dd3c1a5d0dd007a93643282832221612"
+    },
+    {
+      "path": "ChiselAIA/Utility/rocket-chip/torture",
+      "repository": "https://github.com/ucb-bar/riscv-torture.git",
+      "commit": "99d8b2b441ecaa18b852505bb7718ee04e2753f5"
+    },
+    {
+      "path": "ChiselAIA/Utility/rocket-chip/torture/env",
+      "repository": "https://github.com/riscv/riscv-test-env.git",
+      "commit": "ce70afbf50a203be04bc326326cfa75831fe7f5d"
+    },
+    {
+      "path": "ChiselAIA/Utility/rocket-chip/cde",
+      "repository": "https://github.com/chipsalliance/cde.git",
+      "commit": "52768c97a27b254c0cc0ac9401feb55b29e18c28"
+    },
+    {
+      "path": "ChiselIOPMP",
+      "repository": "https://github.com/OpenXiangShan/ChiselIOPMP.git",
+      "commit": "cc1113c30a2469e27a233795a4e5705c43c84726"
+    },
+    {
+      "path": "ChiselIOPMP/rocket-chip",
+      "repository": "https://github.com/OpenXiangShan/rocket-chip.git",
+      "commit": "dc2d83f5511232a228e3cb90a3aeba474d8ee702"
+    },
+    {
+      "path": "ChiselIOPMP/rocket-chip/hardfloat",
+      "repository": "https://github.com/ucb-bar/berkeley-hardfloat.git",
+      "commit": "d93aa570806013dea479a92ba9bb33d1f2d4f69f"
+    },
+    {
+      "path": "ChiselIOPMP/rocket-chip/hardfloat/berkeley-softfloat-3",
+      "repository": "https://github.com/ucb-bar/berkeley-softfloat-3.git",
+      "commit": "5c06db33fc1e2130f67c045327b0ec949032df1d"
+    },
+    {
+      "path": "ChiselIOPMP/rocket-chip/hardfloat/berkeley-testfloat-3",
+      "repository": "https://github.com/ucb-bar/berkeley-testfloat-3.git",
+      "commit": "06b20075dd3c1a5d0dd007a93643282832221612"
+    },
+    {
+      "path": "ChiselIOPMP/rocket-chip/torture",
+      "repository": "https://github.com/ucb-bar/riscv-torture.git",
+      "commit": "99d8b2b441ecaa18b852505bb7718ee04e2753f5"
+    },
+    {
+      "path": "ChiselIOPMP/rocket-chip/torture/env",
+      "repository": "https://github.com/riscv/riscv-test-env.git",
+      "commit": "ce70afbf50a203be04bc326326cfa75831fe7f5d"
+    },
+    {
+      "path": "ChiselIOPMP/rocket-chip/cde",
+      "repository": "https://github.com/chipsalliance/cde.git",
+      "commit": "52768c97a27b254c0cc0ac9401feb55b29e18c28"
+    },
+    {
+      "path": "ChiselIOPMP/utility",
+      "repository": "https://github.com/OpenXiangShan/Utility.git",
+      "commit": "b943a200635b6e0b06e96517aa086f4bf754c10d"
+    },
+    {
+      "path": "ChiselIOPMP/utility/rocket-chip",
+      "repository": "https://github.com/OpenXiangShan/rocket-chip.git",
+      "commit": "dc2d83f5511232a228e3cb90a3aeba474d8ee702"
+    },
+    {
+      "path": "ChiselIOPMP/utility/rocket-chip/hardfloat",
+      "repository": "https://github.com/ucb-bar/berkeley-hardfloat.git",
+      "commit": "d93aa570806013dea479a92ba9bb33d1f2d4f69f"
+    },
+    {
+      "path": "ChiselIOPMP/utility/rocket-chip/hardfloat/berkeley-softfloat-3",
+      "repository": "https://github.com/ucb-bar/berkeley-softfloat-3.git",
+      "commit": "5c06db33fc1e2130f67c045327b0ec949032df1d"
+    },
+    {
+      "path": "ChiselIOPMP/utility/rocket-chip/hardfloat/berkeley-testfloat-3",
+      "repository": "https://github.com/ucb-bar/berkeley-testfloat-3.git",
+      "commit": "06b20075dd3c1a5d0dd007a93643282832221612"
+    },
+    {
+      "path": "ChiselIOPMP/utility/rocket-chip/torture",
+      "repository": "https://github.com/ucb-bar/riscv-torture.git",
+      "commit": "99d8b2b441ecaa18b852505bb7718ee04e2753f5"
+    },
+    {
+      "path": "ChiselIOPMP/utility/rocket-chip/torture/env",
+      "repository": "https://github.com/riscv/riscv-test-env.git",
+      "commit": "ce70afbf50a203be04bc326326cfa75831fe7f5d"
+    },
+    {
+      "path": "ChiselIOPMP/utility/rocket-chip/cde",
+      "repository": "https://github.com/chipsalliance/cde.git",
+      "commit": "52768c97a27b254c0cc0ac9401feb55b29e18c28"
+    },
+    {
+      "path": "XSCache",
+      "repository": "https://github.com/OpenXiangShan/XSCache.git",
+      "commit": "300515bc7b2f65ca988041a984204489d80ec2fb"
+    },
+    {
+      "path": "XSCache/rocket-chip",
+      "repository": "https://github.com/OpenXiangShan/rocket-chip.git",
+      "commit": "dc2d83f5511232a228e3cb90a3aeba474d8ee702"
+    },
+    {
+      "path": "XSCache/rocket-chip/hardfloat",
+      "repository": "https://github.com/ucb-bar/berkeley-hardfloat.git",
+      "commit": "d93aa570806013dea479a92ba9bb33d1f2d4f69f"
+    },
+    {
+      "path": "XSCache/rocket-chip/hardfloat/berkeley-softfloat-3",
+      "repository": "https://github.com/ucb-bar/berkeley-softfloat-3.git",
+      "commit": "5c06db33fc1e2130f67c045327b0ec949032df1d"
+    },
+    {
+      "path": "XSCache/rocket-chip/hardfloat/berkeley-testfloat-3",
+      "repository": "https://github.com/ucb-bar/berkeley-testfloat-3.git",
+      "commit": "06b20075dd3c1a5d0dd007a93643282832221612"
+    },
+    {
+      "path": "XSCache/rocket-chip/torture",
+      "repository": "https://github.com/ucb-bar/riscv-torture.git",
+      "commit": "99d8b2b441ecaa18b852505bb7718ee04e2753f5"
+    },
+    {
+      "path": "XSCache/rocket-chip/torture/env",
+      "repository": "https://github.com/riscv/riscv-test-env.git",
+      "commit": "ce70afbf50a203be04bc326326cfa75831fe7f5d"
+    },
+    {
+      "path": "XSCache/rocket-chip/cde",
+      "repository": "https://github.com/chipsalliance/cde.git",
+      "commit": "52768c97a27b254c0cc0ac9401feb55b29e18c28"
+    },
+    {
+      "path": "XSCache/utility",
+      "repository": "https://github.com/OpenXiangShan/utility",
+      "commit": "eb8e12b00a33e4716e7778175f6dd45b7a3a9ede"
+    },
+    {
+      "path": "XSCache/utility/rocket-chip",
+      "repository": "https://github.com/OpenXiangShan/rocket-chip.git",
+      "commit": "dc2d83f5511232a228e3cb90a3aeba474d8ee702"
+    },
+    {
+      "path": "XSCache/utility/rocket-chip/hardfloat",
+      "repository": "https://github.com/ucb-bar/berkeley-hardfloat.git",
+      "commit": "d93aa570806013dea479a92ba9bb33d1f2d4f69f"
+    },
+    {
+      "path": "XSCache/utility/rocket-chip/hardfloat/berkeley-softfloat-3",
+      "repository": "https://github.com/ucb-bar/berkeley-softfloat-3.git",
+      "commit": "5c06db33fc1e2130f67c045327b0ec949032df1d"
+    },
+    {
+      "path": "XSCache/utility/rocket-chip/hardfloat/berkeley-testfloat-3",
+      "repository": "https://github.com/ucb-bar/berkeley-testfloat-3.git",
+      "commit": "06b20075dd3c1a5d0dd007a93643282832221612"
+    },
+    {
+      "path": "XSCache/utility/rocket-chip/torture",
+      "repository": "https://github.com/ucb-bar/riscv-torture.git",
+      "commit": "99d8b2b441ecaa18b852505bb7718ee04e2753f5"
+    },
+    {
+      "path": "XSCache/utility/rocket-chip/torture/env",
+      "repository": "https://github.com/riscv/riscv-test-env.git",
+      "commit": "ce70afbf50a203be04bc326326cfa75831fe7f5d"
+    },
+    {
+      "path": "XSCache/utility/rocket-chip/cde",
+      "repository": "https://github.com/chipsalliance/cde.git",
+      "commit": "52768c97a27b254c0cc0ac9401feb55b29e18c28"
+    },
+    {
+      "path": "XSCache/OpenNCB",
+      "repository": "https://github.com/OpenXiangShan/OpenNCB.git",
+      "commit": "9a83eb7e6c0e36e0d6b72642ff93641ec65819cf"
+    },
+    {
+      "path": "XSCache/OpenNCB/external/rocket-chip",
+      "repository": "https://github.com/OpenXiangShan/rocket-chip",
+      "commit": "46f1efefa1ff431bffe3262e4830bc50316842f4"
+    },
+    {
+      "path": "XSCache/OpenNCB/external/rocket-chip/hardfloat",
+      "repository": "https://github.com/ucb-bar/berkeley-hardfloat.git",
+      "commit": "d93aa570806013dea479a92ba9bb33d1f2d4f69f"
+    },
+    {
+      "path": "XSCache/OpenNCB/external/rocket-chip/hardfloat/berkeley-softfloat-3",
+      "repository": "https://github.com/ucb-bar/berkeley-softfloat-3.git",
+      "commit": "5c06db33fc1e2130f67c045327b0ec949032df1d"
+    },
+    {
+      "path": "XSCache/OpenNCB/external/rocket-chip/hardfloat/berkeley-testfloat-3",
+      "repository": "https://github.com/ucb-bar/berkeley-testfloat-3.git",
+      "commit": "06b20075dd3c1a5d0dd007a93643282832221612"
+    },
+    {
+      "path": "XSCache/OpenNCB/external/rocket-chip/torture",
+      "repository": "https://github.com/ucb-bar/riscv-torture.git",
+      "commit": "99d8b2b441ecaa18b852505bb7718ee04e2753f5"
+    },
+    {
+      "path": "XSCache/OpenNCB/external/rocket-chip/torture/env",
+      "repository": "https://github.com/riscv/riscv-test-env.git",
+      "commit": "ce70afbf50a203be04bc326326cfa75831fe7f5d"
+    },
+    {
+      "path": "XSCache/OpenNCB/external/rocket-chip/cde",
+      "repository": "https://github.com/chipsalliance/cde.git",
+      "commit": "52768c97a27b254c0cc0ac9401feb55b29e18c28"
+    },
+    {
+      "path": "XSCache/ZhuJiang",
+      "repository": "https://github.com/OpenXiangShan/ZhuJiang.git",
+      "commit": "dfcf69662f7682bbc36410b5763cc285956534c8"
+    },
+    {
+      "path": "OpenIOMMU",
+      "repository": "https://github.com/OpenXiangShan/OpenIOMMU.git",
+      "commit": "92ed152eeb74caeacbd04a02446f8e4aae780fe5"
+    }
+  ],
+  "design": {
+    "config": "DefaultConfig",
+    "num_cores": 1,
+    "top": "top.TopMain",
+    "chisel_args": [
+      "--fpga-platform",
+      "--reset-gen",
+      "--issue",
+      "E.b",
+      "--llc",
+      "OpenLLC"
+    ]
+  },
+  "patches": [],
+  "tools": {
+    "mill": "0.12.17",
+    "chisel": "7.13.0",
+    "firtool": "1.149.0",
+    "java": "17"
+  },
+  "firtool_options": [
+    "-O=release",
+    "--disable-annotation-unknown",
+    "--lowering-options=explicitBitcast,disallowLocalVariables,disallowPortDeclSharing,locationInfoStyle=none",
+    "--ignore-read-enable-mem",
+    "--default-layer-specialization=disable"
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "format": "mmu-coverage-audit-summary",
+  "generated_at": "2026-10-24T14:15:19.542978+00:00",
+  "run": "results/bitmapcache-final-03",
+  "coverage_dat_sha256": "aaad221caa91c76fc7f103e25bb185f3452af6a82721a0061cb1e230553b9632",
+  "coverage_info_sha256": "71351d5341320f0d8aa4e346407fe054df007019670611d5a8d120aed1197e67",
+  "lcov_lines": {
+    "unique_lines": 635,
+    "covered_lines": 317,
+    "uncovered": 318,
+    "procedural_uncovered": 251,
+    "coverage_percent": 49.9213
+  },
+  "lcov_lines_dut_only": {
+    "unique_lines": 323,
+    "covered_lines": 314,
+    "uncovered": 9,
+    "procedural_uncovered": 9,
+    "coverage_percent": 97.2136
+  },
+  "lcov_lines_per_file": {
+    "BitmapCacheDut.v": {
+      "covered_lines": 255,
+      "unique_lines": 255,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "BitmapCacheDut_top.sv": {
+      "covered_lines": 3,
+      "unique_lines": 312,
+      "uncovered": 309,
+      "coverage_percent": 0.9615
+    },
+    "ClockGate.sv": {
+      "covered_lines": 2,
+      "unique_lines": 2,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    },
+    "MbistBitmapCache.sv": {
+      "covered_lines": 38,
+      "unique_lines": 46,
+      "uncovered": 8,
+      "coverage_percent": 82.6087
+    },
+    "SRAMTemplate_286.sv": {
+      "covered_lines": 10,
+      "unique_lines": 11,
+      "uncovered": 1,
+      "coverage_percent": 90.9091
+    },
+    "array_32x90.sv": {
+      "covered_lines": 9,
+      "unique_lines": 9,
+      "uncovered": 0,
+      "coverage_percent": 100.0
+    }
+  },
+  "branches": {
+    "total": 148,
+    "covered": 124,
+    "uncovered_count": 24
+  },
+  "toggles": {
+    "total": 14174,
+    "covered": 6488,
+    "uncovered_count": 7686
+  },
+  "functional_coverage": {
+    "coverage": 100.0,
+    "covered": true,
+    "groups": [
+      {
+        "instance": "bitmapcache",
+        "coverage": 100.0,
+        "samples": 325,
+        "points": [
+          {
+            "name": "event",
+            "coverage": 100.0,
+            "samples": 325
+          },
+          {
+            "name": "byte",
+            "coverage": 100.0,
+            "samples": 325
+          },
+          {
+            "name": "order",
+            "coverage": 100.0,
+            "samples": 325
+          }
+        ],
+        "crosses": []
+      }
+    ]
+  },
+  "limits": "Verilator point summaries are not semantic checks. LCOV DA hits are summed per line (duplicate shadow points included) and every denominator is retained. Declarative wire/reg/end lines are separated by source text, not deleted; procedural lines are still listed if uncovered. Files are kept separate so a parent DUT does not hide a child's own gaps.",
+  "note": "Compact summary; the final run keeps the full audit and coverage database."
+}

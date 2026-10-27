@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "updated_at_date": "2026-10-24",
+  "items": [
+    {
+      "id": "FLUSH-EMPTY-TWO-LEVELS-REVIEWED",
+      "severity": "reviewed_not_bug",
+      "status": "closed_no_defect",
+      "summary": "CMO \u671f\u95f4 flush.empty \u53d7 sqempty \u95e8\u63a7\u4e0d\u662f\u7f3a\u9677\uff1aCMO \u6d88\u8d39 sbempty\uff0cfence/atomics \u6d88\u8d39 flush.empty\u3002",
+      "evidence": "docs/reports/flush-contract-review-20261024.md; RISC-V CMO spec 19.1.4.1; XiangShan PR #6183; MemBlock.scala:1175-1186,1239; Fence.scala:58-83; AtomicsUnit.scala:125,312; NewStoreQueue.scala:967-1003",
+      "impact": "\u4e24\u4e2a\u7a7a\u4fe1\u53f7\u662f\u4e0d\u540c\u5c42\u7ea7\uff1asbempty=Sbuffer+\u8f93\u5165+MSHR\uff1bflush.empty=\u518d\u52a0 sqempty\u3002CBO \u5728 SQ \u5934\u6267\u884c\u3001\u81ea\u8eab\u6761\u76ee\u4f7f sqempty=0\uff0c\u7b49 flush.empty \u4f1a\u6b7b\u9501\u3002",
+      "next": "\u82e5\u672a\u6765 sbempty \u52a0\u5165 sqempty\u3001CBO \u6539\u6d88\u8d39 flush.empty\uff0c\u6216 CMO \u4e0d\u518d\u7b49 MSHR\uff0c\u5219\u9700\u91cd\u65b0\u5ba1\u67e5\u3002"
+    },
+    {
+      "id": "WLINE-ZERO-PAYLOAD-ONLY",
+      "severity": "scope_constraint",
+      "status": "enforced_in_parent_tests",
+      "summary": "\u7236\u5757\u53ea\u5728 cbo.zero \u4ea7\u751f wline\uff0c\u4e14 payload \u6052\u4e3a 0\uff1b\u9876\u5c42 UT \u4e0d\u518d\u7528\u975e\u96f6 payload \u9a71\u52a8 wline\u3002",
+      "evidence": "NewStoreQueue.scala:1272 wline := isCbo && isCboZero; NewStoreQueue.scala:1966 cbo.zero data := 0; Sbuffer difftest assertion 'wline only supports whole zero write now'; tests/sbuffer/test_sbuffer.py::test_wline_zero_all_lines",
+      "impact": "\u975e\u96f6 wline payload \u4e0d\u53ef\u8fbe\uff1bSbufferData \u6a21\u5757\u7ea7\u975e\u96f6\u5e7f\u64ad\u4ec5\u4f5c\u4e3a\u6a21\u5757\u80fd\u529b\uff0c\u4e0d\u4f5c\u4e3a\u7236\u5757\u884c\u4e3a\u8bc1\u636e\u3002",
+      "next": "\u82e5\u7236\u5757\u672a\u6765\u628a wline \u7528\u4e8e\u975e cbo.zero \u573a\u666f\uff0c\u9700\u91cd\u65b0\u5b9a\u4e49\u5408\u6cd5\u57df\u5e76\u8865\u9876\u5c42\u7528\u4f8b\u3002"
+    },
+    {
+      "id": "SBD-TIME0-INIT",
+      "severity": "tool_boundary",
+      "status": "documented_open",
+      "summary": "SbufferData \u751f\u6210\u7684 initial \u5757\u53ea\u5728\u4eff\u771f\u65f6\u95f4 0 \u6267\u884c\u4e00\u6b21\uff1b\u5176 if(reset) \u7684\u53e6\u4e00\u5206\u652f\u4e0d\u53ef\u7531\u8fd0\u884c\u671f\u6fc0\u52b1\u5230\u8fbe\u3002",
+      "evidence": "results/sbuffer-data-initial-04/coverage-audit.json; branch 2115/2116",
+      "impact": "\u4e0d\u5f71\u54cd\u5468\u671f reset \u529f\u80fd\uff1breset \u7684 always \u8def\u5f84\u5df2\u8986\u76d6\u3002\u4fdd\u7559\u539f\u59cb\u5206\u6bcd\u3002",
+      "next": "\u65e0\u529f\u80fd\u8865\u4f8b\uff1b\u5982\u5de5\u5177\u652f\u6301 time-zero reset \u63a7\u5236\uff0c\u53ef\u5355\u72ec\u590d\u6838\u3002"
+    },
+    {
+      "id": "SBT-SAMEBLOCK-SLOT-SWEEP",
+      "severity": "case_enumeration_missing",
+      "status": "open",
+      "summary": "\u540c\u5757 inflight \u65f6 follower \u63d2\u5165\u53ea\u547d\u4e2d\u4e86\u90e8\u5206\u69fd\uff1bwaitInflightMask \u7684\u9ad8\u69fd\u5199\u8def\u5f84\u672a\u5168\u90e8\u6fc0\u6d3b\u3002",
+      "evidence": "results/sbuffer-top-contract-03/coverage-audit.json; SbufferDut.v 11133-11286 \u5171 31 \u884c\uff0c33 \u4e2a\u5206\u652f\u81c2",
+      "impact": "\u5df2\u6709\u529f\u80fd\u70b9 SBT-ENQ-04 \u7684\u60c5\u5f62\u7f3a\u5931\uff0c\u4e0d\u662f\u65b0\u7684\u5fae\u67b6\u6784\u529f\u80fd\u70b9\uff1b\u5f53\u524d\u540c\u5757\u4e32\u884c\u529f\u80fd\u672c\u8eab\u5df2\u901a\u8fc7\u3002",
+      "next": "\u6784\u9020\u540c\u5757 inflight \u7684 prime\uff0c\u5e76\u5728\u4e0d\u89e6\u53d1\u5bb9\u91cf\u66ff\u6362\u7684\u7a97\u53e3\u5185\u9010\u4e2a\u7a7a\u69fd\u63d2\u5165 follower\uff1b\u9700\u8981\u6309\u516c\u5f00 request/hit \u63a5\u53e3\u8f6e\u6362\u76ee\u6807\u69fd\u3002"
+    },
+    {
+      "id": "SBD-SAME-LANE-PORT-HALVES",
+      "severity": "case_enumeration_missing",
+      "status": "open",
+      "summary": "SbufferData \u9ad8\u69fd\u540c\u4e00 lane \u7684\u53e6\u4e00\u534a\u5b57\u8282\u7aef\u53e3\u8def\u5f84\u672a\u8986\u76d6\uff1b\u5f53\u524d\u6bcf\u4e2a lane \u7531\u4e24\u4e2a\u7aef\u53e3\u4ea4\u66ff\u62e5\u6709\u4f4e/\u9ad8\u534a\u533a\u3002",
+      "evidence": "results/sbuffer-top-contract-03/coverage-audit.json; SbufferData.sv 512 \u884c\uff0c16 \u7ec4\u9ad8\u69fd lane \u533a\u95f4",
+      "impact": "\u5df2\u6709\u529f\u80fd\u70b9 SBT-ENQ-01 / SBT-WRITE-01 \u7684\u60c5\u5f62\u7f3a\u5931\u3002\u72ec\u7acb SbufferData DUT \u5df2 100% \u884c\u8986\u76d6\uff0c\u7236\u5c42\u672a\u91cd\u590d\u8d70\u5168\u3002",
+      "next": "\u5728\u7236\u5757\u672a\u6ee1\u6216\u53ef\u5b89\u5168\u66ff\u6362\u65f6\uff0c\u5148\u5efa\u7acb\u884c\uff0c\u518d\u7528\u96f6\u63a9\u7801\u5360\u4f4f\u53e6\u4e00\u4e2a\u7aef\u53e3\u3001\u8ba9\u76ee\u6807\u7aef\u53e3\u5199\u6ee1\u6574 lane\uff1b\u5f53\u524d\u6ee1\u5bb9\u91cf\u65f6\u7aef\u53e3 1 \u7684 ready \u4f9d\u8d56\u7aef\u53e3 0\u3002"
+    },
+    {
+      "id": "SBT-TOGGLE-RESIDUAL",
+      "severity": "case_enumeration_missing",
+      "status": "open",
+      "summary": "\u9876\u5c42 toggle 82.0%\uff1b\u5269\u4f59\u4e3b\u8981\u662f\u9ad8\u69fd\u5b58\u50a8\u8f93\u51fa\u4f4d\u3001\u884c\u72b6\u6001\u4f4d\u548c\u5185\u90e8\u5199\u6d41\u6c34\u3002",
+      "evidence": "results/sbuffer-top-contract-03/coverage-audit.json; toggle 70275/85706\uff0cstorage_output_bit 2938\u3001line_state_bit 3946\u3001internal_write_pipeline 1338\u3001forward_bit 986\u3001other 5244",
+      "impact": "\u5df2\u6709\u529f\u80fd\u70b9 SBT-WRITE-01/SBT-ENQ-01 \u7684\u60c5\u5f62\u7f3a\u5931\uff0c\u4e0d\u662f\u65b0\u7684\u529f\u80fd\u70b9\uff1b\u529f\u80fd\u8986\u76d6\u5df2 100%\u3002",
+      "next": "\u5168 16 \u69fd\u5199 0/1/0 \u9971\u548c\uff0c\u5e76\u5bf9\u8f6c\u53d1\u5730\u5740\u9ad8\u4f4d\u505a\u5b9a\u5411/\u5408\u6cd5\u968f\u673a\uff1b\u4fdd\u6301\u56fa\u5b9a seed \u548c\u8d44\u6e90\u4e0a\u9650\u3002"
+    },
+    {
+      "id": "PICKER-DEFAULT-DUMPFILE",
+      "severity": "tool_boundary",
+      "status": "mitigated",
+      "summary": "Picker -w \u5728\u751f\u6210\u7684 top \u4e2d\u6ce8\u5165\u65e0\u6761\u4ef6 $dumpfile/$dumpvars\uff1b\u5373\u4f7f\u8fd0\u884c\u65f6\u4e0d\u8c03\u7528 SetWaveform \u4e5f\u4f1a\u4ea7\u751f\u9ed8\u8ba4 fst\u3002",
+      "evidence": "dut/sbuffer/SbufferDut_top.sv:1566; results/sbuffer-top-contract-03/trace-policy.json status=PASS",
+      "impact": "trace \u80fd\u529b\u4fdd\u7559\uff1b\u6b63\u5e38\u8fd0\u884c\u7531\u4e34\u65f6 cwd \u627f\u8f7d\u9ed8\u8ba4 fst \u5e76\u5220\u9664\uff0c\u8bc1\u636e\u6811\u65e0\u6ce2\u5f62\u3002",
+      "next": "trace \u80fd\u529b\u53ea\u4fdd\u7559\u7f16\u8bd1\uff1b\u8fd0\u884c\u65f6\u4e0d\u63d0\u4f9b\u6ce2\u5f62\u5f00\u5173\u3002\u4e0d\u8981\u628a\u9ed8\u8ba4 fst \u5f53\u4f5c\u9010\u62cd\u8bc1\u636e\u3002"
+    },
+    {
+      "id": "NO-VPI-NO-INTERNAL-CFG",
+      "severity": "scope_decision",
+      "status": "enforced",
+      "summary": "\u5f53\u524d DUT \u6784\u5efa\u4e0d\u542f\u7528 --vpi\uff0c\u4e5f\u4e0d\u542f\u7528 --internal/internal-cfg\uff1b\u6d4b\u8bd5\u53ea\u4f7f\u7528\u516c\u5f00\u7aef\u53e3\u3002",
+      "evidence": "results/builds/20261024T024302843131Z-sbuffer/report.json; command \u4e2d\u65e0 --vpi/--internal\uff0cvpi=false\uff0cinternal_signal_config=false",
+      "impact": "\u5185\u90e8\u4fe1\u53f7\u4e0d\u53ef\u8bbf\u95ee\uff0c\u8bca\u65ad\u53ea\u80fd\u4f9d\u8d56\u516c\u5f00\u8f93\u51fa\u4e0e\u8986\u76d6\u7387\uff1b\u8fd9\u662f\u6709\u610f\u7ea6\u675f\u3002",
+      "next": "\u4fdd\u6301\u8be5\u7ea6\u675f\uff1b\u5982\u9700\u5185\u90e8\u89c2\u5bdf\uff0c\u5e94\u7531 RTL \u516c\u5f00\u7aef\u53e3\u6216\u8986\u76d6\u7387\u627f\u62c5\uff0c\u4e0d\u91cd\u65b0\u5f15\u5165 VPI\u3002"
+    },
+    {
+      "id": "NO-PER-CYCLE-DUMP",
+      "severity": "resource_policy",
+      "status": "enforced",
+      "summary": "\u4e0d\u4fdd\u5b58\u9010\u5468\u671f\u4fe1\u53f7\u6216\u4e8b\u52a1 dump\uff1b\u4e0d\u4f7f\u7528 --keep-coverage-inputs\uff0c\u4e0d\u5199 JSONL/\u9010\u62cd trace\u3002",
+      "evidence": "results/sbuffer-top-contract-03/trace-policy.json; per_cycle_signal_dump=false, per_cycle_transaction_dump=false, per_cycle_files=[]",
+      "impact": "\u8bc1\u636e\u53ea\u4fdd\u7559\u8986\u76d6\u7387\u6570\u636e\u5e93\u3001\u529f\u80fd\u8986\u76d6 JSON\u3001manifest \u548c\u5ba1\u8ba1\u62a5\u544a\uff1b\u5931\u8d25\u5b9a\u4f4d\u4f9d\u8d56\u65ad\u8a00\u6d88\u606f\u548c\u8986\u76d6\u70b9\uff0c\u4e0d\u4f9d\u8d56\u5168\u91cf\u9010\u62cd\u539f\u4ef6\u3002",
+      "next": "\u8c03\u8bd5\u9700\u8981\u65f6\u663e\u5f0f\u5f00\u542f\u53d7\u5927\u5c0f\u4e0a\u9650\u7ea6\u675f\u7684 trace\uff1b\u4e0d\u4f5c\u4e3a\u5e38\u89c4\u56de\u5f52\u4ea7\u7269\u3002"
+    }
+  ]
+}

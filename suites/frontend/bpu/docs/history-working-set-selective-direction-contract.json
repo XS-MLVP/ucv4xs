@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "feature": "BPU-INT-102",
+  "status": "normative requirement; execution and credit are determined only by scoped run evidence",
+  "extends": "docs/integrated-history-working-set-contract.json",
+  "maintenance_contract": "docs/history-working-set-maintenance-contract.json",
+  "title": "选定路径改变预测方向时，其他路径保留原方向；之后可以独立恢复",
+  "gap": "原工作集所有正向历史的公开结果相同，单次错误只改变尚未跨过方向边界的可靠性。仅比较这些内部数值不足以证明消费者真正区分了各自的学习身份。",
+  "requirements": [
+    "先从真实前驱程序为超过最近旁路容量的多个历史建立各自的学习。预期结果来自声明的分支程序和独立语义账本。",
+    "仅选定的历史连续收到真实not-taken结果，直到这些历史的早级预测实际改变为not-taken；所需反馈数量在驱动前由独立账本决定，不通过等待周期或观察DUT数值决定。",
+    "在同一取指窗口中，目标条件分支被预测not-taken时，公开预测必须选择后面的真实兜底分支；不能只以内部counter或provider值作为完成证据。",
+    "重新消费所有声明历史。选定历史仍选择兜底分支，未选定历史仍选择原目标条件分支；每个消费者必须属于它原来的真实前驱上下文。",
+    "再只为选定历史提供taken结果，恢复其公开条件分支预测。最终全部历史再次呈现正确的原方向，其他历史、另一分支位置的短历史学习和全部原始metadata保持。",
+    "持续纠错触发合法全局保护维护时，按独立失败账本和共同前态检查其效果；维护后重新消费两种方向，最终重新消费全部恢复后的历史。保护可按维护规则降低，但方向、身份及旧来源不可被抹掉。"
+  ],
+  "observables": {
+    "taken_path": "公开预测选择位置10的目标条件分支，目标为声明的前驱入口。",
+    "not_taken_path": "公开预测越过位置10，选择位置12的真实间接兜底分支，目标仍为声明的前驱入口。",
+    "identity": "原始预测/metadata的关联、完整独立路径历史及后续消费者，不以同一个PC或相同预测数值替代身份。",
+    "diagnostics_only": "bank/way/index、内部counter及保护状态辅助归因并可作为额外完整性检查，不单独构成功能完成。"
+  },
+  "coverage": "学习接纳、选择性方向反转、混合方向的全部历史消费者、选择性恢复及最终重新消费分别保留reached/checked义务；测试或整个生命周期未完成时不能取得checked信用。",
+  "capacity_policy": "512身份容量场景仍保留；先完成具有可区分公开结果的周转场景，再扩展同一行为要求，不把bank/way排列作为独立功能点。",
+  "limits": ["不修改RTL/DUT/SDK", "不添加或扩大XFAIL", "不使用DUT状态作为golden或刺激种子", "不在case中添加边沿、原始信号操作或固定周期等待", "旧同方向工作集的证据不升级为新增行为要求的PASS"]
+}

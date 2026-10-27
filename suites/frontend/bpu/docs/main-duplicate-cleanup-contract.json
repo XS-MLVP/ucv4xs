@@ -1,0 +1,41 @@
+{
+  "format": "semantic-requirement-before-case",
+  "version": 1,
+  "title": "重复分支副本清理按目标副本执行，不能吞掉独立分支的学习",
+  "event": "两个仍有资格的旧miss原来源先后学习同一分支，中间另一个分支替换干净shadow，从而自然形成重复副本；真实新查询触发重复项清理。",
+  "owner": "有效分支版本以逻辑分支身份关联；清理是指定存储目的地的失效操作，不是tag和位置均为零的有效分支。",
+  "effect": "保留声明的低优先序号副本，仅清除重复副本。清理与另一分支完整目标修正重叠时，两项效果都应完成，不被零编码或端口优先级错误合并。",
+  "preservation": "其他分支的完整目标、属性、方向及原始metadata保持；每项实际学习只接纳一次；全部S1受有界窗口模型计数。",
+  "crosses": {
+    "identity": ["nonzero-identity", "zero-tag-and-position"],
+    "overlap": ["cleanup-only", "cleanup-and-learning"],
+    "preparation": ["neighbor-already-serviced", "neighbor-learning-inflight"]
+  },
+  "source_chain": [
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtbAlignBank.scala:293",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtbInternalBank.scala:169",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/mbtb/Bundles.scala:60",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/CompareMatrix.scala:125",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:347",
+    "XiangShan/src/main/scala/xiangshan/frontend/bpu/WriteBuffer.scala:163"
+  ],
+  "source_gap": {
+    "measurement": "results/owned-state-full-measurement-audit-20261018-v1/current-source-event-review.json",
+    "file": "rtl/bpu/WriteBuffer_4.sv",
+    "cross_owner_candidate_rows": 52,
+    "dual_operation_candidate_rows": 41,
+    "parent_dual_inputs_are_write_and_cleanup_not_two_arbitrary_trains": true,
+    "association_is_not_a_promise_to_hit_all_93_rows": true
+  },
+  "reference": "复用独立Main语义模型：显式失效按(row,目的地)关联，而非借用无效payload的零tag/位置；程序从原分支定义和学习顺序推导，不从DUT状态初始化。",
+  "observation": "公开driver送入完整合格原输入；独立流水线和Main模型检查真实重复查询、清理消费、完整实际操作、两个fresh消费者及全量metadata；Bundle/@on monitor观察实际输入和写回。",
+  "control": "BPU不能像独立MBTB测试那样单独保持内部s2_fire；仅通过公开预测ready保持S1，独立流水模型识别重复查询进入消费阶段，再由真实学习接纳和父操作事件证明重叠，不硬编码周期偏移。",
+  "selection_before_cleanup": "清理前临时重复候选的位置相等，按CompareMatrix既有平局规则选择较大候选编号；清理按detectMultiHit移除重复高way，之后新查询只剩低way。两者不是同一个优先级。",
+  "pending_lifetime_cross": "另一分支已经写入或仍有真实学习在服务中时，迟到版本到达；两笔不同分支的接纳、提案和SDK服务需证明其真实寿命重叠，再检查排空后清理的身份保持。不按缓冲槽编号生成case。",
+  "scope": "16窗口有界BPU输入合同，不推断提交，不证明整个FTQ/后端；所有原学习来源必须在发送时仍有效，不借用已冲刷快照。只读memory-direct，不写内部信号。",
+  "known_failure_policy": "独立MBTB零键清理已有普通FAIL；集成复现只加强来源和父连接证据，不冒称新的架构缺陷，不新增XFAIL或放宽比较。",
+  "features": ["BPU-MBTB-029", "BPU-INT-093"],
+  "new_feature_IDs": 0,
+  "physical_coordinate_enumeration": false,
+  "SDK_RTL_DUT_changes": false
+}

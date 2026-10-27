@@ -1,0 +1,31 @@
+{
+  "format": "semantic-requirement-before-case",
+  "version": 1,
+  "title": "接近容量时，相邻递归层各自保留剩余返回次数和外层调用身份",
+  "event": "真实的多层调用链接近提交栈容量；最后两个不同调用点分别递归，内层自然返回后继续消费外层尚存的重复调用。",
+  "effect": "内外递归层不借用彼此的计数或返回地址；调用目标修正只重做原调用一次；按层提交返回后，其余外层的完整提交状态保持。",
+  "preservation": "所有仍存活调用均能返回，最终恢复reset sentinel；原始调用和返回metadata不重绑定，每个实际S3操作只提交一次。",
+  "crosses": {
+    "capacity": ["one-group-free", "exact-retained-capacity"],
+    "recursive_count_relation": ["outer-heavy", "inner-heavy"]
+  },
+  "source_gap": {
+    "measurement": "results/owned-state-full-measurement-audit-20261018-v1/analysis.json",
+    "module": "integrated RAS",
+    "remaining_semantic_attribution_rows": 6,
+    "native_file": "rtl/bpu/RasStack.sv",
+    "native_lines": [529, 530, 533, 534, 590, 592],
+    "source": "XiangShan/src/main/scala/xiangshan/frontend/bpu/ras/RasStack.scala:335",
+    "relation_is_not_a_promise_to_hit_every_row": true,
+    "local_priority_and_parent_action_guard_rows_not_waived": true
+  },
+  "missing_semantic_cross": "原有三层递归形成的同时存活不同调用组较少；跨容量用例主要重复最内层。缺少近容量的两个相邻递归组保持和逐层自然返回。",
+  "reference": "复用展开逻辑调用帧和独立CommittedStack压缩模型；预期来自声明的函数调用及返回序列，不能由DUT槽号、counter或metadata初始化。",
+  "observation": "公开agent/driver送入调用、目标修正和源相关提交；既有RAS/PHR/提交monitor比较所有实际调用、完整返回目标序列、每层提交状态及最终sentinel。",
+  "features": ["BPU-INT-033", "BPU-INT-054", "BPU-INT-096"],
+  "scope": "MiniConfig容量内的所有逻辑调用都保留；不验证已被容量驱逐的调用返回，不扩大原有局部不可达证明。",
+  "new_feature_IDs": 0,
+  "physical_coordinate_enumeration": false,
+  "new_predictor_reference_algorithms": 0,
+  "SDK_RTL_DUT_changes": false
+}

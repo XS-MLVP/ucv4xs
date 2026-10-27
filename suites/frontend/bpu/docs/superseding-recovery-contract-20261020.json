@@ -1,0 +1,18 @@
+{
+  "title": "更老分支的恢复紧接着到达时，取代尚未完成的年轻恢复，后继只继承最终存活的执行前缀",
+  "defined_before_implementation": true,
+  "existing_requirements": ["path-recovery/owned-checkpoint", "conditional-context/executed-condition-prefix", "conditional-context/read-versus-feedback"],
+  "existing_features": ["BPU-INT-034", "BPU-INT-043", "BPU-INT-094", "BPU-INT-099"],
+  "gap": "单次后端恢复、与预测纠正竞争、循环原件恢复以及恢复后的查询已各有证据；未找到两个不同真实公开原件按年轻到更老顺序、连续接纳恢复的专属DUT程序。两个恢复的组合不能由单次恢复PASS替代。",
+  "legal_scenario": "同一正常条件循环取得不同年龄的两份真实预测原件，冻结metadata。先恢复年轻原件，再在相邻接纳边界恢复更老原件；后者在前者取消范围之外。反过来用已取消的年轻来源恢复不属于此合法输入场景。",
+  "profiles": ["older-not-taken", "older-forward-taken", "older-backward-taken", "older-direct-after-prefix"],
+  "semantic_expectation": "原件中的条件历史和迭代各自独立，年轻恢复可暂时注册，但第二份更老恢复完成后，它的已执行条件前缀、原迭代和路径历史必须同时胜出。新预测不能复活年轻前缀、相加两份结果或使用当前循环次数。",
+  "distinguishing_controls": "四程序使年轻和更老恢复至少一个GHR/BW或迭代字段不同。更老原件循环计数尚未饱和且比年轻原件小；恢复后进入已正常学习的无条件保持路径，再由fresh完整公开消费者确认最终历史。",
+  "obligations": ["two-distinct-published-originals", "older-source-survives-first-cancellation", "adjacent-actual-recovery-acceptance", "complete-original-payloads", "both-intermediate-and-final-history-checked", "older-prefix-and-iteration-win", "fresh-winner-consumer", "originals-remain-immutable"],
+  "implementation_rules": "使用现有CommonQueryReference、LoopIterationReference、PathHistoryReference与正常Main/Micro模型，不以任何DUT状态生成金值；补公共agent批量恢复与其只读接纳关联，case不出现边沿、pin访问、硬编码等待或asyncio.gather。",
+  "line_relationship": "来自Phr恢复寿命和CommonHR读取/反馈历史优先级的组合完整性复查，不承诺覆盖1404个有来源前提的游标行。CommonHR 869-871有外层互斥前提，不将这三个行点硬称为缺少第二个恢复；所有原生分母保留。",
+  "scope": "BPU公开输入切点上的两份可核对年龄与仍存活来源；不是完整FTQ的任意退休、取消或容量证明。",
+  "new_feature_IDs": 0,
+  "RTL_DUT_SDK_changes": false,
+  "new_DUT_credit_before_execution": 0
+}

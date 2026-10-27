@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "updated_at_date": "2026-10-25",
+  "items": [
+    {
+      "id": "BDA-ECC-DELAYED-FLAG",
+      "severity": "reviewed_not_bug",
+      "status": "closed_no_defect",
+      "summary": "read_error_delayed 对“已通过编码器写入的行”为 0；此前的告警来自读取从未写过的 SRAM 行——这些行的数据与 ECC 都是随机内容，解码必然报错。这不是编解码约定不匹配。",
+      "evidence": "实测：未写过的 set 读回随机数据（0x8b8e/0xebb1/...）且 8 个 error 位全 1；用 commit_write 经编码器写入全零后同一窗口 error 全 0；写入其他地址后也全 0。新增回归用例 test_zero_line_has_no_ecc_error（经编码器写 0 后读回 error=0）与 test_ecc_error_flag_clears_after_read（读后标志回 0）。",
+      "impact": "原“本配置下正确数据也报错”的结论撤回；ECC 功能点的通过条件恢复为“数据逐位一致 + 伪错误注入生效 + 正确数据 error=0”。",
+      "next": "无需修复。任何读取前必须先用编码写路径初始化目标 set/way（测试已统一 prime）。"
+    },
+    {
+      "id": "BDA-DUPLICATED-BANK-ADDR",
+      "severity": "reviewed_not_bug",
+      "status": "closed_no_defect",
+      "summary": "bank 0..15 的读地址取自 addr_dup，16..31 取自 addr；两者都在同一 div 内，功能上等价于两套物理副本。",
+      "evidence": "BankedDataArray.scala:752 DuplicatedQueryBankSeq = 0 until DCacheBanks/2；soc-split/rtl/BankedDataArray.sv bank_addr_matchs_dup 路径。",
+      "impact": "验证模型 read_result 对 bank<16 使用 addr_dup 的 set，测试中 addr_dup=addr 或显式不同 set 均已覆盖。",
+      "next": "无。"
+    },
+    {
+      "id": "DCACHE-REFILL-NOT-RESIDENT",
+      "severity": "reviewed_not_bug",
+      "status": "closed_resolved",
+      "summary": "（已解决）DCache 顶层冷 load refill 后不命中的问题，根因是 tag/meta SRAM 需要 256 拍清扫、GrantData 必须 size=6、load 响应只在 S2 采样。",
+      "evidence": "results/dc-final-05（15 passed）；results/mp-main-07 + results/mq-main-03 的 refill/install 行为；docs/reports/dcache-top-20261024.md §refill 根因。",
+      "impact": "refill 已可在 DCache 顶层闭环：AcquireBlock → 2×GrantData → 重放命中，数据逐字节一致。",
+      "next": "无（保留记录供追溯）。"
+    },
+    {
+      "id": "MQ-STORE-MERGE-DATA-PENDING",
+      "severity": "rtl_defect",
+      "status": "confirmed_rtl_defect",
+      "summary": "同一 cache line 的第二笔部分 store 合并到已分配的 MSHR 时被应答成功（queryMQ ready=1、handled=1、无第二次 Acquire），但其字节从未写入 refill_and_store_data：DCache 顶层安装的行是 0x00AA 而不是 0xBBAA（第二笔 store 写入的 byte1 被 0x00 覆盖，L2 原来的 0x01 也丢失）。",
+      "evidence": "新增两个严格 expected-failure 用例：tests/dcache/test_dcache.py::test_two_partial_stores_same_missing_line_merge_data（真实 DCache DUT，store1 byte0=0xAA mask 0x01、store2 byte1=0xBB mask 0x02，refill 后 load 观测 0x00AA，期望 0xBBAA）与 tests/miss_queue/test_miss_queue.py::test_second_store_merge_carries_its_bytes（MissQueue 独立 DUT，refill_info 观测 0x01AA）。`--runxfail` 确认失败点就是数据断言。根因定位：MissEntry.sv 中 refill_and_store_data 的 store 合并分支与 req_store_mask 更新都由 _GEN_1 = io_miss_req_pipe_reg_merge & (io_miss_req_pipe_reg_req_source == 4'h1) 门控，第二笔 store 走的合并路径（MissQueue.scala:888-891 before_data_refill_can_merge，alloc_is_store 且未 refill 响应）没有把新 store 的 data/mask 写入该寄存器。",
+      "impact": "真实功能缺陷：同 line 连续两笔部分 store 会静默丢数据/写坏行内容，且 LSU 收到成功响应。影响 store→load 正确性与 dirty 数据完整性，不能作为“已验证行为”。",
+      "next": "待上游确认修复方案（在 entry 级 store 合并路径写入 refill_and_store_data，或对第二笔 store 返回 replay 让 Sbuffer 重试）。修复后严格 xfail 会变成 unexpected pass，用例会自动提示重新打开该功能点。"
+    },
+    {
+      "id": "DCACHE-DENIED-ERROR-PADDR-ZERO",
+      "severity": "reviewed_not_bug",
+      "status": "closed_no_defect",
+      "summary": "DENIED/corrupt refill 时 io_error.paddr 只等于 vaddr[11:0]：MainPipe 用 Cat(s2_tag, get_untag(vaddr)) 重建上报地址（MainPipe.scala:682），冷行 tag 仍为 0，因此只剩低 12 位；此前“paddr=0”是因为测试地址页对齐（低 12 位为 0）。该字段只用于 tag/data ECC 错误（report_to_beu=1），L2 错误的 report_to_beu=0，BEU 不消费它。",
+      "evidence": "实测：vaddr/paddr=0x11000 → io_error.paddr=0x0；0x11440 → 0x440；0x123C0 → 0x3C0；三种地址的 report_to_beu 均为 0。新增非 xfail 用例 tests/dcache/test_dcache.py::test_denied_refill_error_paddr_is_vaddr_low_bits 固化该契约。",
+      "impact": "不是缺陷，是错误上报地址字段的固有语义；消费者不应在 L2 错误上用 paddr 定位行。",
+      "next": "无需修复。若上游希望 L2 错误携带完整 paddr，需要在 MainPipe 中改用 s2_req.addr 并单独定义该字段。"
+    },
+    {
+      "id": "WRAPPER-NO-UNCACHE-LOGIC",
+      "severity": "documented_scope",
+      "status": "closed_by_design",
+      "summary": "DCacheWrapper 内不含 Uncache 数据通路/uncache 仲裁/flush 状态机；它只是 DCache 的 1:1 端口封装（766 identity + 53 rename + 42 perf 两级寄存器）。",
+      "evidence": "tools/wrapper_portmap.py 从 DCacheWrapper.sv 提取 861 连接；MemBlock.sv:7891 与 DCacheWrapper 平级实例化 Uncache；DCache.sv 无 uncache 端口。",
+      "impact": "“Uncache 与 DCache 的仲裁/返回”不能在 DCacheWrapper 上验证，需 MemBlock 或 uncache 仲裁子块 DUT。本工程不虚构该行为。",
+      "next": "如需覆盖，新建 MemBlock（或 uncache 仲裁器）DUT。"
+    },
+    {
+      "id": "DCACHE-REEVICT-BLOCK-REJECTED",
+      "severity": "reviewed_not_bug",
+      "status": "closed_no_defect",
+      "summary": "被替换 block 的“再次 miss 被拒绝（handled=0）”不是缺陷，而是写回阻塞契约：替换产生的 C 通道 Release 未被接受（c_ready=0）时，WritebackQueue 条目仍占用该 block，MissQueue 依据 io_block_miss_req 拒绝为同一 block 分配，load 返回 handled=0（LSU 应按 replay 处理）。一旦 C 通道放行并收到 ReleaseAck，同一 block 的 miss 立即恢复 handled=1。",
+      "evidence": "新增用例 test_pending_release_blocks_remiss_until_drained：填满 4 way → 访问第 5 个 block 触发替换（c_ready=0）→ 对被替换 block 的 load 得到 miss=1/handled=0；随后 c_ready=1 并回 ReleaseAck → 同一 block 的 load 得到 miss=1/handled=1 并完成 refill。此前“永久拒绝”的观测是因为测试环境从未放行 C 通道（env._idle 默认把 c_ready 清 0），并非 RTL 卡死。",
+      "impact": "不是缺陷。真实系统里 L2 会接受写回并回 ack，LSU 会把 handled=0 当作 replay 重发；随机流量生成器保持 c_ready/ack 常开即可。",
+      "next": "无需修复。随机流量生成器保持 L2 侧常开并在 handled=0 时重试；替换语义由定向用例覆盖。"
+    },
+    {
+      "id": "CF-DEQUEUE-PIPELINE-NO-RESET",
+      "severity": "reviewed_benign_in_system",
+      "status": "open",
+      "summary": "CounterFilter 的 3 级出队计数流水（last3CycleAlloc_REG/_REG_1/_REG_2）位于无复位的 always @(posedge clock) 块中，只有末级 last3CycleAlloc 被复位。短复位后这些寄存器保留复位前的/随机的值，第一个复位后时钟沿会按该值出队，把 deqPtr 推过 enqPtr，使 FIFO 指针永久偏移。",
+      "evidence": "多 seed 扫描发现：seed=1 时同一份确定性用例全过，seed=2 时 test_single_entry_lifetime / test_query_ports_are_independent / test_index_and_way_full_range / test_capacity_full_and_pointer_wrap 全部失败，报 query 期望命中而 DUT 不命中（occupancy=1）。相同激励只差 Verilator 随机初值，定位到唯一无复位寄存器组（rtl/counter_filter/CounterFilter.sv:606-610）。把复位保持 5 拍（期间 ld_valid=0）后三个寄存器被清零，seed 1/2/3 全部通过。",
+      "impact": "对 DCache 功能无影响：真实系统复位至少持续数百拍，且 DCache 在复位后还要等 256 拍 SRAM 清扫才会发出 load，流水早已清零。只影响“复位后立刻打流量”的仿真场景。",
+      "next": "若希望彻底消除，可给这三个寄存器加复位（上游决定）。本工程在 env 的 reset() 中按 5 拍复位校准，并在 counter-filter 报告与功能点文档中记录该前提。"
+    }
+  ]
+}

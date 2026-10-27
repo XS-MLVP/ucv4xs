@@ -1,0 +1,379 @@
+{
+  "format": "xreactor-functional-coverage",
+  "version": 2,
+  "coverage": 100.0,
+  "covered": true,
+  "groups": [
+    {
+      "report_version": 2,
+      "schema": {
+        "version": 1,
+        "name": "ptwfilter",
+        "iff": null,
+        "goal": 100.0,
+        "points": [
+          {
+            "name": "event",
+            "source": "event",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "enqueue",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "enqueue"
+                  ]
+                }
+              },
+              {
+                "name": "flush",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "flush"
+                  ]
+                }
+              },
+              {
+                "name": "full",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "full"
+                  ]
+                }
+              },
+              {
+                "name": "issue",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "issue"
+                  ]
+                }
+              },
+              {
+                "name": "match_resp",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "match_resp"
+                  ]
+                }
+              },
+              {
+                "name": "merge",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "merge"
+                  ]
+                }
+              },
+              {
+                "name": "mismatch_resp",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "mismatch_resp"
+                  ]
+                }
+              }
+            ],
+            "description": "入队、向 PTW 发出、匹配/不匹配响应、重复合并、flush 和满。"
+          },
+          {
+            "name": "getgpa",
+            "source": "getgpa",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "clear",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "clear"
+                  ]
+                }
+              },
+              {
+                "name": "set",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    "set"
+                  ]
+                }
+              }
+            ],
+            "description": "请求的 getGpa 属性在响应中透传。"
+          },
+          {
+            "name": "stage",
+            "source": "stage",
+            "iff": null,
+            "weight": 1,
+            "goal": 100.0,
+            "overlap": "warn",
+            "bins": [
+              {
+                "name": "0",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    0
+                  ]
+                }
+              },
+              {
+                "name": "1",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    1
+                  ]
+                }
+              },
+              {
+                "name": "2",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    2
+                  ]
+                }
+              },
+              {
+                "name": "3",
+                "kind": "normal",
+                "at_least": 1,
+                "matcher": {
+                  "type": "values",
+                  "values": [
+                    3
+                  ]
+                }
+              }
+            ],
+            "description": "待处理请求的翻译阶段编码。"
+          }
+        ],
+        "crosses": [],
+        "description": "PTWFilter 8 项待处理队列与响应匹配。"
+      },
+      "schema_digest": "2e3e956fdebc891a8ebd4278efbe4cff1b9fd04b99af7a5445d7d8e39bcb8981",
+      "instance": "ptwfilter",
+      "illegal_policy": "raise",
+      "samples": 19,
+      "gated": 0,
+      "coverage": 100.0,
+      "goal": 100.0,
+      "covered": true,
+      "goal_met": true,
+      "items_goal_met": true,
+      "has_illegal": false,
+      "points": [
+        {
+          "samples": 19,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "enqueue": 8,
+            "flush": 1,
+            "full": 1,
+            "issue": 1,
+            "match_resp": 6,
+            "merge": 1,
+            "mismatch_resp": 1
+          },
+          "provenance": {
+            "issue": {
+              "e19471a4d00b48e6aae1681c26020b00": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "match_resp": {
+              "e19471a4d00b48e6aae1681c26020b00": {
+                "count": 6,
+                "first": null,
+                "last": null
+              }
+            },
+            "mismatch_resp": {
+              "e19471a4d00b48e6aae1681c26020b00": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "merge": {
+              "e19471a4d00b48e6aae1681c26020b00": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "enqueue": {
+              "e19471a4d00b48e6aae1681c26020b00": {
+                "count": 8,
+                "first": null,
+                "last": null
+              }
+            },
+            "full": {
+              "e19471a4d00b48e6aae1681c26020b00": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "flush": {
+              "e19471a4d00b48e6aae1681c26020b00": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "event",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 19,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "0": 16,
+            "1": 1,
+            "2": 1,
+            "3": 1
+          },
+          "provenance": {
+            "0": {
+              "e19471a4d00b48e6aae1681c26020b00": {
+                "count": 16,
+                "first": null,
+                "last": null
+              }
+            },
+            "1": {
+              "e19471a4d00b48e6aae1681c26020b00": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "2": {
+              "e19471a4d00b48e6aae1681c26020b00": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            },
+            "3": {
+              "e19471a4d00b48e6aae1681c26020b00": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "stage",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        },
+        {
+          "samples": 19,
+          "gated": 0,
+          "ignored": 0,
+          "unmatched": 0,
+          "unknown": 0,
+          "counts": {
+            "clear": 18,
+            "set": 1
+          },
+          "provenance": {
+            "clear": {
+              "e19471a4d00b48e6aae1681c26020b00": {
+                "count": 18,
+                "first": null,
+                "last": null
+              }
+            },
+            "set": {
+              "e19471a4d00b48e6aae1681c26020b00": {
+                "count": 1,
+                "first": null,
+                "last": null
+              }
+            }
+          },
+          "name": "getgpa",
+          "coverage": 100.0,
+          "goal": 100.0,
+          "goal_met": true,
+          "excluded_bins": {}
+        }
+      ],
+      "crosses": [],
+      "illegal_hits": [],
+      "sampling_contract": null,
+      "sampling_backend": "manual",
+      "sampling_fallback": null,
+      "diagnostics": null,
+      "collection_complete": true,
+      "origins": {
+        "e19471a4d00b48e6aae1681c26020b00": {
+          "run_id": "e19471a4d00b48e6aae1681c26020b00",
+          "instance": "ptwfilter",
+          "metadata": {},
+          "explicit_run_id": false
+        }
+      },
+      "active_origin": "e19471a4d00b48e6aae1681c26020b00",
+      "snapshot_id": "7ea8c6351f3608c2a643a63fcbb1ed914671aa2c089b0a1498db8a18c229985b"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "dut": "std_exe_unit",
+  "top": "StdExeUnit",
+  "run": "std-exe-unit-final-01",
+  "rtl_sha256": {
+    "StdExeUnit.sv": "3b1ceed3b9d9ebc97ff51c92ec8006dadfb99468afdaf685268dd57998d09090"
+  },
+  "metrics": {
+    "line_dut_only": {
+      "hit": 11,
+      "total": 11,
+      "percent": 100.0
+    },
+    "branch": {
+      "hit": 12,
+      "total": 12,
+      "percent": 100.0
+    },
+    "toggle_dut_only": {
+      "hit": 1058,
+      "total": 1058,
+      "percent": 100.0
+    },
+    "functional": {
+      "coverage": 100.0,
+      "cases": 22,
+      "checked": true
+    }
+  },
+  "uncovered": [],
+  "semantic_findings": [
+    {
+      "id": "STD-ROB-NEEDS-LEGAL",
+      "finding": "out.toRob.valid requires the SQ index to be inside the physical window",
+      "evidence": [
+        "StdExeUnit.scala: io.out.toRob.valid := io.in.valid && !io.vstdIn.valid && !isAMO && !(io.in.valid && s0IllegalIssue)",
+        "StdExeUnit.sv: io_out_toRob_valid_0 chains ~(io_in_valid & ~legal)"
+      ],
+      "impact": "an out-of-window scalar STD produces neither a ROB writeback nor SQ data, but still reports feedBack.hit=0",
+      "defect_claim": false
+    },
+    {
+      "id": "STD-NO-RESET",
+      "finding": "the generated unit has no reset port",
+      "evidence": [
+        "StdExeUnit.sv port list has only clock among clock/reset"
+      ],
+      "impact": "feedback registers start at the Verilator random-init value; the first compared cycle skips them",
+      "defect_claim": false
+    }
+  ],
+  "failures": [],
+  "status": "PASS"
+}

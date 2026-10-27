@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "suite": "bpu",
+  "generation": "bpu-standalone",
+  "closure": "module-dependencies",
+  "duts": {
+    "bpu": {
+      "top": "Bpu",
+      "export_name": "BpuDut"
+    },
+    "abtb": {
+      "top": "AheadBtb",
+      "export_name": "AbtbDut"
+    },
+    "ittage": {
+      "top": "Ittage",
+      "export_name": "IttageDut"
+    },
+    "mbtb": {
+      "top": "MainBtb",
+      "export_name": "MbtbDut"
+    },
+    "ras": {
+      "top": "Ras",
+      "export_name": "RasDut"
+    },
+    "sc": {
+      "top": "Sc",
+      "export_name": "ScDut"
+    },
+    "tage": {
+      "top": "Tage",
+      "export_name": "TageDut"
+    },
+    "ubtb": {
+      "top": "MicroBtb",
+      "export_name": "UbtbDut"
+    },
+    "uras": {
+      "top": "MicroRas",
+      "export_name": "UrasDut"
+    },
+    "utage": {
+      "top": "MicroTage",
+      "export_name": "UtageDut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "tests"
+  ],
+  "process_isolation": "dut"
+}

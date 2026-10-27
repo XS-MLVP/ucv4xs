@@ -1,0 +1,17 @@
+{
+  "format": "human-obligation-before-model-and-case",
+  "feature": "BPU-MBTB-026",
+  "human_event": "迟到目标纠正找回自己已有的保留记录；同拍另一个分支的重复版本需要清理。两者虽然来自不同请求，却最终共享服务资源。",
+  "obligation": "容量仍有空位、两者目标记录不同，就必须各自保留直至服务；清理不能挤掉刚找回的纠正，纠正也不能吞掉清理。后续真实查询分别消费新目标和唯一幸存版本。",
+  "why_previous_cases_are_insufficient": "旧026的普通纠正和清理分别拥有独立服务主人；旧023的迟到纠正没有同时争用的清理。两种通过不能证明它们组合后的不丢失义务。",
+  "independent_model_counterexample": "RetainedEntries保留一份已完成的分支记录后，同时输入命中它的纠正与另一行的显式失效；旧模型两次选择同一空闲位置，丢失纠正，尽管第二位置可用。无需DUT即可复现，不能把模型的丢失当RTL的正确答案。",
+  "semantic_axes": {
+    "correction_source": ["current-owner-control", "old-miss-finds-retained-owner"],
+    "identity_boundary": ["ordinary-identity", "zero-tag-only"]
+  },
+  "observations": ["original snapshots and complete accepted feedback", "both simultaneous complete requests and their preexisting logical owners", "both eventual destination-specific services", "fresh unique survivor and corrected-neighbor consumers", "all unrelated records preserved"],
+  "scope": "独立Main正常公开driver、原生只读memory-direct监视；一份已服务的纠正记录，另一行首次产生的失效，容量足够。首次清理与反馈必须由monitor证明同拍，不能先清理后重放来冒充该前态。已完成清理的重放仍由旧026覆盖，不声称它也保留此新前态。不同输入口可归同一服务主人，不声称完整FTQ可达、任意满容量仲裁或同请求口优先级已解决。",
+  "known_failure_isolation": "方向邻居保持已声明的弱计数2以区分记录丢失与已知的独立方向错归属；完整默认参考始终工作，这不豁免旧负方向邻居普通FAIL。",
+  "new_feature_IDs": 0,
+  "RTL_DUT_SDK_changes": false
+}

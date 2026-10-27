@@ -1,0 +1,437 @@
+{
+  "schema_version": 1,
+  "validated_date": "2026-10-26",
+  "source": {
+    "repository": "/home/xyl/kmh-v3-test/XiangShan",
+    "commit": "893e1580b705d81f113c30c7a05734e09a08050e",
+    "rtl_source": "/home/xyl/kmh-v3-test/soc-split/rtl",
+    "rtl_policy": "byte-for-byte copies, no edits"
+  },
+  "hierarchy": {
+    "TLBFA": {
+      "instances": [
+        {
+          "parent": "TlbStorageWrapper",
+          "instance": "page_itlb_storage_fa",
+          "used_by": [
+            "TLB (Frontend ITLB)"
+          ]
+        }
+      ],
+      "file": "TLBFA.sv",
+      "lines": 13023,
+      "parameters": {
+        "ports": 1,
+        "n_ways": 48,
+        "n_sets": 1,
+        "n_dups": 1,
+        "sector_entries": 8,
+        "level": 3,
+        "vpn_bits": 38,
+        "ppn_bits": 36,
+        "pte_ppn_bits": 41,
+        "asid_bits": 16,
+        "vmid_bits": 14
+      },
+      "coverage": "31 PASS; line 3419/3419; toggle 17766/17766; branch 1016/1018; sampled bins 100% not semantic closure; run soundness-final-tlbfa-01",
+      "note": "Fake-PTE level is characterization; architectural fault/GPA effects unverified.",
+      "current_run": "soundness-final-tlbfa-01",
+      "soundness_status": "regression-passed-scope-not-closed"
+    },
+    "TlbStorageWrapper": {
+      "file": "TlbStorageWrapper.sv",
+      "instances": [
+        "TLBFA"
+      ],
+      "used_by": [
+        "TLB (Frontend ITLB)"
+      ],
+      "coverage": "8 PASS; line 3431/3431; toggle 18798/18798; branch 1019/1022; sampled bins 100% not semantic closure; run soundness-final-wrapper-01",
+      "replacement_note": "pure tree-PLRU; does not prioritize invalid ways",
+      "historical_review_fields": {
+        "replacement_note": "pure tree-PLRU; does not prioritize invalid ways",
+        "coverage": "closed: 8 tests, line 100%, toggle 100%, branch 1019/1022"
+      },
+      "note": "Pure tree-PLRU without invalid priority: performance observation, not ISA failure.",
+      "current_run": "soundness-final-wrapper-01",
+      "soundness_status": "regression-passed-scope-not-closed"
+    },
+    "TLB": {
+      "file": "TLB.sv",
+      "instances": [
+        "TlbStorageWrapper",
+        "DelayN_3",
+        "DelayN_5"
+      ],
+      "used_by": [
+        "Frontend"
+      ],
+      "note": "Internal GPA replay checked; not CSR/retirement exception encoding acceptance.",
+      "coverage": "25 PASS; line 3655/3657; toggle 18785/23074; branch 1094/1104; sampled bins 100% not semantic closure; run soundness-final-tlb-01",
+      "historical_review_fields": {
+        "note": "one requestor port; ITLB; GPA replay path now verified",
+        "coverage": "25 tests PASS; functional 100%; overall line 3655/3657=99.945%; TLB top file 156/158; toggle 18785/23074; branch 1094/1104; GPA/getGpa replay closed in tlb-gpa-tests-06"
+      },
+      "current_run": "soundness-final-tlb-01",
+      "soundness_status": "regression-passed-scope-not-closed"
+    },
+    "TLBNonBlock": {
+      "file": "TLBNonBlock.sv",
+      "instances": [
+        "TlbStorageWrapper_1",
+        "TLBFA_1",
+        "DelayN_3",
+        "DelayN_5"
+      ],
+      "used_by": [
+        "MemBlock (DTLB load path)"
+      ],
+      "note": "Independent multi-port DUT; per-way sfence and need_gpa enumeration remains open.",
+      "coverage": "30 PASS; line 4839/4956; toggle 20486/37422; branch 1424/1568; sampled bins 100% not semantic closure; run soundness-final-tlbn-01",
+      "historical_review_fields": {
+        "note": "multi-port DTLB with independent TLBFA_1/TlbStorageWrapper_1; closed in phase 2; residual 117 lines are per-way sfence ternary arms and need_gpa port 1/3 case enumeration",
+        "coverage": "30 tests PASS; DUT-only line 4839/4956=97.639%; branch 1424/1568; toggle 20486/37422; functional 100% (580 samples); final run tlbn-tests-13"
+      },
+      "current_run": "soundness-final-tlbn-01",
+      "soundness_status": "regression-passed-scope-not-closed"
+    },
+    "L2TLB": {
+      "file": "L2TLB.sv",
+      "lines": 19798,
+      "instances": [
+        "L2TlbMissQueue",
+        "PtwCache",
+        "PTW",
+        "HPTW",
+        "LLPTW",
+        "L2TlbPrefetch",
+        "Bitmap",
+        "BitmapCache",
+        "PMP",
+        "arbiters"
+      ],
+      "used_by": [
+        "L2TLBWrapper (MemBlock)"
+      ],
+      "coverage": "46 PASS; line 17079/22249; toggle 96980/255430; branch 4330/6304; sampled bins 100% not semantic closure; run soundness-final-l2tlb-02",
+      "note": "Corrected fences, zero-gap and 4-outstanding controls pass. Conditional no-fence liveness and architectural crosses open.",
+      "historical_review_fields": {
+        "note": "Real sub-blocks only. Closed: PMA/PMP page-table attributes, bitmap deny, scoped sfence, satp+sfence, four outstanding requests with realistic memory latency. Still strict XFAIL: all-address sfence. L2TLBWrapper separately verified by l2tlbwrapper-final-05.",
+        "coverage": "40 PASS + 1 strict XFAIL; DUT-only line 17081/22249=76.772%; branch 4329/6304; toggle 96615/255430; functional 100%; final run l2tlb-final-12"
+      },
+      "current_run": "soundness-final-l2tlb-02",
+      "soundness_status": "regression-passed-scope-not-closed"
+    },
+    "L2TlbMissQueue": {
+      "coverage": "5 PASS; line 24/24; toggle 829/854; branch 17/18; sampled bins 100% not semantic closure; run soundness-final-l2mq-01",
+      "historical_review_fields": {
+        "coverage": "5 tests; line 24/24; branch 17/18; toggle 829/854; functional 100%"
+      },
+      "note": "Selected tests pass; residual denominators retained and not automatically waived.",
+      "current_run": "soundness-final-l2mq-01",
+      "soundness_status": "regression-passed-scope-not-closed"
+    },
+    "L2TlbPrefetch": {
+      "coverage": "6 PASS; line 39/39; toggle 657/784; branch 22/23; sampled bins 100% not semantic closure; run soundness-final-l2pf-01",
+      "historical_review_fields": {
+        "coverage": "6 tests; line 39/39; branch 22/23; toggle 657/784; functional 100%"
+      },
+      "note": "Selected tests pass; residual denominators retained and not automatically waived.",
+      "current_run": "soundness-final-l2pf-01",
+      "soundness_status": "regression-passed-scope-not-closed"
+    },
+    "PTWRepeaterNB": {
+      "file": "PTWRepeaterNB.sv",
+      "lines": 446,
+      "instances": [
+        {
+          "parent": "Frontend",
+          "instance": "inner_itlbRepeater2"
+        },
+        {
+          "parent": "MemBlock",
+          "instance": "inner_itlbRepeater3"
+        }
+      ],
+      "coverage": "7 PASS; line 72/72; toggle 3114/3114; branch 7/8; sampled bins 100% not semantic closure; run soundness-final-ptwrepeater-01",
+      "note": "Selected tests pass; residual denominators retained and not automatically waived.",
+      "historical_review_fields": {
+        "note": "not an L2TLB internal instance; verified as an independent leaf",
+        "coverage": "7 tests; line 72/72; toggle 3114/3114; branch 7/8; functional 100%; final run ptwrepeater-06"
+      },
+      "current_run": "soundness-final-ptwrepeater-01",
+      "soundness_status": "regression-passed-scope-not-closed"
+    },
+    "PTWFilter": {
+      "file": "PTWFilter.sv",
+      "lines": 1745,
+      "instances": [
+        {
+          "parent": "Frontend",
+          "instance": "inner_itlbRepeater1"
+        }
+      ],
+      "parameters": {
+        "width": 1,
+        "size": 8,
+        "fence_delay": 6
+      },
+      "coverage": "14 PASS; line 206/206; toggle 4412/4414; branch 91/92; sampled bins 100% not semantic closure; run soundness-final-ptwfilter-01",
+      "note": "Selected tests pass; residual denominators retained and not automatically waived.",
+      "historical_review_fields": {
+        "note": "PTWNewFilter/vector variant is not built; this is the real 8-entry PTWFilter instance",
+        "coverage": "14 tests; line 206/206; toggle 4411/4414; branch 91/92; functional 100%; final run ptwfilter-final-16"
+      },
+      "current_run": "soundness-final-ptwfilter-01",
+      "soundness_status": "regression-passed-scope-not-closed"
+    },
+    "L2TLB-subblocks-integration": {
+      "historical_review_fields": {
+        "coverage": {
+          "PtwCache": {
+            "lines": "13741/13748 (standalone)",
+            "note": "independent leaf closed at 99.949%; wrapper 64-page working set also exercises all L0 sets with zero-read replay"
+          },
+          "PTW": {
+            "lines": "519/530 (standalone)",
+            "note": "standalone leaf; allStage/full_gvpn gaps"
+          },
+          "HPTW": {
+            "lines": "133/133",
+            "note": "standalone leaf closed; integration also 133/133"
+          },
+          "LLPTW": {
+            "lines": "1656/1955 (standalone)",
+            "note": "standalone main closure; multi-allStage + duplicate-waiting cases open"
+          },
+          "Bitmap": {
+            "lines": "955/1415 (standalone)",
+            "note": "standalone leaf; multi-miss vectors open"
+          },
+          "BitmapCache": {
+            "lines": "314/323 (standalone)",
+            "note": "standalone leaf; MBIST/SRAM residual"
+          },
+          "PMP": {
+            "lines": "2117/2117 (standalone)",
+            "note": "standalone leaf closed except structure branches"
+          }
+        },
+        "note": "These are integration coverage numbers, not independent leaf acceptance.",
+        "PTW": {
+          "lines": "530/530 (standalone)",
+          "note": "full_gvpn and normal allStage closed; final ptw-final-06"
+        },
+        "HPTW": {
+          "lines": "133/133 (standalone)",
+          "note": "closed; accessFault reset observation accepted; final hptw-final-02"
+        },
+        "LLPTW": {
+          "lines": "1656/1955 (standalone)",
+          "note": "multi-allStage strict XFAIL; per-entry residual case enumeration; final llptw-tests-14"
+        },
+        "Bitmap": {
+          "lines": "974/1415 (standalone)",
+          "note": "deny/allow closed; multi-miss/back-to-back strict XFAIL; final bitmap-final-07"
+        },
+        "PMP": {
+          "lines": "2117/2117 (standalone)",
+          "note": "PMP/PMA semantics closed; final pmp-final-04"
+        }
+      },
+      "note": "Independent child and parent integration acceptance are separate; per-file integration coverage remains in parent audits.",
+      "independent_runs": {
+        "PtwCache": "soundness-final-ptwcache-01",
+        "PTW": "soundness-final-ptw-01",
+        "HPTW": "soundness-final-hptw-01",
+        "LLPTW": "soundness-final-llptw-01",
+        "Bitmap": "soundness-final-bitmap-01",
+        "BitmapCache": "soundness-final-bitmapcache-01",
+        "PMP": "soundness-final-pmp-01"
+      }
+    },
+    "HPTW": {
+      "file": "HPTW.sv",
+      "lines": 474,
+      "instances": [
+        {
+          "parent": "L2TLB",
+          "instance": "HPTW"
+        }
+      ],
+      "coverage": "21 PASS; line 133/133; toggle 5069/5270; branch 97/98; sampled bins 100% not semantic closure; run soundness-final-hptw-01",
+      "note": "Reset-without-flush characterization only; no exhaustive reset proof.",
+      "historical_review_fields": {
+        "note": "AccessFault reset structural observation accepted; no functional spurious fault reproduced at seed 1..8.",
+        "coverage": "21 tests PASS; line 133/133=100%; toggle 5069/5270=96.19%; branch 97/98; functional 100%; final run hptw-final-02"
+      },
+      "current_run": "soundness-final-hptw-01",
+      "soundness_status": "regression-passed-scope-not-closed"
+    },
+    "PTW": {
+      "file": "PTW.sv",
+      "lines": 1962,
+      "instances": [
+        {
+          "parent": "L2TLB",
+          "instance": "PTW"
+        }
+      ],
+      "coverage": "30 PASS; line 530/530; toggle 12213/15344; branch 418/420; sampled bins 100% not semantic closure; run soundness-final-ptw-01",
+      "note": "Selected tests pass; residual denominators retained and not automatically waived.",
+      "historical_review_fields": {
+        "note": "full_gvpn high VPN and normal allStage identity-HPTW walk closed.",
+        "coverage": "30 tests PASS; line 530/530=100%; toggle 12213/15344; branch 418/420; functional 100%; final run ptw-final-06"
+      },
+      "current_run": "soundness-final-ptw-01",
+      "soundness_status": "regression-passed-scope-not-closed"
+    },
+    "PMP": {
+      "file": "PMP.sv",
+      "lines": 4369,
+      "instances": [
+        {
+          "parent": "L2TLB",
+          "instance": "PMP"
+        }
+      ],
+      "coverage": "12 PASS; line 2117/2117; toggle 47680/51404; branch 437/470; sampled bins 100% not semantic closure; run soundness-final-pmp-01",
+      "note": "Static build-specific PMA oracle; not an ISA universal configuration.",
+      "historical_review_fields": {
+        "note": "PMP and PMA cfg/addr/mask semantics, including exhaustive PMA cfg bytes, closed at leaf.",
+        "coverage": "12 tests PASS; line 2117/2117=100%; toggle 47680/51404; branch 437/470; functional 100%; final run pmp-final-04"
+      },
+      "current_run": "soundness-final-pmp-01",
+      "soundness_status": "regression-passed-scope-not-closed"
+    },
+    "Bitmap": {
+      "file": "Bitmap.sv",
+      "lines": 2955,
+      "instances": [
+        {
+          "parent": "L2TLB",
+          "instance": "Bitmap"
+        }
+      ],
+      "coverage": "19 PASS; line 994/1415; toggle 2138/6636; branch 290/398; sampled bins 100% not semantic closure; run soundness-final-bitmap-01",
+      "note": "Back-to-back and coalesced/split blocks pass. Remaining state/data coverage open.",
+      "historical_review_fields": {
+        "note": "deny/allow polarity closed; multi-miss and back-to-back PMP alias recorded as strict XFAIL.",
+        "coverage": "16 PASS + 2 strict XFAIL; line 974/1415=68.8%; toggle 2190/6636; branch 279/398; functional 100%; final run bitmap-final-07"
+      },
+      "current_run": "soundness-final-bitmap-01",
+      "soundness_status": "regression-passed-scope-not-closed"
+    },
+    "BitmapCache": {
+      "file": "BitmapCache.sv",
+      "lines": 863,
+      "instances": [
+        {
+          "parent": "L2TLB",
+          "instance": "BitmapCache"
+        }
+      ],
+      "coverage": "12 PASS; line 314/323; toggle 6953/14174; branch 124/148; sampled bins 100% not semantic closure; run soundness-final-bitmapcache-01",
+      "note": "Selected tests pass; residual denominators retained and not automatically waived.",
+      "historical_review_fields": {
+        "note": "independent leaf; residual MBIST/initial/SRAM structure",
+        "coverage": "12 tests PASS; line 314/323=97.2%; toggle 6953/14174=49.0%; branch 124/148; functional 100%; final run bitmapcache-final-06"
+      },
+      "current_run": "soundness-final-bitmapcache-01",
+      "soundness_status": "regression-passed-scope-not-closed"
+    },
+    "PtwCache": {
+      "file": "PtwCache.sv",
+      "lines": 43977,
+      "instances": [
+        {
+          "parent": "L2TLB",
+          "instance": "PtwCache"
+        }
+      ],
+      "coverage": "50 PASS; line 13744/13748; toggle 95616/110892; branch 3182/3226; sampled bins 100% not semantic closure; run soundness-final-ptwcache-01",
+      "note": "Functional data/way-sequence gaps OPEN; absent direct-way selector does not prove unreachable.",
+      "historical_review_fields": {
+        "note": "independent leaf DUT (13-file closure); residual line/branch/toggle are SRAM reset, MBIST/DFT, L3 one-hot mux and data-polarity/way-placement structure; not missing functional points",
+        "coverage": "50 tests PASS; line 13741/13748=99.949%; toggle 87398/110892=78.814%; branch 3179/3226; functional 100% (44 samples); final run ptwcache-final-02"
+      },
+      "current_run": "soundness-final-ptwcache-01",
+      "soundness_status": "regression-passed-scope-not-closed"
+    },
+    "LLPTW": {
+      "file": "LLPTW.sv",
+      "lines": 4505,
+      "instances": [
+        {
+          "parent": "L2TLB",
+          "instance": "LLPTW"
+        }
+      ],
+      "coverage": "27 PASS; line 1660/1955; toggle 4330/20770; branch 359/407; sampled bins 100% not semantic closure; run soundness-final-llptw-01",
+      "note": "Two allStage responses and no-gap normal requests pass. Per-entry wait/HPTW/data residuals open.",
+      "historical_review_fields": {
+        "note": "single allStage in every slot closed; two concurrent allStage stall recorded as strict XFAIL; residual lines per-entry duplicate wait/last HPTW state enumeration.",
+        "coverage": "23 PASS + 1 strict XFAIL; line 1656/1955=84.706%; toggle 4329/20770; branch 359/407; functional 100%; final run llptw-final-04"
+      },
+      "current_run": "soundness-final-llptw-01",
+      "soundness_status": "regression-passed-scope-not-closed"
+    },
+    "L2TLBWrapper": {
+      "file": "L2TLBWrapper.sv",
+      "lines": 977,
+      "instances": [
+        "L2TLB"
+      ],
+      "used_by": [
+        "MemBlock"
+      ],
+      "coverage": "52 PASS; line 17460/22289; toggle 96604/260640; branch 4430/6304; sampled bins 100% not semantic closure; run soundness-final-l2tlbwrapper-02",
+      "note": "Latency 0/1/7 and zero-gap shared-leaf pass. Prior -01 failed illegal unaligned 1GiB positive; -02 includes aligned positive and unaligned PF negative.",
+      "historical_review_fields": {
+        "note": "Four outstanding requests pass with mem_latency=7; zero-gap shared-leaf stall remains strict XFAIL with one-idle-cycle positive test.",
+        "coverage": "46 PASS + 1 strict XFAIL; wrapper own RTL 40/40 lines=100%; combined DUT line 17697/22289=79.398%; branch 4444/6304; toggle 102301/260640; functional 100%; final run l2tlbwrapper-final-05"
+      },
+      "current_run": "soundness-final-l2tlbwrapper-02",
+      "soundness_status": "regression-passed-scope-not-closed"
+    }
+  },
+  "scope_note": "17 real RTL DUT suites: 395 PASS plus 13 checker/model selftests; no current XFAIL/SKIP. Not MMU/SoC or ISA acceptance. Open: fake-PTE fault/GPA, qualified no-fence liveness, targeted HFENCE.GVMA GPA, A/D/privilege crosses and functional residual sequences. MBIST/DFT excluded.",
+  "soundness_review": {
+    "report": "docs/reports/verification-soundness-20261025.md",
+    "status": "regression-complete-with-open-scope",
+    "old_metrics": "historical, not reinterpreted as corrected-code metrics",
+    "RTL": "not modified",
+    "residual_policy": "sampled bins != semantic closure; public-port selector absence != unreachable",
+    "totals": {
+      "PASS": 408
+    },
+    "dut_pass": 395,
+    "checker_selftest_pass": 13,
+    "isa_report": "docs/reports/isa-confirmation-20261026.md",
+    "run_index": "docs/reports/evidence/soundness-20261025/final-runs.json",
+    "residuals": "docs/reports/evidence/soundness-20261025/final-residuals.json",
+    "source_drift": "docs/reports/evidence/soundness-20261025/source-drift-review.json",
+    "review_date": "2026-10-26"
+  },
+  "historical_scope_note": "TLBFA is the ITLB storage leaf; TLBNonBlock uses independent TLBFA_1/TlbStorageWrapper_1 and is now separately verified. PTWRepeaterNB/PTWFilter are Frontend/MemBlock leaves. HPTW, PTW, PMP, Bitmap, BitmapCache, PtwCache and LLPTW have independent DUTs. L2TLBWrapper has an independent combination DUT. Closed in phase 2: TLBNonBlock, TLB GPA replay, Bitmap deny, L2TLB PMA/PMP interaction, PTW full_gvpn/normal allStage, HPTW accessFault reset observation, shared-leaf root-cause isolation. Still not claimed: LLPTW multi-allStage, L2TLB/L2TLBWrapper >2 outstanding (now pass with realistic memory latency), all-address sfence invalidation, Bitmap multi-miss/back-to-back, MBIST/DFT and physical way placement. No claim covers the whole MMU.",
+  "current_runs": {
+    "tlbfa": "soundness-final-tlbfa-01",
+    "wrapper": "soundness-final-wrapper-01",
+    "tlb": "soundness-final-tlb-01",
+    "tlbn": "soundness-final-tlbn-01",
+    "l2mq": "soundness-final-l2mq-01",
+    "l2pf": "soundness-final-l2pf-01",
+    "ptwrepeater": "soundness-final-ptwrepeater-01",
+    "ptwfilter": "soundness-final-ptwfilter-01",
+    "hptw": "soundness-final-hptw-01",
+    "ptw": "soundness-final-ptw-01",
+    "pmp": "soundness-final-pmp-01",
+    "bitmapcache": "soundness-final-bitmapcache-01",
+    "bitmap": "soundness-final-bitmap-01",
+    "ptwcache": "soundness-final-ptwcache-01",
+    "llptw": "soundness-final-llptw-01",
+    "l2tlb": "soundness-final-l2tlb-02",
+    "l2tlbwrapper": "soundness-final-l2tlbwrapper-02",
+    "checker-selftest": "soundness-final-checker-selftest-01"
+  }
+}

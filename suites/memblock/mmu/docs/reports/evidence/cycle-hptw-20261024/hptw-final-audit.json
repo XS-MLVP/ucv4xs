@@ -1,0 +1,1402 @@
+{
+  "format": "mmu-coverage-audit-summary",
+  "generated_at": "2026-10-25T03:44:59.970300+00:00",
+  "run": "results/hptw-final-02",
+  "manifest": {
+    "state": "committed",
+    "coverage_complete": true,
+    "pytest_exitstatus": 0,
+    "tests": {
+      "PASS": 21
+    }
+  },
+  "coverage_dat_sha256": "38369769c68f45af5245f016a42c3c5a4e6d27371cc24e44e288786756bd3c4b",
+  "coverage_info_sha256": "bdd6ae119ac1932f250225e57164b018bc1957ec2213198e93bd90e8ac832a97",
+  "lcov_lines": {
+    "unique_lines": 461,
+    "covered_lines": 136,
+    "uncovered": 325,
+    "procedural_uncovered": 248,
+    "coverage_percent": 29.5011
+  },
+  "lcov_lines_dut_only": {
+    "unique_lines": 133,
+    "covered_lines": 133,
+    "uncovered": 0,
+    "procedural_uncovered": 0,
+    "coverage_percent": 100.0
+  },
+  "lcov_lines_per_file": {
+    "HptwDut.v": {
+      "role": "dut",
+      "unique_lines": 133,
+      "covered_lines": 133,
+      "coverage_percent": 100.0,
+      "uncovered": 0,
+      "uncovered_procedural": 0,
+      "uncovered_declarative": 0,
+      "procedural_lines": 112,
+      "procedural_covered": 112,
+      "uncovered_procedural_lines": [],
+      "uncovered_declarative_lines": []
+    },
+    "HptwDut_top.sv": {
+      "role": "picker_harness",
+      "unique_lines": 328,
+      "covered_lines": 3,
+      "coverage_percent": 0.9146,
+      "uncovered": 325,
+      "uncovered_procedural": 248,
+      "uncovered_declarative": 77,
+      "procedural_lines": 251,
+      "procedural_covered": 3,
+      "uncovered_procedural_lines": [
+        {
+          "line": 290,
+          "source": "function void get_clockxxPfBDHPiBzks;"
+        },
+        {
+          "line": 292,
+          "source": "value=clock;"
+        },
+        {
+          "line": 295,
+          "source": "function void set_clockxxPfBDHPiBzks;"
+        },
+        {
+          "line": 297,
+          "source": "clock=value;"
+        },
+        {
+          "line": 300,
+          "source": "function void get_resetxxPfBDHPiBzks;"
+        },
+        {
+          "line": 302,
+          "source": "value=reset;"
+        },
+        {
+          "line": 305,
+          "source": "function void set_resetxxPfBDHPiBzks;"
+        },
+        {
+          "line": 307,
+          "source": "reset=value;"
+        },
+        {
+          "line": 310,
+          "source": "function void get_io_sfence_validxxPfBDHPiBzks;"
+        },
+        {
+          "line": 312,
+          "source": "value=io_sfence_valid;"
+        },
+        {
+          "line": 315,
+          "source": "function void set_io_sfence_validxxPfBDHPiBzks;"
+        },
+        {
+          "line": 317,
+          "source": "io_sfence_valid=value;"
+        },
+        {
+          "line": 320,
+          "source": "function void get_io_csr_satp_changedxxPfBDHPiBzks;"
+        },
+        {
+          "line": 322,
+          "source": "value=io_csr_satp_changed;"
+        },
+        {
+          "line": 325,
+          "source": "function void set_io_csr_satp_changedxxPfBDHPiBzks;"
+        },
+        {
+          "line": 327,
+          "source": "io_csr_satp_changed=value;"
+        },
+        {
+          "line": 330,
+          "source": "function void get_io_csr_vsatp_changedxxPfBDHPiBzks;"
+        },
+        {
+          "line": 332,
+          "source": "value=io_csr_vsatp_changed;"
+        },
+        {
+          "line": 335,
+          "source": "function void set_io_csr_vsatp_changedxxPfBDHPiBzks;"
+        },
+        {
+          "line": 337,
+          "source": "io_csr_vsatp_changed=value;"
+        },
+        {
+          "line": 340,
+          "source": "function void get_io_csr_hgatp_modexxPfBDHPiBzks;"
+        },
+        {
+          "line": 342,
+          "source": "value=io_csr_hgatp_mode;"
+        },
+        {
+          "line": 345,
+          "source": "function void set_io_csr_hgatp_modexxPfBDHPiBzks;"
+        },
+        {
+          "line": 347,
+          "source": "io_csr_hgatp_mode=value;"
+        },
+        {
+          "line": 350,
+          "source": "function void get_io_csr_hgatp_vmidxxPfBDHPiBzks;"
+        },
+        {
+          "line": 352,
+          "source": "value=io_csr_hgatp_vmid;"
+        },
+        {
+          "line": 355,
+          "source": "function void set_io_csr_hgatp_vmidxxPfBDHPiBzks;"
+        },
+        {
+          "line": 357,
+          "source": "io_csr_hgatp_vmid=value;"
+        },
+        {
+          "line": 360,
+          "source": "function void get_io_csr_hgatp_ppnxxPfBDHPiBzks;"
+        },
+        {
+          "line": 362,
+          "source": "value=io_csr_hgatp_ppn;"
+        },
+        {
+          "line": 365,
+          "source": "function void set_io_csr_hgatp_ppnxxPfBDHPiBzks;"
+        },
+        {
+          "line": 367,
+          "source": "io_csr_hgatp_ppn=value;"
+        },
+        {
+          "line": 370,
+          "source": "function void get_io_csr_hgatp_changedxxPfBDHPiBzks;"
+        },
+        {
+          "line": 372,
+          "source": "value=io_csr_hgatp_changed;"
+        },
+        {
+          "line": 375,
+          "source": "function void set_io_csr_hgatp_changedxxPfBDHPiBzks;"
+        },
+        {
+          "line": 377,
+          "source": "io_csr_hgatp_changed=value;"
+        },
+        {
+          "line": 380,
+          "source": "function void get_io_csr_mbmc_BMExxPfBDHPiBzks;"
+        },
+        {
+          "line": 382,
+          "source": "value=io_csr_mbmc_BME;"
+        },
+        {
+          "line": 385,
+          "source": "function void set_io_csr_mbmc_BMExxPfBDHPiBzks;"
+        },
+        {
+          "line": 387,
+          "source": "io_csr_mbmc_BME=value;"
+        },
+        {
+          "line": 390,
+          "source": "function void get_io_csr_mbmc_CMODExxPfBDHPiBzks;"
+        },
+        {
+          "line": 392,
+          "source": "value=io_csr_mbmc_CMODE;"
+        },
+        {
+          "line": 395,
+          "source": "function void set_io_csr_mbmc_CMODExxPfBDHPiBzks;"
+        },
+        {
+          "line": 397,
+          "source": "io_csr_mbmc_CMODE=value;"
+        },
+        {
+          "line": 400,
+          "source": "function void get_io_csr_priv_virt_changedxxPfBDHPiBzks;"
+        },
+        {
+          "line": 402,
+          "source": "value=io_csr_priv_virt_changed;"
+        },
+        {
+          "line": 405,
+          "source": "function void set_io_csr_priv_virt_changedxxPfBDHPiBzks;"
+        },
+        {
+          "line": 407,
+          "source": "io_csr_priv_virt_changed=value;"
+        },
+        {
+          "line": 410,
+          "source": "function void get_io_csr_mPBMTExxPfBDHPiBzks;"
+        },
+        {
+          "line": 412,
+          "source": "value=io_csr_mPBMTE;"
+        },
+        {
+          "line": 415,
+          "source": "function void set_io_csr_mPBMTExxPfBDHPiBzks;"
+        },
+        {
+          "line": 417,
+          "source": "io_csr_mPBMTE=value;"
+        },
+        {
+          "line": 420,
+          "source": "function void get_io_req_readyxxPfBDHPiBzks;"
+        },
+        {
+          "line": 422,
+          "source": "value=io_req_ready;"
+        },
+        {
+          "line": 425,
+          "source": "function void get_io_req_validxxPfBDHPiBzks;"
+        },
+        {
+          "line": 427,
+          "source": "value=io_req_valid;"
+        },
+        {
+          "line": 430,
+          "source": "function void set_io_req_validxxPfBDHPiBzks;"
+        },
+        {
+          "line": 432,
+          "source": "io_req_valid=value;"
+        },
+        {
+          "line": 435,
+          "source": "function void get_io_req_bits_sourcexxPfBDHPiBzks;"
+        },
+        {
+          "line": 437,
+          "source": "value=io_req_bits_source;"
+        },
+        {
+          "line": 440,
+          "source": "function void set_io_req_bits_sourcexxPfBDHPiBzks;"
+        },
+        {
+          "line": 442,
+          "source": "io_req_bits_source=value;"
+        },
+        {
+          "line": 445,
+          "source": "function void get_io_req_bits_idxxPfBDHPiBzks;"
+        },
+        {
+          "line": 447,
+          "source": "value=io_req_bits_id;"
+        },
+        {
+          "line": 450,
+          "source": "function void set_io_req_bits_idxxPfBDHPiBzks;"
+        },
+        {
+          "line": 452,
+          "source": "io_req_bits_id=value;"
+        },
+        {
+          "line": 455,
+          "source": "function void get_io_req_bits_gvpnxxPfBDHPiBzks;"
+        },
+        {
+          "line": 457,
+          "source": "value=io_req_bits_gvpn;"
+        },
+        {
+          "line": 460,
+          "source": "function void set_io_req_bits_gvpnxxPfBDHPiBzks;"
+        },
+        {
+          "line": 462,
+          "source": "io_req_bits_gvpn=value;"
+        },
+        {
+          "line": 465,
+          "source": "function void get_io_req_bits_ppnxxPfBDHPiBzks;"
+        },
+        {
+          "line": 467,
+          "source": "value=io_req_bits_ppn;"
+        },
+        {
+          "line": 470,
+          "source": "function void set_io_req_bits_ppnxxPfBDHPiBzks;"
+        },
+        {
+          "line": 472,
+          "source": "io_req_bits_ppn=value;"
+        },
+        {
+          "line": 475,
+          "source": "function void get_io_req_bits_l3HitxxPfBDHPiBzks;"
+        },
+        {
+          "line": 477,
+          "source": "value=io_req_bits_l3Hit;"
+        },
+        {
+          "line": 480,
+          "source": "function void set_io_req_bits_l3HitxxPfBDHPiBzks;"
+        },
+        {
+          "line": 482,
+          "source": "io_req_bits_l3Hit=value;"
+        },
+        {
+          "line": 485,
+          "source": "function void get_io_req_bits_l2HitxxPfBDHPiBzks;"
+        },
+        {
+          "line": 487,
+          "source": "value=io_req_bits_l2Hit;"
+        },
+        {
+          "line": 490,
+          "source": "function void set_io_req_bits_l2HitxxPfBDHPiBzks;"
+        },
+        {
+          "line": 492,
+          "source": "io_req_bits_l2Hit=value;"
+        },
+        {
+          "line": 495,
+          "source": "function void get_io_req_bits_l1HitxxPfBDHPiBzks;"
+        },
+        {
+          "line": 497,
+          "source": "value=io_req_bits_l1Hit;"
+        },
+        {
+          "line": 500,
+          "source": "function void set_io_req_bits_l1HitxxPfBDHPiBzks;"
+        },
+        {
+          "line": 502,
+          "source": "io_req_bits_l1Hit=value;"
+        },
+        {
+          "line": 505,
+          "source": "function void get_io_req_bits_bypassedxxPfBDHPiBzks;"
+        },
+        {
+          "line": 507,
+          "source": "value=io_req_bits_bypassed;"
+        },
+        {
+          "line": 510,
+          "source": "function void set_io_req_bits_bypassedxxPfBDHPiBzks;"
+        },
+        {
+          "line": 512,
+          "source": "io_req_bits_bypassed=value;"
+        },
+        {
+          "line": 515,
+          "source": "function void get_io_req_bits_bitmapCheck_jmp_bitmap_checkxxPfBDHPiBzks;"
+        },
+        {
+          "line": 517,
+          "source": "value=io_req_bits_bitmapCheck_jmp_bitmap_check;"
+        },
+        {
+          "line": 520,
+          "source": "function void set_io_req_bits_bitmapCheck_jmp_bitmap_checkxxPfBDHPiBzks;"
+        },
+        {
+          "line": 522,
+          "source": "io_req_bits_bitmapCheck_jmp_bitmap_check=value;"
+        },
+        {
+          "line": 525,
+          "source": "function void get_io_req_bits_bitmapCheck_ptexxPfBDHPiBzks;"
+        },
+        {
+          "line": 527,
+          "source": "value=io_req_bits_bitmapCheck_pte;"
+        },
+        {
+          "line": 530,
+          "source": "function void set_io_req_bits_bitmapCheck_ptexxPfBDHPiBzks;"
+        },
+        {
+          "line": 532,
+          "source": "io_req_bits_bitmapCheck_pte=value;"
+        },
+        {
+          "line": 535,
+          "source": "function void get_io_req_bits_bitmapCheck_ptes_0xxPfBDHPiBzks;"
+        },
+        {
+          "line": 537,
+          "source": "value=io_req_bits_bitmapCheck_ptes_0;"
+        },
+        {
+          "line": 540,
+          "source": "function void set_io_req_bits_bitmapCheck_ptes_0xxPfBDHPiBzks;"
+        },
+        {
+          "line": 542,
+          "source": "io_req_bits_bitmapCheck_ptes_0=value;"
+        },
+        {
+          "line": 545,
+          "source": "function void get_io_req_bits_bitmapCheck_ptes_1xxPfBDHPiBzks;"
+        },
+        {
+          "line": 547,
+          "source": "value=io_req_bits_bitmapCheck_ptes_1;"
+        },
+        {
+          "line": 550,
+          "source": "function void set_io_req_bits_bitmapCheck_ptes_1xxPfBDHPiBzks;"
+        },
+        {
+          "line": 552,
+          "source": "io_req_bits_bitmapCheck_ptes_1=value;"
+        },
+        {
+          "line": 555,
+          "source": "function void get_io_req_bits_bitmapCheck_ptes_2xxPfBDHPiBzks;"
+        },
+        {
+          "line": 557,
+          "source": "value=io_req_bits_bitmapCheck_ptes_2;"
+        },
+        {
+          "line": 560,
+          "source": "function void set_io_req_bits_bitmapCheck_ptes_2xxPfBDHPiBzks;"
+        },
+        {
+          "line": 562,
+          "source": "io_req_bits_bitmapCheck_ptes_2=value;"
+        },
+        {
+          "line": 565,
+          "source": "function void get_io_req_bits_bitmapCheck_ptes_3xxPfBDHPiBzks;"
+        },
+        {
+          "line": 567,
+          "source": "value=io_req_bits_bitmapCheck_ptes_3;"
+        },
+        {
+          "line": 570,
+          "source": "function void set_io_req_bits_bitmapCheck_ptes_3xxPfBDHPiBzks;"
+        },
+        {
+          "line": 572,
+          "source": "io_req_bits_bitmapCheck_ptes_3=value;"
+        },
+        {
+          "line": 575,
+          "source": "function void get_io_req_bits_bitmapCheck_ptes_4xxPfBDHPiBzks;"
+        },
+        {
+          "line": 577,
+          "source": "value=io_req_bits_bitmapCheck_ptes_4;"
+        },
+        {
+          "line": 580,
+          "source": "function void set_io_req_bits_bitmapCheck_ptes_4xxPfBDHPiBzks;"
+        },
+        {
+          "line": 582,
+          "source": "io_req_bits_bitmapCheck_ptes_4=value;"
+        },
+        {
+          "line": 585,
+          "source": "function void get_io_req_bits_bitmapCheck_ptes_5xxPfBDHPiBzks;"
+        },
+        {
+          "line": 587,
+          "source": "value=io_req_bits_bitmapCheck_ptes_5;"
+        },
+        {
+          "line": 590,
+          "source": "function void set_io_req_bits_bitmapCheck_ptes_5xxPfBDHPiBzks;"
+        },
+        {
+          "line": 592,
+          "source": "io_req_bits_bitmapCheck_ptes_5=value;"
+        },
+        {
+          "line": 595,
+          "source": "function void get_io_req_bits_bitmapCheck_ptes_6xxPfBDHPiBzks;"
+        },
+        {
+          "line": 597,
+          "source": "value=io_req_bits_bitmapCheck_ptes_6;"
+        },
+        {
+          "line": 600,
+          "source": "function void set_io_req_bits_bitmapCheck_ptes_6xxPfBDHPiBzks;"
+        },
+        {
+          "line": 602,
+          "source": "io_req_bits_bitmapCheck_ptes_6=value;"
+        },
+        {
+          "line": 605,
+          "source": "function void get_io_req_bits_bitmapCheck_ptes_7xxPfBDHPiBzks;"
+        },
+        {
+          "line": 607,
+          "source": "value=io_req_bits_bitmapCheck_ptes_7;"
+        },
+        {
+          "line": 610,
+          "source": "function void set_io_req_bits_bitmapCheck_ptes_7xxPfBDHPiBzks;"
+        },
+        {
+          "line": 612,
+          "source": "io_req_bits_bitmapCheck_ptes_7=value;"
+        },
+        {
+          "line": 615,
+          "source": "function void get_io_req_bits_bitmapCheck_hitwayxxPfBDHPiBzks;"
+        },
+        {
+          "line": 617,
+          "source": "value=io_req_bits_bitmapCheck_hitway;"
+        },
+        {
+          "line": 620,
+          "source": "function void set_io_req_bits_bitmapCheck_hitwayxxPfBDHPiBzks;"
+        },
+        {
+          "line": 622,
+          "source": "io_req_bits_bitmapCheck_hitway=value;"
+        },
+        {
+          "line": 625,
+          "source": "function void get_io_req_bits_bitmapCheck_fromSPxxPfBDHPiBzks;"
+        },
+        {
+          "line": 627,
+          "source": "value=io_req_bits_bitmapCheck_fromSP;"
+        },
+        {
+          "line": 630,
+          "source": "function void set_io_req_bits_bitmapCheck_fromSPxxPfBDHPiBzks;"
+        },
+        {
+          "line": 632,
+          "source": "io_req_bits_bitmapCheck_fromSP=value;"
+        },
+        {
+          "line": 635,
+          "source": "function void get_io_req_bits_bitmapCheck_SPlevelxxPfBDHPiBzks;"
+        },
+        {
+          "line": 637,
+          "source": "value=io_req_bits_bitmapCheck_SPlevel;"
+        },
+        {
+          "line": 640,
+          "source": "function void set_io_req_bits_bitmapCheck_SPlevelxxPfBDHPiBzks;"
+        },
+        {
+          "line": 642,
+          "source": "io_req_bits_bitmapCheck_SPlevel=value;"
+        },
+        {
+          "line": 645,
+          "source": "function void get_io_resp_readyxxPfBDHPiBzks;"
+        },
+        {
+          "line": 647,
+          "source": "value=io_resp_ready;"
+        },
+        {
+          "line": 650,
+          "source": "function void set_io_resp_readyxxPfBDHPiBzks;"
+        },
+        {
+          "line": 652,
+          "source": "io_resp_ready=value;"
+        },
+        {
+          "line": 655,
+          "source": "function void get_io_resp_validxxPfBDHPiBzks;"
+        },
+        {
+          "line": 657,
+          "source": "value=io_resp_valid;"
+        },
+        {
+          "line": 660,
+          "source": "function void get_io_resp_bits_resp_entry_tagxxPfBDHPiBzks;"
+        },
+        {
+          "line": 662,
+          "source": "value=io_resp_bits_resp_entry_tag;"
+        },
+        {
+          "line": 665,
+          "source": "function void get_io_resp_bits_resp_entry_vmidxxPfBDHPiBzks;"
+        },
+        {
+          "line": 667,
+          "source": "value=io_resp_bits_resp_entry_vmid;"
+        },
+        {
+          "line": 670,
+          "source": "function void get_io_resp_bits_resp_entry_nxxPfBDHPiBzks;"
+        },
+        {
+          "line": 672,
+          "source": "value=io_resp_bits_resp_entry_n;"
+        },
+        {
+          "line": 675,
+          "source": "function void get_io_resp_bits_resp_entry_pbmtxxPfBDHPiBzks;"
+        },
+        {
+          "line": 677,
+          "source": "value=io_resp_bits_resp_entry_pbmt;"
+        },
+        {
+          "line": 680,
+          "source": "function void get_io_resp_bits_resp_entry_ppnxxPfBDHPiBzks;"
+        },
+        {
+          "line": 682,
+          "source": "value=io_resp_bits_resp_entry_ppn;"
+        },
+        {
+          "line": 685,
+          "source": "function void get_io_resp_bits_resp_entry_perm_dxxPfBDHPiBzks;"
+        },
+        {
+          "line": 687,
+          "source": "value=io_resp_bits_resp_entry_perm_d;"
+        },
+        {
+          "line": 690,
+          "source": "function void get_io_resp_bits_resp_entry_perm_axxPfBDHPiBzks;"
+        },
+        {
+          "line": 692,
+          "source": "value=io_resp_bits_resp_entry_perm_a;"
+        },
+        {
+          "line": 695,
+          "source": "function void get_io_resp_bits_resp_entry_perm_xxxPfBDHPiBzks;"
+        },
+        {
+          "line": 697,
+          "source": "value=io_resp_bits_resp_entry_perm_x;"
+        },
+        {
+          "line": 700,
+          "source": "function void get_io_resp_bits_resp_entry_perm_wxxPfBDHPiBzks;"
+        },
+        {
+          "line": 702,
+          "source": "value=io_resp_bits_resp_entry_perm_w;"
+        },
+        {
+          "line": 705,
+          "source": "function void get_io_resp_bits_resp_entry_perm_rxxPfBDHPiBzks;"
+        },
+        {
+          "line": 707,
+          "source": "value=io_resp_bits_resp_entry_perm_r;"
+        },
+        {
+          "line": 710,
+          "source": "function void get_io_resp_bits_resp_entry_levelxxPfBDHPiBzks;"
+        },
+        {
+          "line": 712,
+          "source": "value=io_resp_bits_resp_entry_level;"
+        },
+        {
+          "line": 715,
+          "source": "function void get_io_resp_bits_resp_gpfxxPfBDHPiBzks;"
+        },
+        {
+          "line": 717,
+          "source": "value=io_resp_bits_resp_gpf;"
+        },
+        {
+          "line": 720,
+          "source": "function void get_io_resp_bits_resp_gafxxPfBDHPiBzks;"
+        },
+        {
+          "line": 722,
+          "source": "value=io_resp_bits_resp_gaf;"
+        },
+        {
+          "line": 725,
+          "source": "function void get_io_resp_bits_idxxPfBDHPiBzks;"
+        },
+        {
+          "line": 727,
+          "source": "value=io_resp_bits_id;"
+        },
+        {
+          "line": 730,
+          "source": "function void get_io_mem_req_readyxxPfBDHPiBzks;"
+        },
+        {
+          "line": 732,
+          "source": "value=io_mem_req_ready;"
+        },
+        {
+          "line": 735,
+          "source": "function void set_io_mem_req_readyxxPfBDHPiBzks;"
+        },
+        {
+          "line": 737,
+          "source": "io_mem_req_ready=value;"
+        },
+        {
+          "line": 740,
+          "source": "function void get_io_mem_req_validxxPfBDHPiBzks;"
+        },
+        {
+          "line": 742,
+          "source": "value=io_mem_req_valid;"
+        },
+        {
+          "line": 745,
+          "source": "function void get_io_mem_req_bits_addrxxPfBDHPiBzks;"
+        },
+        {
+          "line": 747,
+          "source": "value=io_mem_req_bits_addr;"
+        },
+        {
+          "line": 750,
+          "source": "function void get_io_mem_req_bits_hptw_bypassedxxPfBDHPiBzks;"
+        },
+        {
+          "line": 752,
+          "source": "value=io_mem_req_bits_hptw_bypassed;"
+        },
+        {
+          "line": 755,
+          "source": "function void get_io_mem_resp_validxxPfBDHPiBzks;"
+        },
+        {
+          "line": 757,
+          "source": "value=io_mem_resp_valid;"
+        },
+        {
+          "line": 760,
+          "source": "function void set_io_mem_resp_validxxPfBDHPiBzks;"
+        },
+        {
+          "line": 762,
+          "source": "io_mem_resp_valid=value;"
+        },
+        {
+          "line": 765,
+          "source": "function void get_io_mem_resp_bitsxxPfBDHPiBzks;"
+        },
+        {
+          "line": 767,
+          "source": "value=io_mem_resp_bits;"
+        },
+        {
+          "line": 770,
+          "source": "function void set_io_mem_resp_bitsxxPfBDHPiBzks;"
+        },
+        {
+          "line": 772,
+          "source": "io_mem_resp_bits=value;"
+        },
+        {
+          "line": 775,
+          "source": "function void get_io_mem_maskxxPfBDHPiBzks;"
+        },
+        {
+          "line": 777,
+          "source": "value=io_mem_mask;"
+        },
+        {
+          "line": 780,
+          "source": "function void set_io_mem_maskxxPfBDHPiBzks;"
+        },
+        {
+          "line": 782,
+          "source": "io_mem_mask=value;"
+        },
+        {
+          "line": 785,
+          "source": "function void get_io_refill_req_info_vpnxxPfBDHPiBzks;"
+        },
+        {
+          "line": 787,
+          "source": "value=io_refill_req_info_vpn;"
+        },
+        {
+          "line": 790,
+          "source": "function void get_io_refill_req_info_sourcexxPfBDHPiBzks;"
+        },
+        {
+          "line": 792,
+          "source": "value=io_refill_req_info_source;"
+        },
+        {
+          "line": 795,
+          "source": "function void get_io_refill_levelxxPfBDHPiBzks;"
+        },
+        {
+          "line": 797,
+          "source": "value=io_refill_level;"
+        },
+        {
+          "line": 800,
+          "source": "function void get_io_pmp_req_bits_addrxxPfBDHPiBzks;"
+        },
+        {
+          "line": 802,
+          "source": "value=io_pmp_req_bits_addr;"
+        },
+        {
+          "line": 805,
+          "source": "function void get_io_pmp_resp_ldxxPfBDHPiBzks;"
+        },
+        {
+          "line": 807,
+          "source": "value=io_pmp_resp_ld;"
+        },
+        {
+          "line": 810,
+          "source": "function void set_io_pmp_resp_ldxxPfBDHPiBzks;"
+        },
+        {
+          "line": 812,
+          "source": "io_pmp_resp_ld=value;"
+        },
+        {
+          "line": 815,
+          "source": "function void get_io_pmp_resp_mmioxxPfBDHPiBzks;"
+        },
+        {
+          "line": 817,
+          "source": "value=io_pmp_resp_mmio;"
+        },
+        {
+          "line": 820,
+          "source": "function void set_io_pmp_resp_mmioxxPfBDHPiBzks;"
+        },
+        {
+          "line": 822,
+          "source": "io_pmp_resp_mmio=value;"
+        },
+        {
+          "line": 825,
+          "source": "function void get_io_bitmap_req_readyxxPfBDHPiBzks;"
+        },
+        {
+          "line": 827,
+          "source": "value=io_bitmap_req_ready;"
+        },
+        {
+          "line": 830,
+          "source": "function void set_io_bitmap_req_readyxxPfBDHPiBzks;"
+        },
+        {
+          "line": 832,
+          "source": "io_bitmap_req_ready=value;"
+        },
+        {
+          "line": 835,
+          "source": "function void get_io_bitmap_req_validxxPfBDHPiBzks;"
+        },
+        {
+          "line": 837,
+          "source": "value=io_bitmap_req_valid;"
+        },
+        {
+          "line": 840,
+          "source": "function void get_io_bitmap_req_bits_bmppnxxPfBDHPiBzks;"
+        },
+        {
+          "line": 842,
+          "source": "value=io_bitmap_req_bits_bmppn;"
+        },
+        {
+          "line": 845,
+          "source": "function void get_io_bitmap_req_bits_vpnxxPfBDHPiBzks;"
+        },
+        {
+          "line": 847,
+          "source": "value=io_bitmap_req_bits_vpn;"
+        },
+        {
+          "line": 850,
+          "source": "function void get_io_bitmap_req_bits_levelxxPfBDHPiBzks;"
+        },
+        {
+          "line": 852,
+          "source": "value=io_bitmap_req_bits_level;"
+        },
+        {
+          "line": 855,
+          "source": "function void get_io_bitmap_req_bits_way_infoxxPfBDHPiBzks;"
+        },
+        {
+          "line": 857,
+          "source": "value=io_bitmap_req_bits_way_info;"
+        },
+        {
+          "line": 860,
+          "source": "function void get_io_bitmap_req_bits_hptw_bypassedxxPfBDHPiBzks;"
+        },
+        {
+          "line": 862,
+          "source": "value=io_bitmap_req_bits_hptw_bypassed;"
+        },
+        {
+          "line": 865,
+          "source": "function void get_io_bitmap_req_bits_nxxPfBDHPiBzks;"
+        },
+        {
+          "line": 867,
+          "source": "value=io_bitmap_req_bits_n;"
+        },
+        {
+          "line": 870,
+          "source": "function void get_io_bitmap_resp_readyxxPfBDHPiBzks;"
+        },
+        {
+          "line": 872,
+          "source": "value=io_bitmap_resp_ready;"
+        },
+        {
+          "line": 875,
+          "source": "function void get_io_bitmap_resp_validxxPfBDHPiBzks;"
+        },
+        {
+          "line": 877,
+          "source": "value=io_bitmap_resp_valid;"
+        },
+        {
+          "line": 880,
+          "source": "function void set_io_bitmap_resp_validxxPfBDHPiBzks;"
+        },
+        {
+          "line": 882,
+          "source": "io_bitmap_resp_valid=value;"
+        },
+        {
+          "line": 885,
+          "source": "function void get_io_bitmap_resp_bits_cfxxPfBDHPiBzks;"
+        },
+        {
+          "line": 887,
+          "source": "value=io_bitmap_resp_bits_cf;"
+        },
+        {
+          "line": 890,
+          "source": "function void set_io_bitmap_resp_bits_cfxxPfBDHPiBzks;"
+        },
+        {
+          "line": 892,
+          "source": "io_bitmap_resp_bits_cf=value;"
+        },
+        {
+          "line": 895,
+          "source": "function void get_io_l0_way_infoxxPfBDHPiBzks;"
+        },
+        {
+          "line": 897,
+          "source": "value=io_l0_way_info;"
+        },
+        {
+          "line": 900,
+          "source": "function void set_io_l0_way_infoxxPfBDHPiBzks;"
+        },
+        {
+          "line": 902,
+          "source": "io_l0_way_info=value;"
+        },
+        {
+          "line": 913,
+          "source": "function void finish_PfBDHPiBzks;"
+        },
+        {
+          "line": 914,
+          "source": "$finish;"
+        }
+      ],
+      "uncovered_declarative_lines": [
+        {
+          "line": 291,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 301,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 311,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 321,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 331,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 341,
+          "source": "output logic [3:0] value;"
+        },
+        {
+          "line": 351,
+          "source": "output logic [15:0] value;"
+        },
+        {
+          "line": 361,
+          "source": "output logic [43:0] value;"
+        },
+        {
+          "line": 371,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 381,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 391,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 401,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 411,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 421,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 426,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 436,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 446,
+          "source": "output logic [2:0] value;"
+        },
+        {
+          "line": 456,
+          "source": "output logic [37:0] value;"
+        },
+        {
+          "line": 466,
+          "source": "output logic [35:0] value;"
+        },
+        {
+          "line": 476,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 486,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 496,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 506,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 516,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 526,
+          "source": "output logic [63:0] value;"
+        },
+        {
+          "line": 536,
+          "source": "output logic [63:0] value;"
+        },
+        {
+          "line": 546,
+          "source": "output logic [63:0] value;"
+        },
+        {
+          "line": 556,
+          "source": "output logic [63:0] value;"
+        },
+        {
+          "line": 566,
+          "source": "output logic [63:0] value;"
+        },
+        {
+          "line": 576,
+          "source": "output logic [63:0] value;"
+        },
+        {
+          "line": 586,
+          "source": "output logic [63:0] value;"
+        },
+        {
+          "line": 596,
+          "source": "output logic [63:0] value;"
+        },
+        {
+          "line": 606,
+          "source": "output logic [63:0] value;"
+        },
+        {
+          "line": 616,
+          "source": "output logic [3:0] value;"
+        },
+        {
+          "line": 626,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 636,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 646,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 656,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 661,
+          "source": "output logic [37:0] value;"
+        },
+        {
+          "line": 666,
+          "source": "output logic [13:0] value;"
+        },
+        {
+          "line": 671,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 676,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 681,
+          "source": "output logic [37:0] value;"
+        },
+        {
+          "line": 686,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 691,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 696,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 701,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 706,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 711,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 716,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 721,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 726,
+          "source": "output logic [3:0] value;"
+        },
+        {
+          "line": 731,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 741,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 746,
+          "source": "output logic [47:0] value;"
+        },
+        {
+          "line": 751,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 756,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 766,
+          "source": "output logic [63:0] value;"
+        },
+        {
+          "line": 776,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 786,
+          "source": "output logic [37:0] value;"
+        },
+        {
+          "line": 791,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 796,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 801,
+          "source": "output logic [47:0] value;"
+        },
+        {
+          "line": 806,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 816,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 826,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 836,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 841,
+          "source": "output logic [35:0] value;"
+        },
+        {
+          "line": 846,
+          "source": "output logic [37:0] value;"
+        },
+        {
+          "line": 851,
+          "source": "output logic [1:0] value;"
+        },
+        {
+          "line": 856,
+          "source": "output logic [3:0] value;"
+        },
+        {
+          "line": 861,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 866,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 871,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 876,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 886,
+          "source": "output logic  value;"
+        },
+        {
+          "line": 896,
+          "source": "output logic [3:0] value;"
+        }
+      ]
+    }
+  },
+  "branches": {
+    "total": 98,
+    "covered": 97,
+    "uncovered_count": 1
+  },
+  "toggles": {
+    "total": 5270,
+    "covered": 5069,
+    "uncovered_count": 201,
+    "classes": {
+      "other": 201
+    }
+  },
+  "functional_coverage": {
+    "coverage": 100.0,
+    "covered": true,
+    "groups": [
+      {
+        "instance": "hptw",
+        "coverage": 100.0,
+        "samples": 35,
+        "points": [
+          {
+            "name": "event",
+            "coverage": 100.0,
+            "samples": 35
+          },
+          {
+            "name": "page",
+            "coverage": 100.0,
+            "samples": 35
+          },
+          {
+            "name": "hit",
+            "coverage": 100.0,
+            "samples": 35
+          }
+        ]
+      }
+    ]
+  },
+  "limits": "Verilator point summaries are not semantic checks. LCOV DA hits are summed per line (duplicate shadow points included) and every denominator is retained. Declarative wire/reg/end lines are separated by source text, not deleted; procedural lines are still listed if uncovered. Files are kept separate so a parent DUT does not hide a child's own gaps.",
+  "note": "Compact summary; the final run keeps the full audit and coverage database."
+}

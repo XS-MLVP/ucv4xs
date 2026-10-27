@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "suite": "icache",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "waylookup": {
+      "top": "ICacheWayLookup",
+      "export_name": "WayLookupDut"
+    },
+    "replacer": {
+      "top": "ICacheReplacer",
+      "export_name": "ReplacerDut"
+    },
+    "mshr": {
+      "top": "ICacheMshr",
+      "export_name": "MshrDut"
+    },
+    "databank": {
+      "top": "ICacheDataBank",
+      "export_name": "DataBankDut"
+    },
+    "metabank": {
+      "top": "ICacheMetaInterleavedBank",
+      "export_name": "MetaBankDut"
+    },
+    "metaarray": {
+      "top": "ICacheMetaArray",
+      "export_name": "MetaArrayDut"
+    },
+    "dataarray": {
+      "top": "ICacheDataArray",
+      "export_name": "DataArrayDut"
+    },
+    "missunit": {
+      "top": "ICacheMissUnit",
+      "export_name": "MissUnitDut"
+    },
+    "mainpipe": {
+      "top": "ICacheMainPipe",
+      "export_name": "MainPipeDut"
+    },
+    "prefetchpipe": {
+      "top": "ICachePrefetchPipe",
+      "export_name": "PrefetchPipeDut"
+    },
+    "icache": {
+      "top": "ICache",
+      "export_name": "ICacheDut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "tests"
+  ],
+  "process_isolation": "suite"
+}

@@ -1,0 +1,132 @@
+{
+  "format": "mmu-wrapper-perf-trace-comparison-v1",
+  "l2tlb_trace": "/home/xyl/kmh-v3-test/memblock-hash/mmu/docs/reports/evidence/cycle-l2tlbwrapper-20261025/perf-trace-l2tlb.json",
+  "wrapper_trace": "/home/xyl/kmh-v3-test/memblock-hash/mmu/docs/reports/evidence/cycle-l2tlbwrapper-20261025/perf-trace-l2tlbwrapper.json",
+  "cycles": 22,
+  "functional_fields": [
+    "resp_valid",
+    "resp_ppn",
+    "resp_level",
+    "resp_v",
+    "req_ready",
+    "a_valid",
+    "a_addr",
+    "wfi_safe"
+  ],
+  "perf_shift_cycles": 2,
+  "initial_cycles_ignored": 4,
+  "pulses": {
+    "l2tlb": {
+      "0": [],
+      "1": [],
+      "2": [],
+      "3": [],
+      "4": [
+        5,
+        9
+      ],
+      "5": [],
+      "6": [],
+      "7": [],
+      "8": [],
+      "9": [],
+      "10": [],
+      "11": [],
+      "12": [
+        9
+      ],
+      "13": [
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "14": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "15": [],
+      "16": [
+        11
+      ],
+      "17": [
+        12,
+        13
+      ],
+      "18": []
+    },
+    "wrapper": {
+      "0": [],
+      "1": [],
+      "2": [],
+      "3": [],
+      "4": [
+        7,
+        11
+      ],
+      "5": [],
+      "6": [],
+      "7": [],
+      "8": [],
+      "9": [],
+      "10": [],
+      "11": [],
+      "12": [
+        11
+      ],
+      "13": [
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "14": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "15": [],
+      "16": [
+        13
+      ],
+      "17": [
+        14,
+        15
+      ],
+      "18": []
+    }
+  },
+  "failures": [],
+  "status": "PASS"
+}
