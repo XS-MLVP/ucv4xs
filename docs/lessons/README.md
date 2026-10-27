@@ -4,6 +4,8 @@
 
 ## 从哪里开始
 
+- [编译、构建与工具链经验](build-and-toolchain.md)：完整构建入口、已遇到的工具问题、补丁、搬迁重建及日志位置。
+
 - [防复发速查卡](../../skills/rtl-verification-soundness/CARD.md)：开始新模块或修改检查器前，定位相关的十二类历史坑。
 - [踩坑复盘与防复发手册](../../skills/rtl-verification-soundness/SKILL.md)：按“实际问题 → 错误判断 → 原因 → 修正 → 成对回归”保留经验。
 - [跨模块假阴性总结，2026-10-26](false-negatives-20261026.md)：保留原案例矩阵、状态快照、诊断树和待完成事项。
