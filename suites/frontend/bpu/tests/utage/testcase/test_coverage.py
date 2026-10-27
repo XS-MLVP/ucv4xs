@@ -55,7 +55,7 @@ async def test_utage_functional_coverage_closes_defined_bins(utage_agent):
         assert (primed.hit, primed.taken) == (1, 1)
         retagged = await utage_agent.recover_prediction(
             PASSING_PC, POSITION, 0,
-            stage=stage, override_pc=PASSING_PC + 0x20,
+            stage=stage, override_pc=PASSING_PC + 0x10,
         )
         assert retagged.hit == 0
         coverage.sample({

@@ -67,7 +67,7 @@ def test_every_measured_long_pole_declares_its_cost(module):
         'run_cost.py and the long-first scheduler would under-place it')
 
 
-def test_hint_multiplication_is_visible_for_parametrized_matrices():
+def test_hint_multiplication_is_visible_for_parametrized_matrices(tmp_path):
     """A per-case hint times many cases is the shape that hid 9.8 h of work."""
 
     under = []
@@ -83,15 +83,23 @@ def test_hint_multiplication_is_visible_for_parametrized_matrices():
     # must reproduce them from --measured rather than the hint.
     assert under, ('the measured report should expose at least one matrix whose '
                    'per-case hint understates its total')
-    inspected = run_cost_hint_understatement()
+    # Synthetic JUnit fixture exercises the measurement parser independently
+    # of any deletable external run; these values are not hardware evidence.
+    import xml.etree.ElementTree as ET
+    suite=ET.Element('testsuite')
+    for module,(total,peak,cases) in MEASURED.items():
+        ET.SubElement(suite,'testcase',classname=module[:-3].replace('/','.'),
+                      name='synthetic-measured-total',time=str(total))
+    report=tmp_path/'measured.xml';ET.ElementTree(suite).write(report)
+    inspected = run_cost_hint_understatement(report)
     assert set(inspected) == {module for module, _, _ in under}
 
 
-def run_cost_hint_understatement():
+def run_cost_hint_understatement(report):
     from tools import run_cost
     rows = run_cost.costs(run_cost.selection_files(['tests/bpu/testcase']))
     selected = {row['file'] for row in rows}
-    data = run_cost.measured(ROOT / 'results/bpu-composition-full-20261021-v1/pytest.xml')
+    data = run_cost.measured(report)
     result = []
     for name in selected & set(data['totals']):
         declared = next((row['hinted_seconds'] for row in rows if row['file'] == name), 0)

@@ -24,8 +24,8 @@ def test_all52_history_bits_and_both_full_tags_representable(bank,phase):
     plan=recipe(bank)
     position=plan['position'] if phase=='conditional' else plan['fallback']
     history=0
-    for _ in range(40):
-        history=((history<<2)^path_hash((plan['pc']&~7)+position,plan['pc']))&MASK
+    for _ in range(270):
+        history=((history<<2)^path_hash((plan['pc']&~15)+position,plan['pc']))&MASK
         tags=full_tags(plan['pc'],folds(history))
         assert all(0<=tag<256 for tag in tags)
     assert history==plan[phase+'_history']

@@ -67,8 +67,8 @@ class RasSemanticComponentChecker(RasSemanticChecker):
             # The latter is checked separately at the component and consumer.
             self.board.check(expected={key:wanted[key] for key in ('group','repeat','calls')},
                 actual=dict(group=meta['ssp'],repeat=meta['sctr'],
-                calls=16*meta['tosw']['flag']+meta['tosw']['value']),context=context)
-            return dict(ssp=wanted['group'],tosw=dict(flag=wanted['calls']//16,value=wanted['calls']%16))
+                calls=32*meta['tosw']['flag']+meta['tosw']['value']),context=context)
+            return dict(ssp=wanted['group'],tosw=dict(flag=wanted['calls']//32,value=wanted['calls']%32))
         except Exception as error:
             self.failure = error
             raise

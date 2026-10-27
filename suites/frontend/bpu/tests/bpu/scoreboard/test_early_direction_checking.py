@@ -46,9 +46,10 @@ def actual_fast(sources,cycle):
 
 
 class Program:
+    fallback_position = 4
     def __init__(self,pc=0x40000000):
         self.model,self.event,self.anchor,original=prepare(pc)
-        self.pc=original.pc;self.tick=1000;self.retired=[]
+        self.pc=original.pc;self.conditional_position=2+(pc&8);self.fallback_position+=(pc&8);self.tick=1000;self.retired=[]
         cold=next(token for token in self.model.published.values() if token.pc==self.pc and token.lookup is not None
             and not any(entry.hit for row in source_entries(token.lookup) for entry in row))
         self.checks=self.make_checks(self.pc,'byte-tag-control' if pc==0x40000000 else 'full-tag-high-bits')
@@ -56,7 +57,7 @@ class Program:
             source_token=lambda source:source.token,retire_source=self.retired.append)
         self.cold=NS(token=cold,prediction_tick=20,meta_tick=24)
         self.original=NS(token=original,prediction_tick=40,meta_tick=44)
-        self.checks.accepted(self.cold,(26,self.feedback(cold,2,Kind.CONDITIONAL,True)),'cold')
+        self.checks.accepted(self.cold,(26,self.feedback(cold,self.conditional_position,Kind.CONDITIONAL,True)),'cold')
         self.checks.ahead_consumer(self.original)
 
     def make_checks(self,pc,tag_class):
@@ -89,7 +90,7 @@ class Program:
         self.quiet();self.checks.accepted(source,(accepted,request),phase)
 
     def query(self,source):
-        idle=self.quiet();self.step(replace(idle,redirect=Redirect(source.token.history,self.pc+4,self.pc,True)))
+        idle=self.quiet();self.step(replace(idle,redirect=Redirect(source.token.history,(self.pc//16)*16+self.fallback_position,self.pc,True)))
         for _ in range(32):
             token=self.step().metadata
             if token is not None and token.pc==self.pc:
@@ -98,10 +99,10 @@ class Program:
         raise AssertionError('fresh fallback owner did not retire')
 
     def learned(self):
-        self.resolve(self.original,2,Kind.CONDITIONAL,False,'not-taken')
+        self.resolve(self.original,self.conditional_position,Kind.CONDITIONAL,False,'not-taken')
         fallback=self.query(self.original)
-        self.resolve(fallback,4,Kind.DIRECT,True,'fallback')
-        idle=self.quiet();self.step(replace(idle,redirect=Redirect(fallback.token.history,self.pc+4,self.pc,True)))
+        self.resolve(fallback,self.fallback_position,Kind.DIRECT,True,'fallback')
+        idle=self.quiet();self.step(replace(idle,redirect=Redirect(fallback.token.history,(self.pc//16)*16+self.fallback_position,self.pc,True)))
         for _ in range(256):
             token=self.step().metadata
             if token is None or token.pc!=self.pc:continue
@@ -112,13 +113,13 @@ class Program:
         raise AssertionError('independently learned NT provider did not reach a fresh receipt')
 
 
-@pytest.mark.parametrize('pc',(0x40000000,0x40000800))
+@pytest.mark.parametrize('pc',(0x40000000,0x40000008))
 def test_complete_owned_program_requires_new_provider_receipt_before_checked_credit(pc):
     program=Program(pc);consumer=program.learned();checks=program.checks
     assert checks.coverage.groups['checked'].coverage==0 and not program.retired
-    if pc==0x40000800:
+    if pc==0x40000008:
         frame=program.model.sources.short_snapshot(consumer.token).prediction.frame
-        assert any(entry.valid and entry.tag>=256 for entry in frame.read.entries)
+        assert any(entry.valid and entry.tag>=128 for entry in frame.read.entries)
     checks.negative_consumer(consumer);checks.finish()
     assert checks.closed and len(program.retired)==4
     assert all(group.coverage==100 for group in checks.coverage.groups.values())

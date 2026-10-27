@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 from typing import Any
+from bpuverify.common.model.configuration import RESULT_SLOTS
 from bpuverify.common.model.folded_history import folded_history_values, PHR_FOLD_LAYOUT
 from typing import Sequence
 from bpuverify.sc.transaction.types import ScBaseBranch
@@ -23,14 +24,14 @@ def _mbtb_result(position: int, valid: int, branch_type: int) -> tuple[Any, ...]
                 "target_addr": 0,
             },
         }
-        for index in range(4)
+        for index in range(RESULT_SLOTS)
     )
 
 
 def _provider_counters(value: int, valid: int) -> tuple[Any, ...]:
     return tuple(
         {"valid": int(index == 0 and valid), "bits_value": value}
-        for index in range(4)
+        for index in range(RESULT_SLOTS)
     )
 
 
@@ -50,7 +51,7 @@ def _sc_s2_context(request: ScLookup, capacity: int) -> dict[str, Any]:
     if any(branch is not None and branch.position < 0 for branch in entries):
         raise ValueError("SC branch positions must be nonnegative")
     occupied = set(positions)
-    fallback = min(positions) + 1
+    fallback = 0
     padded: list[ScBaseBranch | None] = list(entries)
     padded.extend([None] * (capacity - len(padded)))
     mbtb_result = []

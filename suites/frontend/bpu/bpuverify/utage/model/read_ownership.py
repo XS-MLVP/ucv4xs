@@ -16,7 +16,7 @@ RULES = ('distinct-original-records', 'original-feedback-once',
 class ReadOwnershipProgram:
     original: Profile = Profile('original', PC, 0xA6B, 3)
     learning: Profile = Profile('learning', PC, 0xA7B, 7)
-    neighbor: Profile = Profile('cold-neighbor', PC, 0xA8B, None)
+    neighbor: Profile = Profile('cold-neighbor', PC, 0xA8C, None)
 
     @property
     def reinforcements(self):

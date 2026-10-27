@@ -42,7 +42,7 @@ class CommonHistoryChecks:
         self.check((int(resolve_valid),checkpoint.value.ghr,checkpoint.value.bw),
             (resolve['valid'],resolve['ghr'],resolve['bw']),'owned public resolve history')
         values={} if token.lookup is None else token.lookup.values();seen=set();hits=[]
-        for i in range(4):
+        for i in range(10):
             position=values.get(f'{i}.position')
             hit=bool(values.get(f'{i}.valid') and values[f'{i}.kind']==Kind.CONDITIONAL and position not in seen)
             hits.append(int(hit))
@@ -58,7 +58,7 @@ class CommonHistoryChecks:
 
     def original_source(self,receipt,*,later_conditional):
         source=self.source(receipt)
-        self.check((True,255,15),(source.value.valid,source.value.ghr,source.value.bw),'independent nonzero original lookup history')
+        self.check((True,65535,255),(source.value.valid,source.value.ghr,source.value.bw),'independent nonzero original lookup history')
         self.check((1,5) if later_conditional else (1,),source.block.conditionals,'first versus unexecuted later conditional identities')
         self.original=receipt,source
         if self.coverage is not None:
@@ -69,7 +69,7 @@ class CommonHistoryChecks:
         self.check(True,self.original is not None and self.last_recovery is not None,'real original recovery input precedes restored-state check')
         self.check((tick,self.original[1]),self.last_recovery[:2],'restored prefix belongs to the exact original source')
         self.check(True,self.last_tick>tick+2 and self.model.pending is None,'post-restore observation required before endpoint credit')
-        self.check(Value(False,254,14),self.model.value,'one executed not-taken conditional, not the whole predicted block')
+        self.check(Value(False,65534,254),self.model.value,'one executed not-taken conditional, not the whole predicted block')
         self.completed_recovery=tick
         if self.coverage is not None:
             self.coverage.record('reached',self.rules[3],self.last_tick)
@@ -78,7 +78,7 @@ class CommonHistoryChecks:
     def consumed(self,receipt,*,later_conditional):
         self.check(True,self.completed_recovery is not None and receipt.prediction_tick>self.completed_recovery,'consumer is a fresh post-recovery prediction')
         source=self.source(receipt)
-        self.check(Value(True,253,12) if later_conditional else Value(True,254,14),source.value,'only actually subsequent conditional outcomes extend recovered history')
+        self.check(Value(True,65533,252) if later_conditional else Value(True,65534,254),source.value,'only actually subsequent conditional outcomes extend recovered history')
         self.consumer=receipt
         if self.coverage is not None:self.coverage.record('reached',self.rules[4],receipt.meta_tick)
 
@@ -96,7 +96,7 @@ class CommonHistoryChecks:
         token=self.pipeline.source_token(receipt);checkpoint=self.sources.get(token.history.sequence)
         self.check(True,checkpoint is not None and checkpoint.owner is token.history,'recovery only from reset/fixed-point certified history')
         self.model.require(checkpoint)
-        position=request.cfi_pc-(token.pc//8)*8
+        position=request.cfi_pc-(token.pc//16)*16
         branch=Branch(position,request.pc,Kind(request.branch_type),bool(request.taken))
         self.plans.append((checkpoint,branch,request))
 

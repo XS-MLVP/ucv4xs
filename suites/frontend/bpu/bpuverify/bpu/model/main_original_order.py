@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from bpuverify.bpu.model.main_service import PC,STREAM_PC,entry_payload
 from bpuverify.mbtb.model.semantic import Entry,Target,coordinate,tag
-from bpuverify.mbtb.model.replacement import MbtbTwoWayLru
+from bpuverify.mbtb.model.replacement import MbtbFourWayLru
 
 EARLIER,LATER=1,5
 INITIAL_TARGET=PC+0x600
@@ -38,7 +38,7 @@ class Program:
 
     @property
     def owner(self):
-        lru=MbtbTwoWayLru();lru.allocate() # The conditional sibling is learned first.
+        lru=MbtbFourWayLru();lru.allocate() # The conditional sibling is learned first.
         return lru.allocate()           # The earlier indirect instruction is next.
 
     def effect(self,index):

@@ -74,7 +74,7 @@ async def reach_highest_provider(agent, *, pc: int = PC, position: int = POSITIO
     """Escalate through real mispredictions until no longer-history table exists."""
 
     prediction = await agent.predict(pc, position, 0)
-    for _ in range(12):
+    for _ in range(2 * TAGGED_TABLES + 2):
         if (
             prediction.meta["hasProvider"]
             and prediction.meta["providerTableIdx"] == HIGHEST_TABLE
@@ -161,3 +161,31 @@ async def train_until_useful_reset_reopens_set(agent, prediction, *, already_fai
             return attempt, prediction
         require_miss(prediction)
     raise AssertionError("TAGE useful reset did not reopen the full set")
+
+
+async def await_cold_allocation(agent, *, pc, position, taken, base, table):
+    """Choose an owned LFSR opportunity, then submit ordinary cold feedback.
+
+    No observed allocation signal or SRAM value is used to choose the table.
+    The case must submit without another await and check the resulting owner.
+    """
+    from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT, TAGE_TABLES
+    from bpuverify.common.env.wait import wait_condition
+    from bpuverify.tage.model.semantic import Feedback, Context, Branch, Hint
+    if type(table) is not int or table not in range(TAGE_TABLES):
+        raise ValueError('configured TAGE table required')
+    await agent._drain_base_tasks()
+    agent.lookup_driver.quiesce()
+    agent.base_driver.quiesce()
+    await agent.training_activity.wait_idle('reads', 'pipeline', 'writes')
+    feedback = Feedback(pc, Context(), (Branch(position, bool(taken), 1, True, True,
+        3 if base else 0, Hint(alternative=bool(base), confident=True)),))
+    # Rising-edge predicate completion precedes the next write opportunity;
+    # one idle reference cycle elapses before this isolated pulse is accepted.
+    def sample():
+        agent.reference.raise_failure()
+        return agent.reference.model.allocation_at_next_accept(feedback, launch_cycles=1)
+    result = await wait_condition(agent.dut.clock, sample=sample,
+        satisfied=lambda owner: owner is not None and owner[0] == table,
+        name='tage.owned-cold-allocation', timeout_cycles=TAGE_ALLOCATION_WAIT)
+    return result.state

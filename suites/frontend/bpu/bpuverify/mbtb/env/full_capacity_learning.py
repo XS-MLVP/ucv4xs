@@ -1,4 +1,5 @@
 """Normal predictions and feedback; existing agents own every clock detail."""
+from bpuverify.common.model.configuration import *
 from copy import deepcopy
 
 from bpuverify.mbtb.checker.full_capacity_learning import FullCapacityChecks
@@ -11,7 +12,7 @@ def planned_payload(transaction):
                     for row in transaction.meta_entries)
     branches = tuple((b.position, b.target, b.taken, b.branch_type, b.ras_action, b.mispredict)
                      for b in transaction.branches)
-    return (transaction.pc, (transaction.pc // 8 + 1) * 8), sources, branches
+    return (transaction.pc, (transaction.pc // ALIGN_HALFWORDS + 1) * ALIGN_HALFWORDS), sources, branches
 
 
 def observed_payload(feedback):
@@ -69,13 +70,13 @@ class FullCapacityEnv:
         for _ in range(2):
             await self.teach('old-a', taken=0, allocate=False)
         await self.teach('old-b', allocate=False)
-        for owner in ('neighbor-a', 'neighbor-b'):
+        for owner in ('old-c', 'old-d', 'neighbor-a', 'neighbor-b', 'neighbor-c', 'neighbor-d'):
             await self.teach(owner)
         await self.teach('neighbor-a', allocate=False)
-        await self.read('prepared', ('old-a', 'old-b', 'neighbor-a', 'neighbor-b'))
+        await self.read('prepared', ('old-a', 'old-b', 'old-c', 'old-d', 'neighbor-a', 'neighbor-b', 'neighbor-c', 'neighbor-d'))
         self.checks.reach('full-distinct-old-residents',
             residents=self.program.stages['prepared'], victims=self.program.victims['prepared'],
-            consumers=self.checks.consumer_witness('prepared', ('old-a', 'old-b', 'neighbor-a', 'neighbor-b')))
+            consumers=self.checks.consumer_witness('prepared', ('old-a', 'old-b', 'old-c', 'old-d', 'neighbor-a', 'neighbor-b', 'neighbor-c', 'neighbor-d')))
 
     async def learn_pair(self):
         self.phase = 'capture two real independent cold sources'
@@ -100,16 +101,16 @@ class FullCapacityEnv:
         await self.read('pair', self.program.sequence, after=receipts[-1][0])
         self.checks.reach('two-new-identities-and-directions',
                           consumers={o: self.checks.consumers['pair', o] for o in self.program.sequence})
-        await self.read('pair', ('old-a', 'old-b'), after=receipts[-1][0])
+        await self.read('pair', ('old-a', 'old-b', 'old-c', 'old-d'), after=receipts[-1][0])
         self.checks.reach('old-residents-retired', consumers=self.checks.consumer_witness('pair', ('old-a', 'old-b')))
-        await self.read('pair', ('neighbor-a', 'neighbor-b'), after=receipts[-1][0])
+        await self.read('pair', ('neighbor-a', 'neighbor-b', 'neighbor-c', 'neighbor-d'), after=receipts[-1][0])
         self.checks.reach('independent-window-content',
                           consumers=self.checks.consumer_witness('pair', ('neighbor-a', 'neighbor-b')))
 
     async def compete(self):
         self.phase = 'neighbor competition before any further target age update'
         tick = await self.teach('neighbor-probe', source_stage='pair')
-        owners = (*self.program.sequence, 'neighbor-a', 'neighbor-b', 'neighbor-probe')
+        owners = (*self.program.sequence, 'old-c', 'old-d', 'neighbor-a', 'neighbor-b', 'neighbor-c', 'neighbor-d', 'neighbor-probe')
         await self.read('neighbor-probe', owners, after=tick)
         self.checks.reach('independent-next-victim', evicted='neighbor-b', kept='neighbor-a',
             feedback=self.last_teaching, consumers=self.checks.consumer_witness('neighbor-probe', owners))
@@ -120,9 +121,9 @@ class FullCapacityEnv:
                              consumers=self.checks.consumer_witness('neighbor-touch', owners))
         self.phase = 'target competition after discriminating qualified neighbor touch'
         tick = await self.teach('target-probe', source_stage='neighbor-touch')
-        owners = (*self.program.sequence, 'target-probe', 'neighbor-a', 'neighbor-b', 'neighbor-probe')
+        owners = (*self.program.sequence, 'old-c', 'old-d', 'target-probe', 'neighbor-a', 'neighbor-b', 'neighbor-c', 'neighbor-d', 'neighbor-probe')
         await self.read('target-probe', owners, after=tick)
-        self.checks.reach('target-next-victim', evicted=self.program.sequence[0], kept=self.program.sequence[1],
+        self.checks.reach('target-next-victim', evicted='old-c', kept='old-d',
             feedback=self.last_teaching, independent_touch=neighbor_touch,
             consumers=self.checks.consumer_witness('target-probe', owners))
 

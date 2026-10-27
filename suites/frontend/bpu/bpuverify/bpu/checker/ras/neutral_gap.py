@@ -43,14 +43,14 @@ class RasNeutralGapChecks(RasSemanticComponentChecker):
         if self.failure is not None or not self.initialized:return
         try:
             if resources is None:raise AssertionError('neutral-gap verification requires read-only BOS and guard observations')
-            wanted=dict(bos=self.model.retired_calls%32,guarded=int(self.model.guarded))
-            observed=dict(bos=16*resources['bos']['flag']+resources['bos']['value'],guarded=resources['guarded'])
+            wanted=dict(bos=self.model.retired_calls%64,guarded=int(self.model.guarded))
+            observed=dict(bos=32*resources['bos']['flag']+resources['bos']['value'],guarded=resources['guarded'])
             self.check(wanted,observed,'owned lifetime credit and registered capacity guard')
             self.resources.append(dict(tick=event.tick,**observed))
         except Exception as error:self.failure=error
 
     def unchanged_committed(self):
-        self.check((0,tuple((0,0) for _ in range(8))),
+        self.check((0,tuple((0,0) for _ in range(16))),
             (self.model.committed_head,tuple((f.address,f.repeat) for f in self.model.committed)),
             'neutral notifications never fabricate a committed call, return or address')
 

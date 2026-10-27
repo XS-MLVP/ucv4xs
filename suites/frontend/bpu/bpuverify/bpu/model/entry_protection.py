@@ -1,5 +1,6 @@
 """Original contribution and original contradiction at real instruction entries."""
 from dataclasses import dataclass
+from bpuverify.bpu.model.early_opposition import FALLBACK
 from bpuverify.bpu.model.block_entry_learning import PROGRAMS as ENTRIES
 from bpuverify.bpu.coverage.early_opposition import RULES as BASE_RULES
 
@@ -13,7 +14,7 @@ class Program:
     @property
     def pc(self): return self.entry.pc
     @property
-    def fallback_pc(self): return (self.pc//8)*8+4
+    def fallback_pc(self): return (self.pc//16)*16+FALLBACK
     @property
     def recovery_offset(self): return self.fallback_pc-self.pc
 

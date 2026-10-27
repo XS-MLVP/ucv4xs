@@ -159,7 +159,7 @@ class Checks(DirectionServiceChecks):
         self.check(self.contexts[history], self.pipeline.model.sources.snapshot(token).read.context, 'consumer owns the exact original history')
         self.check(self.profile.counters(history, final=phase == 'final', mixed=phase == 'mixed'), values[1],
             'fresh consumer checks the independently expected old, mixed, or final storage value')
-        self.check(((3, 0), (3, 1)), self.owners(token), 'both branch identities remain the original providers')
+        self.check(((7, 0), (7, 1)), self.owners(token), 'both branch identities remain the original providers')
         self.check(((source.prediction_tick+2, 2),), self.pipeline.corrections_for_source(source), 'fresh consumer includes its complete compared repair window')
         after = self.accepted[-1][0] if phase == 'old' else max(v[-1][0] for v in self.written.values())
         self.check(True, source.prediction_tick > after, 'old receipts cannot impersonate a post-learning or post-service query')

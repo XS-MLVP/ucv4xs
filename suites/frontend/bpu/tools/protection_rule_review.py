@@ -64,30 +64,33 @@ class Projection:
 def extract(source):
     text=re.sub(r'//[^\n]*','',source)
     c=compact(text)
-    for declaration in ('inputclock,reset,input[8:0]',
-            'inputio_train_t1_update_valid,io_train_t1_update_bits_updateTaken,input[3:0]',
-            'inputio_train_t1_update_bits_usefulValid,io_train_t1_update_bits_needUseful,io_train_t1_alloc_valid,io_train_t1_alloc_bits_taken,input[3:0]',
-            'inputio_writeSuccess,io_usefulReset);'):
-        require(declaration in c,'unsupported control port widths/grouping')
+    for name,width in (('clock',None),('reset',None),('io_train_t0_trainIndex_bits','8:0'),
+            ('io_train_t1_update_valid',None),('io_train_t1_update_bits_updateTaken',None),
+            ('io_train_t1_update_bits_updateCfiPosition','4:0'),
+            ('io_train_t1_update_bits_usefulValid',None),('io_train_t1_update_bits_needUseful',None),
+            ('io_train_t1_alloc_valid',None),('io_train_t1_alloc_bits_taken',None),
+            ('io_train_t1_alloc_bits_cfiPosition','4:0'),('io_writeSuccess',None),('io_usefulReset',None)):
+        port=r'\binput\s+'+(r'\['+width+r'\]\s*' if width else '')+name+r'\s*[,)]'
+        require(len(re.findall(port,text))==1,'unsupported control port width: '+name)
     cells={(int(b),int(r)) for b,r in re.findall(r'reg\s+\[1:0\]\s+'+CELL+r'\s*;',text)}
     require(cells=={(b,r) for b in range(4) for r in range(128)},'complete two-bit protection array required')
     for declaration in ('reg[8:0]t1_trainIndex;',
-            'automaticlogic[127:0][1:0]_GEN_146;',
-            'automaticlogic[1:0]_GEN_147;',
-            'automaticlogic_newUseful_T_8;',
-            'automaticlogic[1:0]_newUseful_T_13;',
-            'automaticlogic_GEN_148='):
+            'wire[127:0][1:0]_GEN_137=',
+            'wire[1:0]_GEN_138=',
+            'wire_newUseful_T_8=',
+            'wire[1:0]_newUseful_T_13=',
+            'wire_GEN_139='):
         require(declaration in c,'unsupported shared protection dependency widths')
     @cache
     def definition(name):
         values=re.findall(r'(?<![A-Za-z0-9_])'+re.escape(name)+r'\s*=(?!=)\s*([^;]+);',text)
         require(len(values)==1,'ambiguous or missing dependency '+name)
         return compact(values[0])
-    require(definition('_GEN_148')=='io_train_t1_alloc_valid|io_train_t1_update_valid&io_train_t1_update_bits_usefulValid',
+    require(definition('_GEN_139')=='io_train_t1_alloc_valid|io_train_t1_update_valid&io_train_t1_update_bits_usefulValid',
         'unsupported protection qualification')
-    require(definition('_newUseful_T_8')=='(&_GEN_147)&io_train_t1_update_bits_needUseful|_GEN_147==2\'h0&~io_train_t1_update_bits_needUseful',
+    require(definition('_newUseful_T_8')=='(&_GEN_138)&io_train_t1_update_bits_needUseful|_GEN_138==2\'h0&~io_train_t1_update_bits_needUseful',
         'unsupported saturation guard')
-    require(definition('_newUseful_T_13')=="io_train_t1_update_bits_needUseful?_GEN_147+2'h1:_GEN_147-2'h1",
+    require(definition('_newUseful_T_13')=="io_train_t1_update_bits_needUseful?2'(_GEN_138+2'h1):2'(_GEN_138-2'h1)",
         'unsupported protection arithmetic')
     # Both levels of the current-state packed-array read must be complete.
     muxes={}
@@ -98,11 +101,11 @@ def extract(source):
             'unsupported bank mux expression')
         muxes[match[1]]=tuple(address(int(b),int(r)) for b,r in reversed(leaves))
     require(len(muxes)==128,'complete current-state row muxes required')
-    outer=definition('_GEN_146')
+    outer=definition('_GEN_137')
     names=re.findall(r'\{(\w+)\[t1_trainIndex\[1:0\]\]\}',outer)
     require(len(names)==128 and outer=='{'+','.join('{'+name+'[t1_trainIndex[1:0]]}' for name in names)+'}',
         'unsupported current-state outer mux')
-    require(set(names)<=muxes.keys() and definition('_GEN_147')=='_GEN_146[t1_trainIndex[8:2]]',
+    require(set(names)<=muxes.keys() and definition('_GEN_138')=='_GEN_137[t1_trainIndex[8:2]]',
         'protection update must read the complete current array')
     read_map=tuple(value for name in reversed(names) for value in muxes[name])
     reset_match=re.search(r'\bif\s*\(reset\)\s*(begin)',text)
@@ -142,7 +145,7 @@ def extract(source):
             k=re.fullmatch(r"2'h([0-3])",rhs);require(k is not None,'unsupported reset value');resets[key]=int(k[1])
         elif age.start(1)<m.start()<age_end:
             sig=f'usefulEntries_{b}_{r}_value'
-            k=re.fullmatch(re.escape(sig)+r"==2'h0\?2'h0:"+re.escape(sig)+r"-2'h([0-3])",rhs)
+            k=re.fullmatch(re.escape(sig)+r"==2'h0\?2'h0:2'\("+re.escape(sig)+r"-2'h([0-3])\)",rhs)
             require(k is not None,'unsupported aging expression');aging[key]=int(k[1])
         else:require(normal_start<m.start()<normal_end,'unaccounted protection assignment')
     require(len(resets)==len(aging)==512 and len(assignments)==2560,'every clocked protection assignment must be accounted for')
@@ -153,7 +156,7 @@ def extract(source):
     require(not text[previous:age_end].strip(),'unaccounted aging control')
     pattern=(r'(?m)^ {8}if\s*\((.*?)\)\s*begin\s*'
         r'if\s*\(io_train_t1_alloc_valid\)\s*('+CELL+r")\s*<=\s*2'h([0-3]);\s*"
-        r'else\s+if\s*\(_newUseful_T_8\)\s*\2\s*<=\s*_GEN_147;\s*'
+        r'else\s+if\s*\(_newUseful_T_8\)\s*\2\s*<=\s*_GEN_138;\s*'
         r'else\s*\2\s*<=\s*_newUseful_T_13;\s*end')
     matches=list(re.finditer(pattern,text[normal_start:normal_end],re.S))
     require(len(matches)==512,'all ordinary protection writes must have one complete supported branch')
@@ -163,7 +166,7 @@ def extract(source):
     def decoder(term):
         term=compact(term)
         if re.fullmatch(r'\w+',term):
-            require('automaticlogic'+term+';' in c,'unsupported decoder width')
+            require('wire'+term+'=' in c,'unsupported decoder width')
             term=definition(term)
         m=re.fullmatch(r"t1_trainIndex\[(1:0|8:2)\]==([27])'h([0-9A-Fa-f]+)",term)
         if m:
@@ -175,7 +178,7 @@ def extract(source):
     for m in matches:
         start,end=normal_start+m.start(),normal_start+m.end()
         require(not text[previous:start].strip(),'unaccounted control between protection writes');previous=end
-        terms=split_and(compact(m[1]));require(len(terms)==3 and terms[0]=='_GEN_148','one qualification and two decoder terms required')
+        terms=split_and(compact(m[1]));require(len(terms)==3 and terms[0]=='_GEN_139','one qualification and two decoder terms required')
         d=dict(decoder(t) for t in terms[1:]);require(set(d)=={'bank','row'},'both address components required')
         key=address(int(m[3]),int(m[4]));require(key not in decoders,'duplicate protection destination')
         decoders[key]=(d['bank'],d['row']);alloc[key]=int(m[5])

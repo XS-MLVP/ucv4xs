@@ -95,7 +95,7 @@ class RasReuseChecks(RasSemanticComponentChecker):
         self.check(PRESERVED+len(sources),self.model.program.calls,'only the younger new call is undone')
         self.check(True,cancelled.meta_tick>sources[-1].meta_tick,'cancelled source is younger than all new retirements')
         for index,expected in enumerate(self.protected):
-            if index in (1,2):self.check(expected,self.model.committed[index],'old retained groups survive new-address reuse')
+            if expected.address==call_address(OLD_CALL):self.check(expected,self.model.committed[index],'old retained groups survive new-address reuse')
         self.kept_new=tuple(sources);self.mark(6,self.last_actual[2])
 
     def final_returns(self,sources):

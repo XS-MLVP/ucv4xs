@@ -5,6 +5,8 @@ Read views and feedback views are distinct: recovery may repair a young
 metadata view after its weight read, but published views cannot be rebound.
 Only independently predicted pipeline events enter this model.
 """
+from bpuverify.common.model.configuration import *
+
 from collections import Counter
 from dataclasses import dataclass, replace
 
@@ -85,7 +87,7 @@ class CommonQueryReference:
         if feedback and not source.published:
             raise ValueError('SC feedback history needs a published original')
         value = source.metadata if feedback else source.read
-        return ScHistory(source.owner.history % (1 << 31), value.ghr, value.bw, source.loop, value.valid)
+        return ScHistory(source.owner.history % (1 << PHR_BITS), value.ghr, value.bw, source.loop, value.valid)
 
     def retire(self, token):
         source = self.snapshot(token)

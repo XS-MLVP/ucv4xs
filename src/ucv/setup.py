@@ -6,8 +6,8 @@ import shutil
 import sys
 import urllib.request
 import venv
-from .common import UcvError, execute, file_hash, lock, now, read, write
-from .sources import checkout
+from .common import UcvError, digest, execute, file_hash, lock, now, read, write
+from .sources import checkout, git
 
 def setup(project, jobs=16):
     if sys.version_info[:2]!=(3,12) or platform.system()!='Linux' or platform.machine()!='x86_64':
@@ -25,8 +25,25 @@ def setup(project, jobs=16):
         sources = {}
         for name in ('toffee','xcomm','picker'):
             pin = project.tools[name]
-            sources[name] = checkout(pin['repository'],pin['commit'],prefix/'sources'/name,
-                                    project.local.get('dependency_mirrors',{}).get(name),log)
+            destination = prefix/'sources'/name
+            patches = pin.get('patches', [])
+            patch_receipt = destination/'.ucv-patches.json'
+            sources[name] = checkout(pin['repository'],pin['commit'],destination,
+                                    project.local.get('dependency_mirrors',{}).get(name),log,
+                                    allow_dirty=bool(patches and patch_receipt.exists()))
+            for patch in patches:
+                if file_hash(root/patch['path']) != patch['sha256']:
+                    raise UcvError('Dependency patch content changed: '+patch['path'])
+            if patch_receipt.exists():
+                prior = read(patch_receipt)
+                if (prior['patches'] != patches or prior['diff_sha256'] !=
+                        digest(git(destination,'diff','HEAD','--binary','--ignore-submodules=all'))):
+                    raise UcvError('Installed dependency patches differ from the lock: '+name)
+            elif patches:
+                for patch in patches:
+                    execute(['git','-C',destination,'apply',root/patch['path']],log=log)
+                write(patch_receipt,{'patches':patches,'diff_sha256':
+                    digest(git(destination,'diff','HEAD','--binary','--ignore-submodules=all'))})
         # Native library and SWIG wrapper are built together from the same pin.
         env.update(BUILD_XSPCOMM_SWIG='python',CMAKE_BUILD_PARALLEL_LEVEL=str(jobs),
                    SETUPTOOLS_SCM_PRETEND_VERSION_FOR_XSPCOMM=project.tools['xcomm']['package_version'])

@@ -1,5 +1,6 @@
 """Byte-preserving RTL closures and independently smoked native builds. MPL-2.0."""
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from contextlib import ExitStack
 import keyword
 import os
 from pathlib import Path
@@ -7,7 +8,7 @@ import re
 import shutil
 import tempfile
 from .common import UcvError, activate, digest, execute, file_hash, lock, now, read, write
-from .sources import generate
+from .sources import generate, source_key
 
 MODULE = re.compile(r'^\s*module\s+(\w+)', re.M)
 INSTANCE = re.compile(r'^[ \t]*(\w+)[ \t]+(?:#\s*\([^;]*?\)\s*)?(\w+)[ \t]*\(',re.M)
@@ -64,6 +65,9 @@ def prepare(project, suite, dut):
             write(receipt,{'key':dut,**spec,'files':files,'baseline':suite.baseline,
                            'source':str(source),'cache_key':base.name,'created_at':now()})
         activate(suite.path/'rtl'/dut,rtl)
+        # Existing contracts cite paths relative to the suite. Resolve that
+        # compatibility entry to this suite's complete effective baseline.
+        activate(suite.path/'XiangShan',project.root/'.cache/sources'/source_key(suite.baseline))
         # VAGQ's verification package addresses its original flat RTL names.
         if suite.name=='vagq':
             for name in read(receipt)['files']:
@@ -154,20 +158,26 @@ def build_many(project, suites, duts=None, jobs=16, prepare_only=False):
         for key in keys:
             if key not in suite.recipe['duts']:raise UcvError(f'Unknown DUT {suite.name}/{key}')
             tasks.append((suite,key))
-    width=min(len(tasks),max(1,jobs//4))
-    per_job=max(1,jobs//width)
-    results=[]
-    with ThreadPoolExecutor(max_workers=width) as pool:
-        futures={pool.submit(prepare if prepare_only else build,project,suite,key,
-                            **({} if prepare_only else {'jobs':per_job})):(suite.name,key) for suite,key in tasks}
-        for future in as_completed(futures):
-            name,key=futures[future]
-            try:
-                value=future.result()
-                print(f'{name}/{key}: {"PREPARED" if prepare_only else "BUILT + SMOKE PASS"}',flush=True)
-                results.append({'suite':name,'dut':key,'status':'PASS'})
-            except Exception as error:
-                print(f'{name}/{key}: ERROR: {error}',flush=True)
-                results.append({'suite':name,'dut':key,'status':'ERROR','error':str(error)})
+    if not tasks:raise UcvError('No DUTs selected')
+    from .validation import installed_tools
+    installed_tools(project,runtime=not prepare_only)
+    with ExitStack() as stack:
+        for suite in sorted(suites,key=lambda item:item.name):
+            stack.enter_context(lock(project.root/'.cache/locks'/('suite-run-'+suite.name)))
+        width=min(len(tasks),max(1,jobs//4))
+        per_job=max(1,jobs//width)
+        results=[]
+        with ThreadPoolExecutor(max_workers=width) as pool:
+            futures={pool.submit(prepare if prepare_only else build,project,suite,key,
+                                **({} if prepare_only else {'jobs':per_job})):(suite.name,key) for suite,key in tasks}
+            for future in as_completed(futures):
+                name,key=futures[future]
+                try:
+                    value=future.result()
+                    print(f'{name}/{key}: {"PREPARED" if prepare_only else "BUILT + SMOKE PASS"}',flush=True)
+                    results.append({'suite':name,'dut':key,'status':'PASS'})
+                except Exception as error:
+                    print(f'{name}/{key}: ERROR: {error}',flush=True)
+                    results.append({'suite':name,'dut':key,'status':'ERROR','error':str(error)})
     write(project.root/'.ucv/last-build.json',{'completed_at':now(),'results':results})
     return results

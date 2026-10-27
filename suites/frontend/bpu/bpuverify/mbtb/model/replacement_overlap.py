@@ -26,18 +26,18 @@ class ReplacementProgram:
     def __init__(self, mode):
         if mode not in CASES: raise ValueError(f'unknown replacement program {mode}')
         self.mode=mode
-        self.pcs=dict(same=PC,alias=PC^0x400,independent=PC^0x20)
+        self.pcs=dict(same=PC,alias=PC^0x2000,independent=PC^0x80)
         self.lookup_only=mode=='lookup-only'
         relation='same' if self.lookup_only else mode.split('-',1)[0]
         self.taken=not self.lookup_only and not mode.endswith('not-taken')
         age=MbtbReplacementState()
         records=[]
         for pc in self.pcs.values():
-            for position in (1,5):
+            for position in (1,5,9,13):
                 way=age.allocate(pc,position)
                 # Learning the later branch includes the earlier NT prefix.
                 records.append(Resident(pc,position,pc+0x600+position*0x10,way,
-                                        1 if position==1 else 2))
+                                        1 if position!=13 else 2))
         self.prepared=tuple(records)
         self.old_victim=age.victim(PC,NEW_POSITION)
         self.touch=next(r for r in records if r.pc==self.pcs[relation] and r.way==self.old_victim)
@@ -58,7 +58,10 @@ class ReplacementProgram:
                 # direction projection uses that original counter, not SRAM.
                 counter=max(0,record.counter-1)
             final.append(replace(record,counter=counter))
-        self.final=tuple(final)+(self.new,)
+        # The displaced Main record remains observable in DefaultConfig's
+        # VictimBTB with its independent weak-taken direction initialization.
+        removed=next(r for r in records if r.pc==PC and r.way==self.victim)
+        self.final=tuple(final)+(self.new,replace(removed,way=4,counter=2))
         self.removed=next(r for r in records if r.pc==PC and r.way==self.victim)
 
     def profile(self, pc, *, prepared=False):

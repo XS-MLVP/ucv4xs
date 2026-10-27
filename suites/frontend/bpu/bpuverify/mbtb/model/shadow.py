@@ -3,30 +3,37 @@
 LRU chooses each request way, while an existing entry shadow retains its owner.
 Only one retained key, two rewrites and initially counter-2 residents are covered.
 """
+from bpuverify.common.model.configuration import *
 from bpuverify.mbtb.model.entry import expected_mbtb_entry_activity
-from bpuverify.mbtb.model.replacement import MbtbTwoWayLru
+from bpuverify.mbtb.model.replacement import MbtbFourWayLru
 
 
 SHADOW_PHASES = ("clean_first", "pending_second")
 
 
-def expected_mbtb_shadow_request_ways(owner, phase):
-    MbtbTwoWayLru._require_way(owner)
+def shadow_phase_touch_ways(owner, phase):
+    MbtbFourWayLru._require_way(owner)
     if phase not in SHADOW_PHASES:
         raise ValueError("MainBTB shadow phase must be clean_first or pending_second")
-    lru = MbtbTwoWayLru()
-    # A genuine correct-taken hit changes replacement state without entry writes.
-    lru.touch(owner if phase == "clean_first" else 1 - owner)
+    peer = next(way for way in range(4) if way != owner)
+    first = (peer, owner) if phase == 'clean_first' else (owner, peer)
+    return (*first, *(way for way in range(4) if way not in first))
+
+
+def expected_mbtb_shadow_request_ways(owner, phase):
+    lru = MbtbFourWayLru()
+    for way in shadow_phase_touch_ways(owner, phase):
+        lru.touch(way)
     return lru.allocate(), lru.allocate()
 
 
 def require_mbtb_shadow_cold_metadata(metadata):
     """Reject fabricated hit feedback and unsupported geometry before driving."""
     if (not isinstance(metadata, (tuple, list)) or len(metadata) != 2
-            or any(not isinstance(row, (tuple, list)) or len(row) != 2 for row in metadata)
+            or any(not isinstance(row, (tuple, list)) or len(row) != MAIN_WAYS + 1 for row in metadata)
             or any(not isinstance(entry, dict) or entry.get("rawHit") != 0
                    for row in metadata for entry in row)):
-        raise ValueError("shadow replay requires genuine all-miss two-bank/two-way cold metadata")
+        raise ValueError("shadow replay requires genuine all-miss two-bank/Main-plus-victim cold metadata")
 
 
 def expected_mbtb_shadow_activity(pc, position, owner, targets, mode, phase, *, reads=24):

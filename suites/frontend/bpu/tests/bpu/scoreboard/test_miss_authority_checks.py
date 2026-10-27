@@ -19,18 +19,18 @@ def checks(program):return Checks(SimpleNamespace(checker=SimpleNamespace(curren
 @pytest.mark.parametrize('inactive',(0,1,2,3))
 def test_inactive_counter_bits_are_not_falsely_compared_as_writes(inactive):
     p=Program(True,False)
-    checks(p).check([p.direction],[observed_counter(dict(row=0,mask=1,counters=(2,inactive)))],
+    checks(p).check([p.direction],[observed_counter(dict(row=16,mask=4,counters=(inactive,inactive,2,inactive)))],
         'inactive lane payload has no SRAM write authority')
 
 
 @pytest.mark.parametrize('fault',('spurious-unhit-update','extra-allocated-lane','wrong-row','wrong-initialization'))
 def test_actual_masked_corruption_is_not_normalized_away(fault):
     p=Program(fault!='spurious-unhit-update',True)
-    bits=dict(row=0,mask=1,counters=(2,3))
-    if fault=='spurious-unhit-update':bits.update(mask=2,counters=(0,1))
-    elif fault=='extra-allocated-lane':bits['mask']=3
-    elif fault=='wrong-row':bits['row']=1
-    else:bits['counters']=(3,0)
+    bits=dict(row=16,mask=4,counters=(0,0,2,3))
+    if fault=='spurious-unhit-update':bits.update(mask=8,counters=(0,0,0,1))
+    elif fault=='extra-allocated-lane':bits['mask']=12
+    elif fault=='wrong-row':bits['row']=17
+    else:bits['counters']=(0,0,3,0)
     with pytest.raises(ScoreboardMismatch):checks(p).check([] if p.direction is None else [p.direction],
         [observed_counter(bits)],'only original hit or actual new-owner initialization can write a direction')
 

@@ -22,6 +22,8 @@ def decode_events(sample):
     row = sample.lookup
     return Events(pc=row.start_pc.as_int(), select=bool(row.s0_fire.as_int()),
         advance=bool(row.s1_fire.as_int()), consume=bool(row.s2_fire.as_int()),
+        last_stage=bool(row.s3_fire.as_int()),
+        victim_taken=tuple(bool(value.as_int()) for value in row.victim_taken),
         feedback=decode_feedback(sample.train) if sample.train_valid.as_int() else None,
         enabled=bool(sample.enabled.as_int()), ready=bool(sample.ready.as_int()), reset=bool(sample.reset.as_int()))
 

@@ -1,7 +1,7 @@
 """Selector inputs from genuine FTQ feedback, never observed selector state."""
 INITIAL=16
 MAXIMUM=31
-COUNT=8
+COUNT=16
 
 
 def feedback_votes(bits):
@@ -35,7 +35,7 @@ def feedback_votes(bits):
 
 def update_selectors(values,votes):
     if len(values)!=COUNT or any(type(v) is not int or not 0<=v<=MAXIMUM for v in values):
-        raise ValueError('eight unsigned five-bit selector values required')
+        raise ValueError('sixteen unsigned five-bit selector values required')
     inc=[0]*COUNT;dec=[0]*COUNT
     for vote in votes:
         if vote['valid']:

@@ -1,4 +1,5 @@
 """Hand-derived, exhaustive pointer and bit-basis checks for the independent model."""
+from bpuverify.common.model.configuration import *
 from copy import deepcopy
 from itertools import product
 
@@ -21,29 +22,29 @@ def boundary():
             meta=deepcopy(meta)) for stage in ('s1', 's2', 's3')})
 
 
-@pytest.mark.parametrize('value,flag,taken', tuple(product(range(52), (0, 1), (0, 1))))
+@pytest.mark.parametrize('value,flag,taken', tuple(product(range(PHR_STORAGE_BITS), (0, 1), (0, 1))))
 def test_pointer_subtraction_and_flag(value, flag, taken):
-    wanted_value = value - 2 if taken and value >= 2 else value + 50 if taken else value
+    wanted_value = value - 2 if taken and value >= 2 else value + PHR_STORAGE_BITS - 2 if taken else value
     wanted_flag = 1 - flag if taken and value < 2 else flag
     assert subtract(dict(value=value, flag=flag), 2 * taken) == dict(value=wanted_value, flag=wanted_flag)
 
 
 @pytest.mark.parametrize('length,width', LAYOUT)
 def test_all_fold_bit_bases(length, width):
-    for bit in range(52):
+    for bit in range(PHR_STORAGE_BITS):
         assert fold(1 << bit, length, width) == (1 << (bit % width) if bit < length else 0)
     assert fold(MASK, length, width) == sum(((length // width + int(index < length % width)) % 2) << index
         for index in range(width))
 
 
-@pytest.mark.parametrize('pointer', range(52))
+@pytest.mark.parametrize('pointer', range(PHR_STORAGE_BITS))
 def test_all_physical_rotations_and_pending_overlay(pointer):
     model = BpuPhrReference()
     model.state['pointer']['value'] = pointer
-    for cell in range(52):
-        model.state['cells'] = [int(index == cell) for index in range(52)]
-        assert model.physical_read(model.state['pointer']) == 1 << ((cell - pointer - 1) % 52)
-    model.state['cells'] = [1] * 52
+    for cell in range(PHR_STORAGE_BITS):
+        model.state['cells'] = [int(index == cell) for index in range(PHR_STORAGE_BITS)]
+        assert model.physical_read(model.state['pointer']) == 1 << ((cell - pointer - 1) % PHR_STORAGE_BITS)
+    model.state['cells'] = [1] * PHR_STORAGE_BITS
     for taken, low, shift in product((0, 1), (0, 0x1800, 0x1FFF), range(4)):
         model.state['pending'] = dict(valid=1, taken=taken, low=low, shift=shift)
         width = 15 if taken else 13
@@ -65,7 +66,7 @@ def test_s1_consumes_all_fifteen_pending_bits():
     row['s1'].update(valid=1, prediction=dict(taken=1, position=0, target=0))
     model.advance(row, 0)
     assert model.state['fold1'] == folds(0x18000)
-    assert model.state['pointer'] == dict(value=50, flag=1)
+    assert model.state['pointer'] == dict(value=PHR_STORAGE_BITS - 2, flag=1)
 
 
 def test_s1_not_taken_does_not_change_current_history():
@@ -92,18 +93,18 @@ def test_four_source_priority_uses_one_prestate(valids):
     assert model.state['fold1'] == folds(0 if winning is None else (1, 2, 4, 8)[winning])
     assert model.state['pending']['valid'] == int(winning in (1, 2, 3))
     if winning == 0:
-        assert model.state['cells'][51] == 1
+        assert model.state['cells'][PHR_STORAGE_BITS - 1] == 1
 
 
 def test_not_taken_restores_metadata_without_shift():
     model = BpuPhrReference()
-    model.state['cells'] = [1] * 52
+    model.state['cells'] = [1] * PHR_STORAGE_BITS
     row = boundary()
     row['redirect'].update(valid=1, meta=dict(pointer=dict(value=10, flag=1), low=0x1234))
     model.advance(row, 0)
     assert model.state['pointer'] == dict(value=10, flag=1)
-    for bit in range(52):
-        assert model.state['cells'][(11 + bit) % 52] == ((0x1234 >> bit) & 1 if bit < 13 else 1)
+    for bit in range(PHR_STORAGE_BITS):
+        assert model.state['cells'][(11 + bit) % PHR_STORAGE_BITS] == ((0x1234 >> bit) & 1 if bit < 13 else 1)
     assert model.state['fold0_reg'] == folds(((MASK >> 13) << 13) | 0x1234)
 
 
@@ -113,9 +114,9 @@ def test_stall_holds_fold_register_but_not_redirect_restore():
     row['stall'] = 1
     row['redirect'].update(valid=1, taken=1, cfi_pc=0, target=2)
     model.advance(row, 0)
-    assert model.state['fold0_reg'] == [0] * 19
-    assert model.state['cells'][51] == 1
-    assert model.state['pointer'] == dict(value=50, flag=1)
+    assert model.state['fold0_reg'] == [0] * len(PHR_FOLDS)
+    assert model.state['cells'][PHR_STORAGE_BITS - 1] == 1
+    assert model.state['pointer'] == dict(value=PHR_STORAGE_BITS - 2, flag=1)
 
 
 def test_redirect_replaces_old_pending_write():
@@ -125,7 +126,7 @@ def test_redirect_replaces_old_pending_write():
     row = boundary()
     row['redirect'].update(valid=1, meta=dict(pointer=dict(value=0, flag=0), low=1))
     model.advance(row, 0)
-    assert model.state['cells'] == [int(index == 1) for index in range(52)]
+    assert model.state['cells'] == [int(index == 1) for index in range(PHR_STORAGE_BITS)]
     assert model.state['pending']['valid'] == 0
 
 
@@ -136,7 +137,7 @@ def test_s2_does_not_erase_previous_pending_physical_commit():
     row = boundary()
     row['s2'].update(valid=1, prediction=dict(taken=0, position=0, target=0))
     model.advance(row, 0)
-    assert model.state['cells'] == [int(index in range(27, 42)) for index in range(52)]
+    assert model.state['cells'] == [int(index in range(27, 42)) for index in range(PHR_STORAGE_BITS)]
     assert model.state['pending'] == dict(valid=1, taken=0, low=0, shift=0)
 
 
@@ -160,6 +161,6 @@ def test_odd_metadata_is_a_counterexample_to_global_even_waiver():
 @pytest.mark.parametrize('which', ('flag', 'value'))
 def test_invalid_pointer_rejected(which):
     pointer = dict(flag=0, value=0)
-    pointer[which] = 2 if which == 'flag' else 52
+    pointer[which] = 2 if which == 'flag' else PHR_STORAGE_BITS
     with pytest.raises(ValueError, match='invalid PHR pointer'):
         subtract(pointer, 2)

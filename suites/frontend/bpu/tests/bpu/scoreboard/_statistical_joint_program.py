@@ -1,4 +1,5 @@
 """Real semantic learning program for pure qualification, never a DUT oracle seed."""
+from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT
 from dataclasses import replace
 
 from bpuverify.bpu.model.pipeline import Outcome, Redirect, Resolution
@@ -10,7 +11,7 @@ from tests.bpu.scoreboard.test_semantic_pipeline import boot
 
 class Program:
     def __init__(self, *, positive, pc=0x40000002, early=False,anchor_pc=0x40000103,recovery_position=4,sources=None):
-        self.a, self.b, self.x = anchor_pc, pc, pc + 0x400
+        self.a, self.b, self.x = anchor_pc, pc, pc + 0x10000
         self.recovery_position=recovery_position
         self.d = self.a + 0x100
         self.positive = positive
@@ -48,7 +49,7 @@ class Program:
 
     def query(self, pc):
         idle = self.quiet()
-        self.step(replace(idle, redirect=Redirect(self.anchor.history, (self.a // 8) * 8 + self.recovery_position,
+        self.step(replace(idle, redirect=Redirect(self.anchor.history, (self.a // 16) * 16 + self.recovery_position,
             pc, True, Kind.INDIRECT)))
         return self.consume(pc)
 
@@ -68,7 +69,7 @@ class Program:
         request = Resolution(source.history, source.pc, tuple(branches), origin=source)
         if maximum:
             transaction = self.bank.feedback_for(request)
-            for _ in range(128):
+            for _ in range(TAGE_ALLOCATION_WAIT):
                 candidate = self.bank.tage.allocation_at_next_accept(transaction)
                 if candidate is not None and candidate[0] == TABLES - 1:
                     break
@@ -113,7 +114,7 @@ class Program:
         source = self.query(pc)
         values = dict(self.bank.tage_snapshot(source, resolved=True).wanted)
         main = source.lookup.values()
-        slot, = [slot for slot in range(4) if main.get(f'{slot}.valid') and main[f'{slot}.position'] == 2]
+        slot, = [slot for slot in range(10) if main.get(f'{slot}.valid') and main[f'{slot}.position'] == 2]
         assert values[f'{slot}.table'] == TABLES - 1
         assert values[f'{slot}.counter'] == (4 if self.positive else 3)
         direction = values[f'{slot}.taken'] if values[f'{slot}.valid'] else main[f'{slot}.taken']
@@ -144,7 +145,7 @@ class ContextProgram(Program):
         from bpuverify.bpu.model.statistical_prefix import ContextLayout
         self.layout=(layout_type or ContextLayout)(profile)
         super().__init__(positive=True,pc=self.layout.b,anchor_pc=self.layout.a,
-            recovery_position=self.layout.a%8+self.layout.recovery_offset)
+            recovery_position=self.layout.a%16+self.layout.recovery_offset)
         self.d=self.layout.d
 
     def query(self,pc):
@@ -173,7 +174,7 @@ class ContextProgram(Program):
         token=self.model.stages[0]
         read=self.bank.statistical_snapshot(token).read
         assert token.pc==source.pc and read.context.common_valid
-        assert read.indices[1:3]==before.indices[1:3] and all(any(row) for row in read.weights[1:3])
+        assert read.indices[2:6]==before.indices[2:6] and all(any(row) for row in read.weights[2:6])
         assert self.model.stages[0] is token
         self.controls(sc=False)
         self.anchor=Program.query(self,self.a)
@@ -234,7 +235,7 @@ class ContextBurstProgram(ContextProgram):
             self.consume(self.layout.loop_prefix)
         if source is None:raise AssertionError('no independently owned loop experience')
         self.step(replace(self.quiet(),redirect=Redirect(source.history,self.layout.loop_prefix+2,
-            self.layout.loop_prefix+16,False,Kind.CONDITIONAL)))
+            self.layout.loop_prefix+32,False,Kind.CONDITIONAL)))
         return self.consume(self.b)
 
     def conditional(self,source,taken,*,maximum=False,learn_sc=False):

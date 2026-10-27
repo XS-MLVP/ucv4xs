@@ -24,7 +24,7 @@ def test_both_cold_sources_are_genuinely_observable_in_aligned_stream(bank):
     pcs=sorted(program["pc"] for program in (recipe(bank)["old"],recipe(bank)["second"]))
     leads=[(pc-1)&~15 for pc in pcs]
     assert len(set(leads))==2 and leads[1]>leads[0]
-    assert all((pc-2)&~7==lead for pc,lead in zip(pcs,leads,strict=True))
+    assert all((pc-2)&~15==lead for pc,lead in zip(pcs,leads,strict=True))
 
 @pytest.mark.parametrize("bank",(1,2,3))
 @pytest.mark.parametrize("key",("old","second"))
@@ -32,9 +32,9 @@ def test_every_conditional_and_fallback_transient_full_tag_fits_storage(bank,key
     program=recipe(bank)[key]
     for position in (program["position"],program["fallback"]):
         history=0
-        for _ in range(40):
+        for _ in range(270):
             assert all(0<=tag<256 for tag in full_tags(program["pc"],folds(history)))
-            history=((history<<2)^path_hash((program["pc"]&~7)+position,program["pc"]))&MASK
+            history=((history<<2)^path_hash((program["pc"]&~15)+position,program["pc"]))&MASK
         expected=program["conditional_history"] if position==program["position"] else program["fallback_history"]
         assert history==expected
 
@@ -56,7 +56,7 @@ def test_second_program_steady_reads_can_commit_old_bank_and_do_not_alias_old_in
             history=0
             for value in sequence:
                 history=(history<<2)^value
-            indices.add(read_indices(new["pc"],(fold(history,6,6),fold(history,12,9)))[1])
+            indices.add(read_indices(new["pc"],(fold(history,5,5),fold(history,9,9)))[1])
     assert old["expected_conditional_upper_index"] not in indices
 
 

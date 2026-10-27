@@ -48,22 +48,22 @@ def test_distinct_actual_originals_supersede_one_complete_record_not_its_directi
     model,event,anchor,sources,originals,requests,baseline=program();main=model.sources.main
     assert sources[0].history is not sources[1].history
     frozen=tuple(source_entries(s.lookup) for s in (*sources,*originals))
-    assert entry_plan(main,0,0)==((effect(TARGETS[1]),),())
+    assert entry_plan(main,0,0)==((),(),(effect(TARGETS[1]),),())
     assert tuple(counter_payload(p) for p in main.directions[0,0].pending)==(direction(),direction())
     assert (main.entry_commits,main.counter_commits)==baseline
     assert (main.entries[0,0].overflows,main.directions[0,0].drops)==(0,0)
     old=streaming_query(model,event,anchor,PC)
-    assert old.middle.branch.position==5 and source_entries(old.lookup)[0][0].kind==1
+    assert old.middle.branch.position==5 and source_entries(old.lookup)[0][2].kind==1
     quiet(model,event)
     current=revisit(model,event,anchor,PC)
     assert (current.middle.branch.position,current.middle.branch.target)==(POSITION,TARGETS[1])
     assert (main.entry_commits,main.counter_commits)==(baseline[0]+1,baseline[1]+2)
-    assert entry_plan(main,0,0)==((),())
+    assert entry_plan(main,0,0)==((),)*4
     resolve=feedback(current,(outcome(TARGETS[2]),))
     model.advance(replace(quiet(model,event),feedback=resolve));quiet(model,event)
     latest=revisit(model,event,anchor,PC)
     assert latest.middle.branch.target==TARGETS[2]
-    assert source_entries(latest.lookup)[0][1]==source_entries(originals[0].lookup)[0][1]
+    assert source_entries(latest.lookup)[0][3]==source_entries(originals[0].lookup)[0][3]
     assert (main.entry_commits,main.counter_commits)==(baseline[0]+2,baseline[1]+3)
     assert source_entries(revisit(model,event,anchor,PCS[1]).lookup)==source_entries(originals[1].lookup)
     assert tuple(source_entries(s.lookup) for s in (*sources,*originals))==frozen
@@ -83,11 +83,11 @@ def fixture():
     checks=MainRewriteChecks(pipeline,MainRewriteCoverage());checks.arm(receipts,originals)
     loop=streaming_query(model,event,anchor,STREAM_PC);checks.start(NS(token=loop))
     row=dict(reset=0,initialized=1,read=dict(valid=1,row=24),training=dict(valid=0,ready=1),
-        prediction=dict(valid=1,ready=1,pc=STREAM_PC),incoming=tuple(dict(valid=0,bits={}) for _ in range(2)),
+        prediction=dict(valid=1,ready=1,pc=STREAM_PC),incoming=tuple(dict(valid=0,bits={}) for _ in range(4)),
         direction=dict(valid=0,ready=1,bits={}),
-        writes=(dict(valid=1,ready=0,bits=effect(TARGETS[1])),dict(valid=0,ready=0,bits={}),
-            dict(valid=1,ready=0,bits=raw_counter(direction()))),dirty=((1,0),(0,0)),
-        queue=dict(enqueue=0,dequeue=0,full=1))
+        writes=tuple(dict(valid=int(w==2),ready=0,bits=effect(TARGETS[1]) if w==2 else {}) for w in range(4)) +
+            (dict(valid=1,ready=0,bits=raw_counter(direction())),),dirty=((0,)*4,(0,)*4,(1,0,0,0),(0,)*4),
+        queue=dict(enqueue=2,dequeue=0,full=0))
     events=tuple((200+i*2,r) for i,r in enumerate(requests))
     return checks,receipts,events,row,(model,event,anchor),retired
 
@@ -103,7 +103,7 @@ def armed():
         if index<2:
             r['training']['valid']=1;r['direction']=dict(valid=1,ready=1,bits=raw_counter(direction()))
         index=(tick-202)//2
-        if index in (0,1):r['incoming']=(dict(valid=1,bits=effect(TARGETS[index])),dict(valid=0,bits={}))
+        if index in (0,1):r['incoming']=tuple(dict(valid=int(w==2),bits=effect(TARGETS[index]) if w==2 else {}) for w in range(4))
         sample(checks,r,tick)
     checks.accepted_burst(events);checks.pending()
     return checks,receipts,events,row,program,retired
@@ -114,7 +114,7 @@ def test_checked_credit_waits_for_all_actual_services_fresh_consumers_and_clean_
     assert checks.coverage.groups['checked'].coverage==0
     old=NS(token=streaming_query(model,event,anchor,PC),prediction_tick=250,meta_tick=254)
     checks.consumed_old(old);checks.release();quiet(model,event)
-    for port,tick,value in ((0,280,effect(TARGETS[1])),(2,280,raw_counter(direction())),(2,282,raw_counter(direction()))):
+    for port,tick,value in ((2,280,effect(TARGETS[1])),(4,280,raw_counter(direction())),(4,282,raw_counter(direction()))):
         checks.write_accepted(port,NS(accepted_tick=tick,value=value))
     current=NS(token=revisit(model,event,anchor,PC),prediction_tick=300,meta_tick=304)
     checks.consumed_new(current);checks.reactivate(current)
@@ -122,13 +122,13 @@ def test_checked_credit_waits_for_all_actual_services_fresh_consumers_and_clean_
     for tick in (320,322):
         r=deepcopy(row)
         if tick==320:r['direction']=dict(valid=1,ready=1,bits=raw_counter(direction()))
-        else:r['incoming']=(dict(valid=1,bits=effect(TARGETS[2])),dict(valid=0,bits={}))
+        else:r['incoming']=tuple(dict(valid=int(w==2),bits=effect(TARGETS[2]) if w==2 else {}) for w in range(4))
         sample(checks,r,tick)
     model.advance(replace(quiet(model,event),feedback=feedback(current.token,(outcome(TARGETS[2]),))));quiet(model,event)
-    for port,value in ((0,effect(TARGETS[2])),(2,raw_counter(direction()))):
+    for port,value in ((2,effect(TARGETS[2])),(4,raw_counter(direction()))):
         checks.write_accepted(port,NS(accepted_tick=330,value=value))
     checks.consumed_latest(NS(token=revisit(model,event,anchor,PC),prediction_tick=350,meta_tick=354))
-    r=deepcopy(row);r['writes']=tuple(dict(valid=0,ready=1,bits={}) for _ in range(3));sample(checks,r,360)
+    r=deepcopy(row);r['writes']=tuple(dict(valid=0,ready=1,bits={}) for _ in range(5));sample(checks,r,360)
     sibling=NS(token=revisit(model,event,anchor,PCS[1]),prediction_tick=370,meta_tick=374)
     checks.finish(sibling)
     assert checks.closed and all(g.coverage==100 for g in checks.coverage.groups.values()) and len(set(retired))==8
@@ -137,13 +137,13 @@ def test_checked_credit_waits_for_all_actual_services_fresh_consumers_and_clean_
 @pytest.mark.parametrize('fault',('intermediate-target','stale-type','wrong-carry','extra-entry','lost-direction','merged-direction','sibling-write','read-gap'))
 def test_bad_pending_actual_cannot_repair_the_owned_latest_version_or_receive_checked_credit(fault):
     checks,_,_,row,_,_=armed();r=deepcopy(row)
-    if fault=='intermediate-target':r['writes'][0]['bits']=effect(TARGETS[0])
-    elif fault=='stale-type':r['writes'][0]['bits']['kind']=1
-    elif fault=='wrong-carry':r['writes'][0]['bits']['carry']=0
+    if fault=='intermediate-target':r['writes'][2]['bits']=effect(TARGETS[0])
+    elif fault=='stale-type':r['writes'][2]['bits']['kind']=1
+    elif fault=='wrong-carry':r['writes'][2]['bits']['carry']=0
     elif fault=='extra-entry':r['dirty']=((1,1),(0,0))
-    elif fault=='lost-direction':r['writes'][2]['valid']=0
+    elif fault=='lost-direction':r['writes'][4]['valid']=0
     elif fault=='merged-direction':r['queue']['full']=0;r['queue']['enqueue']=1
-    elif fault=='sibling-write':r['writes'][1]['valid']=1
+    elif fault=='sibling-write':r['writes'][3]['valid']=1
     else:r['read']['valid']=0
     before=deepcopy(checks.pipeline.model.sources.main.state())
     with pytest.raises(AssertionError) as first:sample(checks,r,222)
@@ -156,12 +156,12 @@ def test_bad_pending_actual_cannot_repair_the_owned_latest_version_or_receive_ch
 def test_actual_service_requires_the_complete_latest_declared_version_exactly_once(fault):
     checks,_,_,row,_,_=armed()
     if fault!='before-release':checks.old=object();checks.release()
-    port=1 if fault=='sibling-port' else 0;bits=effect(TARGETS[1])
+    port=3 if fault=='sibling-port' else 2;bits=effect(TARGETS[1])
     if fault=='old-version':bits=effect(TARGETS[0])
     elif fault=='partial-kind':bits['kind']=1
     elif fault=='partial-carry':bits['carry']=0
     elif fault=='premature-new-version':bits=effect(TARGETS[2])
-    elif fault=='duplicate':checks.write_accepted(0,NS(accepted_tick=230,value=bits))
+    elif fault=='duplicate':checks.write_accepted(2,NS(accepted_tick=230,value=bits))
     before=len(checks.written[port])
     with pytest.raises(AssertionError):checks.write_accepted(port,NS(accepted_tick=232,value=bits))
     assert len(checks.written[port])==before and checks.coverage.groups['checked'].coverage==0

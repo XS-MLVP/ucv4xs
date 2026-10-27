@@ -2,6 +2,7 @@
 from copy import deepcopy
 import json
 from pathlib import Path
+from ucv.runtime import historical_path
 
 import pytest
 
@@ -12,7 +13,7 @@ from vagqverify.vagq.scenario_matrix import legal_public_feature_cases
 
 
 ROOT = Path(__file__).resolve().parents[2]
-REVIEW = ROOT / 'results/vagq-exhaustive-review-20261020-v1'
+REVIEW = historical_path('vagq', 'results/vagq-exhaustive-review-20261020-v1')
 
 
 def test_source_window_is_not_field_major_destination_register_offset():
@@ -22,7 +23,7 @@ def test_source_window_is_not_field_major_destination_register_offset():
 
 
 def test_recomputed_witnesses_compare_after_json_roundtrip():
-    originals = json.loads((ROOT / 'results/vagq-exhaustive-20261020-v1/failed-shapes.json').read_text())
+    originals = json.loads((historical_path('vagq', 'results/vagq-exhaustive-20261020-v1/failed-shapes.json')).read_text())
     explanations = json.loads((REVIEW / 'case-review.json').read_text())
     cases = tuple(legal_public_feature_cases())
     for original, explanation in zip(originals, explanations):

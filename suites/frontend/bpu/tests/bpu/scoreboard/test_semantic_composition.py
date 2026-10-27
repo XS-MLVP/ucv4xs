@@ -23,7 +23,7 @@ def test_path_history_uses_owned_full_words_and_restores_an_immutable_checkpoint
     assert recovered.history == saved.history and initial.history == 0
     assert recovered.metadata() == saved.metadata()
     assert saved.folds() == tuple(row['foldedHist'] for row in folded_history_values(
-        saved.history % (1 << 31), len(PHR_FOLD_LAYOUT)))
+        saved.history % (1 << 532), len(PHR_FOLD_LAYOUT)))
 
 
 @pytest.mark.parametrize('fault', ('foreign', 'copied', 'reset'))
@@ -44,13 +44,13 @@ def test_external_metadata_cannot_inject_a_golden_history(fault):
 def test_taken_path_word_keeps_high_hash_bits_and_two_circular_wraps():
     model = PathHistoryReference()
     expected = 0
-    for count in range(1, 54):
-        expected = ((expected << 2) ^ path_contribution(PC + 7, PC + 0x6000)) & ((1 << 52) - 1)
+    for count in range(1, 534):
+        expected = ((expected << 2) ^ path_contribution(PC + 7, PC + 0x6000)) & ((1 << 532) - 1)
         source = model.advance(taken=True, cfi_pc=PC + 7, target=PC + 0x6000)
         assert source.history == expected
         assert source.metadata()['phrPtr']['value'] % 2 == 0
-        if count in (26, 52):
-            assert source.metadata()['phrPtr'] == dict(value=0, flag=int(count == 26))
+        if count in (266, 532):
+            assert source.metadata()['phrPtr'] == dict(value=0, flag=int(count == 266))
 
 
 def test_retired_checkpoint_cannot_be_used_as_a_recovery_source():
@@ -65,8 +65,8 @@ def test_retired_checkpoint_cannot_be_used_as_a_recovery_source():
 def test_fallthrough_alignment_and_page_boundary_are_independent_of_a_port(offset):
     pc = PC + offset
     value = fallthrough(pc).branch
-    assert value.target == min((pc // 8) * 8 + 16, (pc // 2048 + 1) * 2048)
-    assert (pc // 8) * 8 + value.position + 1 == value.target
+    assert value.target == min((pc // 16) * 16 + 32, (pc // 2048 + 1) * 2048)
+    assert (pc // 16) * 16 + value.position + 1 == value.target
 
 
 def test_any_ahead_hit_suppresses_micro_even_when_all_ahead_branches_are_not_taken():

@@ -68,7 +68,7 @@ class DirectionForwardingChecks:
         self.check(first,second,'distinct requests own identical old semantic TAGE contents')
         for source,token in zip(sources,tokens,strict=True):
             self.prepared(source,((1,2),(2,5)))
-            self.check(((3,0),(3,1)),self.owners(token),'two distinct longest-history logical owners')
+            self.check(((7,0),(7,1)),self.owners(token),'two distinct longest-history logical owners')
             metadata=self.pipeline.model.sources.defined_metadata(token)
             for slot,entry in enumerate(tuple(entry for row in source_entries(token.lookup) for entry in row)):
                 if entry.hit and entry.position in POSITIONS:
@@ -103,7 +103,7 @@ class DirectionForwardingChecks:
         self.check(True,source.prediction_tick>self.accepted[-1][0],'consumer must be a new post-feedback lookup')
         token,values=self.values(source)
         self.check(((0,3),(0,7)),values,'both forwarded updates, not either single old-metadata effect')
-        self.check(((3,0),(3,1)),self.owners(token),'forwarding preserves both original logical provider owners')
+        self.check(((7,0),(7,1)),self.owners(token),'forwarding preserves both original logical provider owners')
         for old in self.sources:
             self.check(True,token is not self.pipeline.source_token(old),'old read cannot count as the new consumer')
         self.check(((source.prediction_tick+2,2),),self.pipeline.corrections_for_source(source),
@@ -133,7 +133,7 @@ class DirectionForwardingChecks:
         self.check(True,source.prediction_tick>tick,'boundary readback follows actual feedback')
         token,values=self.values(source)
         self.check(((0,3),(0,7)),values,'fresh saturated update neither wraps nor corrupts its neighbor')
-        self.check(((3,0),(3,1)),self.owners(token),'saturation preserves both original provider owners')
+        self.check(((7,0),(7,1)),self.owners(token),'saturation preserves both original provider owners')
         self.check(((source.prediction_tick+2,2),),self.pipeline.corrections_for_source(source),'retained final consumer repair window')
         self.coverage.record('checked',RULES[-1],source.meta_tick)
         for old in self.sources:self.pipeline.retire_source(old.meta_tick)

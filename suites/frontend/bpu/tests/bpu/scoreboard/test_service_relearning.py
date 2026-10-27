@@ -46,7 +46,7 @@ def initial_reference(program):
         if not learning_inflight(model.sources.tage): break
     else: raise AssertionError('first independent learning did not mature')
     assert model.sources.tage.commits == baseline
-    assert tuple(tuple(p['counter'] for p in v) for v in pending_plan(model.sources.tage, 3, PC%4)) == ((1, 1), (6, 6))
+    assert tuple(tuple(p['counter'] for p in v) for v in pending_plan(model.sources.tage, 7, PC%4)) == ((1, 1), (6, 6))
     old = consumers(model, event, anchor)
     assert all(counters(model.sources.snapshot(s).read) == (2, 5) for s in old)
     return model, event, anchor, sources, old, baseline
@@ -101,7 +101,7 @@ def held(program):
     checks.begin_late()
     model.advance(replace(event, feedback=resolution(tokens[2], program.late_path)))
     for _ in range(32):
-        if model.sources.tage.offers.get((3, PC%4)): break
+        if model.sources.tage.offers.get((7, PC%4)): break
         model.advance(event)
     else: raise AssertionError('late independent learning never proposes')
     actual = packet(checks); actual['state']['training']['valid'] = 1

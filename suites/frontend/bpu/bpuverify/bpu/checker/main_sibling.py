@@ -1,4 +1,5 @@
 """Passive public-SDK service witnesses, never expected-state seeds."""
+from bpuverify.common.model.configuration import *
 from copy import deepcopy
 
 from toffee import CheckContext, Scoreboard, ScoreboardMode
@@ -13,7 +14,7 @@ class MainSiblingChecks:
         self.held = False
         self.last = None
         self.incoming,self.directions,self.inputs,self.accepted = [],[],[],[]
-        self.written = [[],[],[]]
+        self.written = [[] for _ in range(MAIN_WAYS+1)]
         self.snapshots,self.consumers = [],[]
         self.failure = None
         self.status = 'INCOMPLETE'

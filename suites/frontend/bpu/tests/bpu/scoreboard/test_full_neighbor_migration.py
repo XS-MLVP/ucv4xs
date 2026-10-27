@@ -62,7 +62,7 @@ def serviced_fixture():
         for owner in range(2): checks.write_accepted(owner, NS(accepted_tick=40410 + 2 * i,
             value=deepcopy(checks.expected_plan[owner][i])))
     checks.services_complete(); quiet(program[0], program[1])
-    assert program[0].sources.tage.commits == baseline + 8 and pending_plan(program[0].sources.tage, 3, 0) == ((), ())
+    assert program[0].sources.tage.commits == baseline + 8 and pending_plan(program[0].sources.tage, 7, 0) == ((), ())
     return checks, program, retired
 
 
@@ -78,8 +78,8 @@ def test_full_program_uses_52_normal_steps_six_real_sources_and_four_independent
     assert checks.input_count == len(checks.requests) == len({id(s.token.history) for s in checks.requests}) == 6
     assert checks.service_count == 4 and len(checks.before) == 5
     assert len({checks.read(checks.before[n]).rows[3] for n in (*NEIGHBOR_NAMES, 'original')}) == 4
-    assert all(checks.profile(checks.before[n]) == ((1, 3), ((3, 0, 2, 0), (3, 1, 5, 0))) for n in NEIGHBOR_NAMES)
-    assert checks.profile(checks.before['original']) == ((1, 3), ((3, 1, 1, 0), (3, 0, 4, 0)))
+    assert all(checks.profile(checks.before[n]) == ((1, 3), ((7, 0, 2, 0), (7, 1, 5, 0))) for n in NEIGHBOR_NAMES)
+    assert checks.profile(checks.before['original']) == ((1, 3), ((7, 1, 1, 0), (7, 0, 4, 0)))
     assert checks.coverage.groups['checked'].coverage == 0
 
 
@@ -140,7 +140,7 @@ def test_pending_needs_both_full_witnesses_and_every_independently_derived_resul
     elif fault == 'missing-sixth-offer': checks.offered.pop()
     elif fault == 'lost-neighbor': checks.expected_plan[0][1]['counter'] = 2
     elif fault == 'target-stale': checks.expected_plan[0][-1]['counter'] = 6
-    else: checks.pipeline.model.sources.tage.cache[3, 0].overflows += 1
+    else: checks.pipeline.model.sources.tage.cache[7, 0].overflows += 1
     with pytest.raises(AssertionError) as first: checks.pending()
     with pytest.raises(AssertionError) as second: checks.raise_failure()
     assert first.value is second.value

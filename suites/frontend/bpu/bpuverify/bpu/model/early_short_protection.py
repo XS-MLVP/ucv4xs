@@ -17,9 +17,12 @@ EDGES = {
     'lower-recover': (('reach-lower', 'penalty', 1, 0), ('lower-hold', 'penalty', 0, 0),
                       ('lower-recover', 'reward', 0, 1)),
 }
+# The second prefix differs in the last older history bit retained after the
+# common fallback suffix. Reuse the first prefix for the final short consumer.
 OLDER_PATHS = ((CONDITIONAL,) * 6,
-               (FALLBACK, CONDITIONAL, FALLBACK, CONDITIONAL, FALLBACK, CONDITIONAL),
-               (CONDITIONAL, FALLBACK, CONDITIONAL, FALLBACK, CONDITIONAL, FALLBACK))
+               (CONDITIONAL,) * 4 + (FALLBACK, CONDITIONAL),
+               (CONDITIONAL,) * 6)
+
 EXTRA = ('short-not-long-provider', 'actual-acceptance-window', 'neutral-seed-confirmed')
 
 

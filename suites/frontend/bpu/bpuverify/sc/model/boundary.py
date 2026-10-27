@@ -1,10 +1,12 @@
 """Closed-form signed-weight boundary program, not an RTL state machine.
 
-The pinned SC has five six-bit weight families. One representative branch
-learns unit votes; three other branch ways retain zero. Original cold sources
+The pinned SC has eight six-bit tables in five families. One representative branch
+learns unit votes; other branch ways retain zero. Original cold sources
 remain eligible even after newer predictions become confident. Every source is
 used once. These are standalone SC cut-point obligations, not FTQ generation.
 """
+from bpuverify.common.model.configuration import SC_WAYS, SC_TABLES, RESULT_SLOTS, MAIN_WAYS, SC_MIN_THRESHOLD, SC_MAX_THRESHOLD
+
 from dataclasses import dataclass
 
 from bpuverify.sc.transaction.types import ScBaseBranch, ScBatchTraining, ScBranchFeedback
@@ -14,7 +16,7 @@ META_FIELDS = ('scBiasLowerBits', 'scPred', 'useScPred', 'sumAboveThres',
                'tageCtr', 'tagePred', 'tagePredValid')
 FAMILY_FIELDS = ('scPathTakenVec', 'scGlobalTakenVec', 'scBWTakenVec',
                  'scImliTakenVec', 'scBiasTakenVec')
-POSITIONS = (4, 5, 6, 7)
+POSITIONS = (4, 0, 1, 2, 3, 5, 6, 7, 8, 9)
 WEIGHT_BITS = 6
 
 
@@ -58,14 +60,14 @@ class ScBoundaryProgram:
     def expected(self, weight, thresholds):
         # All families have the same selected weight, but their public signs
         # are checked separately so one wrong family cannot hide in the sum.
-        scores = (5 * (2 * weight + 1), 5, 5, 5)
+        scores = (SC_TABLES * (2 * weight + 1),) + (SC_TABLES,) * (RESULT_SLOTS - 1)
         signs = tuple(int(score >= 0) for score in scores)
-        ways = tuple((p % 4) ^ (p // 4) for p in POSITIONS)
+        ways = tuple((p % SC_WAYS) ^ (p // SC_WAYS) for p in POSITIONS)
         used = tuple(int(abs(score) > thresholds[way] // 64) for score, way in zip(scores, ways, strict=True))
-        meta = dict(scBiasLowerBits=(3 if self.direction else 2,) * 4,
+        meta = dict(scBiasLowerBits=(3 if self.direction else 2,) * RESULT_SLOTS,
             scPred=signs, useScPred=used, sumAboveThres=used,
-            tageCtr=(4 if self.direction else 3,) * 4,
-            tagePred=(self.direction,) * 4, tagePredValid=(1,) * 4)
+            tageCtr=(4 if self.direction else 3,) * RESULT_SLOTS,
+            tagePred=(self.direction,) * RESULT_SLOTS, tagePredValid=(1,) * RESULT_SLOTS)
         return dict(takens=signs, useds=used, meta=meta,
                     families={name: signs for name in FAMILY_FIELDS})
 
@@ -84,7 +86,7 @@ def expected_feedback(transaction, *, branch_count, fold_count):
     return dict(valid=1, ready=1, pc=transaction.pc,
         history=(1, 0, 0, 0, (0,) * fold_count),
         meta={key: tuple(transaction.meta[key]) for key in META_FIELDS},
-        mbtb_meta=((hit, empty), (empty, empty)),
+        mbtb_meta=((hit,) + (empty,) * MAIN_WAYS, (empty,) * (MAIN_WAYS + 1)),
         branches=tuple(dict(valid=int(index == 0), taken=branch.actual_taken if index == 0 else 0,
             position=branch.position if index == 0 else 0,
             branch_type=branch.branch_type if index == 0 else 0) for index in range(branch_count)))

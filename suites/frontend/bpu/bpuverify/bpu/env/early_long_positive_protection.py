@@ -1,3 +1,4 @@
+from bpuverify.bpu.model.early_opposition import FALLBACK
 """Normal historical ancestors make the same original long record reachable."""
 from contextlib import asynccontextmanager
 
@@ -15,7 +16,7 @@ class EarlyLongPositiveProtectionProgram(EarlyPositiveProtectionProgram):
 
     async def original_long(self, source, *, penalty=False, expect_taken=None):
         return await self._source_window(source, older=REVISIT_PREFIX if penalty else None,
-                                         recovery_position=2 if penalty else 4, expect_taken=expect_taken)
+                                         recovery_position=2 if penalty else FALLBACK, expect_taken=expect_taken)
 
 
 @asynccontextmanager

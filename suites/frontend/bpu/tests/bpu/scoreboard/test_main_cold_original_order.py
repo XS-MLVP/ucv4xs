@@ -13,14 +13,14 @@ from bpuverify.mbtb.model.semantic import MbtbReference,Events,Feedback,Branch
 def settle(model,*,busy=False):
     for _ in range(32): # Failure budget only; completion is model state.
         mature=model.offered is None and not any(model.entry_offers.values())
-        pending=any(c.outstanding for c in model.entries.values()) or any(q.pending for q in model.directions.values())
+        pending=bool(model.snapshots or model.cleanup) or any(c.outstanding for c in model.entries.values()) or any(q.pending for q in model.directions.values())
         if mature and (busy or not pending):return
         model.advance(Events(pc=STREAM_PC,select=busy))
     raise AssertionError('semantic Main state failed to settle')
 
 
 def teach(model,frame,position,target,kind,*,taken=True,wrong=True,busy=False):
-    feedback=Feedback((frame.pc,(frame.pc//8+1)*8),source_entries(frame),
+    feedback=Feedback((frame.pc,(frame.pc//16+1)*16),source_entries(frame),
         (Branch(target,taken,position,kind,0,wrong),))
     model.advance(Events(pc=STREAM_PC,select=busy,feedback=feedback))
     directions=model.direction_proposals()
@@ -39,7 +39,7 @@ def test_cold_original_initializes_the_retained_branch_not_its_new_nomination(or
     teach(model,model.lookup_snapshot(PC+EARLIER+1),LATER,LATER_TARGET,1)
     for _ in range(2-counter):
         frame=model.lookup_snapshot(PC+EARLIER+1)
-        teach(model,frame,LATER,LATER_TARGET,1,taken=False,wrong=bool(frame.values()['1.taken']))
+        teach(model,frame,LATER,LATER_TARGET,1,taken=False,wrong=bool(frame.values()['3.taken']))
     teach(model,model.lookup_snapshot(PC),EARLIER,INITIAL_TARGET,3)
     current=model.lookup_snapshot(PC);frames=(cold,current);before=deepcopy(frames)
     committed=model.entry_commits
@@ -50,8 +50,8 @@ def test_cold_original_initializes_the_retained_branch_not_its_new_nomination(or
     settle(model)
     assert model.entry_commits-committed==len(p.services)
     values=model.lookup_snapshot(PC).values()
-    assert (values['0.position'],values['0.target'],values['0.counter'])==(EARLIER,p.final_target,2)
-    assert (values['1.position'],values['1.target'],values['1.counter'])==(LATER,LATER_TARGET,counter)
+    assert (values['2.position'],values['2.target'],values['2.counter'])==(EARLIER,p.final_target,2)
+    assert (values['3.position'],values['3.target'],values['3.counter'])==(LATER,LATER_TARGET,counter)
     assert frames==before and cold==before_cold
     assert not any(s.hit for row in source_entries(cold) for s in row)
 

@@ -26,7 +26,7 @@ async def run_program(env):
     token = c.save(c.sc_control)
     value = c.bank.statistical_snapshot(token,resolved=True)
     fields = dict(c.bank.tage_snapshot(token,resolved=True).wanted)
-    slot, = [i for i in range(4) if fields.get(f'{i}.has_provider')]
+    slot, = [i for i in range(10) if fields.get(f'{i}.has_provider')]
     c.check(True,direction_ready(c.bank,token,p),'independent SC experience did not train the target TAGE identity')
     c.check((1,0,-19),(value.prediction.used[slot],value.prediction.directions[slot],value.prediction.sums[slot]),
         'real SC evidence now opposes final taken TAGE')

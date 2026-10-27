@@ -56,3 +56,30 @@ def test_cache_separates_baseline_dut_tools_and_options(project):
     assert original!=project.cache_key(project.suite('bpu'),'unit')
     project.tools['toffee']['commit']='f'*40
     assert original!=project.cache_key(suite,'unit')
+
+@pytest.mark.parametrize('field,value', [
+    ('design', {'config':'','num_cores':1,'top':'top.TopMain'}),
+    ('design', {'config':'DefaultConfig','num_cores':0,'top':'top.TopMain'}),
+    ('visibility', 'unknown'), ('commit', '893e1580b'),
+    ('firtool_options', '-O=release'), ('recursive_submodules', {}),
+])
+def test_partial_or_ambiguous_definition_is_rejected(project, field, value):
+    path=project.root/'baselines/a.json'
+    data=json.loads(path.read_text());data[field]=value;write(path,data)
+    with pytest.raises(UcvError):project.suite('bpu')
+
+
+def test_generation_config_changes_baseline_and_cache_identity(project):
+    before=project.suite('bpu')
+    path=project.root/'baselines/a.json';data=json.loads(path.read_text())
+    data['design']['config']='AnotherConfig';write(path,data)
+    after=project.suite('bpu')
+    assert before.baseline_key != after.baseline_key
+    assert project.cache_key(before,'unit') != project.cache_key(after,'unit')
+    assert after.summary()['design_config']=='AnotherConfig'
+
+
+def test_dut_cannot_override_design_configuration(project):
+    path=project.root/'suites/frontend/bpu/ucv.json';data=json.loads(path.read_text())
+    data['duts']['unit']['config']='MinimalConfig';write(path,data)
+    with pytest.raises(UcvError,match='per-DUT'):project.suite('bpu')

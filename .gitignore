@@ -21,3 +21,6 @@ results/
 *.egg-info/
 build/
 dist/
+
+# Generated compatibility source entry resolved by ucv prepare.
+XiangShan

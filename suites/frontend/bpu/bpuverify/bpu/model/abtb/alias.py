@@ -1,4 +1,5 @@
 """Joint PHR and ahead-index model: oldFoldedPhr precedes current S1 update."""
+from bpuverify.common.model.configuration import ALIGN_HALFWORDS, POSITIONS, MAIN_WAYS, MAIN_BANKS, MAIN_ROWS
 from collections import Counter
 from copy import deepcopy
 from bpuverify.bpu.model.phr.model import BpuPhrReference
@@ -26,7 +27,7 @@ def rtl_bank_set(addr, folded6):
 
 
 def step(history, source, target):
-    return ((history << 2) ^ path_hash((source & ~7) + 7, target)) & MASK
+    return ((history << 2) ^ path_hash((source & ~(ALIGN_HALFWORDS-1)) + 7, target)) & MASK
 
 
 def pair_history_before_b(a, b):
@@ -34,19 +35,21 @@ def pair_history_before_b(a, b):
 
 
 def mainbtb_route(addr, position):
-    if type(position) is not int or not 0 <= position < 16:
-        raise ValueError('CFI position must be 0..15')
-    first_align = (addr >> 3) & 1
-    logical = tuple(addr if i == 0 else (addr + 8 * i) & ~7 for i in range(2))
-    physical = tuple(logical[(bank - first_align) % 2] for bank in range(2))
-    selected = (first_align + (position >> 3)) % 2
+    if type(position) is not int or not 0 <= position < POSITIONS:
+        raise ValueError(f'CFI position must be 0..{POSITIONS-1}')
+    first_align = (addr // ALIGN_HALFWORDS) % 2
+    logical = tuple(addr if i == 0 else (addr // ALIGN_HALFWORDS+i)*ALIGN_HALFWORDS for i in range(2))
+    physical = tuple(logical[(bank-first_align)%2] for bank in range(2))
+    selected = (first_align + position//ALIGN_HALFWORDS) % 2
     routed = physical[selected]
     return dict(read_start_pc_by_physical_align=physical,
         FTQ_train_start_pc_by_physical_align=physical,
         selected_physical_align=selected, selected_start_pc=routed,
-        internal_bank=(routed >> 4) & 1, entry_set=(routed >> 5) & 63,
-        tag=(routed >> 11) & 65535, entry_position=position & 7,
-        source_offset=addr & 7, aligned_byte_start=byte_pc(addr) & ~15)
+        internal_bank=(routed//(2*ALIGN_HALFWORDS))%MAIN_BANKS,
+        entry_set=(routed//(2*ALIGN_HALFWORDS*MAIN_BANKS))%MAIN_ROWS,
+        tag=(routed//(2*ALIGN_HALFWORDS*MAIN_BANKS*MAIN_ROWS))%65536,
+        entry_position=position%ALIGN_HALFWORDS,
+        source_offset=addr%ALIGN_HALFWORDS, aligned_byte_start=byte_pc(addr)&~(2*ALIGN_HALFWORDS-1))
 
 
 def capacity(pairs):
@@ -78,7 +81,7 @@ def plan(bank, entry_set):
         # history BEFORE A. This a0 source later indexes the prediction of A.
         peer = physical_index(a, before_b)
         pairs = tuple((a + alias * 256, b + alias * 256) for alias in range(5))
-        if physical_index(b, before_a) == wanted and peer != wanted and max(capacity(pairs).values()) <= 2:
+        if physical_index(b, before_a) == wanted and peer != wanted and max(capacity(pairs).values()) <= MAIN_WAYS:
             return dict(bank=bank, entry_set=entry_set, physical_index=wanted,
                 PC_unit='Pc.addr: halfword; byte address = addr << 1',
                 taken_pairs=pairs, conditional_position=7, return_position=7,

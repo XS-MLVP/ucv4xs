@@ -167,6 +167,11 @@ def _source_path(recorded: str, dut: str) -> Path:
     """Resolve a generated source after its DUT package has been relocated."""
 
     original = Path(recorded)
+    # Resolve only the active package/closure directory, never a basename match.
+    for directory in (ROOT / 'rtl' / dut, ROOT / 'dut' / dut):
+        candidate = directory / original.name
+        if original.parent.resolve() == directory.resolve() and candidate.is_file():
+            return candidate
     if original.parent.name == dut and original.parent.parent.name == 'rtl':
         installed = ROOT / 'rtl' / dut / original.name
         if installed != original and original.is_file() and installed.is_file():

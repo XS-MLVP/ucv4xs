@@ -8,6 +8,8 @@ top again. Main-RAS state is a public input to this standalone UT.
 All addresses are 50-bit guarded halfword addresses. Calls return after the
 instruction at fetch-block-aligned PC plus its halfword position.
 """
+from bpuverify.common.model.configuration import *
+
 from dataclasses import dataclass
 from enum import IntEnum
 
@@ -34,11 +36,11 @@ class Operation:
         if not isinstance(self.action, Action):
             raise TypeError('operation action must be a semantic Action')
         _unsigned(self.pc, ADDRESS_BITS, 'operation PC')
-        _unsigned(self.position, 4, 'CFI position')
+        _unsigned(self.position, (POSITIONS-1).bit_length(), 'CFI position')
 
     @property
     def return_address(self):
-        return ((self.pc // 8) * 8 + self.position + 1) % (1 << ADDRESS_BITS)
+        return ((self.pc // ALIGN_HALFWORDS) * ALIGN_HALFWORDS + self.position + 1) % (1 << ADDRESS_BITS)
 
 
 @dataclass(frozen=True, slots=True)

@@ -9,7 +9,7 @@ class EligibilityEnv:
     def __init__(self,agent,program,coverage):
         self.agent,self.program,self.coverage=agent,program,coverage
         self.checks=EligibilityChecks(program,coverage)
-        self.thresholds=ScThresholdModel()
+        self.thresholds=ScThresholdModel.for_default()
         self.inputs=EligibilityInputMonitor(agent)
 
     async def __aenter__(self):

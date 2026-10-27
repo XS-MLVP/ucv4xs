@@ -7,7 +7,7 @@ from bpuverify.sc.model.threshold import ScThresholdModel
 async def check_weight_boundary(agent, coverage, *, direction):
     program = ScBoundaryProgram(direction)
     checks = ScBoundaryChecks(program)
-    thresholds = ScThresholdModel()
+    thresholds = ScThresholdModel.for_default()
     boundary = 'upper' if direction else 'lower'
     await agent.reset()
     await agent.check_thresholds(thresholds.values)

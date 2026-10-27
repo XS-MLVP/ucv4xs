@@ -1,4 +1,4 @@
-"""Bounded integrated call chains; eight calls exercise committed slot wrap."""
+"""Bounded integrated call chains; sixteen calls exercise committed slot wrap."""
 from bpuverify.bpu.transaction.types import BpuRedirect
 from bpuverify.bpu.transaction.types import BpuTraining
 from bpuverify.bpu.model.sc.metadata import mbtb_meta_for_position
@@ -9,13 +9,13 @@ POSITION = 15
 
 
 def program(depth):
-    if type(depth) is not int or depth not in (4, 7, 8):
-        raise ValueError('qualified chain depths are 4, 7 and 8')
+    if type(depth) is not int or depth not in (4, 7, 8, 15, 16):
+        raise ValueError('qualified chain depths are 4, 7, 8, 15 and 16')
     calls = tuple(0x40010800 + 0x40 * index for index in range(depth))
     body = 0x40012000
-    returns = depth if depth < 8 else 7
-    # Eight real calls evict only the initial sentinel in the bounded model.
-    # Do not fabricate an empty eighth return or claim a bottom-stack model.
+    returns = depth if depth < 16 else 15
+    # Sixteen real calls evict only the initial sentinel in the bounded model.
+    # Do not fabricate an empty sixteenth return or claim a bottom-stack model.
     return_pcs = (body, *(pc + 16 for pc in reversed(calls[depth - returns + 1:])))
     assert len(return_pcs) == returns
     call_cases = tuple((pc, calls[index + 1] if index + 1 < depth else body, 2, 2)
@@ -49,7 +49,7 @@ async def run_chain(agent, depth):
         requests = await retirement.retire_many(operations)
         retirement.checker.check([item[3] for item in cases], [item['action'] for item in requests],
                                  phase='deep-program-order')
-        retirement.checker.check(0 if depth < 8 else 1, retirement.checker.reference.head,
+        retirement.checker.check(0 if depth < 16 else 1, retirement.checker.reference.head,
                                  phase='bounded-chain-final-head')
         accepted = retirement.checker.accepted
         retirement.checker.check([2] * (len(accepted) - 1),

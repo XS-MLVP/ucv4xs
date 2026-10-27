@@ -1,4 +1,5 @@
 """Passive counter requests, writebacks and occupancy across all physical banks."""
+from bpuverify.common.model.configuration import *
 from bpuverify.common.env.memory_direct import memory_signal
 from bpuverify.common.env.memory_direct import memory_signal_names
 from dataclasses import dataclass
@@ -40,10 +41,10 @@ class MbtbCounterActivityMonitor(CycleMonitor):
             fields = {key:signal(align,bank,name) for key,name in QUEUE_FIELDS}
             for port in ('enq','deq'):
                 fields[port+'_counters'] = tuple(signal(align,bank,f'io_{port}_bits_counters_{way}_value')
-                                               for way in range(2))
+                                               for way in range(MAIN_WAYS))
             return Bundle(**fields)
 
-        queues = tuple(tuple(queue(align,bank) for bank in range(2)) for align in range(2))
+        queues = tuple(tuple(queue(align,bank) for bank in range(MAIN_BANKS)) for align in range(2))
         super().__init__(PortBinding(dut.clock,Bundle(queues=queues),'mbtb.counter_activity'),decoder=self.decode)
 
     @staticmethod

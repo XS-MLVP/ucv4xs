@@ -1,4 +1,6 @@
 """Independent semantic composition; these synthetic tests are not DUT credit."""
+from bpuverify.common.model.configuration import ITTAGE_ALLOCATION_WAIT
+
 from copy import deepcopy
 from dataclasses import replace
 
@@ -53,7 +55,7 @@ def resolve(model,event,source,target,*,wrong=True,kind=Kind.INDIRECT):
 def establish(table):
     model,event,anchor=prepared()
     for path,target in zip(PATHS,TARGETS,strict=True):
-        for _ in range(128):
+        for _ in range(ITTAGE_ALLOCATION_WAIT):
             source=query_path(model,event,anchor,path)
             expected=model.sources.snapshot(source,resolved=True)
             if expected.prediction.provider is None and expected.allocation==table:break
@@ -114,16 +116,16 @@ def test_four_real_history_owners_keep_complete_foreign_targets_old_until_actual
 def test_nonzero_confidence_retains_target_then_zero_confidence_relearns_without_metadata_feedback_seeding():
     model,event,anchor=prepared();pc=anchor.pc
     # Pick by independent PRNG, never by an observed allocation proposal.
-    for _ in range(128):
+    for _ in range(ITTAGE_ALLOCATION_WAIT):
         source=revisit(model,event,anchor,pc)
-        if model.sources.snapshot(source,resolved=True).allocation==2:break
+        if model.sources.snapshot(source,resolved=True).allocation==4:break
     else:raise AssertionError('long history admission absent')
     first,second=pc+0x400,pc+0x600
     for target,confidence,expected in ((first,2,first),(second,1,first),(second,0,first),(second,0,second)):
         resolve(model,event,source,target)
         source=revisit(model,event,anchor,pc)
         actual=model.sources.snapshot(source,resolved=True)
-        assert (actual.prediction.provider,actual.prediction.confidence,actual.prediction.target)==(2,confidence,expected*2)
+        assert (actual.prediction.provider,actual.prediction.confidence,actual.prediction.target)==(4,confidence,expected*2)
         assert actual.late.branch.target==expected
         assert model.sources.feedback_for(resolution(source,target)).context==context_for(source.history)
 

@@ -21,7 +21,7 @@ def learned_frames():
     model = sources.main
     result = [model.lookup_snapshot(PC)]
     for taken in (True,False,True):
-        feedback = Feedback((PC,PC+8),source_entries(result[-1]),
+        feedback = Feedback((PC,PC+16),source_entries(result[-1]),
             (Branch(TARGET,taken,POSITION,1,mispredict=True),))
         model.advance(Events(feedback=feedback))
         for _ in range(8):model.advance()

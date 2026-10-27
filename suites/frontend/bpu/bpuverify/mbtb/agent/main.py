@@ -1,8 +1,9 @@
 """bpuverify.mbtb.agent.main components."""
 
 from __future__ import annotations
+import asyncio
 from collections.abc import AsyncIterator
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, suppress
 from copy import deepcopy
 from typing import Any
 from toffee import Bundle
@@ -66,10 +67,20 @@ class MbtbAgent:
         self.reset_driver = ResetDriver(dut)
         self.control_driver = ClockedWriteDriver(self.ports.control)
         self.lookup_driver = AsyncSingleCycleDriver(
-            self.ports.lookup,
+            PortBinding(dut.clock, Bundle(s0_fire=self.ports.lookup.bits.s0_fire,
+                start_pc=self.ports.lookup.bits.start_pc, s3_fire=self.ports.lookup.bits.s3_fire,
+                victim_taken=self.ports.lookup.bits.victim_taken), 'mbtb.lookup_s0'),
             idle=self._lookup_idle,
             encoder=self._encode_lookup,
         )
+        self.advance_driver = AsyncSingleCycleDriver(
+            PortBinding(dut.clock, Bundle(fire=self.ports.lookup.bits.s1_fire), 'mbtb.lookup_s1'),
+            idle={'fire': 0}, encoder=lambda _: {'fire': 1})
+        self.consume_driver = AsyncSingleCycleDriver(
+            PortBinding(dut.clock, Bundle(fire=self.ports.lookup.bits.s2_fire), 'mbtb.lookup_s2'),
+            idle=lambda _: {'fire': int(self._multi_hit_cleanup_scope_active and not self._defer_multi_hit_cleanup)},
+            encoder=lambda _: {'fire': int(not self._defer_multi_hit_cleanup)})
+        self._lookup_tails = set()
         self.training_driver = PulseDriver(self.ports.training)
         self.prediction_monitor = CycleMonitor(
             self.ports.prediction, decoder=self._decode
@@ -93,18 +104,51 @@ class MbtbAgent:
     def _lookup_idle(self, _last_request: MbtbLookup | None) -> dict[str, int]:
         return {
             "s0_fire": 0,
-            "s1_fire": 1,
-            "s2_fire": int(not self._defer_multi_hit_cleanup),
+            "s3_fire": 0,
+            "victim_taken": (0, 0),
             "start_pc": 0,
         }
 
     def _encode_lookup(self, request: MbtbLookup) -> dict[str, int]:
         return {
             "s0_fire": 1,
-            "s1_fire": 1,
-            "s2_fire": int(not self._defer_multi_hit_cleanup),
+            "s3_fire": 0,
+            "victim_taken": (0, 0),
             "start_pc": request.pc,
         }
+
+    def _quiesce_lookup(self):
+        self.lookup_driver.quiesce()
+        self.consume_driver.quiesce()
+
+    async def _advance_lookup(self, transfer):
+        # One S1 and one S2 token per accepted S0 request. Continuous S2 fire
+        # would repeatedly clean a stale SRAM read while a new victim arrives.
+        await transfer.wait_processing()
+        await self.advance_driver.send(None)
+        await self.consume_driver.send(None)
+
+    async def launch_lookup(self, request):
+        """Launch an acceptance-only query with the same real pipeline pulses.
+
+        Reset tests observe its lease independently of the response scoreboard.
+        """
+        launch = await self.lookup_driver.send(request)
+        async def advance():
+            await ClockCycles(self.dut.clock, 1)
+            await self.advance_driver.send(None)
+            await self.consume_driver.send(None)
+        self._lookup_tails.add(asyncio.create_task(advance()))
+        return launch
+
+    async def _close_lookup_tails(self):
+        tasks = tuple(self._lookup_tails)
+        self._lookup_tails.clear()
+        for task in tasks:
+            if not task.done(): task.cancel()
+        for task in tasks:
+            with suppress(asyncio.CancelledError):
+                await task
 
     @asynccontextmanager
     async def defer_multi_hit_cleanup(self) -> AsyncIterator[None]:
@@ -121,12 +165,12 @@ class MbtbAgent:
             raise RuntimeError("MainBTB multi-hit cleanup is already deferred")
         self._multi_hit_cleanup_scope_active = True
         self._defer_multi_hit_cleanup = True
-        self.lookup_driver.quiesce()
+        self._quiesce_lookup()
         try:
             yield
         finally:
             self._defer_multi_hit_cleanup = False
-            self.lookup_driver.quiesce()
+            self._quiesce_lookup()
             try:
                 # One S2 pulse accepts the cached result; retirement below
                 # follows registered clear requests and pending SRAM writes.
@@ -134,6 +178,7 @@ class MbtbAgent:
                 await self._drain_multi_hit_cleanup()
             finally:
                 self._multi_hit_cleanup_scope_active = False
+                self.consume_driver.quiesce()
 
     async def train_during_multi_hit_cleanup(
         self, transaction: MbtbBatchTraining, *, shadow_state: str = "dirty"
@@ -154,15 +199,15 @@ class MbtbAgent:
         encoded = self._encode_training(transaction)
         if shadow_state == "clean":
             self._defer_multi_hit_cleanup = False
-            self.lookup_driver.quiesce()
+            self._quiesce_lookup()
             try:
                 await ClockCycles(self.dut.clock, 1)
             finally:
                 self._defer_multi_hit_cleanup = True
-                self.lookup_driver.quiesce()
+                self._quiesce_lookup()
             await self.training_activity.wait_idle('pipeline', 'writes')
         self._defer_multi_hit_cleanup = False
-        self.lookup_driver.quiesce()
+        self._quiesce_lookup()
         await self.training_driver.send(encoded)
         await self._drain_multi_hit_cleanup()
 
@@ -191,13 +236,13 @@ class MbtbAgent:
                 if accepted:raise AssertionError('first-clear launch requires exactly one feedback acceptance')
                 accepted.append(frame.event.tick)
                 self._defer_multi_hit_cleanup=False
-                self.lookup_driver.quiesce()
+                self._quiesce_lookup()
         monitor.start(self._execution,observer=release)
         try:
             await self.training_driver.send(self._encode_training(transaction))
         finally:
             self._defer_multi_hit_cleanup=True
-            self.lookup_driver.quiesce()
+            self._quiesce_lookup()
             await monitor.aclose()
         if len(accepted)!=1:raise AssertionError('first-clear launch had no accepted normal feedback')
         await self._drain_multi_hit_cleanup()
@@ -207,12 +252,12 @@ class MbtbAgent:
         """Stop replaying cached S2 clears while their actual writes retire."""
         old_defer = self._defer_multi_hit_cleanup
         self._defer_multi_hit_cleanup = True
-        self.lookup_driver.quiesce()
+        self._quiesce_lookup()
         try:
             await self.training_activity.wait_idle('pipeline', 'writes')
         finally:
             self._defer_multi_hit_cleanup = old_defer
-            self.lookup_driver.quiesce()
+            self._quiesce_lookup()
 
     async def start(self, execution: Execution) -> "MbtbAgent":
         if self._started:
@@ -223,6 +268,8 @@ class MbtbAgent:
         try:
             await self.control_driver.__aenter__()
             self.lookup_driver.start(execution)
+            self.advance_driver.start(execution)
+            self.consume_driver.start(execution)
             self.prediction_scoreboard.bind(
                 execution,
                 driver=self.lookup_driver,
@@ -235,6 +282,9 @@ class MbtbAgent:
             await self.training_driver.__aenter__()
         except BaseException:
             await self.reference_monitor.aclose()
+            await self._close_lookup_tails()
+            await self.advance_driver.aclose()
+            await self.consume_driver.aclose()
             await self.lookup_driver.aclose()
             self.control_driver.close()
             self.reset_driver.close()
@@ -248,6 +298,9 @@ class MbtbAgent:
         finally:
             await self.reference_monitor.aclose()
             self.training_driver.close()
+            await self._close_lookup_tails()
+            await self.advance_driver.aclose()
+            await self.consume_driver.aclose()
             await self.lookup_driver.aclose()
             self.control_driver.close()
             self.reset_driver.close()
@@ -284,12 +337,18 @@ class MbtbAgent:
         self, pc: int, *, expected: Any = MISSING
     ) -> XTransfer[MbtbLookup, MbtbPrediction]:
         self._require_started()
-        return self.prediction_scoreboard.submit(
-            MbtbLookup(pc), expected=expected
-        )
+        transfer = self.prediction_scoreboard.submit(MbtbLookup(pc), expected=expected)
+        self._lookup_tails.add(asyncio.create_task(self._advance_lookup(transfer)))
+        return transfer
 
     async def drain_predictions(self):
         result = await self.prediction_scoreboard.drain(timeout_cycles=64)
+        while self._lookup_tails:
+            task = next(iter(self._lookup_tails))
+            try:
+                await task
+            finally:
+                self._lookup_tails.discard(task)
         self.reference.raise_failure()
         return result
 
@@ -473,9 +532,9 @@ class MbtbAgent:
         branches = transaction.branches + (None,) * (branch_count - len(transaction.branches))
         return {
             "start_pc0": transaction.pc,
-            # Pc.addr omits the architectural bit 0. A 16-byte aligned block
-            # therefore advances by 8 in the picker-visible field.
-            "start_pc1": (transaction.pc & ~0x7) + 0x8,
+            # Pc.addr omits architectural bit 0; DefaultConfig alignment
+            # is 32 bytes (16 halfwords).
+            "start_pc1": (transaction.pc & ~0xf) + 0x10,
             "meta_entries": transaction.meta_entries,
             "branches": tuple(_encode_branch_feedback(branch) for branch in branches),
         }

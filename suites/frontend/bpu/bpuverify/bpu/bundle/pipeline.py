@@ -1,4 +1,6 @@
 """Read-only core IO and diagnostic projections; observations never seed tokens."""
+from bpuverify.common.model.configuration import *
+
 from toffee import Bundle
 
 from bpuverify.common.bundle.bindings import PortBinding
@@ -33,7 +35,7 @@ def pipeline_binding(agent,*,with_tage=False,with_ahead=False,with_early_directi
             for key,field in (('hit','rawHit'),('position','position'),('kind','attribute_branchType'),
                 ('action','attribute_rasAction'),('counter','counter_value'))}) for way in range(2)) for align in range(2))
     tage_metadata = lambda base:tuple(Bundle(**{field:signal(f'{base}entries_{slot}_{field}')
-        for field in META_FIELDS}) for slot in range(4))
+        for field in META_FIELDS}) for slot in range(RESULT_SLOTS))
     def ittage_metadata(base):
         from bpuverify.bpu.bundle.ittage_semantic import META_FIELDS as INDIRECT_FIELDS
         return Bundle(valid=signal(base+'valid'),**{field:signal(base+field) for field in INDIRECT_FIELDS},

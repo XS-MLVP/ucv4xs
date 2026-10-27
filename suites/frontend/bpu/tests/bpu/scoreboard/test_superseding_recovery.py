@@ -23,7 +23,7 @@ def test_two_actual_model_boundaries_apply_distinct_originals_without_adding_pre
     assert old.owner is not young.owner and old.sequence < young.sequence and old.loop < young.loop < 255
     frozen = deepcopy((old.metadata, young.metadata))
     first, _ = h.step(ready=False, recovery=(young, p.younger))
-    assert first.recovered is None and first.lookup == Value(False, 255, 15)
+    assert first.recovered is None and first.lookup == Value(False, 65535, 255)
     assert first.iteration.after == p.iteration(young.loop, younger=True)
     second, _ = h.step(ready=False, recovery=(old, p.older))
     assert second.recovered == p.intermediate and h.query.value == p.intermediate
@@ -53,8 +53,8 @@ def test_semantic_pair_distinguishes_wrong_winner_or_combined_history(profile, f
         # winning older prefix. Forward/backward bits must follow that
         # actual younger outcome; all-ones plus one is not discriminating.
         younger_backward = int(p.younger.target < 0x40000801)
-        wrong['history'] = replace(p.restored, ghr=(2*p.restored.ghr + 1) % 256,
-                                   bw=(2*p.restored.bw + younger_backward) % 16)
+        wrong['history'] = replace(p.restored, ghr=(2*p.restored.ghr + 1) % 65536,
+                                   bw=(2*p.restored.bw + younger_backward) % 256)
     with pytest.raises(AssertionError):
         Scoreboard('superseding-recovery.negative').check(expected=expected, actual=wrong)
 

@@ -1,4 +1,6 @@
 """bpuverify.bpu.monitor.sc.common_state components."""
+from bpuverify.common.model.configuration import *
+
 
 from bpuverify.common.env.memory_direct import memory_signal
 from bpuverify.common.env.memory_direct import memory_signal_names
@@ -22,10 +24,10 @@ class CommonStateMonitor(CycleMonitor):
             return value
 
         def vector(base):
-            return tuple(signal(f'{base}_{index}') for index in range(4))
+            return tuple(signal(f'{base}_{index}') for index in range(RESULT_SLOTS))
 
         s2 = Bundle(pc=signal('io_s2Update_startPc_addr'), positions=vector('io_s2Update_positions'),
-            targets=tuple(signal(f'io_s2Update_targets_{i}_addr') for i in range(4)),
+            targets=tuple(signal(f'io_s2Update_targets_{i}_addr') for i in range(RESULT_SLOTS)),
             hits=vector('io_s2Update_condHitMask'))
         s3 = Bundle(pc=signal('io_s3Update_startPc_addr'), taken=signal('io_s3Update_prediction_taken'),
             position=signal('io_s3Update_prediction_cfiPosition'), target=signal('io_s3Update_prediction_target_addr'),

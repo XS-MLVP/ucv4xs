@@ -1,6 +1,6 @@
 """Independent history-conditioned branch learning and visibility semantics.
 
-The model owns four 4-bank/128-row/two-way tables, useful values, selector
+The model owns eight 4-bank/512-row/two-way tables, useful values, selector
 confidence, immutable reads and versioned learning obligations. Prediction
 metadata is an isolated-UT feedback input, never an SRAM/dirty-mask oracle.
 Branch identity is (row, tag); useful learning follows that identity's retained
@@ -8,15 +8,17 @@ owner. Random allocation evolves from a reset seed, not an observed choice.
 PC units are the existing UT API's halfwords.
 """
 from dataclasses import dataclass, replace
+
+from bpuverify.common.model.configuration import TAGE_HISTORIES, TAGE_TABLES, TAGE_ROWS, PHR_BITS, RESULT_SLOTS, POSITIONS
 from copy import copy
 
 from bpuverify.common.model.folded_history import PHR_FOLD_LAYOUT
 
 
-HISTORIES = (6, 9, 17, 31)
-TABLES, BANKS, ROWS, WAYS = 4, 4, 128, 2
+HISTORIES = TAGE_HISTORIES
+TABLES, BANKS, ROWS, WAYS = TAGE_TABLES, 4, TAGE_ROWS, 2
 FOLD_IDS = tuple(tuple(PHR_FOLD_LAYOUT.index((length, min(length, width)))
-                      for width in (7, 13, 12)) for length in HISTORIES)
+                      for width in (ROWS.bit_length()-1, 13, 12)) for length in HISTORIES)
 
 
 def unsigned(value, limit, name):
@@ -34,13 +36,13 @@ class Context:
 
     def __post_init__(self):
         if type(self.folds) is not tuple or len(self.folds) != len(PHR_FOLD_LAYOUT):
-            raise ValueError('TAGE context requires nineteen immutable public folds')
+            raise ValueError('TAGE context requires all configured immutable public folds')
         for value, (_, width) in zip(self.folds, PHR_FOLD_LAYOUT, strict=True):
             unsigned(value, 1 << width, 'history fold')
 
     @classmethod
     def from_recent(cls, recent):
-        unsigned(recent, 1 << 31, 'recent path history')
+        unsigned(recent, 1 << PHR_BITS, 'recent path history')
         return cls(tuple(sum((sum((recent >> position) & 1
             for position in range(bit, length, width)) % 2) << bit
             for bit in range(width)) for length, width in PHR_FOLD_LAYOUT))
@@ -224,7 +226,7 @@ class Base:
     kind: int = 0
 
     def __post_init__(self):
-        unsigned(self.position, 16, 'base position')
+        unsigned(self.position, POSITIONS, 'base position')
         unsigned(self.kind, 4, 'base kind')
         if any(type(value) is not bool for value in (self.valid, self.taken, self.confident)):
             raise ValueError('TAGE base requires semantic bools')
@@ -264,7 +266,7 @@ class Branch:
     hint: Hint = Hint()
 
     def __post_init__(self):
-        unsigned(self.position, 16, 'branch position')
+        unsigned(self.position, POSITIONS, 'branch position')
         unsigned(self.kind, 4, 'branch kind')
         unsigned(self.base_counter, 4, 'base counter')
         if any(type(value) is not bool for value in (self.taken, self.mispredict, self.matched)):
@@ -396,7 +398,7 @@ class Learning:
 class Events:
     pc: int = 0
     context: Context = Context()
-    positions: tuple[int, ...] = (0, 0, 0, 0)
+    positions: tuple[int, ...] = (0,) * RESULT_SLOTS
     select: bool = False
     advance: bool = False
     feedback: Feedback | None = None
@@ -406,10 +408,10 @@ class Events:
 
     def __post_init__(self):
         unsigned(self.pc, 1 << 49, 'halfword PC')
-        if type(self.context) is not Context or type(self.positions) is not tuple or len(self.positions) != 4:
-            raise ValueError('TAGE prediction requires a context and four fast positions')
+        if type(self.context) is not Context or type(self.positions) is not tuple or not 1 <= len(self.positions) <= RESULT_SLOTS:
+            raise ValueError('TAGE prediction requires a context and configured fast positions')
         for position in self.positions:
-            unsigned(position, 16, 'fast position')
+            unsigned(position, POSITIONS, 'fast position')
         if any(type(value) is not bool for value in (self.select, self.advance, self.enabled, self.ready, self.reset)):
             raise ValueError('TAGE events require semantic bools')
         if self.feedback is not None and type(self.feedback) is not Feedback:
@@ -431,7 +433,7 @@ class TageReference:
                             for table in range(TABLES) for bank in range(BANKS) for way in range(WAYS)}
         self.offers, self.useful_offers = {}, {}
         self.read = self.frame = self.accepted = self.info = self.mature = None
-        self.selectors = [16] * 8
+        self.selectors = [16] * (2 * TABLES)
         self.random = 1
         self.tick = 0
         self.aging = False
@@ -479,7 +481,7 @@ class TageReference:
             outcomes.append(Outcome(branch, provider, alternate, use_provider, alternative, confident, allocate))
         return Learning(feedback, read, tuple(outcomes))
 
-    def allocation_at_next_accept(self, feedback):
+    def allocation_at_next_accept(self, feedback, *, launch_cycles=0):
         """Plan a quiescent learning event using only owned state.
 
         The next accepted event passes through accepted -> info -> mature
@@ -488,6 +490,8 @@ class TageReference:
         allocation proposal. Callers must keep reads/configuration quiescent
         until acceptance; concurrent learning is explicitly unsupported here.
         """
+        if type(launch_cycles) is not int or not 0 <= launch_cycles <= 4:
+            raise ValueError('bounded idle launch cycles required')
         if type(feedback) is not Feedback or not feedback.reread:
             raise ValueError('allocation planning requires a semantic reread feedback')
         if any(value is not None for value in (self.accepted,self.info,self.mature)) or self.offers or self.useful_offers:
@@ -503,14 +507,14 @@ class TageReference:
             return None
         provider = allocating[0].provider
         random = self.random
-        for _ in range(3):
+        for _ in range(3 + launch_cycles):
             random = lfsr_next(random)
-        return learning.read.allocation(0 if provider is None else provider[0]+1,random % 16)
+        return learning.read.allocation(0 if provider is None else provider[0]+1,random % (1 << TABLES))
 
     def _schedule(self, learning, random_mask):
         feedback = learning.feedback
         bank = feedback.pc % BANKS
-        writes, useful, votes = {}, {}, [0] * 8
+        writes, useful, votes = {}, {}, [0] * (2 * TABLES)
         allocators = [outcome for outcome in learning.outcomes if outcome.allocate]
         if len(allocators) > 1:
             raise ValueError('TAGE one feedback beat can allocate only one branch')
@@ -571,7 +575,7 @@ class TageReference:
             return {}, {}, False
         view=copy(self)
         view.selectors=list(self.selectors)
-        return view._schedule(self.mature,self.random % 16)
+        return view._schedule(self.mature,self.random % (1 << TABLES))
 
     def advance(self, events=Events()):
         if events.reset:
@@ -606,7 +610,7 @@ class TageReference:
             for retired in cache.advance(bank in busy, self.offers.get((table, bank), ())):
                 self.memory[table, bank, retired.row, retired.way] = retired.entry
                 self.commits += 1
-        writes, useful, start = self._schedule(self.mature, old_random % 16) if self.mature is not None else ({}, {}, False)
+        writes, useful, start = self._schedule(self.mature, old_random % (1 << TABLES)) if self.mature is not None else ({}, {}, False)
         for key, queue in self.useful_queue.items():
             table, bank, way = key
             retiring = queue.advance(bank in busy, self.useful_offers.get(key), flush=start or (table, bank) in self.clear_cursor)

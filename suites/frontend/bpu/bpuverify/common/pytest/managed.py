@@ -75,7 +75,7 @@ class ManagedFeatures:
 
     @pytest.hookimpl(optionalhook=True)
     def pytest_toffee_coverage(self, config, functional, native, pytest_exitstatus):
-        if any(set(phases) != {'setup','call','teardown'} or
+        if any(set(phases) != ({'setup','call','teardown'} if phases.get('setup',{}).get('outcome') == 'passed' else {'setup','teardown'}) or
                len({p['worker'] for p in phases.values()}) != 1 for phases in self.phases.values()):
             raise ValueError('incomplete or mixed-owner project lifecycle')
         if config.getoption('bpu_full_suite') and pytest_exitstatus == 0:
@@ -91,8 +91,10 @@ class ManagedFeatures:
         rows = []
         root = Path(config.rootpath).resolve()
         for row in native:
-            modules = {Path(path).parent.name for path in row['build']['files']
-                       if Path(path).name == '__init__.py' and Path(path).parent.parent == root/'dut'}
+            packages = {Path(path).parent.resolve() for path in row['build']['files']
+                        if Path(path).name == '__init__.py'}
+            modules = {entry.name for entry in (root/'dut').iterdir()
+                       if entry.is_dir() and entry.resolve() in packages}
             if len(modules) != 1:
                 raise ValueError('native build does not identify one canonical DUT')
             rows.append(dict(row, dut=modules.pop()))
@@ -109,7 +111,7 @@ class ManagedFeatures:
         by_feature = {feature['id']: [] for feature in self.config._bpu_feature_plan}
         errors = []
         for node, phases in self.phases.items():
-            if set(phases) != {'setup', 'call', 'teardown'} or len({p['worker'] for p in phases.values()}) != 1:
+            if set(phases) != ({'setup', 'call', 'teardown'} if phases.get('setup', {}).get('outcome') == 'passed' else {'setup', 'teardown'}) or len({p['worker'] for p in phases.values()}) != 1:
                 errors.append(f'incomplete or mixed-owner lifecycle: {node}')
             status = worst({p['status'] for p in phases.values() if p['status'] is not None})
             for feature in self.mapping[node]:

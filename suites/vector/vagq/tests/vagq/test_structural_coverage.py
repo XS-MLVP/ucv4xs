@@ -63,9 +63,13 @@ def _input_widths(module):
 
 
 @pytest.mark.parametrize("module,clocked,cycles,seed", SWEEPS)
-def test_native_rtl_structural_sweep(
+async def test_native_rtl_structural_sweep(
     module, clocked, cycles, seed, native_registration, tmp_path
 ):
+    if module in {'VAGQ', 'VAGQEntryTable', 'OrderedPermitCtrl'}:
+        from vagqverify.legal_structural import sweep
+        await sweep(module, cycles, seed, tmp_path / module, native_registration)
+        return
     inputs = _input_widths(module)
     rng = random.Random(seed)
     values = {name: 0 for name, _width in inputs}

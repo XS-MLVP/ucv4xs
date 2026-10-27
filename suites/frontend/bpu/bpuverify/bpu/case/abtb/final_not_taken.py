@@ -41,7 +41,7 @@ async def run_final_not_taken_cycle(agent,output,*,bank,entry_set,direction_prep
 
     async def recover(target,checkpoint,label,*,resume=False):
         source=checkpoint.prediction.start_pc
-        checker.compare((target-1)&~7,source&~7,field='actual_same_halfblock_checkpoint')
+        checker.compare((target-1)&~15,source&~15,field='actual_same_halfblock_checkpoint')
         checker.compare(True,source<=target-1,field='checkpoint_precedes_CFI')
         transaction=BpuRedirect(target,checkpoint.meta.redirect,cfi_pc=target-1,taken=0,branch_type=1)
         report.setdefault('recoveries',[]).append(dict(payload=transaction.payload(),source=asdict(checkpoint)))

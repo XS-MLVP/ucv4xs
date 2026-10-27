@@ -4,7 +4,7 @@ import pytest
 PROFILES = ('production', 'physical')
 REPRESENTATIVE_COORDINATES = ((0, 0),)
 PHYSICAL_COORDINATES = tuple((bank, entry_set) for bank in range(4) for entry_set in range(64))
-MBTB_REPRESENTATIVE_INDICES = (0, 63)
+MBTB_REPRESENTATIVE_INDICES = (0, 255)
 
 
 def counter_coordinates(profile):
@@ -16,7 +16,7 @@ def counter_coordinates(profile):
 def mbtb_replacement_indices(profile):
     if profile not in PROFILES:
         raise ValueError(f'unknown regression profile: {profile}')
-    return tuple(range(64)) if profile == 'physical' else MBTB_REPRESENTATIVE_INDICES
+    return tuple(range(256)) if profile == 'physical' else MBTB_REPRESENTATIVE_INDICES
 
 
 def pytest_addoption(parser):

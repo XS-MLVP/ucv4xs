@@ -23,7 +23,7 @@ async def prepare_context_burst(env):
         source=await env.query_context(context)
         token=c.save(source)
         fields=dict(c.bank.tage_snapshot(token,resolved=True).wanted)
-        slot,=[i for i in range(4) if token.lookup.values().get(f'{i}.valid')
+        slot,=[i for i in range(10) if token.lookup.values().get(f'{i}.valid')
                and token.lookup.values()[f'{i}.position']==p.position]
         if not fields[f'{slot}.has_provider']:
             await env.conditional(source,False,maximum=True)

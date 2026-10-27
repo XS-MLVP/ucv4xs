@@ -1,4 +1,4 @@
-"""Independent statistical-correction semantics for the pinned MinimalConfig.
+"""Independent statistical-correction semantics for the pinned DefaultConfig.
 
 Five families own signed learning weights: path, global, backward, loop count
 and bias. A lookup captures a committed-weight snapshot; later base-predictor
@@ -11,12 +11,14 @@ learns next cycle, queues masked writes the following cycle, and reads have
 priority over write retirement in each bank. There is no SRAM-to-golden sync.
 """
 from dataclasses import dataclass, replace
+from bpuverify.common.model.configuration import SC_WAYS, RESULT_SLOTS, POSITIONS, ALIGN_HALFWORDS
 
 from bpuverify.sc.model.threshold import ScThresholdModel
 from bpuverify.sc.transaction.types import ScBaseBranch
 
 
 FAMILIES = ('path', 'global', 'backward', 'loop', 'bias')
+TABLE_FAMILIES = ('path', 'path', 'global', 'global', 'backward', 'backward', 'loop', 'bias')
 
 
 def fold(value, length, width=7):
@@ -34,14 +36,15 @@ class Context:
     backward: int = 0
     loop: int = 0
     common_valid: bool = True
+    path_long: int = 0
 
     @classmethod
     def from_history(cls, history):
         return cls(fold(history.path, 8), history.global_history, history.backward,
-                   history.loop, history.common_valid)
+                   history.loop, history.common_valid, fold(history.path, 16))
 
     def __post_init__(self):
-        for name, width in (('path', 7), ('global_history', 8), ('backward', 4), ('loop', 8)):
+        for name, width in (('path', 7), ('path_long', 7), ('global_history', 16), ('backward', 8), ('loop', 8)):
             value = getattr(self, name)
             if type(value) is not int or not 0 <= value < 1 << width:
                 raise ValueError(f'SC {name} is out of range')
@@ -50,15 +53,17 @@ class Context:
 def coordinates(pc, context):
     if type(pc) is not int or not 0 <= pc < 1 << 49:
         raise ValueError('SC halfword PC is out of range')
-    row = (pc // 8) % 128
-    return pc % 2, (row ^ context.path, row ^ fold(context.global_history, 8),
-                    row ^ context.backward, row ^ fold(context.loop, 8), row)
+    row = (pc // ALIGN_HALFWORDS) % 128
+    return pc % 2, (row ^ context.path, row ^ context.path_long,
+                    row ^ fold(context.global_history, 8), row ^ fold(context.global_history, 16),
+                    row ^ fold(context.backward, 4), row ^ fold(context.backward, 8),
+                    row ^ fold(context.loop, 8), row)
 
 
 def way(position):
-    if type(position) is not int or not 0 <= position < 16:
-        raise ValueError('SC branch position must fit four bits')
-    return (position % 4) ^ (position // 4)
+    if type(position) is not int or not 0 <= position < POSITIONS:
+        raise ValueError('SC branch position must fit the configured fetch block')
+    return (position % SC_WAYS) ^ (position // SC_WAYS)
 
 
 def bias_feature(branch):
@@ -96,13 +101,13 @@ class Prediction:
 
 def decide(read, branches, thresholds, *, enabled=True):
     """Evaluate weighted evidence and TAGE-confidence-dependent correction."""
-    if len(branches) != 4 or len(thresholds) != 4:
-        raise ValueError('SC decisions require four base slots and thresholds')
+    if not 1 <= len(branches) <= RESULT_SLOTS or len(thresholds) != SC_WAYS:
+        raise ValueError('SC decisions require configured base slots and eight thresholds')
     sums, directions, used, above, components = [], [], [], [], []
     for branch in branches:
         slot = way(branch.position)
         weights = tuple(row[slot if family != 'bias' else 4 * slot + bias_feature(branch)]
-                        for family, row in zip(FAMILIES, read.weights, strict=True))
+                        for family, row in zip(TABLE_FAMILIES, read.weights, strict=True))
         evidence = tuple(2 * weight + 1 for weight in weights)
         total = sum(evidence)
         eligible = bool(branch.mbtb_valid and branch.branch_type == 1 and branch.provider_valid)
@@ -113,7 +118,7 @@ def decide(read, branches, thresholds, *, enabled=True):
         directions.append(int(total >= 0))
         used.append(int(enabled and confident))
         above.append(int(confident or not eligible))
-        components.append(tuple(int(value >= 0) for value in evidence))
+        components.append(tuple(int(sum(value for value, owner in zip(evidence, TABLE_FAMILIES, strict=True) if owner == family) >= 0) for family in FAMILIES))
     return Prediction(read, tuple(branches), tuple(sums), tuple(directions), tuple(used),
                       tuple(above), tuple(components))
 
@@ -191,9 +196,9 @@ class ScReference:
         self.reset()
 
     def reset(self):
-        self.thresholds = ScThresholdModel()
-        self.memory = [{} for _ in FAMILIES]
-        self.writes = [[DeferredWeights() for _ in range(2)] for _ in FAMILIES]
+        self.thresholds = ScThresholdModel.for_default()
+        self.memory = [{} for _ in TABLE_FAMILIES]
+        self.writes = [[DeferredWeights() for _ in range(2)] for _ in TABLE_FAMILIES]
         self.read = self.selection = self.prediction = None
         self.learning = None
         self.pending = ()
@@ -202,8 +207,8 @@ class ScReference:
     def snapshot(self, pc, context):
         bank, indices = coordinates(pc, context)
         weights = []
-        for table, family in enumerate(FAMILIES):
-            size = 16 if family == 'bias' else 4
+        for table, family in enumerate(TABLE_FAMILIES):
+            size = 4 * SC_WAYS if family == 'bias' else SC_WAYS
             row = self.memory[table].get((bank, indices[table]), (0,) * size)
             if not context.common_valid and family in ('global', 'backward'):
                 row = (0,) * size
@@ -212,12 +217,12 @@ class ScReference:
 
     def _learn(self, transaction, read, *, thresholds=None):
         features = transaction.meta['scBiasLowerBits']
-        if len(features) != 4 or any(type(feature) is not int or not 0 <= feature < 4 for feature in features):
-            raise ValueError('SC feedback needs four valid bias features')
+        if len(features) != RESULT_SLOTS or any(type(feature) is not int or not 0 <= feature < 4 for feature in features):
+            raise ValueError('SC feedback needs one valid bias feature per prediction slot')
         update = (self.thresholds if thresholds is None else thresholds).apply(transaction)
         branches = {branch.prediction_slot: branch for branch in transaction.branches if branch is not None}
         patches = []
-        for table, family in enumerate(FAMILIES):
+        for table, family in enumerate(TABLE_FAMILIES):
             if not read.context.common_valid and family in ('global', 'backward'):
                 continue
             votes = [0] * len(read.weights[table])
@@ -244,7 +249,7 @@ class ScReference:
         """
         original = self.thresholds
         thresholds = ScThresholdModel(ways=original.ways, position_width=original.position_width,
-            width=original.width, minimum=original.minimum, maximum=original.maximum, initial=original.values)
+            width=original.width, minimum=original.minimum, maximum=original.maximum, initial=original.values, slots=original.slots)
         patches = self._learn(*self.learning, thresholds=thresholds) if self.learning is not None else ()
         return patches, thresholds.values
 
@@ -259,7 +264,7 @@ class ScReference:
         if events.ready and events.enabled:
             if events.pc is not None:
                 self.read = self.snapshot(events.pc, events.context)
-                busy.update((table, events.pc % 2) for table, family in enumerate(FAMILIES)
+                busy.update((table, events.pc % 2) for table, family in enumerate(TABLE_FAMILIES)
                             if events.context.common_valid or family not in ('global', 'backward'))
             if events.advance:
                 self.selection = old_read
@@ -269,13 +274,13 @@ class ScReference:
             if events.feedback is not None:
                 transaction = events.feedback
                 # Validation and eligibility cannot mutate state until learning.
-                probe = ScThresholdModel(initial=self.thresholds.values)
+                probe = ScThresholdModel.for_default(initial=self.thresholds.values)
                 probe.apply(transaction)
                 if feedback_needs_read(transaction):
                     read = self.snapshot(transaction.pc, events.feedback_context)
                     if events.pc is not None and transaction.pc % 2 == events.pc % 2:
                         raise AssertionError('SC accepts conflicting prediction and feedback reads in one bank')
-                    busy.update((table, transaction.pc % 2) for table, family in enumerate(FAMILIES)
+                    busy.update((table, transaction.pc % 2) for table, family in enumerate(TABLE_FAMILIES)
                                 if events.feedback_context.common_valid or family not in ('global', 'backward'))
                     new_learning = (transaction, read)
         incoming = {(table, bank): (index, patch) for table, bank, index, patch in self.pending}

@@ -1,4 +1,6 @@
 """Compare program meaning, not an implementation register mirror."""
+from bpuverify.common.model.configuration import *
+
 from toffee import CheckContext, Scoreboard, ScoreboardMode
 
 from bpuverify.ras.model.semantic import RasReference
@@ -7,14 +9,14 @@ from bpuverify.ras.model.semantic import RasReference
 def projection(actual):
     metadata = actual['redirect_meta']
     return dict(top=actual['top'], group=metadata['ssp'], repeat=metadata['sctr'],
-                calls=metadata['tosw']['flag'] * 16 + metadata['tosw']['value'])
+                calls=metadata['tosw']['flag'] * RAS_SPEC_ENTRIES + metadata['tosw']['value'])
 
 
 def values(model, actual, retained=None):
     expected, observed = dict(model.projection), projection(actual)
     expected.update(commit_group=expected['group'], commit_calls=expected['calls'])
     commit = actual['commit_meta']
-    observed.update(commit_group=commit['ssp'], commit_calls=commit['tosw']['flag'] * 16 + commit['tosw']['value'])
+    observed.update(commit_group=commit['ssp'], commit_calls=commit['tosw']['flag'] * RAS_SPEC_ENTRIES + commit['tosw']['value'])
     if retained is not None:
         expected.update(retained_head=model.committed_head,
                         retained_groups=tuple((frame.address, frame.repeat) for frame in model.committed))

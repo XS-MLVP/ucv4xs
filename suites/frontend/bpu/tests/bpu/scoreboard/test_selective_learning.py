@@ -60,7 +60,7 @@ def qualified_lifecycle(program):
     counts = [0]*len(program.paths)
     def advance(feedback=None):
         model.advance(replace(event, feedback=feedback))
-        requests = model.sources.tage.offers.get((3, PC % 4), ())
+        requests = model.sources.tage.offers.get((7, PC % 4), ())
         if requests: offered.append(tuple((r.way, r.entry.counter) for r in requests))
     batches = (program.first_batch,) + (() if program.boundary == 'still-pending' else ((len(originals)-1,),))
     for wave, batch in enumerate(batches):
@@ -74,7 +74,7 @@ def qualified_lifecycle(program):
             advance()
             if not learning_inflight(model.sources.tage): break
         else: raise AssertionError('qualified old learning failed to mature')
-        plan = pending_plan(model.sources.tage, 3, PC % 4)
+        plan = pending_plan(model.sources.tage, 7, PC % 4)
         wanted = len(program.paths) if wave == 0 else 1
         assert tuple(map(len, plan)) == tuple(wanted if owner == program.active else 0 for owner in range(2))
         assert sorted(p['counter'] for p in plan[program.active]) == (sorted(program.counters(h, counts[h])[program.active]
@@ -87,7 +87,7 @@ def qualified_lifecycle(program):
             assert values(model, query(model, event, anchor, path)) == ((0, 3), program.counters(h, counts[h]))
     assert offered == [((program.active, program.proposal),)]*len(originals)
     assert definitions == tuple(model.sources.defined_metadata(s) for s in originals)
-    assert model.sources.tage.cache[3, PC % 4].overflows == 0
+    assert model.sources.tage.cache[7, PC % 4].overflows == 0
     selected = query(model, event, anchor, program.paths[program.target])
     idle = quiet(model, event)
     model.advance(replace(idle, feedback=resolution(selected, program.reverse_outcome)))

@@ -1,4 +1,5 @@
 """Mixed hit/allocation expectations with no signal or edge details."""
+from bpuverify.common.model.configuration import *
 from copy import deepcopy
 
 from bpuverify.tage.transaction.types import TageBaseBranch
@@ -13,26 +14,26 @@ from bpuverify.tage.case.way_migration_scenario import snapshot
 
 async def prepare(agent, pc, way, counter, feedback):
     await prepare_unprotected_highest_ways(agent, pc, origin_way=1-way)
-    residents = await read_grid(agent, pc, positions=tuple(range(9)))
-    target = next(pos for pos, pred in residents.items() if cell(pred) == (3, way))
-    victim = next(pos for pos, pred in residents.items() if cell(pred) == (3, 1-way))
+    residents = await read_grid(agent, pc, positions=tuple(range((2 * TAGE_TABLES + 1))))
+    target = next(pos for pos, pred in residents.items() if cell(pred) == (TAGE_TABLES - 1, way))
+    victim = next(pos for pos, pred in residents.items() if cell(pred) == (TAGE_TABLES - 1, 1-way))
     for expected_counter in range(6, -1, -1):
         pred = await agent.predict(pc, target, 1, base_conf=1)
         await agent.train_checked(TageBatchTraining(pc, (TageBranchFeedback(
             target, 0, 1, pred.meta, mispredict=int((pred.taken if pred.valid else 1) != 0)),)), feedback)
         after = await agent.predict(pc, target, 1, base_conf=1)
-        assert cell(after) == (3, way) and after.meta['providerTakenCtr_value'] == expected_counter, after
+        assert cell(after) == (TAGE_TABLES - 1, way) and after.meta['providerTakenCtr_value'] == expected_counter, after
     for _ in range(3):
         pred = await agent.predict(pc, target, 1, base_conf=1)
         await agent.train_checked(TageBatchTraining(pc, (TageBranchFeedback(target, 0, 1, pred.meta),)), feedback)
     for _ in range(counter):
         pred = await agent.predict(pc, target, 0)
         await agent.train_checked(TageBatchTraining(pc, (TageBranchFeedback(target, 1, 0, pred.meta, mispredict=1),)), feedback)
-    before = await read_grid(agent, pc, positions=tuple(range(9)))
+    before = await read_grid(agent, pc, positions=tuple(range((2 * TAGE_TABLES + 1))))
     assert before[target].meta['providerTakenCtr_value'] == counter
     assert before[target].meta['providerUsefulCtr_value'] == 3
     assert before[victim].meta['providerUsefulCtr_value'] == 0
-    assert target < 9 and 9 not in before
+    assert target < (2 * TAGE_TABLES + 1) and (2 * TAGE_TABLES + 1) not in before
     for pos, pred in before.items():
         if pos not in (target, victim):
             assert pred.meta['providerTakenCtr_value'] == 7 and pred.meta['providerUsefulCtr_value'] == 3, pred
@@ -45,7 +46,7 @@ def checker(expected, *, absent=False):
     def compare(pred):
         # TAGE's taken-valid/meta can expose a hit for an unused MainBTB slot;
         # only the to-SC provider-counter-valid is gated by branch.valid.
-        assert pred.provider_counter_valids[1:] == (0, 0, 0), pred
+        assert pred.provider_counter_valids[1:] == (0,) * (RESULT_SLOTS - 1), pred
         if absent:
             assert (pred.valid, pred.provider_counter_valid, pred.meta['hasProvider']) == (0, 0, 0), pred
         else:
@@ -63,13 +64,13 @@ async def prepare_reuse(agent, pc, target, victim, way, counter, feedback):
     """
     old = await agent.predict(pc, victim, 0)
     if not old.meta['hasProvider']:
-        newcomer = await agent.predict(pc, 9, 0)
-        assert cell(newcomer) == (3, 1-way) and newcomer.meta['providerUsefulCtr_value'] == 0
+        newcomer = await agent.predict(pc, (2 * TAGE_TABLES + 1), 0)
+        assert cell(newcomer) == (TAGE_TABLES - 1, 1-way) and newcomer.meta['providerUsefulCtr_value'] == 0
         await agent.train_checked(TageBatchTraining(pc, (TageBranchFeedback(
             victim, 1, 0, old.meta, mispredict=1),)), feedback)
     for _ in range(3):
         pred = await agent.predict(pc, target, 0)
-        assert cell(pred) == (3, way) and pred.meta['providerUsefulCtr_value'] == 3, pred
+        assert cell(pred) == (TAGE_TABLES - 1, way) and pred.meta['providerUsefulCtr_value'] == 3, pred
         current = pred.meta['providerTakenCtr_value']
         assert 0 <= current <= 2, pred
         if current == counter:
@@ -77,10 +78,10 @@ async def prepare_reuse(agent, pc, target, victim, way, counter, feedback):
         taken = int(current < counter)
         await agent.train_checked(TageBatchTraining(pc, (TageBranchFeedback(
             target, taken, 0, pred.meta, mispredict=taken),)), feedback)
-    before = await read_grid(agent, pc, positions=tuple(range(9)))
+    before = await read_grid(agent, pc, positions=tuple(range((2 * TAGE_TABLES + 1))))
     assert before[target].meta['providerTakenCtr_value'] == counter
-    assert cell(before[victim]) == (3, 1-way) and before[victim].meta['providerUsefulCtr_value'] == 0
-    assert not (await agent.predict(pc, 9, 0)).meta['hasProvider']
+    assert cell(before[victim]) == (TAGE_TABLES - 1, 1-way) and before[victim].meta['providerUsefulCtr_value'] == 0
+    assert not (await agent.predict(pc, (2 * TAGE_TABLES + 1), 0)).meta['hasProvider']
     return before
 
 
@@ -106,16 +107,16 @@ async def check_case(agent, coverage, pc, context, way, counter, *, reason=None,
             target, victim = pair
             before = await prepare_reuse(agent, pc, target, victim, way, counter, feedback)
         prepared = {pos: deepcopy(snapshot(pred)) for pos, pred in before.items()}
-        prepared[9] = None
+        prepared[(2 * TAGE_TABLES + 1)] = None
         await read_expected(agent, pc, prepared)
         axis = {'counter': counter} if reason is None else {'reason': reason}
         base = dict(context=context, way=way, **axis)
         coverage.sample(dict(base, phase='prepared'))
-        pred = await agent.predict_branches(pc, (TageBaseBranch(target, 0), TageBaseBranch(9, 0)))
+        pred = await agent.predict_branches(pc, (TageBaseBranch(target, 0), TageBaseBranch((2 * TAGE_TABLES + 1), 0)))
         assert pred.metas[0]['providerTakenCtr_value'] == counter and pred.metas[1]['hasProvider'] == 0
         early = TageBranchFeedback(target, 0, 0, pred.metas[0], valid=int(reason != 'inactive'),
                                    mbtb_hit=int(reason != 'mbtb_miss'))
-        transaction = TageBatchTraining(pc, (early,)+(None,)*6+(TageBranchFeedback(9, 1, 0, pred.metas[1], mispredict=1),))
+        transaction = TageBatchTraining(pc, (early,)+(None,)*6+(TageBranchFeedback((2 * TAGE_TABLES + 1), 1, 0, pred.metas[1], mispredict=1),))
         qualified, allocation = reason not in ('mbtb_miss', 'inactive', 'disabled'), reason != 'disabled'
         expected_activity = expected_tage_mixed_writes(pc, target, way, counter, qualified=qualified, allocation=allocation)
         states = deepcopy(prepared)
@@ -123,8 +124,8 @@ async def check_case(agent, coverage, pc, context, way, counter, *, reason=None,
             states[target]['meta']['providerTakenCtr_value'] = counter-1
         if allocation:
             states[victim] = None
-            states[9] = {'valid': 1, 'taken': 1, 'provider_counter_valid': 1, 'meta': {
-                'hasProvider': 1, 'hasAlt': 0, 'providerTableIdx': 3, 'providerWayIdx': 1-way,
+            states[(2 * TAGE_TABLES + 1)] = {'valid': 1, 'taken': 1, 'provider_counter_valid': 1, 'meta': {
+                'hasProvider': 1, 'hasAlt': 0, 'providerTableIdx': TAGE_TABLES - 1, 'providerWayIdx': 1-way,
                 'providerTakenCtr_value': 4, 'providerUsefulCtr_value': 0,
                 'useProvider': 1, 'altConf': 0, 'altOrBasePred': 0,
             }}

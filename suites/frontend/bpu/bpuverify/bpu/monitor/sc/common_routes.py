@@ -1,4 +1,6 @@
 """bpuverify.bpu.monitor.sc.common_routes components."""
+from bpuverify.common.model.configuration import *
+
 
 from bpuverify.common.env.memory_direct import memory_signal
 from bpuverify.common.env.memory_direct import memory_signal_names
@@ -24,7 +26,7 @@ class CommonHistoryMonitor(CycleMonitor):
         reads = {table: Bundle(valid=signal(table + '.io_predictReadReq_valid'),
             set_index=signal(table + '.io_predictReadReq_bits_setIdx'),
             bank_mask=signal(table + '.io_predictReadReq_bits_bankMask'))
-            for table in ('globalTable_0', 'bwTable_0')}
+            for table in ('globalTable_0', 'globalTable_1', 'bwTable_0', 'bwTable_1')}
         super().__init__(PortBinding(dut.clock, Bundle(reset=dut.reset,
             enable=signal('io_enable'), stage_fire=signal('io_stageCtrl_s0_fire'), fire=signal('s0_fire'),
             pc=signal('io_startPc_addr'), common=Bundle(valid=signal('io_commonHR_valid'),

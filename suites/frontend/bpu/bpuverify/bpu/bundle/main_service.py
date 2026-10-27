@@ -1,4 +1,5 @@
 """Read-only complete MainBTB entry service and separately masked directions."""
+from bpuverify.common.model.configuration import *
 from toffee import Bundle,ReadyValid,Role
 from bpuverify.common.bundle.bindings import PortBinding
 from bpuverify.common.env.memory_direct import memory_signal,memory_signal_names
@@ -17,9 +18,9 @@ def main_service_binding(agent,*,alignment,bank):
     def counters(side):
         port=base+f'counterWriteBuffer.io_{side}_bits_'
         return Bundle(row=signal(port+'setIdx'),mask=signal(port+'wayMask'),
-            counters=tuple(signal(port+f'counters_{way}_value') for way in range(2)))
+            counters=tuple(signal(port+f'counters_{way}_value') for way in range(MAIN_WAYS)))
     ports=[]
-    for way in range(2):
+    for way in range(MAIN_WAYS):
         port=base+f'entryWriteBuffer.io_read_{way}_'
         ports.append(ReadyValid(clock=agent.dut.clock,valid=signal(port+'valid'),ready=signal(port+'ready'),
             bits=entry('read',way),role=Role.MONITOR,name=f'bpu.main.entry-service.{alignment}.{bank}.{way}'))
@@ -33,10 +34,10 @@ def main_service_binding(agent,*,alignment,bank):
             pc=signal('io_toFtq_prediction_bits_startPc_addr')),
         writes=tuple(Bundle(valid=p.valid,ready=p.ready,bits=p.bits) for p in ports),
         incoming=tuple(Bundle(valid=signal(base+f'entryWriteBuffer.io_write_{way}_valid'),bits=entry('write',way))
-            for way in range(2)),
+            for way in range(MAIN_WAYS)),
         direction=Bundle(valid=signal(base+'counterWriteBuffer.io_enq_valid'),
             ready=signal(base+'counterWriteBuffer.io_enq_ready'),bits=counters('enq')),
-        dirty=tuple(tuple(signal(base+f'entryWriteBuffer.dirty_{way}_{rank}') for rank in range(2)) for way in range(2)),
+        dirty=tuple(tuple(signal(base+f'entryWriteBuffer.dirty_{way}_{rank}') for rank in range(MAIN_RETAINED)) for way in range(MAIN_WAYS)),
         queue=Bundle(enqueue=signal(base+'counterWriteBuffer.enq_ptr_value'),dequeue=signal(base+'counterWriteBuffer.deq_ptr_value'),
             full=signal(base+'counterWriteBuffer.maybe_full')))
     return PortBinding(agent.dut.clock,state,'bpu.main.read-priority-service'),tuple(ports)

@@ -9,11 +9,16 @@ from bpuverify.bpu.transaction.types import BpuRedirect
 
 
 class EarlyDirectionProgram(BranchTargetProgram):
+    @property
+    def fallback_position(self):return 4+(self.pc&8)
+
+    @property
+    def conditional_position(self):return 2+(self.pc&8)
     async def restart(self,source):
         await self.pause()
         self.checker.source_token(source)
         request=BpuRedirect(self.pc,source.meta.redirect,
-            cfi_pc=source.prediction.start_pc+4,taken=1,branch_type=3)
+            cfi_pc=(source.prediction.start_pc//16)*16+self.fallback_position,taken=1,branch_type=3)
         self.checker.plan_redirect(source,request)
         boundary=await self.agent.redirect(request)
         await self.agent.set_ready(prediction=True,meta=True)
@@ -36,7 +41,7 @@ class EarlyDirectionProgram(BranchTargetProgram):
         await self.query(latest)
         await self.agent.set_ready(prediction=True,meta=True)
         return await self.consume('owned_ahead_conditional',lambda token:token.early.source=='ahead'
-            and token.early.branch.position==2)
+            and token.early.branch.position==self.conditional_position)
 
     async def consume(self,name,predicate):
         token=None

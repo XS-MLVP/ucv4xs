@@ -129,7 +129,7 @@ def test_cross_owner_requests_keep_stale_payload_separate_from_forwarded_counter
     assert frames[-2][bank][origin]['counter'] == 6
 
 
-@pytest.mark.parametrize('pc,target,origin,prefix', ((-1, 6, 0, ()), (0, 9, 0, ()), (0, 6, 2, ()),
+@pytest.mark.parametrize('pc,target,origin,prefix', ((-1, 6, 0, ()), (0, 17, 0, ()), (0, 6, 2, ()),
     (0, 6, 0, ((1, 4),)), (0, 6, 0, ((0, 4),)), (0, 6, 0, ((4, 4),)*4)))
 def test_cross_owner_payload_model_rejects_unsupported_scope(pc, target, origin, prefix):
     with pytest.raises(ValueError):

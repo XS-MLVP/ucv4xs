@@ -27,10 +27,10 @@ def test_forecast_never_mutates_state_and_matches_the_complete_learning_pipeline
 def test_allocation_uses_invalid_owner_before_overwriting_an_existing_opposite_branch():
     occupied = (Entry(True,0x123,2),Entry())
     empty = (Entry(),Entry())
-    read = Read(0,Context(),0,(0,)*4,(empty,empty,occupied,empty),((0,0),)*4)
+    read = Read(0,Context(),0,(0,)*8,(empty,empty,occupied,empty,empty,empty,empty,empty),((0,0),)*8)
     assert read.allocation(0,4) == (2,1)
     assert read.allocation(3,4) == (3,0)
-    assert read.allocation(4,15) is None
+    assert read.allocation(8,255) is None
 
 
 @pytest.mark.parametrize('fault', ('no-reread','pending','maintenance','wrapper'))

@@ -14,4 +14,4 @@ def effect(target):
 
 
 def direction():
-    return dict(row=coordinate(PC)[2],mask=1,values={'0':2})
+    return dict(row=coordinate(PC)[2],mask=4,values={'2':2})

@@ -27,7 +27,7 @@ def _main_btb(
     if any(branch is not None and branch.position < 0 for branch in entries):
         raise ValueError("MainBTB positions must be nonnegative")
     occupied = set(positions)
-    fallback = min(positions) + 1
+    fallback = 0
     padded: list[TageBaseBranch | None] = list(entries)
     padded.extend([None] * (capacity - len(padded)))
     positions_by_slot = []

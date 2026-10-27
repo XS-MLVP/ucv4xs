@@ -1,4 +1,4 @@
-"""Eight selector registers from reset; input/source/T2/T3/commit association."""
+"""Sixteen selector registers from reset; input/source/T2/T3/commit association."""
 from collections import deque,Counter
 from copy import deepcopy
 from dataclasses import asdict
@@ -52,7 +52,7 @@ class TageSelectorChecker:
             self.check(1,row['reset'],'initialize_selectors_from_hardware_reset')
             self.initialized=True
         else:
-            self.check(list(self.values),list(row['selectors']),'all_eight_reset_derived_selectors')
+            self.check(list(self.values),list(row['selectors']),'all_sixteen_reset_derived_selectors')
             if self.effect is not None:
                 self.check(self.effect['committed_tick'],tick,'exact_selector_commit_source')
                 for event in self.effect['events']:
@@ -87,7 +87,7 @@ class TageSelectorChecker:
             self.check(1-read['need_read'],row['use_meta'],'actual_T2_metadata_or_SRAM_mode')
             if read['need_read']:
                 pc=read['bits']['start_pcs'][0][0]['addr']
-                self.check([(pc>>9)&8191]*4,list(row['raw_tags']),'zero_PHR_raw_tags_from_actual_source_PC')
+                self.check([(pc>>11)&8191]*8,list(row['raw_tags']),'zero_PHR_raw_tags_from_actual_source_PC')
                 for vote in read['votes']:
                     if vote['valid']:
                         projection=read_projection(row['reads'],row['raw_tags'],vote)
@@ -111,7 +111,7 @@ class TageSelectorChecker:
         self.check(int(source is not None),row['fire'][3],'T3_from_exact_actual_T0_source')
         if source is not None:
             for vote,actual in zip(source['votes'],row['votes'],strict=True):
-                self.check(vote['valid'],actual['valid'],'all_eight_T3_entry_qualifiers',slot=vote['slot'])
+                self.check(vote['valid'],actual['valid'],'all_sixteen_T3_entry_qualifiers',slot=vote['slot'])
                 if vote['valid']:
                     self.check({key:vote[key] for key in ('index','inc','dec')},
                         {key:actual[key] for key in ('index','inc','dec')},'independent_qualified_selector_votes',slot=vote['slot'])

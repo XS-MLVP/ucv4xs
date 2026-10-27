@@ -266,8 +266,8 @@ EXTRA_MATRICES = {
     'owned_ahead_reached': (lambda:ahead_learning_coverage('reached'),dict(rule=AHEAD_LEARNING_RULES),None,len(AHEAD_LEARNING_RULES)),
     'owned_ahead_checked': (lambda:ahead_learning_coverage('checked'),dict(rule=AHEAD_LEARNING_RULES),None,len(AHEAD_LEARNING_RULES)),
     'mbtb_replacement_physical': (mbtb_replacement_coverage_model,
-        dict(index=tuple(range(64)),align=(0,1),upper=(0,1),mode=TOUCH_MODES,phase=MBTB_REPLACEMENT_PHASES),
-        'all_dimensions',6144),
+        dict(index=tuple(range(256)),align=(0,1),upper=(0,1),mode=TOUCH_MODES,phase=MBTB_REPLACEMENT_PHASES),
+        'all_dimensions',24576),
     'abtb_semantic_reached': (lambda: abtb_semantic_coverage('reached'),dict(rule=ABTB_SEMANTIC_RULES),None,len(ABTB_SEMANTIC_RULES)),
     'abtb_semantic_checked': (lambda: abtb_semantic_coverage('checked'),dict(rule=ABTB_SEMANTIC_RULES),None,len(ABTB_SEMANTIC_RULES)),
     'utage_boundary_reached': (lambda: utage_semantic_coverage('boundary','reached'),dict(rule=UTAGE_BOUNDARY_RULES),None,len(UTAGE_BOUNDARY_RULES)),
@@ -280,16 +280,16 @@ EXTRA_MATRICES = {
     'sc_semantic_checked': (lambda: sc_semantic_coverage('checked'),dict(rule=SC_SEMANTIC_RULES),None,len(SC_SEMANTIC_RULES)),
     'alignment': (alignment_coverage,
         dict(case=tuple(case.label for case in ALL_CASES), phase=tuple(row[0] for row in PHASES)),
-        'legal_case_phase', 2000),
-    'sc_used': (used_coverage, dict(bank=(0, 1), way=range(4), kind=USED_KINDS),
-        'physical_used_feedback', 24),
+        'legal_case_phase', 7840),
+    'sc_used': (used_coverage, dict(bank=(0, 1), way=range(8), kind=USED_KINDS),
+        'physical_used_feedback', 48),
     'sc_history': (history_coverage,
-        dict(bank=(0, 1), way=range(4), direction=('forward', 'backward'), kind=USED_KINDS),
-        'physical_used_nonzero_history', 48),
+        dict(bank=(0, 1), way=range(8), direction=('forward', 'backward'), kind=USED_KINDS),
+        'physical_used_nonzero_history', 96),
     'sc_threshold_reached': (lambda: bounds_coverage('reached'),
-        dict(way=range(4),rule=THRESHOLD_RULES),'way_rule',52),
+        dict(way=range(8),rule=THRESHOLD_RULES),'way_rule',104),
     'sc_threshold_checked': (lambda: bounds_coverage('checked'),
-        dict(way=range(4),rule=THRESHOLD_RULES),'way_rule',52),
+        dict(way=range(8),rule=THRESHOLD_RULES),'way_rule',104),
     'micro_ras_reached': (lambda: micro_coverage('reached'),dict(rule=MICRO_RAS_RULES),None,4),
     'micro_ras_checked': (lambda: micro_coverage('checked'),dict(rule=MICRO_RAS_RULES),None,4),
 }
@@ -742,7 +742,7 @@ def test_production_accepts_representatives_without_shrinking_physical_denominat
     result = GATE.validate_parallel_case_coverage(full_report(representative_only=True))
     assert result['semantic'] == dict(total_bins=48, coverage=100, full_required=True)
     assert result['physical'] == dict(total_bins=12288, coverage=100 / 256, full_required=False)
-    assert result['mbtb_replacement_physical'] == dict(total_bins=6144,coverage=100 / 32,full_required=False)
+    assert result['mbtb_replacement_physical'] == dict(total_bins=24576,coverage=100 / 128,full_required=False)
     assert result['threshold_votes'] == dict(total_bins=52,full_required=True,reached=100,checked=100)
     assert result['micro_ras'] == dict(total_bins=4,full_required=True,reached=100,checked=100)
     assert result['tage_raw_qualified_routing'] == dict(rule_bins=5,full_required=True,reached=100,checked=100)

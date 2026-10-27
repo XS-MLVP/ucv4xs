@@ -18,9 +18,9 @@ def lookup(model, pc=PC):
 
 def feedback(frame, *, position=3, kind=1, action=0, target=PC + 0x234, taken=True, mispredict=True):
     sources = tuple(tuple(Source(entry.valid and entry.tag == tag(read.pc),
-        read.ordinal * 8 + entry.position, entry.kind, entry.action, counter)
-        for entry, counter in zip(read.entries, read.counters, strict=True)) for read in frame.banks)
-    return Feedback((frame.pc, (frame.pc // 8 + 1) * 8), sources,
+        read.ordinal * 16 + entry.position, entry.kind, entry.action, counter)
+        for entry, counter in zip(read.entries, read.counters, strict=True)) + (Source(),) for read in frame.banks)
+    return Feedback((frame.pc, (frame.pc // 16 + 1) * 16), sources,
                     (Branch(target, taken, position, kind, action, mispredict),))
 
 
@@ -39,16 +39,16 @@ def derive(p,*,canonical=False):
     original=deepcopy(frame)
     tx=feedback(frame,position=p.position,target=STREAM_PC,taken=bool(p.taken),mispredict=p.allocate)
     assert not any(s.hit for row in tx.sources for s in row)
-    assert tx.sources[0][1].position==RESIDENT_POSITION and tx.sources[0][1].counter==2
+    assert tx.sources[0][3].position==RESIDENT_POSITION and tx.sources[0][3].counter==2
     if canonical:tx=replace(tx,sources=source_entries(frame))
     model.advance(Events(feedback=tx))
     patch=model.direction_proposals().get((0,0))
     assert (None if patch is None else counter_payload(patch))==p.direction
     for _ in range(5):model.advance()
-    assert lookup(model).values()['1.counter']==2
-    assert model.counters[0,0,0,1]==before[0,0,0,1]==2
+    assert lookup(model).values()['3.counter']==2
+    assert model.counters[0,0,16,3]==before[0,0,16,3]==2
     if p.allocate:
-        assert lookup(model,FOREIGN_PC).values()['0.counter']==2
+        assert lookup(model,FOREIGN_PC).values()['2.counter']==2
     else:assert model.counters==before
     assert frame==original
     return model.counters

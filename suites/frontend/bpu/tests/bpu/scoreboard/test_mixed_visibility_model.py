@@ -47,13 +47,13 @@ def test_normal_partial_service_and_real_mixed_sources_keep_all_independent_resu
     for token, outcomes in zip(inputs[:3], OUTCOMES[:3], strict=True):
         model.advance(replace(event, feedback=resolution(token, outcomes)))
     mature(model, event)
-    assert pending_plan(model.sources.tage, 3, PC % 4) == concrete_plan(checks, model, inputs, PRELUDE_PLAN)
+    assert pending_plan(model.sources.tage, 7, PC % 4) == concrete_plan(checks, model, inputs, PRELUDE_PLAN)
     consumers(checks, model, event, anchor, program, 'initial')
     model.advance(replace(event, prediction_ready=False))
     assert model.sources.tage.commits == before + 2
     for _ in range(8):
         model.advance(event)
-    assert pending_plan(model.sources.tage, 3, PC % 4) == concrete_plan(checks, model, inputs, PARTIAL_PLAN)
+    assert pending_plan(model.sources.tage, 7, PC % 4) == concrete_plan(checks, model, inputs, PARTIAL_PLAN)
     mixed = consumers(checks, model, event, anchor, program, 'mixed')
     saved = {'old-target': inputs[3], 'old-neighbor': old_neighbor,
              'mixed-target': mixed['original'], 'mixed-neighbor': mixed['neighbor']}
@@ -62,14 +62,14 @@ def test_normal_partial_service_and_real_mixed_sources_keep_all_independent_resu
     assert len({id(t.history) for t in used}) == len(used)
     for token in late:
         frozen.setdefault(id(token), deepcopy(model.sources.defined_metadata(token)))
-    assert pending_plan(model.sources.tage, 3, PC % 4) == concrete_plan(checks, model, inputs, PARTIAL_PLAN)
+    assert pending_plan(model.sources.tage, 7, PC % 4) == concrete_plan(checks, model, inputs, PARTIAL_PLAN)
     for token, outcomes in zip(late, program.late_outcomes, strict=True):
         request = resolution(token, outcomes)
         assert not model.sources.feedback_for(request).reread
         model.advance(replace(event, feedback=request))
     mature(model, event)
     assert model.sources.tage.commits == before + 2
-    assert pending_plan(model.sources.tage, 3, PC % 4) == concrete_plan(checks, model, inputs, program.final_plan)
+    assert pending_plan(model.sources.tage, 7, PC % 4) == concrete_plan(checks, model, inputs, program.final_plan)
     consumers(checks, model, event, anchor, program, 'blocked')
     quiet(model, event)
     assert model.sources.tage.commits - before == 2 + sum(map(len, program.final_plan))

@@ -29,11 +29,11 @@ class Program:
     @property
     def concurrent(self):return self.overlap=='cleanup-and-learning'
     @property
-    def pc(self):return 0x40000020+(0x800 if self.identity=='nonzero-identity' else 0)
+    def pc(self):return 0x80000080+(0x8000 if self.identity=='nonzero-identity' else 0)
     @property
     def position(self):return 5 if self.identity=='nonzero-identity' else 0
     @property
-    def neighbor(self):return self.pc+64
+    def neighbor(self):return self.pc+256
     @property
     def query_neighbor(self):return self.neighbor+3
     @property
@@ -55,7 +55,7 @@ class Program:
         return entry_payload(coordinate(self.query_neighbor)[2],Entry(tag(self.neighbor),3,3,0,
             Target.encode(self.query_neighbor,self.updated_neighbor_target)))
     @property
-    def expected_services(self):return ((self.neighbor_effect,) if self.concurrent else (),(self.cleared,))
+    def expected_services(self):return ((),(),(self.neighbor_effect,) if self.concurrent else (),(self.cleared,))
 
     def state(self):
         return dict(identity=self.identity,overlap=self.overlap,preparation=self.preparation,pc=self.pc,position=self.position,

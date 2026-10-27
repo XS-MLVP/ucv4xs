@@ -16,8 +16,8 @@ pytestmark=pytest.mark.toffee_functional_coverage(False)
 @pytest.mark.parametrize('profile',PROFILES)
 def test_strongest_direction_confidence_and_one_error_determine_teaching_not_cycles(profile):
     p=Program(profile)
-    assert p.teaching_count==8 and 5*(2*(p.teaching_count-1)+1)>1130//16
-    assert 5*(2*(p.teaching_count-2)+1)<=1130//16
+    assert p.teaching_count==5 and 8*(2*(p.teaching_count-1)+1)>1130//16
+    assert 8*(2*(p.teaching_count-2)+1)<=1130//16
     assert p.state()['core_original_counters']==(5,6,7)
     assert p.old_iteration>0 and p.young_iteration>p.old_iteration
     assert not p.state()['physical_enumeration']
@@ -26,16 +26,17 @@ def test_strongest_direction_confidence_and_one_error_determine_teaching_not_cyc
 @pytest.mark.parametrize('profile',PROFILES)
 def test_joint_original_reserves_a_real_history_window_for_registered_observation(profile):
     p=Program(profile)
-    assert p.young_iteration-p.old_iteration==2
+    assert p.young_iteration-p.old_iteration==17
     assert p.require_feedback_window(110,100)==20
-    for current in (99,111,200):
+    assert p.require_feedback_window(167,100)==134
+    for current in (99,168,200):
         with pytest.raises(ValueError,match='retained history window'):p.require_feedback_window(current,100)
 
 
 def lookup(m,p,history,counter):
     return decide(
         m.snapshot(p.b,Context.from_history(history)),
-        (ScBaseBranch(p.position,counter),*(ScBaseBranch(i,0,0,0,0) for i in (0,2,3))),m.thresholds.values)
+        (ScBaseBranch(p.position,counter),*(ScBaseBranch(i,0,0,0,0) for i in (0,2,3,4,5,6,7,8,9))),m.thresholds.values)
 
 
 def drain(m):
@@ -62,11 +63,11 @@ def test_same_original_qualification_survives_changing_TAGE_confidence(profile):
     assert before==(m.memory,m.thresholds.values)
     correct=lookup(m,p,old,7);assert correct.used[0]==1
     young=replace(old,loop=p.young_iteration)
-    private_before=lookup(m,p,young,7).read.weights[3]
+    private_before=lookup(m,p,young,7).read.weights[6]
     send(correct,False)
     wrong=lookup(m,p,old,6);assert wrong.used[0]==wrong.directions[0]==1
     assert all(a!=b for a,b in zip(correct.read.weights,wrong.read.weights,strict=True))
-    assert private_before==lookup(m,p,young,6).read.weights[3]
+    assert private_before==lookup(m,p,young,6).read.weights[6]
 
 
 @pytest.mark.parametrize('counter',range(8))
@@ -88,7 +89,7 @@ def test_TAGE_preview_is_pure_and_equals_the_next_owned_schedule(counter,taken):
 def actual_offer():
     blank=lambda:dict(valid=0,index=0,bank=0,ways=0,entry_mask=(0,0),useful_mask=(0,0),taken=(0,0),
         entries=[dict(valid=0,tag=0,counter=0) for _ in range(2)],useful=(0,0))
-    rows=[blank() for _ in range(4)]
+    rows=[blank() for _ in range(8)]
     rows[3].update(valid=1,index=4,bank=1,ways=1,entry_mask=(1,0),taken=(1,0),entries=[dict(valid=1,tag=17,counter=6),dict(valid=0,tag=0,counter=0)])
     writes={(3,0,0):Write(4,0,Entry(True,17,6),True)}
     return writes,rows
@@ -113,7 +114,7 @@ def test_unwritten_TAGE_payload_is_not_required_to_be_zero():
 @pytest.mark.parametrize('count',(0,3,5))
 def test_no_table_can_be_silently_omitted_from_actual_offer_comparison(count):
     _,rows=actual_offer()
-    with pytest.raises(ValueError,match='all four'):tage_offer_values({}, {},(rows*2)[:count])
+    with pytest.raises(ValueError,match='all eight'):tage_offer_values({}, {},(rows*2)[:count])
 
 
 def test_committed_memory_direct_layout_has_every_new_read_only_TAGE_port():
@@ -129,7 +130,7 @@ def test_committed_memory_direct_layout_has_every_new_read_only_TAGE_port():
         fields += [f'bits_{kind}_{w}' for kind in ('writeEntryEn','writeUsefulEn','actualTakenMask')]
         fields += [f'bits_entries_{w}_{f}' for f in ('valid','tag','takenCtr_value')]
         fields += [f'bits_usefulCtrs_{w}_value']
-    assert {prefix+f'tage.tables_{t}.io_writeReq_'+f for t in range(4) for f in fields}<=names
+    assert {prefix+f'tage.tables_{t}.io_writeReq_'+f for t in range(8) for f in fields}<=names
     assert {prefix+f'tage.io_fromPhr_foldedPathHistForTrain_hist_{i}_foldedHist' for i in HISTORY_PORTS}<=names
 
 

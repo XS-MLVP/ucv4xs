@@ -7,6 +7,7 @@ from bpuverify.mbtb.transaction.types import MbtbBranchFeedback
 from bpuverify.mbtb.transaction.types import MbtbTraining
 from bpuverify.mbtb.model.entry import expected_mbtb_entry_states
 from bpuverify.mbtb.model.entry import mbtb_retarget_targets
+from bpuverify.mbtb.model.shadow import shadow_phase_touch_ways
 from bpuverify.mbtb.model.shadow import expected_mbtb_shadow_activity
 from bpuverify.mbtb.model.shadow import expected_mbtb_shadow_request_ways
 from bpuverify.mbtb.model.shadow import require_mbtb_shadow_cold_metadata
@@ -30,10 +31,10 @@ async def prepare(agent, context, align, bank, owner, phase):
     for index in (1, 2, 3, 0):
         await allocate_pair(agent, vectors[index], owner, neighbor_type=2)
     prepared = [snapshot(await agent.predict(vector.pc)) for vector in vectors]
-    touch = vectors[0] if phase == "clean_first" else replace(
-        vectors[0], target=vectors[0].target + 0x400, position=vectors[0].position + 1, branch_type=2)
-    await agent.train(MbtbTraining(touch.pc, touch.target, 1, touch.position, touch.branch_type,
-                                  deepcopy(prepared[0]["meta_entries"]), mispredict=0))
+    for way in shadow_phase_touch_ways(owner, phase):
+        touch = prepared[0]['entries'][align * 5 + way]
+        await agent.train(MbtbTraining(vectors[0].pc, touch.target, 1, touch.position, touch.branch_type,
+                                      deepcopy(prepared[0]["meta_entries"]), mispredict=0))
     # This correct-taken touch must leave full entry/counter/meta state unchanged.
     await read_expected(agent, vectors, prepared)
     return vectors, prepared, captured_cold

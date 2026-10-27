@@ -155,7 +155,7 @@ def test_invalid_frame_shape_is_rejected_without_mutation(requests):
 
 
 @pytest.mark.parametrize('field,value', (('counter', 8), ('counter', -1), ('taken', 2),
-    ('set_idx', 128), ('tag', 8192), ('entry_valid', 2), ('counter', '1')))
+    ('set_idx', 512), ('tag', 8192), ('entry_valid', 2), ('counter', '1')))
 def test_invalid_second_write_does_not_partially_apply_first(field, value):
     before = resident_banks()
     for row in before[0]:

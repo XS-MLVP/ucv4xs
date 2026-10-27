@@ -1,0 +1,85 @@
+--- a/include/xspcomm/xexpr.h
++++ b/include/xspcomm/xexpr.h
+@@ -118,6 +118,7 @@
+         int NewBits(ExprOp op, int lhs, int rhs, uint32_t width, bool is_signed);
+         std::vector<unsigned char> EvalBits(int root);
+         XData* GetOrCreateSignal(XSignalCFG* cfg, const std::string &name);
++        XData* GetOrCreateSignalWord(XSignalCFG* cfg, const std::string &name, uint64_t word);
+         void RegisterExternalSignal(const std::string &name, XData* sig);
+         void ResetState();
+         int CompileExpr(std::string expr, XSignalCFG* cfg);
+--- a/src/expr/engine.cpp
++++ b/src/expr/engine.cpp
+@@ -635,6 +635,25 @@
+     return this->signal_xdata[name].get();
+ }
+ 
++// Verilator VlWide uses little-endian, 32-bit words. Keep the parent and
++// slice alive in the engine; reading the slice refreshes native parent storage.
++XData* ExprEngine::GetOrCreateSignalWord(XSignalCFG* cfg, const std::string &name, uint64_t word){
++    XData *parent = GetOrCreateSignal(cfg, name);
++    const uint64_t width = parent->W();
++    if(width <= 64 || word >= (width + 31) / 32){
++        throw std::runtime_error("invalid wide signal word: " + name + "[" + std::to_string(word) + "]");
++    }
++    const std::string key = name + "[" + std::to_string(word) + "]";
++    auto found = signal_xdata.find(key);
++    if(found != signal_xdata.end()) return found->second.get();
++    const uint32_t start = static_cast<uint32_t>(word * 32);
++    const uint32_t count = static_cast<uint32_t>(std::min<uint64_t>(32, width - start));
++    auto slice = std::unique_ptr<XData>(parent->SubDataRefRaw(start, count, key));
++    XData *result = slice.get();
++    signal_xdata[key] = std::move(slice);
++    return result;
++}
++
+ void ExprEngine::RegisterExternalSignal(const std::string &name, XData* sig){
+     if(sig == nullptr){
+         throw std::runtime_error("external signal is null: " + name);
+--- a/src/expr/parser.cpp
++++ b/src/expr/parser.cpp
+@@ -17,6 +17,8 @@
+     LParen,
+     RParen,
+     Comma,
++    LBracket,
++    RBracket,
+ };
+ 
+ struct Token {
+@@ -64,6 +66,10 @@
+                 break;
+             }
+             return Token{TokType::Ident, input.substr(start, pos - start)};
++        }
++        if(c == '[' || c == ']'){
++            pos++;
++            return Token{c == '[' ? TokType::LBracket : TokType::RBracket, std::string(1, c)};
+         }
+         // paren
+         if(c == '('){
+@@ -608,6 +614,24 @@
+                 throw std::runtime_error("unexpected keyword: " + name);
+             }
+             Next();
++            if(cur.type == TokType::LBracket){
++                Next();
++                if(cur.type != TokType::Number){
++                    throw std::runtime_error("wide signal word must be a constant integer");
++                }
++                const uint64_t word = ParseNumber(cur.text);
++                Next();
++                if(cur.type != TokType::RBracket){
++                    throw std::runtime_error("expected ']' after wide signal word");
++                }
++                Next();
++                NodeInfo n;
++                n.sig = engine.GetOrCreateSignalWord(cfg, name, word);
++                n.id = engine.NewSignal(n.sig);
++                n.is_signal = true;
++                n.width = n.sig->W();
++                return n;
++            }
+             return MakeSignal(name);
+         }
+         if(cur.type == TokType::LParen){

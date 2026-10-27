@@ -34,7 +34,11 @@ class QueryMonitor:
                 self.lease.accept(snapshot, event.tick)
                 self.snapshot_frozen = deepcopy(snapshot)
                 self.previous_same_pc_is_not_this_request = output is not None and output.pc == pc and output is not snapshot
-            if self.lease.disposition is None and self.lease.response(output, event.tick):
+            # Adding the VictimBTB result creates a new immutable Frame; its
+            # bank-read tuple still owns the exact original request identity.
+            owned_output = (self.lease.snapshot if output is not None and self.lease.snapshot is not None
+                and output.banks is self.lease.snapshot.banks else output)
+            if self.lease.disposition is None and self.lease.response(owned_output, event.tick):
                 expected = output.values(True)
                 actual = self.agent.prediction_monitor.sample_at(event).value
                 self.checks.old_response(expected, actual)

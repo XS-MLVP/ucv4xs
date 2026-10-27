@@ -66,7 +66,7 @@ class ShortContextPath:
     def tail_variant(self): return self.branch
 
     def edges(self):
-        return tuple(Edge(pc, self.pcs[index+1] if index+1 < len(self.pcs) else self.branch_pc, 3)
+        return tuple(Edge(pc, self.pcs[index+1] if index+1 < len(self.pcs) else self.branch_pc, 3, max(7,pc%16))
                      for index, pc in enumerate(self.pcs))
 
 
@@ -81,7 +81,7 @@ def path(branch, older):
     history, samples = PathHistoryReference(), [0]
     for index, pc in enumerate(pcs):
         target = pcs[index + 1] if index + 1 < len(pcs) else branch_pc
-        samples.append(history.advance(taken=True, cfi_pc=(pc & ~7) + 7, target=target).history)
+        samples.append(history.advance(taken=True, cfi_pc=(pc & ~15) + max(7,pc%16), target=target).history)
     return ShortContextPath(branch, older, branch_pc, pcs,
         Context.from_recent(samples[6]), Context.from_recent(samples[7]))
 
@@ -246,7 +246,7 @@ def working_set_path(branch,incoming,older=None):
     branch_pc=ANCHOR^(0x40 if branch=='right' else 0)
     history,samples=PathHistoryReference(),[0]
     for index,pc in enumerate(pcs):
-        samples.append(history.advance(taken=True,cfi_pc=(pc&~7)+7,
+        samples.append(history.advance(taken=True,cfi_pc=(pc&~15)+max(7,pc%16),
             target=pcs[index+1] if index<7 else branch_pc).history)
     return WorkingSetPath(branch,incoming,branch_pc,tuple(pcs),
         Context.from_recent(samples[6]),Context.from_recent(samples[7]))

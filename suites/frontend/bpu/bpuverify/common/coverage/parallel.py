@@ -411,6 +411,6 @@ def validate_parallel_case_coverage(report, *, profile='production'):
         mbtb_cleanup_physical=dict(total_bins=144,
             coverage=database.groups[cleanup_physical.instance].cross_coverage('all_dimensions'),
             full_required=profile == 'physical'),
-        mbtb_replacement_physical=dict(total_bins=6144,
+        mbtb_replacement_physical=dict(total_bins=24576,
             coverage=database.groups[mbtb_physical.instance].cross_coverage('all_dimensions'),
             full_required=profile == 'physical'))

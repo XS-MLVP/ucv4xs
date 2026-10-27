@@ -61,8 +61,8 @@ def test_normal_feedback_versions_establish_discriminating_records_without_state
     p, model = prepared_model()
     assert len(p.preparation) == RETAINED_VERSIONS == 8
     assert [s.counter for s in p.preparation] == [3, 4, 5, 6, 7, 7, 7, 7]
-    assert p.original.indices[0] == 43 and p.learning.indices[0] == 59
-    assert tag(p.original.pc, p.original.context, 0) == 63
+    assert p.original.indices[0] == 11 and p.learning.indices[0] == 27
+    assert tag(p.original.pc, p.original.context, 0) == 29
     assert tag(p.learning.pc, p.learning.context, 0) == 15
     assert model.updates[0].sequence == RETAINED_VERSIONS
     assert model.updates[0].newest(p.original.indices[0]).entry.counter == 3
@@ -75,7 +75,7 @@ def test_inflight_original_read_remains_a_logical_snapshot_after_other_learning_
         pc=p.learning.pc, context=p.learning.context, positions=POSITIONS, bases=BASES, advance=True)
     model.advance(replace(query, feedback=feedback(source)))
     original = model.read
-    assert original.entries[0] == Entry(True, 63, 5, 3)
+    assert original.entries[0] == Entry(True, 29, 5, 3)
     model.advance(query)
     model.advance(query)
     assert model.updates[0].sequence == RETAINED_VERSIONS + 1

@@ -1,4 +1,5 @@
 """Synthetic input contracts only: none is a DUT/coverage reachability claim."""
+from bpuverify.common.model.configuration import *
 from copy import deepcopy
 from itertools import product
 from pathlib import Path
@@ -18,21 +19,22 @@ from bpuverify.sc.transaction.types import ScBranchFeedback
 from bpuverify.sc.model.threshold import ScThresholdModel
 from bpuverify.bpu.model.sc.used import branch_effects, used_requests, threshold_update, UsedScReference, ThresholdReference
 from bpuverify.bpu.monitor.sc.used import UsedScMonitor, pipeline_leaves
-POSITIONS = (5, 4, 7, 6)
+POSITIONS_COUNT = POSITIONS
+POSITIONS = tuple(8 + (way ^ 1) for way in range(SC_WAYS))
 ROOT = Path(__file__).resolve().parents[3]
 
 def transaction(*, bank=0, way=0, key=0, used=1, predicted=0, tage=1, valid=1, above=1, taken=1, hit=1, conditional=1, bias=0, common_valid=1):
     pc = 1073758208 + key * 128 + bank
     position = POSITIONS[way]
-    owners = [dict(rawHit=hit, position=position), dict(rawHit=0, position=0), dict(rawHit=0, position=0), dict(rawHit=0, position=0)]
+    owners = [dict(rawHit=hit, position=position), *[dict(rawHit=0, position=0) for _ in range(RESULT_SLOTS - 1)]]
     common = dict(valid=common_valid, ghr=129, bw=11, imli=3)
     indices = history_indices(pc, common)
-    base = pc >> 3 & 127
-    sc = dict(scPred=[predicted, 0, 0, 0], tagePred=[tage, 0, 0, 0], tagePredValid=[valid, 0, 0, 0], useScPred=[used, 0, 0, 0], sumAboveThres=[above, 0, 0, 0], scBiasLowerBits=[bias, 0, 0, 0], debug=dict(predPathIdx=[base ^ 9], predGlobalIdx=[indices['globalTable_0']], predBWIdx=[indices['bwTable_0']], predImliIdx=base ^ 3, predBiasIdx=base))
-    return dict(pc=pc, resolve_meta=dict(commonHR=common, sc=sc, mbtb_entries=[owners[:2], owners[2:]]), branches=[dict(position=position, target=1073807360, branch_type=1 if conditional else 3, taken=taken, mispredict=0, ras_action=0)])
+    base = pc // ALIGN_HALFWORDS & 127
+    sc = dict(scPred=[predicted] + [0] * (RESULT_SLOTS - 1), tagePred=[tage] + [0] * (RESULT_SLOTS - 1), tagePredValid=[valid] + [0] * (RESULT_SLOTS - 1), useScPred=[used] + [0] * (RESULT_SLOTS - 1), sumAboveThres=[above] + [0] * (RESULT_SLOTS - 1), scBiasLowerBits=[bias] + [0] * (RESULT_SLOTS - 1), debug=dict(predPathIdx=[base ^ 9, base ^ 37], predGlobalIdx=[indices[f'globalTable_{i}'] for i in range(2)], predBWIdx=[indices[f'bwTable_{i}'] for i in range(2)], predImliIdx=base ^ 3, predBiasIdx=base))
+    return dict(pc=pc, resolve_meta=dict(commonHR=common, sc=sc, mbtb_entries=[owners[:5], owners[5:]]), branches=[dict(position=position, target=1073807360, branch_type=1 if conditional else 3, taken=taken, mispredict=0, ras_action=0)])
 
 @pytest.mark.parametrize('bank', [0, 1])
-@pytest.mark.parametrize('way', range(4))
+@pytest.mark.parametrize('way', range(SC_WAYS))
 @pytest.mark.parametrize('flags', list(product((0, 1), repeat=8)))
 def test_full_boolean_read_update_and_threshold_truth_table(bank, way, flags):
     used, predicted, tage, valid, above, taken, hit, conditional = flags
@@ -45,10 +47,10 @@ def test_full_boolean_read_update_and_threshold_truth_table(bank, way, flags):
     assert effect['counter_delta'] == ((1 if taken else -1) if expected_update else 0)
     assert effect['threshold_delta'] == ((1 if predicted != taken else -1) if expected_update else 0)
     assert train_need_write(encoded_payload(tx)) == int(expected_read)
-    model = ScThresholdModel()
+    model = ScThresholdModel.for_default()
     standalone = ScBatchTraining(tx['pc'], tx['resolve_meta']['sc'], (ScBranchFeedback(tx['branches'][0]['position'], taken, 0, mbtb_hit=hit, branch_type=tx['branches'][0]['branch_type']),))
     admitted = model.apply(standalone)
-    actual = threshold_update((1130,) * 4, [effect])
+    actual = threshold_update((1130,) * SC_WAYS, [effect])
     assert actual['after'] == admitted.after
     assert actual['increments'] == admitted.increments and actual['decrements'] == admitted.decrements
 
@@ -56,11 +58,11 @@ def test_full_boolean_read_update_and_threshold_truth_table(bank, way, flags):
 @pytest.mark.parametrize('common_valid', [0, 1])
 @pytest.mark.parametrize('encoded', range(64))
 def test_every_signed_counter_encoding_allways_bias_selectors_tables(bank, common_valid, encoded):
-    for way, bias, taken in product(range(4), range(4), (0, 1)):
+    for way, bias, taken in product(range(SC_WAYS), range(4), (0, 1)):
         tx = transaction(bank=bank, way=way, bias=bias, common_valid=common_valid, predicted=1 - taken, taken=taken, tage=taken)
         ref = ScReference()
         debug = tx['resolve_meta']['sc']['debug']
-        indices = dict(pathTable_0=debug['predPathIdx'][0], imliTable=debug['predImliIdx'], biasTable=debug['predBiasIdx'])
+        indices = dict(pathTable_0=debug['predPathIdx'][0], pathTable_1=debug['predPathIdx'][1], imliTable=debug['predImliIdx'], biasTable=debug['predBiasIdx'])
         if common_valid:
             indices.update(history_indices(tx['pc'], tx['resolve_meta']['commonHR']))
         for table, index in indices.items():
@@ -83,7 +85,7 @@ def test_every_signed_counter_encoding_allways_bias_selectors_tables(bank, commo
         assert branch_effects(tx)[0]['read_eligible']
 
 @pytest.mark.parametrize('bank', [0, 1])
-@pytest.mark.parametrize('way', range(4))
+@pytest.mark.parametrize('way', range(SC_WAYS))
 @pytest.mark.parametrize('taken', [0, 1])
 def test_used_correct_tage_agrees_skips_read_but_disagrees_reads_without_counter_update(bank, way, taken):
     no_read = transaction(bank=bank, way=way, predicted=taken, tage=taken, taken=taken)
@@ -93,10 +95,10 @@ def test_used_correct_tage_agrees_skips_read_but_disagrees_reads_without_counter
     assert not branch_effects(read_hold)[0]['counter_update']
     assert used_requests(no_read, ScReference().memories) == {}
     assert used_requests(read_hold, ScReference().memories) == {}
-    assert threshold_update((1130,) * 4, branch_effects(read_hold))['after'] == (1130,) * 4
+    assert threshold_update((1130,) * SC_WAYS, branch_effects(read_hold))['after'] == (1130,) * SC_WAYS
 
 @pytest.mark.parametrize('bank', [0, 1])
-@pytest.mark.parametrize('way', range(4))
+@pytest.mark.parametrize('way', range(SC_WAYS))
 def test_nonzero_common_valid_scused_four_depths_dirty_merge_clean_reactivate(bank, way):
     ref = UsedScReference()
     assert UsedScReference.reset is ScReference.reset and UsedScReference.step is ScReference.step
@@ -105,38 +107,38 @@ def test_nonzero_common_valid_scused_four_depths_dirty_merge_clean_reactivate(ba
         tx = transaction(bank=bank, way=way, key=key, bias=0)
         ref.accept(key * 2, tx)
         _, actions = ref.step(ref.pending.pop(key * 2 + 2), ready)
-        assert len(actions) == 5 and all((row['kind'] == 'miss' for row in actions))
+        assert len(actions) == SC_TABLES and all((row['kind'] == 'miss' for row in actions))
     active = [name for name in NAMES if name.endswith(f'bank{bank}')]
     assert all(([row['dirty'] for row in ref.slots[name]] == [1] * 4 for name in active))
     for key in range(4):
         tx = transaction(bank=bank, way=way, key=key, bias=1)
         ref.accept(10 + key * 2, tx)
         _, actions = ref.step(ref.pending.pop(12 + key * 2), ready)
-        assert len(actions) == 5 and all((row['kind'] == 'dirty_merge' for row in actions))
+        assert len(actions) == SC_TABLES and all((row['kind'] == 'dirty_merge' for row in actions))
     for _ in range(4):
         drains, _ = ref.step({}, dict.fromkeys(NAMES, 1))
-        assert len(drains) == 5
+        assert len(drains) == SC_TABLES
     assert all((not row['dirty'] for name in active for row in ref.slots[name]))
     for key in range(4):
         tx = transaction(bank=bank, way=way, key=key, bias=2)
         ref.accept(30 + key * 2, tx)
         _, actions = ref.step(ref.pending.pop(32 + key * 2), ready)
-        assert len(actions) == 5 and all((row['kind'] == 'clean_reactivate' for row in actions))
+        assert len(actions) == SC_TABLES and all((row['kind'] == 'clean_reactivate' for row in actions))
     assert ref.pending == {}
 
-@pytest.mark.parametrize('value', [640, 641, 1130, 5039, 5040])
-@pytest.mark.parametrize('way', range(4))
+@pytest.mark.parametrize('value', [SC_MIN_THRESHOLD, SC_MIN_THRESHOLD + 1, 1130, SC_MAX_THRESHOLD - 1, SC_MAX_THRESHOLD])
+@pytest.mark.parametrize('way', range(SC_WAYS))
 @pytest.mark.parametrize('directions', [(-1, -1), (-1, 1), (1, -1), (1, 1)])
 def test_threshold_sameway_net_votes_range_rejection_not_endpoint_clamp(value, way, directions):
     effects = [dict(way=way, counter_update=True, threshold_delta=delta) for delta in directions]
-    before = [1130] * 4
+    before = [1130] * SC_WAYS
     before[way] = value
     update = threshold_update(before, effects)
     candidate = value + sum(directions)
-    expected = candidate if 640 <= candidate <= 5040 else value
+    expected = candidate if SC_MIN_THRESHOLD <= candidate <= SC_MAX_THRESHOLD else value
     assert update['after'][way] == expected
-    assert update['rejected_ways'] == (() if 640 <= candidate <= 5040 else (way,))
-    assert all((update['after'][other] == 1130 for other in range(4) if other != way))
+    assert update['rejected_ways'] == (() if SC_MIN_THRESHOLD <= candidate <= SC_MAX_THRESHOLD else (way,))
+    assert all((update['after'][other] == 1130 for other in range(SC_WAYS) if other != way))
 
 @pytest.mark.parametrize('taken', [0, 1])
 def test_adjacent_pipeline_preserves_t1_and_t2_even_read_no_update(taken):
@@ -154,7 +156,7 @@ def test_adjacent_pipeline_preserves_t1_and_t2_even_read_no_update(taken):
     assert third['t1_write_valid'] == third['t2_write_valid'] == 1 and third['after'][0] == 1131
     assert fourth['t1_write_valid'] == 0 and fourth['t2_write_valid'] == 1
     assert fifth['t1_fire'] == fifth['t2_write_valid'] == 0
-    assert ref.advance(None, t0_fire=0, reset=1)['after'] == (1130,) * 4
+    assert ref.advance(None, t0_fire=0, reset=1)['after'] == (1130,) * SC_WAYS
 
 def test_missing_owner_unconditional_provider_invalid_and_invalid_slots_are_noops():
     for options in (dict(hit=0), dict(conditional=0), dict(valid=0)):
@@ -190,9 +192,9 @@ def test_two_sameway_opposite_votes_cancel_path_but_update_distinct_bias_lanes()
     assert len(effects) == 2 and all((row['way'] == 1 for row in effects))
     requests = used_requests(tx, ScReference().memories)
     assert set(requests) == {'biasTable_bank0'}
-    assert requests['biasTable_bank0']['masks'] == [int(i in (4, 5)) for i in range(16)]
+    assert requests['biasTable_bank0']['masks'] == [int(i in (4, 5)) for i in range(4 * SC_WAYS)]
     assert requests['biasTable_bank0']['data'][4:6] == [1, 63]
-    assert threshold_update((1130,) * 4, effects)['after'][1] == 1132
+    assert threshold_update((1130,) * SC_WAYS, effects)['after'][1] == 1132
 
 def test_reference_still_rejects_full_dirty_not_silently_claimed_closed():
     ref = UsedScReference()
@@ -203,7 +205,7 @@ def test_reference_still_rejects_full_dirty_not_silently_claimed_closed():
     with pytest.raises(ValueError, match='full dirty overwrite'):
         ref.step(used_requests(transaction(key=4), ref.memories), dict.fromkeys(NAMES, 0))
 
-@pytest.mark.parametrize('path,value', [(['pc'], -1), (['pc'], 1 << 49), (['branches'], []), (['branches', 0, 'position'], 16), (['branches', 0, 'taken'], 2), (['branches', 0, 'branch_type'], 4), (['resolve_meta', 'sc', 'useScPred', 0], 2), (['resolve_meta', 'sc', 'scBiasLowerBits', 0], 4), (['resolve_meta', 'sc', 'tagePredValid'], [1]), (['resolve_meta', 'mbtb_entries', 0, 0, 'rawHit'], 2)])
+@pytest.mark.parametrize('path,value', [(['pc'], -1), (['pc'], 1 << 49), (['branches'], []), (['branches', 0, 'position'], POSITIONS_COUNT), (['branches', 0, 'taken'], 2), (['branches', 0, 'branch_type'], 4), (['resolve_meta', 'sc', 'useScPred', 0], 2), (['resolve_meta', 'sc', 'scBiasLowerBits', 0], 4), (['resolve_meta', 'sc', 'tagePredValid'], [1]), (['resolve_meta', 'mbtb_entries', 0, 0, 'rawHit'], 2)])
 def test_invalid_feedback_is_atomic_for_full_state_reference(path, value):
     tx = transaction()
     parent = tx
@@ -227,7 +229,7 @@ def test_monitor_all35_leaves_exist_with_correct_width_in_native_yaml():
     text = (ROOT / 'dut/bpu/BpuDut_offset.yaml').read_text()
     entries = {name: int(width) for name, width in re.findall('^  - name: (BpuDut_top\\.Bpu\\.sc\\.[^\\n]+)\\n(?:    [^\\n]+\\n)*?    rtl_width: (\\d+)$', text, re.M)}
     wanted = pipeline_leaves()
-    assert len(wanted) == len(set(wanted)) == 35
+    assert len(wanted) == len(set(wanted)) == 2 * SC_WAYS + 3 * 8 + 3
     for leaf in wanted:
         assert entries['BpuDut_top.Bpu.sc.' + leaf] == (13 if leaf.startswith(('scThreshold_', 't1_writeThresVec_')) else 1)
 
@@ -257,7 +259,7 @@ def test_monitor_preserves_static_bundle_and_inherited_lossless_subscriptions(mo
     monitor = module.UsedScMonitor(agent)
     assert set(calls) == {'Bpu.sc.' + leaf for leaf in pipeline_leaves()}
     assert monitor.binding.bits.used_pipeline.t1_fire.value == 0
-    assert len(monitor.binding.bits.used_pipeline.thresholds) == 4
+    assert len(monitor.binding.bits.used_pipeline.thresholds) == SC_WAYS
     assert module.UsedScMonitor.start is module.ScMonitor.start
     assert module.UsedScMonitor.aclose is module.ScMonitor.aclose
     assert monitor.binding.name == 'bpu.sc.used_full_state_and_threshold'

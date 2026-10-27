@@ -6,11 +6,13 @@ are not executed outcomes and must not be pre-appended as not-taken.
 Addresses use the integrated API's halfwords. Lookup-window/IMLI scheduling
 are separate contracts, not silently claimed by this direction-history core.
 """
+from bpuverify.common.model.configuration import *
+
 from dataclasses import dataclass
 from bpuverify.bpu.model.selection import Kind
 from bpuverify.bpu.model.path_history import address
 
-GHR_WIDTH,BW_WIDTH,TARGET_WIDTH=8,4,20
+GHR_WIDTH,BW_WIDTH,TARGET_WIDTH=16,8,20
 LOOKUP_WINDOW_CAPACITY=8 # Pinned CommonHRParameters.HistQueueSize, not a settling delay.
 
 
@@ -44,21 +46,21 @@ class Block:
 
     def __post_init__(self):
         address(self.pc)
-        if type(self.conditionals) is not tuple or any(type(p) is not int or not 0<=p<16 for p in self.conditionals):
+        if type(self.conditionals) is not tuple or any(type(p) is not int or not 0<=p<POSITIONS for p in self.conditionals):
             raise ValueError('conditional positions must be immutable logical positions')
         object.__setattr__(self,'conditionals',tuple(sorted(set(self.conditionals))))
 
     @classmethod
     def from_token(cls,token):
         values={} if token.lookup is None else token.lookup.values()
-        return cls(token.pc,tuple(values[f'{slot}.position'] for slot in range(4)
+        return cls(token.pc,tuple(values[f'{slot}.position'] for slot in range(RESULT_SLOTS)
             if values.get(f'{slot}.valid') and values[f'{slot}.kind']==Kind.CONDITIONAL))
 
     def outcomes(self,branch,*,recovering=False):
         if not branch.taken and not recovering:return tuple((False,False) for _ in self.conditionals)
         prefix=tuple((False,False) for p in self.conditionals if p<branch.position)
         if branch.kind==Kind.CONDITIONAL:
-            cfi_pc=(self.pc//8)*8+branch.position
+            cfi_pc=(self.pc//ALIGN_HALFWORDS)*ALIGN_HALFWORDS+branch.position
             backward=branch.taken and cfi_pc%(1<<TARGET_WIDTH)>branch.target%(1<<TARGET_WIDTH)
             return (*prefix,(bool(branch.taken),bool(backward)))
         if not branch.taken:raise ValueError('nonconditional recovery cannot be not-taken')

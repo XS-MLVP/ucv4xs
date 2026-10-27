@@ -1,4 +1,5 @@
 """Independent learning visibility under uninterrupted same-bank read service."""
+from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT
 from dataclasses import replace
 from copy import deepcopy
 from pathlib import Path
@@ -75,7 +76,7 @@ def additional_history(model,event,anchor,via_pc):
             operation,path,values(model,source),decision)
         if operation=='allocate':
             feedback=model.sources.feedback_for(request)
-            for _ in range(128):
+            for _ in range(TAGE_ALLOCATION_WAIT):
                 if model.sources.tage.allocation_at_next_accept(feedback)==owner:break
                 model.advance(idle)
             else:raise AssertionError('second-history allocation opportunity not reached')
@@ -96,12 +97,12 @@ def test_nonreread_feedback_acceptance_does_not_make_pending_learning_visible_th
     model,event,anchor,old,baseline=pending_program()
     tage=model.sources.tage
     assert tage.commits==baseline
-    payloads=pending_fronts(tage,3,PC%4)
+    payloads=pending_fronts(tage,7,PC%4)
     assert tuple(row['counter'] for row in payloads)==(0,7)
     assert counters(tage.lookup_snapshot(PC,context_for(old[0].history)))==(2,5)
     for _ in range(4):
         model.advance(event)
-        assert pending_fronts(tage,3,PC%4)==payloads and tage.commits==baseline
+        assert pending_fronts(tage,7,PC%4)==payloads and tage.commits==baseline
     # A genuine same-bank query, not an SRAM peek, still owns the old values.
     model.advance(replace(event,redirect=Redirect(anchor.history,anchor.pc+4,PC,True)))
     for _ in range(8):
@@ -115,7 +116,7 @@ def test_nonreread_feedback_acceptance_does_not_make_pending_learning_visible_th
     assert tage.commits==baseline+2
     new=revisit(model,event,anchor,PC)
     assert counters(model.sources.snapshot(new).read)==(0,7)
-    assert pending_fronts(tage,3,PC%4)==(None,None)
+    assert pending_fronts(tage,7,PC%4)==(None,None)
 
 
 def test_two_owned_histories_retain_four_pending_versions_and_retire_two_per_owner_after_release():
@@ -123,19 +124,19 @@ def test_two_owned_histories_retain_four_pending_versions_and_retire_two_per_own
     tage=model.sources.tage
     reads=tuple(model.sources.snapshot(source).read for source in sources)
     assert tage.commits==baseline
-    plan=pending_plan(tage,3,PC%4)
+    plan=pending_plan(tage,7,PC%4)
     assert tuple(tuple(payload['counter'] for payload in way) for way in plan)==((0,0),(7,7))
     assert all(counters(tage.lookup_snapshot(PC,read.context))==(2,5) for read in reads)
     quiet(model,event)
     assert tage.commits==baseline+4
-    assert pending_plan(tage,3,PC%4)==((),())
+    assert pending_plan(tage,7,PC%4)==((),())
     assert all(counters(tage.lookup_snapshot(PC,read.context))==(0,7) for read in reads)
 
 
 def pending_two_history_program():
     model,event,anchor,sources=two_history_program()
     reads=tuple(model.sources.snapshot(source).read for source in sources)
-    assert reads[0].context!=reads[1].context and reads[0].rows[3]!=reads[1].rows[3]
+    assert reads[0].context!=reads[1].context and reads[0].rows[7]!=reads[1].rows[7]
     assert reads[0]==reads[2] and reads[1]==reads[3]
     assert all(counters(read)==(2,5) for read in reads)
     loop=revisit(model,event,anchor,STREAM_PC)
@@ -177,7 +178,7 @@ def fixture():
     checks=DirectionServiceChecks(pipeline,DirectionServiceCoverage())
     row=dict(reset=0,reads=({'valid':1,'mask':1},{'valid':0,'mask':0}),
         training=dict(valid=0,ready=1),prediction=dict(valid=1,ready=1,pc=STREAM_PC),
-        writes=tuple(dict(valid=1,ready=0,bits=way[0]) for way in pending_plan(model.sources.tage,3,0)))
+        writes=tuple(dict(valid=1,ready=0,bits=way[0]) for way in pending_plan(model.sources.tage,7,0)))
     consumers=(NS(token=old_a,prediction_tick=230,meta_tick=234),NS(token=old_b,prediction_tick=240,meta_tick=244))
     return checks,sources,accepted,row,consumers,(model,event,anchor),retired
 
@@ -290,9 +291,9 @@ def test_bad_blocked_port_payload_is_compared_against_owned_pending_versions(fau
     elif fault=='missing-port':actual['writes']=actual['writes'][:1]
     else:actual['writes'][1]['bits']['valid' if fault=='entry-valid' else fault]^=1
     checks.capture_state(NS(tick=220),actual)
-    before=deepcopy(pending_plan(checks.pipeline.model.sources.tage,3,0))
+    before=deepcopy(pending_plan(checks.pipeline.model.sources.tage,7,0))
     with pytest.raises(AssertionError):checks.pending()
-    assert pending_plan(checks.pipeline.model.sources.tage,3,0)==before
+    assert pending_plan(checks.pipeline.model.sources.tage,7,0)==before
     assert checks.coverage.groups['checked'].coverage==0
 
 

@@ -80,7 +80,7 @@ def reverse_sources(program,checks,*,family_fault=None):
             prediction=actual(expected)
             if family_fault is not None:
                 family,offset=family_fault
-                weight=(3-step)*(1 if owner.outcome else -1)+offset
+                weight=(program.warm_votes-step)*(1 if owner.outcome else -1)+offset
                 prediction.meta['debug'][family]=(int(weight>=0),*prediction.meta['debug'][family][1:])
             checks.reverse_consumer(owner,transfer(program,owner,'eligible',sequence+1,tick+6),prediction,program.actual_input(owner))
             sequence+=2
@@ -95,7 +95,7 @@ def test_complete_single_cause_lifetime_retains_then_reverses_each_independent_o
     assert coverage.groups['checked'].coverage==0
     reverse_sources(program,checks)
     checks.finish()
-    assert len(checks.sources)==54 and len(checks.spent)==19
+    assert len(checks.sources)==44 and len(checks.spent)==13
     assert len(checks.rejected_acceptances)==len(checks.rejected_consumers)==2
     assert coverage.groups['checked'].coverage==pytest.approx(100/len(PROFILES))
     with pytest.raises(AssertionError):checks.finish()
@@ -105,11 +105,11 @@ def test_complete_single_cause_lifetime_retains_then_reverses_each_independent_o
 @pytest.mark.parametrize('direction',(0,1))
 def test_independent_complete_feedback_offer_proves_which_source_qualification_is_absent(gate,direction):
     program=FeedbackProgram(direction,'serial',gate)
-    counts={owner.name:3 for owner in program.owners}
+    counts={owner.name:program.warm_votes for owner in program.owners}
     for owner in program.owners:
         expected,_=program.expected(owner,gate,counts)
         feedback=program.rejected_feedback(owner,expected['meta'])
-        offer=expected_offer(feedback,branch_count=8,fold_count=19)
+        offer=expected_offer(feedback,branch_count=16,fold_count=33)
         branch=offer['branches'][0]
         original=offer['mbtb_meta'][0][0]
         assert original['rawHit']==int(gate!='main-miss')

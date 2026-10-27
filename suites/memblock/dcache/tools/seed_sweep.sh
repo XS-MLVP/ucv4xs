@@ -10,8 +10,9 @@
 # Usage: tools/seed_sweep.sh [--audit] 1 2 3 4
 set -eu
 cd "$(dirname "$0")/.."
-PY=/home/xyl/xreactor/output/toffee-migration/venv/bin/python
-export PYTHONPATH="/usr/local/share/picker/python:$PWD"
+UCV_SWEEP_ROOT=$(CDPATH= cd -- ../../.. && pwd)
+PY="$UCV_SWEEP_ROOT/.venv/bin/python"
+export PYTHONPATH="$UCV_SWEEP_ROOT/src:$PWD"
 
 AUDIT=0
 if [ "${1:-}" = "--audit" ]; then
@@ -22,7 +23,7 @@ fi
 for seed in "$@"; do
   name="seed-sweep-$(printf '%02d' "$seed")"
   echo "=== seed $seed -> $name"
-  DCACHE_VERILATOR_SEED="$seed" DCACHE_TEST_RANDOM_SEED="$seed" \
+  UCV_SEED="$seed" DCACHE_VERILATOR_SEED="$seed" DCACHE_TEST_RANDOM_SEED="$seed" \
     "$PY" tools/run.py --name "$name" --workers 4 tests
   if [ "$AUDIT" = "1" ]; then
     "$PY" tools/coverage_audit.py "$name"

@@ -1,5 +1,8 @@
 """Seven-model composition, real learning and immutable original provenance."""
 from copy import deepcopy
+
+ABSENT_SLOT=0
+CONDITIONAL_SLOT=2
 from dataclasses import replace
 
 import pytest
@@ -15,18 +18,18 @@ def test_shared_sc_experience_changes_the_prefix_without_training_the_target_tag
     target, original, sources, fresh = p.prepare()
     result = p.bank.statistical_snapshot(fresh, resolved=True)
     tagged = dict(p.bank.tage_snapshot(fresh, resolved=True).wanted)
-    slot, = [slot for slot in range(4) if tagged.get(f'{slot}.has_provider')]
+    slot, = [slot for slot in range(10) if tagged.get(f'{slot}.has_provider')]
     assert tagged[f'{slot}.counter'] == (4 if positive else 3)
     main = fresh.lookup.values()
     direction = tagged[f'{slot}.taken'] if tagged[f'{slot}.valid'] else main[f'{slot}.taken']
     assert bool(direction) is not positive
     assert result.prediction.used[slot] == 1 and result.prediction.directions[slot] == int(positive)
-    assert result.prediction.sums[slot] == (23 if positive else -19)
+    assert result.prediction.sums[slot] == (32 if positive else -24)
     assert result.late.branch.position == (2 if positive else 4)
     assert result.late.branch.target == (p.d if positive else p.a)
     assert result.late.source == ('main' if positive else 'indirect-history')
     assert p.bank.statistical_snapshot(target, resolved=True) is original
-    assert original.prediction.sums[slot] == 5 and not original.prediction.used[slot]
+    assert original.prediction.sums[slot] == 8 and not original.prediction.used[slot]
     assert len({source.history.sequence for source in sources}) == len(sources)
 
 
@@ -51,7 +54,7 @@ def test_backend_history_needs_declared_branch_semantics_and_exact_original(faul
     p = Program(positive=True)
     idle = p.quiet()
     source = p.anchor.history if fault == 'missing-kind' else replace(p.anchor.history)
-    request = Redirect(source, (p.a // 8) * 8 + 4, p.b, True,
+    request = Redirect(source, (p.a // 16) * 16 + 4, p.b, True,
         None if fault == 'missing-kind' else Kind.INDIRECT)
     with pytest.raises(ValueError, match='semantic branch kind|owned|original|checkpoint'):
         p.step(replace(idle, redirect=request))
@@ -101,7 +104,7 @@ def test_learning_projection_is_pure_and_predicts_the_one_actual_SC_advance(posi
     p.bank.sc.advance(Events(feedback=transaction,feedback_context=Context.from_history(transaction.history)))
     before = deepcopy(p.bank.sc.state()), deepcopy(p.bank.sc.memory)
     patches, thresholds = p.bank.sc.preview_learning()
-    assert len(patches) == 3 and thresholds != p.bank.sc.thresholds.values
+    assert len(patches) == 4 and thresholds != p.bank.sc.thresholds.values
     assert before == (p.bank.sc.state(), p.bank.sc.memory)
     p.bank.sc.advance(Events())
     assert p.bank.sc.pending == patches and p.bank.sc.thresholds.values == thresholds
@@ -112,8 +115,8 @@ def metadata_actual(value):
     prediction = value.prediction
     return dict(prediction.metadata(), debug=dict(
         **{name: tuple(row[table] for row in prediction.components) for table,name in enumerate(DEBUG_VECTORS)},
-        **{name: prediction.read.indices[table] for table,name in enumerate(
-            ('predPathIdx','predGlobalIdx','predBWIdx','predImliIdx','predBiasIdx'))}))
+        predPathIdx=prediction.read.indices[:2],predGlobalIdx=prediction.read.indices[2:4],
+        predBWIdx=prediction.read.indices[4:6],predImliIdx=prediction.read.indices[6],predBiasIdx=prediction.read.indices[7]))
 
 
 @pytest.mark.parametrize('field', ('scPred','scPathTakenVec','scImliTakenVec','tageCtr','scBiasLowerBits'))
@@ -124,10 +127,10 @@ def test_unused_absent_candidate_payload_is_not_invented_but_authority_remains_c
     source = p.bank.statistical_snapshot(token,resolved=True)
     actual = metadata_actual(source)
     target = actual['debug'] if field.startswith('sc') and field.endswith('TakenVec') else actual
-    target[field] = tuple(1-v if slot==2 else v for slot,v in enumerate(target[field]))
+    target[field] = tuple(1-v if slot==ABSENT_SLOT else v for slot,v in enumerate(target[field]))
     expected, observed = metadata_values(p.bank,token,actual)
     assert expected == observed
-    actual['useScPred'] = tuple(1 if slot==2 else v for slot,v in enumerate(actual['useScPred']))
+    actual['useScPred'] = tuple(1 if slot==ABSENT_SLOT else v for slot,v in enumerate(actual['useScPred']))
     assert metadata_values(p.bank,token,actual)[0] != metadata_values(p.bank,token,actual)[1]
 
 
@@ -138,7 +141,7 @@ def test_every_real_candidate_field_still_rejects_corruption(field):
     _, _, _, token = p.prepare()
     actual = metadata_actual(p.bank.statistical_snapshot(token,resolved=True))
     target = actual['debug'] if field.startswith('sc') and field.endswith('TakenVec') else actual
-    target[field] = tuple(1-v if slot==0 else v for slot,v in enumerate(target[field]))
+    target[field] = tuple(1-v if slot==CONDITIONAL_SLOT else v for slot,v in enumerate(target[field]))
     expected, observed = metadata_values(p.bank,token,actual)
     assert expected != observed
 
@@ -152,14 +155,14 @@ def test_independently_invalid_provider_payload_is_unspecified_but_validity_is_n
     p=Program(positive=False)
     _,_,_,token=p.prepare()
     source=p.bank.statistical_snapshot(token,resolved=True)
-    branches=tuple(replace(branch,provider_valid=0,tage_counter=0) if slot==0 else branch
+    branches=tuple(replace(branch,provider_valid=0,tage_counter=0) if slot==CONDITIONAL_SLOT else branch
         for slot,branch in enumerate(source.prediction.branches))
     value=replace(source,prediction=decide(source.original.read,branches,p.bank.sc.thresholds.values))
     bank=SimpleNamespace(statistical_snapshot=lambda *args,**kwargs:value)
     actual=metadata_actual(value)
-    actual[field]=tuple(payload if slot==0 else bit for slot,bit in enumerate(actual[field]))
+    actual[field]=tuple(payload if slot==CONDITIONAL_SLOT else bit for slot,bit in enumerate(actual[field]))
     assert metadata_values(bank,token,actual)[0]==metadata_values(bank,token,actual)[1]
-    actual['tagePredValid']=tuple(1 if slot==0 else bit for slot,bit in enumerate(actual['tagePredValid']))
+    actual['tagePredValid']=tuple(1 if slot==CONDITIONAL_SLOT else bit for slot,bit in enumerate(actual['tagePredValid']))
     assert metadata_values(bank,token,actual)[0]!=metadata_values(bank,token,actual)[1]
 
 
@@ -172,12 +175,12 @@ def test_invalid_provider_does_not_relax_authority_bias_confidence_or_sc_directi
     p=Program(positive=False)
     _,_,_,token=p.prepare()
     source=p.bank.statistical_snapshot(token,resolved=True)
-    branches=tuple(replace(branch,provider_valid=0,tage_counter=0) if slot==0 else branch
+    branches=tuple(replace(branch,provider_valid=0,tage_counter=0) if slot==CONDITIONAL_SLOT else branch
         for slot,branch in enumerate(source.prediction.branches))
     value=replace(source,prediction=decide(source.original.read,branches,p.bank.sc.thresholds.values))
     bank=SimpleNamespace(statistical_snapshot=lambda *args,**kwargs:value)
     actual=metadata_actual(value)
-    actual[field]=tuple(1-bit if slot==0 else bit for slot,bit in enumerate(actual[field]))
+    actual[field]=tuple(1-bit if slot==CONDITIONAL_SLOT else bit for slot,bit in enumerate(actual[field]))
     assert metadata_values(bank,token,actual)[0]!=metadata_values(bank,token,actual)[1]
 
 
@@ -250,7 +253,7 @@ def test_executed_nonzero_prefix_owns_five_family_learning_and_both_used_feedbac
     tagged=dict(p.bank.tage_snapshot(fresh,resolved=True).wanted)
     assert tagged[f'{slot}.counter']==layout.provider_counter
     assert source.prediction.used[slot] and source.prediction.directions[slot]
-    assert source.prediction.sums[slot]==45
+    assert source.prediction.sums[slot]==72
     assert all(a!=b for a,b in zip(old.original.read.weights,source.original.read.weights,strict=True))
     before=deepcopy(p.bank.sc.memory),p.bank.sc.thresholds.values
     p.controls(tage=False)
@@ -265,7 +268,7 @@ def test_executed_nonzero_prefix_owns_five_family_learning_and_both_used_feedbac
     p.controls(tage=True)
     after=p.query(layout.b)
     after_source=p.bank.statistical_snapshot(after,resolved=True)
-    assert after_source.prediction.sums[slot]==35
+    assert after_source.prediction.sums[slot]==56
     assert all(a!=b for a,b in zip(source.original.read.weights,after_source.original.read.weights,strict=True))
     assert p.bank.statistical_snapshot(control,resolved=True) is old
 
@@ -362,7 +365,7 @@ def test_old_nonzero_context_keeps_its_learning_identity_during_new_zero_history
         assert read.indices==coordinates(source.pc,read.context)[1]
         patches,_=p.bank.sc.preview_learning()
         assert bool(patches) is (feedback_class!='used-correct')
-        if patches:assert tuple(row[0] for row in patches)==tuple(range(5))
+        if patches:assert tuple(row[0] for row in patches)==tuple(range(8))
     else:
         assert p.bank.sc.learning is None
     p.quiet()
@@ -431,9 +434,13 @@ def test_concurrent_context_monitor_rejects_ownership_and_admission_faults(monke
 
 
 def numeric_actual(read,*,consumed=False):
-    values=tuple(tuple((2*v+1)%128 if consumed else v%64 for v in weights) for weights in read.weights)
+    # Seven history tables combine into four signed family sums before bias.
+    groups=((0,1),(2,3),(4,5),(6,),(7,))
+    values=(tuple(tuple(sum(2*read.weights[i][column]+1 for i in group) % (256 if len(group)==2 else 128)
+                  for column in range(len(read.weights[group[0]]))) for group in groups) if consumed else
+            tuple(tuple(v%64 for v in weights) for weights in read.weights))
     return dict(indices=read.indices,history_valid=int(read.context.common_valid),
-        banks=(1<<(read.pc%2),)*5,words=values)
+        banks=(1<<(read.pc%2),)*8,words=values)
 
 
 @pytest.fixture(scope='module')
@@ -449,8 +456,10 @@ def test_complete_numeric_experience_matches_the_independently_owned_read(numeri
     p,_,token=numeric_context
     read=p.bank.statistical_snapshot(token).read
     expected,actual=numeric_values(p.bank,token,numeric_actual(read,consumed=consumed),consumed=consumed)
-    assert expected==actual and set(('path','global','backward','loop','bias'))<=expected.keys()
-    assert sum(len(expected[name]) for name in ('path','global','backward','loop','bias'))==32
+    assert expected==actual
+    names=('path','global','backward','loop','bias') if consumed else ('path.0','path.1','global.2','global.3','backward.4','backward.5','loop.6','bias.7')
+    assert set(names)<=expected.keys()
+    assert sum(len(expected[name]) for name in names)==(64 if consumed else 88)
 
 
 @pytest.mark.parametrize('consumed',(False,True))
@@ -478,11 +487,11 @@ def test_unequal_family_experience_cannot_be_swapped_even_if_the_total_is_unchan
     from bpuverify.bpu.checker.statistical import numeric_values
     from bpuverify.sc.model.semantic import Read,Context
     # Comparator-only pure fixture. It is never installed in a DUT oracle.
-    weights=((1,2,3,4),(5,6,7,8),(9,10,11,12),(-32,31,-1,0),tuple(range(16)))
-    read=Read(0x40010000,Context(),(1,2,3,4,5),weights)
+    weights=tuple(tuple(value+i for i in range(8)) for value in (1,5,9,-8,-4,0,4))+(tuple(range(-16,16)),)
+    read=Read(0x40010000,Context(),tuple(range(1,9)),weights)
     bank=NS(statistical_snapshot=lambda token:NS(read=read));token=NS(pc=read.pc)
     actual=numeric_actual(read,consumed=consumed)
-    swapped=list(actual['words']);swapped[0],swapped[1]=swapped[1],swapped[0]
+    swapped=list(actual['words']);other=1 if consumed else 2;swapped[0],swapped[other]=swapped[other],swapped[0]
     assert sum(map(sum,swapped))==sum(map(sum,actual['words']))
     actual['words']=tuple(swapped)
     expected,observed=numeric_values(bank,token,actual,consumed=consumed)
@@ -495,18 +504,18 @@ def test_invalid_history_ignores_old_raw_ports_but_requires_actual_zeroed_consum
     from bpuverify.sc.model.semantic import Read,Context
     p,_,token=numeric_context
     original=p.bank.statistical_snapshot(token).read
-    weights=list(original.weights);weights[1]=weights[2]=(0,)*4
+    weights=list(original.weights);weights[2:6]=((0,)*8,)*4
     read=replace(original,context=replace(original.context,common_valid=False),weights=tuple(weights))
     bank=NS(statistical_snapshot=lambda token:NS(read=read))
     actual=numeric_actual(read)
-    stale=list(actual['words']);stale[1]=(63,)*4;stale[2]=(31,)*4
+    stale=list(actual['words']);stale[2]=(63,)*8;stale[4]=(31,)*8
     actual['words']=tuple(stale)
     expected,observed=numeric_values(bank,token,actual)
     assert expected==observed and 'global' not in expected and 'backward' not in expected
     actual=numeric_actual(read,consumed=True)
     expected,observed=numeric_values(bank,token,actual,consumed=True)
-    assert expected==observed and expected['global']==expected['backward']==(1,)*4
-    stale=list(actual['words']);stale[1]=(9,)*4
+    assert expected==observed and expected['global']==expected['backward']==(2,)*8
+    stale=list(actual['words']);stale[1]=(9,)*8
     actual['words']=tuple(stale)
     assert numeric_values(bank,token,actual,consumed=True)[0]!=numeric_values(bank,token,actual,consumed=True)[1]
 
@@ -516,8 +525,8 @@ def invalid_history_evidence_fixture(*,valid=False,nonzero=True):
     from types import SimpleNamespace as NS
     from bpuverify.sc.model.semantic import Read,Context
     from bpuverify.bpu.checker.statistical import InvalidHistoryEvidence
-    read=Read(0x40010000,Context(common_valid=valid),(1,2,3,4,5),
-        ((0,)*4,)*4+((0,)*16,))
+    read=Read(0x40010000,Context(common_valid=valid),tuple(range(1,9)),
+        ((0,)*8,)*7+((0,)*32,))
     token=NS(sequence=11,pc=read.pc,history=NS(sequence=7))
     def snapshot(original):
         if original is not token:raise ValueError('foreign original cannot supply a masking witness')
@@ -528,9 +537,9 @@ def invalid_history_evidence_fixture(*,valid=False,nonzero=True):
     pipeline=NS(model=NS(sources=sources,stages=(token,None,None)),sc_previous_cycle=None,sc_numeric_checked={7:{'read':2}})
     cycle=NS(tokens=(token,None,None),fires=(True,False,False,False))
     raw=numeric_actual(read)
-    words=list(raw['words']);words[1]=(63,0,2,0) if nonzero else (0,)*4
-    words[2]=(0,31,0,0) if nonzero else (0,)*4;raw['words']=tuple(words)
-    actual=dict(prediction_requests=(True,valid,valid,True,True),
+    words=list(raw['words']);words[2]=(63,0,2,0,0,0,0,0) if nonzero else (0,)*8
+    words[4]=(0,31,0,0,0,0,0,0) if nonzero else (0,)*8;raw['words']=tuple(words)
+    actual=dict(prediction_requests=(True,True,valid,valid,valid,valid,True,True),
         prediction_read=raw,prediction_evidence=numeric_actual(read,consumed=True))
     def check(expected,observed,point):assert expected==observed,point
     witness=InvalidHistoryEvidence()
@@ -553,8 +562,8 @@ def test_invalid_history_credit_requires_nonzero_raw_and_same_query_neutral_cons
     assert set(witness.witnesses)==({'global','backward'} if nonzero and not valid else set())
     for family,value in witness.witnesses.items():
         assert value['owner']==token.sequence and value['read_tick']==2 and value['consumed_tick']==4
-        assert any(value['raw_weights']) and value['consumed_percsum']==(1,)*4
-    assert pipeline.model.sources.statistical_snapshot(token).read.weights[1:3]==((0,)*4,)*2
+        assert any(value['raw_weights']) and value['consumed_percsum']==(2,)*8
+    assert pipeline.model.sources.statistical_snapshot(token).read.weights[2:6]==((0,)*8,)*4
 
 
 @pytest.mark.parametrize('fault',('missing-read','missing-consume','wrong-read-boundary',
@@ -571,7 +580,7 @@ def test_invalid_history_witness_rejects_missing_or_borrowed_proof_and_nonzero_c
         if fault=='missing-issued-request':witness.requests.clear()
         else:
             owner,tick,valids=witness.requests[7]
-            witness.requests[7]=(owner,tick,(True,)*5)
+            witness.requests[7]=(owner,tick,(True,)*8)
         with pytest.raises(AssertionError):witness.observe(pipeline,cycle,actual,2,check)
         assert not witness.witnesses
         return
@@ -587,7 +596,7 @@ def test_invalid_history_witness_rejects_missing_or_borrowed_proof_and_nonzero_c
     elif fault=='foreign-original':cycle.tokens=(None,NS(**vars(token)),None)
     else:
         words=list(actual['prediction_evidence']['words'])
-        words[1 if fault=='leaked-global' else 2]=(3,1,1,1)
+        words[1 if fault=='leaked-global' else 2]=(3,2,2,2,2,2,2,2)
         actual['prediction_evidence']['words']=tuple(words)
     with pytest.raises((AssertionError,ValueError)):
         witness.observe(pipeline,cycle,actual,tick,check)
@@ -606,11 +615,11 @@ def test_unarmed_or_pre_warm_response_cannot_grant_invalid_history_credit():
 
 
 @pytest.mark.parametrize('main,sc,issue,valid,wanted',(
-    (True,True,True,False,(True,False,False,True,True)),
-    (True,True,True,True,(True,)*5),
-    (False,True,True,True,(False,)*5),
-    (True,False,True,True,(False,)*5),
-    (True,True,False,True,(False,)*5)))
+    (True,True,True,False,(True,True,False,False,False,False,True,True)),
+    (True,True,True,True,(True,)*8),
+    (False,True,True,True,(False,)*8),
+    (True,False,True,True,(False,)*8),
+    (True,True,False,True,(False,)*8)))
 def test_actual_prediction_read_gates_depend_on_owned_history_and_qualified_issue(main,sc,issue,valid,wanted):
     from types import SimpleNamespace as NS
     from bpuverify.bpu.checker.statistical import live_values
@@ -641,7 +650,7 @@ def test_cancelled_nonzero_query_then_invalid_consumer_preserves_all_learned_exp
     warm,invalid=p.probe_invalid_history(source)
     now=p.bank.statistical_snapshot(invalid).read
     assert warm.sequence<invalid.sequence and not now.context.common_valid
-    assert now.weights[1:3]==((0,)*4,)*2
+    assert now.weights[2:6]==((0,)*8,)*4
     assert before==(p.bank.sc.memory,p.bank.sc.thresholds.values)
     assert p.bank.statistical_snapshot(source) is original
 

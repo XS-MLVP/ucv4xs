@@ -1,5 +1,6 @@
 """Independent MainBTB feedback semantics; never call the driver's encoder."""
 from copy import deepcopy
+from bpuverify.common.model.configuration import ALIGN_HALFWORDS
 
 
 def expected_mbtb_feedback(transaction, *, branch_count=8):
@@ -8,7 +9,7 @@ def expected_mbtb_feedback(transaction, *, branch_count=8):
     branches = tuple(transaction.branches)+(None,)*(branch_count-len(transaction.branches))
     if sum(bool(branch.mispredict) for branch in branches if branch is not None) > 1:
         raise ValueError('MainBTB feedback permits at most one misprediction')
-    return {'ready':1,'pc':transaction.pc,'next_pc':(transaction.pc//8+1)*8,
+    return {'ready':1,'pc':transaction.pc,'next_pc':(transaction.pc//ALIGN_HALFWORDS+1)*ALIGN_HALFWORDS,
             'meta_entries':tuple(tuple(deepcopy(entry) for entry in bank) for bank in transaction.meta_entries),
             'resolved':tuple(None if branch is None else {
                 'target':branch.target,'taken':branch.taken,'position':branch.position,

@@ -181,7 +181,7 @@ def test_original_counter_rebuild_and_overlap_allocation_are_derived_from_normal
     assert b.after.counter!=(3 if not program.inverse else 4)
     assert b.companion==(mode=='adjacent')
     assert (program.old_a.indices[0],program.old_b.indices[0])==(0,0)
-    assert program.state()['complete_short_tags']==(0,129)
+    assert program.state()['complete_short_tags']==(0,65)
 
 
 REBUILD_FAULTS=('first-old-write-hidden-by-correct-second','second-old-uses-current-counter',

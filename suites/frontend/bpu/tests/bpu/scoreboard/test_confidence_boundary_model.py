@@ -25,7 +25,7 @@ def test_each_correct_old_source_changes_current_version_through_hold_and_revers
         assert not model.sources.feedback_for(request).reread
         model.advance(replace(event,feedback=request));mature(model,event)
         assert not learning_inflight(model.sources.tage)
-        assert pending_plan(model.sources.tage,3,0)==concrete_plan(checks,model,tokens,program.pending_after[i])
+        assert pending_plan(model.sources.tage,7,0)==concrete_plan(checks,model,tokens,program.pending_after[i])
         assert model.sources.tage.commits==commits
     assert tuple(model.sources.defined_metadata(t) for t in tokens)==frozen
     assert all(queue.drops==0 for queue in model.sources.main.directions.values())

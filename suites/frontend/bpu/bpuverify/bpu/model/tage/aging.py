@@ -1,9 +1,9 @@
 """One candidate set from reset and qualified writes; random filter is an input."""
 from copy import deepcopy
 
-TABLES=4
+TABLES=8
 WAYS=2
-SETS=128
+SETS=512
 BANKS=4
 MAX_FAILURES=255
 
@@ -13,7 +13,7 @@ def empty_set():
 
 
 def prediction(cells,pc,position,base,selectors):
-    tag=((pc>>9)&8191)^position
+    tag=((pc>>11)&8191)^position
     hits=[(t,w,c) for t,table in enumerate(cells) for w,c in enumerate(table) if c['valid'] and c['tag']==tag]
     # Current scenario has unique tags, but choose first way at each history length.
     by_table={}
@@ -39,7 +39,7 @@ def candidate_masks(cells,meta):
         weak=sum((c['counter'] in (3,4) and not c['useful'])<<w for w,c in enumerate(table))
         unused=sum((not c['useful'])<<w for w,c in enumerate(table))
         masks.append(invalid or weak or unused)
-    longer=((15<< (meta['providerTableIdx']+1))&15) if meta['hasProvider'] else 15
+    longer=((255<< (meta['providerTableIdx']+1))&255) if meta['hasProvider'] else 255
     return masks,sum(bool(mask)<<t for t,mask in enumerate(masks))&longer
 
 
@@ -48,7 +48,7 @@ def transition(cells,meta,*,pc,position,taken,mispredict,random_mask):
     before=deepcopy(cells);after=deepcopy(cells)
     provider_direction=int(meta['providerTakenCtr_value']>=4)
     final=provider_direction if meta['useProvider'] else meta['altOrBasePred']
-    need=int(bool(mispredict and final!=taken and not(meta['hasProvider'] and meta['providerTableIdx']==3)
+    need=int(bool(mispredict and final!=taken and not(meta['hasProvider'] and meta['providerTableIdx']==7)
         and not(meta['hasProvider'] and not meta['useProvider'] and provider_direction==taken
                     and meta['providerTakenCtr_value'] in (3,4))))
     masks,can=candidate_masks(cells,meta)
@@ -65,7 +65,7 @@ def transition(cells,meta,*,pc,position,taken,mispredict,random_mask):
         if not(writes[t][w]['entry_en'] or writes[t][w]['useful_en']):writes[t][w]=None
     allocate=int(bool(need and can))
     if allocate:
-        entry=dict(valid=1,tag=((pc>>9)&8191)^position,counter=4 if taken else 3,useful=0)
+        entry=dict(valid=1,tag=((pc>>11)&8191)^position,counter=4 if taken else 3,useful=0)
         after[table][way]=entry
         writes[table][way]=dict(entry=deepcopy(entry),entry_en=1,useful_en=1,taken=taken)
     return dict(after=after,need=need,can=can,allocate=allocate,

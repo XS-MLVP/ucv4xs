@@ -15,9 +15,9 @@ from bpuverify.mbtb.checker.reset_lifetime import Checks
 def feedback(model, branch, *, taken=True, allocate=True):
     frame = model.lookup_snapshot(branch.pc)
     sources = tuple(tuple(Source(entry.valid and entry.tag == tag(read.pc),
-        8*read.ordinal+entry.position, entry.kind, entry.action, counter)
-        for entry, counter in zip(read.entries, read.counters, strict=True)) for read in frame.banks)
-    return Feedback((branch.pc, (branch.pc//8+1)*8), sources,
+        16*read.ordinal+entry.position, entry.kind, entry.action, counter)
+        for entry, counter in zip(read.entries, read.counters, strict=True))+(Source(),) for read in frame.banks)
+    return Feedback((branch.pc, (branch.pc//16+1)*16), sources,
                     (Outcome(branch.target, taken, branch.position, branch.kind, 0, allocate),))
 
 
@@ -25,7 +25,7 @@ def settled(model, request):
     model.advance(Events(feedback=request))
     # Pure model transition bound: accepted -> learned -> retained -> served.
     # These are not DUT delays or testcase settling assumptions.
-    for _ in range(5):
+    for _ in range(8):
         model.advance()
 
 
@@ -59,7 +59,7 @@ def test_reset_ends_each_old_semantic_obligation_and_cannot_replay_it(phase):
     assert not model.memory and not model.counters
     settled(model, feedback(model, program.new[0]))
     values = model.lookup_snapshot(program.new[0].pc).values()
-    active = next(slot for slot in range(4) if values[f'{slot}.valid'])
+    active = next(slot for slot in range(10) if values[f'{slot}.valid'])
     assert values[f'{active}.counter'] == 2
     assert values[f'{active}.target'] == program.new[0].target
     assert original == frozen
@@ -91,8 +91,8 @@ def test_checked_credit_requires_every_obligation_and_is_granted_once(profile):
 
 
 def prediction(branch=None, *, counter=2):
-    entries = [MbtbEntry(0, 0, 0, 0, 0, 0) for _ in range(4)]
-    meta = [[dict(rawHit=0, position=0, counter_value=0) for _ in range(2)] for _ in range(2)]
+    entries = [MbtbEntry(0, 0, 0, 0, 0, 0) for _ in range(10)]
+    meta = [[dict(rawHit=0, position=0, counter_value=0) for _ in range(5)] for _ in range(2)]
     if branch is not None:
         entries[0] = MbtbEntry(1, int(counter >= 2), branch.target, branch.position, branch.kind, 0)
         meta[0][0] = dict(rawHit=1, position=branch.position, counter_value=counter)

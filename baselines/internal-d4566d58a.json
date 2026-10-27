@@ -389,15 +389,16 @@
   "design": {
     "config": "DefaultConfig",
     "num_cores": 1,
-    "top": "top.TopMain",
+    "top": "top.XiangShanSim",
     "chisel_args": [
-      "--fpga-platform",
-      "--reset-gen",
       "--issue",
       "E.b",
       "--llc",
-      "OpenLLC"
-    ]
+      "OpenLLC",
+      "--enable-difftest",
+      "--full-stacktrace"
+    ],
+    "mill_target": "xiangshan.test.runMain"
   },
   "patches": [],
   "tools": {
@@ -410,7 +411,6 @@
     "-O=release",
     "--disable-annotation-unknown",
     "--lowering-options=explicitBitcast,disallowLocalVariables,disallowPortDeclSharing,locationInfoStyle=none",
-    "--ignore-read-enable-mem",
-    "--default-layer-specialization=disable"
+    "--default-layer-specialization=enable"
   ]
 }

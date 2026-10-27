@@ -1,4 +1,5 @@
-"""Pure stimulus recipe against built RTL's (6,6)/(12,9) index folds."""
+"""Pure stimulus recipe against built RTL's (5,5)/(9,9) index folds."""
+from bpuverify.common.model.configuration import PHR_FOLDS, PHR_STORAGE_BITS
 from bpuverify.bpu.model.phr.model import MASK
 from bpuverify.bpu.model.phr.model import fold
 from bpuverify.bpu.model.phr.model import path_hash
@@ -16,17 +17,16 @@ def concatenate(pc, bits):
 
 
 def full_tags(pc, folded):
-    low = concatenate(pc, (12, 10, 8, 6, 4, 2)) ^ folded[2] ^ (folded[1] << 1)
-    high = concatenate(pc, (11, 9, 8, 7, 5, 4, 3, 2, 1))
-    low_upper = concatenate(pc, (10, 8, 6, 4, 2, 0)) ^ folded[8] ^ (folded[7] << 1)
-    high_upper = concatenate(pc, (15, 13, 11, 10, 9, 8, 5, 3, 1))
-    return (high << 6) | low, (high_upper << 6) | low_upper
+    f=lambda length,width: folded[PHR_FOLDS.index((length,width))]
+    low = (concatenate(pc, (10,8,6,4,2)) ^ f(5,5) ^ (f(5,4)<<1)) & 31
+    long = (concatenate(pc, (14,12,10,8,6,4,2,0)) ^ f(9,8) ^ (f(9,7)<<1)) & 255
+    return (concatenate(pc,(3,2,1))<<5)|low, long
 
 
 def recurring_history(pc, position, count=30):
     history = 0
-    for _ in range(count):
-        history = ((history << 2) ^ path_hash((pc & ~7) + position, pc)) & MASK
+    for _ in range(max(count,(PHR_STORAGE_BITS+1)//2+2)):
+        history = ((history << 2) ^ path_hash((pc & ~15) + position, pc)) & MASK
     return history
 
 
@@ -36,11 +36,11 @@ def recipe(bank):
     pc, position = (0x40010004, 8) if bank == 2 else (0x40010005, 7)
     fallback = position + 4
     histories = [recurring_history(pc, pos) for pos in (position, fallback)]
-    indices = [read_indices(pc, (fold(h, 6, 6), fold(h, 12, 9))) for h in histories]
+    indices = [read_indices(pc, (fold(h, 5, 5), fold(h, 9, 9))) for h in histories]
     assert indices[0][0] == indices[1][0] and indices[0][0] % 4 == bank
     assert indices[0][1] % 4 == bank
     return dict(bank=bank, pc=pc, position=position, fallback=fallback,
         conditional_history=histories[0], fallback_history=histories[1],
         expected_lower_index=indices[0][0], expected_conditional_upper_index=indices[0][1],
         expected_fallback_upper_index=indices[1][1],
-        path_hashes=[path_hash((pc & ~7) + pos, pc) for pos in (position, fallback)])
+        path_hashes=[path_hash((pc & ~15) + pos, pc) for pos in (position, fallback)])

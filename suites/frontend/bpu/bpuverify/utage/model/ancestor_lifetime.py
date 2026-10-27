@@ -1,7 +1,7 @@
 """One algebraic discriminator, not an address or physical-bank sweep."""
 from bpuverify.utage.model.read_lifetime import Program as VersionProgram,PC,POSITION,NEIGHBOR,PROFILES,RELATIONS
 
-MATCH_PC,MATCH_HISTORY=PC+0x1041,0x25c
+MATCH_PC,MATCH_HISTORY=PC+0x550,0xea
 RULES=('normally-learned-distinct-prestate','distinct-read-and-match-contexts',
     'complete-original-feedback','actual-read-effect-relation','original-read-not-rebound',
     'declared-response-version','fresh-new-version-consumers','own-context-stays-cold',

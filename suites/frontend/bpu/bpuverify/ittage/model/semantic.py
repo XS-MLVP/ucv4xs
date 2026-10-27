@@ -6,18 +6,20 @@ internal hits, counter registers or write-buffer packets sampled from the DUT.
 Random allocation is specified as an independently computed legal set. A
 checked choice may subsequently be an upstream training input.
 
-Scope: MinimalConfig's three direct-mapped tables, two banks, 7-bit tags,
+Scope: DefaultConfig's five direct-mapped tables, two banks, 9-bit tags,
 2-bit confidence, one useful bit, four-entry write caches and 16 PLRU regions.
 The public API uses byte addresses; zero-confidence learning preserves the
 actual target semantics even when the RTL's compressed encoding fails.
 """
 from dataclasses import dataclass, fields, replace
 
+from bpuverify.common.model.configuration import ITTAGE_ROWS, ITTAGE_HISTORIES, ITTAGE_TAG_BITS, PHR_BITS
+
 from bpuverify.ittage.model.region import IttageRegionModel
 
 
-SETS = (128, 128, 256)
-HISTORY_LENGTHS = (4, 8, 16)
+SETS = ITTAGE_ROWS
+HISTORY_LENGTHS = ITTAGE_HISTORIES
 REGION_WIDTH = 20
 ADDRESS_LIMIT = 1 << 50  # The unguarded PC addr port is49 pruned bits.
 
@@ -30,27 +32,27 @@ def unsigned(value, limit, name):
 @dataclass(frozen=True, slots=True)
 class Context:
     """Per-table index, tag and secondary-tag folds; ordinary upstream data."""
-    folds: tuple[tuple[int, int, int], ...] = ((0, 0, 0),) * 3
+    folds: tuple[tuple[int, int, int], ...] = ((0, 0, 0),) * len(SETS)
 
     def __post_init__(self):
-        if len(self.folds) != 3 or any(len(row) != 3 for row in self.folds):
-            raise ValueError('three tables require three folded operands each')
+        if len(self.folds) != len(SETS) or any(len(row) != 3 for row in self.folds):
+            raise ValueError('each configured table requires three folded operands')
         for table, row in enumerate(self.folds):
             widths = (min(HISTORY_LENGTHS[table], SETS[table].bit_length() - 1),
-                      min(HISTORY_LENGTHS[table], 7), min(HISTORY_LENGTHS[table], 6))
+                      min(HISTORY_LENGTHS[table], ITTAGE_TAG_BITS), min(HISTORY_LENGTHS[table], ITTAGE_TAG_BITS-1))
             for value, width in zip(row, widths, strict=True):
                 unsigned(value, 1 << width, 'folded context')
 
     @classmethod
     def from_recent(cls, recent):
-        unsigned(recent, 1 << 31, 'recent path history')
+        unsigned(recent, 1 << PHR_BITS, 'recent path history')
         def fold(length, width):
             value = 0
             for bit in range(length):
                 value ^= ((recent >> bit) & 1) << (bit % width)
             return value
         return cls(tuple((fold(length, min(length, sets.bit_length() - 1)),
-                          fold(length, min(length, 7)), fold(length, min(length, 6)))
+                          fold(length, min(length, ITTAGE_TAG_BITS)), fold(length, min(length, ITTAGE_TAG_BITS-1)))
                          for length, sets in zip(HISTORY_LENGTHS, SETS, strict=True)))
 
 
@@ -62,7 +64,7 @@ def coordinates(pc, context, table):
     index_fold, tag_fold, secondary = context.folds[table]
     halfword = pc // 2
     index = ((halfword // 2) ^ index_fold) % SETS[table]
-    tag = ((halfword // (2 * SETS[table])) ^ tag_fold ^ (secondary * 2)) % 128
+    tag = ((halfword // (2 * SETS[table])) ^ tag_fold ^ (secondary * 2)) % (1 << ITTAGE_TAG_BITS)
     return halfword % 2, index, tag
 
 
@@ -179,7 +181,7 @@ class Metadata:
         for name in ('provider', 'alternate', 'allocation'):
             value = getattr(self, name)
             if value is not None:
-                unsigned(value, 3, name)
+                unsigned(value, len(SETS), name)
         unsigned(self.confidence, 4, 'confidence')
         unsigned(self.alternate_confidence, 4, 'alternate confidence')
         unsigned(self.useful, 2, 'useful')
@@ -318,7 +320,7 @@ class IttageReference:
     def lookup_snapshot(self, pc, context=Context()):
         """Pure request-owned table read, before any later region selection."""
         entries, tags = [], []
-        for table in range(3):
+        for table in range(len(SETS)):
             bank, index, tag = coordinates(pc, context, table)
             entries.append(self.memories[table][bank].get(index, Entry()))
             tags.append(tag)
@@ -393,7 +395,7 @@ class IttageReference:
         new_read, reading_bank = self.read, None
         if events.enabled and events.ready and events.access and self.fetch_pc is not None:
             entries, tags = [], []
-            for table in range(3):
+            for table in range(len(SETS)):
                 bank, index, tag = coordinates(self.fetch_pc, events.context, table)
                 reading_bank = bank
                 entries.append(self.memories[table][bank].get(index, Entry()))

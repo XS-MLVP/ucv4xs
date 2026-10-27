@@ -50,7 +50,7 @@ class AheadCorrectionProgram:
         pcs = [BASE+0x20000]
         for number in range(SIZES[self.size]-1):
             pc = pcs[-1]
-            pcs.append(fallthrough(pc).branch.target if number % 2 == 0 else pc+9)
+            pcs.append(fallthrough(pc).branch.target if number % 2 == 0 else pc+17)
         return tuple(Edge(pc, pcs[(number+1) % len(pcs)], 1 if number % 2 == 0 else 3)
                      for number, pc in enumerate(pcs))
 

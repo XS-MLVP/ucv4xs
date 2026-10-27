@@ -1,4 +1,6 @@
 """Public RAS event decoding only; expected call frames live in the model."""
+from bpuverify.common.model.configuration import *
+
 import asyncio
 from contextlib import suppress
 
@@ -10,7 +12,7 @@ from bpuverify.ras.monitor.observation import committed_state
 
 
 def pointer_value(pointer):
-    return pointer.flag.as_int() * 16 + pointer.value.as_int()
+    return pointer.flag.as_int() * RAS_SPEC_ENTRIES + pointer.value.as_int()
 
 
 def decode_events(row):

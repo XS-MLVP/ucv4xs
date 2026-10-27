@@ -292,9 +292,9 @@ class ContextBurstChecks(BurstChecks):
         self.before=deepcopy(self.bank.sc.memory),self.bank.sc.thresholds.values
         self.old_numeric=[self.numeric_consumer(source) for source in sources]
         a,b=(self.original_controls[context].original.read for context in p.contexts)
-        for family in (1,2):
+        for family in (2,3,4,5):
             self.check(True,a.indices[family]!=b.indices[family],'global and backward experience have genuinely private identities')
-        for family in (3,4):
+        for family in (6,7):
             self.check(a.indices[family],b.indices[family],'loop and bias experience is genuinely shared')
         self.prove('distinct-complete-originals')
         self.prove('eligibility-belongs-to-original')
@@ -318,7 +318,7 @@ class ContextBurstChecks(BurstChecks):
             owner,resolution=self.queue[indices[previous]]
             self.check(self.bank.sc_feedback(resolution,True),self.learning_original,
                 'complete learning beat has the next accepted qualifying original, not a current-history substitute')
-            self.check(tuple(range(5)),tuple(patch[0] for patch in self.expected_patches),'every qualified beat learns all five feature families')
+            self.check(tuple(range(8)),tuple(patch[0] for patch in self.expected_patches),'every qualified beat learns all five feature families')
             self.learning_owners.append(owner.sequence)
 
     def finish_context_burst(self, fresh):

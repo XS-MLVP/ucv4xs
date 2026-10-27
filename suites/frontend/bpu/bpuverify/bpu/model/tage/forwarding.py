@@ -22,8 +22,8 @@ def establish_program():
     yield 'resolve',((0,True,True),),None,((1,0),(None,None))
     yield 'resolve',((0,True,True),),None,((2,0),(None,None))
     yield 'enable',(),None,None
-    yield 'allocate',((0,False,True),(1,False,False)),(3,0),((1,0),(3,None))
-    yield 'allocate',((0,False,False),(1,True,True)),(3,1),((0,1),(2,4))
+    yield 'allocate',((0,False,True),(1,False,False)),(7,0),((1,0),(3,None))
+    yield 'allocate',((0,False,False),(1,True,True)),(7,1),((0,1),(2,4))
     yield 'resolve',((0,False,False),(1,True,True)),None,((0,2),(1,5))
     yield 'resolve',((0,True,True),),None,((1,2),(2,5))
 

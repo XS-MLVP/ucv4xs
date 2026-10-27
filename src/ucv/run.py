@@ -22,13 +22,24 @@ def source_identity(project,suites):
     except UcvError:commit=None;status='uncommitted repository'
     return {'git_commit':commit,'git_status':status,'files':files,'sha256':digest(files)}
 
+def collection_arguments(suite):
+    """Pytest defaults apply only when no explicit path/node ID is supplied."""
+    paths = [str(suite.path / p) for p in suite.recipe.get('tests', ['tests'])]
+    # Pytest splits testpaths with shlex, including repositories with spaces.
+    import shlex
+    return ['-o', 'testpaths=' + ' '.join(shlex.quote(p) for p in paths)]
+
+
 def run(project,suites,workers=8,seed=1,pytest_args=None,collect_only=False,output=None):
     if workers<1:raise UcvError('workers must be positive')
+    if not 0<=seed<=4294967295:raise UcvError('seed must be in [0, 4294967295]')
     extra=list(pytest_args or [])
-    if any(a.startswith(('--toffee-output','--rootdir','--override-ini','--junitxml','--bpu-dut-scope','--bpu-partition','-n','--numprocesses')) for a in extra):
+    if any(a in {'-c','-o','--output','--workers'} or a.startswith(('-c','-o','--output=','--workers=','--toffee-output','--rootdir','--override-ini','--junitxml','--bpu-dut-scope','--bpu-partition','-n','--numprocesses')) for a in extra):
         raise UcvError('ucv owns output, pytest roots, BPU partitioning and worker budgets')
     python=project.root/'.venv/bin/python'
     if not python.exists():raise UcvError('Run ucv setup first')
+    from .validation import installed_tools
+    installed=installed_tools(project)
     stamp=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')+'-'+uuid.uuid4().hex[:8]
     output=Path(output).resolve() if output else project.root/'results'/stamp
     if output.exists():raise UcvError(f'Output must be new: {output}')
@@ -40,7 +51,7 @@ def run(project,suites,workers=8,seed=1,pytest_args=None,collect_only=False,outp
     output.mkdir(parents=True)
     record={'schema':1,'started_at':now(),'source':source_identity(project,suites),
             'suites':[s.summary() for s in suites], 'mixed_baseline':len({s.baseline_key for s in suites})>1,
-            'tools':project.tools,'seed':seed,'workers':workers,'pytest_args':extra,
+            'tools':project.tools,'installed_tools':installed,'seed':seed,'workers':workers,'pytest_args':extra,
             'collect_only':collect_only,'tasks':[],'status':'RUNNING'}
     write(output/'run.json',record)
     tasks=[]
@@ -52,10 +63,10 @@ def run(project,suites,workers=8,seed=1,pytest_args=None,collect_only=False,outp
                 env=project.environment()
                 env.update(PYTHONPATH=str(project.root/'src')+os.pathsep+str(suite.path),
                            UCV_SEED=str(seed),PYTHONHASHSEED=str(seed),DCACHE_TEST_RANDOM_SEED=str(seed))
-                flags=['-q','-p','no:cacheprovider','-p','ucv.pytest_plugin','--durations=20',
+                flags=[*collection_arguments(suite),'-q','-p','no:cacheprovider','-p','ucv.pytest_plugin','--durations=20',
                        '-c',str(suite.path/'pytest.ini'),'--rootdir='+str(suite.path)]
                 # A suite keeps its own pytest.ini and collection root.
-                tests=[str(suite.path/p) for p in suite.recipe.get('tests',['tests'])]
+                tests=[]  # testpaths supplies defaults; explicit node IDs replace them.
                 builds={}
                 if not collect_only:
                     for dut in suite.recipe['duts']:
@@ -67,6 +78,8 @@ def run(project,suites,workers=8,seed=1,pytest_args=None,collect_only=False,outp
                             raise UcvError(f'{suite.name}/{dut}: no valid build and smoke receipt')
                         for name,h in receipt['outputs'].items():
                             if file_hash(base/'dut'/name)!=h:raise UcvError(f'Native package changed: {suite.name}/{dut}')
+                        for name,h in receipt['rtl'].items():
+                            if file_hash(base/'rtl'/name)!=h:raise UcvError(f'RTL changed: {suite.name}/{dut}')
                         builds[dut]={'cache_key':base.name,'rtl':receipt['rtl'],'outputs':receipt['outputs']}
                     write(output/(suite.name+'-builds.json'),builds)
                 if suite.name=='bpu':

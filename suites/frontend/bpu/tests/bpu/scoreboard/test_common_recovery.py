@@ -90,7 +90,7 @@ def test_corrupt_actual_recovery_cannot_advance_reference_or_gain_checked(profil
     if fault in ('ghr', 'bw'):
         accepted['meta'][fault] ^= 1
     elif fault == 'hits':
-        accepted['meta']['hits'] = (0, 0, 0, 0)
+        accepted['meta']['hits'] = (0,) * len(accepted['meta']['positions'])
     else:
         accepted['pc' if fault == 'position' else fault] ^= 1
     before = checks.model.value, checks.model.pending, len(checks.plans)

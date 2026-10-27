@@ -1,7 +1,7 @@
 """Source-bound, two-state guard proofs; never filter native denominators.
 
-Eight generated decrement copies contradict their own priority selector.
-Eight others require simultaneous call and return commit flags that the parent
+Sixteen generated decrement copies contradict their own priority selector.
+Sixteen others require simultaneous call and return commit flags that the parent
 cannot produce. This is a bounded guard/input-relation proof, not whole-design
 formal reachability or evidence that every other uncovered line is reachable.
 """
@@ -48,7 +48,7 @@ def inspect_sources(root=ROOT):
         binding_lines[kind] = matches[0] + 1
 
     def unique(text):
-        found = [index for index, line in enumerate(child) if line == text]
+        found = [index for index, line in enumerate(child) if re.sub(r'^wire\s+', '', line) == text]
         if len(found) != 1:
             raise ValueError(f'RAS lexical anchor changed: {text}')
         return found[0]
@@ -67,27 +67,27 @@ def inspect_sources(root=ROOT):
     outer = unique('if (io_commit_pushValid) begin')
     end = block(outer)
     increment = outer + 1
-    if child[increment] != 'if (_GEN_30) begin':
+    if child[increment] != 'if (_GEN_62) begin':
         raise ValueError('RAS increment priority changed')
     increment_end = block(increment)
     if child[increment_end + 1] != 'else begin':
         raise ValueError('RAS allocation alternative changed')
     rows = []
     for index in range(outer + 1, end):
-        match = re.fullmatch(r'commitStack_([0-7])_ctr <= _commitStack_ctr_T;', child[index])
+        match = re.fullmatch(r'commitStack_(\d+)_ctr <= _commitStack_ctr_T;', child[index])
         if match is None:
             continue
         slot = int(match[1])
-        guard = f'_GEN_{16 + 2 * slot}' if slot < 7 else '_GEN_29'
+        guard = f'_GEN_{46 + slot}'
         if child[index - 1] != f'else if ({guard})':
             raise ValueError('RAS decrement immediate guard changed')
-        selected = f'_GEN_{15 + 2 * slot}' if slot < 7 else '(&io_commit_metaSsp)'
-        definition = unique(f'{guard} = io_commit_popValid & (|_GEN_14) & {selected};')
-        if slot < 7:
-            unique(f'{selected} = io_commit_metaSsp == 3\'h{slot};')
+        selected = f'_GEN_{6 + slot}' if slot < 15 else '(&io_commit_metaSsp)'
+        definition = unique(f'{guard} = io_commit_popValid & (|_GEN_45) & {selected};')
+        if slot < 15:
+            unique(f'{selected} = io_commit_metaSsp == 4\'h{slot:X};')
         kind = 'priority' if index < increment_end else 'parent-action'
         if kind == 'priority':
-            selector = f'_GEN_{15 + 2 * slot}' if slot < 7 else '&io_commit_metaSsp'
+            selector = f'_GEN_{6 + slot}' if slot < 15 else '&io_commit_metaSsp'
             if child[index - 3] != f'if ({selector})' or child[index - 2] != f'commitStack_{slot}_ctr <= _commitStack_ctr_T_2;':
                 raise ValueError('RAS selector priority changed')
         if witnesses(kind) or not witnesses(kind, relax=True):
@@ -98,8 +98,8 @@ def inspect_sources(root=ROOT):
             constraint='!selected && pop && nonzero_count && selected' if kind == 'priority'
                        else 'commit_valid && action==2 && action==1',
             satisfying_valuations=0, negative_control=witnesses(kind, relax=True)[0]))
-    if len(rows) != 16 or [(row['kind'], row['slot']) for row in rows] != [
-            (kind, slot) for kind in ('priority', 'parent-action') for slot in range(8)]:
+    if len(rows) != 32 or [(row['kind'], row['slot']) for row in rows] != [
+            (kind, slot) for kind in ('priority', 'parent-action') for slot in range(16)]:
         raise ValueError('RAS generated decrement-copy layout changed')
     return dict(rows=rows, parent_binding_lines=binding_lines,
                 source_sha256={name: sha256((root / name).read_bytes()).hexdigest() for name in (PARENT, CHILD)})
@@ -111,14 +111,14 @@ def audit(native, *, root=ROOT):
     missing = {(row['file'], row['line']): row for row in coverage['uncovered_rtl_source_lines']}
     proved = {(row['file'], row['line']): row for row in proof['rows']}
     if set(proved) != set(missing):
-        raise ValueError('RAS current uncovered set differs from the sixteen source-bound guard rows')
+        raise ValueError('RAS current uncovered set differs from the thirty-two source-bound guard rows')
     for key, row in proved.items():
         if row['verilog'] != missing[key]['verilog'].strip():
             raise ValueError('RAS native report source text changed')
     return dict(format='bpu-ras-generated-guard-audit', version=1,
         proof_scope='source-bound two-state local guards and exact parent input relations; NOT whole-RTL formal proof',
         metric=native['line_coverage'], native_source_lines=coverage['source_lines'],
-        native_denominator_unchanged=True, classified_rows=16, functional_points_inferred_missing=0,
+        native_denominator_unchanged=True, classified_rows=32, functional_points_inferred_missing=0,
         build_provenance=coverage['build_provenance'], **proof)
 
 

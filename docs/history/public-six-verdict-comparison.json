@@ -1,0 +1,117 @@
+{
+  "kind": "historical-artifact-versus-rebuilt-defaultconfig",
+  "rtl_evidence": "public-rtl-rebuild-comparison.json",
+  "runs": [
+    {
+      "suite": "icache",
+      "before": "results/pre-migration-20261027T144713/cases/icache-suite/cases.json",
+      "after": "results/20261027T042315Z-637a5069/cases/icache/cases.json",
+      "before_sha256": "cb0415679245ef9ad5c163c0fcc136fa04cc0d713d8b5cfd4a9707775ac7f108",
+      "after_sha256": "885681bd9a41dbb73091f97045c4ec9e3b002609afc6271c91d6d0a0f46c1a67",
+      "before_counts": {
+        "PASS": 290,
+        "XFAIL": 3
+      },
+      "after_counts": {
+        "PASS": 290,
+        "XFAIL": 3
+      },
+      "changed": {},
+      "added": [],
+      "removed": [],
+      "case_verdict_equivalence": "PASS",
+      "capture_correction": "icache-empty-directory-capture-correction.json"
+    },
+    {
+      "suite": "lsq",
+      "before": "results/pre-migration-20261027T113135/cases/lsq-suite/cases.json",
+      "after": "results/20261027T042315Z-637a5069/cases/lsq/cases.json",
+      "before_sha256": "b1c084f5eace2c65d1e5ec1c6bea276c5f1d62475d7c458bb97ac9888a377942",
+      "after_sha256": "76bc15dd8dd5887c9ee00301a08fac317456c3fcf2d2c4a1541743375da369cc",
+      "before_counts": {
+        "PASS": 2325,
+        "FAIL": 250
+      },
+      "after_counts": {
+        "PASS": 2325,
+        "FAIL": 250
+      },
+      "changed": {},
+      "added": [],
+      "removed": [],
+      "case_verdict_equivalence": "PASS"
+    },
+    {
+      "suite": "dcache",
+      "before": "results/pre-migration-20261027T113420/cases/dcache-suite/cases.json",
+      "after": "results/20261027T042315Z-637a5069/cases/dcache/cases.json",
+      "before_sha256": "ef267260f4d2cd606fbeccd63c3065243e2cc37c0175b4887b755b4bf24edcc5",
+      "after_sha256": "9382630f3e43e031ca12c9b1efe0af30dfa0a675a6b556f67fc44a65647d190c",
+      "before_counts": {
+        "PASS": 210,
+        "XFAIL": 3
+      },
+      "after_counts": {
+        "PASS": 210,
+        "XFAIL": 3
+      },
+      "changed": {},
+      "added": [],
+      "removed": [],
+      "case_verdict_equivalence": "PASS"
+    },
+    {
+      "suite": "mmu",
+      "before": "results/pre-migration-20261027T113135/cases/mmu-suite/cases.json",
+      "after": "results/20261027T042315Z-637a5069/cases/mmu/cases.json",
+      "before_sha256": "1e59f53cad7db5869a5be5e52b0f711938ded4af14f51749d20315df4469dcd7",
+      "after_sha256": "88cbfd92f3d5e5d02ded191a143acd71221fe48fe717fac52c3252594293afc3",
+      "before_counts": {
+        "PASS": 408
+      },
+      "after_counts": {
+        "PASS": 408
+      },
+      "changed": {},
+      "added": [],
+      "removed": [],
+      "case_verdict_equivalence": "PASS"
+    },
+    {
+      "suite": "sbuffer",
+      "before": "results/pre-migration-20261027T113135/cases/sbuffer-suite/cases.json",
+      "after": "results/20261027T042315Z-637a5069/cases/sbuffer/cases.json",
+      "before_sha256": "a8881cc6e7a7476df0c9d4a76749fe0aedce62d1a35bd6f9c4c37ec79086cdf7",
+      "after_sha256": "03c10f147befccfbed6b27e54f6e1a24572fd4fd4f4a2cd3df2f068f8fb72058",
+      "before_counts": {
+        "PASS": 31
+      },
+      "after_counts": {
+        "PASS": 31
+      },
+      "changed": {},
+      "added": [],
+      "removed": [],
+      "case_verdict_equivalence": "PASS"
+    },
+    {
+      "suite": "lsu",
+      "before": "results/pre-migration-20261027T113135/cases/lsu-suite/cases.json",
+      "after": "results/20261027T042315Z-637a5069/cases/lsu/cases.json",
+      "before_sha256": "f8b3c83e82afa54d1c565d09794c3a668c2baf3d9451e46a6f440c00bf3d17d8",
+      "after_sha256": "5a710a8e849c436ddbe6113aff7d9a872f24d704fb397398077bfd7d95ffa173",
+      "before_counts": {
+        "PASS": 522,
+        "FAIL": 7
+      },
+      "after_counts": {
+        "PASS": 522,
+        "FAIL": 7
+      },
+      "changed": {},
+      "added": [],
+      "removed": [],
+      "case_verdict_equivalence": "PASS"
+    }
+  ]
+}

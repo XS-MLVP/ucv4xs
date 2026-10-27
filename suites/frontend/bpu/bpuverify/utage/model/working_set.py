@@ -33,7 +33,7 @@ class WorkingSetProgram:
 
     @property
     def short_histories(self):
-        return tuple(sorted({history & 63 for history in self.histories}))
+        return tuple(sorted({history & 31 for history in self.histories}))
 
     @property
     def selected(self):

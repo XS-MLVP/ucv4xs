@@ -13,11 +13,11 @@ class RecordingBits:
         self.value = value
 
 
-def test_full_legal_domain_is_200_not_an_arbitrary_position_subset():
-    assert len(ALL_CASES) == 200
+def test_full_legal_domain_is_784_not_an_arbitrary_position_subset():
+    assert len(ALL_CASES) == 784
     assert {(case.first_align, case.offset, case.position) for case in ALL_CASES} == {
-        (align, offset, position) for align in (0, 1) for offset in range(8)
-        for position in range(16) if position >= offset}
+        (align, offset, position) for align in (0, 1) for offset in range(16)
+        for position in range(32) if position >= offset}
 
 
 @pytest.mark.parametrize('case', ALL_CASES, ids=[case.label for case in ALL_CASES])

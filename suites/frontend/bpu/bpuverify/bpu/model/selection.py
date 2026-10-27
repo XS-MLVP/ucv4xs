@@ -4,6 +4,8 @@ These functions take owned reference predictions, not sampled DUT results.
 They do not yet constitute a complete composed BPU or a learned table model.
 Addresses use the existing integrated halfword units.
 """
+from bpuverify.common.model.configuration import *
+
 from dataclasses import dataclass, replace
 from enum import IntEnum
 
@@ -31,8 +33,8 @@ class Branch:
     action: StackAction = StackAction.NONE
 
     def __post_init__(self):
-        if type(self.position) is not int or not 0 <= self.position < 16:
-            raise ValueError('BPU branch position must fit four bits')
+        if type(self.position) is not int or not 0 <= self.position < POSITIONS:
+            raise ValueError('BPU branch position must fit five bits')
         if type(self.target) is not int or not 0 <= self.target < 1 << 50:
             raise ValueError('BPU branch target must fit the guarded halfword address')
         if type(self.kind) is not Kind or type(self.action) is not StackAction or type(self.taken) is not bool:
@@ -49,8 +51,8 @@ class Choice:
 def fallthrough(pc):
     if type(pc) is not int or not 0 <= pc < 1 << 50:
         raise ValueError('BPU PC must fit the guarded halfword address')
-    aligned = (pc // 8) * 8
-    target = aligned + 16
+    aligned = (pc // ALIGN_HALFWORDS) * ALIGN_HALFWORDS
+    target = aligned + POSITIONS
     # A fetch cannot cross the current 4-KiB byte page.
     target = min(target, (pc // 2048 + 1) * 2048)
     return Choice(Branch(target - aligned - 1, target % (1 << 50), Kind.NONE, False), None, 'fallthrough')

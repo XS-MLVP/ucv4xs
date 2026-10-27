@@ -44,7 +44,7 @@ def learn(model, request):
 def test_algorithm_has_no_signal_driver_or_old_partial_model_dependency():
     tree = ast.parse(Path('bpuverify/tage/model/semantic.py').read_text())
     assert [node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)] == [
-        'dataclasses', 'copy', 'bpuverify.common.model.folded_history']
+        'dataclasses', 'bpuverify.common.model.configuration', 'copy', 'bpuverify.common.model.folded_history']
     assert not any(isinstance(node, ast.Import) for node in ast.walk(tree))
 
 
@@ -55,7 +55,7 @@ def test_history_parity_is_independent_of_driver_chunk_fold(history):
 
 
 @pytest.mark.parametrize('pc,history,expected', ((PC, 0, (0, 0, 0)), (PC + 3, 0, (3, 0, 0)),
-    (PC + 508, 0, (0, 127, 0)), (PC + 512, 0, (0, 0, 1)), (PC, 1, (0, 1, 3))))
+    (PC + 2044, 0, (0, 511, 0)), (PC + 2048, 0, (0, 0, 1)), (PC, 1, (0, 1, 3))))
 def test_geometry_and_tag_operand_are_semantic_halfword_coordinates(pc, history, expected):
     assert coordinate(pc, Context.from_recent(history), 0) == expected
 
@@ -117,7 +117,7 @@ def test_unqualified_feedback_has_no_learning(condition):
     model.advance(Events(feedback=request, enabled=condition != 'disabled'))
     for _ in range(8):
         model.advance()
-    assert model.memory == model.useful == {} and model.selectors == [16] * 8
+    assert model.memory == model.useful == {} and model.selectors == [16] * 16
 
 
 def test_snapshot_is_not_changed_by_later_learning_commit():
@@ -194,7 +194,7 @@ def test_aging_clears_usefulness_not_branch_identity_or_counter():
     lookup(model)
     learn(model, feedback(model, matched=False, mispredict=False))
     assert model.aging and model.tick == 0
-    for _ in range(130):
+    for _ in range(514):
         model.advance()
     assert not model.aging and not model.clear_cursor
     assert model.memory == before and all(value == 0 for value in model.useful.values())

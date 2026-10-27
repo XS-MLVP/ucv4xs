@@ -56,7 +56,7 @@ def test_actual_same_boundary_is_required_before_complete_services_and_checked_c
     capture(c,4,packet(c,proposal=True));capture(c,6,packet(c,retained=True))
     assert c.close_when_retained.done() and c.recovery['tick']==c.inputs[0]==2
     c.write_accepted(p.owner,transfer(9,deepcopy(p.effect)))
-    c.write_accepted(2,transfer(9,dict(row=p.direction['row'],mask=p.direction['mask'],counters=[2,1])))
+    c.write_accepted(4,transfer(9,dict(row=p.direction['row'],mask=p.direction['mask'],counters=[0,0,2,1])))
     assert c.complete()
     coverage=Coverage(p)
     for rule in RULES:coverage.reach(rule)

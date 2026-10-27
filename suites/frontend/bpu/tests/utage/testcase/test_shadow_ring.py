@@ -65,7 +65,7 @@ async def test_saturated_rows_survive_full_shadow_replacement_in_both_tables_and
         "status": "KNOWN_FAIL" if failures else "PASS", "dut": "MicroTage",
         "feature": "BPU-UTAGE-016", "matrix": matrix, "mismatches": failures,
         "rtl": str(REPO_ROOT / "rtl" / "utage" / "BypassShadowBuffer.sv"),
-        "scala": str(ucv_paths.source_path_for(ROOT) / "src" / "main" / "scala" / "xiangshan"
+        "scala": str(ucv_paths.source_path_for(REPO_ROOT) / "src" / "main" / "scala" / "xiangshan"
                      / "frontend" / "bpu" / "utage" / "BypassShadowBuffer.scala"),
         "declared_allowances": list(utage_agent.allowed_reference_events),
     }

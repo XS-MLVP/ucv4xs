@@ -19,8 +19,8 @@ from tests.tage.scoreboard.test_competing_rebuild import component_state
 def test_original_pair_can_compete_after_one_branch_migrates_and_its_peer_is_evicted():
     model, event, anchor, saved, current = prepare_program(PROGRAMS[0])
     source = saved['a-old-1']
-    assert profile(model, source) == ((1, 3), ((3, 0, 2, 0), (3, 1, 5, 0)))
-    assert profile(model, current['original']) == ((0, 0), ((3, 1, 2, 0), None))
+    assert profile(model, source) == ((1, 3), ((7, 0, 2, 0), (7, 1, 5, 0)))
+    assert profile(model, current['original']) == ((0, 0), ((7, 1, 2, 0), None))
     request = resolution(source, PAIR)
     assert not model.sources.feedback_for(request).reread
     model.advance(replace(quiet(model, event), redirect=Redirect(
@@ -34,7 +34,7 @@ def test_original_pair_can_compete_after_one_branch_migrates_and_its_peer_is_evi
             model.advance(event)
         except ValueError as failure:
             assert 'retained destination' in str(failure)
-            offered = model.sources.tage.offers[3, 0]
+            offered = model.sources.tage.offers[7, 0]
             assert len(offered) == 2 and len({write.row for write in offered}) == 1
             assert len({write.entry.tag for write in offered}) == 2
             assert tuple((write.way, write.entry.counter, write.taken) for write in offered) == (

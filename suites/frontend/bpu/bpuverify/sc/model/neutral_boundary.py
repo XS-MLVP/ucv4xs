@@ -1,4 +1,6 @@
 """Closed-form shared-parameter neutrality, not a cycle/signal-level oracle."""
+from bpuverify.common.model.configuration import SC_WAYS, SC_TABLES, RESULT_SLOTS, MAIN_WAYS, SC_MIN_THRESHOLD, SC_MAX_THRESHOLD
+
 from dataclasses import dataclass
 
 from bpuverify.sc.transaction.types import ScBaseBranch, ScBatchTraining, ScBranchFeedback
@@ -61,8 +63,8 @@ class NeutralBoundaryProgram:
     @property
     def layout(self):
         early, late = self.prefix_slots
-        positions = [None, None, 8, 12]
-        positions[early], positions[late] = 1, 4
+        positions = [None, None, 9, 10, 11, 12, 13, 14, 15, 16]
+        positions[early], positions[late] = 1, 8
         return tuple(ScBaseBranch(p, 4 if self.direction else 3) for p in positions)
 
     def weight(self, seeds, reverse=0):
@@ -76,23 +78,23 @@ class NeutralBoundaryProgram:
     def thresholds(self, seeds, reverse=0):
         self.weight(seeds, reverse)
         target = INITIAL_THRESHOLD + (-seeds if self.direction else seeds) + reverse
-        return INITIAL_THRESHOLD, target, INITIAL_THRESHOLD, INITIAL_THRESHOLD
+        return tuple(target if way == 1 else INITIAL_THRESHOLD for way in range(SC_WAYS))
 
     def scores(self, weight):
-        return 5 * (2 * weight + 1), 5 * (2 * weight + 1), 5, 5
+        return (SC_TABLES * (2 * weight + 1),) * 2 + (SC_TABLES,) * (RESULT_SLOTS - 2)
 
     def expected(self, weight, thresholds):
         signs = tuple(int(s >= 0) for s in self.scores(weight))
-        # Positions 1/4 share the same parameter, whereas the unexecuted
-        # suffix positions 8/12 own independent parameters.
-        logical_parameters = (1, 1, 2, 3)
+        # Positions 1/8 share the same parameter, whereas the unexecuted
+        # suffix positions own independent parameters.
+        logical_parameters = tuple((branch.position % SC_WAYS) ^ (branch.position // SC_WAYS) for branch in self.layout)
         used = tuple(int(abs(score) > thresholds[owner] // 64)
                      for score, owner in zip(self.scores(weight), logical_parameters, strict=True))
         return dict(takens=signs, useds=used,
-            meta=dict(scBiasLowerBits=(3 if self.direction else 2,) * 4,
+            meta=dict(scBiasLowerBits=(3 if self.direction else 2,) * RESULT_SLOTS,
                 scPred=signs, useScPred=used, sumAboveThres=used,
-                tageCtr=(4 if self.direction else 3,) * 4,
-                tagePred=(self.direction,) * 4, tagePredValid=(1,) * 4),
+                tageCtr=(4 if self.direction else 3,) * RESULT_SLOTS,
+                tagePred=(self.direction,) * RESULT_SLOTS, tagePredValid=(1,) * RESULT_SLOTS),
             families={name: signs for name in FAMILY_FIELDS})
 
     def seed(self, meta):
@@ -103,7 +105,7 @@ class NeutralBoundaryProgram:
         # metadata slots were exchanged. The unexecuted suffix gets no vote.
         return ScBatchTraining(self.pc, meta, (
             ScBranchFeedback(1, 0, self.prefix_slots[0]),
-            ScBranchFeedback(4, 1, self.prefix_slots[1]),
+            ScBranchFeedback(8, 1, self.prefix_slots[1]),
         ))
 
     def reverse(self, meta):
@@ -115,6 +117,6 @@ class NeutralBoundaryProgram:
 
     def state(self):
         return dict(boundary=self.boundary, placement=self.placement, seed_feedbacks=self.seed_count,
-            cold_sources=self.cold_source_count, prefix=((1, False), (4, True)),
+            cold_sources=self.cold_source_count, prefix=((1, False), (8, True)),
             reverse_feedbacks=self.reverse_steps, physical_enumeration=False,
             full_FTQ_reachability_proved=False)

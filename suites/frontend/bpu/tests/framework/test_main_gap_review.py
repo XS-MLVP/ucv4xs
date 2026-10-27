@@ -64,12 +64,12 @@ def test_incomplete_or_wrong_native_associations_are_rejected(fault):
 def test_unsupported_or_partial_source_copies_cannot_be_classified(fault):
     text=Path(SOURCE).read_text();copy=copy_catalog(text)[0];lines=text.splitlines()
     if fault=='mixed-port':
-        lines[copy['first']-1]=lines[copy['first']-1].replace(f"io_write_{copy['write_port']}_",f"io_write_{1-copy['write_port']}_")
+        lines[copy['first']-1]=lines[copy['first']-1].replace(f"io_write_{copy['write_port']}_",f"io_write_{(1+copy['write_port'])%4}_")
     elif fault=='missing-field':lines[copy['last']-1]=''
     elif fault=='wrong-field':lines[copy['last']-1]=lines[copy['last']-1].replace('_bits_entry_targetLowerBits','_bits_entry_tag')
-    elif fault=='changed-hit-gate':lines=[line.replace('io_write_1_valid & hit_1;','io_write_1_valid & ~hit_1;') for line in lines]
+    elif fault=='changed-hit-gate':lines=[line.replace('io_write_3_valid & (|hitMaskUInt_3);','io_write_3_valid & ~(|hitMaskUInt_3);') for line in lines]
     elif fault=='missing-hit-branch':
-        symbol=re.search(r'(\w+)\s*=\s*io_write_1_valid\s*&\s*hit_1;',text)[1]
+        symbol=re.search(r'(\w+)\s*=\s*io_write_3_valid\s*&\s*\(\|hitMaskUInt_3\);',text)[1]
         lines=[line.replace(f'if ({symbol}) begin',f'if (~{symbol}) begin') for line in lines]
     else:lines.append('begin')
     with pytest.raises(ValueError):copy_catalog('\n'.join(lines))

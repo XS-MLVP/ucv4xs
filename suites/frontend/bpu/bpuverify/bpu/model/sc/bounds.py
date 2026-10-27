@@ -1,16 +1,18 @@
 """Single logical key per global threshold lane; no physical bank/row matrix."""
+from bpuverify.common.model.configuration import *
+
 from bpuverify.bpu.model.sc.used import INITIAL, MINIMUM, MAXIMUM
 from bpuverify.bpu.model.phr.model import path_hash
 from bpuverify.bpu.model.sc.training_path import training_indices
 
 
 def bounds_plan(way, boundary):
-    if type(way) is not int or way not in range(4) or boundary not in ('lower','upper'):
+    if type(way) is not int or way not in range(SC_WAYS) or boundary not in ('lower','upper'):
         raise ValueError('unknown threshold lane or boundary')
-    positions = (way, way ^ 5) if way < (way ^ 5) else (way ^ 5, way)
+    positions = (way, way ^ 9) if way < (way ^ 9) else (way ^ 9, way)
     pc = 0x40010000 + 1056 * positions[0]
     assert path_hash(pc + positions[0], pc) == 0
-    assert all((p & 3) ^ (p >> 2) == way for p in positions)
+    assert all((p % SC_WAYS) ^ (p // SC_WAYS) == way for p in positions)
     # Lower priming uses two genuine not-taken outcomes to establish SC=0;
     # subsequent correct NT feedback is a legal two-branch direction vector.
     start = INITIAL + (2 if boundary == 'lower' else 0)
@@ -60,14 +62,14 @@ def public_decisions(reference,pc,positions,providers,thresholds,common):
     indices=training_indices(pc,0,common)
     result=[]
     for position,provider in zip(positions,providers,strict=True):
-        way=(position&3)^(position>>2);counter=provider[2]
+        way=(position%SC_WAYS)^(position//SC_WAYS);counter=provider[2]
         bias=4*way+2*int(counter in (3,4))+int(counter>=4)
         total=0
         for table,index in indices.items():
             lane=bias if table=='biasTable' else way
             memory=reference.memories[f'{table}_bank{pc&1}']
-            encoded=0 if table in ('globalTable_0','bwTable_0') and not common['valid'] else (
-                memory.get(index,[0]*(16 if table=='biasTable' else 4))[lane])
+            encoded=0 if table.startswith(('globalTable_', 'bwTable_')) and not common['valid'] else (
+                memory.get(index,[0]*(4*SC_WAYS if table=='biasTable' else SC_WAYS))[lane])
             signed=encoded-64 if encoded&32 else encoded
             total+=2*signed+1
         shift=4 if counter in (0,7) else 6 if counter in (3,4) else 5

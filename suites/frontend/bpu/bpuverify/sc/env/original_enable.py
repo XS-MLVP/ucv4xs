@@ -10,7 +10,7 @@ class EnableEnv(EligibilityEnv):
     def __init__(self,agent,program,coverage):
         self.agent,self.program,self.coverage=agent,program,coverage
         self.checks=EnableChecks(program,coverage)
-        self.thresholds=ScThresholdModel()
+        self.thresholds=ScThresholdModel.for_default()
         self.inputs=EnableInputMonitor(agent)
 
     async def disable_old_outcomes_and_reopen(self):

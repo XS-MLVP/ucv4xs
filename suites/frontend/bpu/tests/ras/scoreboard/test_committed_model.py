@@ -8,16 +8,16 @@ from bpuverify.ras.model.model import Group
 from bpuverify.ras.model.model import advance
 
 
-@pytest.mark.parametrize('count', range(1, 25))
+@pytest.mark.parametrize('count', range(1, 49))
 def test_unique_calls_write_exactly_the_selected_slots(count):
-    state, expected = CommittedStack(), [Cell()] * 8
+    state, expected = CommittedStack(), [Cell()] * 16
     for index in range(1, count + 1):
         previous = state
         state = advance(state, 2, address=0x100 + index)
-        expected[index % 8] = Cell(0x100 + index, 0)
-        assert state.cells == tuple(expected) and state.head == index % 8
+        expected[index % 16] = Cell(0x100 + index, 0)
+        assert state.cells == tuple(expected) and state.head == index % 16
         assert previous.cells != state.cells and previous.evicted == state.evicted[:len(previous.evicted)]
-    assert len(state.evicted) == max(0, count + 1 - 8)
+    assert len(state.evicted) == max(0, count + 1 - 16)
     while len(state.groups) > 1:
         retained = state.cells
         state = advance(state, 1)
@@ -26,18 +26,18 @@ def test_unique_calls_write_exactly_the_selected_slots(count):
         advance(state, 1)
 
 
-@pytest.mark.parametrize('slot', range(8))
+@pytest.mark.parametrize('slot', range(16))
 @pytest.mark.parametrize('mode', ('normal', 'saturated'))
 def test_repeat_count_rollover_keeps_neighbors_and_stale_cells(slot, mode):
-    state, expected = CommittedStack(), [Cell()] * 8
-    prefix = (slot - 1) % 8
+    state, expected = CommittedStack(), [Cell()] * 16
+    prefix = (slot - 1) % 16
     for index in range(1, prefix + 1):
         state = advance(state, 2, address=0x100 + index)
-        expected[index % 8] = Cell(0x100 + index, 0)
+        expected[index % 16] = Cell(0x100 + index, 0)
     repetitions = 3 if mode == 'normal' else 9
     for count in range(repetitions):
         state = advance(state, 2, address=0x400)
-        selected = slot if count < 8 else (slot + 1) % 8
+        selected = slot if count < 8 else (slot + 1) % 16
         expected[selected] = Cell(0x400, count % 8)
         assert state.head == selected and state.cells == tuple(expected)
     for _ in range(repetitions):
@@ -53,7 +53,7 @@ def test_reset_sentinel_duplicate_and_detached_snapshots():
     state = CommittedStack()
     following = advance(state, 2, address=0)
     assert following.projection() == dict(top=0, ssp=0, sctr=1)
-    assert following.cells == (Cell(0, 1),) + (Cell(),) * 7
+    assert following.cells == (Cell(0, 1),) + (Cell(),) * 15
     assert advance(following, 1) == state
     snapshot = following.native()
     snapshot['cells'][0]['counter'] = 7
@@ -70,13 +70,13 @@ def test_reject_out_of_scope_requests_without_mutation(action, address):
 
 
 @pytest.mark.parametrize('changed', (
-    replace(CommittedStack(), cells=(Cell(),) * 7),
+    replace(CommittedStack(), cells=(Cell(),) * 15),
     replace(CommittedStack(), groups=()),
     replace(CommittedStack(), groups=(Group(0, 0, 0), Group(0, 0, 0))),
-    replace(CommittedStack(), cells=(Cell(0, 8),) + (Cell(),) * 7),
-    replace(CommittedStack(), cells=(Cell(1 << 50, 0),) + (Cell(),) * 7),
+    replace(CommittedStack(), cells=(Cell(0, 8),) + (Cell(),) * 15),
+    replace(CommittedStack(), cells=(Cell(1 << 50, 0),) + (Cell(),) * 15),
     replace(CommittedStack(), groups=(Group(1, 0, 0),)),
-    replace(CommittedStack(), groups=(Group(0, 0, 8),)),
+    replace(CommittedStack(), groups=(Group(0, 0, 16),)),
 ))
 def test_reject_inconsistent_states(changed):
     with pytest.raises(ValueError):

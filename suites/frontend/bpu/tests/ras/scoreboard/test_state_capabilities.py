@@ -83,7 +83,7 @@ async def test_observation_requires_started_execution():
 
 
 MATRICES = (
-    ('committed', committed_coverage, [dict(slot=slot, mode=mode) for slot, mode in product(range(8), ('normal', 'saturated'))]),
+    ('committed', committed_coverage, [dict(slot=slot, mode=mode) for slot, mode in product(range(16), ('normal', 'saturated'))]),
     ('adjacent', adjacent_coverage, [dict(scenario=case['label']) for case in cases()]),
     ('redirect', redirect_coverage, [dict(storage=storage, counter=counter, redo=redo) for storage, counter, redo in product(
         ('inflight', 'committed'), (0, 3, 7), ('call-same', 'call-distinct-positive', 'call-distinct-negative', 'return'))]),

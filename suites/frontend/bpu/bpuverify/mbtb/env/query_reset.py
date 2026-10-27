@@ -38,7 +38,7 @@ class QueryResetLifetime:
         monitor = QueryMonitor(agent, p, check).start()
         try:
             request = MbtbLookup(p.old[0].pc)
-            launch = await agent.lookup_driver.send(request)
+            launch = await agent.launch_lookup(request)
             if p.mode == 'response-before-reset':
                 await wait_condition(agent.dut.clock, sample=monitor.status, satisfied=lambda state: state['disposition'] is not None, name='mbtb' + '.old-query-response', timeout_cycles=64)
             await agent.reset()

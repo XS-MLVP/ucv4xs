@@ -132,7 +132,7 @@ class ContextProgram(Program):
         numeric=c.numeric_consumer(self.anchor)
         c.check(before,(c.bank.sc.memory,c.bank.sc.thresholds.values),'read cancellation and control changes do not train SC')
         c.invalid_history_probe=dict(warm_owner=token.sequence,warm_read_tick=proof['read'],
-            warm_history_indices=read.indices[1:3],warm_history_weights=read.weights[1:3],
+            warm_history_indices=read.indices[2:6],warm_history_weights=read.weights[2:6],
             cancelled_before_consumption=True,invalid_consumer=numeric,
             no_extra_backend_training=True,learned_SC_state_unchanged=True)
 

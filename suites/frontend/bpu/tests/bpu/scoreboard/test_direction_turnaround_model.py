@@ -47,7 +47,7 @@ def partial_program(program, initial_pc=None):
     for token, outcome in zip(inputs[:3], OUTCOMES[:3], strict=True):
         model.advance(replace(event, feedback=resolution(token, outcome)))
     mature(model, event)
-    assert pending_plan(model.sources.tage, 3, PC%4) == concrete_plan(checks, model, inputs, PRELUDE_PLAN)
+    assert pending_plan(model.sources.tage, 7, PC%4) == concrete_plan(checks, model, inputs, PRELUDE_PLAN)
     consumers(checks, model, event, anchor, program, 'initial')
     model.advance(replace(event, prediction_ready=False))
     for _ in range(8): model.advance(event)
@@ -78,11 +78,11 @@ def test_reversed_outcomes_use_each_current_version_and_preserve_all_unrelated_h
             wrong = None if old==actual or actual is None and old is not None and old>last else min(p for p in (old, actual) if p is not None)
             assert tuple(b.position for b in request.branches if b is not None and b.mispredict)==(() if wrong is None else (wrong,))
         model.advance(replace(event, feedback=request))
-        new = pending_plan(model.sources.tage, 3, PC%4)
+        new = pending_plan(model.sources.tage, 7, PC%4)
         if new != previous:
             assert new == concrete_plan(checks, model, inputs, program.pending_after[len(offered)-1])
             previous = new
-        proposals = model.sources.tage.offers.get((3, PC%4), ())
+        proposals = model.sources.tage.offers.get((7, PC%4), ())
         if proposals:
             payload = [None, None]
             for write in proposals:
@@ -96,7 +96,7 @@ def test_reversed_outcomes_use_each_current_version_and_preserve_all_unrelated_h
     else: raise AssertionError('independent reversal learning did not mature')
     assert len(offered)==len(late)
     assert model.sources.tage.commits==commits==before+2
-    assert pending_plan(model.sources.tage, 3, PC%4)==concrete_plan(checks, model, inputs, program.final_plan)
+    assert pending_plan(model.sources.tage, 7, PC%4)==concrete_plan(checks, model, inputs, program.final_plan)
     consumers(checks, model, event, anchor, program, 'blocked')
     quiet(model, event)
     assert model.sources.tage.commits-before==2+sum(map(len, program.final_plan))

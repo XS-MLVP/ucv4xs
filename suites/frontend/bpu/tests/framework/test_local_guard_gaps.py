@@ -50,40 +50,40 @@ def baseline(tmp_path):
 @pytest.mark.parametrize('dut',('sc','tage'))
 def test_reviewed_source_claims_require_matching_native_producers(dut,baseline):
     result = review(baseline)['dut'][dut]
-    assert result['raw_missing']==result['locally_classified']==(336 if dut=='sc' else 120)
+    assert result['raw_missing']==result['locally_classified']==(656 if dut=='sc' else 120)
     assert result['unclassified']==[] and result['native_points']
     assert result['native_denominator_unchanged'] and not result['functional_pass_credit']
     assert not result['whole_design_formal_claim']
 
 
-@pytest.mark.parametrize('dut,line,replacement',(
-    ('sc',338,'if (~hit) begin'),
-    ('sc',293,"_GEN_15 = victim == 2'h0;"),
-    ('sc',366,'entries_0_1_setIdx <= io_write_0_bits_setIdx;'),
-    ('sc',371,'entries_0_0_wayData_0 <= io_write_1_bits_wayData_0;'),
-    ('sc',806,'if (~hit) begin'),
-    ('sc',689,"_GEN_39 = victim == 2'h0;"),
-    ('tage',808,'if (~hit_1) begin'),
-    ('tage',546,'_GEN_58 = ~rowIdx & _GEN_25;'),
-    ('tage',804,'if (hit_1) begin'),
-    ('tage',538,'_GEN_54 = ~hitWritten | _GEN_44;'),
-    ('tage',871,'else if (hit_1) begin'),
-    ('tage',1550,'else if (hit) begin'),
-    ('tage',1545,'entries_0_0_entry_tag <= io_write_0_bits_entry_tag;'),
+@pytest.mark.parametrize('dut,file,before,after',(
+    ('sc','WriteBuffer.sv','if (|hitMaskUInt) begin','if (~(|hitMaskUInt)) begin'),
+    ('sc','WriteBuffer.sv',"_GEN_21 = ~(|hitMaskUInt) & victim == 2'h0;","_GEN_21 = victim == 2'h0;"),
+    ('sc','WriteBuffer.sv','entries_0_0_setIdx <= io_write_0_bits_setIdx;','entries_0_1_setIdx <= io_write_0_bits_setIdx;'),
+    ('sc','WriteBuffer.sv','entries_0_0_wayData_0 <= io_write_0_bits_wayData_0;','entries_0_0_wayData_0 <= io_write_1_bits_wayData_0;'),
+    ('sc','WriteBuffer_14.sv','if (|hitMaskUInt) begin','if (~(|hitMaskUInt)) begin'),
+    ('sc','WriteBuffer_14.sv',"_GEN_69 = ~(|hitMaskUInt) & victim == 2'h0;","_GEN_69 = victim == 2'h0;"),
+    ('tage','WriteBuffer.sv','if (|hitMaskUInt_1) begin','if (~(|hitMaskUInt_1)) begin'),
+    ('tage','WriteBuffer.sv','_GEN_55 = (|hitMaskUInt) & ~rowIdx & _GEN_22;','_GEN_55 = ~rowIdx & _GEN_22;'),
+    ('tage','WriteBuffer.sv','if (_GEN_125) begin','if (|hitMaskUInt_1) begin'),
+    ('tage','WriteBuffer.sv','_GEN_51 = ~(|_hitWritten_T_1) | _GEN_41 | ~_GEN_33;','_GEN_51 = ~(|_hitWritten_T_1) | _GEN_41;'),
+    ('tage','WriteBuffer.sv','else if (~(|_hitWritten_T_3) | _GEN_115 | ~_GEN_93) begin','else if (|hitMaskUInt_1) begin'),
+    ('tage','WriteBuffer.sv','else if (_GEN_51) begin','else if (|hitMaskUInt) begin'),
+    ('tage','WriteBuffer.sv','entries_1_0_entry_tag <= io_write_0_bits_entry_tag;','entries_0_0_entry_tag <= io_write_0_bits_entry_tag;'),
 ))
-def test_weakened_guards_or_wrong_body_source_are_rejected_without_editing_rtl(dut,line,replacement,monkeypatch):
-    path = ROOT/('rtl/sc/WriteBuffer_8.sv' if dut=='sc' and line>600 else
-                 'rtl/sc/WriteBuffer.sv' if dut=='sc' else 'rtl/tage/WriteBuffer.sv')
-    before = path.read_bytes()
-    changed = path.read_text().splitlines()
-    changed[line-1] = replacement
+def test_weakened_guards_or_wrong_body_source_are_rejected_without_editing_rtl(dut,file,before,after,monkeypatch):
+    path = ROOT/f'rtl/{dut}/{file}'
+    original = path.read_bytes()
+    text = path.read_text()
+    assert before in text
+    changed = text.replace(before,after)
     real_read = Path.read_text
     def read(received,*args,**kwargs):
-        return '\n'.join(changed) if received==path else real_read(received,*args,**kwargs)
+        return changed if received==path else real_read(received,*args,**kwargs)
     monkeypatch.setattr(Path,'read_text',read)
     with pytest.raises(AssertionError):
         sc_claims() if dut=='sc' else tage_claims(report())
-    assert path.read_bytes()==before
+    assert path.read_bytes()==original
 
 
 def fixture():
@@ -149,7 +149,7 @@ def test_a_guard_closed_before_the_body_is_not_an_enclosing_proof(tmp_path):
 def test_diagnostic_review_is_read_only_and_has_no_implicit_exports(baseline):
     files = list(baseline.rglob('*'))
     files = [path for path in files if path.is_file()]
-    files += [ROOT/name for name in ('rtl/sc/WriteBuffer.sv','rtl/sc/WriteBuffer_8.sv','rtl/tage/WriteBuffer.sv')]
+    files += [ROOT/name for name in ('rtl/sc/WriteBuffer.sv','rtl/sc/WriteBuffer_14.sv','rtl/tage/WriteBuffer.sv')]
     before = {str(path):sha256(path.read_bytes()).hexdigest() for path in files}
     review(baseline)
     assert {str(path):sha256(path.read_bytes()).hexdigest() for path in files}==before
@@ -185,7 +185,7 @@ def test_cli_exports_only_when_requested_and_never_replaces_existing_output(base
     monkeypatch.setattr('sys.argv',args+['--output',str(output)])
     main()
     first = output.read_bytes()
-    assert json.loads(first)['dut']['sc']['locally_classified']==336
+    assert json.loads(first)['dut']['sc']['locally_classified']==656
     with pytest.raises(FileExistsError): main()
     assert output.read_bytes()==first
 

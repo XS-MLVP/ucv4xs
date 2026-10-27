@@ -47,14 +47,14 @@ def compare(model, program, prediction, weight, thresholds):
     assert model.thresholds.values == thresholds
     # Pure model inspection checks hand-computed family magnitudes too; the
     # later DUT program must use observable exact-recovery consumers instead.
-    columns = (1, 1, 1, 1, 7 if program.direction else 6)
-    assert tuple(row[column] for row, column in zip(prediction.read.weights, columns, strict=True)) == (weight,) * 5
+    columns = (1,)*7 + (7 if program.direction else 6,)
+    assert tuple(row[column] for row, column in zip(prediction.read.weights, columns, strict=True)) == (weight,) * 8
 
 
 def test_closed_form_has_only_semantic_transaction_dependencies():
     tree = ast.parse(MODULE.read_text())
     assert [n.module for n in ast.walk(tree) if isinstance(n, ast.ImportFrom)] == [
-        'dataclasses', 'bpuverify.sc.transaction.types']
+        'bpuverify.common.model.configuration', 'dataclasses', 'bpuverify.sc.transaction.types']
     assert not any(isinstance(n, ast.Import) for n in ast.walk(tree))
 
 
@@ -65,7 +65,7 @@ def test_distinct_cold_sources_neutral_boundary_and_exact_fresh_recovery(boundar
     cold = tuple(lookup(model, program) for _ in range(program.cold_source_count))
     frozen = tuple(deepcopy(p.metadata()) for p in cold)
     assert len({id(p) for p in cold}) == program.cold_source_count
-    assert all(p.sums == (5,) * 4 and p.used == (0,) * 4 for p in cold)
+    assert all(p.sums == (8,) * 10 and p.used == (0,) * 10 for p in cold)
     for step, source in enumerate(cold[:-1], 1):
         feedback = program.seed(source.metadata())
         assert thresholds.apply(feedback).qualifying_slots == (program.prefix_slots[0],)
@@ -73,7 +73,7 @@ def test_distinct_cold_sources_neutral_boundary_and_exact_fresh_recovery(boundar
         settle(model)
         compare(model, program, lookup(model, program), program.weight(step), program.thresholds(step))
     request = program.neutral(cold[-1].metadata())
-    assert tuple((b.position, b.actual_taken) for b in request.branches) == ((1, 0), (4, 1))
+    assert tuple((b.position, b.actual_taken) for b in request.branches) == ((1, 0), (8, 1))
     update = thresholds.apply(request)
     assert update.qualifying_slots == program.prefix_slots
     assert update.before == update.after == program.thresholds(program.seed_count)
@@ -81,7 +81,7 @@ def test_distinct_cold_sources_neutral_boundary_and_exact_fresh_recovery(boundar
     settle(model)
     current = lookup(model, program)
     compare(model, program, current, program.endpoint, program.thresholds(program.seed_count))
-    assert lookup(model, program, pc=program.pc + 16).read.weights == ((0,) * 4,) * 4 + ((0,) * 16,)
+    assert lookup(model, program, pc=program.pc + 16).read.weights == ((0,) * 8,) * 7 + ((0,) * 32,)
     for step in range(1, program.reverse_steps + 1):
         request = program.reverse(current.metadata())
         assert thresholds.apply(request).qualifying_slots == (program.prefix_slots[0],)
@@ -92,7 +92,7 @@ def test_distinct_cold_sources_neutral_boundary_and_exact_fresh_recovery(boundar
                 program.thresholds(program.seed_count, step))
         assert current.directions[:2] == ((program.direction,) * 2 if step < 32 else (1 - program.direction,) * 2)
     assert frozen == tuple(p.metadata() for p in cold)
-    assert model.snapshot(program.pc + 16, Context()).weights == ((0,) * 4,) * 4 + ((0,) * 16,)
+    assert model.snapshot(program.pc + 16, Context()).weights == ((0,) * 8,) * 7 + ((0,) * 32,)
 
 
 @pytest.mark.parametrize('fault', ('drop-first', 'drop-second', 'sequential-clamp', 'sequential-resolved-clamp'))
@@ -100,7 +100,7 @@ def test_the_four_legal_programs_collectively_distinguish_vote_order_or_missing_
     detected = []
     for boundary, placement in PROFILES:
         program = Program(boundary, placement)
-        feedback = program.neutral(program.expected(0, (1130,) * 4)['meta'])
+        feedback = program.neutral(program.expected(0, (1130,) * 8)['meta'])
         ordered = list(feedback.branches) if fault == 'sequential-resolved-clamp' else sorted(feedback.branches, key=lambda b: b.prediction_slot)
         if fault == 'drop-first':
             ordered = ordered[1:]
@@ -124,7 +124,7 @@ def test_the_four_legal_programs_collectively_distinguish_vote_order_or_missing_
 @pytest.mark.parametrize('boundary,placement', PROFILES)
 def test_current_confidence_cannot_replace_the_original_dual_source_qualification(boundary, placement):
     program = Program(boundary, placement)
-    cold = program.expected(0, (1130,) * 4)['meta']
+    cold = program.expected(0, (1130,) * 8)['meta']
     hot = program.expected(program.endpoint, program.thresholds(program.seed_count))['meta']
     original = ScThresholdModel().apply(program.neutral(cold))
     replaced = ScThresholdModel().apply(program.neutral(hot))
@@ -161,7 +161,7 @@ def test_final_consumer_rejects_one_missing_fresh_reverse_feedback(boundary, pla
 @pytest.mark.parametrize('boundary,placement', PROFILES)
 def test_existing_source_ledger_rejects_modified_original_metadata_before_feedback(boundary, placement):
     program = Program(boundary, placement)
-    expected = program.expected(0, (1130,) * 4)
+    expected = program.expected(0, (1130,) * 8)
     actual = SimpleNamespace(takens=expected['takens'], useds=expected['useds'],
         meta=dict(deepcopy(expected['meta']), debug=deepcopy(expected['families'])))
     transfer = SimpleNamespace(sequence_id=1,

@@ -29,7 +29,7 @@ class DirectionLearningChecks:
             raise
 
     def owner(self,token):
-        matches = [(align*2+way,entry) for align,row in enumerate(source_entries(token.lookup))
+        matches = [(align*5+way,entry) for align,row in enumerate(source_entries(token.lookup))
             for way,entry in enumerate(row) if entry.hit and entry.position==self.position]
         self.check(1,len(matches),'exact owned conditional MainBTB branch')
         return matches[0]

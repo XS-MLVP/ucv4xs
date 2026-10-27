@@ -6,7 +6,9 @@ from bpuverify.bpu.model.path_history import path_contribution
 from bpuverify.utage.model.semantic import Entry,HISTORIES,Context,INDEX_FOLDS,TAG_FOLDS,ALT_FOLDS
 
 PC=0x40000000
-CONDITIONAL,FALLBACK=2,4
+# An odd later CFI contributes bit 4 to the path hash. The configured
+# five-bit short history can therefore distinguish it from conditional 2.
+CONDITIONAL,FALLBACK=2,5
 
 
 @dataclass(frozen=True,slots=True)
@@ -73,7 +75,7 @@ def stable_negative(sources,token):
 
 
 def loop_history(pc,position):
-    width=max(HISTORIES);edge=path_contribution((pc//8)*8+position,pc);word=0
+    width=max(HISTORIES);edge=path_contribution((pc//16)*16+position,pc);word=0
     for shift in range(0,width,2):word^=edge<<shift
     return word% (1<<width)
 

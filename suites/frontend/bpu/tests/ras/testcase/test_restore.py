@@ -1,6 +1,7 @@
 """RAS redirect recovery and enable gate."""
 
 from __future__ import annotations
+from bpuverify.common.model.configuration import *
 
 import pytest
 
@@ -35,19 +36,19 @@ async def test_restore_checkpoint_whose_stack_pointer_already_wrapped(ras_agent)
     pointer is genuine hardware state, not a hand-built metadata value.
     """
 
-    calls = unique_calls()[:12]
+    calls = unique_calls()[:RAS_GROUPS + 4]
     await ras_agent.reset()
     initial = ras_agent.snapshot()
-    for call in calls[:9]:
+    for call in calls[:RAS_GROUPS + 1]:
         await push(ras_agent, call)
     saved = ras_agent.snapshot()
-    assert saved.redirect_meta["ssp"] < 8
-    for call in calls[9:12]:
+    assert saved.redirect_meta["ssp"] < RAS_GROUPS
+    for call in calls[RAS_GROUPS + 1:RAS_GROUPS + 4]:
         await push(ras_agent, call)
 
     restored = await ras_agent.restore(saved.redirect_meta)
-    assert restored.top == expected_top(calls[8])
-    for call in reversed(calls[:8]):
+    assert restored.top == expected_top(calls[RAS_GROUPS])
+    for call in reversed(calls[:RAS_GROUPS]):
         assert (await pop(ras_agent)).top == expected_top(call)
     assert (await pop(ras_agent)).top == initial.top
 

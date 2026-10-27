@@ -6,16 +6,16 @@ from bpuverify.mbtb.transaction.types import MbtbEntry
 from bpuverify.mbtb.model.depth import expected_mbtb_depth_one_states
 
 def prepared(align, owner, empty_counter):
-    entries = tuple(MbtbEntry(0, 0, 0x40000000, (way // 2) * 8, 0, 0) for way in range(4))
-    active = align * 2 + owner
-    entries = tuple(replace(value, valid=1, taken=1, target=0x40009340, position=1 + align * 8, branch_type=3)
+    entries = tuple(MbtbEntry(0, 0, 0x40000000, (way // 5) * 16, 0, 0) for way in range(10))
+    active = align * 5 + owner
+    entries = tuple(replace(value, valid=1, taken=1, target=0x40009340, position=1 + align * 16, branch_type=3)
                     if way == active else value for way, value in enumerate(entries))
-    metadata = [[dict(rawHit=0, position=bank * 8, counter_value=0,
-                      attribute=dict(branchType=0, rasAction=0)) for _ in range(2)] for bank in range(2)]
-    metadata[align][owner].update(rawHit=1, position=1 + align * 8, counter_value=2,
+    metadata = [[dict(rawHit=0, position=bank * 16, counter_value=0,
+                      attribute=dict(branchType=0, rasAction=0)) for _ in range(5)] for bank in range(2)]
+    metadata[align][owner].update(rawHit=1, position=1 + align * 16, counter_value=2,
                                  attribute=dict(branchType=3, rasAction=0))
     metadata[align][1 - owner]['counter_value'] = empty_counter
-    entries = tuple(replace(value, taken=int(empty_counter >= 2)) if way == align * 2 + 1 - owner else value
+    entries = tuple(replace(value, taken=int(empty_counter >= 2)) if way == align * 5 + 1 - owner else value
                     for way, value in enumerate(entries))
     first = dict(entries=deepcopy(entries), meta_entries=deepcopy(metadata))
     return [first, dict(entries=entries, meta_entries=metadata)]
@@ -31,9 +31,9 @@ def test_request_way_does_not_redefine_retained_entry_or_unmatched_payload(align
     assert source == before and result[0] == before[0]
     assert result[1]['meta_entries'][align][owner]['counter_value'] == 2
     assert result[1]['meta_entries'][align][1 - owner] == before[1]['meta_entries'][align][1 - owner]
-    assert result[1]['entries'][align * 2 + owner].target == 0x4010B340
-    other = result[1]['entries'][align * 2 + 1 - owner]
-    assert other == before[1]['entries'][align * 2 + 1 - owner]
+    assert result[1]['entries'][align * 5 + owner].target == 0x4010B340
+    other = result[1]['entries'][align * 5 + 1 - owner]
+    assert other == before[1]['entries'][align * 5 + 1 - owner]
     result[1]['meta_entries'][align][owner]['counter_value'] = 1
     assert source == before
 

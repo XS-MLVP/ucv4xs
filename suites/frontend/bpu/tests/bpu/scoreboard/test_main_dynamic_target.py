@@ -19,7 +19,7 @@ def test_all_versions_are_the_same_indirect_instruction(phase, origin):
     effects = [program.effect(version) for version in range(3)]
     assert all(effect['kind'] == 3 and effect['position'] == EARLIER and effect['carry'] == 0 for effect in effects)
     assert len({effect['offset'] for effect in effects}) == 3
-    assert program.direction()['values'] == {'0': 2}
+    assert program.direction()['values'] == {'2': 2}
 
 
 def path():

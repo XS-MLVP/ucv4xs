@@ -13,8 +13,12 @@ async def test_parallel_history_contexts_use_their_own_learned_weight_snapshots(
     # Different semantic contexts share the PC bias but have distinct history
     # features. Each feedback returns the actual source metadata unchanged.
     for history, taken in zip(contexts, (0, 1, 0), strict=True):
-        prediction = await sc_agent.predict(pc, position, counter, history=history)
-        await sc_agent.train(ScTraining(pc, position, taken, prediction.meta, history=history))
+        # Four common-history tables are neutral when invalid. Two declared
+        # outcomes make the remaining four trained tables dominate that neutral
+        # contribution in DefaultConfig, including the shared bias table.
+        for _ in range(2):
+            prediction = await sc_agent.predict(pc, position, counter, history=history)
+            await sc_agent.train(ScTraining(pc, position, taken, prediction.meta, history=history))
     baseline = [await sc_agent.predict(pc, position, counter, history=history) for history in contexts]
     before = sc_agent.reference.board.status.checked
     sequence = (0, 1, 2, 1, 0, 2)

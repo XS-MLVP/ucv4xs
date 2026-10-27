@@ -1,4 +1,5 @@
 """Captured feedback with/without overlap, using only domain operations."""
+from bpuverify.common.model.configuration import *
 from copy import deepcopy
 
 from bpuverify.tage.transaction.types import TageBaseBranch
@@ -16,12 +17,12 @@ from bpuverify.tage.case.way_migration_scenario import snapshot
 async def restore(agent, pc, target, victim, way, counter, feedback, protected):
     old = await agent.predict(pc, victim, 0)
     assert old.meta['hasProvider'] == 0, old
-    newcomer = await agent.predict(pc, 10, 0)
-    assert cell(newcomer) == (3, 1-way) and newcomer.meta['providerUsefulCtr_value'] == 0, newcomer
+    newcomer = await agent.predict(pc, (2 * TAGE_TABLES + 2), 0)
+    assert cell(newcomer) == (TAGE_TABLES - 1, 1-way) and newcomer.meta['providerUsefulCtr_value'] == 0, newcomer
     await agent.train_checked(TageBatchTraining(pc, (TageBranchFeedback(
         victim, 1, 0, old.meta, mispredict=1),)), feedback)
     before = await prepare_reuse(agent, pc, target, victim, way, counter, feedback)
-    assert not (await agent.predict(pc, 10, 0)).meta['hasProvider']
+    assert not (await agent.predict(pc, (2 * TAGE_TABLES + 2), 0)).meta['hasProvider']
     # Preserve the original independently checked six-neighbor baseline across
     # restoration too; do not silently adopt damaged state as a new baseline.
     await read_expected(agent, pc, protected)
@@ -38,7 +39,7 @@ async def check_case(agent, coverage, pc, context, way, counter, mode, *, pair=N
             target, victim, protected = pair
             before = await restore(agent, pc, target, victim, way, counter, feedback, protected)
         prepared = {position: deepcopy(snapshot(pred)) for position,pred in before.items()}
-        prepared[9] = prepared[10] = None
+        prepared[(2 * TAGE_TABLES + 1)] = prepared[(2 * TAGE_TABLES + 2)] = None
         await read_expected(agent, pc, prepared)
         base = dict(context=context, way=way, counter=counter, mode=mode)
         coverage.sample(dict(base, phase='prepared'))
@@ -47,7 +48,7 @@ async def check_case(agent, coverage, pc, context, way, counter, mode, *, pair=N
         # resolved branch order stays earlier NT + later taken, not two taken
         # branches in the same block. Only the cold later slot mispredicts.
         transactions = []
-        for newcomer in (9, 10):
+        for newcomer in ((2 * TAGE_TABLES + 1), (2 * TAGE_TABLES + 2)):
             prediction = await agent.predict_branches(pc,
                 (TageBaseBranch(target, 0), TageBaseBranch(newcomer, 0)))
             assert prediction.metas[0]['providerTakenCtr_value'] == counter

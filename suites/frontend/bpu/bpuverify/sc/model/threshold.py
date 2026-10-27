@@ -18,15 +18,15 @@ class ScThresholdUpdate:
 
 
 class ScThresholdModel:
-    """Four-way MinimalConfig by default; consume unmodified feedback metadata.
+    """DefaultConfig eight-way geometry by default; consume unmodified feedback metadata.
 
     Range rejection preserves the old entry, not the nearest range endpoint.
     Multiple branches contribute a net direction before one atomic update.
     No actual threshold observation is used to initialize or update this model.
     """
 
-    def __init__(self, *, ways=4, position_width=4, width=13,
-                 minimum=640, maximum=5040, initial=1130):
+    def __init__(self, *, ways=8, position_width=5, width=13,
+                 minimum=832, maximum=8064, initial=1130, slots=10):
         ways, position_width, width = index(ways), index(position_width), index(width)
         minimum, maximum = index(minimum), index(maximum)
         if ways < 2 or ways & (ways - 1) or position_width < 1 or width < 1:
@@ -35,10 +35,21 @@ class ScThresholdModel:
             raise ValueError('threshold bounds must fit the counter')
         self.ways, self.position_width, self.width = ways, position_width, width
         self.minimum, self.maximum = minimum, maximum
+        self.slots = ways if slots is None else index(slots)
+        if self.slots < 1:
+            raise ValueError("SC requires positive prediction slots")
         self.initial = tuple(index(value) for value in initial) if isinstance(initial, tuple) else (index(initial),) * ways
         if len(self.initial) != ways or any(not minimum <= value <= maximum for value in self.initial):
             raise ValueError('initial thresholds must be in range for every way')
         self._values = self.initial
+
+    @classmethod
+    def for_default(cls, **overrides):
+        from bpuverify.common.model.configuration import SC_WAYS, POSITIONS, RESULT_SLOTS, SC_MIN_THRESHOLD, SC_MAX_THRESHOLD
+        options = dict(ways=SC_WAYS, position_width=(POSITIONS-1).bit_length(),
+                       slots=RESULT_SLOTS, minimum=SC_MIN_THRESHOLD, maximum=SC_MAX_THRESHOLD)
+        options.update(overrides)
+        return cls(**options)
 
     @property
     def values(self):
@@ -74,13 +85,13 @@ class ScThresholdModel:
         if len({branch.position for branch in active}) != len(active):
             raise ValueError('SC branch positions must be distinct')
         slots = [index(branch.prediction_slot) for branch in active]
-        if len(set(slots)) != len(slots) or any(not 0 <= slot < self.ways for slot in slots):
+        if len(set(slots)) != len(slots) or any(not 0 <= slot < self.slots for slot in slots):
             raise ValueError('SC prediction slots must be distinct and in range')
         keys = ('scPred', 'tagePred', 'tagePredValid', 'useScPred', 'sumAboveThres')
         meta = {}
         for key in keys:
             values = tuple(self._bit(value) for value in transaction.meta[key])
-            if len(values) != self.ways:
+            if len(values) != self.slots:
                 raise ValueError(f'{key} must have one value per prediction slot')
             meta[key] = values
         decoded = []

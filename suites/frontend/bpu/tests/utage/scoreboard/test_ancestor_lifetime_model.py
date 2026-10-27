@@ -47,7 +47,7 @@ def test_two_ancestor_lifetime_has_independently_distinguishable_old_and_new_res
 
 def test_algebraic_choice_is_not_a_same_context_or_an_undefined_high_tag_alias():
     later=Context.from_recent(MATCH_HISTORY)
-    assert indices(MATCH_PC,later)==(93,28)
+    assert indices(MATCH_PC,later)==(346,442)
     assert tuple(tag(MATCH_PC,later,t) for t in range(2))==(0,0)
     assert tuple(tag(PC,Context(),t) for t in range(2))==(0,0)
     assert tag(MATCH_PC,Context(),0)!=0 and tag(PC,later,0)!=0

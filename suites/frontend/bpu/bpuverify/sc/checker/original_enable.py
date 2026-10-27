@@ -1,4 +1,5 @@
 """Old active source -> ignored while disabled -> fresh enabled consumers."""
+from bpuverify.common.model.configuration import RESULT_SLOTS
 from copy import deepcopy
 
 from bpuverify.sc.checker.eligibility import EligibilityChecks
@@ -37,7 +38,7 @@ class EnableChecks(EligibilityChecks):
                    'disabled response is an actual accepted/completed driver observation')
         self.check(True,transfer.accepted_event.tick>max(value['completed_tick'] for value in self.old_sources.values()),
                    'disabled query is a new occurrence after the active originals')
-        self.check((0,0,0,0),prediction.useds,'global disable suppresses use for every branch slot')
+        self.check((0,)*RESULT_SLOTS,prediction.useds,'global disable suppresses use for every branch slot')
         # Disabled raw metadata is not a defined semantic response. Keep the
         # immutable software snapshot only; do not predict it or train from it.
         self.sources[transfer.sequence_id]=(prediction,deepcopy(prediction.meta))
@@ -102,8 +103,8 @@ class EnableChecks(EligibilityChecks):
         for values in (self.old_sources,self.disabled_queries,self.disabled_feedback,self.restored):
             self.check(wanted,set(values),'both independent original branches complete each enable phase')
         self.check(wanted,self.fresh_same_results,'fresh same-payload enabled positive controls exist for both old outcomes')
-        self.check(56,len(self.sources),'complete active/disabled/restored query occurrences are all unique')
-        self.check(19,len(self.spent),'six warm, two disabled and eleven qualified reverse outcomes only')
+        self.check(2*self.program.warm_votes+len(self.program.probes)+2*sum(self.program.reversal_steps(o) for o in self.program.owners)+6,len(self.sources),'complete active/disabled/restored query occurrences are all unique')
+        self.check(2*self.program.warm_votes+2+sum(self.program.reversal_steps(o) for o in self.program.owners),len(self.spent),'all declared warm, disabled and qualified reverse outcomes only')
         super().finish()
         for rule in ('disabled-use-suppressed','disabled-old-feedback-ignored','reopen-without-relearning'):
             self.coverage.record('checked',rule,owners=len(wanted))

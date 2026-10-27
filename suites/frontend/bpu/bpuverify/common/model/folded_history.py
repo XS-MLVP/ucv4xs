@@ -1,4 +1,4 @@
-"""Consistent recent PHR profiles for the generated Kunminghu-v3 MinimalConfig.
+"""Consistent recent PHR profiles for the generated Kunminghu-v3 DefaultConfig.
 
 The aggregate follows PhrAllFoldedHistories' sorted (history, folded) tuples.
 Each fold XORs chunks of the selected recent history, as PhrHelper does;
@@ -8,28 +8,26 @@ profiles. Keep this predictor-specific layout out of the generic framework.
 
 from __future__ import annotations
 
+from bpuverify.common.model.configuration import PHR_FOLDS, PHR_STORAGE_BITS
 
-# Types.scala getFoldedHistoryInfoSet, top/Configs.scala MinimalConfig and
+
+# Types.scala getFoldedHistoryInfoSet, top/Configs.scala DefaultConfig and
 # history/phr/Bundles.scala: sortBy(_.asTuple). Width/count changes fail fast
 # against bound ports. History lengths are a contract of this fixed build;
 # they cannot be inferred from widths for arbitrary other configurations.
-PHR_FOLD_LAYOUT = (
-    (4, 4), (6, 5), (6, 6), (8, 6), (8, 7), (9, 7), (9, 9),
-    (12, 5), (12, 6), (12, 9), (16, 6), (16, 7), (16, 8),
-    (17, 7), (17, 12), (17, 13), (31, 7), (31, 12), (31, 13),
-)
+PHR_FOLD_LAYOUT = PHR_FOLDS
 
 
 def validate_folded_history_layout(widths) -> None:
     actual = tuple(widths)
     expected = tuple(width for _, width in PHR_FOLD_LAYOUT)
     if actual != expected:
-        raise ValueError(f"PHR fold layout differs from generated MinimalConfig: {actual}, expected {expected}")
+        raise ValueError(f"PHR fold layout differs from generated DefaultConfig: {actual}, expected {expected}")
 
 
 def folded_history_values(recent_bits: int, count: int) -> tuple[dict[str, int], ...]:
-    if not isinstance(recent_bits, int) or not 0 <= recent_bits < 1 << 31:
-        raise ValueError("recent path history must fit 31 bits")
+    if not isinstance(recent_bits, int) or not 0 <= recent_bits < 1 << PHR_STORAGE_BITS:
+        raise ValueError(f"recent path history must fit {PHR_STORAGE_BITS} bits")
     if count != len(PHR_FOLD_LAYOUT):
         raise ValueError(f"PHR profile needs {len(PHR_FOLD_LAYOUT)} folds, got {count}")
     values = []

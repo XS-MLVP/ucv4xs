@@ -5,9 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 
-# The generated unit-test DUT is intentionally reduced to two ways per align
-# bank (four flattened outputs across two align banks).
-NUM_WAYS = 2
+# DefaultConfig: four MainBTB ways plus one victim output per align bank.
+NUM_WAYS = 4
 SAME_PHYSICAL_SET_STRIDE = 1 << 15
 PIPELINE_REQUESTS = 4
 
@@ -27,10 +26,10 @@ PC = 0x4000_0800
 MISS_PC = PC + 0x200
 # Pc.addr is halfword-addressed.  The first fetch starts in the last 16 bytes
 # of a 4 KiB page; position 9 belongs to the next page's first align bank.
-PAGE_END_PC = 0x4000_0FF8
-NEXT_PAGE_PC = PAGE_END_PC + 8
+PAGE_END_PC = 0x4000_0FF0
+NEXT_PAGE_PC = PAGE_END_PC + 16
 NEXT_PAGE_BRANCH = BranchVector(
-    PAGE_END_PC, 0x4000_4A00, 9, 2
+    PAGE_END_PC, 0x4000_4A00, 17, 2
 )
 VISIBLE_NEXT_PAGE_BRANCH = BranchVector(
     NEXT_PAGE_PC,

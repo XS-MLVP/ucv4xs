@@ -1,4 +1,6 @@
 """Static TAGE write-port views alongside the existing seven-source sampler."""
+from bpuverify.common.model.configuration import *
+
 from toffee import Bundle
 from bpuverify.bpu.bundle.pipeline import pipeline_binding
 from bpuverify.common.bundle.bindings import PortBinding
@@ -22,6 +24,6 @@ def joint_learning_binding(agent,**options):
                 counter=signal(base+f'bits_entries_{w}_takenCtr_value')) for w in range(2)),
             useful=tuple(signal(base+f'bits_usefulCtrs_{w}_value') for w in range(2)))
     return PortBinding(binding.clock,Bundle(inputs=binding.bits.inputs,
-        observed=Bundle(**dict(binding.bits.observed),joint_tage=tuple(table(t) for t in range(4)),
+        observed=Bundle(**dict(binding.bits.observed),joint_tage=tuple(table(t) for t in range(TAGE_TABLES)),
             joint_train_folds=tuple(signal(f'tage.io_fromPhr_foldedPathHistForTrain_hist_{i}_foldedHist') for i in HISTORY_PORTS))),
         'bpu.joint-direction-learning')

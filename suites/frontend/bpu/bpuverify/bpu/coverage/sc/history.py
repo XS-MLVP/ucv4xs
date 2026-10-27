@@ -16,7 +16,7 @@ def coverage():
     points = tuple(CoverPointDef(key, {str(value): Bin.values(value) for value in values})
                    for key, values in axes.items())
     return CoverGroupDef('sc_common_history_training_gate', points,
-        crosses=(CrossDef('bank_history_table_feedback', ('bank', 'common_valid', 'table', 'feedback'), max_auto_bins=40),)
+        crosses=(CrossDef('bank_history_table_feedback', ('bank', 'common_valid', 'table', 'feedback'), max_auto_bins=8*len(TABLES)),)
         ).instantiate('kunminghu_v3.bpu.sc_common_history_training_gate')
 
 

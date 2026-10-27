@@ -1,4 +1,5 @@
 """Semantic path collisions and delayed-source counter ownership, without RTL."""
+from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT
 from dataclasses import replace
 from copy import deepcopy
 from pathlib import Path
@@ -42,7 +43,7 @@ def migration_program(original_way=1,*,retained_sources=None):
         feedback=request(source,step.taken,step.wrong)
         if step.owner is not None:
             f=model.sources.feedback_for(feedback)
-            for _ in range(128):
+            for _ in range(TAGE_ALLOCATION_WAIT):
                 if model.sources.tage.allocation_at_next_accept(f)==step.owner:break
                 model.advance(idle)
             else:raise AssertionError(('independent allocation opportunity not reached',step))
@@ -63,18 +64,18 @@ def test_three_path_keys_migrate_normally_and_original_strong_feedback_routes_to
     model,event,anchor,original=migration_program(original_way)
     before={name:via(model,event,anchor,path) for name,path in PATHS.items()}
     reads={name:model.sources.snapshot(token).read for name,token in before.items()}
-    assert len({r.context for r in reads.values()})==3 and {r.rows[3] for r in reads.values()}=={122}
-    assert values(model,original)==(3,(3,original_way,5,0))
-    assert values(model,before['original'])==(2,(3,1-original_way,4,0))
-    assert values(model,before['newcomer'])==(2,(3,original_way,5,1))
+    assert len({r.context for r in reads.values()})==3 and {r.rows[7] for r in reads.values()}=={322}
+    assert values(model,original)==(3,(7,original_way,5,0))
+    assert values(model,before['original'])==(2,(7,1-original_way,4,0))
+    assert values(model,before['newcomer'])==(2,(7,original_way,5,1))
     assert values(model,before['blocker'])==(2,None)
     old_meta=model.sources.defined_metadata(original)
     feedback=request(original,True,False)
     assert not model.sources.feedback_for(feedback).reread
     model.advance(replace(quiet(model,event),feedback=feedback))
     after={name:via(model,event,anchor,path) for name,path in PATHS.items()}
-    assert values(model,after['original'])==(3,(3,1-original_way,5,0))
-    assert values(model,after['newcomer'])==(3,(3,original_way,5,1))
+    assert values(model,after['original'])==(3,(7,1-original_way,5,0))
+    assert values(model,after['newcomer'])==(3,(7,original_way,5,1))
     assert values(model,after['blocker'])==(3,None)
     assert model.sources.defined_metadata(original)==old_meta
 
@@ -84,7 +85,7 @@ def test_checker_projects_the_semantic_main_target_and_complete_provider(origina
     model,event,anchor,original=migration_program(original_way)
     checks=DirectionMigrationChecks(NS(model=model,raise_failure=lambda:None,board=Scoreboard('migration-contract'),
         source_token=lambda source:source.token),DirectionMigrationCoverage(original_way),original_way)
-    assert checks.value(NS(token=original))==(3,(3,original_way,5,0))
+    assert checks.value(NS(token=original))==(3,(7,original_way,5,0))
     for name,path in PATHS.items():
         token=via(model,event,anchor,path)
         assert checks.value(NS(token=token))==values(model,token)
@@ -165,11 +166,11 @@ def test_old_and_current_timelines_cannot_be_relabelled_into_a_migration(fault):
             selected=checks.original if fault.startswith('old-') else profile['original'] if fault=='current-way' else profile['newcomer'] if fault=='neighbor-useful' else profile['blocker']
             if source is not selected:return value
             if fault=='old-base':return (1,value[1])
-            if fault=='old-way':return (3,(3,0,5,0))
-            if fault=='old-counter':return (3,(3,1,4,0))
-            if fault=='current-way':return (2,(3,1,4,0))
-            if fault=='neighbor-useful':return (2,(3,1,5,0))
-            return (2,(3,0,7,0))
+            if fault=='old-way':return (3,(7,0,5,0))
+            if fault=='old-counter':return (3,(7,1,4,0))
+            if fault=='current-way':return (2,(7,1,4,0))
+            if fault=='neighbor-useful':return (2,(7,1,5,0))
+            return (2,(7,0,7,0))
         checks.value=corrupted
     before=deepcopy(checks.pipeline.model.sources.tage.state())
     with pytest.raises(AssertionError) as first:checks.arm(profile)
@@ -235,8 +236,8 @@ def test_every_consumer_and_immutable_original_metadata_are_required_before_cred
         value=checks.value
         def corrupted(source):
             actual=value(source)
-            if fault=='wrong-counter' and source is new['original']:return (3,(3,0,6,0))
-            if fault=='wrong-useful' and source is new['newcomer']:return (3,(3,1,5,0))
+            if fault=='wrong-counter' and source is new['original']:return (3,(7,0,6,0))
+            if fault=='wrong-useful' and source is new['newcomer']:return (3,(7,1,5,0))
             return actual
         checks.value=corrupted
     elif fault=='missing-repair':checks.pipeline.corrections_for_source=lambda source:()

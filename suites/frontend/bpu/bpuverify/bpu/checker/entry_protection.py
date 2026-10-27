@@ -2,7 +2,7 @@
 from dataclasses import asdict
 from bpuverify.bpu.checker.early_opposition import EarlyOppositionChecks
 from bpuverify.bpu.model.entry_protection import program,rules,COMMON,LOSS
-from bpuverify.bpu.model.early_opposition import provider,main_counter
+from bpuverify.bpu.model.early_opposition import provider,main_counter,FALLBACK
 
 
 class Checks(EarlyOppositionChecks):
@@ -83,7 +83,7 @@ class Checks(EarlyOppositionChecks):
     def final_source(self,source):
         token=self.save(source); boundary=self.reward['actual_confirmation_tick'] if self.wrong is None else self.wrong['loss']['actual_confirmation_tick']
         self.check(True,source.prediction_tick>boundary,'fresh exact-level source after actual protection comparison')
-        branch=token.middle.branch; position=4 if self.program.mode=='contribution' else 2
+        branch=token.middle.branch; position=FALLBACK if self.program.mode=='contribution' else 2
         self.check((self.pc,position,self.pc,True),(token.pc,branch.position,branch.target,branch.taken),'complete post-effect public prediction')
         self.final=dict(owner=token.sequence,prediction_tick=source.prediction_tick,meta_tick=source.meta_tick,
             exact=asdict(branch),short_reconsumption_proved=False)

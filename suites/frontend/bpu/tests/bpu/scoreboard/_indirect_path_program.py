@@ -1,4 +1,5 @@
 """Pure semantic program helper; not imported by production verification code."""
+from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT, TAGE_HISTORIES, TAGE_TABLES, PHR_STORAGE_BITS
 from copy import deepcopy
 from dataclasses import replace
 from bpuverify.bpu.model.early_joint_sources import EarlyJointSources
@@ -48,9 +49,9 @@ class Program(Foundation):
             (Outcome(position, target, kind, taken, mispredict=wrong),), origin=source)
         if room:
             feedback = self.model.sources.feedback_for(request)
-            for _ in range(128):
+            for _ in range(TAGE_ALLOCATION_WAIT):
                 owner = self.model.sources.tage.allocation_at_next_accept(feedback)
-                if owner is not None and owner[0] < 3:
+                if owner is not None and owner[0] < TAGE_TABLES-1:
                     break
                 self.step(idle)
             else:
@@ -73,13 +74,13 @@ class Program(Foundation):
         source = self.query()
         self.resolve(source, 4, True, wrong=True, kind=Kind.INDIRECT)
         # The natural A4 -> B4 -> A path establishes the independent history.
-        edge = (path_contribution((self.a // 8) * 8 + 4, self.pc) << 2) ^ path_contribution((self.pc // 8) * 8 + 4, self.a)
+        edge = (path_contribution((self.a // 16) * 16 + 4, self.pc) << 2) ^ path_contribution((self.pc // 16) * 16 + 4, self.a)
         recent = 0
-        for bit in range(0, 31, 4):
+        for bit in range(0, max(TAGE_HISTORIES), 4):
             recent ^= edge << bit
-        recent %= 1 << 31
+        recent %= 1 << max(TAGE_HISTORIES)
         self.restart()
-        self.anchor = self.source(lambda t: t.history.history % (1 << 31) == recent, pc=self.a)
+        self.anchor = self.source(lambda t: t.history.history % (1 << max(TAGE_HISTORIES)) == recent, pc=self.a)
         # Every target observation comes from a real, separately published B.
         target_originals = []
         for number in range(3):
@@ -124,7 +125,7 @@ class Program(Foundation):
                 assert token.history is self.model.sources.short_snapshot(token).owner
                 assert token.history is self.model.sources.tage_snapshot(token).owner
                 assert cancelled is not None and cancelled.pc == self.a + 0x200
-                expected = ((token.history.history << 2) ^ path_contribution((token.pc // 8) * 8 + 4, self.a)) % (1 << 52)
+                expected = ((token.history.history << 2) ^ path_contribution((token.pc // 16) * 16 + 4, self.a)) % (1 << PHR_STORAGE_BITS)
                 assert self.model.history.history == expected
                 assert cancelled.sequence not in {t.sequence for t in self.model.stages if t is not None}
                 assert self.model.sources.defined_ittage_metadata(target) == frozen_target

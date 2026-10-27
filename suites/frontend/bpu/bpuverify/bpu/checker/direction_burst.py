@@ -14,7 +14,7 @@ class DirectionBurstChecks(DirectionMigrationChecks):
     def retain_source(self,source):
         self.check(None,self.before,'old sources must be captured before migration qualification')
         self.check(True,len(self.sources)<SOURCE_COUNT,'bounded original-source burst')
-        self.check((3,(3,self.original_way,5,0)),self.value(source),'each original source owns old counter5 in the old way')
+        self.check((3,(7,self.original_way,5,0)),self.value(source),'each original source owns old counter5 in the old way')
         if self.sources:
             self.check(True,self.sources[-1].meta_tick<source.prediction_tick,'all old queries are genuine and ordered')
             self.check(self.read(self.sources[0]),self.read(source),'old read contents agree without duplicating a request')

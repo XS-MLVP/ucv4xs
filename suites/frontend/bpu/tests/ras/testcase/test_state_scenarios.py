@@ -1,4 +1,5 @@
 """Logical RAS scenarios; agent/model/monitor own details and comparisons."""
+from bpuverify.common.model.configuration import *
 import pytest
 
 from bpuverify.ras.coverage.supplemental import ras_committed_cells_coverage_model
@@ -16,7 +17,7 @@ from bpuverify.common.env.paths import REPO_ROOT
 async def test_committed_cells(ras_agent):
     coverage = ras_committed_cells_coverage_model()
     async with ras_agent.observe_committed() as observations:
-        for slot in range(8):
+        for slot in range(RAS_GROUPS):
             for mode in ('normal', 'saturated'):
                 await check_case(ras_agent, observations, slot=slot, mode=mode)
                 coverage.sample(dict(slot=slot, mode=mode))

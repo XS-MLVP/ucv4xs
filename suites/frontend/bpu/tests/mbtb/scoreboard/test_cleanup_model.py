@@ -12,22 +12,22 @@ from bpuverify.mbtb.case.definitions import BranchVector
 
 
 def profiles(align):
-    entries = tuple(MbtbEntry(0, 0, 0x40000000, index // 2 * 8, 0, 0) for index in range(4))
-    metadata = [[dict(rawHit=0, position=bank * 8, counter_value=0,
-        attribute=dict(branchType=0, rasAction=0)) for _ in range(2)] for bank in range(2)]
+    entries = tuple(MbtbEntry(0, 0, 0x40000000, index // 5 * 16, 0, 0) for index in range(10))
+    metadata = [[dict(rawHit=0, position=bank * 16, counter_value=0,
+        attribute=dict(branchType=0, rasAction=0)) for _ in range(5)] for bank in range(2)]
     for way in range(2):
-        metadata[align][way].update(rawHit=1, position=5 + align * 8, counter_value=2,
+        metadata[align][way].update(rawHit=1, position=5 + align * 16, counter_value=2,
             attribute=dict(branchType=3, rasAction=0))
-    entries = tuple(replace(entry, valid=1, taken=1, target=0x40002740 - (index % 2) * 0x400,
-                            position=5 + align * 8, branch_type=3) if index // 2 == align else entry
+    entries = tuple(replace(entry, valid=1, taken=1, target=0x40002740 - (index % 5) * 0x400,
+                            position=5 + align * 16, branch_type=3) if index // 5 == align and index % 5 < 2 else entry
                     for index, entry in enumerate(entries))
     duplicate = dict(entries=entries, meta_entries=metadata)
     neighbor = deepcopy(duplicate)
-    neighbor['entries'] = tuple(replace(entry, target=0x40003360 + (index % 2) * 0x200,
-        position=6 + align * 8 - index % 2) if index // 2 == align else entry
+    neighbor['entries'] = tuple(replace(entry, target=0x40003360 + (index % 5) * 0x200,
+        position=6 + align * 16 - index % 5) if index // 5 == align and index % 5 < 2 else entry
         for index, entry in enumerate(entries))
     for way in range(2):
-        neighbor['meta_entries'][align][way]['position'] = 6 + align * 8 - way
+        neighbor['meta_entries'][align][way]['position'] = 6 + align * 16 - way
     return duplicate, neighbor
 
 
@@ -38,13 +38,13 @@ def test_cleanup_preserves_counters_and_neighbor_profiles_without_mutation(align
     before = deepcopy((duplicate, neighbor))
     cleaned, updated = expected_mbtb_cleanup_states(duplicate, neighbor, 0x40000820, align, way, 0x40005560)
     assert (duplicate, neighbor) == before
-    assert cleaned['entries'][align * 2] == duplicate['entries'][align * 2]
-    cleared = cleaned['entries'][align * 2 + 1]
+    assert cleaned['entries'][align * 5] == duplicate['entries'][align * 5]
+    cleared = cleaned['entries'][align * 5 + 1]
     assert (cleared.valid, cleared.taken, cleared.target, cleared.position, cleared.branch_type, cleared.ras_action) == (
-        0, 1, 0x40000000, align * 8, 0, 0)
-    assert [item['counter_value'] for item in cleaned['meta_entries'][align]] == [2, 2]
-    assert updated['entries'][align * 2 + way].target == 0x40005560
-    assert updated['entries'][align * 2 + 1 - way] == neighbor['entries'][align * 2 + 1 - way]
+        0, 1, 0x40000000, align * 16, 0, 0)
+    assert [item['counter_value'] for item in cleaned['meta_entries'][align]] == [2, 2, 0, 0, 0]
+    assert updated['entries'][align * 5 + way].target == 0x40005560
+    assert updated['entries'][align * 5 + 1 - way] == neighbor['entries'][align * 5 + 1 - way]
     assert updated['meta_entries'] == neighbor['meta_entries']
     cleaned['meta_entries'][align][0]['counter_value'] = 0
     assert (duplicate, neighbor) == before
@@ -88,7 +88,9 @@ async def test_agent_owns_cleanup_phase_sequence(monkeypatch, shadow_state):
     agent._started = True
     agent._multi_hit_cleanup_scope_active = agent._defer_multi_hit_cleanup = True
     agent.dut = SimpleNamespace(clock='clock')
-    agent.lookup_driver = SimpleNamespace(quiesce=lambda: log.append(('s2', not agent._defer_multi_hit_cleanup)))
+    agent.lookup_driver = SimpleNamespace(quiesce=lambda: None)
+    agent.consume_driver = SimpleNamespace(quiesce=lambda: None)
+    agent.consume_driver = SimpleNamespace(quiesce=lambda: log.append(('s2', not agent._defer_multi_hit_cleanup)))
     agent._encode_training = lambda tx: dict(payload=tx)
     async def send(tx):
         log.append(('train', tx))
@@ -128,6 +130,7 @@ async def test_cleanup_scope_cannot_be_nested_after_resume(monkeypatch):
     agent._multi_hit_cleanup_scope_active = agent._defer_multi_hit_cleanup = False
     agent.dut = SimpleNamespace(clock='clock')
     agent.lookup_driver = SimpleNamespace(quiesce=lambda: None)
+    agent.consume_driver = SimpleNamespace(quiesce=lambda: None)
     async def cycles(_clock, _count):
         pass
     monkeypatch.setattr('bpuverify.mbtb.agent.main.ClockCycles', cycles)
@@ -148,6 +151,7 @@ async def test_failed_clean_pulse_restores_deferred_gate(monkeypatch):
     agent._multi_hit_cleanup_scope_active = agent._defer_multi_hit_cleanup = True
     agent.dut = SimpleNamespace(clock='clock')
     agent.lookup_driver = SimpleNamespace(quiesce=lambda: None)
+    agent.consume_driver = SimpleNamespace(quiesce=lambda: None)
     agent._encode_training = lambda value: value
     async def cycles(_clock, _count):
         raise RuntimeError('interrupted pulse')

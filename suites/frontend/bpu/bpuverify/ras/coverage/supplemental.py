@@ -1,4 +1,5 @@
 """RAS requirements; coverage definitions never import concrete test stimuli."""
+from bpuverify.common.model.configuration import *
 
 from bpuverify.common.coverage.exports import write_functional_coverage
 from bpuverify.common.env.artifacts import output_path
@@ -26,7 +27,7 @@ def ras_retirement_gap_coverage_model():
 
 
 def ras_committed_cells_coverage_model():
-    return _cross('committed_cells', dict(slot=range(8), mode=('normal', 'saturated')))
+    return _cross('committed_cells', dict(slot=range(RAS_GROUPS), mode=('normal', 'saturated')))
 
 
 def ras_adjacent_coverage_model():

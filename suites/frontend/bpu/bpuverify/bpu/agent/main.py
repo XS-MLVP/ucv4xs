@@ -11,11 +11,11 @@ from toffee import Bundle
 from toffee.signals import sample_signal
 from bpuverify.common.monitor.activity import ActivityMonitor
 from bpuverify.bpu.bundle.activity import training_activity
-from bpuverify.bpu.bundle.activity import control_activity
+from bpuverify.bpu.bundle.activity import control_activity, initialization_activity
 from bpuverify.common.bundle.bindings import PortBinding
 from bpuverify.common.monitor.cycle import CycleMonitor
 from bpuverify.common.monitor.activity import TRAINING_TIMEOUT_CYCLES
-from bpuverify.common.env.wait import wait_condition
+from bpuverify.common.env.wait import wait_condition, RESET_TIMEOUT_CYCLES
 from bpuverify.bpu.driver.training import BpuTrainingDriver
 from bpuverify.bpu.driver.control import BpuControlDriver, PredictionWindow
 from bpuverify.common.transaction.cycle import CycleTransaction
@@ -47,6 +47,7 @@ class BpuAgent:
         self.ports = BpuPorts.bind(dut)
         self.training_activity = ActivityMonitor(training_activity(dut))
         self.applied_control = ActivityMonitor(control_activity(dut))
+        self.initialization = ActivityMonitor(initialization_activity(dut))
         self.retirement_monitor = CycleMonitor(PortBinding(dut.clock,
             Bundle(valid=self.ports.meta.valid, pc=self.ports.meta.bits.perf.start_pc),
             'bpu.pipeline_retirement'), decoder=lambda s: dict(valid=s.valid.as_int(), pc=s.pc.as_int()))
@@ -124,6 +125,13 @@ class BpuAgent:
         self._transaction_aligned = False
         await self._drive_control()
         await self.reset_driver.send(cycles)
+        # DefaultConfig SRAM clearing can consume 512 cycles. Observe the
+        # aggregate hardware-ready condition before starting a prediction
+        # deadline; monitors keep checking every reset/initialization cycle.
+        await wait_condition(self.dut.clock,
+            sample=lambda: self.initialization._capture(None)['sram_ready'],
+            satisfied=lambda state: state == {'sramResetDone': 1},
+            name='bpu.sram_initialization_complete', timeout_cycles=RESET_TIMEOUT_CYCLES)
 
     async def set_enabled(self, enabled: bool) -> None:
         self._require_started()

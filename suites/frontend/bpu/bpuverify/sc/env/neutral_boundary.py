@@ -5,7 +5,7 @@ from bpuverify.sc.model.threshold import ScThresholdModel
 class NeutralBoundaryEnv:
     def __init__(self, agent, program, checks, coverage):
         self.agent, self.program, self.checks, self.coverage = agent, program, checks, coverage
-        self.thresholds = ScThresholdModel()
+        self.thresholds = ScThresholdModel.for_default()
         self.frames = None
         self.last_cold_response = None
 
@@ -35,7 +35,7 @@ class NeutralBoundaryEnv:
         c.check(p.thresholds(seeds, reverse), update.after, request='independent threshold vector follows the declared complete event')
         if kind == 'neutral':
             c.check(update.before, update.after, request='opposite qualified votes leave the full threshold vector unchanged')
-            c.check(((0, 1, 0, 0), (0, 1, 0, 0)), (update.increments, update.decrements),
+            c.check(((0, 1, 0, 0, 0, 0, 0, 0),)*2, (update.increments, update.decrements),
                     request='one positive and one negative threshold contribution')
         before = len(self.frames)
         await self.agent.train_batch(actual)

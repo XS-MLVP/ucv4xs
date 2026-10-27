@@ -1,4 +1,5 @@
 """Static read-only full counter/recency view composed with public pipeline IO."""
+from bpuverify.common.model.configuration import *
 from toffee import Bundle
 
 from bpuverify.bpu.bundle.pipeline import pipeline_binding
@@ -18,10 +19,10 @@ def working_set_binding(agent, **options):
         for bank in range(4) for row in range(64) for way in range(4)),
         recency=tuple(signal(f'replacers_{bank}.states.states_{row}') for bank in range(4) for row in range(64)),
         main_service=tuple(main_service_binding(agent, alignment=alignment, bank=bank)[0].bits
-                           for alignment in range(2) for bank in range(2)),
+                           for alignment in range(2) for bank in range(MAIN_BANKS)),
         main_response=main_replacement_binding(agent).bits,
         tage_fast=tuple(Bundle(valid=parent(f'tage.io_prediction_fastTakenVec_{slot}_valid'),
-            taken=parent(f'tage.io_prediction_fastTakenVec_{slot}_bits')) for slot in range(4)))
+            taken=parent(f'tage.io_prediction_fastTakenVec_{slot}_bits')) for slot in range(RESULT_SLOTS)))
     observed = Bundle(**dict(binding.bits.observed), ahead_working_state=state)
     return PortBinding(binding.clock, Bundle(inputs=binding.bits.inputs, observed=observed),
                        'bpu.ahead-working-set')

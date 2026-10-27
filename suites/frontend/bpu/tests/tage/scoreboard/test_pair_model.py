@@ -9,7 +9,7 @@ from bpuverify.tage.model.pair import TageTableState
 @pytest.mark.parametrize('provider_way', (0, 1))
 def test_pair_initialization_is_independent_of_observed_counters(direction, alternate_way, provider_way):
     model = TagePairModel(direction, alternate_way=alternate_way, provider_way=provider_way)
-    assert model.tables == (None, None, TageTableState(1 << alternate_way, 6 if direction else 1, 3),
+    assert model.tables == (None,)*6 + (TageTableState(1 << alternate_way, 6 if direction else 1, 3),
                             TageTableState(1 << provider_way, 3 if direction else 4, 0))
     assert (model.metadata['useProvider'], model.metadata['altConf'], model.taken) == (0, 1, direction)
 

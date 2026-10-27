@@ -1,4 +1,6 @@
 """Read-only CommonHR direction state and public backend recovery boundary."""
+from bpuverify.common.model.configuration import *
+
 from toffee import Bundle
 from bpuverify.common.bundle.bindings import PortBinding
 from bpuverify.common.env.memory_direct import memory_signal,memory_signal_names
@@ -14,6 +16,6 @@ def common_history_binding(agent,*,observe_state=True):
         redirect=Bundle(valid=signal('io_fromFtq_redirect_valid'),pc=signal(base+'cfiPc_addr'),
             target=signal(base+'target_addr'),taken=signal(base+'taken'),kind=signal(base+'attribute_branchType'),
             meta=Bundle(ghr=signal(meta+'ghr'),bw=signal(meta+'bw'),
-                hits=tuple(signal(meta+f'hitMask_{i}') for i in range(4)),
-                kinds=tuple(signal(meta+f'attribute_{i}_branchType') for i in range(4)),
-                positions=tuple(signal(meta+f'position_{i}') for i in range(4))))),'bpu.owned-common-direction-history')
+                hits=tuple(signal(meta+f'hitMask_{i}') for i in range(RESULT_SLOTS)),
+                kinds=tuple(signal(meta+f'attribute_{i}_branchType') for i in range(RESULT_SLOTS)),
+                positions=tuple(signal(meta+f'position_{i}') for i in range(RESULT_SLOTS))))),'bpu.owned-common-direction-history')

@@ -1,0 +1,304 @@
+{
+  "kind": "same-RTL-framework-verdict-comparison",
+  "baseline": "historical BPU MinimalConfig artifacts (not DefaultConfig acceptance)",
+  "native_report_integrity": "Not certified: source runs reported native coverage packaging errors; verdict comparison is separate",
+  "rows": [
+    {
+      "scope": "pure",
+      "before_counts": {
+        "PASS": 27845,
+        "SKIP": 7,
+        "FAIL": 42
+      },
+      "after_counts": {
+        "PASS": 27845,
+        "SKIP": 7,
+        "FAIL": 42
+      },
+      "same_collection": false,
+      "differences": [
+        {
+          "nodeid": "tests/framework/test_runtime_dependency.py::test_old_toffee_checkout_is_not_a_silent_fallback",
+          "before": null,
+          "after": "PASS"
+        },
+        {
+          "nodeid": "tests/framework/test_runtime_dependency.py::test_old_xreactor_checkout_is_not_a_silent_fallback",
+          "before": "PASS",
+          "after": null
+        },
+        {
+          "nodeid": "tests/framework/test_runtime_dependency.py::test_runtime_uses_the_coverage_v2_worktree_and_native_protocol",
+          "before": "PASS",
+          "after": null
+        },
+        {
+          "nodeid": "tests/framework/test_runtime_dependency.py::test_runtime_uses_the_project_environment_and_native_protocol",
+          "before": null,
+          "after": "PASS"
+        }
+      ],
+      "verdict_equivalence": "REQUIRES_ANALYSIS",
+      "files": [
+        {
+          "path": "results/pre-migration-20261027T113420/cases/bpu-pure/cases.json",
+          "sha256": "e3d8265cfa0f667345a1236ac0e72f10c5bbc82ee3fee445cd251924eb1a563b"
+        },
+        {
+          "path": "results/framework-comparison-20261027T035449Z-693f5256/cases/bpu-pure/cases.json",
+          "sha256": "88e3948929499003c4f24cf3ed53a35e5ad02c4c1926d06c74a3834e1b09037a"
+        }
+      ]
+    },
+    {
+      "scope": "uras",
+      "before_counts": {
+        "PASS": 31,
+        "FAIL": 4
+      },
+      "after_counts": {
+        "PASS": 31,
+        "FAIL": 4
+      },
+      "same_collection": true,
+      "differences": [],
+      "verdict_equivalence": "PASS",
+      "files": [
+        {
+          "path": "results/pre-migration-20261027T113420/cases/bpu-uras/cases.json",
+          "sha256": "aaa50dae5ff10a5160b9d315752a0a64ce8586a5ba738856ccafec0f4f8d6571"
+        },
+        {
+          "path": "results/framework-comparison-20261027T035449Z-693f5256/cases/bpu-uras/cases.json",
+          "sha256": "ec02af566adddde1c9d4c1bf286cf1d1e5003ad183875f07b3a38b8c41169cdc"
+        }
+      ]
+    },
+    {
+      "scope": "ras",
+      "before_counts": {
+        "PASS": 24,
+        "FAIL": 5,
+        "XFAIL": 1
+      },
+      "after_counts": {
+        "PASS": 24,
+        "FAIL": 5,
+        "XFAIL": 1
+      },
+      "same_collection": true,
+      "differences": [],
+      "verdict_equivalence": "PASS",
+      "files": [
+        {
+          "path": "results/pre-migration-20261027T113420/cases/bpu-ras/cases.json",
+          "sha256": "90669ad08d0ccb1d02b9b5c5f6a4a7067d85bdbbdc9801908d18057ef7c3a9f9"
+        },
+        {
+          "path": "results/framework-comparison-20261027T035449Z-693f5256/cases/bpu-ras/cases.json",
+          "sha256": "c1aa78e06f60e66ce1e0148f39a5de918ba1917e8fabe70a36e007953f6f1bc3"
+        }
+      ]
+    },
+    {
+      "scope": "ubtb",
+      "before_counts": {
+        "PASS": 45,
+        "FAIL": 2
+      },
+      "after_counts": {
+        "PASS": 45,
+        "FAIL": 2
+      },
+      "same_collection": true,
+      "differences": [],
+      "verdict_equivalence": "PASS",
+      "files": [
+        {
+          "path": "results/pre-migration-20261027T113420/cases/bpu-ubtb/cases.json",
+          "sha256": "ea865ae847db5a44c8160dc0ec938048b8288704d3e64920245a2e42bf74eb80"
+        },
+        {
+          "path": "results/framework-comparison-20261027T035449Z-693f5256/cases/bpu-ubtb/cases.json",
+          "sha256": "6a710ca4282b42db9b9005e2308bbb9d033a8c54ab6fb551cbe3e2785c59a8cf"
+        }
+      ]
+    },
+    {
+      "scope": "abtb",
+      "before_counts": {
+        "PASS": 91,
+        "FAIL": 1
+      },
+      "after_counts": {
+        "PASS": 91,
+        "FAIL": 1
+      },
+      "same_collection": true,
+      "differences": [],
+      "verdict_equivalence": "PASS",
+      "files": [
+        {
+          "path": "results/pre-migration-20261027T113420/cases/bpu-abtb/cases.json",
+          "sha256": "c46081b26031aefeb3ad45f4fc69c5be92a3f1af016fd9c0d0b69e27d34f4072"
+        },
+        {
+          "path": "results/framework-comparison-20261027T035449Z-693f5256/cases/bpu-abtb/cases.json",
+          "sha256": "5fc541ce54a074981085f75801016684ae7631bcdc0edede092b751558fab039"
+        }
+      ]
+    },
+    {
+      "scope": "utage",
+      "before_counts": {
+        "PASS": 232,
+        "XFAIL": 3,
+        "FAIL": 35
+      },
+      "after_counts": {
+        "PASS": 232,
+        "XFAIL": 2,
+        "FAIL": 36
+      },
+      "same_collection": true,
+      "differences": [
+        {
+          "nodeid": "tests/utage/testcase/test_shadow_ring.py::test_saturated_rows_survive_full_shadow_replacement_in_both_tables_and_all_banks",
+          "before": "XFAIL",
+          "after": "FAIL"
+        }
+      ],
+      "verdict_equivalence": "REQUIRES_ANALYSIS",
+      "files": [
+        {
+          "path": "results/pre-migration-20261027T113420/cases/bpu-utage/cases.json",
+          "sha256": "55b4d1c04cf441870816da5375fe213b873eb99db3d9a352658c762eb3402bf7"
+        },
+        {
+          "path": "results/framework-comparison-20261027T035449Z-693f5256/cases/bpu-utage/cases.json",
+          "sha256": "9c3a8dfdc7e7ca6616f177aa27b94bdb95b08af41bd31ef6efa822bc3c4134d7"
+        }
+      ]
+    },
+    {
+      "scope": "tage",
+      "before_counts": {
+        "PASS": 248,
+        "XFAIL": 1
+      },
+      "after_counts": {
+        "PASS": 248,
+        "XFAIL": 1
+      },
+      "same_collection": true,
+      "differences": [],
+      "verdict_equivalence": "PASS",
+      "files": [
+        {
+          "path": "results/pre-migration-20261027T113420/cases/bpu-tage/cases.json",
+          "sha256": "7e58eb565392d8118b400bc1f952737f41a84e1b670d5969409a85c91ce1f186"
+        },
+        {
+          "path": "results/framework-comparison-20261027T035449Z-693f5256/cases/bpu-tage/cases.json",
+          "sha256": "4dfd9cf2c25cc4bd4794d430c85a0a099620e74c75874ece945d8bd9eed55fc1"
+        }
+      ]
+    },
+    {
+      "scope": "ittage",
+      "before_counts": {
+        "PASS": 43,
+        "FAIL": 3
+      },
+      "after_counts": {
+        "PASS": 43,
+        "FAIL": 3
+      },
+      "same_collection": true,
+      "differences": [],
+      "verdict_equivalence": "PASS",
+      "files": [
+        {
+          "path": "results/pre-migration-20261027T113420/cases/bpu-ittage/cases.json",
+          "sha256": "eff9c224e751e82cb1c2b3e744f3788487158ff90e75fb73867a4cd9dbc84687"
+        },
+        {
+          "path": "results/framework-comparison-20261027T035449Z-693f5256/cases/bpu-ittage/cases.json",
+          "sha256": "e6a8f2d3d8d480df3b9eacb4b2d41f0affdb33269a052726f15df99354003a89"
+        }
+      ]
+    },
+    {
+      "scope": "sc",
+      "before_counts": {
+        "PASS": 62
+      },
+      "after_counts": {
+        "PASS": 62
+      },
+      "same_collection": true,
+      "differences": [],
+      "verdict_equivalence": "PASS",
+      "files": [
+        {
+          "path": "results/pre-migration-20261027T113420/cases/bpu-sc/cases.json",
+          "sha256": "d093ad7980976a0ddf3b16221a562632da5d8932bd2d83189bf3b31baf06fd05"
+        },
+        {
+          "path": "results/framework-comparison-20261027T035449Z-693f5256/cases/bpu-sc/cases.json",
+          "sha256": "5517329a277dd1b3298335ad87d64e4b4ed7f8a544275c597f291c57ff0dd1f6"
+        }
+      ]
+    },
+    {
+      "scope": "mbtb",
+      "before_counts": {
+        "PASS": 116,
+        "FAIL": 10
+      },
+      "after_counts": {
+        "PASS": 116,
+        "FAIL": 10
+      },
+      "same_collection": true,
+      "differences": [],
+      "verdict_equivalence": "PASS",
+      "files": [
+        {
+          "path": "results/pre-migration-20261027T113420/cases/bpu-mbtb/cases.json",
+          "sha256": "6fd7c69b3606eaa9cbd79ac152a38cab1e405a08b8993cbe865c4879bd564d7b"
+        },
+        {
+          "path": "results/framework-comparison-20261027T035449Z-693f5256/cases/bpu-mbtb/cases.json",
+          "sha256": "742a2c9ffb09f992772ecca0eaa8f769e87a8801a4da7a6d36867e7df4b2d3bd"
+        }
+      ]
+    },
+    {
+      "scope": "bpu",
+      "before_counts": {
+        "PASS": 993,
+        "FAIL": 62,
+        "XFAIL": 2
+      },
+      "after_counts": {
+        "PASS": 993,
+        "FAIL": 62,
+        "XFAIL": 2
+      },
+      "same_collection": true,
+      "differences": [],
+      "verdict_equivalence": "PASS",
+      "files": [
+        {
+          "path": "results/pre-migration-20261027T113420/cases/bpu-bpu/cases.json",
+          "sha256": "71a076657431ffc17cee8f5a2b753c7b94e36101cb9fb3e2f85a8c0b85bb8e9b"
+        },
+        {
+          "path": "results/framework-comparison-20261027T035449Z-693f5256/cases/bpu-bpu/cases.json",
+          "sha256": "92d1af5c0f1d8ee04354d9abde151ee5eba1485055211d284aa6f9363c730609"
+        }
+      ]
+    }
+  ]
+}

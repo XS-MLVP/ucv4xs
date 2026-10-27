@@ -1,3 +1,4 @@
+from bpuverify.bpu.model.early_opposition import FALLBACK
 """Source-owned protection, confirmed at the next full actual-state boundary."""
 from collections import deque
 from copy import deepcopy
@@ -120,7 +121,7 @@ class EarlyProtectionChecks(EarlyOppositionChecks):
         sources = self.pipeline.model.sources
         self.check((3, True), (main_counter(token), steady_history(token, 2)),
                    'normal Main steering has a distinct stable taken history')
-        self.check(False, steady_history(token, 4), 'different real program history from the protected NT path')
+        self.check(False, steady_history(token, FALLBACK), 'different real program history from the protected NT path')
         if sources.snapshot(token).enabled:
             frame = sources.short_snapshot(token).prediction.frame
             self.check(True, frame is not None and frame.read.indices[self.identity.table] != self.identity.index,

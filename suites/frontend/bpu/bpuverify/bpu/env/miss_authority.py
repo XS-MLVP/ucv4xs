@@ -32,7 +32,7 @@ async def run(agent,p,coverage,evidence):
             observer.check(False,any(s.hit for row in source_entries(token.lookup) for s in row),'new logical tag is an actual original Main miss')
             literal=deepcopy(cold.meta.resolve['mbtb_entries'])
             observer.check(False,any(s['rawHit'] for row in literal for s in row),'all raw hit bits really exclude the old identity')
-            witness=literal[0][1]
+            witness=literal[0][3]
             observer.check((0,RESIDENT_POSITION,1,2),
                 (witness['rawHit'],witness['position'],witness['attribute']['branchType'],witness['counter_value']),
                 'counterexample precondition: genuine miss retains an old conditional position/counter without fabricating it')
@@ -55,16 +55,16 @@ async def run(agent,p,coverage,evidence):
                 evidence.update(input_tick=event.tick,input_payload_sha256=fingerprint(observer.literal_inputs[0]['payload']),
                     expected_input_payload_sha256=fingerprint(expected),
                     accepted_literal_main=deepcopy(observer.literal_inputs[0]['payload']['meta']['mbtb_entries']),
-                    directions=deepcopy(observer.directions),counter_services=deepcopy(observer.written[2]),
-                    entry_proposals=deepcopy(observer.incoming),entry_services=deepcopy(observer.written[:2]))
+                    directions=deepcopy(observer.directions),counter_services=deepcopy(observer.written[4]),
+                    entry_proposals=deepcopy(observer.incoming),entry_services=deepcopy(observer.written[:4]))
                 effect=entry_payload(coordinate(FOREIGN_PC)[2],Entry(tag(FOREIGN_PC),p.position,1,0,Target.encode(FOREIGN_PC,STREAM_PC)))
                 expected_entries=[effect] if p.allocate else []
                 observer.check(expected_entries,[r['bits'] for r in observer.incoming],'only requested new identity gets an entry proposal')
-                observer.check((expected_entries,[]),tuple([r['bits'] for r in rows] for rows in observer.written[:2]),
+                observer.check(([],[],expected_entries,[]),tuple([r['bits'] for r in rows] for rows in observer.written[:4]),
                     'actual new entry services on its independent selected owner')
                 coverage.reach('entry-allocation-ownership')
                 proposed=[observed_counter(r['bits']) for r in observer.directions]
-                serviced=[observed_counter(r['bits']) for r in observer.written[2]]
+                serviced=[observed_counter(r['bits']) for r in observer.written[4]]
                 wanted=[] if p.direction is None else [p.direction]
                 observer.check(wanted,proposed,'a miss has no resident direction authority; allocation resets only its new owner')
                 coverage.reach('direction-authority')

@@ -132,8 +132,8 @@ def test_false_overlap_or_missing_completion_cannot_claim_pipeline_credit(damage
 def test_all_adopted_utage_contracts_preserve_recipes_and_do_not_claim_old_pass_as_new_proof():
     plan = json.loads(Path('verification_plan.json').read_text());features = plan['features']
     utage = [p for p in features if p['id'].startswith('BPU-UTAGE-')]
-    assert len(utage) == 25 and all('contract' in p for p in utage)
-    assert {p['id'] for p in utage} == {f'BPU-UTAGE-{n:03d}' for n in range(1, 26)}
+    assert len(utage) == 27 and all('contract' in p for p in utage)
+    assert {p['id'] for p in utage} == {f'BPU-UTAGE-{n:03d}' for n in range(1, 28)}
     assert sum('contract' in p for p in features) >= 47
     adopted = [p for p in utage if p['metadata'].get('semantic_review',{}).get('adopted_event_review')]
     assert len(adopted) == 18

@@ -8,7 +8,7 @@ from bpuverify.bpu.checker.ras.capacity import RasReuseChecks
 from bpuverify.bpu.coverage.ras_reuse import RasReuseCoverage
 
 
-@pytest.mark.parametrize('adjacent,expected',((True,16),(False,15)))
+@pytest.mark.parametrize('adjacent,expected',((True,32),(False,31)))
 def test_registered_guard_margin_is_a_real_cadence_contract_not_an_extra_capacity_bit(adjacent,expected):
     model=RasReference()
     for _ in range(CAPACITY+3):
@@ -34,7 +34,7 @@ class Program:
         self.last=self.step(Events(reset=True))
     def actual(self):
         model=self.checks.model;p=model.projection
-        pointer=dict(flag=p['calls']//16,value=p['calls']%16)
+        pointer=dict(flag=p['calls']//32,value=p['calls']%32)
         return dict(top=p['top'],redirect_meta=dict(ssp=p['group'],sctr=p['repeat'],tosw=pointer),
             commit_meta=dict(ssp=p['group'],tosw=pointer))
     def retained(self):
@@ -94,10 +94,10 @@ def test_complete_lifetime_retains_old_groups_and_new_return_identity_after_canc
     assert c.lifecycle.groups['checked'].coverage==0
     returns=p.returns(3,NEW_RETURN);p.retire(returns,1,NEW_RETURN);c.final_returns(returns);c.finish()
     assert c.closed and all(g.coverage==100 for g in c.lifecycle.groups.values())
-    assert c.model.program.calls==21 and c.model.retirements==26
+    assert c.model.program.calls==37 and c.model.retirements==42
     assert c.model.committed[1].address==c.model.committed[2].address==call_address(OLD_CALL)
-    assert (c.model.committed[1].repeat,c.model.committed[2].repeat)==(7,3)
-    assert (c.model.committed[3].address,c.model.committed[3].repeat)==(call_address(NEW_CALL),3)
+    assert (c.model.committed[1].repeat,c.model.committed[2].repeat)==(7,7)
+    assert (c.model.committed[5].address,c.model.committed[5].repeat)==(call_address(NEW_CALL),3)
     assert c.model.program.head.address==call_address(NEW_CALL) and c.model.program.head.version>=CAPACITY
     # The original cancelled full-capacity suffix can no longer retire.
     with pytest.raises(AssertionError,match='no owned speculative source'):
@@ -111,8 +111,8 @@ def test_wrong_actual_is_latched_without_reseeding_the_owned_program_or_retained
     elif fault=='group':actual['redirect_meta']['ssp']^=1
     elif fault=='repeat':actual['redirect_meta']['sctr']^=1
     elif fault=='calls':actual['redirect_meta']['tosw']['value']^=1
-    elif fault=='retained-address':retained['cells'][3]['address']=call_address(OLD_CALL)//2
-    elif fault=='retained-repeat':retained['cells'][3]['counter']^=1
+    elif fault=='retained-address':retained['cells'][5]['address']=call_address(OLD_CALL)//2
+    elif fault=='retained-repeat':retained['cells'][5]['counter']^=1
     else:tick+=2
     before=deepcopy(c.model.state())
     c.capture_output(NS(tick=tick),actual,retained=retained,consumer=dict(valid=1,pc=NEW_RETURN))

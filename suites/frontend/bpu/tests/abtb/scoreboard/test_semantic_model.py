@@ -38,7 +38,7 @@ def learn(model, request):
 
 def test_algorithm_has_no_signal_or_old_implementation_audit_dependency():
     tree = ast.parse(Path('bpuverify/abtb/model/semantic.py').read_text())
-    assert [node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)] == ['dataclasses']
+    assert [node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)] == ['bpuverify.common.model.configuration', 'dataclasses']
     assert not any(isinstance(node, ast.Import) for node in ast.walk(tree))
 
 
@@ -245,9 +245,9 @@ def test_miss_does_not_compare_undefined_entry_payloads():
     assert expected == observed
 
 
-@pytest.mark.parametrize('invalid', (lambda: Events(select=1), lambda: Events(history=16),
+@pytest.mark.parametrize('invalid', (lambda: Events(select=1), lambda: Events(history=32),
     lambda: Events(feedback=SimpleNamespace(as_int=lambda: 0)), lambda: Source(hit=1),
-    lambda: Source(position=16), lambda: Source(kind=4),
+    lambda: Source(position=32), lambda: Source(kind=4),
     lambda: Source(target=1 << 22), lambda: coordinate(1 << 49)))
 def test_signal_like_and_out_of_contract_inputs_are_rejected(invalid):
     with pytest.raises(ValueError):

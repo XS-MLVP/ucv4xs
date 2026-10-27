@@ -1,4 +1,5 @@
 """Input-only resident conditional + later fallback, separate from final NT."""
+from bpuverify.common.model.configuration import PHR_STORAGE_BITS, MAIN_WAYS
 from collections import Counter
 from bpuverify.bpu.model.phr.model import BpuPhrReference
 from bpuverify.bpu.model.phr.model import MASK
@@ -50,7 +51,7 @@ def plan(bank, entry_set):
                 if len({pc for cycle in cycles for pc in cycle}) != 20:
                     continue
                 peers = set((steady_indices(a, b, c, d, 1)[index] for index in (0, 1, 3)))
-                if steady_indices(a, b, c, d, 1)[2] != wanted or wanted in peers or max(capacity(cycles).values()) > 2:
+                if steady_indices(a, b, c, d, 1)[2] != wanted or wanted in peers or max(capacity(cycles).values()) > MAIN_WAYS:
                     continue
                 return dict(bank=bank, entry_set=entry_set, physical_index=wanted, cycles=cycles, conditional_position=6, fallback_position=7, return_positions=(7, 7, 7), low4_index_source_history=c >> 1 & 15, index_request_pc=d, peer_physical_indices=sorted(peers), address_region_salt=salt, maximum_MainBTB_residents_per_group=max(capacity(cycles).values()), PC_unit='halfword Pc.addr; byte address=addr<<1', negative_path='final taken=1 position=7 after conditional position=6; not final NT', no_DUT_or_raw_created=True)
     raise AssertionError(('no capacity-safe later-taken cycle', bank, entry_set))
@@ -60,6 +61,7 @@ def required_operations(confirmed, intent, alias, phase, required):
     return {name: [row for row in confirmed if row['phase'] == phase and row['bank'] == intent['bank'] and (row['set_index'] == intent['entry_set']) and (row['transition'] == name) and (row.get('feedback') is not None) and (row['feedback']['pc'] == a) and (row['feedback']['taken'] == 1) and (row['feedback']['position'] == (7 if name.startswith('dec') else 6))] for name in required}
 
 def joint_proof(intent, rounds=16):
+    rounds=max(rounds,(PHR_STORAGE_BITS+7)//8+2)
     full_checks = target_checks = 0
     for a, b, c, d in intent['cycles']:
         model, index, history = (BpuPhrReference(), IndexReference(), 0)
@@ -84,7 +86,7 @@ def joint_proof(intent, rounds=16):
                 inputs = boundary(model, source, target)
                 inputs['s1']['prediction'].update(position=position, taken=1)
                 model.advance(inputs, reset=0)
-                history = (history << 2 ^ path_hash((source & ~7) + position, target)) & MASK
+                history = (history << 2 ^ path_hash((source & ~15) + position, target)) & MASK
                 assert model.logical() == history
                 if cycle >= 1:
                     assert history != 0

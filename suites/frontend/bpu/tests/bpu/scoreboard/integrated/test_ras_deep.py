@@ -27,14 +27,14 @@ def test_ordered_nested_commit_retains_popped_cells():
     assert state.native()['cells'][1:3] == [dict(address=first, counter=0), dict(address=second, counter=0)]
 
 
-@pytest.mark.parametrize('depth', (4, 7, 8))
+@pytest.mark.parametrize('depth', (4, 7, 8, 15, 16))
 def test_deep_program_is_bounded_and_matches_retained_slots(depth):
     calls, cases = program(depth)
     state = CommittedStack()
     for pc, target, branch_type, action in cases:
         state = advance(state, action, address=return_address(pc, 15) if action == 2 else None)
-    assert state.head == (1 if depth == 8 else 0)
-    assert len(state.evicted) == int(depth == 8)
-    assert len(cases) == (15 if depth == 8 else 2 * depth)
+    assert state.head == (1 if depth == 16 else 0)
+    assert len(state.evicted) == int(depth == 16)
+    assert len(cases) == (31 if depth == 16 else 2 * depth)
     for index, pc in enumerate(calls):
-        assert state.cells[(index + 1) % 8].address == return_address(pc, 15)
+        assert state.cells[(index + 1) % 16].address == return_address(pc, 15)

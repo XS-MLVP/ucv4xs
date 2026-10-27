@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -19,7 +20,7 @@ from bpuverify.common.coverage.native import native_coverage_path
 
 ROOT = Path(__file__).resolve().parents[3]
 RTL_COVERAGE_FILES: set[Path] = set()
-VERILATOR_SEED = 1
+VERILATOR_SEED = int(os.environ.get('UCV_SEED', '1'))
 
 
 def initialize_dut_inputs(dut: Any) -> None:

@@ -26,7 +26,7 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCK = __import__("ucv.runtime", fromlist=["toolchain"]).toolchain()
-TOFFEE = shlex.split(LOCK["toffee"]["runner_command"])
+TOFFEE = list(LOCK["toffee"]["runner_command"])
 VERILATOR_COVERAGE = LOCK["verilator"]["coverage_processor"]
 
 

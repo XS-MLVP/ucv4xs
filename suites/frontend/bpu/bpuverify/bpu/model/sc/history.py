@@ -1,4 +1,6 @@
 """bpuverify.bpu.model.sc.history components."""
+from bpuverify.common.model.configuration import *
+
 
 from copy import deepcopy
 from bpuverify.bpu.model.sc.model import ScReference
@@ -8,13 +10,13 @@ from bpuverify.bpu.model.sc.model import width
 def history_indices(pc, common):
     if common['valid'] not in (0, 1):
         raise ValueError('common history valid must be one bit')
-    if not 0 <= common['ghr'] < 256 or not 0 <= common['bw'] < 16:
-        raise ValueError('common history exceeds the elaborated GHR/BW widths')
-    folded = 0
-    for bit in range(8):
-        folded ^= ((common['ghr'] >> bit) & 1) << (bit % 7)
-    base = (pc >> 3) & 127
-    return dict(globalTable_0=base ^ folded, bwTable_0=base ^ common['bw'])
+    if not 0 <= common['ghr'] < 1 << 16 or not 0 <= common['bw'] < 1 << 8:
+        raise ValueError('common history exceeds DefaultConfig GHR/BW widths')
+    def folded(value, length):
+        return sum((sum((value >> j) & 1 for j in range(i, length, 7)) % 2) << i for i in range(7))
+    base = (pc // ALIGN_HALFWORDS) & 127
+    return {**{f'globalTable_{i}': base ^ folded(common['ghr'], n) for i, n in enumerate((8, 16))},
+            **{f'bwTable_{i}': base ^ folded(common['bw'], n) for i, n in enumerate((4, 8))}}
 
 
 def history_requests(transaction, memories):
@@ -39,14 +41,14 @@ def history_requests(transaction, memories):
             raise ValueError('SC-used metadata outside this qualified setup')
         taken = branch['taken']
         if sc['scPred'][index] != taken or not sc['sumAboveThres'][index]:
-            way = (branch['position'] & 3) ^ (branch['position'] >> 2)
+            way = (branch['position'] % SC_WAYS) ^ (branch['position'] // SC_WAYS)
             updates.append((way, way * 4 + sc['scBiasLowerBits'][index], 1 if taken else -1))
     debug = sc['debug']
-    indices = dict(pathTable_0=debug['predPathIdx'][0],
+    indices = dict(pathTable_0=debug['predPathIdx'][0], pathTable_1=debug['predPathIdx'][1],
         imliTable=debug['predImliIdx'], biasTable=debug['predBiasIdx'])
     if common['valid']:
-        for table, field in (('globalTable_0', 'predGlobalIdx'), ('bwTable_0', 'predBWIdx')):
-            if debug[field][0] != common_indices[table]:
+        for table, field, index in ((f'{family}_{i}', field, i) for family, field in (('globalTable', 'predGlobalIdx'), ('bwTable', 'predBWIdx')) for i in range(2)):
+            if debug[field][index] != common_indices[table]:
                 raise ValueError(f'captured {table} index disagrees with actual PC/history')
         indices.update(common_indices)
     requests = {}

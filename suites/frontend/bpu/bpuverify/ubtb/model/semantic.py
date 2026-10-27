@@ -8,6 +8,8 @@ captured lookup from the later use of its selected entry.
 Scope: the checked-in 32-entry, one-taken, PLRU, no-target-fix MicroBTB config.
 Addresses use the standalone API's aligned 50-bit unguarded byte units.
 """
+from bpuverify.common.model.configuration import *
+
 from dataclasses import dataclass, replace
 
 from bpuverify.ubtb.transaction.types import (
@@ -109,7 +111,7 @@ class UbtbReference:
     def _validate_feedback(cls, feedback):
         cls._address(feedback.pc, 'feedback PC')
         cls._address(feedback.target, 'feedback target')
-        for name, limit in (('taken', 2), ('mispredict', 2), ('position', 16),
+        for name, limit in (('taken', 2), ('mispredict', 2), ('position', POSITIONS),
                             ('branch_type', 4), ('ras_action', 4)):
             value = getattr(feedback, name)
             if type(value) is not int or not 0 <= value < limit:

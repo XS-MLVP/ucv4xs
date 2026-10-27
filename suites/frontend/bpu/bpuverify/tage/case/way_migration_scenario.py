@@ -1,4 +1,5 @@
 """Real provider-way migration, accepted feedback, and neighbor preservation."""
+from bpuverify.common.model.configuration import *
 
 from bpuverify.tage.transaction.types import TageTraining
 from bpuverify.tage.checker.assertions import fill_useful_set
@@ -40,7 +41,7 @@ def snapshot(prediction):
             "provider_counter_valid": prediction.provider_counter_valid, "meta": prediction.meta}
 
 
-async def read_grid(agent, pc, *, repeated=False, positions=tuple(range(10))):
+async def read_grid(agent, pc, *, repeated=False, positions=tuple(range((2 * TAGE_TABLES + 2)))):
     coordinates = list(positions)
     if repeated:
         coordinates += list(reversed(coordinates))
@@ -57,7 +58,7 @@ async def read_grid(agent, pc, *, repeated=False, positions=tuple(range(10))):
         predictions[position] = prediction
     residents = {position: prediction for position, prediction in predictions.items()
                  if prediction.meta["hasProvider"]}
-    assert len(residents) == len({cell(p) for p in residents.values()}) == 8, (pc, residents)
+    assert len(residents) == len({cell(p) for p in residents.values()}) == 2 * TAGE_TABLES, (pc, residents)
     return residents
 
 
@@ -87,11 +88,11 @@ async def set_unprotected_counter(agent, pc, position, expected_cell, counter):
 async def prepare_unprotected_highest_ways(agent, pc, origin_way):
     await agent.reset()
     await fill_useful_set(agent, pc=pc)
-    cold = await agent.predict(pc, 8, 0)
+    cold = await agent.predict(pc, 2 * TAGE_TABLES, 0)
     assert cold.meta["hasProvider"] == 0, cold
     for attempt in range(USEFUL_RESET_COUNTER_MAX + 6):
-        await agent.train(TageTraining(pc, 8, 1, 0, cold.meta, mispredict=1))
-        newcomer = await agent.predict(pc, 8, 0)
+        await agent.train(TageTraining(pc, 2 * TAGE_TABLES, 1, 0, cold.meta, mispredict=1))
+        newcomer = await agent.predict(pc, 2 * TAGE_TABLES, 0)
         if newcomer.meta["hasProvider"]:
             assert attempt + 1 > USEFUL_RESET_COUNTER_MAX, (pc, attempt, newcomer)
             break
@@ -100,8 +101,8 @@ async def prepare_unprotected_highest_ways(agent, pc, origin_way):
     # Set zero can reopen before the 128-set useful clear finishes. Sixteen
     # pipelined, read-only all-grid rounds give the existing sweep time to
     # finish before any reinforcement; no reset occurs after capture.
-    for _ in range(16):
-        residents = await read_grid(agent, pc, positions=tuple(range(9)))
+    for _ in range((TAGE_ROWS + 2 * TAGE_TABLES) // (2 * TAGE_TABLES + 1)):
+        residents = await read_grid(agent, pc, positions=tuple(range((2 * TAGE_TABLES + 1))))
     assert all(p.meta["providerUsefulCtr_value"] == 0 for p in residents.values()), residents
     for position, prediction in residents.items():
         if cell(prediction)[0] != HIGHEST_TABLE:
@@ -149,13 +150,13 @@ async def check_way_migration(agent, coverage, *, pc, context, origin_way, mode)
         weakened = await agent.predict(pc, original_position, 0)
         assert cell(weakened) == (HIGHEST_TABLE, origin_way)
         assert (weakened.meta["providerTakenCtr_value"], weakened.meta["providerUsefulCtr_value"]) == (4, 0)
-        cold = await agent.predict(pc, 9, 0)
+        cold = await agent.predict(pc, (2 * TAGE_TABLES + 1), 0)
         assert cold.meta["hasProvider"] == 0, cold
-        await send(TageTraining(pc, 9, 1, 0, cold.meta, mispredict=1))
-        replacement = await agent.predict(pc, 9, 0)
+        await send(TageTraining(pc, (2 * TAGE_TABLES + 1), 1, 0, cold.meta, mispredict=1))
+        replacement = await agent.predict(pc, (2 * TAGE_TABLES + 1), 0)
         assert cell(replacement) == (HIGHEST_TABLE, origin_way), replacement
         assert (await agent.predict(pc, original_position, 0)).meta["hasProvider"] == 0
-        await protect(agent, pc, 9, replacement, send)
+        await protect(agent, pc, (2 * TAGE_TABLES + 1), replacement, send)
         missing = await agent.predict(pc, original_position, 0)
         assert missing.meta["hasProvider"] == 0, missing
         await send(TageTraining(pc, original_position, 1, 0, missing.meta, mispredict=1))
@@ -165,12 +166,12 @@ async def check_way_migration(agent, coverage, *, pc, context, origin_way, mode)
         before = await read_grid(agent, pc)
         assert (before[original_position].meta["providerTakenCtr_value"],
                 before[original_position].meta["providerUsefulCtr_value"]) == (4, 0)
-        assert (before[9].meta["providerTakenCtr_value"], before[9].meta["providerUsefulCtr_value"]) == (7, 3)
+        assert (before[(2 * TAGE_TABLES + 1)].meta["providerTakenCtr_value"], before[(2 * TAGE_TABLES + 1)].meta["providerUsefulCtr_value"]) == (7, 3)
         failures = []
         phases = {}
 
         def check_phase(predictions, phase):
-            target, neighbor = predictions[original_position], predictions[9]
+            target, neighbor = predictions[original_position], predictions[(2 * TAGE_TABLES + 1)]
             state = (pc, context, origin_way, mode, phase, target, neighbor)
             assert set(predictions) == set(before), state
             assert cell(target) == (HIGHEST_TABLE, 1 - origin_way), state
@@ -184,17 +185,17 @@ async def check_way_migration(agent, coverage, *, pc, context, origin_way, mode)
             allowed_useful = (0,) if phase == "migrated" else ((0, 1) if mode == "captured" else (1,))
             assert target.meta["providerUsefulCtr_value"] in allowed_useful, state
             for position in before:
-                if position not in (original_position, 9):
+                if position not in (original_position, (2 * TAGE_TABLES + 1)):
                     assert snapshot(predictions[position]) == snapshot(before[position]), (state, position)
-            old_neighbor_meta = {k: v for k, v in before[9].meta.items() if k != "providerUsefulCtr_value"}
+            old_neighbor_meta = {k: v for k, v in before[(2 * TAGE_TABLES + 1)].meta.items() if k != "providerUsefulCtr_value"}
             assert {k: v for k, v in neighbor.meta.items() if k != "providerUsefulCtr_value"} == old_neighbor_meta, state
             actual_useful = neighbor.meta["providerUsefulCtr_value"]
             neighbor_held = actual_useful == 3
             if not neighbor_held:
                 assert mode == "captured" and phase != "migrated" and actual_useful == 1, state
                 failures.append({"pc": pc, "context": context, "origin_way": origin_way, "phase": phase,
-                    "neighbor_position": 9, "expected_useful": 3, "actual_useful": actual_useful,
-                    "neighbor_before": snapshot(before[9]), "neighbor_after": snapshot(neighbor),
+                    "neighbor_position": (2 * TAGE_TABLES + 1), "expected_useful": 3, "actual_useful": actual_useful,
+                    "neighbor_before": snapshot(before[(2 * TAGE_TABLES + 1)]), "neighbor_after": snapshot(neighbor),
                     "target_after": snapshot(target)})
             for check in ("target_counter", "target_useful", "neighbor_counter", "neighbor_useful", "other_neighbors"):
                 if check != "neighbor_useful" or neighbor_held:

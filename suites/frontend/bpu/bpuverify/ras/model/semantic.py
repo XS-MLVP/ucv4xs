@@ -5,13 +5,14 @@ Push/pop/return-and-call are stack operations; repeated addresses form bounded
 call groups. A checkpoint restores the owned program prefix. Retirement names
 an already accepted operation, never an address sampled from hardware memory.
 
-MinimalConfig: eight retained committed groups, sixteen speculative call
+DefaultConfig: sixteen retained committed groups, thirty-two speculative call
 versions, eight calls per repeated-address group. Addresses here are bytes.
 The public adapter handles halfword ports and the one-cycle retirement/repair
 visibility boundary. Queue pointer details outside the checked projection
 remain covered by the existing dedicated retirement/recovery checkers.
 """
 from dataclasses import dataclass, replace
+from bpuverify.common.model.configuration import RAS_GROUPS, RAS_SPEC_ENTRIES, RAS_POINTER_MODULUS, ALIGN_BYTES, POSITIONS
 from copy import copy
 
 
@@ -33,7 +34,7 @@ class Program:
         return self.frames[-1]
 
     def commit_key(self):
-        return self.head.group % 8, self.calls % 32
+        return self.head.group % RAS_GROUPS, self.calls % RAS_POINTER_MODULUS
 
     def redirect_key(self):
         return *self.commit_key(), self.head.repeat
@@ -87,9 +88,9 @@ class Events:
 
 def instruction_return(pc, position):
     """Block-relative end-of-instruction address; do not use the encoder."""
-    if type(pc) is not int or not 0 <= pc < 1 << 51 or type(position) is not int or not 0 <= position < 16:
+    if type(pc) is not int or not 0 <= pc < 1 << 51 or type(position) is not int or not 0 <= position < POSITIONS:
         raise ValueError('RAS PC or instruction position is out of range')
-    return ((pc // 16) * 16 + 2 * (position + 1)) % (1 << 51)
+    return ((pc // ALIGN_BYTES) * ALIGN_BYTES + 2 * (position + 1)) % (1 << 51)
 
 
 class RasReference:
@@ -98,7 +99,7 @@ class RasReference:
 
     def reset(self):
         self.program = Program()
-        self.committed = [Frame(group=group) for group in range(8)]
+        self.committed = [Frame(group=group) for group in range(RAS_GROUPS)]
         self.committed_head = 0
         self.retired_calls = 0
         self.guarded = False
@@ -169,11 +170,11 @@ class RasReference:
             self._original_operations[origin.serial] = operation
 
     def _live(self, frame, program):
-        return frame.version >= 0 and (frame.version - self.retired_calls) % 32 < (program.calls - self.retired_calls) % 32
+        return frame.version >= 0 and (frame.version - self.retired_calls) % RAS_POINTER_MODULUS < (program.calls - self.retired_calls) % RAS_POINTER_MODULUS
 
     def _top(self, program):
         head = program.head
-        return head if self._live(head, program) else self.committed[head.group % 8]
+        return head if self._live(head, program) else self.committed[head.group % RAS_GROUPS]
 
     def _pop(self, program):
         before = program.head
@@ -184,13 +185,13 @@ class RasReference:
             # An empty/bottom return exposes retained bounded storage; it
             # does not invent an infinite stack of architecturally valid calls.
             group = before.group - 1
-            resident = self.committed[group % 8]
+            resident = self.committed[group % RAS_GROUPS]
             head = Frame(resident.address, group, resident.repeat)
             frames = (head,)
         if before.repeat:
             head = replace(head, group=before.group, repeat=before.repeat - 1)
         elif not self._live(head, program):
-            head = replace(head, repeat=self.committed[head.group % 8].repeat)
+            head = replace(head, repeat=self.committed[head.group % RAS_GROUPS].repeat)
         return replace(program, frames=(*frames[:-1], head))
 
     def _apply(self, program, action, address):
@@ -212,7 +213,7 @@ class RasReference:
 
     def _retire(self, accepted):
         before, action, address = accepted.before, accepted.action, accepted.address
-        group = before.head.group % 8
+        group = before.head.group % RAS_GROUPS
         if action & 1:
             # Repair the committed program cursor to the source before
             # applying its operation, rather than copying an unrelated head's
@@ -221,16 +222,16 @@ class RasReference:
             if old.repeat:
                 self.committed[group] = replace(old, repeat=old.repeat - 1)
             else:
-                group = (group - 1) % 8
+                group = (group - 1) % RAS_GROUPS
         if action & 2:
             old = self.committed[group]
             if old.address == address and old.repeat < 7:
                 self.committed[group] = replace(old, repeat=old.repeat + 1)
             else:
-                group = (group + 1) % 8
+                group = (group + 1) % RAS_GROUPS
                 self.committed[group] = Frame(address, group)
             self.retired_calls = before.calls
-        elif (before.calls - self.retired_calls) % 32 > 2:
+        elif (before.calls - self.retired_calls) % RAS_POINTER_MODULUS > 2:
             self.retired_calls = before.calls - 1
         if action:
             self.committed_head = group
@@ -322,7 +323,7 @@ class RasReference:
         self.cycles += 1
         self.last_applied = None
         before = self.program
-        occupancy = (before.calls - self.retired_calls) % 32
+        occupancy = (before.calls - self.retired_calls) % RAS_POINTER_MODULUS
         recovering = self.pending_recovery
         retiring = self.pending_retirement
         self.pending_recovery = events.recovery
@@ -336,7 +337,7 @@ class RasReference:
                 checkpoint = self.checkpoints.get(key) if source is None else source.program
                 if checkpoint is None:
                     raise AssertionError(f'RAS recovery has no independently owned checkpoint: {key}')
-                older = 0 < (before.calls - checkpoint.calls) % 32 <= 16
+                older = 0 < (before.calls - checkpoint.calls) % RAS_POINTER_MODULUS <= RAS_SPEC_ENTRIES
                 if not self.guarded or older:
                     following = self._apply(checkpoint, recovering.action, recovering.address)
                     # Restoring a program also cancels its younger operation
@@ -369,13 +370,13 @@ class RasReference:
         # Registered top sees this cycle's stack operation but not a committed
         # cell retiring at the same boundary. The next cycle sees that commit.
         top = self._top(following)
-        self.projection = dict(top=top.address // 2, group=following.head.group % 8,
-                               repeat=following.head.repeat, calls=following.calls % 32)
+        self.projection = dict(top=top.address // 2, group=following.head.group % RAS_GROUPS,
+                               repeat=following.head.repeat, calls=following.calls % RAS_POINTER_MODULUS)
         self.program = following
         self._remember(following)
         if retiring is not None:
             self._retire(retiring)
-        self.guarded = occupancy > 14
+        self.guarded = occupancy > RAS_SPEC_ENTRIES - 2
         # Checkpoints are independently generated program prefixes. This is
         # not a general FTQ trace validator or a gold model for raw pointer bits.
         if len(self.operations) > 128:

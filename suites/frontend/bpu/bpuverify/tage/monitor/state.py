@@ -1,4 +1,6 @@
 """Same-event native table state and public prediction sampling for TAGE."""
+from bpuverify.common.model.configuration import *
+
 from bpuverify.common.env.memory_direct import memory_signal
 from bpuverify.common.env.memory_direct import memory_signal_names
 from dataclasses import replace
@@ -25,7 +27,7 @@ class TageSelectorMonitor(CycleMonitor):
                     f'found {len(matches)}: {matches}')
             return memory_signal(dut, matches[0].split('.', 1)[1])
 
-        self.fields = tuple(signal(index) for index in range(8))
+        self.fields = tuple(signal(index) for index in range(2*TAGE_TABLES))
         binding = PortBinding(dut.clock,
             Bundle(registers=tuple(self.fields)), 'tage.selectors')
         super().__init__(binding, decoder=lambda sample: tuple(value.as_int() for value in sample.registers))
@@ -42,13 +44,13 @@ class TagePredictionStateMonitor(CycleMonitor):
                 raise RuntimeError(f'TAGE state signal {suffix} needs one memory-direct binding; found {len(matches)}: {matches}')
             return memory_signal(dut, matches[0].split('.', 1)[1])
 
-        hit_masks = tuple(tuple(signal(f's2_hits_{slot}_{table}') for table in range(4)) for slot in range(4))
+        hit_masks = tuple(tuple(signal(f's2_hits_{slot}_{table}') for table in range(TAGE_TABLES)) for slot in range(RESULT_SLOTS))
         table_entries = tuple(tuple(Bundle(
             counter=signal(f's2_readResp_{table}_entries_{way}_takenCtr_value'),
             useful=signal(f's2_readResp_{table}_usefulCtrs_{way}_value'),
-        ) for way in range(2)) for table in range(4))
+        ) for way in range(2)) for table in range(TAGE_TABLES))
         alternate_counters = tuple(signal(f'alt_{slot}_takenCtr_value' if slot else 'alt_takenCtr_value')
-                                   for slot in range(4))
+                                   for slot in range(RESULT_SLOTS))
         binding = PortBinding(dut.clock, Bundle(prediction=prediction_binding.bits,
             hit_masks=hit_masks, table_entries=table_entries, alternate_counters=alternate_counters), 'tage.prediction_state')
 

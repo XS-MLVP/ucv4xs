@@ -1,4 +1,6 @@
 """Learning credit requires real original-source feedback and all consumers."""
+from bpuverify.common.model.configuration import ITTAGE_ALLOCATION_WAIT
+
 from dataclasses import replace
 from types import SimpleNamespace as NS
 import pytest
@@ -12,9 +14,9 @@ from tests.bpu.scoreboard.test_direction_sources import revisit
 
 def fixture():
     model,event,anchor=prepared();pc=anchor.pc
-    for _ in range(128):
+    for _ in range(ITTAGE_ALLOCATION_WAIT):
         token=revisit(model,event,anchor,pc)
-        if model.sources.snapshot(token,resolved=True).allocation==2:break
+        if model.sources.snapshot(token,resolved=True).allocation==4:break
     else:raise AssertionError('cold longest allocation missing')
     retired=[];repairs={}
     pipeline=NS(board=Scoreboard('owned-indirect-learning-contract'),model=model,raise_failure=lambda:None,

@@ -3,6 +3,7 @@
 This MiniConfig model covers two counter-2 hit feedback beats and a 24-read
 sentinel window. It is not a full allocator, overflow, flush or stale-way model.
 """
+from bpuverify.common.model.configuration import *
 from copy import deepcopy
 from dataclasses import replace
 
@@ -27,7 +28,7 @@ def mbtb_retarget_targets(pc, original_target, pattern):
 
 
 def expected_mbtb_entry_activity(pc, position, way, targets, mode, *, reads=24):
-    if pc < 0 or pc & 7 or position not in (1, 9) or way not in (0, 1):
+    if pc < 0 or pc & 7 or position not in (1, 1 + ALIGN_HALFWORDS) or way not in range(MAIN_WAYS):
         raise ValueError("entry scenario requires an aligned PC, position 1/9 and way 0/1")
     if mode not in ("blocked", "flow") or not isinstance(reads, int) or reads < 4:
         raise ValueError("entry scenario requires blocked/flow and a sufficient read window")
@@ -38,9 +39,9 @@ def expected_mbtb_entry_activity(pc, position, way, targets, mode, *, reads=24):
         delta = target // REGION_SPAN - pc // REGION_SPAN
         if target < 0 or delta not in (-1, 0, 1):
             raise ValueError("partial target carry only reconstructs the same or adjacent PC region")
-        requests.append(dict(align=position // 8, bank=(pc >> 4) & 1, way=way,
-            set_idx=(pc >> 5) & 63, tag=(pc >> 11) & 65535, branch_type=3, ras_action=0,
-            position=position % 8, carry={0: 0, 1: 1, -1: 2}[delta], lower=target % REGION_SPAN))
+        requests.append(dict(align=position // ALIGN_HALFWORDS, bank=(pc >> 5) & (MAIN_BANKS - 1), way=way,
+            set_idx=(pc >> 7) & (MAIN_ROWS - 1), tag=(pc >> 15) & 65535, branch_type=3, ras_action=0,
+            position=position % ALIGN_HALFWORDS, carry={0: 0, 1: 1, -1: 2}[delta], lower=target % REGION_SPAN))
     blocked = mode == "blocked"
     return {"requests": tuple(requests), "writebacks": deepcopy(tuple(requests[1:] if blocked else requests)),
             "input_to_request_ticks": (4, 4), "request_read_state": ((0, int(not blocked)), (1, int(not blocked))),
@@ -49,9 +50,9 @@ def expected_mbtb_entry_activity(pc, position, way, targets, mode, *, reads=24):
 
 
 def expected_mbtb_entry_states(prepared, align, way, latest_target):
-    if len(prepared) != 4 or align not in (0, 1) or way not in (0, 1) or latest_target < 0:
+    if len(prepared) != 4 or align not in (0, 1) or way not in range(MAIN_WAYS) or latest_target < 0:
         raise ValueError("entry states require four residents and the supported physical geometry")
-    active = align * 2 + way
+    active = align * (MAIN_WAYS + 1) + way
     entry = prepared[0]["entries"][active]
     meta = prepared[0]["meta_entries"][align][way]
     if not entry.valid or entry.branch_type != 3 or not meta["rawHit"] or meta["counter_value"] != 2:

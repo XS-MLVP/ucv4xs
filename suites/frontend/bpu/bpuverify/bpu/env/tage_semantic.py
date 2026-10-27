@@ -26,7 +26,7 @@ class TageSemanticEnvironment:
         if exc_type is None:
             self.reference.raise_failure()
 
-    async def allocate(self, source, transaction, *, owner, timeout_cycles=128):
+    async def allocate(self, source, transaction, *, owner, timeout_cycles=1823):
         """Admit one eligible allocation at a model-predicted opportunity.
 
         The existing SDK driver is still the sole writer. No observed random

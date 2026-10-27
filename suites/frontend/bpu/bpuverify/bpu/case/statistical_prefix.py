@@ -28,7 +28,7 @@ async def prepare_branch(env, pc, *, target_branch):
     token = c.save(source)
     fields = dict(c.bank.tage_snapshot(token, resolved=True).wanted)
     main = token.lookup.values()
-    slot, = [slot for slot in range(4) if main.get(f'{slot}.valid') and main[f'{slot}.position'] == 2]
+    slot, = [slot for slot in range(10) if main.get(f'{slot}.valid') and main[f'{slot}.position'] == 2]
     c.check((TABLES - 1, 4 if p.positive else 3),
         (fields[f'{slot}.table'], fields[f'{slot}.counter']), 'real weak highest-history provider')
     direction = fields[f'{slot}.taken'] if fields[f'{slot}.valid'] else main[f'{slot}.taken']
@@ -61,7 +61,7 @@ async def prepare_sources(env,*,teaching_count=None):
     token = c.save(source)
     value = c.bank.statistical_snapshot(token, resolved=True)
     fields = dict(c.bank.tage_snapshot(token, resolved=True).wanted)
-    slot, = [slot for slot in range(4) if fields.get(f'{slot}.has_provider')]
+    slot, = [slot for slot in range(10) if fields.get(f'{slot}.has_provider')]
     c.check(4 if p.positive else 3, fields[f'{slot}.counter'], 'SC teaching did not train the target TAGE identity')
     c.check((1,int(p.positive)),(value.prediction.used[slot],value.prediction.directions[slot]),
         'SC independently earns direction authority')

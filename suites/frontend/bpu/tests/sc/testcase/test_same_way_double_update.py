@@ -1,6 +1,7 @@
 """Two same-way resolved branches advance SC learning in one feedback beat."""
 
 from __future__ import annotations
+from bpuverify.common.model.configuration import *
 
 import pytest
 
@@ -16,7 +17,7 @@ from bpuverify.sc.case.definitions import TAGE_COUNTER
 from bpuverify.common.env.paths import REPO_ROOT
 
 
-POSITIONS = (1, 4)
+POSITIONS = (1, 8)
 LAYOUT = tuple(ScBaseBranch(position, TAGE_COUNTER) for position in POSITIONS)
 
 

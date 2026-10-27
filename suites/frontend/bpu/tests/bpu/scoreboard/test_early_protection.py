@@ -1,3 +1,4 @@
+from bpuverify.bpu.model.early_opposition import FALLBACK
 """Semantic strength ledger and synthetic actual comparisons; no DUT credit."""
 import ast
 from dataclasses import replace
@@ -40,7 +41,7 @@ class Program(SourceProgram):
         event = self.event if event is None else event
         if event.redirect is not None:
             require_recovery_window(self.model.history.taken_edges, event.redirect.source.taken_edges,
-                capacity=52, history_bits=31, shift=2)
+                capacity=532, history_bits=397, shift=2)
             self.restore_ages.append(self.model.history.taken_edges-event.redirect.source.taken_edges)
         cycle = self.model.evaluate(event); self.tick += 2
         observed = actual_live(self.model.sources, cycle.enabled[1])
@@ -78,7 +79,7 @@ class Program(SourceProgram):
         self.quiet()
         # The two existing drivers launch ready and redirect together after
         # drain, then own their normal commit/return and deassertion stages.
-        self.step(replace(self.event, redirect=Redirect(source.token.history, self.pc+4, self.pc, True)))
+        self.step(replace(self.event, redirect=Redirect(source.token.history, (self.pc//16)*16+FALLBACK, self.pc, True)))
         self.step()  # PulseDriver deassertion; not an empirical settling delay.
 
     def until(self, source, predicate, *, settle=True):
@@ -115,7 +116,7 @@ class Program(SourceProgram):
         self.enable(False)
         for _ in range(8):
             source = self.query(source)
-            if steady_history(source.token, 4):
+            if steady_history(source.token, FALLBACK):
                 break
         else:
             raise AssertionError('fresh original NT suffix required')

@@ -11,8 +11,8 @@ from bpuverify.bpu.model.phr.model import folds
 def test_full_history_and_index_pipeline_agree_across_direction_changes(which):
     plan = recipe()
     assert plan['MainBTB_residents'] == 10
-    assert plan['maximum_MainBTB_residents_per_group'] == 1
-    assert joint_proof(plan[which]) == 224
+    assert plan['maximum_MainBTB_residents_per_group'] == 2
+    assert joint_proof(plan[which]) == 1104
     context = plan[which]['positive'][plan[which]['pc']]
     assert context['index_pc'] != plan[which]['pc']
     assert context['index_pc'] == plan[which]['nodes'][3]
@@ -23,7 +23,7 @@ def test_programs_and_direction_phases_have_distinct_upper_input_keys():
     contexts = [plan[p][phase][plan[p]['pc']] for p in ('old', 'second') for phase in ('positive', 'negative')]
     assert len({context['indices'][1] for context in contexts}) == 4
     assert len({context['indices'][0] for context in contexts}) == 2
-    assert [context['tags'] for context in contexts] == [(248, 125), (248, 75), (222, 67), (222, 117)]
+    assert [context['tags'] for context in contexts] == [(122, 185), (122, 185), (126, 83), (126, 83)]
     assert all(context['tag_history'] != context['history'] for context in contexts)
 
 
@@ -33,11 +33,11 @@ def test_high_lower_index_does_not_imply_a_high_prediction_tag_when_pcs_differ()
     program = dict(nodes=(0x40010006, 0x40010016, 0x40010080, 0x400101e2), pc=0x40010006)
     program['positive'] = phase_contexts(program, True)
     program['negative'] = phase_contexts(program, False)
-    assert joint_proof(program) == 224
+    assert joint_proof(program) == 1104
     for phase in ('positive', 'negative'):
         context = program[phase][program['pc']]
-        assert context['indices'][0] == 462
-        assert context['tags'][0] == 208 < 256
+        assert context['indices'][0] == 494
+        assert context['tags'][0] == 112 < 256
         assert context['index_pc'] != program['pc']
 
 
@@ -48,7 +48,7 @@ def test_return_qualification_separates_index_and_tag_ancestry(fault, phase):
     program = recipe()['old']
     context = program[phase][program['pc']]
     token = dict(source_tick=11, pc=context['index_pc'], folds=context['index_folds'], indices=context['indices'])
-    physical = dict(new_pc=program['pc'], s1_folds=tuple(folds(context['tag_history'])[i] for i in (1, 2, 7, 8)),
+    physical = dict(new_pc=program['pc'], s1_folds=tuple(folds(context['tag_history'])[i] for i in (1, 2, 5, 6)),
                     redirect_valid=0, s2_override=0, s3_override=0)
     before = deepcopy((token, physical))
     if fault == 'stale': token['source_tick'] = 10

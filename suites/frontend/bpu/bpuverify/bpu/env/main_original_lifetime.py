@@ -1,4 +1,5 @@
 """One original-input/service lifetime, with explicit preparation and checks."""
+from bpuverify.common.model.configuration import *
 import asyncio
 from copy import deepcopy
 
@@ -67,7 +68,7 @@ async def run_original_lifetime(agent,p,coverage,evidence,*,prepare_sources,chec
                         if not p.retained:
                             await env.observation.wait('main-declared-version-actually-serviced',lambda _:
                                 (monitor.raise_failure() is None) and len(observer.entry_services())==len(accepts)
-                                and len(observer.written[2])==len(accepts))
+                                and len(observer.written[MAIN_WAYS])==len(accepts))
                     monitor.raise_failure()
                     coverage.reach('source-qualified-inputs')
                     observer.check([tokens[i].sequence for i in p.order_indices],
@@ -87,7 +88,7 @@ async def run_original_lifetime(agent,p,coverage,evidence,*,prepare_sources,chec
                     coverage.reach('complete-entry-services')
                     observer.check([p.direction,p.direction],[observed_counter(r['bits']) for r in observer.directions],
                         'two complete direction proposals only reset the corrected branch owner')
-                    observer.check([p.direction,p.direction],[observed_counter(r['bits']) for r in observer.written[2]],
+                    observer.check([p.direction,p.direction],[observed_counter(r['bits']) for r in observer.written[MAIN_WAYS]],
                         'both independent direction obligations really reach SRAM')
                     coverage.reach('independent-direction-services')
                     env.anchor=sources[1]

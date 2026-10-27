@@ -28,7 +28,7 @@ def source(program, number=1):
 def test_closed_form_program_does_not_import_the_cycle_reference_or_signal_access():
     module = ast.parse(Path('bpuverify/sc/model/boundary.py').read_text())
     imports = [node.module for node in ast.walk(module) if isinstance(node, ast.ImportFrom)]
-    assert imports == ['dataclasses', 'bpuverify.sc.transaction.types']
+    assert imports == ['bpuverify.common.model.configuration', 'dataclasses', 'bpuverify.sc.transaction.types']
     assert not any(isinstance(node, ast.Import) for node in ast.walk(module))
 
 
@@ -54,8 +54,8 @@ def test_distinct_original_sources_reach_every_family_endpoint_and_exact_reverse
         checker.prediction(program.expected(program.weight(step), thresholds.values),
             SimpleNamespace(takens=current.directions, useds=current.used, meta=actual_metadata(current)), state=step)
         assert model.thresholds.values == thresholds.values
-    bias_column = 7 if direction else 6
-    assert tuple(row[1 if family < 4 else bias_column] for family, row in enumerate(current.read.weights)) == (program.endpoint,) * 5
+    bias_column = 19 if direction else 18
+    assert tuple(row[4 if family < 7 else bias_column] for family, row in enumerate(current.read.weights)) == (program.endpoint,) * 8
     for step in range(1, program.reverse_steps + 1):
         intended = program.feedback(program.expected(program.weight(program.source_count, reverse=step-1),
                                                      thresholds.values)['meta'], reverse=True)
@@ -66,7 +66,7 @@ def test_distinct_original_sources_reach_every_family_endpoint_and_exact_reverse
         checker.prediction(program.expected(program.weight(program.source_count, reverse=step), thresholds.values),
             SimpleNamespace(takens=current.directions, useds=current.used, meta=actual_metadata(current)), state=step)
         assert current.directions[0] == (1-direction if step == program.reverse_steps else direction)
-    assert all(value.sums == (5,) * 4 for value in sources)
+    assert all(value.sums == (8,) * 10 for value in sources)
 
 
 def test_old_fresh_correct_agreement_is_not_a_boundary_witness():
@@ -77,7 +77,7 @@ def test_old_fresh_correct_agreement_is_not_a_boundary_witness():
         model.advance(Events(feedback=feedback(current, outcome=1)))
         settle(model)
         current = lookup(model, branches=program.layout)
-    assert current.sums[0] == 25  # Five weights of2, not31.
+    assert current.sums[0] == 24  # Eight weights of1 after one strong correct feedback.
     update = ScThresholdModel(initial=model.thresholds.values).apply(feedback(current, outcome=1))
     assert not update.qualifying_slots
     # Three real wrong fresh feedbacks expose the false saturation claim.
@@ -104,16 +104,16 @@ def test_reverse_consumers_distinguish_wrong_boundary_effects(direction, fault):
     else:
         step = 32
         wrong = program.weight(program.source_count, reverse=31)
-    wanted = program.expected(program.weight(program.source_count, reverse=step), (1130,) * 4)
+    wanted = program.expected(program.weight(program.source_count, reverse=step), (1130,) * 8)
     with pytest.raises(AssertionError) as caught:
-        ScBoundaryChecks(program).prediction(wanted, actual(program.expected(wrong, (1130,) * 4)), state=fault)
+        ScBoundaryChecks(program).prediction(wanted, actual(program.expected(wrong, (1130,) * 8)), state=fault)
     assert 'expected' in str(caught.value) and 'actual' in str(caught.value) and fault in str(caught.value)
 
 
 @pytest.mark.parametrize('family', FAMILY_FIELDS)
 def test_one_wrong_family_cannot_hide_behind_a_correct_total_direction(family):
     program = ScBoundaryProgram(1)
-    wanted = program.expected(-1, (1130,) * 4)
+    wanted = program.expected(-1, (1130,) * 8)
     wrong = actual(wanted)
     wrong.meta['debug'][family] = (1, 1, 1, 1)
     with pytest.raises(AssertionError, match=family):
@@ -123,12 +123,12 @@ def test_one_wrong_family_cannot_hide_behind_a_correct_total_direction(family):
 def test_source_lifetime_is_distinct_single_use_and_immutable():
     program = ScBoundaryProgram(1)
     checker = ScBoundaryChecks(program)
-    wanted = program.expected(0, (1130,) * 4)
+    wanted = program.expected(0, (1130,) * 8)
     prediction = actual(wanted)
     number = checker.source(source(program), prediction, wanted, state='cold')
     real, intended = checker.feedback(number)
     real.meta['scPred'] = (0,) * 4
-    assert intended.meta['scPred'] == prediction.meta['scPred'] == (1,) * 4
+    assert intended.meta['scPred'] == prediction.meta['scPred'] == (1,) * 10
     checker.finish()
     with pytest.raises(AssertionError):
         checker.feedback(number)
@@ -144,7 +144,7 @@ def test_source_lifetime_is_distinct_single_use_and_immutable():
 def test_missing_feedback_cannot_finish_a_designated_source():
     program = ScBoundaryProgram(0)
     checker = ScBoundaryChecks(program)
-    wanted = program.expected(0, (1130,) * 4)
+    wanted = program.expected(0, (1130,) * 8)
     checker.source(source(program), actual(wanted), wanted, state='cold')
     with pytest.raises(AssertionError):
         checker.finish()
@@ -154,7 +154,7 @@ def test_missing_feedback_cannot_finish_a_designated_source():
 def test_feedback_cannot_precede_or_share_its_original_response(tick):
     program = ScBoundaryProgram(1)
     checker = ScBoundaryChecks(program)
-    wanted = program.expected(0, (1130,) * 4)
+    wanted = program.expected(0, (1130,) * 8)
     number = checker.source(source(program), actual(wanted), wanted, state='cold')
     checker.feedback(number)
     with pytest.raises(AssertionError):
@@ -172,7 +172,7 @@ def test_unowned_or_unpublished_source_is_not_eligible_evidence(fault):
         transfer.completed_event = None
     else:
         transfer.completed_event.tick = 8
-    wanted = program.expected(0, (1130,) * 4)
+    wanted = program.expected(0, (1130,) * 8)
     with pytest.raises(AssertionError):
         ScBoundaryChecks(program).source(transfer, actual(wanted), wanted, state=fault)
 
@@ -180,7 +180,7 @@ def test_unowned_or_unpublished_source_is_not_eligible_evidence(fault):
 @pytest.mark.parametrize('fault', ('none', 'valid', 'ready', 'pc', 'history', 'metadata', 'owner', 'extra-branch'))
 def test_complete_feedback_offer_is_compared_not_just_its_count(fault):
     program = ScBoundaryProgram(1)
-    transaction = program.feedback(program.expected(0, (1130,) * 4)['meta'])
+    transaction = program.feedback(program.expected(0, (1130,) * 8)['meta'])
     expected = expected_feedback(transaction, branch_count=8, fold_count=3)
     bits = dict(start_pc=program.pc, common_hr_valid=1, global_history=0, backward=0, loop=0,
         path_history=({'foldedHist': 0},) * 3,

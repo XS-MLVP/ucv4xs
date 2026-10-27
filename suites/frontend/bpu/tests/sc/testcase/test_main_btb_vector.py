@@ -1,6 +1,7 @@
 """SC S2 and registered metadata must follow each MainBTB slot."""
 
 from __future__ import annotations
+from bpuverify.common.model.configuration import *
 
 import pytest
 
@@ -30,9 +31,9 @@ async def test_nonzero_sc_slots_and_overlapped_qualification(sc_agent):
     learned = await learn(sc_agent, 1)
     assert (learned.used, learned.taken) == (1, 1)
 
-    for slot in (1, 2, 3):
+    for slot in range(1, RESULT_SLOTS):
         observed = await sc_agent.predict_branches(PC, branch_layout(slot))
-        assert len(observed.takens) == len(observed.useds) == 4
+        assert len(observed.takens) == len(observed.useds) == RESULT_SLOTS
         assert observed.useds[0] == 0
         assert (observed.useds[slot], observed.takens[slot]) == (1, 1)
         assert observed.meta["useScPred"][0] == 0
@@ -40,7 +41,7 @@ async def test_nonzero_sc_slots_and_overlapped_qualification(sc_agent):
         assert observed.meta["tagePredValid"][slot] == 1
         assert all(
             observed.meta["useScPred"][index] == 0
-            for index in range(4) if index not in (0, slot)
+            for index in range(RESULT_SLOTS) if index not in (0, slot)
         )
         coverage.sample({"used_slot": slot, "association": "serial"})
 

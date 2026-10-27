@@ -4,6 +4,7 @@ A -> B is conditional and shares its true fall-through destination.
 B -> C -> D -> A are unconditional. The index observed with A originates
 from C's earlier D request, not from A's current B request.
 """
+from bpuverify.common.model.configuration import PHR_STORAGE_BITS, MAIN_WAYS
 from collections import Counter
 from bpuverify.bpu.model.phr.model import BpuPhrReference
 from bpuverify.bpu.model.phr.model import MASK
@@ -23,7 +24,7 @@ ALL_CASES = tuple((bank, entry_set) for bank in range(4) for entry_set in range(
 
 
 def fall_through(addr):
-    """MiniConfig: 32-byte fetch, 16-byte alignment, 4096-byte page.
+    """DefaultConfig: 64-byte fetch, 32-byte alignment, 4096-byte page.
 
     Addresses here are Pc.addr halfwords, not byte addresses. Geometric
     formulation is checked independently against generated RTL bit slices.
@@ -31,10 +32,10 @@ def fall_through(addr):
     if type(addr) is not int or not 0 <= addr < (1 << 49) - 16:
         raise ValueError('non-overflowing halfword Pc.addr required')
     start = addr << 1
-    following = (start + 32) & ~15
+    following = (start + 64) & ~31
     crossing = (start >> 12) != (following >> 12)
     target = following & ~4095 if crossing else following
-    return dict(target=target >> 1, position=(target - (start & ~15)) // 2 - 1,
+    return dict(target=target >> 1, position=(target - (start & ~31)) // 2 - 1,
         taken=0, branch_type=0, cross_page=crossing)
 
 
@@ -42,9 +43,9 @@ def fall_through(addr):
 def programs(cycles):
     return tuple(row for a,b,c,d in cycles for row in (
         dict(pc=a,position=6,target=b,branch_type=1),
-        dict(pc=b,position=7,target=c,branch_type=3),
-        dict(pc=c,position=7,target=d,branch_type=3),
-        dict(pc=d,position=7,target=a,branch_type=3)))
+        dict(pc=b,position=max(7,b%16),target=c,branch_type=3),
+        dict(pc=c,position=max(7,c%16),target=d,branch_type=3),
+        dict(pc=d,position=max(7,d%16),target=a,branch_type=3)))
 
 
 def capacity(cycles):
@@ -58,11 +59,11 @@ def capacity(cycles):
 
 def edges(a,b,c,d,outcome):
     return ((a,b,6 if outcome else fall_through(a)['position'],outcome),
-        (b,c,7,1),(c,d,7,1),(d,a,7,1))
+        (b,c,max(7,b%16),1),(c,d,max(7,c%16),1),(d,a,max(7,d%16),1))
 
 
 def advance_scalar(history,source,target,position,taken):
-    return ((history<<2)^path_hash((source&~7)+position,target))&MASK if taken else history
+    return ((history<<2)^path_hash((source&~15)+position,target))&MASK if taken else history
 
 
 def nonzero_violations(cycles,rounds=16):
@@ -92,9 +93,9 @@ def plan(bank,entry_set):
     wanted=entry_set*4+bank
     d=0x40013080+((wanted&240)>>1)
     for salt in range(8):
-        for a_extra in range(0,128,8):
+        for a_extra in range(0,128,16):
             a=0x40011080+a_extra
-            b=a+16
+            b=a+32
             for c_extra in range(0,128,32):
                 c=0x400128a0+salt*0x800+c_extra+(wanted&15)*2
                 cycles=tuple((a+alias*256,b+alias*256,c+alias*256,d+alias*256) for alias in range(5))
@@ -105,10 +106,10 @@ def plan(bank,entry_set):
                     created=steady_indices(a,b,c,d,outcome)
                     assert created[2]==wanted
                     peers.update(created[index] for index in (0,1,3))
-                if wanted in peers or max(capacity(cycles).values())>2:continue
+                if wanted in peers or max(capacity(cycles).values())>MAIN_WAYS:continue
                 if nonzero_violations(cycles):continue
                 return dict(bank=bank,entry_set=entry_set,physical_index=wanted,cycles=cycles,
-                    conditional_position=6,return_positions=(7,7,7),branch_programs=programs(cycles),
+                    conditional_position=6,return_positions=tuple(max(7,pc%16) for pc in (b,c,d)),branch_programs=programs(cycles),
                     low4_index_source_history=(c>>1)&15,index_request_pc=d,
                     peer_physical_indices=sorted(peers),address_region_salt=salt,
                     maximum_MainBTB_residents_per_group=max(capacity(cycles).values()),
@@ -123,6 +124,7 @@ def plan(bank,entry_set):
 
 def scalar_proof(intent,rounds=16):
     if type(rounds) is not int or rounds<14:raise ValueError('at least14 full-history flush rounds required')
+    rounds=max(rounds,(PHR_STORAGE_BITS+5)//6+2)
     full_checks=target_checks=0
     for a,b,c,d in intent['cycles']:
         history=0
@@ -163,7 +165,8 @@ def joint_reference(intent,idle_cycles=0):
             s2_override=0,s3_override=0,redirect=0,pc=0,folded6=0,tick=0)
         tick=0
         created=[]
-        for cycle,outcome in enumerate([1]*16+[0]*16+[1]*16):
+        rounds=(PHR_STORAGE_BITS+5)//6+2
+        for cycle,outcome in enumerate([1]*rounds+[0]*rounds+[1]*rounds):
             for source,target,position,taken in edges(a,b,c,d,outcome):
                 assert model.state['fold1']==folds(history)
                 if len(created)>=2:

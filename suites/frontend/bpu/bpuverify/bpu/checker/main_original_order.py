@@ -1,4 +1,5 @@
 """Compare passive complete proposals, retained versions and native services."""
+from bpuverify.common.model.configuration import *
 from copy import deepcopy
 from toffee import Scoreboard,CheckContext,ScoreboardMode
 from bpuverify.bpu.model.main_service import observed_counter
@@ -10,7 +11,7 @@ class Checks:
     def __init__(self,env,program):
         self.env,self.program=env,program
         self.board=Scoreboard('bpu.original-resolution-order')
-        self.last=None;self.inputs=[];self.incoming=[];self.directions=[];self.written=[[],[],[]]
+        self.last=None;self.inputs=[];self.incoming=[];self.directions=[];self.written=[[] for _ in range(MAIN_WAYS+1)]
         self.failure=None;self.first_error_state=None;self.close_when_retained=None;self.retained_witness=None
 
     def start(self,sources):
@@ -63,9 +64,9 @@ class Checks:
             owner=self.program.owner;latest=self.program.services[-1]
             port=row['writes'][owner]
             if row['read']['valid'] and port['valid'] and not port['ready'] and port['bits']==latest:
-                self.check([[],[],[]],self.written,'both versions are compared before any actual service')
+                self.check([[] for _ in range(MAIN_WAYS+1)],self.written,'both versions are compared before any actual service')
                 self.check(1,sum(sum(v) for v in row['dirty']),'one retained latest logical entry, not two old versions')
-                direction=row['writes'][2]
+                direction=row['writes'][MAIN_WAYS]
                 self.check((1,0,self.program.direction),(direction['valid'],direction['ready'],observed_counter(direction['bits'])),
                     'the independently queued direction obligations remain read-blocked')
                 self.check(2,len(self.directions),'both actual masked direction proposals exist before release')
@@ -81,7 +82,7 @@ class Checks:
 
     def complete(self):
         self.raise_failure()
-        return tuple(map(len,self.written))==tuple(len(self.program.services) if i==self.program.owner else 2 if i==2 else 0 for i in range(3))
+        return tuple(map(len,self.written))==tuple(len(self.program.services) if i==self.program.owner else 2 if i==MAIN_WAYS else 0 for i in range(MAIN_WAYS+1))
 
     def summary(self):
         status=self.board.status

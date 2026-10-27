@@ -1,4 +1,5 @@
 """Normal-event feasibility and closed semantic expectations; no DUT credit."""
+from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT
 from copy import deepcopy
 from dataclasses import replace
 
@@ -43,7 +44,7 @@ def prepare_program(program):
         request = resolution(token, step.outcomes)
         if step.allocation is not None:
             feedback = model.sources.feedback_for(request)
-            for _ in range(128):
+            for _ in range(TAGE_ALLOCATION_WAIT):
                 if model.sources.tage.allocation_at_next_accept(feedback) == step.allocation:
                     break
                 model.advance(idle)
@@ -82,7 +83,7 @@ def execute_stage(program, ordinal, model, event, anchor, saved):
     model.advance(replace(quiet(model, event), redirect=Redirect(anchor.history, anchor.pc + 4, STREAM_PC, True)))
     for _ in range(8):
         model.advance(event)
-    cache = model.sources.tage.cache[3, PC % 4]
+    cache = model.sources.tage.cache[7, PC % 4]
     before = cache.overflows
     for name, outcomes in zip(stage.sources, stage.outcomes, strict=True):
         request = resolution(saved[name], outcomes)
@@ -92,7 +93,7 @@ def execute_stage(program, ordinal, model, event, anchor, saved):
     previous = ((), ())
     for _ in range(16):
         model.advance(event)
-        pending = pending_plan(model.sources.tage, 3, PC % 4)
+        pending = pending_plan(model.sources.tage, 7, PC % 4)
         if pending != previous:
             changes.append(tuple(p[0] if p else None for p in pending))
             previous = pending
@@ -108,7 +109,7 @@ def execute_stage(program, ordinal, model, event, anchor, saved):
     for name, path in PATHS.items():
         token = via(model, event, anchor, path)
         assert profile(model, token) == program.profile(ordinal, name, serviced=True)
-    assert pending_plan(model.sources.tage, 3, PC % 4) == ((), ())
+    assert pending_plan(model.sources.tage, 7, PC % 4) == ((), ())
 
 
 @pytest.mark.parametrize('program', PROGRAMS, ids=lambda p: p.name)

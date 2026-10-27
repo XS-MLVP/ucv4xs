@@ -5,6 +5,7 @@ over drain in its selected slot. Two different keys may hit or miss, but
 must select different slots. A collision or full-row-miss/PLRU outcome is
 explicitly unsupported, not resolved by inventing a priority policy.
 """
+from bpuverify.common.model.configuration import *
 from collections.abc import Mapping
 from copy import deepcopy
 

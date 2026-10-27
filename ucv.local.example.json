@@ -1,0 +1,8 @@
+{
+  "source_mirrors": {
+    "public-893e1580b": "/absolute/path/to/public-XiangShan",
+    "internal-d4566d58a": "/absolute/path/to/internal-XiangShan"
+  },
+  "dependency_mirrors": {},
+  "historical_roots": {}
+}

@@ -1,4 +1,5 @@
 """One actual ignored outcome per original source and a fresh consumer."""
+from bpuverify.common.model.configuration import RESULT_SLOTS
 from copy import deepcopy
 
 from bpuverify.sc.checker.eligibility import EligibilityChecks
@@ -73,8 +74,8 @@ class FeedbackChecks(EligibilityChecks):
         self.check(wanted,set(self.rejected_sources),'each owner supplies its own original rejected query')
         self.check(wanted,set(self.rejected_acceptances),'each ignored source is actually accepted')
         self.check(wanted,set(self.rejected_consumers),'each ignored outcome has a new preserved consumer')
-        self.check(19,len(self.spent),'six warm, two ignored and eleven genuine opposite outcomes only')
-        self.check(54,len(self.sources),'no duplicate source or missing fresh consumer can be hidden')
+        self.check(2*self.program.warm_votes+2+sum(self.program.reversal_steps(o) for o in self.program.owners),len(self.spent),'all declared warm, ignored and genuine opposite outcomes only')
+        self.check(2*self.program.warm_votes+len(self.program.probes)+2*sum(self.program.reversal_steps(o) for o in self.program.owners)+4,len(self.sources),'no duplicate source or missing fresh consumer can be hidden')
         self.check(True,any(self.program.feedback_outcome(owner)!=owner.outcome for owner in self.program.owners),
                    'at least one legal ignored outcome actually opposes its strong learned correction')
         super().finish()

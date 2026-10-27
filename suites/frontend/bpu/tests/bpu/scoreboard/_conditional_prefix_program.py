@@ -1,4 +1,5 @@
 """Pure conditional execution-prefix program, independent of hardware sampling."""
+from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT
 from copy import deepcopy
 from dataclasses import asdict, replace
 from hashlib import sha256
@@ -78,7 +79,7 @@ class Program(OriginalProgram):
             (Outcome(position, target, kind, taken, mispredict=wrong),), origin=source)
         if room:
             feedback = self.model.sources.feedback_for(request)
-            for _ in range(128):
+            for _ in range(TAGE_ALLOCATION_WAIT):
                 candidate = self.model.sources.tage.allocation_at_next_accept(feedback)
                 if candidate is not None and candidate[0] == TABLES - 1:
                     break
@@ -111,7 +112,7 @@ class Program(OriginalProgram):
         assert (offered is not None) == (executed_indirect and enabled), 'learning belongs to the actually executed enabled prefix'
         if maximum_allocation:
             feedback = self.model.sources.feedback_for(request)
-            for _ in range(128):
+            for _ in range(TAGE_ALLOCATION_WAIT):
                 candidate = self.model.sources.tage.allocation_at_next_accept(feedback)
                 if candidate is not None and candidate[0] == TABLES - 1:
                     break

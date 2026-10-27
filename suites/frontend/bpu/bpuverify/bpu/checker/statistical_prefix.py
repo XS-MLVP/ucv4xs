@@ -88,7 +88,7 @@ class Checks:
             all_defined_read_weights_compared=True,all_consumed_family_values_compared=True,
             composition_tick=compared['composition'],all_composed_signed_values_compared=True,
             read_families=families,consumed_families=FAMILIES,
-            read_word_count=32 if original.context.common_valid else 24,consumed_word_count=32)
+            read_word_count=88 if original.context.common_valid else 56,consumed_word_count=64)
 
     def finish(self, fresh):
         self.pipeline.raise_failure()
@@ -137,7 +137,7 @@ class ContextChecks(Checks):
         read=self.bank.statistical_snapshot(token).read
         self.check(True,read.context.common_valid,'warm query starts from real valid condition experience')
         self.warm_query=dict(future=asyncio.get_running_loop().create_future(),
-            indices=read.indices[1:3],pc=token.pc,token=None)
+            indices=read.indices[2:6],pc=token.pc,token=None)
         return self.warm_query['future']
 
     def candidates(self,row,*args):
@@ -195,8 +195,8 @@ class ContextChecks(Checks):
             token=self.pipeline.model.stages[0]
             read=self.bank.statistical_snapshot(token).read
             if (token.pc==warm['pc'] and self.bank.read_enabled.get(token.history.sequence,False)
-                    and read.context.common_valid and read.indices[1:3]==warm['indices']
-                    and all(any(values) for values in read.weights[1:3])):
+                    and read.context.common_valid and read.indices[2:6]==warm['indices']
+                    and all(any(values) for values in read.weights[2:6])):
                 warm['token']=token
         probe=self.probe
         if probe is None:return

@@ -42,14 +42,14 @@ class SupersedingRecoveryProgram:
 
     @property
     def intermediate(self):
-        return Value(False, 255, 14 if self.profile == 'older-backward-taken' else 15)
+        return Value(False, 65535, 254 if self.profile == 'older-backward-taken' else 255)
 
     @property
     def restored(self):
-        return {'older-not-taken': Value(False, 254, 14),
-                'older-forward-taken': Value(False, 255, 14),
-                'older-backward-taken': Value(False, 255, 15),
-                'older-direct-after-prefix': Value(False, 254, 14)}[self.profile]
+        return {'older-not-taken': Value(False, 65534, 254),
+                'older-forward-taken': Value(False, 65535, 254),
+                'older-backward-taken': Value(False, 65535, 255),
+                'older-direct-after-prefix': Value(False, 65534, 254)}[self.profile]
 
     def iteration(self, original_count, *, younger=False):
         if type(original_count) is not int or not 0 < original_count < 255:

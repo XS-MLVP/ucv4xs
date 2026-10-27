@@ -4,6 +4,7 @@ The metadata is genuinely captured before tag migration. Taken base prediction
 prevents useful updates, isolating counter ownership from the known useful
 misassociation defect. This is standalone evidence, not FTQ qualification.
 """
+from bpuverify.common.model.configuration import *
 import argparse
 import asyncio
 from copy import deepcopy
@@ -41,25 +42,25 @@ async def prepare_migration(agent, pc, origin):
     target = await prepare_unprotected_highest_ways(agent, pc, origin)
     capture = agent.submit_predict(pc, target, 1)
     captured = await capture
-    assert cell(captured) == (3, origin)
+    assert cell(captured) == (TAGE_TABLES - 1, origin)
     assert (captured.meta['providerTakenCtr_value'], captured.meta['providerUsefulCtr_value'],
             captured.meta['altOrBasePred'], captured.meta['hasAlt']) == (5, 0, 1, 0)
     pred = await agent.predict(pc, target, 0)
     await agent.train(TageTraining(pc, target, 0, 0, pred.meta, mispredict=1))
     weakened = await agent.predict(pc, target, 0)
-    assert cell(weakened) == (3, origin) and weakened.meta['providerTakenCtr_value'] == 4
-    cold = await agent.predict(pc, 9, 0)
+    assert cell(weakened) == (TAGE_TABLES - 1, origin) and weakened.meta['providerTakenCtr_value'] == 4
+    cold = await agent.predict(pc, (2 * TAGE_TABLES + 1), 0)
     assert not cold.meta['hasProvider']
-    await agent.train(TageTraining(pc, 9, 1, 0, cold.meta, mispredict=1))
-    replacement = await agent.predict(pc, 9, 0)
-    assert cell(replacement) == (3, origin)
+    await agent.train(TageTraining(pc, (2 * TAGE_TABLES + 1), 1, 0, cold.meta, mispredict=1))
+    replacement = await agent.predict(pc, (2 * TAGE_TABLES + 1), 0)
+    assert cell(replacement) == (TAGE_TABLES - 1, origin)
     assert not (await agent.predict(pc, target, 0)).meta['hasProvider']
-    await protect(agent, pc, 9, replacement, agent.train)
+    await protect(agent, pc, (2 * TAGE_TABLES + 1), replacement, agent.train)
     missing = await agent.predict(pc, target, 0)
     assert not missing.meta['hasProvider']
     await agent.train(TageTraining(pc, target, 1, 0, missing.meta, mispredict=1))
     migrated = await agent.predict(pc, target, 1)
-    assert cell(migrated) == (3, 1-origin)
+    assert cell(migrated) == (TAGE_TABLES - 1, 1-origin)
     assert (migrated.meta['providerTakenCtr_value'], migrated.meta['providerUsefulCtr_value']) == (4, 0)
     return target, deepcopy(captured.meta), deepcopy(migrated.meta), capture.completed_event.tick
 
@@ -69,9 +70,9 @@ def initial_shadows(pc, last_profiles):
                for _ in range(4)] for _ in range(2)] for _ in range(4)]
     for position, profile in last_profiles.items():
         meta = profile['meta']
-        if meta['providerTableIdx'] == 3:
+        if meta['providerTableIdx'] == TAGE_TABLES - 1:
             banks[pc & 3][meta['providerWayIdx']][0] = dict(valid=1, dirty=0,
-                set_idx=(pc >> 2) & 127, tag=((pc >> 9) & 8191) ^ position,
+                set_idx=(pc >> 2) & (TAGE_ROWS - 1), tag=((pc >> 11) & 8191) ^ position,
                 entry_valid=1, counter=meta['providerTakenCtr_value'])
     return tuple(tuple(tuple(row) for row in bank) for bank in banks)
 
@@ -140,18 +141,18 @@ async def read_profiles(agent, profiles, *, reverse=False):
 async def check_case(agent, *, bank, origin, depth, mode):
     pc = 0x40000000+bank
     target, captured, current, capture_tick = await prepare_migration(agent, pc, origin)
-    profiles = {pc:{pos:deepcopy(snapshot(await agent.predict(pc, pos, 1))) for pos in range(10)}}
+    profiles = {pc:{pos:deepcopy(snapshot(await agent.predict(pc, pos, 1))) for pos in range(2 * TAGE_TABLES + 2)}}
     dummy_rows = []
     for number in range(3):
         dummy_pc = pc+0x20*(number+1)
         residents = await fill_useful_set(agent, pc=dummy_pc)
-        position = next(pos for pos, pred in residents.items() if cell(pred) == (3, 1-origin))
+        position = next(pos for pos, pred in residents.items() if cell(pred) == (TAGE_TABLES - 1, 1-origin))
         pred = await agent.predict(dummy_pc, position, 1)
         assert pred.meta['providerTakenCtr_value'] == 5
         await agent.train(TageTraining(dummy_pc, position, 1, 1, pred.meta, mispredict=0))
         pred = await agent.predict(dummy_pc, position, 1)
-        assert pred.meta['providerTakenCtr_value'] == 6 and cell(pred) == (3, 1-origin)
-        profiles[dummy_pc] = {pos:deepcopy(snapshot(await agent.predict(dummy_pc, pos, 1))) for pos in range(8)}
+        assert pred.meta['providerTakenCtr_value'] == 6 and cell(pred) == (TAGE_TABLES - 1, 1-origin)
+        profiles[dummy_pc] = {pos:deepcopy(snapshot(await agent.predict(dummy_pc, pos, 1))) for pos in range(2 * TAGE_TABLES)}
         dummy_rows.append((dummy_pc, position, deepcopy(pred.meta)))
     assert snapshot(await agent.predict(pc, target, 1)) == profiles[pc][target]
     prefix = tuple(TageBatchTraining(address, (TageBranchFeedback(position, 1, 1, meta),))

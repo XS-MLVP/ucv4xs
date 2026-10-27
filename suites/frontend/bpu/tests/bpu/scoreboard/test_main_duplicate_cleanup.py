@@ -17,18 +17,18 @@ PROGRAMS=tuple(Program(i,o,p) for i in IDENTITIES for o in OVERLAPS for p in PRE
 @pytest.mark.parametrize('p',PROGRAMS,ids=lambda p:p.label)
 def test_reference_clear_never_borrows_valid_zero_branch_identity_or_neighbor_destination(p):
     cache=RetainedEntries();row=coordinate(p.pc)[2];other=coordinate(p.neighbor)[2]
-    a=Write(row,0,Entry(tag(p.pc),p.position,3,0,Target.encode(p.pc,p.target)))
-    old=Write(other,0,Entry(tag(p.neighbor),3,3,0,Target.encode(p.query_neighbor,p.neighbor_target)))
+    a=Write(row,2,Entry(tag(p.pc),p.position,3,0,Target.encode(p.pc,p.target)))
+    old=Write(other,2,Entry(tag(p.neighbor),3,3,0,Target.encode(p.query_neighbor,p.neighbor_target)))
     cache.advance(True,(a,));cache.advance(True,(old,));cache.advance(False);cache.advance(False)
-    clear=Write(row,1,None)
-    update=Write(other,0,Entry(tag(p.neighbor),3,3,0,Target.encode(p.query_neighbor,p.updated_neighbor_target)))
+    clear=Write(row,3,None)
+    update=Write(other,2,Entry(tag(p.neighbor),3,3,0,Target.encode(p.query_neighbor,p.updated_neighbor_target)))
     offers=(update,clear) if p.concurrent else (clear,)
-    assert cache.key(clear)!=cache.key(a) and cache.owner(clear)==1
+    assert cache.key(clear)!=cache.key(a) and cache.owner(clear)==3
     cache.advance(True,offers)
     assert cache.records[cache.key(a)].write==a
     actual=cache.advance(False)
     by_owner=tuple(tuple(entry_payload(w.row,Entry() if w.entry is None else w.entry)
-        for w in actual if w.way==owner) for owner in range(2))
+        for w in actual if w.way==owner) for owner in range(4))
     assert by_owner==p.expected_services and not cache.outstanding
 
 
@@ -48,7 +48,7 @@ def test_exact_destination_services_and_original_qualified_input_shape(p):
     checks.last=(10,dict(read={},writes=[],dirty=[],queue={}))
     for owner,expected in enumerate(p.expected_services):
         for payload in expected:checks.write_accepted(owner,transfer(11,deepcopy(payload)))
-    if p.concurrent:checks.write_accepted(2,transfer(11,dict(row=coordinate(p.neighbor)[2],mask=1,counters=[2,0])))
+    if p.concurrent:checks.write_accepted(4,transfer(11,dict(row=coordinate(p.neighbor)[2],mask=4,counters=[0,0,2,0])))
     assert checks.complete() and checks.board.status.failed==0
 
 
@@ -57,18 +57,18 @@ def test_exact_destination_services_and_original_qualified_input_shape(p):
 def test_wrong_service_cannot_be_hidden_by_matching_zero_payload_or_final_counts(p,damage):
     checks=Checks(NS(checker=NS(current_event=None,raise_failure=lambda:None)),p)
     checks.last=(10,dict(read={},writes=[],dirty=[],queue={}))
-    value=deepcopy(p.cleared);owner=1
+    value=deepcopy(p.cleared);owner=3
     with pytest.raises(ScoreboardMismatch) as first:
-        if damage=='clear-wrong-destination':owner=0
+        if damage=='clear-wrong-destination':owner=2
         elif damage=='wrong-clear-row':value['row']^=1
         elif damage=='clear-still-valid':value['kind']=3
         elif damage=='wrong-target':value['offset']=1
         elif damage=='extra-clear':checks.write_accepted(owner,transfer(11,deepcopy(value)))
         else:
             # A basic clear has no direction, and an overlap has exactly one.
-            bits=dict(row=coordinate(p.neighbor)[2],mask=1,counters=[2,0])
-            if p.concurrent:checks.write_accepted(2,transfer(11,bits))
-            checks.write_accepted(2,transfer(13,bits))
+            bits=dict(row=coordinate(p.neighbor)[2],mask=4,counters=[0,0,2,0])
+            if p.concurrent:checks.write_accepted(4,transfer(11,bits))
+            checks.write_accepted(4,transfer(13,bits))
         checks.write_accepted(owner,transfer(15,value))
     before=deepcopy(checks.summary())
     with pytest.raises(ScoreboardMismatch) as second:checks.complete()

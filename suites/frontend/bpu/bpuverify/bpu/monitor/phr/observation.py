@@ -1,4 +1,6 @@
 """bpuverify.bpu.monitor.phr.observation components."""
+from bpuverify.common.model.configuration import *
+
 
 from bpuverify.common.env.memory_direct import memory_signal
 from bpuverify.common.env.memory_direct import memory_signal_names
@@ -36,7 +38,7 @@ class BpuPhrMonitor(CycleMonitor):
                 target=signal(base + '_target_addr'))
 
         def folds(base):
-            return tuple(signal(f'{base}_hist_{index}_foldedHist') for index in range(19))
+            return tuple(signal(f'{base}_hist_{index}_foldedHist') for index in range(len(PHR_FOLDS)))
 
         boundary = Bundle(stall=signal('io_train_s0_stall'),
             fire0=signal('io_train_stageCtrl_s0_fire'), fire1=signal('io_train_stageCtrl_s1_fire'),
@@ -50,7 +52,7 @@ class BpuPhrMonitor(CycleMonitor):
                 prediction=prediction('io_train_s2_prediction'), meta=metadata('io_train_s2_phrMeta')),
             s3=Bundle(valid=signal('io_train_s3_overrideValid'), start_pc=signal('io_train_s3_startPc_addr'),
                 prediction=prediction('io_train_s3_prediction'), meta=metadata('io_train_s3_phrMeta')))
-        state = Bundle(cells=tuple(signal(f'phr_{index}') for index in range(52)), pointer=pointer('phrPtr'),
+        state = Bundle(cells=tuple(signal(f'phr_{index}') for index in range(PHR_STORAGE_BITS)), pointer=pointer('phrPtr'),
             s1_pointer=pointer('s1_phrPtr'), pending=Bundle(valid=signal('pendingValid'),
                 taken=signal('pendingTaken'), low=signal('pendingLowBits'), shift=signal('pendingShiftBits')),
             fold0_reg=folds('s0_foldedPhrReg'), fold1=folds('s1_foldedPhrReg'),

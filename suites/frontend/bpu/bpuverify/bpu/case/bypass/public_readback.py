@@ -6,8 +6,8 @@ def training_tag_fold_pair(actual, tag_history):
     """Compare latched training folds with the independently qualified input."""
     expected = folds(tag_history)
     observed = actual['meta']['resolve']['utage']['foldedPathHistForTrain_hist']
-    return (tuple(expected[i] for i in (1, 2, 7, 8)),
-            tuple(observed[i]['foldedHist'] for i in (1, 2, 7, 8)))
+    return (tuple(expected[i] for i in (1, 2, 5, 6)),
+            tuple(observed[i]['foldedHist'] for i in (1, 2, 5, 6)))
 
 
 def conditional_source_ways(abtb, position):

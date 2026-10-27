@@ -36,9 +36,10 @@ class Layout:
 
     @property
     def x(self):
-        # A different instruction identity shares the five SC feature rows.
+        # A 64K-halfword offset preserves all SC rows and both path folds.
+        # The target hash uses bits 1..15; TAGE still receives a different tag.
         # It does not share the target's TAGE identity and never trains it.
-        return self.b + 0x400
+        return self.b + 0x10000
 
     @property
     def d(self):
@@ -50,7 +51,7 @@ class Layout:
 
     @property
     def recovery_offset(self):
-        return self.a // 8 * 8 + 4 - self.a
+        return self.a // 16 * 16 + 4 - self.a
 
 
 @dataclass(frozen=True, slots=True)

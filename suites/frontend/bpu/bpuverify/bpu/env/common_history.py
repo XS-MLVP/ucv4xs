@@ -27,7 +27,7 @@ class CommonProgram(MainProgram):
         request=BpuRedirect(PC,self.anchor.meta.redirect,cfi_pc=PC+4)
         self.checker.plan_redirect(self.anchor,request);self.common.plan(self.anchor,request)
         await self.agent.redirect(request);await self.agent.set_ready(prediction=True,meta=True)
-        def fixed(_):self.common.raise_failure();return self.common.stable>=LOOKUP_WINDOW_CAPACITY and self.common.model.value==Value(True,255,15)
+        def fixed(_):self.common.raise_failure();return self.common.stable>=LOOKUP_WINDOW_CAPACITY and self.common.model.value==Value(True,65535,255)
         await self.observation.wait('independent_conditional_history_fixed_point',fixed)
         while True:
             source=await self.agent.next_transaction(start_pc=PC)
@@ -48,7 +48,7 @@ class CommonProgram(MainProgram):
 
     async def consume_recovered_history(self,*,later_conditional,after_tick):
         await self.agent.set_ready(prediction=True,meta=True)
-        expected=Value(True,253,12) if later_conditional else Value(True,254,14)
+        expected=Value(True,65533,252) if later_conditional else Value(True,65534,254)
         def fixed(_):
             self.common.raise_failure();return self.common.stable>=LOOKUP_WINDOW_CAPACITY and self.common.model.value==expected
         await self.observation.wait('independent_recovered_history_visible_to_fresh_lookup',fixed)

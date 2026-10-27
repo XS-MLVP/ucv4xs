@@ -49,13 +49,13 @@ def learn_burst(model,event,sources):
 def test_four_distinct_old_sources_compound_as_5_6_7_7_through_the_new_owner(original_way):
     model,event,anchor,sources,before=burst_program(original_way)
     assert len(sources)==len({id(s) for s in sources})==len({id(s.history) for s in sources})==SOURCE_COUNT
-    assert all(values(model,s)==(3,(3,original_way,5,0)) for s in sources)
-    assert values(model,before['original'])==(2,(3,1-original_way,4,0))
+    assert all(values(model,s)==(3,(7,original_way,5,0)) for s in sources)
+    assert values(model,before['original'])==(2,(7,1-original_way,4,0))
     metadata=tuple(model.sources.defined_metadata(s) for s in sources)
     assert learn_burst(model,event,sources)==COMMIT_COUNTERS
     after={name:via(model,event,anchor,path) for name,path in PATHS.items()}
-    assert values(model,after['original'])==(3,(3,1-original_way,7,0))
-    assert values(model,after['newcomer'])==(3,(3,original_way,5,1))
+    assert values(model,after['original'])==(3,(7,1-original_way,7,0))
+    assert values(model,after['newcomer'])==(3,(7,original_way,5,1))
     assert values(model,after['blocker'])==(3,None)
     assert tuple(model.sources.defined_metadata(s) for s in sources)==metadata
 
@@ -133,7 +133,7 @@ def test_distinct_source_history_and_migration_preconditions_are_mandatory(fault
     elif fault=='repeated-arm':checks.arm(profile)
     elif fault=='wrong-old-counter':
         value=checks.value
-        checks.value=lambda source:(3,(3,1,4,0)) if source is checks.original else value(source)
+        checks.value=lambda source:(3,(7,1,4,0)) if source is checks.original else value(source)
     else:
         source=checks.sources[0];checks.sources=[];checks.saved_metadata=[]
         checks.retain_source(source)
@@ -229,8 +229,8 @@ def test_final_consumption_requires_every_effect_neighbour_and_immutable_origina
     elif fault in ('wrong-counter','wrong-neighbour'):
         value=checks.value
         def corrupted(source):
-            if fault=='wrong-counter' and source is new['original']:return (3,(3,0,6,0))
-            if fault=='wrong-neighbour' and source is new['newcomer']:return (3,(3,1,5,0))
+            if fault=='wrong-counter' and source is new['original']:return (3,(7,0,6,0))
+            if fault=='wrong-neighbour' and source is new['newcomer']:return (3,(7,1,5,0))
             return value(source)
         checks.value=corrupted
     elif fault=='missing-repair':checks.pipeline.corrections_for_source=lambda source:()

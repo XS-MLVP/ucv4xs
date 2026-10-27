@@ -20,7 +20,7 @@ def relearned(p,initial_pc=None):
     model,event,_=reference;checks.arm_mixed();receipts=[];offers=[];commits=model.sources.tage.commits
     def advance(request=None):
         model.advance(replace(event,feedback=request))
-        writes=model.sources.tage.offers.get((3,PC%4),())
+        writes=model.sources.tage.offers.get((7,PC%4),())
         if writes:
             payload=[None,None]
             for write in writes:payload[write.way]=dict(row=write.row,valid=int(write.entry.valid),tag=write.entry.tag,counter=write.entry.counter)
@@ -40,14 +40,14 @@ def relearned(p,initial_pc=None):
             matured()
             checks.capture_state(NS(tick=tick+8),packet(checks,index=3+index,plan=p.pending_before(index)))
             if index==0:
-                assert pending_plan(model.sources.tage,3,PC%4)==checks.concrete(p.pending_after[0])
+                assert pending_plan(model.sources.tage,7,PC%4)==checks.concrete(p.pending_after[0])
                 checks.capture_state(NS(tick=tick+10),packet(checks,plan=p.pending_after[0]))
                 checks.first_learning_settled(tick+10)
     if p.schedule=='adjacent-acceptance':
         matured()
         for index in range(2):checks.capture_state(NS(tick=100408+2*index),packet(checks,index=3+index,plan=p.pending_before(index)))
     assert offers==list(checks.expected_offers[3:])
-    assert pending_plan(model.sources.tage,3,PC%4)==checks.concrete(p.final_plan)
+    assert pending_plan(model.sources.tage,7,PC%4)==checks.concrete(p.final_plan)
     assert model.sources.tage.commits==commits
     checks.pipeline.last_resolution_controls=receipts[-1][0],event.enabled
     checks.accepted_burst(tuple(receipts));return checks,reference,retired

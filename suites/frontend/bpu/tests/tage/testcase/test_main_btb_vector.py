@@ -17,7 +17,7 @@ from bpuverify.tage.case.definitions import POSITION
 async def test_late_main_btb_provider_slots_and_overlapped_lookups(tage_agent):
     coverage = tage_vector_coverage_model()
 
-    for slot in (1, 2, 3):
+    for slot in range(1, 10):
         await tage_agent.reset()
         late_position = POSITION + 2 * slot
         branches = [TageBaseBranch(POSITION, 0)]
@@ -25,7 +25,7 @@ async def test_late_main_btb_provider_slots_and_overlapped_lookups(tage_agent):
         branches.append(TageBaseBranch(late_position, 0))
 
         cold = await tage_agent.predict_branches(PC, branches)
-        assert len(cold.metas) == len(cold.valids) == 4
+        assert len(cold.metas) == len(cold.valids) == 10
         assert cold.metas[0]["hasProvider"] == cold.metas[slot]["hasProvider"] == 0
         assert cold.provider_counter_valids[0] == cold.provider_counter_valids[slot] == 0
 

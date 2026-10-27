@@ -11,7 +11,7 @@ def joint_originals_binding(agent,**options):
     anchor,=[n for n in memory_signal_names(agent.dut) if n.endswith('.sc.io_trainReady')]
     prefix=anchor.removeprefix('TOP.').removesuffix('io_trainReady')
     words=tuple(tuple(memory_signal(agent.dut,prefix+f'{table}.io_trainReadResp_{i}_ctr_value')
-        for i in range(16 if table=='biasTable' else 4)) for table in TABLES)
+        for i in range(32 if table=='biasTable' else 8)) for table in TABLES)
     return PortBinding(binding.clock,Bundle(inputs=binding.bits.inputs,
         observed=Bundle(**dict(binding.bits.observed),joint_SC_train_words=words)),
         'bpu.joint-originals')

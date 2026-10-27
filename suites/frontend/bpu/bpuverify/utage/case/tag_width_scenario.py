@@ -1,4 +1,4 @@
-"""A known tag-width failure must become XPASS when the DUT is corrected."""
+"""DefaultConfig must preserve the complete prediction tag in its stored entry."""
 
 from bpuverify.common.env.artifacts import output_path
 from bpuverify.common.env.artifacts import write_output
@@ -32,24 +32,21 @@ async def check_guarded_pc_tag_width(agent, output):
     transaction = UtageTraining(DEFECT_PC, POSITION, 1, deepcopy(cold.meta))
     async with agent.observe_shadow(table=0) as shadow:
         await agent.train(transaction)
-        # The declared defect is a prediction miss caused by tag truncation.
-        # Declare that exact logical address so every other field of every
-        # other prediction is still compared; the scenario below still has to
-        # prove the allocated cell and the width obstruction.
-        agent.allow_known_miss(DEFECT_PC, POSITION,
-            'BPU-UTAGE-007 prediction tag wider than the training/SRAM tag')
         trained = await agent.predict(DEFECT_PC, POSITION, 0)
         cell, width = deepcopy(shadow.latest['cells'][0]), shadow.tag_width
     full_tag = prediction_tag(DEFECT_PC, 0, 0)
     check(dict(valid=1, index=hash_indices(DEFECT_PC, 0)[0], data_valid=1,
         tag=full_tag & ((1 << width) - 1), position=POSITION, counter=4), cell,
         'actual allocated shadow cell after genuine feedback')
+    check(8, width, 'DefaultConfig stored tag width')
+    check(True, full_tag < (1 << width), 'complete prediction tag fits stored entry')
+    check(1, trained.hit, 'trained DefaultConfig entry remains visible')
     check(hash_indices(DEFECT_PC, 0), tuple(trained.meta['readIndex']), 'same trained address')
     entry = trained.meta['abtbResult'][0]
     check((1, POSITION), (entry['valid'], entry['cfiPosition']), 'trained slot validity and position')
     check(True, trained.hit in (0, 1), 'prediction hit is boolean')
     result = dict(status='PASS' if trained.hit else 'KNOWN_FAIL', dut='MicroTage',
-        issue='prediction GuardedPc tag is wider than training/SRAM tag', pc_addr=hex(DEFECT_PC),
+        issue='historical BPU-UTAGE-007; DefaultConfig uses an eight-bit prediction/stored tag', pc_addr=hex(DEFECT_PC),
         observed_hit=trained.hit, observed_taken=trained.taken,
         public_feedback=asdict(transaction), full_prediction_tag=full_tag, stored_width=width,
         allocated_shadow_cell=cell, evidence=dict(abtbResult_0=entry, readIndex=trained.meta['readIndex']),

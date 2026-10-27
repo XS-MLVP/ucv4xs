@@ -6,13 +6,14 @@ import pytest
 from bpuverify.bpu.checker.early_direction import live_values,fast_values
 from bpuverify.bpu.checker.early_opposition import EarlyOppositionChecks
 from bpuverify.bpu.coverage.early_opposition import EarlyOppositionCoverage,RULES,EXTRA_RULES
-from bpuverify.bpu.model.early_opposition import provider,ahead_owner,main_counter,is_opposed,stable_negative,steady_history,loop_history
+from bpuverify.bpu.model.early_opposition import provider,ahead_owner,main_counter,is_opposed,stable_negative,steady_history,loop_history,FALLBACK
 from bpuverify.bpu.model.pipeline import Redirect
 from bpuverify.bpu.model.selection import Kind
 from tests.bpu.scoreboard.test_early_direction_checking import Program as LearningProgram,actual_live,actual_fast
 
 
 class Program(LearningProgram):
+    fallback_position = FALLBACK
     def __init__(self,pc=0x40000000):
         super().__init__(pc)
         self.named=[];self.corrections={}
@@ -60,7 +61,7 @@ class Program(LearningProgram):
         self.quiet()
 
     def until(self,source,predicate,*,settle=True):
-        idle=self.quiet();self.step(replace(idle,redirect=Redirect(source.token.history,self.pc+4,self.pc,True)))
+        idle=self.quiet();self.step(replace(idle,redirect=Redirect(source.token.history,(self.pc//16)*16+FALLBACK,self.pc,True)))
         for _ in range(256):
             token=self.step().metadata
             if token is not None and token.pc==self.pc and predicate(token):
@@ -73,7 +74,7 @@ class Program(LearningProgram):
         self.enable(False);source=self.query(source)
         for _ in range(4):
             counter=main_counter(source.token)
-            if counter==goal:return self.until(source,lambda token:main_counter(token)==goal and steady_history(token,2 if goal else 4))
+            if counter==goal:return self.until(source,lambda token:main_counter(token)==goal and steady_history(token,2 if goal else FALLBACK))
             taken=counter<goal;idle=self.quiet()
             request=self.feedback(source.token,2,Kind.CONDITIONAL,taken)
             request=replace(request,branches=(replace(request.branches[0],mispredict=(counter>=2)!=taken),))
@@ -215,13 +216,13 @@ def test_active_owned_ahead_beat_checks_even_raw_lanes_without_a_conditional_sou
     with pytest.raises(AssertionError):program.checks.pipeline.board.check(expected=expected,actual=actual)
 
 
-@pytest.mark.parametrize('position,expected',((2,0xAA0),(4,0x540)))
+@pytest.mark.parametrize('position,expected',((2,0xA0),(FALLBACK,0x10)))
 def test_steady_loop_history_is_the_semantic_edge_fixed_point_not_a_wait_count(position,expected):
     from bpuverify.bpu.model.path_history import path_contribution
     from bpuverify.bpu.model.early_opposition import PC
     word=loop_history(PC,position)
     assert word==expected
-    assert ((word<<2)^path_contribution(PC+position,PC))%4096==word
+    assert ((word<<2)^path_contribution(PC+position,PC))%512==word
     assert word%16==0  # Same Ahead history feature, distinct MicroTAGE keys.
 
 

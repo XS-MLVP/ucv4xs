@@ -12,13 +12,13 @@ from bpuverify.bpu.model.sc.full import FullScReference, full_advance
 from tests.bpu.scoreboard.test_used_reference import transaction
 from bpuverify.bpu.model.sc.used import used_requests
 
-def payload(key, ways=4, value=1, lane=0):
+def payload(key, ways=8, value=1, lane=0):
     return dict(set_index=key, masks=[int(i == lane) for i in range(ways)], data=[value if i == lane else 0 for i in range(ways)])
 
-def resident_slots(ways=4, dirty_mask=15):
+def resident_slots(ways=8, dirty_mask=15):
     return [dict(valid=1, dirty=dirty_mask >> i & 1, payload=payload(i, ways, value=i + 1, lane=i)) for i in range(4)]
 
-@pytest.mark.parametrize('ways', [4, 16])
+@pytest.mark.parametrize('ways', [8, 32])
 @pytest.mark.parametrize('plru', range(8))
 @pytest.mark.parametrize('ready', [0, 1])
 def test_full_miss_every_plru_state_and_old_drain(ways, plru, ready):
@@ -42,7 +42,7 @@ def test_full_miss_every_plru_state_and_old_drain(ways, plru, ready):
     assert next_plru == touch(plru, selected)
     assert slots == old
 
-@pytest.mark.parametrize('ways', [4, 16])
+@pytest.mark.parametrize('ways', [8, 32])
 @pytest.mark.parametrize('dirty_mask', range(16))
 @pytest.mark.parametrize('ready', [0, 1])
 @pytest.mark.parametrize('write_key', [None, 0, 1, 2, 3, 4])
@@ -59,7 +59,7 @@ def test_all_bounded_transitions_exactly_preserved(ways, dirty_mask, ready, writ
         assert (new, drain, None if action is None else action['kind']) == (old_new, old_drain, old_kind)
         assert next_plru == (touch(plru, action['slot']) if write_key == 4 else plru)
 
-@pytest.mark.parametrize('ways', [4, 16])
+@pytest.mark.parametrize('ways', [8, 32])
 @pytest.mark.parametrize('slot', range(4))
 @pytest.mark.parametrize('same', [0, 1])
 def test_clean_same_does_not_reactivate_but_partial_mask_merge_retains_full_data(ways, slot, same):
@@ -75,7 +75,7 @@ def test_clean_same_does_not_reactivate_but_partial_mask_merge_retains_full_data
         assert new[slot]['payload']['masks'][slot] == new[slot]['payload']['masks'][-1] == 1
 
 @pytest.mark.parametrize('bank', [0, 1])
-@pytest.mark.parametrize('way', range(4))
+@pytest.mark.parametrize('way', range(8))
 def test_five_real_input_derived_keys_full_overwrite_and_full_sram_drain(bank, way):
     ref = FullScReference()
     all_actions = []
@@ -84,7 +84,7 @@ def test_five_real_input_derived_keys_full_overwrite_and_full_sram_drain(bank, w
         drains, actions = ref.step(used_requests(tx, ref.memories), dict.fromkeys(NAMES, 0))
         assert not drains
         all_actions.extend(actions)
-    active = [f'{table}_bank{bank}' for table in ('pathTable_0', 'globalTable_0', 'bwTable_0', 'imliTable', 'biasTable')]
+    active = [f'{table}_bank{bank}' for table in ('pathTable_0','pathTable_1','globalTable_0','globalTable_1','bwTable_0','bwTable_1','imliTable','biasTable')]
     overwritten = [row for row in all_actions if row['kind'] == 'full_overwrite']
     assert {row['buffer'] for row in overwritten} == set(active)
     assert all((row['slot'] == 0 and row['overwritten_pending'] for row in overwritten))
@@ -95,7 +95,7 @@ def test_five_real_input_derived_keys_full_overwrite_and_full_sram_drain(bank, w
         more, actions = ref.step({}, dict.fromkeys(NAMES, 1))
         assert not actions
         drains.extend(more)
-    assert len(drains) == 20
+    assert len(drains) == 32
     for name in active:
         assert set(ref.memories[name]) == set(expected[name])
         for key, item in expected[name].items():
@@ -112,7 +112,7 @@ def test_same_cycle_old_drain_survives_replacement_and_new_write_remains_dirty(b
         ref.step(used_requests(transaction(bank=bank, key=key), ref.memories), dict.fromkeys(NAMES, 0))
     old = deepcopy(ref.slots)
     drains, actions = ref.step(used_requests(transaction(bank=bank, key=4), ref.memories), dict.fromkeys(NAMES, 1))
-    assert len(drains) == len(actions) == 5
+    assert len(drains) == len(actions) == 8
     assert all((row['drain_same_slot'] and (not row['overwritten_pending']) for row in actions))
     for row in drains:
         name, item = (row['buffer'], row['payload'])

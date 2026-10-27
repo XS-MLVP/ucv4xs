@@ -1,3 +1,4 @@
+from bpuverify.bpu.model.early_opposition import FALLBACK
 """Positive-source preparation plus the existing original-record strength ledger.
 
 The two existing checkers are cooperative: source preparation freezes T seeds;
@@ -61,7 +62,7 @@ class EarlyPositiveProtectionChecks(EarlyShortProtectionChecks, EarlyPositiveChe
 
     def preserved_base_bias(self, source, before, taken):
         token = self.remember(source); sources = self.pipeline.model.sources
-        self.check((3 if taken else 0, True), (main_counter(token), steady_history(token, 2 if taken else 4)),
+        self.check((3 if taken else 0, True), (main_counter(token), steady_history(token, 2 if taken else FALLBACK)),
                    'normal base learning has its own stable direction history')
         self.check(3 if taken else 0, ahead_owner(sources, token)[1], 'same normal Ahead owner reached the declared base direction')
         value = provider(sources, token)

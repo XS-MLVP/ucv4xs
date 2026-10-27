@@ -1,4 +1,5 @@
 """Real old/current sources cross pending/committed visibility in one DUT."""
+from bpuverify.common.model.configuration import *
 from copy import deepcopy
 
 from bpuverify.bpu.env.main_service import MainService, branch, main_program
@@ -57,7 +58,7 @@ async def release(env, service, observer, *, entry_count, direction_count):
     await env.pause()
     def complete(_):
         observer.raise_failure()
-        return sum(len(port) for port in observer.written[:2])>=entry_count and len(observer.written[2])>=direction_count
+        return sum(len(port) for port in observer.written[:MAIN_WAYS])>=entry_count and len(observer.written[MAIN_WAYS])>=direction_count
     await env.observation.wait('all-original-main-services-observed',complete)
 
 
@@ -87,14 +88,14 @@ async def check_with_agent(agent, program, evidence, coverage):
                     await release(env,service,observer,entry_count=1,direction_count=1)
                     await service.start()
                 observer.check(0 if program.phase=='pending' else 1,
-                    sum(len(port) for port in observer.written[:2]),'declared pending/committed visibility is actual')
+                    sum(len(port) for port in observer.written[:MAIN_WAYS]),'declared pending/committed visibility is actual')
                 coverage.reached('declared-version-visibility',phase=program.phase)
                 source = cold if program.origin=='old-cold' else current[1]
                 await submit(env,observer,source,2)
                 await release(env,service,observer,
                     entry_count=1 if program.phase=='pending' else 2,direction_count=2)
                 expected = [program.effect(2)] if program.phase=='pending' else [program.effect(1),program.effect(2)]
-                observer.check((expected,[]),tuple([row['bits'] for row in port] for port in observer.written[:2]),
+                observer.check((expected,[]),tuple([row['bits'] for row in port] for port in observer.written[:MAIN_WAYS]),
                                'all actual complete entry services retain the original earlier branch owner')
                 coverage.reached('complete-latest-entry-service')
                 # Query the not-executed conditional sibling FIRST. A wrong
@@ -119,7 +120,7 @@ async def check_with_agent(agent, program, evidence, coverage):
                 observer.check((EARLIER,VERSIONS[2],3),(token.middle.branch.position,token.middle.branch.target,int(token.middle.branch.kind)),
                                'fresh earlier consumer owns the newest complete version')
                 expected_direction = program.direction()
-                observer.check([expected_direction,expected_direction],[observed_counter(row['bits']) for row in observer.written[2]],
+                observer.check([expected_direction,expected_direction],[observed_counter(row['bits']) for row in observer.written[MAIN_WAYS]],
                                'both independent direction services belong to the earlier branch, not its unexecuted sibling')
                 coverage.reached('latest-earlier-consumer',query_tick=earlier.prediction_tick)
                 observer.check(True,observer.summary()['immutable_originals'],'original metadata was never patched')

@@ -5,7 +5,7 @@
     "src/main/scala/xiangshan/backend/vector/vagq/VAGQUtils.scala": "ffc4e9e006bc227d7c97bcbc7ccaa16e86065cbcb375a3da283edcafbd4a127d"
   },
   "rtl_files": {
-    "DecodeStage.sv": "1e5687565b24908d4bd567642647faa78f295b5b8e2aa5ebdc4af23eab5bf64f"
+    "DecodeStage.sv": "86daac4bf322a7b6d32e5fef452cdd5b551e652bbec08fa56d21dc3aa6632417"
   },
   "scope": "Previously audited source contract, exact byte identity; no decoder simulation",
   "conclusion": "Production decoder excludes segment uops from VAGQ; direct standalone injection remains possible",

@@ -4,6 +4,8 @@ Requests own immutable MainBTB read frames. Feedback must name that exact
 published token, not merely an equivalent PC/history encoding. Other learned
 predictors and return stacks still require additional composition adapters.
 """
+from bpuverify.common.model.configuration import *
+
 from bpuverify.bpu.model.micro_sources import MicroSources
 from bpuverify.bpu.model.selection import Branch,Kind,StackAction,fallthrough,middle,final
 from bpuverify.mbtb.model.semantic import MbtbReference,Events,Feedback,Source,Branch as Outcome,Frame
@@ -16,7 +18,7 @@ def source_entries(frame):
     return tuple(tuple(Source(bool(values[f'{slot}.raw_hit']),
         values.get(f'{slot}.meta_position',0),values.get(f'{slot}.meta_kind',0),
         values.get(f'{slot}.meta_action',0),values.get(f'{slot}.counter',0))
-        for slot in range(alignment*2,alignment*2+2)) for alignment in range(2))
+        for slot in range(alignment*(MAIN_WAYS+1),(alignment+1)*(MAIN_WAYS+1))) for alignment in range(2))
 
 
 class BranchTargetSources(MicroSources):
@@ -47,8 +49,8 @@ class BranchTargetSources(MicroSources):
         values = frame.values()
         entries = tuple(None if not values[f'{slot}.valid'] else Branch(values[f'{slot}.position'],
             values[f'{slot}.target'],Kind(values[f'{slot}.kind']),bool(values[f'{slot}.taken']),
-            StackAction(values[f'{slot}.action'])) for slot in range(4))
-        directions = (None,)*4
+            StackAction(values[f'{slot}.action'])) for slot in range(RESULT_SLOTS))
+        directions = (None,)*RESULT_SLOTS
         return middle(token.pc,entries,directions) if stage==2 else final(token.pc,entries,directions,directions)
 
     def validate(self,events,cycle):
@@ -69,7 +71,7 @@ class BranchTargetSources(MicroSources):
         if events.feedback is not None and cycle.enabled[2]:
             source = events.feedback
             frame = source.origin.lookup
-            feedback = Feedback((source.pc,((source.pc//8+1)*8)%(1<<49)),source_entries(frame),
+            feedback = Feedback((source.pc,((source.pc//ALIGN_HALFWORDS+1)*ALIGN_HALFWORDS)%(1<<49)),source_entries(frame),
                 tuple(Outcome(branch.target,branch.taken,branch.position,int(branch.kind),int(branch.action),
                     branch.mispredict) for branch in source.branches if branch is not None))
         self.main.advance(Events(pc=cycle.next_pc,select=issued is not None,advance=cycle.fires[1],
@@ -78,4 +80,4 @@ class BranchTargetSources(MicroSources):
     def main_pending(self):
         return (self.main.offered is not None or any(self.main.entry_offers.values())
             or any(cache.outstanding for cache in self.main.entries.values())
-            or any(queue.pending for queue in self.main.directions.values()) or bool(self.main.cleanup))
+            or any(queue.pending for queue in self.main.directions.values()) or bool(self.main.cleanup) or bool(self.main.snapshots))

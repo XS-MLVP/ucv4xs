@@ -1,4 +1,5 @@
 """Normal driver/monitor flow; no production imports or SDK are patched."""
+from bpuverify.common.model.configuration import *
 from copy import deepcopy
 
 from bpuverify.bpu.env.main_service import MainService, branch, main_program
@@ -94,13 +95,13 @@ async def check_with_agent(agent, program, evidence, coverage):
                     await release(env, service, observer, entry_count=1, direction_count=1)
                     await service.start()
                 observer.check(0 if program.phase == 'pending' else 1,
-                    sum(len(port) for port in observer.written[:2]), 'actual declared version visibility')
+                    sum(len(port) for port in observer.written[:MAIN_WAYS]), 'actual declared version visibility')
                 coverage.reached('declared-version-visibility', phase=program.phase)
                 await submit(env, observer, cold if program.origin == 'old-cold' else current[1], 2)
                 await release(env, service, observer,
                     entry_count=1 if program.phase == 'pending' else 2, direction_count=2)
                 expected = [program.effect(2)] if program.phase == 'pending' else [program.effect(1), program.effect(2)]
-                observer.check((expected, []), tuple([row['bits'] for row in port] for port in observer.written[:2]),
+                observer.check((expected, []), tuple([row['bits'] for row in port] for port in observer.written[:MAIN_WAYS]),
                                'latest complete target remains with the earlier indirect instruction')
                 coverage.reached('complete-latest-entry-service')
                 sibling = await env.capture_source(PC + EARLIER + 1)
@@ -121,7 +122,7 @@ async def check_with_agent(agent, program, evidence, coverage):
                     (token.middle.branch.position, token.middle.branch.target, int(token.middle.branch.kind)),
                     'fresh indirect consumer follows its newest dynamic target')
                 wanted = program.direction()
-                observer.check([wanted, wanted], [observed_counter(row['bits']) for row in observer.written[2]],
+                observer.check([wanted, wanted], [observed_counter(row['bits']) for row in observer.written[MAIN_WAYS]],
                                'both services preserve the direction of the unexecuted conditional')
                 coverage.reached('latest-earlier-consumer', query_tick=earlier.prediction_tick)
                 observer.check(True, observer.summary()['immutable_originals'], 'original sources were not patched')

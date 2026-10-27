@@ -1,3 +1,4 @@
+from bpuverify.common.model.configuration import *
 from copy import deepcopy
 from itertools import product
 import pytest
@@ -8,7 +9,7 @@ from bpuverify.bpu.model.sc.model import ScReference
 from bpuverify.bpu.model.sc.model import width
 from bpuverify.bpu.model.sc.model import zero_slots
 
-MASK_CASES = [(ways, a, b, dirty, ready) for ways in (4, 16)
+MASK_CASES = [(ways, a, b, dirty, ready) for ways in (SC_WAYS, 4 * SC_WAYS)
               for a, b, dirty, ready in product(range(ways), range(ways), (0, 1), (0, 1))]
 
 
@@ -36,7 +37,7 @@ def minimal_transaction(bank=0, taken=0):
     return dict(pc=0x40000800 + bank, resolve_meta=dict(commonHR=dict(valid=0),
         mbtb_entries=[[dict(rawHit=1, position=4)]],
         sc=dict(tagePredValid=[1], useScPred=[0], scPred=[1 - taken], sumAboveThres=[0],
-                scBiasLowerBits=[0], debug=dict(predPathIdx=[5], predImliIdx=5, predBiasIdx=5))),
+                scBiasLowerBits=[0], debug=dict(predPathIdx=[5, 5], predImliIdx=5, predBiasIdx=5))),
         branches=[dict(position=4, target=0x40000a00, branch_type=1, taken=taken,
                        mispredict=0, ras_action=0)])
 
@@ -44,8 +45,8 @@ def minimal_transaction(bank=0, taken=0):
 @pytest.mark.parametrize('bank,bits,taken', tuple(product(range(2), range(64), range(2))))
 def test_accepted_feedback_derives_signed_saturating_full_payloads(bank, bits, taken):
     ref, tx = ScReference(), minimal_transaction(bank, taken)
-    for table in ('pathTable_0', 'imliTable', 'biasTable'):
-        name, selected = f'{table}_bank{bank}', 4 if table == 'biasTable' else 1
+    for table in ('pathTable_0', 'pathTable_1', 'imliTable', 'biasTable'):
+        name, selected = f'{table}_bank{bank}', 16 if table == 'biasTable' else 4
         ref.memories[name][5] = [bits if index == selected else 0 for index in range(width(name))]
     saved = deepcopy(ref.memories)
     actual = sc_requests(tx, ref.memories)
@@ -54,9 +55,9 @@ def test_accepted_feedback_derives_signed_saturating_full_payloads(bank, bits, t
     if wanted == bits:
         assert actual == {}
     else:
-        assert len(actual) == 3
-        for table in ('pathTable_0', 'imliTable', 'biasTable'):
-            name, selected = f'{table}_bank{bank}', 4 if table == 'biasTable' else 1
+        assert len(actual) == 4
+        for table in ('pathTable_0', 'pathTable_1', 'imliTable', 'biasTable'):
+            name, selected = f'{table}_bank{bank}', 16 if table == 'biasTable' else 4
             assert actual[name] == dict(set_index=5,
                 masks=[int(index == selected) for index in range(width(name))],
                 data=[wanted if index == selected else 0 for index in range(width(name))])
@@ -80,7 +81,7 @@ def test_reference_rejects_unqualified_metadata(kind):
         sc_requests(tx, ref.memories)
 
 
-@pytest.mark.parametrize('ways', (4, 16))
+@pytest.mark.parametrize('ways', (SC_WAYS, 4 * SC_WAYS))
 def test_full_dirty_overwrite_explicitly_rejected(ways):
     slots = zero_slots(ways)
     for index, entry in enumerate(slots):

@@ -55,8 +55,8 @@ def test_hash_uses_semantic_byte_geometry_and_independent_fold_parity(pc, histor
         idx_fold, primary, secondary = context.folds[table]
         assert bank == (pc >> 1) & 1
         assert index == ((pc >> 2) & (sets - 1)) ^ idx_fold
-        assert tag == ((pc // (4 * sets)) ^ primary ^ (2 * secondary)) & 127
-    assert Context.from_recent(4).folds == ((4, 4, 4),) * 3
+        assert tag == ((pc // (4 * sets)) ^ primary ^ (2 * secondary)) & 511
+    assert Context.from_recent(4).folds == ((4, 4, 4),) * 5
 
 
 def test_feedback_acceptance_is_not_memory_visibility():
@@ -115,7 +115,7 @@ def test_request_relaunch_does_not_reuse_preceding_read_token():
     assert model.prediction.target == A
 
 
-@pytest.mark.parametrize('tables', [(), (0,), (1,), (2,), (0, 1), (0, 2), (1, 2), (0, 1, 2)])
+@pytest.mark.parametrize('tables', [tuple(i for i in range(5) if mask & (1<<i)) for mask in range(32)])
 def test_provider_alternate_and_legal_allocation_are_independent_of_actual_choice(tables):
     model = IttageReference()
     for table in tables:
@@ -123,7 +123,7 @@ def test_provider_alternate_and_legal_allocation_are_independent_of_actual_choic
     prediction = model.inspect(PC)
     assert prediction.provider == (max(tables) if tables else None)
     assert prediction.alternate == (sorted(tables)[-2] if len(tables) > 1 else None)
-    assert prediction.candidates == tuple(table for table in range(3)
+    assert prediction.candidates == tuple(table for table in range(5)
         if table not in tables and (not tables or table > max(tables)))
 
 
@@ -133,7 +133,7 @@ def test_tag_miss_cannot_allocate_over_a_useful_resident():
     alias = PC + 4 * SETS[0]
     assert coordinates(PC, Context(), 0)[1] == coordinates(alias, Context(), 0)[1]
     assert model.inspect(alias).provider is None
-    assert model.inspect(alias).candidates == (1, 2)
+    assert model.inspect(alias).candidates == (1, 2, 3, 4)
 
 
 @pytest.mark.parametrize('counter,correct', tuple(product(range(4), (False, True))))
@@ -355,9 +355,9 @@ def test_signal_like_values_are_not_silently_accepted_as_semantic_events(invalid
         invalid()
 
 
-@pytest.mark.parametrize('invalid', [lambda: Context.from_recent(-1), lambda: Context.from_recent(1 << 31),
+@pytest.mark.parametrize('invalid', [lambda: Context.from_recent(-1), lambda: Context.from_recent(1 << 532),
                                   lambda: coordinates(PC + 1, Context(), 0),
-                                  lambda: Metadata(provider=3), lambda: Metadata(confidence=4)])
+                                  lambda: Metadata(provider=5), lambda: Metadata(confidence=4)])
 def test_out_of_contract_inputs_raise(invalid):
     with pytest.raises(ValueError):
         invalid()

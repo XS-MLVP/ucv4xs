@@ -1,4 +1,5 @@
 """Passive highest-table write activity; native binding stays inside the agent."""
+from bpuverify.common.model.configuration import *
 from bpuverify.common.env.memory_direct import memory_signal
 from bpuverify.common.env.memory_direct import memory_signal_names
 from toffee import Bundle
@@ -14,7 +15,7 @@ class TageWriteActivityMonitor(CycleMonitor):
         names = tuple(memory_signal_names(dut))
 
         def signal(bank, field):
-            suffix = f'.Tage.tables_3.tage_entry_write_buffer_bank{bank}.{field}'
+            suffix = f'.Tage.tables_{TAGE_TABLES - 1}.tage_entry_write_buffer_bank{bank}.{field}'
             matches = [name for name in names if name.endswith(suffix)]
             if len(matches) != 1:
                 raise RuntimeError(f'TAGE write signal {suffix} needs one memory-direct binding; found {len(matches)}: {matches}')

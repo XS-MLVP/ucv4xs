@@ -1,4 +1,5 @@
 """Independent event/lifetime controls; synthetic data has no DUT credit."""
+from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT
 import ast
 from dataclasses import replace
 from pathlib import Path
@@ -55,7 +56,7 @@ class Program(Foundation):
         request=Resolution(source.history,pc,(Outcome(position,target,Kind(kind),taken,mispredict=wrong),),origin=source)
         if phase=='not-taken':
             feedback=self.model.sources.feedback_for(request)
-            for _ in range(128):
+            for _ in range(TAGE_ALLOCATION_WAIT):
                 candidate=self.model.sources.tage.allocation_at_next_accept(feedback)
                 if candidate is not None and candidate[0]<TABLES-1:break
                 self.step(idle)

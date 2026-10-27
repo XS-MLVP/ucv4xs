@@ -1,5 +1,6 @@
 """Same short-history provider, independent long-history providers."""
 
+from bpuverify.common.model.configuration import PHR_FOLDS
 from bpuverify.utage.transaction.types import UtageTraining
 from bpuverify.common.model.folded_history import folded_history_values
 from bpuverify.utage.checker.assertions import counter
@@ -11,15 +12,15 @@ from bpuverify.utage.case.definitions import SATURATION_ATTEMPTS
 def requests_for_bit(older_bit):
     return tuple((bank, name, bank | mask, base) for bank in range(4)
                  for name, mask, base in (("a", 0, 1), ("b", 1 << older_bit, 0),
-                                          ("lower_only", 1 << 11, 0)))
+                                          ("lower_only", 1 << 5, 0)))
 
 
 def require_long_history(prediction, bank, name, history, base, table, taken_counter):
     entry = prediction.meta["abtbResult"][0]
-    upper_index = (history & 511) ^ (history >> 9)
+    upper_index = history & 511
     state = (bank, name, history, prediction)
     assert prediction.meta["readIndex"] == (bank, upper_index), state
-    assert prediction.meta["foldedPathHistForTrain_hist"] == folded_history_values(history, 19), state
+    assert prediction.meta["foldedPathHistForTrain_hist"] == folded_history_values(history, len(PHR_FOLDS)), state
     assert (entry["valid"], entry["cfiPosition"], entry["baseTaken"]) == (1, POSITION, base), state
     assert (prediction.hit, entry["hit"], entry["tableId"], counter(prediction), prediction.taken) == (
         1, 1, table, taken_counter, int(taken_counter >= 4),
@@ -65,8 +66,8 @@ async def check_short_alias_long_history(agent, coverage):
             a = await agent.predict(PASSING_PC, POSITION, 1, folded_history=bank)
             require_long_history(a, bank, "a", bank, 1, 1, 3)
 
-            # The older bit lies beyond the six-bit short window: B must
-            # inherit A's lower provider, but its twelve-bit upper row is cold.
+            # The older bit lies beyond the five-bit short window: B must
+            # inherit A's lower provider, but its nine-bit upper row is cold.
             history_b = bank | (1 << older_bit)
             b = await agent.predict(PASSING_PC, POSITION, 1, folded_history=history_b)
             require_long_history(b, bank, "b.lower", history_b, 1, 0, 3)

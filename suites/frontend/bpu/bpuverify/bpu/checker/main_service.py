@@ -1,4 +1,5 @@
 """Entry owner, masked direction owner and visibility must agree independently."""
+from bpuverify.common.model.configuration import *
 from copy import deepcopy
 from toffee import CheckContext,ScoreboardMode
 from bpuverify.bpu.coverage.main_service import main_service_rules
@@ -16,15 +17,15 @@ class MainServiceChecks:
         if stale and reclassify:raise ValueError('stale-owner and current-source reclassification are separate profiles')
         self.pipeline,self.coverage,self.stale,self.reclassify=pipeline,coverage,stale,reclassify
         self.rules=main_service_rules('reclassification' if reclassify else 'retained-owner' if stale else 'service')
-        self.owner=0 if reclassify else 1
+        self.owner=2 if reclassify else 3
         self.pcs=PCS[-1:] if stale else PCS
         self.sources=();self.originals=();self.snapshots=();self.failure=None
         effects=tuple((reclassification_effect if reclassify else target_effect)(pc) for pc in self.pcs)
-        self.plan=(effects,()) if reclassify else ((),effects)
-        self.counter_plan=tuple(dict(row=coordinate(pc)[2],mask=1 if reclassify else 2 if stale else 3,
-            values={'0':2} if reclassify else {'1':2} if stale else {'0':0,'1':2}) for pc in self.pcs)
+        self.plan=tuple(effects if way==self.owner else () for way in range(MAIN_WAYS))
+        self.counter_plan=tuple(dict(row=coordinate(pc)[2],mask=4 if reclassify else 8 if stale else 12,
+            values={'2':2} if reclassify else {'3':2} if stale else {'2':0,'3':2}) for pc in self.pcs)
         self.inputs=[];self.proposals=[];self.counter_proposals=[];self.accepted=()
-        self.written=[[],[],[]];self.old={};self.new={};self.siblings={};self.holding=False;self.pending_checked=False
+        self.written=[[] for _ in range(MAIN_WAYS+1)];self.old={};self.new={};self.siblings={};self.holding=False;self.pending_checked=False
         self.release_tick=None;self.last=None;self.closed=False
 
     def raise_failure(self):
@@ -41,14 +42,14 @@ class MainServiceChecks:
 
     @property
     def service_shape(self):
-        return tuple(len(self.pcs) if port in (self.owner,2) else 0 for port in range(3))
+        return tuple(len(self.pcs) if port in (self.owner,MAIN_WAYS) else 0 for port in range(MAIN_WAYS+1))
 
     def inspect(self,receipt,pc,target,*,committed=False):
         token=self.pipeline.source_token(receipt)
         self.check(pc,token.pc,'exact real Main read PC')
         entries=tuple((way,e.position,e.kind,e.counter) for way,e in enumerate(source_entries(token.lookup)[0]) if e.hit)
         changed=self.reclassify and committed
-        self.check(((0,PEER_POSITION,3 if changed else 1,2 if changed else 0),(1,POSITION,3,2)),entries,
+        self.check(((2,PEER_POSITION,3 if changed else 1,2 if changed else 0),(3,POSITION,3,2)),entries,
             'complete reclassified earlier record or negative peer, and independent later indirect')
         self.check((PEER_POSITION if changed else POSITION,target,True,3),(token.middle.branch.position,token.middle.branch.target,
             token.middle.branch.taken,int(token.middle.branch.kind)),'complete independently selected Main target')
@@ -64,8 +65,8 @@ class MainServiceChecks:
                 self.check(False,any(e.hit for row in source_entries(token.lookup) for e in row),'actual old cold metadata was captured before learning')
                 self.check(False,token.early.branch.taken,'cold original genuinely predicted fallthrough')
                 main=self.pipeline.model.sources.main;entry=Entry(tag(pc),POSITION,3,0,Target.encode(pc,new_target(pc)))
-                self.check((0,1),(main.recency[0,replacement_row(pc)],main.entries[0,0].owner(Write(coordinate(pc)[2],0,entry))),
-                    'old nomination is peer0 but retained logical entry still belongs to owner1')
+                self.check(((3,2,0,1),3),(main.recency[0,replacement_row(pc)],main.entries[0,0].owner(Write(coordinate(pc)[2],0,entry))),
+                    'old nomination is way1 but retained logical entry still belongs to owner3')
             else:self.inspect(source,pc,old_target(pc))
             if i:self.check(True,sources[i-1].meta_tick<source.prediction_tick,'independent ordered original predictions')
         self.sources=tuple(sources);self.originals=tuple(originals)
@@ -84,14 +85,14 @@ class MainServiceChecks:
             self.last=event.tick,row;self.check((0,1),(row['reset'],row['initialized']),'ordinary learning, not reset service')
             if self.holding:
                 self.check(1,row['read']['valid'],'uninterrupted actual Main-bank reads')
-                self.check((0,0,0),tuple(w['ready'] for w in row['writes']),'entry and direction service both denied by reads')
+                self.check((0,)*5,tuple(w['ready'] for w in row['writes']),'entry and direction service both denied by reads')
                 if row['training']['valid'] and row['training']['ready']:
                     p=row['prediction'];self.check((1,1,0),(p['valid'],p['ready'],coordinate(p['pc'])[1]),'real prediction beside each actual feedback')
                     self.inputs.append(event.tick)
             for way,p in enumerate(row['incoming']):
                 if p['valid']:
                     index=len(self.proposals);self.check(True,self.holding and not self.pending_checked and index<len(self.pcs),'one ordinary complete effect per declared source')
-                    self.check((0 if self.stale else self.owner,self.plan[self.owner][index]),(way,p['bits']),'offered entry may nominate another way, never another target')
+                    self.check((1 if self.stale else self.owner,self.plan[self.owner][index]),(way,p['bits']),'offered entry may nominate another way, never another target')
                     if index:self.check(self.proposals[-1][0]+2,event.tick,'adjacent complete entry effects')
                     self.proposals.append((event.tick,way,deepcopy(p['bits'])))
             if row['direction']['valid']:
@@ -120,12 +121,12 @@ class MainServiceChecks:
         self.accepted=tuple(events);self.coverage.record('reached',self.rules[0],events[-1][0])
 
     def blocked(self,row):
-        self.check(0,row['writes'][1-self.owner]['valid'],'unrelated entry owner has no target service')
+        self.check((0,)*3,tuple(row['writes'][way]['valid'] for way in range(MAIN_WAYS) if way!=self.owner),'all unrelated entry owners have no target service')
         self.check(dict(valid=1,ready=0,bits=self.plan[self.owner][0]),row['writes'][self.owner],'oldest complete target remains blocked')
-        actual=row['writes'][2];self.check((1,0,self.counter_plan[0]),(actual['valid'],actual['ready'],observed_counter(actual['bits'])),
+        actual=row['writes'][MAIN_WAYS];self.check((1,0,self.counter_plan[0]),(actual['valid'],actual['ready'],observed_counter(actual['bits'])),
             'separate masked direction obligation remains blocked')
         self.check(len(self.pcs),sum(sum(r) for r in row['dirty']),'every target obligation occupies a real retained slot')
-        q=row['queue'];occupancy=(2 if q['full'] else 0) if q['enqueue']==q['dequeue'] else 1
+        q=row['queue'];occupancy=4 if q['full'] else (q['enqueue']-q['dequeue'])%4
         self.check(len(self.pcs),occupancy,'all masked direction obligations survive in their separate finite FIFO')
 
     def pending(self):
@@ -145,7 +146,7 @@ class MainServiceChecks:
             'entry offer has its additional one-cycle register, not a guessed settling wait')
         self.check(tuple(t for t,_ in self.accepted),tuple(p[0] for p in self.counter_proposals),
             'direct t1 direction enqueue shares the original accepted-input sample boundary')
-        self.check([[],[],[]],self.written,'no earlier actual commit')
+        self.check([[] for _ in range(MAIN_WAYS+1)],self.written,'no earlier actual commit')
         self.check(self.pipeline.last_tick,self.last[0],'owned and actual retention share one boundary')
         self.blocked(self.last[1]);self.pending_checked=True;self.coverage.record('reached',self.rules[1],self.last[0])
 
@@ -165,10 +166,10 @@ class MainServiceChecks:
         self.check(False,index in destination,'one consumer per declared context and visibility boundary')
         if not committed:
             self.check(True,self.pending_checked and self.holding,'old visibility before read release');self.blocked(self.last[1])
-            self.check([[],[],[]],self.written,'no hidden service before old consumer')
+            self.check([[] for _ in range(MAIN_WAYS+1)],self.written,'no hidden service before old consumer')
         else:
             self.check(self.service_shape,tuple(map(len,self.written)),'all complete actual services precede fresh new reads')
-            main=self.pipeline.model.sources.main;self.check(((),()),entry_plan(main,0,0),'no pending entry effect after service')
+            main=self.pipeline.model.sources.main;self.check(((),)*4,entry_plan(main,0,0),'no pending entry effect after service')
             self.check([],main.directions[0,0].pending,'no pending direction effect after service')
         destination[index]=source
         if len(destination)==len(self.pcs):self.coverage.record('reached',self.rules[4 if committed else 2],source.meta_tick)
@@ -192,7 +193,7 @@ class MainServiceChecks:
             token.middle.branch.taken,int(token.middle.branch.kind)),
             'later sibling target is selected and independently compared, not masked by the earlier taken branch')
         entries=source_entries(token.lookup)[0]
-        self.check(((PEER_POSITION,3,2),(POSITION,3,2)),tuple((e.position,e.kind,e.counter) for e in entries),
+        self.check(((0,0,0),(0,0,0),(PEER_POSITION,3,2),(POSITION,3,2),(0,0,0)),tuple((e.position,e.kind,e.counter) for e in entries),
             'offset filtering preserves both record identities and counters')
         r2=middle_repair(token.early,token.middle)
         r3=final_repair(token.early,token.middle,token.middle,corrected_middle=r2)
@@ -206,9 +207,9 @@ class MainServiceChecks:
 
     def write_accepted(self,port,transfer):
         self.check(True,self.release_tick is not None and transfer.accepted_tick>self.release_tick,'actual service only after declared release')
-        self.check(True,port in (self.owner,2),'unrelated owner cannot silently acquire a target')
-        actual=observed_counter(transfer.value) if port==2 else transfer.value
-        expected=self.counter_plan if port==2 else self.plan[port];index=len(self.written[port])
+        self.check(True,port in (self.owner,MAIN_WAYS),'unrelated owner cannot silently acquire a target')
+        actual=observed_counter(transfer.value) if port==MAIN_WAYS else transfer.value
+        expected=self.counter_plan if port==MAIN_WAYS else self.plan[port];index=len(self.written[port])
         self.check(True,index<len(expected),'no extra or duplicate actual service')
         self.check(expected[index],actual,'SDK-confirmed complete payload and independent service order')
         self.written[port].append((transfer.accepted_tick,deepcopy(actual)))
@@ -219,9 +220,9 @@ class MainServiceChecks:
         if self.reclassify:
             self.check(set(range(len(self.pcs))),set(self.siblings),
                 'every later sibling needs a fresh selected consumer before checked credit')
-        self.check((len(self.pcs),)*5,(len(self.accepted),len(self.old),len(self.written[self.owner]),len(self.written[2]),len(self.new)),
+        self.check((len(self.pcs),)*5,(len(self.accepted),len(self.old),len(self.written[self.owner]),len(self.written[MAIN_WAYS]),len(self.new)),
             'every accepted source has old consumption, both real services and new consumption')
-        self.check((0,0,0),tuple(p['valid'] for p in self.last[1]['writes']),'no extra unconsumed actual service')
+        self.check((0,)*5,tuple(p['valid'] for p in self.last[1]['writes']),'no extra unconsumed actual service')
         current=tuple(source_entries(self.pipeline.source_token(s).lookup) for s in (*self.sources,*self.originals))
         self.check(self.snapshots,current,'old source metadata does not rebase after target rewrites')
         tick=max(s.meta_tick for s in self.new.values());self.coverage.record('reached',self.rules[5],tick)

@@ -16,8 +16,8 @@ async def check_aging(agent,output,trigger):
     coverage=AgingCoverage();checker=TageAgingChecker(coverage,trigger)
     phr=ZeroHistoryChecker(scope='genuine candidate-capacity aging lifecycle',record_limit=64)
     checks=CombinedChecks(checker,phr);monitor=TageAgingMonitor(agent)
-    pcs=tuple(0x40010008+512*i for i in range(9));position=4;checkpoints={};residents=[];enabled=False
-    protected_per_table={table:0 for table in range(4)}
+    pcs=tuple(0x40010008+2048*i for i in range(17));position=4;checkpoints={};residents=[];enabled=False
+    protected_per_table={table:0 for table in range(8)}
     async def wait(operation,label):return await bounded(agent,checks,operation,label)
     async def configure(active):
         nonlocal enabled
@@ -72,10 +72,10 @@ async def check_aging(agent,output,trigger):
                 checker.check((2,1),(meta['providerTakenCtr_value'],meta['providerUsefulCtr_value']),'real_correct_disagreement_protects_entry')
                 protected_per_table[table]+=1
                 residents.append(dict(pc=pc,position=position,target=neutral_target(pc,position)))
-            checker.check([2]*4,list(protected_per_table.values()),'both_base_confidences_at_all_provider_tables')
-            checker.check([15]*8,list(checker.selector.values),'every_logical_selector_decremented_once_and_others_isolated')
+            checker.check([2]*8,list(protected_per_table.values()),'both_base_confidences_at_all_provider_tables')
+            checker.check([15]*16,list(checker.selector.values),'every_logical_selector_decremented_once_and_others_isolated')
             checker.routing.require()
-            checker.check(8,sum(c['valid'] and c['useful']>0 for table in checker.cells for c in table),'all_eight_candidate_ways_protected')
+            checker.check(16,sum(c['valid'] and c['useful']>0 for table in checker.cells for c in table),'all_sixteen_candidate_ways_protected')
             pc=pcs[-1];await install_owner(pc);await configure(True);source=await fresh(pc)
             checker.phase='qualified-failures'
             for event in range(MAX_FAILURES):
@@ -91,7 +91,7 @@ async def check_aging(agent,output,trigger):
             else:source=await feedback(pc,source,1-checker.direction(source,phr))
             checker.check((1,0,0,1),(checker.epochs,checker.counter,checker.busy,checker.counts['clear_completed']),
                 'committed_wait_includes_the_actual_all_table_clear')
-            checker.check([0]*8,[c['useful'] for table in checker.cells for c in table],'global_clear_discards_normal_useful_update')
+            checker.check([0]*16,[c['useful'] for table in checker.cells for c in table],'global_clear_discards_normal_useful_update')
             checker.phase='reopened-allocation';pc=pcs[-1];source=await fresh(pc)
             source=await feedback(pc,source,1-checker.direction(source,phr))
             checker.check(1,tage_meta_for_position(source,position)['hasProvider'],'genuine_new_provider_after_clear')
@@ -100,7 +100,7 @@ async def check_aging(agent,output,trigger):
                 pc=resident['pc'];await install_owner(pc);await configure(True);source=await fresh(pc)
                 meta=tage_meta_for_position(source,position)
                 if meta['hasProvider']:survivors+=1
-            checker.check(7,survivors,'one_replacement_and_seven_expected_old_tags_preserved')
+            checker.check(15,survivors,'one_replacement_and_fifteen_expected_old_tags_preserved')
             await wait(agent.set_ready(prediction=False,meta=True),'stop younger prediction work')
             await wait(observation.drain(),'all admitted sources effects and maintenance drain')
             result=dict(passed=True,trigger=trigger,aging=checker.summary(),PHR=phr.summary(),survivors=survivors,

@@ -39,31 +39,31 @@ def test_unknown_or_corrupted_structure_cannot_be_called_a_uniform_replica(fault
     elif fault=='t0-bank-selector':change('_GEN_126[io_train_t0_trainIndex_bits[1:0]]','_GEN_126[io_train_t0_trainIndex_bits[2:1]]')
     elif fault=='t1-bank-selector':change('_GEN_126[t1_trainIndex[1:0]]','_GEN_126[t1_trainIndex[2:1]]')
     elif fault=='t0-row-selector':change('_GEN_127[io_train_t0_trainIndex_bits[8:2]]','_GEN_127[io_train_t0_trainIndex_bits[7:2]]')
-    elif fault=='t1-row-selector':change('_GEN_146[t1_trainIndex[8:2]]','_GEN_146[t1_trainIndex[7:2]]')
+    elif fault=='t1-row-selector':change('_GEN_137[t1_trainIndex[8:2]]','_GEN_137[t1_trainIndex[7:2]]')
     elif fault=='unqualified-learning':change('& io_train_t1_update_bits_usefulValid','| io_train_t1_update_bits_usefulValid')
-    elif fault=='wrong-saturation-boundary':change("_GEN_147 == 2'h0","_GEN_147 == 2'h1")
-    elif fault=='wrong-increment':change("_GEN_147 + 2'h1","_GEN_147 + 2'h2")
+    elif fault=='wrong-saturation-boundary':change("_GEN_138 == 2'h0","_GEN_138 == 2'h1")
+    elif fault=='wrong-increment':change("_GEN_138 + 2'h1","_GEN_138 + 2'h2")
     elif fault=='wrong-reset':change("usefulEntries_0_0_value <= 2'h0;","usefulEntries_0_0_value <= 2'h1;")
     elif fault=='conditional-reset':change("usefulEntries_0_0_value <= 2'h0;","if (io_train_t1_update_valid) begin usefulEntries_0_0_value <= 2'h0; end")
     elif fault=='wrong-maintenance':change("usefulEntries_0_0_value - 2'h1","usefulEntries_0_0_value + 2'h1")
-    elif fault=='wrong-bank-decoder':change("_GEN_149 = t1_trainIndex[1:0] == 2'h0;","_GEN_149 = t1_trainIndex[1:0] == 2'h1;")
-    elif fault=='wrong-row-decoder':change("_GEN_276 = t1_trainIndex[8:2] == 7'h7E;","_GEN_276 = t1_trainIndex[8:2] == 7'h7D;")
-    elif fault=='wrong-last-bank':change('_GEN_148 & (&(t1_trainIndex[1:0]))','_GEN_148 & (&(t1_trainIndex[0:0]))')
+    elif fault=='wrong-bank-decoder':change("_GEN_140 = t1_trainIndex[1:0] == 2'h0;","_GEN_140 = t1_trainIndex[1:0] == 2'h1;")
+    elif fault=='wrong-row-decoder':change("_GEN_267 = t1_trainIndex[8:2] == 7'h7E;","_GEN_267 = t1_trainIndex[8:2] == 7'h7D;")
+    elif fault=='wrong-last-bank':change('_GEN_139 & (&(t1_trainIndex[1:0]))','_GEN_139 & (&(t1_trainIndex[0:0]))')
     elif fault=='mixed-initial':change("usefulEntries_0_0_value <= 2'h1;","usefulEntries_0_0_value <= 2'h2;")
     elif fault=='extra-write':change('if (io_usefulReset) begin',"usefulEntries_0_0_value <= 2'h1; if (io_usefulReset) begin")
     elif fault=='extra-blocking-write':change('if (io_usefulReset) begin',"usefulEntries_0_0_value = 2'h1; if (io_usefulReset) begin")
-    elif fault=='extra-learning-guard':change('if (_GEN_148 & _GEN_149 & _GEN_150) begin',
-        'if (io_train_t1_update_valid) begin end if (_GEN_148 & _GEN_149 & _GEN_150) begin')
+    elif fault=='extra-learning-guard':change('if (_GEN_139 & _GEN_140 & _GEN_141) begin',
+        'if (io_train_t1_update_valid) begin end if (_GEN_139 & _GEN_140 & _GEN_141) begin')
     elif fault=='missing-cell':
         text,count=re.subn(r'\breg\s*\[1:0\]\s*usefulEntries_3_127_value\s*;','',text,count=1);assert count==1
-    else:change('usefulEntries_0_0_value <= _GEN_147;','usefulEntries_0_1_value <= _GEN_147;')
+    else:change('usefulEntries_0_0_value <= _GEN_138;','usefulEntries_0_1_value <= _GEN_138;')
     with pytest.raises(SourceShapeError):review(text)
 
 
 def test_comments_cannot_supply_missing_read_or_write_definitions():
     text=Path('rtl/utage/BypassShadowBuffer.sv').read_text()
-    text,count=re.subn(r'_GEN_147 = _GEN_146\[t1_trainIndex\[8:2\]\];',
-        '/* _GEN_147 = _GEN_146[t1_trainIndex[8:2]]; */',text,count=1)
+    text,count=re.subn(r'_GEN_138 = _GEN_137\[t1_trainIndex\[8:2\]\];',
+        '/* _GEN_138 = _GEN_137[t1_trainIndex[8:2]]; */',text,count=1)
     assert count==1
     with pytest.raises(SourceShapeError):review(text)
 

@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from bpuverify.bpu.model.main_service import PC, STREAM_PC
 from bpuverify.mbtb.model.semantic import Entry, Target, coordinate, tag
 from bpuverify.bpu.model.main_service import entry_payload
-from bpuverify.mbtb.model.replacement import MbtbTwoWayLru
+from bpuverify.mbtb.model.replacement import MbtbFourWayLru
 
 
 EARLIER, LATER, FALLBACK = 1, 5, 12
@@ -33,7 +33,7 @@ class Program:
         # The declared learning order is later branch first, earlier branch
         # second. Its retained owner comes from the existing independent LRU,
         # not the incoming nomination or a sampled SRAM way.
-        recency = MbtbTwoWayLru()
+        recency = MbtbFourWayLru()
         recency.allocate()
         owner = recency.allocate()
         return dict(row=coordinate(PC)[2],mask=1<<owner,values={str(owner):2})

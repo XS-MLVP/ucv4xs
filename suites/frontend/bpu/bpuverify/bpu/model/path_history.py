@@ -5,13 +5,13 @@ metadata inputs. This is the logical contract needed by a composed predictor.
 Physical circular-storage lifetime and cycle scheduling are separate duties.
 Addresses are the integrated driver's halfword address units.
 """
+from bpuverify.common.model.configuration import *
+
 from dataclasses import dataclass
 
 
-LAYOUT = ((4, 4), (6, 5), (6, 6), (8, 6), (8, 7), (9, 7), (9, 9),
-    (12, 5), (12, 6), (12, 9), (16, 6), (16, 7), (16, 8),
-    (17, 7), (17, 12), (17, 13), (31, 7), (31, 12), (31, 13))
-WIDTH, LOW_WIDTH, SHIFT = 52, 13, 2
+LAYOUT = PHR_FOLDS
+WIDTH, LOW_WIDTH, SHIFT = PHR_STORAGE_BITS, 13, 2
 
 
 def address(value):

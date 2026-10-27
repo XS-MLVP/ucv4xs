@@ -120,7 +120,7 @@ def serviced_fixture():
     for i in range(1, 5):
         for owner in range(2): checks.write_accepted(owner, transfer(40410 + 2 * (i - 1), checks.complete_plan[owner][i]))
     checks.services_complete(); quiet(program[0], program[1])
-    assert program[0].sources.tage.commits == baseline + 10 and pending_plan(program[0].sources.tage, 3, 0) == ((), ())
+    assert program[0].sources.tage.commits == baseline + 10 and pending_plan(program[0].sources.tage, 7, 0) == ((), ())
     return checks, program, retired
 
 
@@ -162,7 +162,7 @@ def test_initial_full_set_is_mandatory_before_partial_release(fault):
     elif fault == 'missing-acceptance': checks.accepted.pop()
     elif fault == 'not-full': checks.last[1]['dirty'] = ((1, 1, 1, 0),) * 2
     elif fault == 'premature-service': checks.written[0].append((40017, checks.complete_plan[0][0]))
-    else: checks.pipeline.model.sources.tage.cache[3, 0].overflows += 1
+    else: checks.pipeline.model.sources.tage.cache[7, 0].overflows += 1
     with pytest.raises(AssertionError) as first: checks.pending()
     with pytest.raises(AssertionError) as second: checks.raise_failure()
     assert first.value is second.value and checks.coverage.groups['checked'].coverage == 0
@@ -255,7 +255,7 @@ def test_refill_comparison_requires_all_pending_results_and_two_actual_full_hits
     elif fault == 'wrong-full-tick': checks.full_hits[0]['tick'] += 2
     elif fault == 'lost-neighbor': checks.final_plan[0][1]['counter'] ^= 1
     elif fault == 'stale-target': checks.final_plan[0][-1]['counter'] = 6
-    else: checks.pipeline.model.sources.tage.cache[3, 0].overflows += 1
+    else: checks.pipeline.model.sources.tage.cache[7, 0].overflows += 1
     with pytest.raises(AssertionError): checks.pending()
     assert checks.coverage.groups['checked'].coverage == 0
 

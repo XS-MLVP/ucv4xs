@@ -28,5 +28,5 @@ async def test_indexed_replacement_shares_alias_state_and_preserves_independent_
     await check_case(mbtb_agent, Checkpoint(), index, align, upper, mode)
     mbtb_agent.reference.raise_failure()
     semantic.record('checked', rule, index=index, align=align, upper=upper)
-    assert coverage.cross_coverage('all_dimensions') == pytest.approx(100 / 1024)
+    assert coverage.cross_coverage('all_dimensions') == pytest.approx(100 / 4096)
     write_mbtb_replacement_coverage(coverage, REPO_ROOT, semantic_groups=semantic.groups.values())

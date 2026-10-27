@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import pytest
 
+from bpuverify.mbtb.case.retained_pressure import preceding_displacers
 from bpuverify.mbtb.transaction.types import MbtbBatchTraining
 from bpuverify.mbtb.transaction.types import MbtbBranchFeedback
 from bpuverify.mbtb.coverage.catalog import mbtb_multi_hit_cleanup_coverage_model
@@ -24,7 +25,7 @@ async def test_stale_feedback_duplicate_is_flushed_without_touching_other_set(mb
     cold = await mbtb_agent.predict(DIRECT.pc)
     assert_miss(cold)
     shadow_displacer = BranchVector(
-        DIRECT.pc + 64,
+        DIRECT.pc + 128,
         DIRECT.target + 0x1020,
         DIRECT.position,
         DIRECT.branch_type,
@@ -50,6 +51,8 @@ async def test_stale_feedback_duplicate_is_flushed_without_touching_other_set(mb
     changed_target = DIRECT.target + 0x400
     async with mbtb_agent.defer_multi_hit_cleanup():
         await mbtb_agent.train_burst((feedback(DIRECT.target),))
+        await preceding_displacers(mbtb_agent, shadow_displacer.pc, shadow_displacer.position,
+                                   shadow_displacer.target, shadow_displacer.branch_type)
         await train(mbtb_agent, shadow_displacer, displacer_cold.meta_entries)
         first = await mbtb_agent.predict(DIRECT.pc)
         assert_vector_hit(first, DIRECT)

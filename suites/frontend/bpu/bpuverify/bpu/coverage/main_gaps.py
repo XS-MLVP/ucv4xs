@@ -11,7 +11,7 @@ import re
 from bpuverify.common.coverage.rtl import _covered_lines
 
 SOURCE='rtl/bpu/WriteBuffer_4.sv'
-FIELDS=('setIdx','entry_tag','entry_attribute_branchType','entry_attribute_rasAction',
+FIELDS=('hit','setIdx','entry_tag','entry_attribute_branchType','entry_attribute_rasAction',
     'entry_position','entry_targetCarry_value','entry_targetLowerBits')
 CROSS='cross-owner-copy-candidate'
 ARBITRATION='dual-entry-arbitration-candidate'
@@ -21,11 +21,16 @@ OWN='own-owner-update-candidate'
 def copy_catalog(text):
     """Supported compiled begin/end copy blocks; fail closed on other shapes."""
     lines=[line.split('//',1)[0].strip() for line in text.splitlines()]
-    definitions=[re.fullmatch(r'(\w+)\s*=\s*io_write_1_valid\s*&\s*hit_1;',line) for line in lines]
-    hit_gate=[match[1] for match in definitions if match]
-    if len(hit_gate)!=1:raise ValueError('unique last-entry-input hit gate required')
-    hit_header=f'if ({hit_gate[0]}) begin'
-    if lines.count(hit_header)!=1:raise ValueError('last-entry-input hit gate has no unique lexical branch')
+    hit_gates={}
+    for port in (1,2,3):
+        pattern=rf'(?:wire\s+)?(\w+)\s*=\s*io_write_{port}_valid\s*&\s*\(\|hitMaskUInt_{port}\);'
+        found=[m[1] for line in lines if (m:=re.fullmatch(pattern,line))]
+        if len(found)!=1:raise ValueError('unique competing entry-input hit gate required')
+        header=f'if ({found[0]}) begin'
+        if header not in lines:raise ValueError('competing entry-input hit gate has no lexical branch')
+        hit_gates[header]=port
+    if lines.count(next(h for h,p in hit_gates.items() if p==3))!=1:
+        raise ValueError('last-entry-input hit gate has no unique lexical branch')
     modules=[number for number,line in enumerate(lines,1) if line.startswith('module WriteBuffer_4(')]
     if len(modules)!=1:raise ValueError('one compiled Main WriteBuffer module required')
     contexts={};stack=[];closed=None
@@ -55,10 +60,10 @@ def copy_catalog(text):
     if stack:raise ValueError('unclosed Main copy source block')
     result=[]
     for first,line in enumerate(lines,1):
-        match=re.fullmatch(r'entries_([01])_([01])_setIdx\s*<=\s*io_write_([01])_bits_setIdx;',line)
+        match=re.fullmatch(r'entries_([0-3])_([0-3])_hit\s*<=\s*io_write_([0-3])_bits_hit;',line)
         if not match:continue
         owner,rank,port=map(int,match.groups());parts=[];last=first
-        # Wrapped RHS lines do not consume a field; collect seven statements.
+        # Wrapped RHS lines do not consume a field; collect all eight statements.
         while ''.join(parts).count(';')<len(FIELDS):
             if last>len(lines):raise ValueError('incomplete Main entry payload copy')
             parts.append(lines[last-1]);last+=1
@@ -72,7 +77,7 @@ def copy_catalog(text):
             raise ValueError('Main payload copy is not immediately branch-owned')
         if any(contexts[n]!=parents for n in range(first,last+1)):
             raise ValueError('Main payload copy crosses a lexical boundary')
-        competing=any(item['header']==hit_header for item in parents)
+        competing=any(hit_gates.get(item['header'],-1)>owner for item in parents)
         family=CROSS if owner!=port else ARBITRATION if competing else OWN
         result.append(dict(owner=owner,rank=rank,write_port=port,family=family,
             first=first,last=last,introducer=branch['line'],anchor=branch['anchor'],

@@ -42,14 +42,14 @@ class Program(JointProgram):
         shared=int(self.trained)+(sum(1 if v else -1 for v in self.truths) if serial else (1 if self.arrival_truths[-1] else -1))
         private=int(self.trained and owner==0)+(1 if self.truths[owner] else -1)
         column=way(self.position);bias=4*column+bias_feature(ScBaseBranch(self.position,6))
-        return tuple(tuple((private if family==3 else shared) if i==(bias if family==4 else column) else 0
-            for i in range(16 if family==4 else 4)) for family in range(5))
+        return tuple(tuple((private if family==6 else shared) if i==(bias if family==7 else column) else 0
+            for i in range(32 if family==7 else 8)) for family in range(8))
     def training_weights(self,iteration):
         if iteration not in self.iterations:raise ValueError('one declared original iteration required')
         column=way(self.position);bias=4*column+bias_feature(ScBaseBranch(self.position,6))
-        return tuple(tuple(int(self.trained and (family!=3 or iteration==self.iterations[0]))
-            if i==(bias if family==4 else column) else 0
-            for i in range(16 if family==4 else 4)) for family in range(5))
+        return tuple(tuple(int(self.trained and (family!=6 or iteration==self.iterations[0]))
+            if i==(bias if family==7 else column) else 0
+            for i in range(32 if family==7 else 8)) for family in range(8))
     def state(self):
         return dict(profile=self.profile,original_iterations=self.iterations,
             trained_nonzero_experience=self.trained,

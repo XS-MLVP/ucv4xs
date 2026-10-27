@@ -53,7 +53,7 @@ async def test_actual_s3_metadata_retirement_nested_calls_returns(bpu_agent, bpu
 
 
 @pytest.mark.feature('BPU-INT-053')
-@pytest.mark.parametrize('depth', (4, 7, 8))
+@pytest.mark.parametrize('depth', (4, 7, 8, 15, 16))
 async def test_retirement_crosses_all_committed_stack_slots(bpu_agent, bpu_sc_output, depth):
     await check_retirement_case(bpu_agent, bpu_sc_output, kind='deep', count=depth)
 

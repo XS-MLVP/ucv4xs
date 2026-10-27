@@ -52,7 +52,7 @@ class Checks:
         self.check(True,bool(native['clears']),'registered invalidation exists, not merely a duplicate observation')
         align,bank,row=coordinate(self.program.old.pc)
         for receipt in receipts:
-            self.check((align,bank,row,1,tag(self.program.old.pc),self.program.old.position%8),
+            self.check((align,bank,row,3,tag(self.program.old.pc),self.program.old.position%16),
                 tuple(receipt[name] for name in ('align','bank','row','way','tag','position')),
                 'cleanup receipt belongs to the declared original duplicate, not a different instruction')
             self.check(True,0<receipt['tick']<native['tick'],'consumption precedes this fresh registered request')

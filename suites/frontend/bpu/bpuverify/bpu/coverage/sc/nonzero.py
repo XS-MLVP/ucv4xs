@@ -15,7 +15,7 @@ def coverage():
     axes = dict(bank=(0, 1), direction=('forward', 'backward'), table=TABLES, feedback=(0, 1))
     return CoverGroupDef('sc_real_nonzero_common_history',
         tuple(CoverPointDef(key, {str(value): Bin.values(value) for value in values}) for key, values in axes.items()),
-        crosses=(CrossDef('bank_direction_table_feedback', tuple(axes), max_auto_bins=40),)
+        crosses=(CrossDef('bank_direction_table_feedback', tuple(axes), max_auto_bins=8*len(TABLES)),)
         ).instantiate('kunminghu_v3.bpu.sc_real_nonzero_common_history')
 
 

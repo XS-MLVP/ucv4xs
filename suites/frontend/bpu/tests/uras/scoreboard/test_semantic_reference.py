@@ -224,8 +224,8 @@ def test_call_can_establish_known_top_during_main_recovery():
     assert model.advance(RasEvents(accept=CALL_A, main_top=MAIN)) == UrasResult(1, CALL_A.return_address)
 
 
-@pytest.mark.parametrize('pc,position,target', [(0, 0, 1), (0x7FFFFFFF, 15, 0x80000008),
-                                               ((1 << 50) - 1, 15, 8)])
+@pytest.mark.parametrize('pc,position,target', [(0, 0, 1), (0x7FFFFFFF, 31, 0x80000010),
+                                               ((1 << 50) - 1, 31, 16)])
 def test_return_address_uses_semantic_halfword_geometry_and_wrap(pc, position, target):
     assert Operation(Action.CALL, pc, position).return_address == target
 
@@ -290,7 +290,7 @@ def test_suppressed_lower_priority_requests_get_no_acceptance_credit():
 @pytest.mark.parametrize('factory,error', [
     (lambda: Operation(Action.CALL, -1, 0), ValueError),
     (lambda: Operation(Action.CALL, 1 << 50, 0), ValueError),
-    (lambda: Operation(Action.CALL, 0, 16), ValueError),
+    (lambda: Operation(Action.CALL, 0, 32), ValueError),
     (lambda: Operation(2), TypeError),
     (lambda: RasEvents(main_top=-1), ValueError),
     (lambda: RasEvents(advance=1), TypeError),

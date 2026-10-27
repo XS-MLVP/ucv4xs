@@ -42,7 +42,7 @@ class Harness:
         if recovery is not None:
             source, correction = recovery
             events = replace(events, redirect=Redirect(source.owner,
-                (source.pc // 8) * 8 + correction.position, correction.target, correction.taken))
+                (source.pc // 16) * 16 + correction.position, correction.target, correction.taken))
         cycle = self.pipeline.evaluate(events)
         step = self.query.preview(cycle, recovery=recovery)
         self.pipeline.advance(events)
@@ -54,10 +54,10 @@ class Harness:
     def learned_loop(self):
         for _ in range(24):
             self.step()
-        assert self.query.value == Value(True, 255, 15)
+        assert self.query.value == Value(True, 65535, 255)
         token = next(reversed(self.pipeline.published.values()))
         source = self.query.snapshot(token)
-        assert source.published and source.metadata == Value(True, 255, 15)
+        assert source.published and source.metadata == Value(True, 65535, 255)
         return token, source
 
 
@@ -71,7 +71,7 @@ def test_every_query_reads_its_own_completed_window_not_the_latest_cursor():
             assert source.read == step.lookup
             views.append(source.read)
     assert views[:3] == [Value(), Value(), Value()]
-    assert Value(True, 1, 1) in views and Value(True, 255, 15) in views
+    assert Value(True, 1, 1) in views and Value(True, 65535, 255) in views
     assert h.query.iterations.cursor > 0
 
 
@@ -95,11 +95,11 @@ def test_backend_placeholder_and_recomputed_prefix_do_not_rebind_the_original_re
     _, original = h.learned_loop()
     correction = Branch(1, PC + 0x100, Kind.CONDITIONAL, taken)
     first, token = h.step(recovery=(original, correction))
-    assert first.reason == 'backend-placeholder' and first.lookup == Value(False, 255, 15)
+    assert first.reason == 'backend-placeholder' and first.lookup == Value(False, 65535, 255)
     raw = h.query.snapshot(token)
-    assert raw.read == Value(False, 255, 15)
+    assert raw.read == Value(False, 65535, 255)
     second, _ = h.step()
-    expected = Value(False, 255 if taken else 254, 14)
+    expected = Value(False, 65535 if taken else 65534, 254)
     assert second.reason == 'backend-prefix' and second.lookup == expected
     for _ in range(3):
         h.step()
@@ -108,7 +108,7 @@ def test_backend_placeholder_and_recomputed_prefix_do_not_rebind_the_original_re
     assert published.read == raw.read
     before = h.query.sc_history(token)
     after = h.query.sc_history(token, feedback=True)
-    assert (before.global_history, before.backward) == (255, 15)
+    assert (before.global_history, before.backward) == (65535, 255)
     assert (after.global_history, after.backward) == (expected.ghr, expected.bw)
     assert before.loop == after.loop == 0
 

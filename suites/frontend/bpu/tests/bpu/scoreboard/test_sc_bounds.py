@@ -16,25 +16,25 @@ from bpuverify.bpu.model.phr.model import BpuPhrReference
 from tests.bpu.scoreboard.test_phr_reference import boundary
 
 
-@pytest.mark.parametrize('way',range(4))
+@pytest.mark.parametrize('way',range(8))
 @pytest.mark.parametrize('side',('lower','upper'))
 def test_input_geometry_and_minimal_vote_count_derive_from_semantics(way,side):
     plan=bounds_plan(way,side)
     assert plan['pc']&1==0  # One bank, one key per global threshold register.
     assert len(set(plan['positions']))==2
-    assert all((p&3)^(p>>2)==way for p in plan['positions'])
-    assert plan['near']==(641 if side=='lower' else 5039)
+    assert all((p&7)^(p>>3)==way for p in plan['positions'])
+    assert plan['near']==(833 if side=='lower' else 8063)
     value=plan['start']+plan['outward']*(1+2*(plan['approach_requests']-1))
     assert value==plan['near'] and plan['requests']==plan['approach_requests']+11
-    values=[INITIAL]*4;values[way]=value
+    values=[INITIAL]*8;values[way]=value
     effects=[dict(counter_update=True,threshold_delta=plan['outward'],way=way)]*2
     rejected=threshold_update(values,effects)
     assert rejected['after']==tuple(values) and rejected['rejected_ways']==(way,)
-    assert rejected['candidates'][way]==(639 if side=='lower' else 5041)
+    assert rejected['candidates'][way]==(831 if side=='lower' else 8065)
     assert rejected['after'][way]!=(MINIMUM if side=='lower' else MAXIMUM)
 
 
-@pytest.mark.parametrize('way,side',((-1,'lower'),(4,'upper'),(True,'lower'),(1,'middle')))
+@pytest.mark.parametrize('way,side',((-1,'lower'),(8,'upper'),(True,'lower'),(1,'middle')))
 def test_bad_boundary_intent_fails_before_DUT_access(way,side):
     with pytest.raises(ValueError):bounds_plan(way,side)
 
@@ -42,7 +42,7 @@ def test_bad_boundary_intent_fails_before_DUT_access(way,side):
 def sc_reset_row():
     buffers={name:dict(reset=1,slots=zero_slots(width(name)),
         write=dict(valid=0,bits={}),drain=dict(valid=0,ready=0,bits={})) for name in NAMES}
-    return dict(buffers=buffers,t0={},training={},used_pipeline=dict(thresholds=[INITIAL]*4,
+    return dict(buffers=buffers,t0={},training={},used_pipeline=dict(thresholds=[INITIAL]*8,
         t1_fire=0,t2_write_valid=0),replacement=dict.fromkeys(NAMES,0))
 
 
@@ -154,7 +154,7 @@ async def test_explicit_provider_pair_targets_validate_before_driving(targets):
     with pytest.raises(ValueError):await prepare_pair(None,None,0,None,(1,4),(5,4),targets=targets)
 
 
-@pytest.mark.parametrize('way',range(4))
+@pytest.mark.parametrize('way',range(8))
 @pytest.mark.parametrize('outcomes',((0,0),(0,1),(1,)))
 def test_distinct_feedback_branches_keep_metadata_and_report_only_first_mispredict(way,outcomes):
     from bpuverify.bpu.case.sc.bounds import bounds_feedback
@@ -177,16 +177,16 @@ def test_bad_feedback_shape_fails_before_metadata_or_driver_access(count,taken):
     with pytest.raises(ValueError):bounds_feedback(bounds_plan(0,'lower'),None,count=count,taken=taken)
 
 
-@pytest.mark.parametrize('way',range(4))
+@pytest.mark.parametrize('way',range(8))
 @pytest.mark.parametrize('encoded,expected',((0,(1,0,0)),(63,(0,0,0)),(32,(0,1,1))))
 def test_fresh_public_SC_oracle_uses_full_signed_reference_not_observed_decision(way,encoded,expected):
     from bpuverify.bpu.model.sc.bounds import public_decisions
     from bpuverify.bpu.model.sc.full import FullScReference
     from bpuverify.bpu.model.sc.training_path import training_indices
-    plan=bounds_plan(way,'lower');ref=FullScReference();pc=plan['pc'];common=dict(valid=0,ghr=0,bw=0,imli=0)
+    plan=bounds_plan(way,'lower');ref=FullScReference();pc=plan['pc'];common=dict(valid=1,ghr=0,bw=0,imli=0)
     for table,index in training_indices(pc,0,common).items():
-        count=16 if table=='biasTable' else 4
+        count=32 if table=='biasTable' else 8
         ref.memories[f'{table}_bank0'][index]=[encoded]*count
-    actual=public_decisions(ref,pc,plan['positions'],((0,0,5),(1,0,4)),[INITIAL]*4,common)
+    actual=public_decisions(ref,pc,plan['positions'],((0,0,5),(1,0,4)),[INITIAL]*8,common)
     assert actual==(expected,expected)
 

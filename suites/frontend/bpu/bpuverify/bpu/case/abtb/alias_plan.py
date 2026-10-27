@@ -11,12 +11,12 @@ def checkpoint_route(pc):
         raise ValueError('representable CFI and preceding public checkpoint required')
     lead = (pc - 2) & ~15
     targets = []
-    if lead & ~7 != (pc - 2) & ~7:
-        targets.append((pc - 2) & ~7)
+    if lead & ~15 != (pc - 2) & ~15:
+        targets.append((pc - 2) & ~15)
     targets.append(pc - 1)
     source = lead
     for target in targets:
-        assert source & ~7 == (target - 1) & ~7 and source <= target - 1
+        assert source & ~15 == (target - 1) & ~15 and source <= target - 1
         source = target
     assert source == pc - 1
     return dict(pc=pc, cold_lead=lead, actual_not_taken_checkpoint_targets=targets)

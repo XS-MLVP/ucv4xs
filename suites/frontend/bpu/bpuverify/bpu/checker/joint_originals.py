@@ -97,14 +97,14 @@ class Checks(JointChecks):
             ports=self.observed['statistical']['accepted_reads']
             self.check(tuple(dict(valid=1,index=index,bank=1<<bank) for index in indices),ports,'all actual training reads name the independently owned context')
             actual=tuple(tuple(signed_value(v,6) for v in values) for values in self.observed['joint_SC_train_words'])
-            self.check(read.weights,actual,'all 32 actual training-read weights match this accepted read view')
+            self.check(read.weights,actual,'all 88 actual training-read weights match this accepted read view')
             self.check(self.program.training_weights(owner['iteration']),read.weights,
                 'overlapping originals actually read their declared cold or independently prelearned experience')
             owner['read']=dict(tick=tick,indices=indices,expected=read.weights,actual=actual)
         if self.expected_patches:
             owner=self.SC_offer_owner
             self.check(True,owner['accepted'] is not None,'SC effect cannot precede its actual acceptance')
-            self.check(tuple(range(5)),tuple(v[0] for v in self.expected_patches),'this original owns a complete five-family effect')
+            self.check(tuple(range(8)),tuple(v[0] for v in self.expected_patches),'this original owns a complete five-family effect')
             for table,bank,index,patch in self.expected_patches:
                 port=self.observed['statistical']['updates'][table]
                 e=dict(valid=True,index=index,bank=1<<bank,mask=tuple(v is not None for v in patch),

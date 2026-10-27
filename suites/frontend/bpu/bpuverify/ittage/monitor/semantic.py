@@ -12,7 +12,7 @@ from bpuverify.ittage.monitor.decode import _decode
 def context_value(histories):
     values = {layout: row.foldedHist.as_int() for layout, row in zip(PHR_FOLD_LAYOUT, histories, strict=True)}
     return Context(tuple((values[length, min(length, sets.bit_length() - 1)],
-                          values[length, min(length, 7)], values[length, min(length, 6)])
+                          values[length, min(length, 9)], values[length, min(length, 8)])
                          for length, sets in zip(HISTORY_LENGTHS, SETS, strict=True)))
 
 

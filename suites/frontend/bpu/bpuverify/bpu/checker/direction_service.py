@@ -11,7 +11,7 @@ class DirectionServiceChecks(DirectionForwardingChecks):
         super().__init__(pipeline,coverage)
         self.program=program
         self.rules=getattr(coverage,'rules',RULES)
-        self.table,self.bank=3,PC%4
+        self.table,self.bank=7,PC%4
         self.holding=False
         self.last=None
         self.actual_inputs=[]
@@ -42,7 +42,7 @@ class DirectionServiceChecks(DirectionForwardingChecks):
             'all histories identify distinct SRAM rows in the same bank')
         for history,source,token in zip(self.program.feedback_order,sources,tokens,strict=True):
             self.prepared(source,(self.program.initial_base,self.program.initial_counters(history)))
-            self.check(((3,0),(3,1)),self.owners(token),'both longest-history owners retained in both contexts')
+            self.check(((7,0),(7,1)),self.owners(token),'both longest-history owners retained in both contexts')
             metadata=self.pipeline.model.sources.defined_metadata(token)
             entries=tuple(entry for row in source_entries(token.lookup) for entry in row)
             for slot,entry in enumerate(entries):
@@ -140,7 +140,7 @@ class DirectionServiceChecks(DirectionForwardingChecks):
         self.check(True,context in self.contexts and context not in self.old_sources,'one new old-value consumer per original history')
         self.check(self.program.initial_counters(self.contexts.index(context)),values[1],
             'new read retains its original SRAM entries while both writes are blocked')
-        self.check(((3,0),(3,1)),self.owners(token),'old-value query retains both logical provider owners')
+        self.check(((7,0),(7,1)),self.owners(token),'old-value query retains both logical provider owners')
         self.check(((source.prediction_tick+2,2),),self.pipeline.corrections_for_source(source),'complete old-value consumer repair window')
         self.check(True,self.holding,'old-value consumption must precede read release')
         self.check((0,0),tuple(len(self.written[way]) for way in range(2)),'no SRAM write accepted during uninterrupted reads')
@@ -180,7 +180,7 @@ class DirectionServiceChecks(DirectionForwardingChecks):
         self.check(True,context in self.contexts and context not in self.new_sources,'one committed consumer per original owned history')
         self.check(self.program.expected_counters(self.contexts.index(context)),values[1],
             'new SRAM visibility contains the independently counted history-specific learning results')
-        self.check(((3,0),(3,1)),self.owners(token),'commit preserves both original provider identities')
+        self.check(((7,0),(7,1)),self.owners(token),'commit preserves both original provider identities')
         self.check(((source.prediction_tick+2,2),),self.pipeline.corrections_for_source(source),'complete committed consumer repair window')
         self.check((0,0),tuple(port['valid'] for port in self.last[1]['writes']),'no unconsumed extra pending update')
         self.check(((),()),pending_plan(self.pipeline.model.sources.tage,self.table,self.bank),'all owned writes actually drained')

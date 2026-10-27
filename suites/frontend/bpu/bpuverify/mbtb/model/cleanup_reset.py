@@ -27,7 +27,7 @@ class Program:
     @property
     def changed(self):return Branch(self.old.pc,self.old.target+0x400,self.old.position,self.old.kind)
     @property
-    def neighbor(self):return Branch(self.old.pc+64,0x40004560,self.old.position,2)
+    def neighbor(self):return Branch(self.old.pc+128,0x40004560,self.old.position,2)
     @property
     def new(self):return Branch(self.old.pc,0x40006780,self.old.position,1)
     @property

@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from functools import lru_cache
 
-from bpuverify.bpu.model.history_working_set import ANCHOR,SHORT_POSITION,history_path
+from bpuverify.bpu.model.history_working_set import ANCHOR,SHORT_POSITION,history_path,short_history_path
 from bpuverify.bpu.model.ahead_working_set import Edge
 from bpuverify.bpu.model.short_context_ownership import OWNERS,ShortContextPath
 from bpuverify.bpu.model.path_history import PathHistoryReference
@@ -31,11 +31,12 @@ class CompetitionPath(ShortContextPath):
 def incoming(branch,older):
     if branch not in OWNERS or type(older) is not int or older not in (0,7,*HELPER_PATHS.values(),*RELEASE_PATHS):
         raise ValueError('declared competing branch and genuine older path required')
-    pcs=history_path(older).pcs
+    pcs=(short_history_path(1 if older==64 else 3).pcs
+         if older in HELPER_PATHS.values() else history_path(older).pcs)
     pc=ANCHOR^(0x40 if branch=='right' else 0)
     history,samples=PathHistoryReference(),[0]
     for ordinal,address in enumerate(pcs):
-        samples.append(history.advance(taken=True,cfi_pc=(address&~7)+7,
+        samples.append(history.advance(taken=True,cfi_pc=(address&~15)+max(7,address%16),
             target=pcs[ordinal+1] if ordinal<7 else pc).history)
     return CompetitionPath(branch,older,pc,pcs,Context.from_recent(samples[6]),Context.from_recent(samples[7]))
 

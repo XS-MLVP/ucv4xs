@@ -1,3 +1,4 @@
+from bpuverify.bpu.model.early_opposition import FALLBACK
 """Longest-provider boundary and failure accounting with synthetic actuals only."""
 import ast
 from dataclasses import replace
@@ -26,9 +27,9 @@ class Program(TakenProgram):
             for position in REVISIT_PREFIX:
                 self.recovery_position = position
                 source = self.query(source)
-            self.recovery_position = 4
+            self.recovery_position = FALLBACK
         self.enable(True)
-        return self.bounded_source(source, recovery_position=2 if penalty else 4,
+        return self.bounded_source(source, recovery_position=2 if penalty else FALLBACK,
                                    mutate=mutate, expect_taken=expect_taken)
 
     def companion_short(self, source, *, preserve=False, mutate=None):
@@ -36,7 +37,7 @@ class Program(TakenProgram):
         for position in SHORT_REVISIT_PREFIX:
             self.recovery_position = position
             source = self.query(source)
-        self.recovery_position = 4
+        self.recovery_position = FALLBACK
         self.enable(True)
         return self.bounded_source(source, mutate=mutate,
                                    open_window=lambda: self.checks.open_short(preserve=preserve))
@@ -246,7 +247,7 @@ def test_long_record_case_exposes_no_edges_raw_io_or_async_task_join():
 
 
 def test_long_nt_error_restores_direction_without_protection_reward():
-    pc = 0x40000000; context = Context(); identity = replace(intended_identity(pc), index=indices(pc,context)[1])
+    pc = 0x40000000; context = Context(); identity = replace(intended_identity(pc), index=indices(pc,context)[1], tag=tag(pc,context,1))
     ledger = ProtectionLedger(counter=3, protection=0)
     nt = Feedback(pc,context,indices(pc,context), (Source(True,2,True,1,3,False,False),), 2,True,1)
     t = replace(nt, sources=(Source(True,2,True,1,4,True,False),))
@@ -338,7 +339,7 @@ async def test_free_short_and_preserved_consumer_are_required_exactly_before_che
     elif fault == 'wrong-read-protection':
         checks.available_errors[0]['common_read_protection'] = (1,2)
     elif fault == 'wrong-read-index':
-        checks.available_errors[0]['learning_indices'] = (0, checks.identity.index)
+        checks.available_errors[0]['learning_indices'] = (checks.available_errors[0]['learning_indices'][0] ^ 1, checks.identity.index)
     elif fault == 'wrong-confirmation':
         checks.available_errors[0]['actual_confirmation_tick'] += 2
     elif fault == 'duplicate-owner':

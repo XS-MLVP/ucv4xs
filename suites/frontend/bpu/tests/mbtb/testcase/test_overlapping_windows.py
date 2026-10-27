@@ -21,10 +21,10 @@ async def test_neighboring_fetch_starts_remap_the_shared_window(mbtb_agent):
     coverage = mbtb_overlapping_windows_coverage_model()
     await mbtb_agent.reset()
     next_start = BranchVector(
-        DIRECT.pc + 8, DIRECT.target + 0x400, DIRECT.position, DIRECT.branch_type
+        DIRECT.pc + 16, DIRECT.target + 0x400, DIRECT.position, DIRECT.branch_type
     )
     next_in_first_window = BranchVector(
-        DIRECT.pc, next_start.target, DIRECT.position + 8, DIRECT.branch_type
+        DIRECT.pc, next_start.target, DIRECT.position + 16, DIRECT.branch_type
     )
 
     for vector in (DIRECT, next_start):
@@ -36,8 +36,8 @@ async def test_neighboring_fetch_starts_remap_the_shared_window(mbtb_agent):
     assert_vector_hit(first_window, DIRECT)
     assert_vector_hit(first_window, next_in_first_window)
     assert sum(entry.valid for entry in first_window.entries) == 2
-    assert matching_way(first_window, DIRECT) // NUM_WAYS != (
-        matching_way(first_window, next_in_first_window) // NUM_WAYS
+    assert matching_way(first_window, DIRECT) // (NUM_WAYS + 1) != (
+        matching_way(first_window, next_in_first_window) // (NUM_WAYS + 1)
     )
     coverage.sample({"phase": "overlapping_first_window"})
 

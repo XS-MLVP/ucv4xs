@@ -44,7 +44,7 @@ def test_direction_endpoint_is_owned_by_selected_branches_not_their_physical_coo
         negative = p.desired_branch(edge, negative=True)
         positive = p.desired_branch(edge, negative=False)
         if edge.pc in p.selected:
-            assert (negative['taken'], negative['kind'], negative['position']) == (False, 0, 15)
+            assert (negative['taken'], negative['kind'], negative['position']) == (False, 0, 31)
             assert (positive['taken'], positive['kind'], positive['position']) == (True, 1, 7)
             assert p.desired_counter(edge, negative=True) == 0
             assert p.desired_counter(edge, negative=False) == 3

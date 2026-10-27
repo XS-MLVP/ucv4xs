@@ -5,13 +5,14 @@ from contextlib import suppress
 from toffee import DriveStable, RisingEdge, on
 
 from bpuverify.bpu.bundle.tage_semantic import semantic_binding, HISTORY_PORTS
+from bpuverify.common.model.configuration import PHR_FOLDS
 from bpuverify.tage.monitor.decode import _decode
 from bpuverify.tage.model.semantic import Base, Context, Events
 from bpuverify.tage.monitor.semantic import feedback_value
 
 
 def consumed_context(rows):
-    values = [0] * 19
+    values = [0] * len(PHR_FOLDS)
     for index, row in zip(HISTORY_PORTS, rows, strict=True):
         values[index] = row.foldedHist.as_int()
     return Context(tuple(values))

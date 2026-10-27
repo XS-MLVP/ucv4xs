@@ -15,26 +15,26 @@ from bpuverify.ras.scoreboard.retirement import check_observation
 
 @pytest.mark.parametrize('bos,tosw,expected', (
     (4, 4, 4), (4, 5, 4), (4, 6, 4), (4, 7, 6),
-    (15, 17, 15), (15, 18, 17), (31, 1, 31), (31, 2, 1), (30, 1, 0),
+    (31, 33, 31), (31, 34, 33), (63, 1, 63), (63, 2, 1), (62, 1, 0),
 ))
 def test_non_push_distance_boundary_and_pointer_wrap(bos, tosw, expected):
-    state = Retirement(head=1, cells=(Cell(), Cell(0x100), Cell(0x200)) + (Cell(),) * 5, bos=bos)
+    state = Retirement(head=1, cells=(Cell(), Cell(0x100), Cell(0x200)) + (Cell(),) * 13, bos=bos)
     following = state.accept(1, ssp=3, tosw=tosw)
     assert following.bos == expected and following.head == 2
     assert following.cells == state.cells  # Pop retains every physical cell.
-    assert state.bos == bos and pointer(expected) == dict(flag=expected // 16, value=expected % 16)
+    assert state.bos == bos and pointer(expected) == dict(flag=expected // 32, value=expected % 32)
 
 
-@pytest.mark.parametrize('bos,tosw', ((4, 7), (15, 18), (31, 2), (30, 1)))
+@pytest.mark.parametrize('bos,tosw', ((4, 7), (31, 34), (63, 2), (62, 1)))
 def test_push_priority_allocates_from_metadata_not_old_head(bos, tosw):
-    state = Retirement(head=1, cells=(Cell(), Cell(0x100), Cell(0x200), Cell(0x300)) + (Cell(),) * 4, bos=bos)
+    state = Retirement(head=1, cells=(Cell(), Cell(0x100), Cell(0x200), Cell(0x300)) + (Cell(),) * 12, bos=bos)
     following = state.accept(2, ssp=3, tosw=tosw, address=0x400)
     assert following.bos == tosw and following.head == 4
     assert following.cells == state.cells[:4] + (Cell(0x400),) + state.cells[5:]
 
 
 def test_repeat_repair_updates_counter_only_at_metadata_owner():
-    state = Retirement(head=1, cells=(Cell(), Cell(0x100, 3), Cell(0x200, 6)) + (Cell(),) * 5)
+    state = Retirement(head=1, cells=(Cell(), Cell(0x100, 3), Cell(0x200, 6)) + (Cell(),) * 13)
     pushed = state.accept(2, ssp=2, tosw=3, address=0x100)
     popped = state.accept(1, ssp=2, tosw=3)
     assert pushed.head == popped.head == 2
@@ -56,17 +56,17 @@ def test_hand_derived_fault_endpoints_and_continued_operation(epoch, kind):
         spec = after
 
     operation(2, 0x100)
-    for _ in range(4 if epoch == 'same' else 15):
+    for _ in range(4 if epoch == 'same' else 31):
         operation(2, 0x200)
         operation(1)
-    assert (spec.write, ret.bos) == ((5, 4) if epoch == 'same' else (16, 15))
+    assert (spec.write, ret.bos) == ((5, 4) if epoch == 'same' else (32, 31))
     operation(2, 0x300, False)
     if kind != 'threshold-hold':
         operation(2, 0x301, False)
     operation(2 if kind == 'push-priority' else 1, 0x400 if kind == 'push-priority' else None)
-    expected = {'threshold-hold': (1, 0x100, 4 if epoch == 'same' else 15),
-        'gap-reclaim': (2, 0x200, 6 if epoch == 'same' else 17),
-        'push-priority': (4, 0x400, 7 if epoch == 'same' else 18)}[kind]
+    expected = {'threshold-hold': (1, 0x100, 4 if epoch == 'same' else 31),
+        'gap-reclaim': (2, 0x200, 6 if epoch == 'same' else 33),
+        'push-priority': (4, 0x400, 7 if epoch == 'same' else 34)}[kind]
     assert (ret.head, spec.top(ret), ret.bos) == expected
     if kind == 'gap-reclaim':
         operation(1)
@@ -79,9 +79,9 @@ def test_hand_derived_fault_endpoints_and_continued_operation(epoch, kind):
 
 @pytest.mark.parametrize('kwargs', (
     dict(action=0, ssp=0, tosw=0), dict(action=3, ssp=0, tosw=0), dict(action=True, ssp=0, tosw=0),
-    dict(action=1, ssp=-1, tosw=0), dict(action=1, ssp=8, tosw=0), dict(action=1, ssp=True, tosw=0),
-    dict(action=1, ssp=0, tosw=-1), dict(action=1, ssp=0, tosw=32), dict(action=1, ssp=0, tosw=True),
-    dict(action=1, ssp=0, tosw=17), dict(action=1, ssp=0, tosw=0, address=0),
+    dict(action=1, ssp=-1, tosw=0), dict(action=1, ssp=16, tosw=0), dict(action=1, ssp=True, tosw=0),
+    dict(action=1, ssp=0, tosw=-1), dict(action=1, ssp=0, tosw=64), dict(action=1, ssp=0, tosw=True),
+    dict(action=1, ssp=0, tosw=33), dict(action=1, ssp=0, tosw=0, address=0),
     dict(action=2, ssp=0, tosw=0), dict(action=2, ssp=0, tosw=0, address=-1),
     dict(action=2, ssp=0, tosw=0, address=1 << 50), dict(action=2, ssp=0, tosw=0, address=True),
 ))
@@ -100,19 +100,19 @@ def test_invalid_speculation_scope_and_unallocated_live_pointer_fail():
     with pytest.raises(ValueError, match='genuine prior allocation'):
         replace(spec, write=1, read=0).top(ret)
     with pytest.raises(ValueError, match='bounded window'):
-        replace(spec, write=17).top(ret)
+        replace(spec, write=33).top(ret)
     with pytest.raises(ValueError, match='repeated counters'):
         spec.act(2, replace(ret, cells=(Cell(0, 1),) + ret.cells[1:]), address=0x100)
     with pytest.raises(ValueError, match='capacity rollover'):
-        replace(spec, ssp=7).act(2, ret, address=0x100)
-    # A full, genuine window still cannot accept a seventeenth entry.
-    full = DistinctSpeculation(write=16, cells=tuple(QueueCell(i, i + 1, 31) for i in range(16)))
+        replace(spec, ssp=15).act(2, ret, address=0x100)
+    # A full, genuine window still cannot accept a thirty-third entry.
+    full = DistinctSpeculation(write=32, cells=tuple(QueueCell(i, i + 1, 63) for i in range(32)))
     with pytest.raises(ValueError, match='bounded queue capacity'):
         full.act(2, ret, address=0x100)
 
 
 CORRUPTIONS = (('head',), ('bos', 'flag'), ('bos', 'value'),
-    *(('cells', slot, field) for slot in range(8) for field in ('address', 'counter')),
+    *(('cells', slot, field) for slot in range(16) for field in ('address', 'counter')),
     ('public', 'top'), ('public', 'commit_meta', 'ssp'), ('public', 'commit_meta', 'tosw', 'value'),
     ('public', 'redirect_meta', 'tosr', 'flag'), ('public', 'redirect_meta', 'nos', 'value'),
     ('public', 'redirect_meta', 'topRetAddr_addr'), ('reset',), ('enable',), ('redirect', 'valid'),

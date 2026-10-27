@@ -4,22 +4,23 @@ Four physical banks, two ways and 64 sets describe this installed MiniConfig.
 Each key starts at counter 2. Neither this model nor the trace summarizer is a
 general MainBTB reference, overflow model, or entry-buffer replacement model.
 """
+from bpuverify.common.model.configuration import *
 from copy import deepcopy
 from dataclasses import replace
 
 
 def expected_mbtb_counter_activity(align, bank, way, taken, mode, *, sets=(1,2), reads=24):
-    if any(value not in (0,1) for value in (align,bank,way,taken)):
+    if align not in (0, 1) or taken not in (0, 1) or bank not in range(MAIN_BANKS) or way not in range(MAIN_WAYS):
         raise ValueError('counter scenario requires align/bank/way/taken in 0/1')
     if mode not in ('blocked','flow'):
         raise ValueError('counter scenario mode must be blocked or flow')
-    if len(sets)!=2 or len(set(sets))!=2 or any(not isinstance(index,int) or not 0<=index<64 for index in sets):
+    if len(sets)!=2 or len(set(sets))!=2 or any(not isinstance(index,int) or not 0<=index<MAIN_ROWS for index in sets):
         raise ValueError('counter scenario needs two distinct 6-bit sets')
     if not isinstance(reads, int) or reads < 4:
         raise ValueError('counter scenario needs a read window covering both requests')
     count = 3 if taken else 1
     requests = tuple({'align':align,'bank':bank,'set_idx':index,'way_mask':1<<way,
-                      'counters':tuple(count if index_way==way else None for index_way in range(2))}
+                      'counters':tuple(count if index_way==way else None for index_way in range(MAIN_WAYS))}
                      for index in sets)
     blocked = mode=='blocked'
     return {'requests':requests,'writebacks':deepcopy(requests),'input_to_request_ticks':(2,2),
@@ -31,10 +32,10 @@ def expected_mbtb_counter_activity(align, bank, way, taken, mode, *, sets=(1,2),
 
 
 def expected_mbtb_counter_states(prepared, align, way, taken):
-    if len(prepared)!=4 or any(value not in (0,1) for value in (align,way,taken)):
+    if len(prepared)!=4 or (align not in (0, 1) or taken not in (0, 1) or way not in range(MAIN_WAYS)):
         raise ValueError('counter states need two targets and two sentinels in the supported geometry')
     states = deepcopy(prepared)
-    active = align*2+way
+    active = align*(MAIN_WAYS + 1)+way
     for index in (0,1):
         entry = prepared[index]['entries'][active]
         meta = prepared[index]['meta_entries'][align][way]
@@ -61,7 +62,7 @@ def summarize_mbtb_counter_activity(frames, feedback, lookups, mode):
     for frame in frames:
         for align,row in enumerate(frame.value['queues']):
             for bank,queue in enumerate(row):
-                occupancies.append(0 if queue['empty'] else 2 if queue['enq_ptr']==queue['deq_ptr'] else 1)
+                occupancies.append(0 if queue['empty'] else MAIN_RETAINED if queue['enq_ptr']==queue['deq_ptr'] else (queue['enq_ptr'] - queue['deq_ptr']) % MAIN_RETAINED)
                 if queue['enq_valid']:
                     requests.append((frame.event.tick,record(align,bank,queue,'enq'),
                                      queue['enq_ready'],int(not queue['deq_ready'])))

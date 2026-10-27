@@ -8,7 +8,7 @@ from bpuverify.mbtb.checker.replacement_overlap import HALF_TICKS_PER_CYCLE
 
 def actual_profile(prediction):
     return tuple((slot, e.position, e.target, e.taken, e.branch_type, e.ras_action,
-                  prediction.meta_entries[slot // 2][slot % 2]['counter_value'])
+                  prediction.meta_entries[slot // 5][slot % 5]['counter_value'])
                  for slot, e in enumerate(prediction.entries) if e.valid)
 
 
@@ -41,9 +41,9 @@ class FullCapacityChecks:
             self.check(True, transfer.accepted_event.tick > after, 'consumer is newer than learning acceptance')
         self.check(self.program.profile(stage, owner), actual_profile(prediction),
                    'complete branch identity, target, attributes, direction and counter: ' + owner)
-        if not self.program.profile(stage, owner):
-            self.check((0, 0, 0, 0), tuple(s['rawHit'] for row in prediction.meta_entries for s in row),
-                       'missing old or cold identity has no raw hit')
+        self.check(self.program.raw_hits(stage,owner),
+                   tuple(s['rawHit'] for row in prediction.meta_entries for s in row),
+                   'complete raw-hit metadata includes a page-suppressed adjacent Main window')
         self.originals.append((prediction, deepcopy(prediction.meta_entries)))
         self.consumers[stage, owner] = dict(accepted_tick=transfer.accepted_event.tick,
             completed_tick=transfer.completed_event.tick, actual=actual_profile(prediction))
@@ -71,12 +71,14 @@ class FullCapacityChecks:
     def finish(self):
         self.check(tuple(meta for _, meta in self.originals),
                    tuple(p.meta_entries for p, _ in self.originals), 'original metadata remain immutable')
-        required = {('prepared', owner) for owner in ('old-a', 'old-b', 'neighbor-a', 'neighbor-b', *self.program.sequence)}
+        required = {('prepared', owner) for owner in ('old-a', 'old-b', 'old-c', 'old-d', 'neighbor-a', 'neighbor-b', 'neighbor-c', 'neighbor-d', *self.program.sequence)}
         for stage, owners in (('pair', (*self.program.sequence, 'old-a', 'old-b', 'neighbor-a', 'neighbor-b')),
                 ('neighbor-probe', (*self.program.sequence, 'neighbor-a', 'neighbor-b', 'neighbor-probe')),
                 ('neighbor-touch', (*self.program.sequence, 'neighbor-a', 'neighbor-b', 'neighbor-probe')),
                 ('target-probe', (*self.program.sequence, 'target-probe', 'neighbor-a', 'neighbor-b', 'neighbor-probe'))):
             required.update((stage, owner) for owner in owners)
+        required.update((stage,owner) for stage in ('pair','neighbor-probe','neighbor-touch','target-probe')
+                        for owner in ('old-c','old-d','neighbor-c','neighbor-d'))
         self.check(set(), required - self.consumers.keys(), 'no declared actual consumer can be skipped')
         self.reach('immutable-original-sources', snapshots=len(self.originals))
         self.check(set(RULES), self.completed, 'all declared obligations actually completed')

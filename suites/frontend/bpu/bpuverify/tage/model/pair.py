@@ -1,9 +1,10 @@
-"""Independent state reference for an already allocated table2/table3 pair.
+"""Independent state reference for an already allocated highest two tables pair.
 
-This models the current four-table MinimalConfig, not allocation, hashing, stale
+This models the eight-table DefaultConfig, not allocation, hashing, stale
 metadata, useful aging, or a complete TAGE reference. No observed counter seeds
 or updates the model. Physical ways are frozen at the earlier real allocations.
 """
+from bpuverify.common.model.configuration import TAGE_TABLES
 from dataclasses import dataclass
 from dataclasses import replace
 from operator import index
@@ -28,13 +29,13 @@ class TagePairModel:
 
     @property
     def tables(self):
-        return (None, None, self.alternate, self.provider)
+        return (None,) * (TAGE_TABLES - 2) + (self.alternate, self.provider)
 
     @property
     def metadata(self):
         alt_conf = int(self.alternate.counter not in (3, 4))
         use_provider = int(not (self.provider.counter in (3, 4) and self.selectors[alt_conf] >= 16))
-        return {'hasProvider': 1, 'hasAlt': 1, 'providerTableIdx': 3,
+        return {'hasProvider': 1, 'hasAlt': 1, 'providerTableIdx': TAGE_TABLES - 1,
                 'providerWayIdx': self.provider.hit_mask.bit_length()-1,
                 'providerTakenCtr_value': self.provider.counter,
                 'providerUsefulCtr_value': self.provider.useful,

@@ -1,4 +1,5 @@
 """Declared branch programs and logical learning, never DUT-selected inputs."""
+from bpuverify.common.model.configuration import ALIGN_HALFWORDS, MAIN_WAYS
 from collections import Counter
 from dataclasses import asdict, dataclass
 
@@ -23,7 +24,7 @@ class Edge:
     position: int = POSITION
 
     @property
-    def cfi_pc(self): return (self.pc & ~7) + self.position
+    def cfi_pc(self): return (self.pc // ALIGN_HALFWORDS * ALIGN_HALFWORDS) + self.position
 
 
 @dataclass(frozen=True, slots=True)
@@ -41,7 +42,7 @@ class AheadWorkingSetProgram:
             for edge in entries:
                 route = mainbtb_route(edge.pc, edge.position)
                 routes[route['selected_physical_align'], route['internal_bank'], route['entry_set']] += 1
-            if max(routes.values()) > 2:
+            if max(routes.values()) > MAIN_WAYS:
                 raise ValueError('one active branch program must fit MainBTB associativity')
 
     @property
@@ -58,7 +59,8 @@ class AheadWorkingSetProgram:
             raise ValueError('cohort belongs to this declared lifetime')
         pcs = tuple(BASE + cohort*COHORT_STRIDE + STRIDE*number for number in range(SIZES[self.size]))
         return tuple(Edge(pc, pcs[(number+1) % len(pcs)],
-            3 if number == len(pcs)-1 else 2 if self.kinds == 'mixed' and number % 3 == 0 else 1)
+            3 if number == len(pcs)-1 else 2 if self.kinds == 'mixed' and number % 3 == 0 else 1,
+            max(POSITION,pc % ALIGN_HALFWORDS))
             for number, pc in enumerate(pcs))
 
     def state(self): return dict(asdict(self), cohorts=self.cohorts, branches_per_cohort=SIZES[self.size])
@@ -115,7 +117,7 @@ class PrefixWorkingSetProgram:
             for edge in (self.predecessor(index),*self.branches(index)):
                 route=mainbtb_route(edge.pc,edge.position)
                 routes[route['selected_physical_align'],route['internal_bank'],route['entry_set']]+=1
-        if max(routes.values())>2:raise ValueError('declared instructions exceed Main associativity')
+        if max(routes.values())>MAIN_WAYS:raise ValueError('declared instructions exceed Main associativity')
 
     @property
     def rules(self):return PREFIX_RULES

@@ -1,6 +1,7 @@
 """bpuverify.sc.coverage.catalog components."""
 
 from __future__ import annotations
+from bpuverify.common.model.configuration import *
 
 from bpuverify.common.coverage.exports import write_functional_coverage
 from bpuverify.common.env.artifacts import output_path
@@ -74,9 +75,7 @@ def sc_vector_coverage_model():
         "sc_main_btb_vector",
         (
             CoverPointDef("used_slot", {
-                "slot1": Bin.values(1),
-                "slot2": Bin.values(2),
-                "slot3": Bin.values(3),
+                f"slot{i}": Bin.values(i) for i in range(1, RESULT_SLOTS)
             }),
             CoverPointDef("association", {
                 "serial": Bin.values("serial"),
@@ -160,7 +159,7 @@ def sc_masked_rows_coverage_model():
                 for phase in ("cold", "adjacent_learned", "serial_control")
             }),
             CoverPointDef("context", {f"row_{i}": Bin.values(i) for i in range(4)}),
-            CoverPointDef("way", {f"way_{i}": Bin.values(i) for i in range(4)}),
+            CoverPointDef("way", {f"way_{i}": Bin.values(i) for i in range(SC_WAYS)}),
             CoverPointDef("bias", {f"selector_{i}": Bin.values(i) for i in range(4)}),
         ),
         crosses=(
@@ -187,7 +186,7 @@ def sc_bias_selector_merge_coverage_model():
             }),
             CoverPointDef("row", {f"row_{i}": Bin.values(i) for i in range(4)}),
             CoverPointDef("bias", {f"selector_{i}": Bin.values(i) for i in range(4)}),
-            CoverPointDef("way", {f"way_{i}": Bin.values(i) for i in range(4)}),
+            CoverPointDef("way", {f"way_{i}": Bin.values(i) for i in range(SC_WAYS)}),
         ),
         crosses=(CrossDef("mode_phase_row_bias_way", ("mode", "phase", "row", "bias", "way")),),
     ).instantiate("kunminghu_v3.sc.bias_selector_merge")
@@ -204,13 +203,13 @@ def sc_clean_reactivation_coverage_model():
             CoverPointDef("setup", {name: Bin.values(name) for name in ("adjacent", "serial")}),
             CoverPointDef("phase", {
                 name: Bin.values(name) for name in (
-                    "cold", "queued_learned", *(f"negative_slot_{i}" for i in range(4)),
+                    "cold", "queued_learned", *(f"negative_slot_{i}" for i in range(SC_WAYS)),
                     "subset_relearned", "mixed_pipeline",
                 )
             }),
             CoverPointDef("row", {f"row_{i}": Bin.values(i) for i in range(4)}),
             CoverPointDef("bias", {f"selector_{i}": Bin.values(i) for i in range(4)}),
-            CoverPointDef("way", {f"way_{i}": Bin.values(i) for i in range(4)}),
+            CoverPointDef("way", {f"way_{i}": Bin.values(i) for i in range(SC_WAYS)}),
         ),
         crosses=(CrossDef("setup_phase_row_bias_way", ("setup", "phase", "row", "bias", "way")),),
     ).instantiate("kunminghu_v3.sc.clean_reactivation")
@@ -227,7 +226,7 @@ def sc_threshold_bounds_coverage_model(mode):
         f'sc_threshold_{mode}_bounds',
         (
             CoverPointDef('boundary', {name: Bin.values(name) for name in ('lower', 'upper')}),
-            CoverPointDef('way', {f'way_{i}': Bin.values(i) for i in range(4)}),
+            CoverPointDef('way', {f'way_{i}': Bin.values(i) for i in range(SC_WAYS)}),
             CoverPointDef('phase', {name: Bin.values(name) for name in ('approach', 'reject', 'recover')}),
         ),
         crosses=(CrossDef('boundary_way_phase', ('boundary', 'way', 'phase')),),
@@ -244,7 +243,7 @@ def sc_threshold_qualification_coverage_model():
     return CoverGroupDef(
         'sc_threshold_qualification',
         (
-            CoverPointDef('way', {f'way_{i}': Bin.values(i) for i in range(4)}),
+            CoverPointDef('way', {f'way_{i}': Bin.values(i) for i in range(SC_WAYS)}),
             CoverPointDef('reason', {name: Bin.values(name) for name in (
                 'qualified_wrong', 'mbtb_miss', 'nonconditional', 'provider_invalid',
                 'disabled', 'confident_correct', 'net_zero', 'net_positive',

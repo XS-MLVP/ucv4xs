@@ -28,10 +28,11 @@ def test_real_paths_share_short_history_but_not_distinct_branch_learning():
 
 def test_full_tags_are_derived_and_not_truncated_to_hide_the_existing_defect():
     paths = program()
-    assert [path.read_indices for path in paths] == [(128, 320), (128, 64), (200, 264), (200, 8)]
-    assert [path.tags for path in paths] == [(39, 20), (39, 6), (35, 8), (35, 26)]
-    # These fixed program locations happen to have low full tags. The model
-    # still computes all 15 bits; the separate high-tag FAIL stays mandatory.
+    assert [path.read_indices for path in paths] == [(128, 320), (128, 352), (200, 264), (200, 296)]
+    assert [path.tags for path in paths] == [(5, 165), (5, 39), (1, 168), (1, 42)]
+    # DefaultConfig has full eight-bit long tags, including the high bit.
+    # Both branches exercise that bit without truncating the semantic tag.
+    assert all(paths[index].tags[1] & 128 for index in (0,2))
     assert all(value < 256 for path in paths for value in path.tags)
 
 

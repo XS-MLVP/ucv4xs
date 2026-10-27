@@ -1,4 +1,5 @@
 """Discriminating branch programs at representative addresses, not bank sweeps."""
+from bpuverify.common.model.configuration import *
 from bpuverify.mbtb.transaction.types import MbtbBatchTraining, MbtbBranchFeedback, MbtbTraining
 
 
@@ -11,7 +12,7 @@ def branch_state(prediction, position, kind):
                if entry.valid and (entry.position, entry.branch_type) == (position, kind)]
     assert len(entries) == 1
     way, entry = entries[0]
-    source = prediction.meta_entries[way // 2][way % 2]
+    source = prediction.meta_entries[way // (MAIN_WAYS + 1)][way % (MAIN_WAYS + 1)]
     assert source['rawHit'] and source['position'] == position
     return way, entry.target, entry.taken, source['counter_value']
 

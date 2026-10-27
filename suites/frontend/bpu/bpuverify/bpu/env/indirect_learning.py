@@ -1,4 +1,6 @@
 """Original-source indirect feedback and autonomous allocation admission."""
+from bpuverify.common.model.configuration import ITTAGE_ALLOCATION_WAIT
+
 from contextlib import asynccontextmanager
 
 from bpuverify.bpu.checker.phr.checking import BpuPhrChecker
@@ -31,7 +33,7 @@ class IndirectProgram(BranchTargetProgram):
         self.checker.source_token(source);await self.pause()
         self.checker.retire_source(origin.meta_tick);return source
 
-    async def cold_source(self,pc,*,table,via=None,timeout_requests=128):
+    async def cold_source(self,pc,*,table,via=None,timeout_requests=ITTAGE_ALLOCATION_WAIT):
         for _ in range(timeout_requests):
             source=await self.capture_path(pc,via)
             token=self.checker.source_token(source)

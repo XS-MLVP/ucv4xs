@@ -1,9 +1,8 @@
 """Independent history-conditioned direction tables and visibility contracts.
 
-MinimalConfig promises two 512-row tables with histories 6/12 and 15-bit tags.
+DefaultConfig promises two 512-row tables with histories 5/9 and 8-bit tags.
 The model owns every entry/useful value. Metadata is a public feedback input,
-not a prediction oracle. It does not truncate tags to the implementation's
-8-bit containers or copy the implementation's dirty-mask/priority-mask logic.
+not a prediction oracle. It derives complete configured tags without copying the implementation's dirty-mask/priority-mask logic.
 
 Recent updates are chronological immutable versions: newest matching versions
 forward, superseded writes coalesce, committed versions remain cacheable, and
@@ -12,17 +11,19 @@ Read snapshots survive later updates. PC units are this UT API's halfwords.
 """
 from dataclasses import dataclass, replace
 
+from bpuverify.common.model.configuration import MICRO_HISTORIES, MICRO_HISTORY_TAG_BITS, MICRO_TAG_BITS, PHR_BITS
+
 from bpuverify.common.model.folded_history import PHR_FOLD_LAYOUT
 
 
-HISTORIES = (6, 12)
+HISTORIES = MICRO_HISTORIES
 SETS = 512
-TAG_BITS = 15
-INDEX_FOLDS = (PHR_FOLD_LAYOUT.index((6, 6)), PHR_FOLD_LAYOUT.index((12, 9)))
-TAG_FOLDS = (PHR_FOLD_LAYOUT.index((6, 6)), PHR_FOLD_LAYOUT.index((12, 6)))
-ALT_FOLDS = (PHR_FOLD_LAYOUT.index((6, 5)), PHR_FOLD_LAYOUT.index((12, 5)))
-PC_FEATURES = ((11, 9, 8, 7, 5, 4, 3, 2, 1), (15, 13, 11, 10, 9, 8, 5, 3, 1))
-PC_PARITY = ((12, 10, 8, 6, 4, 2), (10, 8, 6, 4, 2, 0))
+TAG_BITS = MICRO_TAG_BITS
+INDEX_FOLDS = tuple(PHR_FOLD_LAYOUT.index((n,min(n,9))) for n in HISTORIES)
+TAG_FOLDS = tuple(PHR_FOLD_LAYOUT.index((n,min(n,b))) for n,b in zip(HISTORIES,MICRO_HISTORY_TAG_BITS))
+ALT_FOLDS = tuple(PHR_FOLD_LAYOUT.index((n,min(n,b-1))) for n,b in zip(HISTORIES,MICRO_HISTORY_TAG_BITS))
+PC_FEATURES = ((3, 2, 1), ())
+PC_PARITY = ((10, 8, 6, 4, 2), (14, 12, 10, 8, 6, 4, 2, 0))
 
 
 def unsigned(value, limit, name):
@@ -36,13 +37,13 @@ class Context:
 
     def __post_init__(self):
         if len(self.folds) != len(PHR_FOLD_LAYOUT):
-            raise ValueError('UTAGE context requires all nineteen public folded histories')
+            raise ValueError('UTAGE context requires all configured public folded histories')
         for value, (_, width) in zip(self.folds, PHR_FOLD_LAYOUT, strict=True):
             unsigned(value, 1 << width, 'folded history')
 
     @classmethod
     def from_recent(cls, recent):
-        unsigned(recent, 1 << 31, 'recent path history')
+        unsigned(recent, 1 << PHR_BITS, 'recent path history')
         return cls(tuple(sum((sum((recent >> position) & 1
             for position in range(bit, length, width)) % 2) << bit
             for bit in range(width)) for length, width in PHR_FOLD_LAYOUT))
@@ -60,8 +61,9 @@ def tag(pc, context, table):
                    for bit, position in enumerate(reversed(PC_FEATURES[table])))
     parity = sum(((pc >> position) & 1) << bit
                  for bit, position in enumerate(reversed(PC_PARITY[table])))
-    low = (parity ^ context.folds[TAG_FOLDS[table]] ^ (2 * context.folds[ALT_FOLDS[table]])) % 64
-    return 64 * features + low
+    width = MICRO_HISTORY_TAG_BITS[table]
+    low = (parity ^ context.folds[TAG_FOLDS[table]] ^ (2 * context.folds[ALT_FOLDS[table]])) % (1 << width)
+    return (features << width) | low
 
 
 @dataclass(frozen=True, slots=True)

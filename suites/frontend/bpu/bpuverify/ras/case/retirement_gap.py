@@ -4,6 +4,7 @@ All pointers come from checked, genuine pre-operation metadata. Actions zero
 and three, enable gating, internal state writes and full-FTQ legality are not
 part of this fault-injection scenario. Only compact endpoint evidence is saved.
 """
+from bpuverify.common.model.configuration import *
 from copy import deepcopy
 from dataclasses import asdict
 
@@ -77,7 +78,7 @@ async def check_gap(agent, observations, *, epoch, kind):
                 actual=asdict(committed), context=context(commit_event, commit_event))
         checks.check(expected=after_speculation.public(after_retired), actual=asdict(agent.snapshot()),
             context=context(samples[-1].event, commit_event))
-        record = dict(request=request, distance=(speculation.write - retired.bos) % 32,
+        record = dict(request=request, distance=(speculation.write - retired.bos) % RAS_POINTER_MODULUS,
             before=retired.native(), after=after_retired.native(), public_after=after_speculation.public(after_retired),
             spec_tick=spec_event.tick, commit_tick=commit_event.tick if retire else None, samples_checked=len(samples))
         records.append(record)
@@ -87,7 +88,7 @@ async def check_gap(agent, observations, *, epoch, kind):
     await operation(2, pc=0xA1000000, phase='base-call')
     # A semantic epoch transition, not a physical stack-slot sweep: preserve a
     # base frame while ordinary committed temporary pairs advance the queue.
-    for _ in range(4 if epoch == 'same' else 15):
+    for _ in range(4 if epoch == 'same' else RAS_SPEC_ENTRIES - 1):
         await operation(2, pc=0xA2000000, phase='epoch-prefix-call')
         await operation(1, phase='epoch-prefix-return')
     baseline = dict(speculation=speculation.metadata(), retirement=retired.native())

@@ -95,7 +95,7 @@ class DirectionProgram(BranchTargetProgram):
                 request=dict(point='each burst input has one compared acceptance',requests=requests)))
         return actual
 
-    async def allocate(self,source,*branches,owner,timeout_cycles=128):
+    async def allocate(self,source,*branches,owner,timeout_cycles=1823):
         if type(timeout_cycles) is not int or timeout_cycles<=0:
             raise ValueError('allocation timeout must be a positive cycle budget')
         await self.pause()

@@ -1,4 +1,6 @@
 """Reuse the qualified independent eligibility oracle; add feedback intent."""
+from bpuverify.common.model.configuration import SC_WAYS, SC_TABLES, RESULT_SLOTS, MAIN_WAYS, SC_MIN_THRESHOLD, SC_MAX_THRESHOLD
+
 from dataclasses import dataclass
 
 from bpuverify.sc.transaction.types import ScBatchTraining,ScBranchFeedback
@@ -38,7 +40,7 @@ def expected_offer(transaction,*,branch_count,fold_count):
     source=dict(rawHit=branch.mbtb_hit,position=branch.position,
         attribute=dict(branchType=branch.branch_type,rasAction=0),counter_value=0)
     return dict(valid=1,ready=1,pc=transaction.pc,history=(1,0,0,0,(0,)*fold_count),
-        meta={key:tuple(transaction.meta[key]) for key in META},mbtb_meta=((source,empty),(empty,empty)),
+        meta={key:tuple(transaction.meta[key]) for key in META},mbtb_meta=((source,)+(empty,)*MAIN_WAYS,(empty,)*(MAIN_WAYS+1)),
         branches=tuple(dict(valid=int(index==0),taken=branch.actual_taken if index==0 else 0,
             position=branch.position if index==0 else 0,branch_type=branch.branch_type if index==0 else 0)
             for index in range(branch_count)))

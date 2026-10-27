@@ -1,6 +1,8 @@
 """Independent SC reads, feedback obligations and complete signed write patches."""
+from bpuverify.common.model.configuration import *
+
 from bpuverify.sc.checker.semantic import prediction_values
-from bpuverify.sc.model.semantic import feedback_needs_read,FAMILIES
+from bpuverify.sc.model.semantic import feedback_needs_read,FAMILIES,TABLE_FAMILIES
 
 
 def numeric_origins(sources,cycle,previous):
@@ -68,10 +70,10 @@ class InvalidHistoryEvidence:
                 check(True,request is not None and request[0] is token.history,
                     'the invalid response belongs to an actually observed original request')
                 _,issued_tick,valids=request
-                check((False,False),(valids[1],valids[2]),'neither history family issued an actual prediction read')
+                check((False,)*4,tuple(valids[i] for i in (2,3,4,5)),'neither history family issued an actual prediction read')
                 check(True,issued_tick<tick,'actual request observation precedes the raw response')
                 raw={family:tuple(signed_value(value,6) for value in actual['prediction_read']['words'][table])
-                     for table,family in ((1,'global'),(2,'backward'))}
+                     for table,family in ((2,'global'),(4,'backward'))}
                 raw={family:values for family,values in raw.items() if any(values)}
                 if raw:self.pending[key]=(token.history,token.sequence,issued_tick,tick,raw)
             elif key in self.pending:
@@ -82,8 +84,8 @@ class InvalidHistoryEvidence:
                 completed={}
                 for table,family in ((1,'global'),(2,'backward')):
                     if family not in raw:continue
-                    consumed=tuple(signed_value(value,7) for value in actual['prediction_evidence']['words'][table])
-                    check((1,)*len(raw[family]),consumed,'invalid history consumes neutral weights despite nonzero old '+family+' response')
+                    consumed=tuple(signed_value(value,8) for value in actual['prediction_evidence']['words'][table])
+                    check((2,)*len(raw[family]),consumed,'invalid history consumes neutral weights despite nonzero old '+family+' response')
                     completed[family]=dict(owner=sequence,history_owner=key,pc=token.pc,
                         issued_tick=issued_tick,read_tick=read_tick,consumed_tick=tick,raw_weights=raw[family],
                         consumed_percsum=consumed,history_valid=False,
@@ -101,16 +103,21 @@ def numeric_values(sources,token,actual,*,consumed=False):
     if not consumed:
         expected['history_valid']=read.context.common_valid
         observed['history_valid']=bool(actual['history_valid'])
-    for table,(family,weights) in enumerate(zip(FAMILIES,read.weights,strict=True)):
-        if not consumed and not read.context.common_valid and family in ('global','backward'):
-            # No request was made. The old raw port is unspecified; hardware
-            # zeroing is checked in consumed evidence, not simulated here.
-            continue
-        expected[family]=tuple(2*value+1 for value in weights) if consumed else weights
-        observed[family]=tuple(signed_value(value,7 if consumed else 6) for value in actual['words'][table])
-        if not consumed:
-            expected[family+'.bank']=1<<(token.pc%2)
-            observed[family+'.bank']=actual['banks'][table]
+    if consumed:
+        for group, family in enumerate(FAMILIES):
+            members = [row for owner, row in zip(TABLE_FAMILIES, read.weights, strict=True) if owner == family]
+            expected[family] = tuple(sum(2 * value + 1 for value in column) for column in zip(*members, strict=True))
+            width = 8 if len(members) == 2 else 7
+            observed[family] = tuple(signed_value(value, width) for value in actual['words'][group])
+    else:
+        for table, (family, weights) in enumerate(zip(TABLE_FAMILIES, read.weights, strict=True)):
+            if not read.context.common_valid and family in ('global', 'backward'):
+                continue
+            name = f'{family}.{table}'
+            expected[name] = weights
+            observed[name] = tuple(signed_value(value, 6) for value in actual['words'][table])
+            expected[name + '.bank'] = 1 << (token.pc % 2)
+            observed[name + '.bank'] = actual['banks'][table]
     return expected,observed
 
 
@@ -125,8 +132,8 @@ def composition_values(sources,token,actual,*,tage_enabled):
     from bpuverify.sc.model.semantic import way,bias_feature
     from bpuverify.sc.transaction.types import ScBaseBranch
     read=sources.statistical_snapshot(token).read
-    sums=tuple(sum(2*weights[column]+1 for weights in read.weights[:4]) for column in range(4))
-    candidates=tuple(tuple(total+2*read.weights[4][4*column+bias]+1 for bias in range(4))
+    sums=tuple(sum(2*weights[column]+1 for weights in read.weights[:-1]) for column in range(SC_WAYS))
+    candidates=tuple(tuple(total+2*read.weights[-1][4*column+bias]+1 for bias in range(4))
         for column,total in enumerate(sums))
     branches,tagged,_=sources.tage_decision(token,enabled=tage_enabled)
     selected={}
@@ -136,9 +143,9 @@ def composition_values(sources,token,actual,*,tage_enabled):
             int(bool(tagged.get(f'{slot}.has_provider'))))
         selected[str(slot)]=candidates[way(branch.position)][bias_feature(provider)]
     expected=dict(history_sums=sums,candidates=candidates,selected=selected)
-    observed=dict(history_sums=tuple(signed_value(value,9) for value in actual['history_sums']),
-        candidates=tuple(tuple(signed_value(value,10) for value in row) for row in actual['candidates']),
-        selected={slot:signed_value(actual['selected'][int(slot)],10) for slot in selected})
+    observed=dict(history_sums=tuple(signed_value(value,10) for value in actual['history_sums']),
+        candidates=tuple(tuple(signed_value(value,11) for value in row) for row in actual['candidates']),
+        selected={slot:signed_value(actual['selected'][int(slot)],11) for slot in selected})
     return expected,observed
 
 
@@ -162,7 +169,7 @@ def metadata_values(sources, token, actual):
     # of SC authority/provider validity remains checkable for *every* slot.
     defined = tuple(slot for slot, branch in enumerate(source.branches) if branch is not None)
     for key, value in tuple(expected.items()):
-        if isinstance(value, tuple) and key not in ('useScPred', 'tagePredValid', 'sumAboveThres'):
+        if isinstance(value, tuple) and key not in ('useScPred', 'tagePredValid', 'sumAboveThres', 'predPathIdx', 'predGlobalIdx', 'predBWIdx', 'predImliIdx', 'predBiasIdx'):
             slots=defined
             if key in ('tageCtr','tagePred'):
                 # Sc.scala registers raw provider bits separately from valid.
@@ -187,7 +194,7 @@ def live_values(sources, events, cycle, actual):
     observed = {key: actual[key] for key in expected}
     prediction=bool(cycle.enabled[2] and cycle.enabled[4] and cycle.fires[0])
     expected['prediction_requests']=tuple(prediction and (step.lookup.valid or family not in ('global','backward'))
-        for family in FAMILIES)
+        for family in TABLE_FAMILIES)
     observed['prediction_requests']=tuple(map(bool,actual['prediction_requests']))
     pending = {table: (bank, index, patch) for table, bank, index, patch in patches}
     for table, row in enumerate(actual['updates']):

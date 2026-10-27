@@ -13,13 +13,13 @@ from bpuverify.utage.transaction.types import UtageBaseBranch, UtageTraining
 from bpuverify.utage.case.definitions import PASSING_PC
 
 POSITIONS = (5, 7)
-UPPER = PASSING_PC + 0x1000
+UPPER = PASSING_PC + 0x400
 
 
 async def prepare_upper_provider(agent, position):
     """Train one lower and one upper provider at the same logical index.
 
-    The two PCs differ by 0x1000, so their folded history and nine-bit indices
+    The two PCs differ by 0x400, so their folded history and nine-bit indices
     are identical while the eight-bit lower tag stays representable and
     distinct.  The first training protects the lower row, which is the normal
     public way to make the next allocation select the upper table.

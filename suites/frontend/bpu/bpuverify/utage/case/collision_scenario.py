@@ -1,5 +1,6 @@
-"""Equal upper hash indices must still distinguish history-derived tags."""
+"""Equal upper indices must distinguish independently owned PC/history tags."""
 
+from bpuverify.common.model.configuration import PHR_FOLDS
 from bpuverify.utage.transaction.types import UtageTraining
 from bpuverify.common.model.folded_history import folded_history_values
 from bpuverify.utage.checker.assertions import counter
@@ -17,21 +18,25 @@ COLLISION_PHASES = (
 
 def collision_histories(bank, fold_pair):
     a = 256 | bank
-    # XOR folding a twelve-bit window to nine bits maps these two bit flips
-    # to the same index bit. Their five/six-bit tag folds do not cancel.
-    b = a ^ (1 << fold_pair) ^ (1 << (fold_pair + 9))
+    # The nine-bit history-to-index mapping is injective for a fixed PC.
+    # An independent PC bit cancels in the row hash but changes the tag.
+    b = a ^ (1 << (fold_pair + 5))
     return {"a": a, "b": b, "neighbor": 128 | 8 | bank}
 
 
+def collision_pc(history):
+    return PASSING_PC ^ (history & 0xe0)
+
+
 def collision_indices(history):
-    return history & 63, (history & 511) ^ (history >> 9)
+    return (collision_pc(history) ^ (history & 31)) & 511, (collision_pc(history) ^ history) & 511
 
 
 def require_collision_state(prediction, name, history, base, expected, *, phase):
     entry = prediction.meta["abtbResult"][0]
     state = (phase, name, history, prediction)
     assert prediction.meta["readIndex"] == collision_indices(history), state
-    assert prediction.meta["foldedPathHistForTrain_hist"] == folded_history_values(history, 19), state
+    assert prediction.meta["foldedPathHistForTrain_hist"] == folded_history_values(history, len(PHR_FOLDS)), state
     assert (entry["valid"], entry["cfiPosition"], entry["baseTaken"]) == (1, POSITION, base), state
     if expected is None:
         assert (prediction.hit, entry["hit"]) == (0, 0), state
@@ -48,7 +53,7 @@ async def read_collision_grid(agent, histories, expected, *, phase, repeated=Fal
     if repeated:
         names = ("a", "b", "neighbor", "b", "a", "neighbor") * 4
     bases = {"a": 1, "b": 0, "neighbor": 1}
-    transfers = [agent.submit_predict(PASSING_PC, POSITION, bases[name], folded_history=histories[name])
+    transfers = [agent.submit_predict(collision_pc(histories[name]), POSITION, bases[name], folded_history=histories[name])
                  for name in names]
     await agent.drain_predictions()
     ticks = [transfer.accepted_event.tick for transfer in transfers]
@@ -63,13 +68,13 @@ async def read_collision_grid(agent, histories, expected, *, phase, repeated=Fal
 
 
 async def allocate_weak_upper(agent, history, name):
-    cold = await agent.predict(PASSING_PC, POSITION, 0, folded_history=history)
+    cold = await agent.predict(collision_pc(history), POSITION, 0, folded_history=history)
     require_collision_state(cold, name, history, 0, None, phase="prepare.cold")
-    await agent.train(UtageTraining(PASSING_PC, POSITION, 1, cold.meta))
-    lower = await agent.predict(PASSING_PC, POSITION, 0, folded_history=history)
+    await agent.train(UtageTraining(collision_pc(history), POSITION, 1, cold.meta))
+    lower = await agent.predict(collision_pc(history), POSITION, 0, folded_history=history)
     require_collision_state(lower, name, history, 0, (0, 4), phase="prepare.lower")
-    await agent.train(UtageTraining(PASSING_PC, POSITION, 0, lower.meta))
-    upper = await agent.predict(PASSING_PC, POSITION, 1, folded_history=history)
+    await agent.train(UtageTraining(collision_pc(history), POSITION, 0, lower.meta))
+    upper = await agent.predict(collision_pc(history), POSITION, 1, folded_history=history)
     require_collision_state(upper, name, history, 1, (1, 3), phase="prepare.upper")
 
 
@@ -91,31 +96,31 @@ async def check_collision_case(agent, coverage, *, bank, fold_pair, adjacent):
 
     await allocate_weak_upper(agent, histories["a"], "a")
     await allocate_weak_upper(agent, histories["neighbor"], "neighbor")
-    cold_b = await agent.predict(PASSING_PC, POSITION, 0, folded_history=histories["b"])
+    cold_b = await agent.predict(collision_pc(histories["b"]), POSITION, 0, folded_history=histories["b"])
     require_collision_state(cold_b, "b", histories["b"], 0, None, phase="prepare.collision_miss")
-    await agent.train(UtageTraining(PASSING_PC, POSITION, 1, cold_b.meta))
+    await agent.train(UtageTraining(collision_pc(histories["b"]), POSITION, 1, cold_b.meta))
     observed = await read_phase("trained", {"a": (1, 3), "b": (0, 4), "neighbor": (1, 3)})
 
     # Upper A is useful=2: B's real lower-provider error must be blocked.
-    await agent.train(UtageTraining(PASSING_PC, POSITION, 0, observed["b"].meta))
+    await agent.train(UtageTraining(collision_pc(histories["b"]), POSITION, 0, observed["b"].meta))
     observed = await read_phase("blocked", {"a": (1, 3), "b": (0, 3), "neighbor": (1, 3)})
-    await agent.train(UtageTraining(PASSING_PC, POSITION, 1, observed["a"].meta))
+    await agent.train(UtageTraining(collision_pc(histories["a"]), POSITION, 1, observed["a"].meta))
     observed = await read_collision_grid(agent, histories,
         {"a": (1, 4), "b": (0, 3), "neighbor": (1, 3)}, phase="first_error")
     # One error leaves useful=1, so B must still not replace A's upper tag.
-    await agent.train(UtageTraining(PASSING_PC, POSITION, 1, observed["b"].meta))
+    await agent.train(UtageTraining(collision_pc(histories["b"]), POSITION, 1, observed["b"].meta))
     observed = await read_phase("first_error_blocked", {"a": (1, 4), "b": (0, 4), "neighbor": (1, 3)})
-    await agent.train(UtageTraining(PASSING_PC, POSITION, 0, observed["a"].meta))
+    await agent.train(UtageTraining(collision_pc(histories["a"]), POSITION, 0, observed["a"].meta))
     observed = await read_phase("freed", {"a": (1, 3), "b": (0, 4), "neighbor": (1, 3)})
     captured_a = observed["a"]
 
     # The second error makes useful zero: same physical upper row now takes
     # B's tag. A must reject it and fall back to its unchanged lower counter.
-    await agent.train(UtageTraining(PASSING_PC, POSITION, 0, observed["b"].meta))
+    await agent.train(UtageTraining(collision_pc(histories["b"]), POSITION, 0, observed["b"].meta))
     observed = await read_phase("reallocated", {"a": (0, 3), "b": (1, 3), "neighbor": (1, 3)})
-    await agent.train(UtageTraining(PASSING_PC, POSITION, 1, observed["b"].meta))
+    await agent.train(UtageTraining(collision_pc(histories["b"]), POSITION, 1, observed["b"].meta))
     observed = await read_phase("b_direction_corrected", {"a": (0, 3), "b": (1, 4), "neighbor": (1, 3)})
-    feedback = tuple(UtageTraining(PASSING_PC, POSITION, 1, observed["b"].meta, mispredict=0)
+    feedback = tuple(UtageTraining(collision_pc(histories["b"]), POSITION, 1, observed["b"].meta, mispredict=0)
                      for _ in range(SATURATION_ATTEMPTS))
     await send_shadow_feedback(agent, feedback, adjacent=adjacent)
     observed = await read_phase("saturated", {"a": (0, 3), "b": (1, 7), "neighbor": (1, 3)})
@@ -124,9 +129,9 @@ async def check_collision_case(agent, coverage, *, bank, fold_pair, adjacent):
     # Captured, genuinely emitted feedback is allowed to arrive after a
     # different tag occupies this row. The RTL reconstructs from the captured
     # counter, not the other resident tag's counter: A 3+1=4, then B 7-1=6.
-    await agent.train(UtageTraining(PASSING_PC, POSITION, 1, captured_a.meta))
+    await agent.train(UtageTraining(collision_pc(histories["a"]), POSITION, 1, captured_a.meta))
     await read_phase("late_a", {"a": (1, 4), "b": (0, 3), "neighbor": (1, 3)})
-    await agent.train(UtageTraining(PASSING_PC, POSITION, 0, captured_b.meta))
+    await agent.train(UtageTraining(collision_pc(histories["b"]), POSITION, 0, captured_b.meta))
     expected = {"a": (0, 3), "b": (1, 6), "neighbor": (1, 3)}
     await read_phase("late_b", expected)
     await read_phase("pipelined", expected, repeated=True)

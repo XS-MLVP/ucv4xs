@@ -61,9 +61,9 @@ def test_useful_sequence_is_not_entry_forwarding_or_a_newest_metadata_accumulati
     assert all(values(model,token)==(PROGRAM.initial_base,PROGRAM.initial_counters) for token in tokens)
     assert all(tuple(read.matches(p)[-1][3] for p in POSITIONS)==PROGRAM.initial_useful for read in reads)
     learn_under_reads(model,event,anchor,tokens)
-    plan=tuple(dict(row=read.rows[3],value=1) for read in reads)
-    assert pending_useful(model.sources.tage,3,0)==(plan,())
-    assert model.sources.tage.useful_queue[3,0,0].drops==0
+    plan=tuple(dict(row=read.rows[7],value=1) for read in reads)
+    assert pending_useful(model.sources.tage,7,0)==(plan,())
+    assert model.sources.tage.useful_queue[7,0,0].drops==0
     for read in reads:
         current=model.sources.tage.lookup_snapshot(PC,read.context)
         assert tuple(current.matches(p)[-1][2:] for p in POSITIONS)==((2,0),(5,1))
@@ -227,8 +227,8 @@ def test_pending_proof_requires_actual_full_retention_at_the_independent_boundar
     checks,row,_,_=pending_fixture();tage=checks.pipeline.model.sources.tage
     if fault=='missing-accept':checks.accepted=()
     elif fault=='still-learning':tage.offers={(-1,-1):('not-mature',)}
-    elif fault=='lost-effect':tage.useful_queue[3,0,0].pending.pop()
-    elif fault=='drop':tage.useful_queue[3,0,0].drops=1
+    elif fault=='lost-effect':tage.useful_queue[7,0,0].pending.pop()
+    elif fault=='drop':tage.useful_queue[7,0,0].drops=1
     elif fault=='missing-proposal':checks.proposals.pop()
     elif fault=='early-effect':checks.proposals[0]=(198,checks.proposals[0][1])
     elif fault=='hidden-commit':checks.written=[(210,checks.plan[0])]

@@ -1,3 +1,4 @@
+from bpuverify.bpu.model.early_opposition import FALLBACK
 """Pure source programs and checker corruption tests; these give no DUT credit."""
 from dataclasses import replace
 
@@ -32,7 +33,7 @@ def maintenance(short):
 
 
 class Program(LongProgram):
-    recovery_position = 4
+    recovery_position = FALLBACK
 
     def make_checks(self, pc, tag_class):
         return EarlyShortProtectionChecks(EarlyShortProtectionCoverage(), self.mode, pc)
@@ -41,7 +42,7 @@ class Program(LongProgram):
         event = self.event if event is None else event
         if event.redirect is not None:
             require_recovery_window(self.model.history.taken_edges, event.redirect.source.taken_edges,
-                                    capacity=52, history_bits=31, shift=2)
+                                    capacity=532, history_bits=397, shift=2)
         cycle = self.model.evaluate(event); self.tick += 2
         self.checks.pipeline.current_event = synthetic_event(self.tick)
         observed = actual_live(self.model.sources, cycle.enabled[1])
@@ -66,7 +67,7 @@ class Program(LongProgram):
     def restore_flow(self, source):
         self.quiet()
         self.step(replace(self.event, redirect=Redirect(source.token.history,
-                            self.pc+self.recovery_position, self.pc, True)))
+                            (self.pc//16)*16+self.recovery_position, self.pc, True)))
         self.step()
 
     def original_short(self, source, older=OLDER_PATHS[0], *, mutate=None, longer=False):
@@ -74,18 +75,18 @@ class Program(LongProgram):
         for position in older:
             self.recovery_position = position
             source = self.query(source)
-        self.recovery_position = 4
+        self.recovery_position = FALLBACK
         source = self.query(source)
         self.enable(True)
         return self.bounded_source(source, mutate=mutate, longer=longer)
 
     def bounded_source(self, source, *, mutate=None, longer=False, expect_taken=None,
-                       recovery_position=4, open_window=None):
+                       recovery_position=FALLBACK, open_window=None):
         self.quiet()
         accepted = (self.checks.open_original(longer=longer, expect_taken=expect_taken)
                     if open_window is None else open_window())
         rows = []
-        cycle = self.step(replace(self.event, redirect=Redirect(source.token.history, self.pc+recovery_position, self.pc, True)))
+        cycle = self.step(replace(self.event, redirect=Redirect(source.token.history, (self.pc//16)*16+recovery_position, self.pc, True)))
         for _ in range(64):
             if cycle.metadata is not None and cycle.metadata.pc == self.pc:
                 rows.append(self.receipt(cycle.metadata))

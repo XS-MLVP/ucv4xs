@@ -15,13 +15,15 @@ from bpuverify.mbtb.transaction.types import MbtbPrediction, MbtbEntry, MbtbLook
 
 
 def prediction(program, stage, owner):
-    entries = [MbtbEntry(0, 0, 0, 0, 0, 0) for _ in range(4)]
+    entries = [MbtbEntry(0, 0, 0, 0, 0, 0) for _ in range(10)]
     meta = [[dict(rawHit=0, position=0, counter_value=0,
-                  attribute=dict(branchType=0, rasAction=0)) for _ in range(2)] for _ in range(2)]
+                  attribute=dict(branchType=0, rasAction=0)) for _ in range(5)] for _ in range(2)]
     for way, position, target, taken, kind, action, counter in program.profile(stage, owner):
         entries[way] = MbtbEntry(1, taken, target, position, kind, action)
-        meta[0][way] = dict(rawHit=1, position=position, counter_value=counter,
+        meta[way//5][way%5] = dict(rawHit=1, position=position, counter_value=counter,
                             attribute=dict(branchType=kind, rasAction=action))
+    for slot, hit in enumerate(program.raw_hits(stage, owner)):
+        meta[slot//5][slot%5]["rawHit"] = hit
     return MbtbPrediction(tuple(entries), meta)
 
 
@@ -40,29 +42,29 @@ def test_each_new_allocation_has_its_own_initial_direction_and_preserves_the_lat
     p = FullCapacityProgram(order)
     initial = {r.owner: r for r in p.stages['prepared']}
     assert (initial['old-a'].counter, initial['old-b'].counter) == (0, 3)
-    assert p.victims['prepared'] == dict(target=1, neighbor=0)
-    assert {r.owner for r in p.stages['pair']} == {'new-a', 'new-b', 'neighbor-a', 'neighbor-b'}
-    assert [(next(r for r in p.stages['pair'] if r.owner == o).way) for o in p.sequence] == [1, 0]
+    assert p.victims['prepared'] == dict(target=3, neighbor=2)
+    assert {r.owner for r in p.stages['pair'] if r.way < 4} == {'new-a', 'new-b', 'old-c', 'old-d', 'neighbor-a', 'neighbor-b', 'neighbor-c', 'neighbor-d'}
+    assert [(next(r for r in p.stages['pair'] if r.owner == o).way) for o in p.sequence] == [3, 2]
     assert {r.counter for r in p.stages['pair'] if r.owner.startswith('new')} == {2}
-    assert {r.owner for r in p.stages['neighbor-probe']} == {'new-a', 'new-b', 'neighbor-a', 'neighbor-probe'}
-    assert {r.owner for r in p.stages['target-probe']} == {p.sequence[1], 'target-probe', 'neighbor-a', 'neighbor-probe'}
+    assert {r.owner for r in p.stages['neighbor-probe'] if r.way < 4} == {'new-a', 'new-b', 'old-c', 'old-d', 'neighbor-a', 'neighbor-c', 'neighbor-d', 'neighbor-probe'}
+    assert {r.owner for r in p.stages['target-probe'] if r.way < 4} == {'new-a', 'new-b', 'old-d', 'target-probe', 'neighbor-a', 'neighbor-c', 'neighbor-d', 'neighbor-probe'}
     assert next(r for r in p.stages['neighbor-probe'] if r.owner == 'neighbor-a').counter == 3
-    assert p.victims['pair'] == {'target': 1, 'neighbor': 0}
-    assert p.victims['neighbor-touch'] == {'target': 1, 'neighbor': 0}
+    assert p.victims['pair'] == {'target': 1, 'neighbor': 2}
+    assert p.victims['neighbor-touch'] == {'target': 1, 'neighbor': 1}
 
 
 def test_page_adjacent_windows_have_independent_age_without_a_coordinate_matrix():
     p = FullCapacityProgram('forward')
-    a, b = (mbtb_replacement_geometry(pc, 1) for pc in (PC, NEIGHBOR))
+    a, b = (mbtb_replacement_geometry(pc & ~31, (pc & 31)+1) for pc in (PC, NEIGHBOR))
     assert PC // 0x800 + 1 == NEIGHBOR // 0x800
     assert a.replacement_index != b.replacement_index
-    assert len({mbtb_replacement_geometry(p.branches[o].pc, 1) for o in ('old-a', 'old-b', 'new-a', 'new-b')}) == 1
-    assert len(p.branches) == 8 and p.victims['prepared'] == {'target': 1, 'neighbor': 0}
+    assert len({mbtb_replacement_geometry(p.branches[o].pc & ~31, (p.branches[o].pc & 31)+1) for o in ('old-a', 'old-b', 'new-a', 'new-b')}) == 1
+    assert len(p.branches) == 12 and p.victims['prepared'] == {'target': 3, 'neighbor': 2}
 
 
 def completed_program(c):
     p = c.program
-    for owner in ('old-a', 'old-b', 'neighbor-a', 'neighbor-b'):
+    for owner in ('old-a', 'old-b', 'old-c', 'old-d', 'neighbor-a', 'neighbor-b', 'neighbor-c', 'neighbor-d'):
         c.response('prepared', owner, transfer(p, owner), prediction(p, 'prepared', owner))
     c.reach('full-distinct-old-residents')
     ts = tuple(transfer(p, o, 20 + 2 * i) for i, o in enumerate(p.sequence))
@@ -72,7 +74,7 @@ def completed_program(c):
                            ('neighbor-probe', (*p.sequence, 'neighbor-a', 'neighbor-b', 'neighbor-probe')),
                            ('neighbor-touch', (*p.sequence, 'neighbor-a', 'neighbor-b', 'neighbor-probe')),
                            ('target-probe', (*p.sequence, 'target-probe', 'neighbor-a', 'neighbor-b', 'neighbor-probe'))):
-        for owner in owners:
+        for owner in (*owners, "old-c", "old-d", "neighbor-c", "neighbor-d"):
             c.response(stage, owner, transfer(p, owner, 100), prediction(p, stage, owner), after=46)
     for rule in RULES[3:-1]:
         c.reach(rule)
@@ -93,8 +95,8 @@ def test_two_new_hits_are_insufficient_when_a_complete_branch_field_is_wrong(fau
     c = checker(); p = c.program; owner = p.sequence[0]
     result = prediction(p, 'pair', owner); entries = list(result.entries)
     way = next(i for i, e in enumerate(entries) if e.valid)
-    if fault == 'counter': result.meta_entries[0][way]['counter_value'] = 1
-    elif fault == 'way': entries[1 - way], entries[way] = entries[way], entries[1 - way]
+    if fault == 'counter': result.meta_entries[way//5][way%5]['counter_value'] = 1
+    elif fault == 'way': entries[(way//5)*5+(way%5+1)%4], entries[way] = entries[way], entries[(way//5)*5+(way%5+1)%4]
     elif fault == 'lost-entry': entries[way] = replace(entries[way], valid=0)
     else:
         attribute = dict(kind='branch_type', action='ras_action').get(fault, fault)
@@ -158,10 +160,10 @@ def test_public_feedback_comparison_preserves_both_windows_all_source_fields_and
     tx = MbtbBatchTraining(p.branches['new-a'].pc, result.meta_entries, (MbtbBranchFeedback(0x40009000, 1, 1, 1, 0, 1),))
     sources = tuple(tuple(Source(bool(s['rawHit']), s['position'], s['attribute']['branchType'],
         s['attribute']['rasAction'], s['counter_value']) for s in row) for row in result.meta_entries)
-    pcs = (tx.pc, (tx.pc // 8 + 1) * 8)
+    pcs = (tx.pc, (tx.pc // 16 + 1) * 16)
     fb = Feedback(pcs, sources, (Branch(0x40009000, True, 1, 1, 0, True),))
     assert planned_payload(tx) == observed_payload(fb)
-    wrong = replace(fb, sources=((replace(sources[0][0], counter=1), sources[0][1]), sources[1]))
+    wrong = replace(fb, sources=((replace(sources[0][0], counter=1), *sources[0][1:]), sources[1]))
     assert planned_payload(tx) != observed_payload(wrong)
 
 
@@ -208,7 +210,7 @@ def test_missing_completed_consumer_is_rejected_even_if_the_caller_marked_its_ru
 @pytest.mark.parametrize('stage', ('target-probe', 'neighbor-probe'))
 def test_lost_recency_or_foreign_neighbor_touch_cannot_preserve_the_wrong_old_resident(order, stage):
     c = checker(order=order, position_relation='new-position'); p = c.program
-    owner = p.sequence[0] if stage == 'target-probe' else 'neighbor-b'
+    owner = 'old-c' if stage == 'target-probe' else 'neighbor-b'
     previous = 'neighbor-touch' if stage == 'target-probe' else 'pair'
     wrong = prediction(p, previous, owner)
     with pytest.raises(ScoreboardMismatch):

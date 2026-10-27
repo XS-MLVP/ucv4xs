@@ -5,7 +5,7 @@ from bpuverify.utage.model.semantic import Context, indices, tag
 from bpuverify.utage.model.usefulness_events import ProtectionState
 
 PC, POSITION = 0x40000000, 5
-HISTORIES = dict(a=0x2A0, b=0xAA0, fallback=0x6A0, cold=0x2A8)
+HISTORIES = dict(a=0x20, b=0xA0, fallback=0x60, cold=0x28)
 MODES = ('serial', 'adjacent')
 RULES = ('prepared-distinct-long-paths', 'actual-overlapping-sources', 'unique-feedback-once',
          'actual-feedback-cadence', 'independent-cumulative-learning', 'opposed-boundary-holds',

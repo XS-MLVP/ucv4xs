@@ -13,7 +13,7 @@ from bpuverify.bpu.transaction.types import BpuBatchTraining,BpuBranchFeedback
 from bpuverify.tage.model.pair import TagePairModel
 
 
-def metadata(counter=4,alt=0,table=3,conf=1,**options):
+def metadata(counter=4,alt=0,table=7,conf=1,**options):
     return dict(hasProvider=1,providerTableIdx=table,providerWayIdx=0,
         providerTakenCtr_value=counter,providerUsefulCtr_value=0,hasAlt=0,
         altOrBasePred=alt,altConf=conf,useProvider=0,**options)
@@ -22,7 +22,7 @@ def metadata(counter=4,alt=0,table=3,conf=1,**options):
 def transaction(meta=None,*,taken=0,owner=1,conditional=1,valid=1,mispredict=0):
     entry=dict(rawHit=owner,position=4,counter_value=0)
     miss=dict(rawHit=0,position=0,counter_value=0)
-    resolved=dict(mbtb_entries=[[entry,miss],[miss,miss]],tage_entries=[meta or metadata(),metadata(),metadata(),metadata()])
+    resolved=dict(mbtb_entries=[[entry,miss,miss,miss,miss],[miss]*5],tage_entries=[meta or metadata()]+[metadata() for _ in range(9)])
     tx=BpuBatchTraining(0x40010008,resolved,(BpuBranchFeedback(4,0x40020080,
         1 if conditional else 3,taken=taken,mispredict=mispredict),) if valid else (None,))
     return tx
@@ -31,7 +31,7 @@ def transaction(meta=None,*,taken=0,owner=1,conditional=1,valid=1,mispredict=0):
 def bits(tx):return encoded_payload(canonical(asdict(tx)))
 
 
-@pytest.mark.parametrize('counter,alternate,taken',tuple(product(range(8),(0,1),(0,1))))
+@pytest.mark.parametrize('counter,alternate,taken',tuple(product(range(16),(0,1),(0,1))))
 def test_all_qualification_combinations_train_only_weak_disagreement(counter,alternate,taken):
     for provider,owner,conditional,valid in product((0,1),repeat=4):
         meta=metadata(counter,alternate);meta['hasProvider']=provider
@@ -43,9 +43,9 @@ def test_all_qualification_combinations_train_only_weak_disagreement(counter,alt
         assert first['dec']==int(qualified and int(counter>=4)==taken)
 
 
-@pytest.mark.parametrize('index,value',tuple(product(range(8),(0,1,15,16,30,31))))
-def test_all_eight_registers_net_votes_before_saturation_and_isolation(index,value):
-    before=[16]*8;before[index]=value
+@pytest.mark.parametrize('index,value',tuple(product(range(16),(0,1,15,16,30,31))))
+def test_all_sixteen_registers_net_votes_before_saturation_and_isolation(index,value):
+    before=[16]*16;before[index]=value
     for directions in ((1,),(-1,),(-1,1),(1,1),(-1,-1)):
         votes=[dict(valid=1,index=index,inc=int(d==1),dec=int(d==-1),provider=True,weak=True,disagreement=True)
             for d in directions]
@@ -57,13 +57,13 @@ def test_all_eight_registers_net_votes_before_saturation_and_isolation(index,val
 def test_exercise_keeps_same_high_confidence_selector_through_both_boundaries():
     pair=TagePairModel(0,alternate_way=1,provider_way=0)
     pair.alternate=replace(pair.alternate,counter=3,useful=0)
-    stages={};values=(16,)*8
+    stages={};values=(16,)*16
     for label,outcomes in exercise_program():
         for taken in outcomes:
             votes,_=feedback_votes(bits(transaction(pair.metadata,taken=taken)))
             values,_=update_selectors(values,votes)
             pair.apply(taken)
-            assert values[6:]==pair.selectors
+            assert values[14:]==pair.selectors
         stages[label]=pair.selectors
     assert stages['lower-saturation'][1]==0
     assert stages['upper-sign-crossing'][1]==16
@@ -81,8 +81,8 @@ def test_read_mode_includes_alternate_use_and_any_mispredict(provider,has_alt,mi
 def sample(checker,tx=None,*,fire=(0,0,0,0),votes=None):
     empty=transaction(valid=0)
     return dict(reset=0,selectors=list(checker.values),enable=1,fire=fire,use_meta=1,
-        raw_tags=[128]*4,reads=[[dict(valid=0,tag=0,counter=0,useful=0)]*2 for _ in range(4)],
-        votes=votes or [dict(valid=0,index=0,inc=0,dec=0) for _ in range(8)],
+        raw_tags=[32]*8,reads=[[dict(valid=0,tag=0,counter=0,useful=0)]*2 for _ in range(8)],
+        votes=votes or [dict(valid=0,index=0,inc=0,dec=0) for _ in range(16)],
         training=dict(valid=int(tx is not None),ready=1,bits=bits(tx or empty)))
 
 
@@ -95,7 +95,7 @@ def pending_update():
     checker.observe(sample(checker,tx,fire=(1,1,0,0)),14)
     checker.observe(sample(checker,fire=(0,0,1,0)),16)
     t3=sample(checker,fire=(0,0,0,1))
-    t3['votes'][0]=dict(valid=1,index=7,inc=1,dec=0)
+    t3['votes'][0]=dict(valid=1,index=15,inc=1,dec=0)
     return checker,coverage,t3
 
 
@@ -104,7 +104,7 @@ def test_source_T2_T3_and_actual_register_effect_are_separately_associated():
     assert coverage.groups['update','reached'].samples==1
     assert coverage.groups['update','checked'].samples==0
     checker.observe(sample(checker),20)
-    assert checker.summary()['selectors']==(16,)*7+(17,)
+    assert checker.summary()['selectors']==(16,)*15+(17,)
     assert coverage.groups['update','checked'].samples==1
 
 
@@ -119,7 +119,7 @@ def test_dropped_qualifier_or_effect_preserves_reached_event_and_ordinary_failur
     elif fault=='wrong-direction':t3['votes'][0].update(inc=0,dec=1)
     if fault in ('missing-effect','neighbor-corruption','late-effect'):
         checker.observe(t3,18);following=sample(checker)
-        if fault=='missing-effect':following['selectors'][7]-=1
+        if fault=='missing-effect':following['selectors'][15]-=1
         elif fault=='neighbor-corruption':following['selectors'][2]+=1
         observed=SimpleNamespace(value=following,event=SimpleNamespace(tick=22 if fault=='late-effect' else 20))
     else:

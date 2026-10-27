@@ -50,7 +50,7 @@ class StatisticalJointSources(EarlyJointSources):
             if request.kind is None:
                 raise ValueError('SC/CommonHR recovery requires the actual semantic branch kind')
             source = self.queries.source_for(request.source)
-            recovery = source, Branch(request.cfi_pc - source.pc // 8 * 8,
+            recovery = source, Branch(request.cfi_pc - source.pc // 16 * 16,
                 request.target, request.kind, request.taken)
         return self.queries.preview(cycle, recovery=recovery)
 

@@ -16,7 +16,7 @@ class ScHistory:
     common_valid: bool = True
 
     def __post_init__(self):
-        for name, width in (('path', 31), ('global_history', 8), ('backward', 4), ('loop', 8)):
+        for name, width in (('path', 397), ('global_history', 16), ('backward', 8), ('loop', 8)):
             value = getattr(self, name)
             if type(value) is not int or not 0 <= value < 1 << width:
                 raise ValueError(f'SC {name} history must fit {width} bits')

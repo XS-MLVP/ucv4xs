@@ -1,3 +1,4 @@
+from bpuverify.bpu.model.early_opposition import FALLBACK
 """Normal base histories and exact original-T/allocated-NT source windows."""
 from contextlib import asynccontextmanager
 
@@ -13,7 +14,7 @@ class EarlyPositiveProtectionProgram(EarlyProtectionProgram):
         await self.agent.configure_predictors(abtb=True, settle=True)
         await self.restart(source)
         return await self.consume('owned_negative_base_history', lambda token:
-            steady_history(token, 4) and (owner := ahead_owner(self.checker.model.sources, token)) is not None
+            steady_history(token, FALLBACK) and (owner := ahead_owner(self.checker.model.sources, token)) is not None
             and owner[1] == 0)
 
     async def base_bias(self, source, *, taken):
@@ -27,7 +28,7 @@ class EarlyPositiveProtectionProgram(EarlyProtectionProgram):
         # here would consume a transient original-T record while biasing base.
         await self.agent.set_ready(prediction=True, meta=True)
         source = await self.consume('base_only_'+('taken' if taken else 'not_taken'), lambda token:
-            main_counter(token) == (3 if taken else 0) and steady_history(token, 2 if taken else 4)
+            main_counter(token) == (3 if taken else 0) and steady_history(token, 2 if taken else FALLBACK)
             and (owner := ahead_owner(self.checker.model.sources, token)) is not None
             and owner[1] == (3 if taken else 0))
         checks.preserved_base_bias(source, before, taken)
@@ -35,7 +36,7 @@ class EarlyPositiveProtectionProgram(EarlyProtectionProgram):
         return source
 
     async def _source_window(self, source, *, older=None, longer=False, expect_taken=None,
-                             recovery_position=4, open_window=None):
+                             recovery_position=FALLBACK, open_window=None):
         checks = self.checker.coverage
         await self.settled(checks)
         if older is not None:

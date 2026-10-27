@@ -143,7 +143,7 @@ async def check_allocation_routes(agent, coverage, output, *, indices=range(512)
                 output=output, allocation_coverage=coverage) as run:
             # Keep64lower useful registers nonzero. A position6 miss then
             # allocates upper directly, without requiring any forged hit.
-            for index in sorted({index & 63 for index in indices}):
+            for index in sorted({index & 31 for index in indices}):
                 cold = await run.predict(PC, index, 0, expected=(0, None, None, None))
                 await run.feedback(PC, cold, 1, phase=f'prepare-lower-{index}')
             for index in indices:
@@ -156,7 +156,7 @@ async def check_update_routes(agent, coverage, output, *, indices=range(512)):
     blocked = []
     for mode in ('serial', 'adjacent'):
         for index in indices:
-            pc, history = PC + (index & ~63), index & 63
+            pc, history = PC + (index & ~31), index & 31
             expected_tag = prediction_tag(pc, history, 0)
             async with UsefulContext(agent, mode=mode, name='lower-update', index=index,
                     output=output, update_coverage=coverage, shadow=expected_tag >= 256) as run:

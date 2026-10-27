@@ -1,3 +1,4 @@
+from bpuverify.common.model.configuration import TAGE_TABLES, RESULT_SLOTS
 from copy import deepcopy
 from dataclasses import replace
 from types import SimpleNamespace
@@ -19,7 +20,7 @@ def test_emitted_component_ports_cover_every_consumed_fold_without_mocking_unuse
     rows = tuple(SimpleNamespace(foldedHist=SimpleNamespace(as_int=lambda value=full.folds[index]: value))
                  for index in HISTORY_PORTS)
     reduced = consumed_context(rows)
-    for table in range(4):
+    for table in range(TAGE_TABLES):
         assert coordinate(PC, reduced, table) == coordinate(PC, full, table)
 
 
@@ -38,7 +39,7 @@ def checker_and_source():
     from bpuverify.tage.model.semantic import decide
     wanted = decide(checker.model.frame, bases, checker.model.selectors)
     actual = actual_prediction(wanted)
-    extras = {name: tuple(wanted.get(f'{slot}.{field}', 0) for slot in range(4))
+    extras = {name: tuple(wanted.get(f'{slot}.{field}', 0) for slot in range(RESULT_SLOTS))
               for name, field in (('fast_valids','fast_valid'),('fast_takens','fast_taken'),('sc_counters','sc_counter'))}
     checker.capture_output(SimpleNamespace(tick=4), actual, bases=bases, enabled=True, extras=extras)
     source = SimpleNamespace(meta_tick=8, prediction=SimpleNamespace(start_pc=PC),

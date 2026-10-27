@@ -1,4 +1,5 @@
 """Choose an input-only recurrence; retain complete four-way requirements."""
+from bpuverify.common.model.configuration import PHR_STORAGE_BITS
 from bpuverify.bpu.case.abtb.later_taken_four_plan import (
     PHASES, checkpoint_route, input_qualified, final_comparison, required_operations,
     plan as four_plan, programs as four_programs, selected_program as four_selected,
@@ -12,7 +13,7 @@ def plan(bank, entry_set):
     five_edges = bank != 0
     intent = dict((five_plan if five_edges else four_plan)(bank, entry_set))
     intent['recurrence_edges'] = 5 if five_edges else 4
-    intent['natural_cycles_per_phase'] = 64
+    intent['natural_cycles_per_phase'] = max(64, (PHR_STORAGE_BITS + 7)//8 + 2)
     intent['cadence_selection_from_input_bank_only'] = True
     return intent
 

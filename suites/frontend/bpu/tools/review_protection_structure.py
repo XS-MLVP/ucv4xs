@@ -81,17 +81,17 @@ def review(text):
         require(compact(m[2])==expected,'packed bank order or payload changed')
         require(offset not in packed,'duplicate packed source row');packed[offset]=m[1]
     require(set(packed)==set(range(128)),'all128 packed read rows required')
-    for name,index in (('_GEN_127','io_train_t0_trainIndex_bits'),('_GEN_146','t1_trainIndex')):
+    for name,index in (('_GEN_127','io_train_t0_trainIndex_bits'),('_GEN_137','t1_trainIndex')):
         expected='{'+','.join('{'+packed[o]+'['+index+'[1:0]]}' for o in reversed(range(128)))+'}'
         require(assignment(code,name)==expected,'complete read row order or bank selection changed')
-    require(assignment(code,'_GEN_147')=='_GEN_146[t1_trainIndex[8:2]]','t1 complete read index changed')
+    require(assignment(code,'_GEN_138')=='_GEN_137[t1_trainIndex[8:2]]','t1 complete read index changed')
     require(assignment(code,'io_train_t0_read_useful')=='_GEN_127[io_train_t0_trainIndex_bits[8:2]]',
             't0 complete read index changed')
-    require(assignment(code,'_GEN_148')=='io_train_t1_alloc_valid|io_train_t1_update_valid&io_train_t1_update_bits_usefulValid',
+    require(assignment(code,'_GEN_139')=='io_train_t1_alloc_valid|io_train_t1_update_valid&io_train_t1_update_bits_usefulValid',
             'protection qualification changed')
-    require(assignment(code,'_newUseful_T_8')=='(&_GEN_147)&io_train_t1_update_bits_needUseful|_GEN_147==2\'h0&~io_train_t1_update_bits_needUseful',
+    require(assignment(code,'_newUseful_T_8')=='(&_GEN_138)&io_train_t1_update_bits_needUseful|_GEN_138==2\'h0&~io_train_t1_update_bits_needUseful',
             'saturation boundary or direction changed')
-    require(assignment(code,'_newUseful_T_13')=='io_train_t1_update_bits_needUseful?_GEN_147+2\'h1:_GEN_147-2\'h1',
+    require(assignment(code,'_newUseful_T_13')=='io_train_t1_update_bits_needUseful?2\'(_GEN_138+2\'h1):2\'(_GEN_138-2\'h1)',
             'protection arithmetic changed')
 
     reset=re.search(r'\bif\s*\(reset\)\s*(begin)\b',code);require(reset is not None,'explicit reset block required')
@@ -109,7 +109,7 @@ def review(text):
     initial=None;maintenance=None
     for m in aged:
         rhs=compact(m[2]);name=m[1]
-        kind=('decrement' if rhs==name+"==2'h0?2'h0:"+name+"-2'h1" else
+        kind=('decrement' if rhs==name+"==2'h0?2'h0:2'("+name+"-2'h1)" else
               'halve' if rhs=="{1'h0,"+name+'[1]}' else None)
         require(kind is not None and maintenance in (None,kind),'unreviewed or mixed maintenance rule')
         maintenance=kind
@@ -123,7 +123,7 @@ def review(text):
         r'(?P<allocation_choice>if\s*\(io_train_t1_alloc_valid\))\s*'
         r'(?P<allocation_initialize>(?P<state>usefulEntries_\d+_\d+_value)\s*<=\s*(?P<initial>2\x27h[12]);)\s*'
         r'(?P<saturation_choice>else\s+if\s*\(_newUseful_T_8\))\s*'
-        r'(?P<saturation_preserve>(?P=state)\s*<=\s*_GEN_147;)\s*else\s*'
+        r'(?P<saturation_preserve>(?P=state)\s*<=\s*_GEN_138;)\s*else\s*'
         r'(?P<counter_change>(?P=state)\s*<=\s*_newUseful_T_13;)\s*end')
     blocks=list(re.finditer(pattern,body));require(len(blocks)==512,'all512 exact learning blocks required')
     first=blocks[0].start();require(not re.search(r'\bif\b',body[:first]),'unreviewed extra learning guard')
@@ -147,12 +147,12 @@ def review(text):
     for m in blocks:
         name=m['state'];require(name in states,'learning targets undeclared state');names.append(name)
         value=int(m['initial'][-1]);require(initial in (None,value),'mixed provider allocation initial values');initial=value
-        guard=compact(m['guard']);require(guard.startswith('_GEN_148&'),'common learning qualifier missing')
-        terms=guard[len('_GEN_148&'):].split('&',1)
+        guard=compact(m['guard']);require(guard.startswith('_GEN_139&'),'common learning qualifier missing')
+        terms=guard[len('_GEN_139&'):].split('&',1)
         # Bank3 uses a reduction AND inside parentheses, so split by the
         # delimiter following that complete term instead of its inner AND.
-        if guard.startswith('_GEN_148&(&(t1_trainIndex[1:0]))&'):
-            terms=['(&(t1_trainIndex[1:0]))',guard[len('_GEN_148&(&(t1_trainIndex[1:0]))&'):]]
+        if guard.startswith('_GEN_139&(&(t1_trainIndex[1:0]))&'):
+            terms=['(&(t1_trainIndex[1:0]))',guard[len('_GEN_139&(&(t1_trainIndex[1:0]))&'):]]
         require(len(terms)==2,'exact bank and row conditions required')
         bank=decode(terms[0]);offset=decode(terms[1])
         require(bank[0]=='1:0' and offset[0]=='8:2','complete nine-bit destination decoding required')

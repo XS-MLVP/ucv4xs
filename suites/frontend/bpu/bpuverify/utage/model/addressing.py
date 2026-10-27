@@ -1,7 +1,6 @@
-"""Expected hash geometry of the generated MinimalConfig (histories6/12)."""
-FOLD_LAYOUT = ((4, 4), (6, 5), (6, 6), (8, 6), (8, 7), (9, 7), (9, 9),
-    (12, 5), (12, 6), (12, 9), (16, 6), (16, 7), (16, 8),
-    (17, 7), (17, 12), (17, 13), (31, 7), (31, 12), (31, 13))
+"""Expected hash geometry of the 893e1580b DefaultConfig (histories 5/9)."""
+from bpuverify.common.model.configuration import PHR_FOLDS, MICRO_HISTORIES, MICRO_HISTORY_TAG_BITS
+FOLD_LAYOUT = PHR_FOLDS
 
 
 def fold_history(history, length, width):
@@ -13,8 +12,8 @@ def fold_history(history, length, width):
 
 
 def hash_indices(pc, history):
-    return ((pc ^ fold_history(history, 6, 6)) & 511,
-            (pc ^ fold_history(history, 12, 9)) & 511)
+    return tuple((pc ^ fold_history(history, length, min(length, 9))) & 511
+                 for length in MICRO_HISTORIES)
 
 
 def _concatenate(pc, bits):
@@ -26,12 +25,12 @@ def _concatenate(pc, bits):
 
 def prediction_tag(pc, history, table):
     if table == 0:
-        concat, xor, length = (11, 9, 8, 7, 5, 4, 3, 2, 1), (12, 10, 8, 6, 4, 2), 6
+        concat, xor = (3, 2, 1), (10, 8, 6, 4, 2)
     elif table == 1:
-        concat, xor, length = (15, 13, 11, 10, 9, 8, 5, 3, 1), (10, 8, 6, 4, 2, 0), 12
+        concat, xor = (), (14, 12, 10, 8, 6, 4, 2, 0)
     else:
-        raise ValueError('MicroTAGE table must be0or1')
-    low = (_concatenate(pc, xor) ^ fold_history(history, length, 6)
-           ^ fold_history(history, length, 5) << 1) & 63
-    return _concatenate(pc, concat) << 6 | low
-
+        raise ValueError('MicroTAGE table must be 0 or 1')
+    length, width = MICRO_HISTORIES[table], MICRO_HISTORY_TAG_BITS[table]
+    low = (_concatenate(pc, xor) ^ fold_history(history, length, width)
+           ^ fold_history(history, length, width - 1) << 1) & ((1 << width) - 1)
+    return _concatenate(pc, concat) << width | low

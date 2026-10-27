@@ -18,4 +18,4 @@ class Checks(MainSiblingChecks):
             self.literal_inputs.append(dict(tick=event.tick,payload=deepcopy(full)))
 
     def completed_services(self):
-        return sum(map(len,self.written[:2]))==len(self.incoming) and len(self.written[2])==len(self.directions)
+        return sum(map(len,self.written[:4]))==len(self.incoming) and len(self.written[4])==len(self.directions)

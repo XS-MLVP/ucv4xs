@@ -13,7 +13,8 @@ from bpuverify.sc.transaction.types import ScBaseBranch, ScBatchTraining, ScBran
 def context_value(row):
     return Context(row.path_history[PHR_FOLD_LAYOUT.index((8, 7))].foldedHist.as_int(),
                    row.global_history.as_int(), row.backward.as_int(), row.loop.as_int(),
-                   bool(row.common_hr_valid.as_int()))
+                   bool(row.common_hr_valid.as_int()),
+                   path_long=row.path_history[PHR_FOLD_LAYOUT.index((16, 7))].foldedHist.as_int())
 
 
 def decode_events(row):

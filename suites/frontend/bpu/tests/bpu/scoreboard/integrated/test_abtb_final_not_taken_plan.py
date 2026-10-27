@@ -40,7 +40,7 @@ def test_direction_expectation_is_from_intent_not_provider_output(bank,entry_set
     row=selected_program(plan(bank,entry_set),0,goal)
     assert row['taken']==int(bool(goal))
     assert row['branch_type']==(1 if goal else 0)
-    assert row['position']==(6 if goal else 15)
+    assert row['position']==(6 if goal else 31)
 
 
 @pytest.mark.parametrize('changed',['phase','bank','set_index','transition','feedback_pc','missing_feedback','feedback_taken'])
@@ -86,7 +86,7 @@ def test_complete_final_comparison_distinguishes_taken_and_fallthrough():
     intent=plan(0,0)
     negative=selected_program(intent,0,0)
     source=dict(meta_tick=20)
-    actual=dict(valid=1,pc=negative['pc'],taken=0,position=15,target=negative['target'],branch_type=0)
+    actual=dict(valid=1,pc=negative['pc'],taken=0,position=31,target=negative['target'],branch_type=0)
     rising=dict(tick=20,public_meta=dict(valid=1),abtb=dict(final=actual))
     expected,observed=final_comparison(negative,source,rising)
     assert expected==observed

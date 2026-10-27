@@ -22,13 +22,13 @@ def test_existing_reference_source_stages_derive_the_declared_disposition(dut, m
     previous = model.read
     model.advance(Events(pc=pc, select=True, advance=True))
     snapshot = model.read
-    assert model.frame is previous and snapshot.pc == previous.pc and (snapshot is not previous)
-    lease.accept(snapshot, 10)
-    assert not lease.response(model.frame, 10)
+    assert model.frame.banks is previous.banks and snapshot.pc == previous.pc and (snapshot is not previous)
+    lease.accept(snapshot.banks, 10)
+    assert not lease.response(model.frame.banks, 10)
     frozen = deepcopy(snapshot)
     if mode == 'response-before-reset':
         model.advance(Events(advance=True))
-        assert lease.response(model.frame, 12)
+        assert lease.response(model.frame.banks, 12)
     model.advance(Events(reset=True))
     assert model.frame is model.read is None
     lease.reset(14)
@@ -60,10 +60,10 @@ def test_complete_lifetime_earns_credit_once_not_for_another_mode(dut, mode):
         coverage.reach(RULES[0])
 
 def prediction(p):
-    entries = [MbtbEntry(0, 0, 0, 0, 0, 0) for _ in range(4)]
-    for slot, b in zip((0, 2), p.old[:2], strict=True):
+    entries = [MbtbEntry(0, 0, 0, 0, 0, 0) for _ in range(10)]
+    for slot, b in zip((0, 5), p.old[:2], strict=True):
         entries[slot] = MbtbEntry(1, 1, b.target, b.position, b.kind, b.action)
-    return MbtbPrediction(tuple(entries), [[dict(rawHit=0) for _ in range(2)] for _ in range(2)])
+    return MbtbPrediction(tuple(entries), [[dict(rawHit=0) for _ in range(5)] for _ in range(2)])
 
 @pytest.mark.parametrize('dut', DUTS)
 @pytest.mark.parametrize('fault', ('target', 'position', 'kind', 'action', 'taken', 'missing'))

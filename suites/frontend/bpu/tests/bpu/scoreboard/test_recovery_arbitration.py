@@ -17,7 +17,7 @@ pytestmark=pytest.mark.toffee_functional_coverage(False)
 def test_recovery_expectation_uses_old_execution_not_either_younger_path(taken,mode):
     program=RecoveryProgram(taken,mode)
     assert program.winning_history==(2496 if taken else 0)
-    assert program.expected_metadata==dict(phrPtr=dict(flag=taken,value=50 if taken else 0),
+    assert program.expected_metadata==dict(phrPtr=dict(flag=taken,value=530 if taken else 0),
                                           phrLowBits=2496 if taken else 0)
     assert program.winning_history not in (1600,7232)
 

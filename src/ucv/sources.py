@@ -105,7 +105,7 @@ def generate(project, suite, dut=None):
         env['MILL_VERSION'] = baseline['tools']['mill']
         output = destination/'rtl'
         output.mkdir(parents=True,exist_ok=True)
-        command = [mill,'-i','-Djvm-xmx=64G','-Djvm-xss=64m','xiangshan.runMain',
+        command = [mill,'-i','-Djvm-xmx=64G','-Djvm-xss=64m',baseline['design'].get('mill_target','xiangshan.runMain'),
                    'bpuverify.BpuVerifyMain' if standalone else baseline['design']['top'],
                    '--target-dir',output,'--config',baseline['design']['config'],
                    '--num-cores',str(baseline['design']['num_cores']),

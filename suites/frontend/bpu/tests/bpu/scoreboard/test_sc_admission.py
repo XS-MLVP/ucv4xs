@@ -66,10 +66,10 @@ def test_distinct_nonzero_old_contexts_keep_qualification_across_adjacent_feedba
             else:
                 # Independent signed patch arithmetic from the newly owned
                 # committed read, not the old prediction's weight snapshot.
-                column=(layout.position%4)^(layout.position//4)
+                column=(layout.position%8)^(layout.position//8)
                 expected=[]
                 for table,weights in enumerate(read.weights):
-                    selected=column if table!=4 else 4*column+int(layout.agrees)
+                    selected=column if table!=7 else 4*column+int(layout.agrees)
                     patch=tuple(max(-32,weight-1) if i==selected else None for i,weight in enumerate(weights))
                     expected.append((table,token.pc%2,read.indices[table],patch))
                 assert patches==tuple(expected)
@@ -266,8 +266,8 @@ def test_actual_read_identity_cannot_be_inferred_from_acceptance_alone(fault):
     request = Resolution(source.history,source.pc,conditional_outcomes(source,value.late,layout,False),origin=source)
     feedback = p.bank.sc_feedback(request,True)
     bank,indices = coordinates(feedback.pc,Context.from_history(feedback.history))
-    ports = [dict(valid=int(i in (0,3,4)),bank=1<<bank,index=index) for i,index in enumerate(indices)]
-    if fault=='extra-global-read':ports[1]['valid']=1
+    ports = [dict(valid=int(i in (0,1,6,7)),bank=1<<bank,index=index) for i,index in enumerate(indices)]
+    if fault=='extra-global-read':ports[2]['valid']=1
     elif fault=='missing-path-read':ports[0]['valid']=0
     else:ports[0]['bank']=2
     checks = object.__new__(Checks)

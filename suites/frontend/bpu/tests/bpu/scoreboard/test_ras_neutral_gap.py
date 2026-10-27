@@ -11,7 +11,7 @@ from bpuverify.bpu.model.ras.neutral_gap import NEUTRAL
 from tests.bpu.scoreboard.test_retirement_completion import row
 
 
-@pytest.mark.parametrize('gap',(0,1,2,3,16))
+@pytest.mark.parametrize('gap',(0,1,2,3,16,32))
 def test_neutral_credit_boundary_is_registered_and_never_commits_stack_data(gap):
     m=RasReference()
     for _ in range(gap):m.advance(Events(2,call_address(OLD_CALL)))
@@ -22,8 +22,8 @@ def test_neutral_credit_boundary_is_registered_and_never_commits_stack_data(gap)
     m.advance()
     assert m.retired_calls==(gap-1 if gap>2 else 0) and m.retirements==1
     assert tuple(m.committed)==committed and m.committed_head==0
-    if gap==16:
-        assert m.guarded and m.program.head.version==15
+    if gap==32:
+        assert m.guarded and m.program.head.version==31
         m.advance()
         assert not m.guarded and m.projection['top']==call_address(OLD_CALL)//2
 
@@ -34,7 +34,7 @@ class Program:
         self.checks=RasNeutralGapChecks(RasNeutralGapCoverage());self.tick=-1
         self.last=self.step(Events(reset=True))
     def actual(self):
-        m=self.checks.model;p=m.projection;ptr=dict(flag=p['calls']//16,value=p['calls']%16)
+        m=self.checks.model;p=m.projection;ptr=dict(flag=p['calls']//32,value=p['calls']%32)
         return dict(top=p['top'],redirect_meta=dict(ssp=p['group'],sctr=p['repeat'],tosw=ptr),
             commit_meta=dict(ssp=p['group'],tosw=ptr))
     def retained(self):
@@ -42,7 +42,7 @@ class Program:
         return dict(head=m.committed_head,cells=[dict(address=f.address//2,counter=f.repeat) for f in m.committed])
     def resources(self):
         m=self.checks.model
-        return dict(bos=dict(flag=(m.retired_calls%32)//16,value=m.retired_calls%16),guarded=int(m.guarded))
+        return dict(bos=dict(flag=(m.retired_calls%64)//32,value=m.retired_calls%32),guarded=int(m.guarded))
     def step(self,events=Events(),pc=OLD_CALL):
         self.tick+=2;c=self.checks
         consumer=dict(valid=1,taken=1,pc=pc,target=c.model.projection['top'])

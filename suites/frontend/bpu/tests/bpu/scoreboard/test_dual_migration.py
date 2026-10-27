@@ -1,4 +1,5 @@
 """Independent event programs and wrong synthetic observations; no DUT credit."""
+from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT
 from copy import deepcopy
 from dataclasses import replace
 from types import SimpleNamespace as NS
@@ -61,7 +62,7 @@ def fixture(*, initial_pc=None, checks_type=DualMigrationChecks, coverage_type=D
         idle = quiet(model, event)
         if step.allocation is not None:
             feedback = model.sources.feedback_for(request)
-            for _ in range(128):
+            for _ in range(TAGE_ALLOCATION_WAIT):
                 if model.sources.tage.allocation_at_next_accept(feedback) == step.allocation: break
                 model.advance(idle)
             else: raise AssertionError(('semantic allocation opportunity absent', step))
@@ -154,8 +155,8 @@ def completed_fixture():
 def test_normal_preparation_exchanges_both_logical_owners_without_seeding_model_state():
     checks, _, _ = fixture()
     assert len(checks.prepared_labels) == 24 and len(checks.sources) == 3
-    assert checks.profile(checks.sources[0]) == ((1, 3), ((3, 0, 2, 0), (3, 1, 5, 0)))
-    assert checks.profile(checks.before['original']) == ((0, 1), ((3, 1, 1, 0), (3, 0, 4, 0)))
+    assert checks.profile(checks.sources[0]) == ((1, 3), ((7, 0, 2, 0), (7, 1, 5, 0)))
+    assert checks.profile(checks.before['original']) == ((0, 1), ((7, 1, 1, 0), (7, 0, 4, 0)))
     assert len({id(s.token.history) for s in checks.sources}) == 3
     assert checks.coverage.groups['checked'].coverage == 0
 
@@ -166,7 +167,7 @@ def test_original_history_geometry_is_derived_not_a_fixed_row_from_a_different_b
     read = checks.read(checks.sources[0])
     assert {p['row'] for p in checks.proposal} == {read.rows[3]}
     assert checks.read(checks.before['displaced']).rows[3] == read.rows[3]
-    assert checks.profile(checks.before['original']) == ((0, 1), ((3, 1, 1, 0), (3, 0, 4, 0)))
+    assert checks.profile(checks.before['original']) == ((0, 1), ((7, 1, 1, 0), (7, 0, 4, 0)))
 
 
 @pytest.mark.parametrize('count,expected', ((0, (1, 4)), (1, (0, 5)), (2, (0, 6)), (3, (0, 7))))
@@ -190,9 +191,9 @@ def test_arming_does_not_accept_an_incomplete_or_unmigrated_profile(fault):
         actual = checks.profile
         def corrupt(s):
             if s is checks.before['original']:
-                if fault == 'current-owner': return (0, 1), ((3, 0, 1, 0), (3, 1, 4, 0))
-                if fault == 'current-counter': return (0, 1), ((3, 1, 2, 0), (3, 0, 5, 0))
-            if fault == 'displaced-hit' and s is checks.before['displaced']: return (0, 1), ((3, 0, 7, 0), None)
+                if fault == 'current-owner': return (0, 1), ((7, 0, 1, 0), (7, 1, 4, 0))
+                if fault == 'current-counter': return (0, 1), ((7, 1, 2, 0), (7, 0, 5, 0))
+            if fault == 'displaced-hit' and s is checks.before['displaced']: return (0, 1), ((7, 0, 7, 0), None)
             return actual(s)
         checks.profile = corrupt
     with pytest.raises(AssertionError): checks.arm(checks.before)

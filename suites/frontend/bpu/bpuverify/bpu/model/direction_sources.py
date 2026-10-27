@@ -4,6 +4,8 @@ No component result or FTQ metadata is an input to these algorithms. The
 main lookup remains Token.lookup; TAGE snapshots belong to that exact owned
 history checkpoint. S3 uses the decision frozen at S2, not today's selectors.
 """
+from bpuverify.common.model.configuration import *
+
 from dataclasses import dataclass
 
 from bpuverify.bpu.model.main_sources import BranchTargetSources,source_entries
@@ -11,7 +13,7 @@ from bpuverify.bpu.model.selection import Branch,Kind,StackAction,fallthrough,mi
 from bpuverify.tage.model.semantic import TageReference,Base,Branch as Resolved,Context,Events,Feedback,Frame,Hint,decide
 
 
-HISTORY_PORTS = (2,5,6,13,14,15,16,17,18)
+HISTORY_PORTS = tuple(sorted({PHR_FOLDS.index((n,min(n,w))) for n in TAGE_HISTORIES for w in (9,13,12)}))
 META_FIELDS = dict(has_provider='hasProvider',has_alt='hasAlt',use_provider='useProvider',table='providerTableIdx',
     way='providerWayIdx',counter='providerTakenCtr_value',useful='providerUsefulCtr_value',
     alternative='altOrBasePred',alt_conf='altConf')
@@ -23,10 +25,10 @@ def context_for(checkpoint):
 
 
 def candidates(token):
-    if token.lookup is None:return (None,)*4,(Base(),)*4,(0,)*4
+    if token.lookup is None:return (None,)*RESULT_SLOTS,(Base(),)*RESULT_SLOTS,(0,)*RESULT_SLOTS
     values = token.lookup.values()
     branches,bases,positions = [],[],[]
-    for slot in range(4):
+    for slot in range(RESULT_SLOTS):
         valid = bool(values[f'{slot}.valid'])
         position = values.get(f'{slot}.meta_position',0)
         positions.append(position)
@@ -86,23 +88,23 @@ class DirectionSources(BranchTargetSources):
         if not enabled or source.read is None:
             if enabled and token.lookup is not None:
                 raise NotImplementedError('disabled TAGE lookup must be squashed before enabled S2 consumption')
-            return branches,{},final(token.pc,branches,(None,)*4,(None,)*4)
+            return branches,{},final(token.pc,branches,(None,)*RESULT_SLOTS,(None,)*RESULT_SLOTS)
         wanted = decide(Frame(source.read,positions),bases,self.tage.selectors)
-        directions = tuple(bool(wanted[f'{slot}.taken']) if wanted.get(f'{slot}.valid') else None for slot in range(4))
-        return branches,wanted,final(token.pc,branches,directions,(None,)*4)
+        directions = tuple(bool(wanted[f'{slot}.taken']) if wanted.get(f'{slot}.valid') else None for slot in range(RESULT_SLOTS))
+        return branches,wanted,final(token.pc,branches,directions,(None,)*RESULT_SLOTS)
 
     def choose(self,token,stage,enabled):
         if stage==1:return super().choose(token,stage,enabled)
         if not enabled[2] or token.lookup is None:return fallthrough(token.pc)
         if stage==3:return self.snapshot(token,resolved=True).late
         branches,wanted,_ = self.decision(token,bool(enabled[2] and enabled[3]))
-        directions = tuple(bool(wanted[f'{slot}.fast_taken']) if wanted.get(f'{slot}.fast_valid') else None for slot in range(4))
+        directions = tuple(bool(wanted[f'{slot}.fast_taken']) if wanted.get(f'{slot}.fast_valid') else None for slot in range(RESULT_SLOTS))
         return middle(token.pc,branches,directions)
 
     def defined_metadata(self,token):
         source = self.snapshot(token,resolved=True)
         wanted = dict(source.wanted)
-        return {f'{slot}.{field}':wanted[f'{slot}.{key}'] for slot in range(4)
+        return {f'{slot}.{field}':wanted[f'{slot}.{key}'] for slot in range(RESULT_SLOTS)
             for key,field in META_FIELDS.items() if f'{slot}.{key}' in wanted}
 
     def tage_snapshot(self,token,*,resolved=False):
@@ -157,7 +159,7 @@ class DirectionSources(BranchTargetSources):
             self.resolved[second.history.sequence] = DirectionSnapshot(source.owner,source.read,tuple(wanted.items()),late)
         feedback = self.feedback_for(events.feedback) if events.feedback is not None and enabled else None
         first = cycle.tokens[0]
-        positions = (0,)*4 if first is None else candidates(first)[2]
+        positions = (0,)*RESULT_SLOTS if first is None else candidates(first)[2]
         super().advance(events,cycle,issued)
         self.tage.advance(Events(pc=cycle.next_pc,context=Context() if issued is None else context_for(issued.history),
             positions=positions,select=issued is not None,advance=cycle.fires[1],feedback=feedback,enabled=enabled,

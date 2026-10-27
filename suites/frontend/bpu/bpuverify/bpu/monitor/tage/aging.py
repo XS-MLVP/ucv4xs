@@ -1,4 +1,6 @@
 """Compiled memory-direct view; normal writes and maintenance share no driver."""
+from bpuverify.common.model.configuration import *
+
 from toffee import Bundle
 from bpuverify.common.env.memory_direct import memory_signal,memory_signal_names
 from bpuverify.common.bundle.bindings import PortBinding
@@ -36,8 +38,8 @@ class TageAgingMonitor(CycleMonitor):
         age=Bundle(counter=signal('usefulResetCtr_value'),busy=signal('usefulResetInFlight'),
             start=signal('t3_usefulResetStart'),need=signal('t3_needAllocate'),can=signal('t3_canAllocateTableMask'),
             allocate=signal('t3_allocate'),table=signal('t3_allocateTableOH'),way=signal('t3_allocateWayOH'),
-            random=signal('t3_allocateTableRandomMask'),tables=tuple(table_view(t) for t in range(4)),
-            bank=signal('t2_bankMask'),sets=tuple(signal(f't2_setIdx_{t}') for t in range(4)),
-            public_useful=tuple(signal(f'io_meta_entries_{s}_providerUsefulCtr_value') for s in range(4)))
+            random=signal('t3_allocateTableRandomMask'),tables=tuple(table_view(t) for t in range(TAGE_TABLES)),
+            bank=signal('t2_bankMask'),sets=tuple(signal(f't2_setIdx_{t}') for t in range(TAGE_TABLES)),
+            public_useful=tuple(signal(f'io_meta_entries_{s}_providerUsefulCtr_value') for s in range(RESULT_SLOTS)))
         super().__init__(PortBinding(agent.dut.clock,Bundle(selector=base.binding.bits,age=age),
             'bpu.tage.useful_aging_events'),decoder=_plain)

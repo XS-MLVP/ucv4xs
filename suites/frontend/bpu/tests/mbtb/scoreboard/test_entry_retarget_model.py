@@ -20,17 +20,17 @@ PATTERNS = (("fit_overflow", (0, 1), (0, 1)),
 
 
 @pytest.mark.parametrize("align", (0, 1))
-@pytest.mark.parametrize("bank", (0, 1))
-@pytest.mark.parametrize("way", (0, 1))
+@pytest.mark.parametrize("bank", range(4))
+@pytest.mark.parametrize("way", range(4))
 @pytest.mark.parametrize("mode", ("blocked", "flow"))
 @pytest.mark.parametrize("pattern,deltas,carries", PATTERNS)
 def test_entry_reference_keeps_complete_target_geometry_and_writeback_order(align, bank, way, mode, pattern, deltas, carries):
-    pc = 0x40001000 + (31 << 5) + (bank << 4)
+    pc = 0x40010000 + (31 << 7) + (bank << 5)
     targets = mbtb_retarget_targets(pc, 0x40009000, pattern)
     assert targets == tuple((1024 + delta) * SPAN + lower
                             for delta, lower in zip(deltas, (0xA000, 0xB000), strict=True))
-    expected = expected_mbtb_entry_activity(pc, 1 + align * 8, way, targets, mode)
-    requests = tuple(dict(align=align, bank=bank, way=way, set_idx=31, tag=(pc >> 11) & 65535,
+    expected = expected_mbtb_entry_activity(pc, 1 + align * 16, way, targets, mode)
+    requests = tuple(dict(align=align, bank=bank, way=way, set_idx=31, tag=(pc >> 15) & 65535,
                          branch_type=3, ras_action=0, position=1, carry=carry, lower=lower)
                      for carry, lower in zip(carries, (0xA000, 0xB000), strict=True))
     assert expected["requests"] == requests
@@ -42,7 +42,7 @@ def test_entry_reference_keeps_complete_target_geometry_and_writeback_order(alig
 
 
 @pytest.mark.parametrize("kwargs", (
-    {"pc": -8}, {"pc": 3}, {"position": 0}, {"position": 8}, {"way": 2},
+    {"pc": -8}, {"pc": 3}, {"position": 0}, {"position": 8}, {"way": 4},
     {"mode": "queue"}, {"reads": 3}, {"reads": 4.5}, {"targets": ()},
     {"targets": (1, 1)}, {"targets": (-1, 0)}, {"targets": (0, 2 * SPAN)},
 ))
@@ -70,13 +70,13 @@ def test_entry_reference_request_and_writeback_payloads_do_not_alias():
 
 def residents():
     return [{"entries": tuple(MbtbEntry(1, 1, 0x1000 + key * 0x100 + way, way, 3, 0)
-                              for way in range(4)),
-             "meta_entries": tuple(tuple({"rawHit": 1, "counter_value": 2, "position": align * 2 + way}
-                                          for way in range(2)) for align in range(2))}
+                              for way in range(10)),
+             "meta_entries": tuple(tuple({"rawHit": 1, "counter_value": 2, "position": align * 5 + way}
+                                          for way in range(5)) for align in range(2))}
             for key in range(4)]
 
 
-@pytest.mark.parametrize("align,way", ((0, 0), (0, 1), (1, 0), (1, 1)))
+@pytest.mark.parametrize("align,way", tuple((a,w) for a in (0,1) for w in range(4)))
 def test_entry_state_reference_changes_only_latest_full_target_and_is_frozen(align, way):
     before = residents()
     original = deepcopy(before)
@@ -85,7 +85,7 @@ def test_entry_state_reference_changes_only_latest_full_target_and_is_frozen(ali
     assert expected[0]["meta_entries"] == original[0]["meta_entries"]
     for index, entry in enumerate(original[0]["entries"]):
         assert expected[0]["entries"][index] == (replace(entry, target=0x4010A000)
-                                                 if index == align * 2 + way else entry)
+                                                 if index == align * 5 + way else entry)
     before[3]["meta_entries"][0][0]["counter_value"] = 0
     assert expected[3]["meta_entries"][0][0]["counter_value"] == 2
 

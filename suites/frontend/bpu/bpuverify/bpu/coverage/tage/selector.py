@@ -36,9 +36,9 @@ class SelectorCoverage:
 def routing_coverage(status):
     if status not in ('reached','checked'):raise ValueError('unknown routing coverage status')
     return CoverGroupDef('tage_selector_logical_input_routing_v1',(
-        CoverPointDef('index',{str(index):Bin.values(index) for index in range(8)}),
+        CoverPointDef('index',{str(index):Bin.values(index) for index in range(16)}),
     )).instantiate(f'kunminghu_v3.bpu.tage_selector.routing.{status}',
-        contract='qualified actual source -> provider/confidence index -> complete eight-register commit')
+        contract='qualified actual source -> provider/confidence index -> complete sixteen-register commit')
 
 
 class SelectorRoutingCoverage:

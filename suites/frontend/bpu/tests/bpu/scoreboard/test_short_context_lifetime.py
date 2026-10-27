@@ -33,14 +33,14 @@ def test_autonomous_composed_model_reproduces_declared_real_path_ancestry(branch
         (edge.pc,edge.position,edge.target) for edge in declared.edges())
     ways = Counter()
     for pc,position,destination in edges:
-        address = (pc & ~7) + (position//8)*8
+        address = (pc & ~15) + (position//16)*16
         alignment,bank,row = coordinate(address)
         way = ways[alignment,bank,row]
         ways[alignment,bank,row] += 1
-        assert way < 2, 'the declared program must fit real MainBTB associativity'
+        assert way < 4, 'the declared program must fit real MainBTB associativity'
         # Instructions are declared pure-model inputs, never observed SRAM.
         model.sources.main.memory[alignment,bank,row,way] = Entry(
-            tag(address),position%8,3,0,Target.encode(address,destination))
+            tag(address),position%16,3,0,Target.encode(address,destination))
         model.sources.main.counters[alignment,bank,row,way] = 2
     samples = []
     for _ in range(180):

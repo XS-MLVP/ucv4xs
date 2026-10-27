@@ -15,8 +15,8 @@ async def test_captured_cold_rewrites_keep_original_shadow_owner_during_replacem
     coverage = mbtb_shadow_coverage_model()
     for context in range(len(INDEX_CONTEXTS)):
         for align in range(2):
-            for bank in range(2):
-                for owner in range(2):
+            for bank in range(4):
+                for owner in range(4):
                     for phase in SHADOW_PHASES:
                         for mode in ("blocked", "flow"):
                             for pattern in CARRY_PATTERNS:

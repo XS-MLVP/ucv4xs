@@ -38,8 +38,8 @@ class UtageLookup:
         if self.index_pc is not None and (type(self.index_pc) is not int or not 0 <= self.index_pc < 1 << 49):
             raise ValueError('index_pc must be an unsigned 49-bit halfword address')
         if self.index_history is not None and (type(self.index_history) is not int
-                                               or not 0 <= self.index_history < 1 << 31):
-            raise ValueError('index_history must fit 31 bits')
+                                               or not 0 <= self.index_history < 1 << 532):
+            raise ValueError('index_history must fit the 532-bit configured PHR')
 
     @property
     def read_pc(self):

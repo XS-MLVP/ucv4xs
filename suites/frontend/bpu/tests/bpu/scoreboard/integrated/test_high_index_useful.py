@@ -129,25 +129,25 @@ async def test_unsupported_warm_source_is_rejected_before_native_work(source):
 
 def test_high_program_has_distinct_index_tag_ancestors_and_full_history_proof():
     value = program()
-    assert joint_proof(value) == 224
+    assert joint_proof(value) == 1104
     for phase in ('positive', 'negative'):
         ctx = value[phase][value['pc']]
         assert ctx['index_pc'] == value['nodes'][3] != value['pc']
-        assert ctx['indices'][0] == 462 and ctx['tags'][0] == 208
-    assert value['negative'][value['pc']]['indices'][1] == 266
-    assert value['negative'][value['pc']]['tags'][1] == 75
+        assert ctx['indices'][0] == 494 and ctx['tags'][0] == 112
+    assert value['negative'][value['pc']]['indices'][1] == 270
+    assert value['negative'][value['pc']]['tags'][1] == 84
 
 
 def test_one_base_alias_preserves_base_but_separates_both_MicroTAGE_indices():
     value = program()
     alias = base_alias(value)
     assert alias['nodes'][2] == value['nodes'][2] + 32
-    assert joint_proof(alias) == 224
+    assert joint_proof(alias) == 1104
     for phase in ('positive', 'negative'):
         original, alternate = value[phase][value['pc']], alias[phase][value['pc']]
         assert physical_index(original['index_pc'], original['index_folds'][0]) == 200
         assert physical_index(alternate['index_pc'], alternate['index_folds'][0]) == 200
-        assert original['indices'][0] == 462 and alternate['indices'][0] == 478
+        assert original['indices'][0] == 494 and alternate['indices'][0] == 510
         assert all(a != b for a, b in zip(original['indices'], alternate['indices'], strict=True))
 
 
@@ -160,14 +160,14 @@ def test_alias_recipe_rejects_a_changed_original_base_identity():
 
 def test_alias_recipe_rejects_an_unseparated_original_MicroTAGE_index():
     value = program()
-    value['positive'][value['pc']]['indices'] = (478, 11)
+    value['positive'][value['pc']]['indices'] = (510, 30)
     with pytest.raises(AssertionError, match='separate both'):
         base_alias(value)
 
 
-def high_frames(*, allocation_read_index=462):
+def high_frames(*, allocation_read_index=494):
     references, frames = [BypassReference(0), BypassReference(1)], []
-    boundary = dict(read_index=5, train_index=462, tag=208, allocate_position=6, update_position=6)
+    boundary = dict(read_index=5, train_index=494, tag=112, allocate_position=6, update_position=6)
     steps = [(1, inputs()), (0, inputs(**boundary)),
         (0, inputs(**dict(boundary, train_index=allocation_read_index), allocate=1))]
     for direction, valid in ((1, 1), (1, 1), (1, 1), (1, 0), (0, 1), (0, 1), (0, 1), (0, 1)):
@@ -189,16 +189,16 @@ def test_reset_derived_roles_include_real_changes_and_both_saturation_holds():
     assert [row['after'] for row in updates] == [1, 2, 3, 3, 3, 2, 1, 0, 0]
     assert [row['before'] for row in updates] == [0, 1, 2, 3, 3, 3, 2, 1, 0]
     assert [row['role'] for row in updates] == ['allocation'] + ['increase'] * 3 + ['agreement-hold'] + ['decrease'] * 4
-    assert all(row['index'] == 462 and row['tag'] == 208 and row['position'] == 6 for row in updates)
+    assert all(row['index'] == 494 and row['tag'] == 112 and row['position'] == 6 for row in updates)
 
 
 def test_useful_effect_belongs_to_registered_T1_not_the_current_T0_read_index():
     frames = high_frames(allocation_read_index=17)[:6]
     updates = collect_updates(frames)
     assert len(updates) == 1 and updates[0]['role'] == 'allocation'
-    assert updates[0]['index'] == 462 and updates[0]['inputs']['train_index'] == 17
+    assert updates[0]['index'] == 494 and updates[0]['inputs']['train_index'] == 17
     assert frames[-1]['value']['tables'][0]['state']['train_index'] == 17
-    assert frames[-1]['value']['tables'][0]['state']['useful'][462] == 1
+    assert frames[-1]['value']['tables'][0]['state']['useful'][494] == 1
     assert frames[-1]['value']['tables'][0]['state']['useful'][17] == 0
 
 
@@ -219,7 +219,7 @@ def test_any_late_observation_fault_prevents_update_collection(fault):
     frame = frames[-1]
     row = frame['value']['tables'][0]
     if fault == 'useful':
-        row['state']['useful'][462] ^= 1
+        row['state']['useful'][494] ^= 1
     elif fault == 'neighbor':
         row['state']['useful'][511] ^= 1
     elif fault == 'dirty':
@@ -241,7 +241,7 @@ def test_any_late_observation_fault_prevents_update_collection(fault):
 
 
 @pytest.mark.parametrize('kwargs', (dict(index=-1), dict(index=512), dict(index=True),
-    dict(tag=-1), dict(tag=256), dict(tag=True), dict(position=-1), dict(position=16), dict(position=True)))
+    dict(tag=-1), dict(tag=256), dict(tag=True), dict(position=-1), dict(position=32), dict(position=True)))
 def test_bad_scope_rejected_before_any_native_frame(kwargs):
     with pytest.raises(ValueError, match='high-row'):
         collect_updates(None, **kwargs)

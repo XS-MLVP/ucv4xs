@@ -4,6 +4,7 @@ This qualifies the standalone TAGE feedback contract, not integrated FTQ
 reachability. Metadata comes from one genuine NT/T prediction; no native signal
 is written and no observed post-write state supplies an expected transition.
 """
+from bpuverify.common.model.configuration import *
 from copy import deepcopy
 from dataclasses import asdict
 
@@ -36,7 +37,7 @@ def validate_case(bank, depth, mode):
 async def set_counter(agent, pc, position, wanted, owner):
     for _ in range(8):
         prediction = await agent.predict(pc, position, int(wanted >= 4))
-        assert cell(prediction) == (3, owner)
+        assert cell(prediction) == (TAGE_TABLES - 1, owner)
         assert prediction.meta['providerUsefulCtr_value'] == 0
         old = prediction.meta['providerTakenCtr_value']
         if old == wanted:
@@ -54,7 +55,7 @@ async def allocate(agent, pc, position, taken, owner):
     assert not cold.meta['hasProvider']
     await agent.train(TageTraining(pc, position, taken, 1 - taken, cold.meta, mispredict=1))
     after = await agent.predict(pc, position, taken)
-    assert cell(after) == (3, owner)
+    assert cell(after) == (TAGE_TABLES - 1, owner)
     assert (after.meta['providerTakenCtr_value'], after.meta['providerUsefulCtr_value']) == (
         4 if taken else 3, 0)
 
@@ -63,9 +64,9 @@ async def prepare_case(agent, bank, depth, mode):
     validate_case(bank, depth, mode)
     pc = 0x40000000 + bank
     b = await prepare_unprotected_highest_ways(agent, pc, 1)
-    rows = {position: await agent.predict(pc, position, 1) for position in range(9)}
+    rows = {position: await agent.predict(pc, position, 1) for position in range((2 * TAGE_TABLES + 1))}
     a = next(position for position, pred in rows.items()
-             if pred.meta['hasProvider'] and cell(pred) == (3, 0))
+             if pred.meta['hasProvider'] and cell(pred) == (TAGE_TABLES - 1, 0))
     assert a < b
     await set_counter(agent, pc, a, 2, 0)
     capture = agent.submit_predict_branches(pc, (TageBaseBranch(a, 0), TageBaseBranch(b, 1)))
@@ -79,11 +80,11 @@ async def prepare_case(agent, bank, depth, mode):
     mixed = mode.startswith('companion_')
     if cross:
         await set_counter(agent, pc, b, 4, 1)
-        await allocate(agent, pc, 9, 1, 1)
-        await set_counter(agent, pc, 9, 7, 1)
+        await allocate(agent, pc, (2 * TAGE_TABLES + 1), 1, 1)
+        await set_counter(agent, pc, (2 * TAGE_TABLES + 1), 7, 1)
         await allocate(agent, pc, b, 1, 0)
         await set_counter(agent, pc, b, 5, 0)
-        await set_counter(agent, pc, 9, 4, 1)
+        await set_counter(agent, pc, (2 * TAGE_TABLES + 1), 4, 1)
         await allocate(agent, pc, a, 0, 1)
         await set_counter(agent, pc, b, 4, 0)
     current_a = deepcopy((await agent.predict(pc, a, 0)).meta)
@@ -93,15 +94,15 @@ async def prepare_case(agent, bank, depth, mode):
     assert (current_b['providerWayIdx'], current_b['providerTakenCtr_value']) == (
         (0, 4) if cross else (1, 5))
     profiles = {pc: {position: deepcopy(snapshot(await agent.predict(pc, position, 1)))
-                     for position in range(10)}}
+                     for position in range((2 * TAGE_TABLES + 2))}}
     dummy = []
     for index in range(max(1, depth) if mixed else depth):
         address = pc + 0x20 * (index + 1)
         residents = await fill_useful_set(agent, pc=address)
         profiles[address] = {position: deepcopy(snapshot(await agent.predict(address, position, 1)))
-                             for position in range(8)}
+                             for position in range(2 * TAGE_TABLES)}
         positions = tuple(next(position for position, pred in residents.items()
-                               if cell(pred) == (3, owner)) for owner in (0, 1))
+                               if cell(pred) == (TAGE_TABLES - 1, owner)) for owner in (0, 1))
         assert all(profiles[address][position]['meta']['providerTakenCtr_value'] == 5
                    for position in positions)
         dummy.append((address, positions))
@@ -127,16 +128,16 @@ async def prepare_case(agent, bank, depth, mode):
         assert actual == wanted
         profiles[pc][b] = wanted
         preparation.append(dict(expected=wanted, actual=deepcopy(actual)))
-        initial[bank][1][0].update(valid=1, dirty=0, set_idx=(pc >> 2) & 127,
-            tag=((pc >> 9) & 8191) ^ b, entry_valid=1, counter=6)
+        initial[bank][1][0].update(valid=1, dirty=0, set_idx=(pc >> 2) & (TAGE_ROWS - 1),
+            tag=((pc >> 11) & 8191) ^ b, entry_valid=1, counter=6)
     expected_profiles, transactions, frames = deepcopy(profiles), [], []
 
     def append(address, branches, payloads):
         transactions.append(TageBatchTraining(address, tuple(branches)))
         frame = [[None, None] for _ in range(4)]
         for port, position, counter, taken in payloads:
-            frame[bank][port] = dict(set_idx=(address >> 2) & 127,
-                tag=((address >> 9) & 8191) ^ position, counter=counter, entry_valid=1, taken=taken)
+            frame[bank][port] = dict(set_idx=(address >> 2) & (TAGE_ROWS - 1),
+                tag=((address >> 11) & 8191) ^ position, counter=counter, entry_valid=1, taken=taken)
         frames.append(tuple(tuple(row) for row in frame))
 
     for address, positions in dummy[:depth]:

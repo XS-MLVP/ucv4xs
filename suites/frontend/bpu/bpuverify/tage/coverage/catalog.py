@@ -1,6 +1,7 @@
 """bpuverify.tage.coverage.catalog components."""
 
 from __future__ import annotations
+from bpuverify.common.model.configuration import *
 
 from bpuverify.common.coverage.exports import write_functional_coverage
 from bpuverify.common.env.artifacts import output_path
@@ -232,9 +233,7 @@ def tage_vector_coverage_model():
         "tage_main_btb_vector",
         (
             CoverPointDef("provider_slot", {
-                "slot1": Bin.values(1),
-                "slot2": Bin.values(2),
-                "slot3": Bin.values(3),
+                f"slot{slot}": Bin.values(slot) for slot in range(1, 10)
             }),
             CoverPointDef("association", {
                 "serial": Bin.values("serial"),
@@ -282,8 +281,8 @@ def tage_useful_reset_coverage_model():
                 "cleared": Bin.values("cleared"),
             }),
             CoverPointDef("occupancy", {
-                "full": Bin.values(8),
-                "one_replaced": Bin.values(7),
+                "full": Bin.values(2 * TAGE_TABLES),
+                "one_replaced": Bin.values(2 * TAGE_TABLES - 1),
             }),
         ),
     ).instantiate("kunminghu_v3.tage.useful_reset")
@@ -327,7 +326,7 @@ def tage_selector_coverage_model(mode: str):
     elif mode == "depth":
         points = (
             CoverPointDef("provider_depth", {
-                f"table_{depth}": Bin.values(depth) for depth in range(4)
+                f"table_{depth}": Bin.values(depth) for depth in range(TAGE_TABLES)
             }),
         )
     elif mode == "batch":
@@ -362,7 +361,7 @@ def tage_resolve_slot_coverage_model(mode):
         points = (
             CoverPointDef('slot', {f'slot_{i}': Bin.values(i) for i in range(8)}),
             CoverPointDef('direction', {f'direction_{i}': Bin.values(i) for i in range(2)}),
-            CoverPointDef('depth', {f'table_{i}': Bin.values(i) for i in range(4)}),
+            CoverPointDef('depth', {f'table_{i}': Bin.values(i) for i in range(TAGE_TABLES)}),
             CoverPointDef('phase', {name: Bin.values(name) for name in (
                 'allocated', 'strengthened', 'near_saturated', 'saturated', 'held',
             )}),

@@ -1,4 +1,5 @@
 """Own MainBTB/TAGE state and checkpoint-derived lookup/feedback identity."""
+from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT
 from copy import deepcopy
 from dataclasses import replace
 
@@ -45,7 +46,7 @@ def resolve(model,event,source,taken,*,wrong,owner=None):
     resolution = Resolution(source.history,source.pc,(Outcome(4,source.pc+0x400,Kind.CONDITIONAL,taken,mispredict=wrong),),origin=source)
     if owner is not None:
         feedback = model.sources.feedback_for(resolution)
-        for _ in range(128):
+        for _ in range(TAGE_ALLOCATION_WAIT):
             if model.sources.tage.allocation_at_next_accept(feedback)==owner:break
             model.advance(idle)
         else:raise AssertionError('owned allocation forecast did not recur')

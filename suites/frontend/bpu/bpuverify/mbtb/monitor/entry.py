@@ -1,4 +1,5 @@
 """Passive entry requests and SRAM writebacks across all physical banks/ways."""
+from bpuverify.common.model.configuration import *
 from bpuverify.common.env.memory_direct import memory_signal
 from bpuverify.common.env.memory_direct import memory_signal_names
 from dataclasses import dataclass
@@ -43,8 +44,8 @@ class MbtbEntryActivityMonitor(CycleMonitor):
                     values[f"{direction}_{key}"] = signal(align, bank, f"io_{direction}_{way}_bits_{name}")
             return Bundle(**values)
 
-        banks = tuple(tuple(tuple(port(align, bank, way) for way in range(2))
-                            for bank in range(2)) for align in range(2))
+        banks = tuple(tuple(tuple(port(align, bank, way) for way in range(MAIN_WAYS))
+                            for bank in range(MAIN_BANKS)) for align in range(2))
         super().__init__(PortBinding(dut.clock, Bundle(banks=banks), "mbtb.entry_activity"), decoder=self.decode)
 
     @staticmethod

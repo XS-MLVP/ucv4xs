@@ -1,4 +1,6 @@
 """Declared instruction experience; existing models own all predictor algorithms."""
+from bpuverify.common.model.configuration import SC_TABLES, TAGE_TABLES
+
 from dataclasses import dataclass
 from bpuverify.bpu.model.common_history import LOOKUP_WINDOW_CAPACITY,GHR_WIDTH
 from bpuverify.bpu.model.path_history import SHIFT
@@ -41,8 +43,8 @@ class Program:
     def teaching_count(self):
         # All five weights retain enough authority after ONE genuine error.
         # Confidence5 uses the normal five-bit threshold shift.
-        threshold=ScThresholdModel().initial[0]
-        return next(votes for votes in range(1,32) if 5*(2*(votes-1)+1)>threshold//32)
+        threshold=ScThresholdModel.for_default().initial[0]
+        return next(votes for votes in range(1,32) if SC_TABLES*(2*(votes-1)+1)>threshold//32)
     def outcome(self,source,prediction,taken):
         if type(taken) is not bool:raise TypeError('declared original conditional outcome required')
         branch=prediction.branch

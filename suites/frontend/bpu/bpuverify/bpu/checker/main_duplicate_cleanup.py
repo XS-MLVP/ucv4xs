@@ -1,4 +1,5 @@
 """Compare operations by identity/destination, including first wrong service."""
+from bpuverify.common.model.configuration import *
 from copy import deepcopy
 from bpuverify.bpu.checker.main_original_order import Checks as OriginalChecks
 from bpuverify.bpu.model.main_service import observed_counter
@@ -21,10 +22,10 @@ class Checks(OriginalChecks):
     def write_accepted(self,owner,transfer):
         # Keep the actual offending event too. No silent rebasing to RTL.
         ordinal=len(self.written[owner]);super().write_accepted(owner,transfer)
-        if owner==2:
+        if owner==MAIN_WAYS:
             self.check(True,self.program.concurrent,'cleanup-only has no fresh direction learning')
             self.check(0,ordinal,'one independently accepted direction update')
-            self.check(dict(row=coordinate(self.program.neighbor)[2],mask=1,values={'0':2}),
+            self.check(dict(row=coordinate(self.program.neighbor)[2],mask=4,values={'2':2}),
                 observed_counter(transfer.value),'complete direction reset belongs to the independently corrected branch')
             return
         expected=self.program.expected_services[owner]
@@ -33,6 +34,6 @@ class Checks(OriginalChecks):
 
     def complete(self):
         self.raise_failure()
-        return tuple(map(len,self.written))==(int(self.program.concurrent),1,int(self.program.concurrent))
+        return tuple(map(len,self.written))==(0,0,int(self.program.concurrent),1,int(self.program.concurrent))
 
     def summary(self):return dict(super().summary(),parent_operations=deepcopy(self.parents))

@@ -24,7 +24,8 @@ def training_activity(dut):
                    r'ittage\.tables_\d+_io_update_resetUsefulCnt_REG',
                    r'sc\.(?:pathTable_\d+|globalTable_\d+|bwTable_\d+|imliTable|biasTable)\.writeBuffer_\d+\.io_read_\d+_valid',
                    r'mbtb\.alignBanks_\d+\.internalBanks_\d+\.entryWriteBuffer\.io_read_\d+_valid',
-                   r'mbtb\.alignBanks_\d+\.internalBanks_\d+\.counterWriteBuffer\.io_deq_valid'),
+                   r'mbtb\.alignBanks_\d+\.internalBanks_\d+\.counterWriteBuffer\.io_deq_valid',
+                   r'mbtb\.alignBanks_\d+\.internalBanks_\d+\.snapshotState_\d+'),
         'reads': (r's[01]_fire',),
         'fast_pipeline': (r's3_valid', r'abtb\.t[12]_fire', r'utage\.t0_fire_REG|utage\.t1_fire'),
         'fast_writes': (r'abtb\.banks_\d+\.writeBuffer\.io_read_\d+_valid',),
@@ -35,3 +36,9 @@ def control_activity(dut):
     return bind_activity(dut, 'Bpu', {
         'enable': (r'csrCtrl_delay\.REG_1_(?:ubtb|abtb|mbtb|tage|sc|ittage|ras)Enable',),
     }, name='bpu.applied_control')
+
+
+def initialization_activity(dut):
+    return bind_activity(dut, 'Bpu', {
+        'sram_ready': (r'sramResetDone',),
+    }, name='bpu.initialization')

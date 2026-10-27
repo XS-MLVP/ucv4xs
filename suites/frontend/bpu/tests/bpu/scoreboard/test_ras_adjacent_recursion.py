@@ -87,6 +87,6 @@ def test_unknown_or_physical_coordinate_profile_is_rejected_before_native_work(a
     with pytest.raises(ValueError):Program(*args)
 
 
-@pytest.mark.parametrize('layers',(-1,7,True))
+@pytest.mark.parametrize('layers',(-1,15,True))
 def test_invalid_logical_prefix_does_not_silently_truncate(layers):
     with pytest.raises(ValueError):Program('exact-retained-capacity','outer-heavy').call_addresses(layers)

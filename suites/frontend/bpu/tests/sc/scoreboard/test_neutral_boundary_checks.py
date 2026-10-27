@@ -43,8 +43,8 @@ class PureAgent:
     """
     def __init__(self, fault=None):
         self.fault = fault
-        self.ports = NS(training=NS(bits=NS(branches=(None,) * 8,
-            path_history=(None,) * len(PHR_FOLD_LAYOUT), mbtb_meta=((None, None), (None, None)))))
+        self.ports = NS(training=NS(bits=NS(branches=(None,) * 16,
+            path_history=(None,) * len(PHR_FOLD_LAYOUT), mbtb_meta=((None,)*5,)*2)))
         self.frames = None
 
     async def reset(self):
@@ -110,7 +110,7 @@ class PureAgent:
         encoded = ScAgent._encode_batch_training(self, transaction)
         if neutral and self.fault == 'wrong-resolved-slot':
             encoded = deepcopy(encoded)
-            encoded['branches'][1]['position'] = 8
+            encoded['branches'][1]['position'] = 9
         if not (neutral and self.fault == 'missing-input'):
             self.frames.append(NS(event=NS(tick=self.tick + 2), value=deepcopy(dict(valid=1, ready=1, bits=encoded))))
         skip = (self.fault == 'missing-recovery' and self.reverse_count == 1 or

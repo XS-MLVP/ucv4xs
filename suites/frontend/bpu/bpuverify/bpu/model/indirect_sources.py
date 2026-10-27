@@ -1,4 +1,6 @@
 """Owned MainBTB/ITTAGE/history composition, not a sampled-component oracle."""
+from bpuverify.common.model.configuration import *
+
 from dataclasses import dataclass,replace
 
 from bpuverify.bpu.model.main_sources import BranchTargetSources
@@ -7,7 +9,7 @@ from bpuverify.ittage.model.semantic import IttageReference,Context,Metadata,Out
 from bpuverify.tage.model.semantic import lfsr_next
 
 
-def context_for(checkpoint):return Context.from_recent(checkpoint.history% (1<<31))
+def context_for(checkpoint):return Context.from_recent(checkpoint.history% (1<<PHR_BITS))
 
 
 def allocation(prediction,random):
@@ -131,9 +133,9 @@ class IndirectSources(BranchTargetSources):
             values={} if second.lookup is None else second.lookup.values()
             branches=tuple(None if not values.get(f'{slot}.valid') else Branch(values[f'{slot}.position'],
                 values[f'{slot}.target'],Kind(values[f'{slot}.kind']),bool(values[f'{slot}.taken']),StackAction(values[f'{slot}.action']))
-                for slot in range(4))
+                for slot in range(RESULT_SLOTS))
             target=None if prediction is None or prediction.provider is None else prediction.target//2
-            late=final(second.pc,branches,(None,)*4,(None,)*4,indirect_target=target)
+            late=final(second.pc,branches,(None,)*RESULT_SLOTS,(None,)*RESULT_SLOTS,indirect_target=target)
             self.resolved[second.history.sequence]=replace(source,enabled=enabled,prediction=prediction,
                 allocation=None if prediction is None else allocation(prediction,random),late=late)
         feedback=self.feedback_for(events.feedback) if events.feedback is not None and enabled else None

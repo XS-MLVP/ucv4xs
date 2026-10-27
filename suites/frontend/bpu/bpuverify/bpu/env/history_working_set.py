@@ -1,5 +1,6 @@
 """Real source recovery, bounded normal learning and monitor-owned windows."""
 from contextlib import asynccontextmanager
+from bpuverify.common.model.configuration import RESULT_SLOTS
 
 from bpuverify.bpu.bundle.history_working_set import history_working_set_binding
 from bpuverify.bpu.checker.history_working_set import HistoryWorkingSetChecks
@@ -97,7 +98,7 @@ class HistoryWorkingSetEnv(BranchTargetProgram):
     def main_direction(self, source, position):
         token = self.checker.source_token(source)
         values = token.lookup.values()
-        entries = [bool(values[f'{slot}.taken']) for slot in range(4) if values.get(f'{slot}.valid')
+        entries = [bool(values[f'{slot}.taken']) for slot in range(RESULT_SLOTS) if values.get(f'{slot}.valid')
             and values.get(f'{slot}.position') == position and values.get(f'{slot}.kind') == 1]
         self.checks.check(1,len(entries),'one original Main conditional owns the requested direction')
         return entries[0]
@@ -148,7 +149,7 @@ class HistoryWorkingSetEnv(BranchTargetProgram):
         await self.pause()
         self.release_unused()
         await self.guide(SHORT_POSITION,taken=True,later=POSITION)
-        self.tail_variant = False
+        self.tail_variant = self.program.helper.tail_variant
         self.installed_path = self.program.helper
         await self.agent.configure_predictors(abtb=True,settle=True)
         await self.learn_until(self.program.helper,lambda source:
@@ -198,7 +199,7 @@ class HistoryWorkingSetEnv(BranchTargetProgram):
         values = self.checker.source_token(source).lookup.values()
         learned = any(values.get(f'{slot}.valid') and
             (values.get(f'{slot}.position'),values.get(f'{slot}.target'),values.get(f'{slot}.kind')) ==
-            (edge.position,edge.target,edge.kind) for slot in range(4))
+            (edge.position,edge.target,edge.kind) for slot in range(RESULT_SLOTS))
         if not learned:await self.feedback(source,edge)
         return await self.go(source,edge)
 
@@ -274,7 +275,7 @@ class HistoryWorkingSetEnv(BranchTargetProgram):
         for number,path in enumerate(self.program.short_prerequisites):
             if number:
                 await self.set_main(early=True)
-                await self.learn_until(self.program.helper,lambda source:
+                await self.learn_until(self.program.helper_for(path),lambda source:
                     self.ahead_counter(source,SHORT_POSITION) == 3,
                     'other-path actual taken outcomes rebuild the early conditional base')
             await self.set_main(early=False,target=True)

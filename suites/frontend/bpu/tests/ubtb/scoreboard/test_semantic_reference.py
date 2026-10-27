@@ -277,7 +277,7 @@ def test_reset_idle_valid_is_not_a_response_but_new_request_is_checked():
 
 
 @pytest.mark.parametrize('bad', [replace(FIRST, pc=-1), replace(FIRST, target=1 << 50),
-                               replace(FIRST, position=16), replace(FIRST, taken=2)])
+                               replace(FIRST, position=32), replace(FIRST, taken=2)])
 def test_out_of_contract_inputs_raise_instead_of_silent_truncation(bad):
     with pytest.raises(ValueError):
         UbtbReference().advance(UbtbEvents(fast_feedback=bad))

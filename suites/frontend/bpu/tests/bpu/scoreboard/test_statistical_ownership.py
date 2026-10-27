@@ -20,7 +20,7 @@ def prepared(taken=False):
                 joint.outcome(joint.CONDITION, joint.CONDITION_TARGET, Kind.CONDITIONAL, wrong=True))
             token = joint.query(model, event, anchor)
     tagged = dict(model.sources.snapshot(token, resolved=True).wanted)
-    slot = next(slot for slot in range(4) if tagged.get(f'{slot}.has_provider'))
+    slot = next(slot for slot in range(10) if tagged.get(f'{slot}.has_provider'))
     assert bool(tagged[f'{slot}.taken']) is taken
     return model, event, anchor, token, slot
 
@@ -87,7 +87,7 @@ def test_unused_or_disabled_sc_cannot_claim_direction_authority(disabled, tage_t
     model, _, _, token, slot = prepared(tage_taken)
     sc = OwnedStatisticalReference()
     result = select(sc, model, token, enabled=not disabled)
-    assert result.prediction.sums[slot] == 5
+    assert result.prediction.sums[slot] == 8
     assert result.prediction.used[slot] == 0
     assert result.late == model.sources.target_snapshot(token, resolved=True).late
 
@@ -138,7 +138,7 @@ def test_original_selection_is_frozen_and_cannot_be_recomputed_with_new_weights(
         token = joint.query(model, event, anchor)
         fresh = select(sc, model, token)
     assert fresh.prediction.used[slot] == 1 and fresh.prediction.directions[slot] == 1
-    assert old.prediction.used[slot] == 0 and old.prediction.sums[slot] == 5
+    assert old.prediction.used[slot] == 0 and old.prediction.sums[slot] == 8
     original = next(row for row in model.published.values() if row.history is old.original.owner)
     with pytest.raises(ValueError, match='already frozen'):
         sc.resolve(original, direction=model.sources.snapshot(original, resolved=True),
@@ -154,9 +154,9 @@ def test_original_read_survives_younger_weight_commit_before_selection():
     teach(sc, token, taken=True)
     result = sc.resolve(old, direction=model.sources.snapshot(old, resolved=True),
         target=model.sources.target_snapshot(old, resolved=True))
-    assert result.prediction.sums[slot] == 5
+    assert result.prediction.sums[slot] == 8
     token = joint.query(model, event, anchor)
-    assert select(sc, model, token).prediction.sums[slot] == 15
+    assert select(sc, model, token).prediction.sums[slot] == 24
 
 
 def test_unexecuted_feedback_is_rejected_but_real_mispredicted_prefix_is_accepted():
@@ -196,7 +196,7 @@ def test_sc_provider_feature_comes_from_raw_provider_not_the_chosen_alternate_di
     token = joint.query(model, event, anchor)
     direction = model.sources.snapshot(token, resolved=True)
     tagged = dict(direction.wanted)
-    slot = next(slot for slot in range(4) if tagged.get(f'{slot}.has_provider'))
+    slot = next(slot for slot in range(10) if tagged.get(f'{slot}.has_provider'))
     assert tagged[f'{slot}.counter'] == 4 and tagged[f'{slot}.taken'] == 0
     assert tagged[f'{slot}.use_provider'] == 0
     sc = OwnedStatisticalReference()
@@ -256,14 +256,14 @@ def test_indirect_target_authority_comes_from_original_enable_not_only_a_matchin
 def test_nonconditional_indirect_candidate_never_gains_statistical_direction_authority(valid):
     model, event, anchor, token, _ = prepared(True)
     sc = OwnedStatisticalReference()
-    # Invalid CommonHR leaves global/backward untrained. Three learned
-    # families require seven negative votes, not the valid case's five.
+    # Invalid CommonHR leaves global/backward untrained. Four learned tables
+    # require seven negative votes, not the valid case's five.
     for number in range(5 if valid else 7):
         result = select(sc, model, token, context=history(token, valid=valid))
         if not valid and number == 5:
             condition_slot = next(slot for slot, branch in enumerate(result.branches)
                 if branch is not None and branch.kind == Kind.CONDITIONAL)
-            assert result.prediction.sums[condition_slot] == -25
+            assert result.prediction.sums[condition_slot] == -32
             assert result.prediction.used[condition_slot] == 0
             assert result.late.branch.position == joint.CONDITION
         teach(sc, token, taken=False)
@@ -311,7 +311,7 @@ def test_the_layer_imports_existing_algorithms_not_signal_or_DUT_observers():
     from pathlib import Path
     tree = ast.parse(Path('bpuverify/bpu/model/sc/ownership.py').read_text())
     modules = {node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)}
-    assert modules == {'dataclasses', 'bpuverify.bpu.model.direction_sources',
+    assert modules == {'bpuverify.common.model.configuration', 'dataclasses', 'bpuverify.bpu.model.direction_sources',
         'bpuverify.bpu.model.indirect_sources', 'bpuverify.bpu.model.pipeline',
         'bpuverify.bpu.model.selection', 'bpuverify.sc.model.semantic', 'bpuverify.sc.transaction.types'}
     assert not any(isinstance(node, ast.Import) for node in ast.walk(tree))

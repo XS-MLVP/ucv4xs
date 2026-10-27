@@ -17,14 +17,14 @@ from bpuverify.mbtb.driver.feedback import observed_mbtb_feedback
 
 
 @pytest.mark.parametrize("align", (0, 1))
-@pytest.mark.parametrize("bank", (0, 1))
-@pytest.mark.parametrize("way", (0, 1))
+@pytest.mark.parametrize("bank", range(4))
+@pytest.mark.parametrize("way", range(4))
 @pytest.mark.parametrize("taken", (0, 1))
 def test_counter_reference_keeps_bank_set_way_and_flow_control(align, bank, way, taken):
     blocked = expected_mbtb_counter_activity(align, bank, way, taken, "blocked", sets=(31, 32))
     flow = expected_mbtb_counter_activity(align, bank, way, taken, "flow", sets=(31, 32))
     expected = tuple({"align": align, "bank": bank, "set_idx": index, "way_mask": 1 << way,
-                      "counters": (3 if taken else 1, None) if way == 0 else (None, 3 if taken else 1)}
+                      "counters": tuple((3 if taken else 1) if i == way else None for i in range(4))}
                      for index in (31, 32))
     assert blocked["requests"] == flow["requests"] == expected
     assert blocked["writebacks"] == flow["writebacks"] == expected
@@ -37,8 +37,8 @@ def test_counter_reference_keeps_bank_set_way_and_flow_control(align, bank, way,
 
 
 @pytest.mark.parametrize("kwargs", (
-    {"align": 2}, {"bank": -1}, {"way": 2}, {"taken": 2}, {"mode": "queue"},
-    {"sets": (31, 31)}, {"sets": (0, 64)}, {"sets": (1,)},
+    {"align": 2}, {"bank": -1}, {"way": 4}, {"taken": 2}, {"mode": "queue"},
+    {"sets": (31, 31)}, {"sets": (0, 256)}, {"sets": (1,)},
     {"reads": 3}, {"reads": 4.5},
 ))
 def test_counter_reference_rejects_out_of_scope_inputs(kwargs):
@@ -57,9 +57,9 @@ def test_counter_request_expectations_are_not_shared_with_writebacks():
 
 def prepared_states():
     return [{"entries": tuple(MbtbEntry(1, 1, 0x1000 + key * 0x100 + way, way, 1, 0)
-                              for way in range(4)),
-             "meta_entries": tuple(tuple({"rawHit": 1, "counter_value": 2, "position": align * 2 + way}
-                                          for way in range(2)) for align in range(2))}
+                              for way in range(10)),
+             "meta_entries": tuple(tuple({"rawHit": 1, "counter_value": 2, "position": align * 5 + way}
+                                          for way in range(5)) for align in range(2))}
             for key in range(4)]
 
 
@@ -72,7 +72,7 @@ def test_counter_state_reference_changes_only_selected_targets_and_is_frozen(ali
     for key in (0, 1):
         for index, entry in enumerate(original[key]["entries"]):
             assert expected[key]["entries"][index] == (replace(entry, taken=taken)
-                                                       if index == align * 2 + way else entry)
+                                                       if index == align * 5 + way else entry)
         assert expected[key]["meta_entries"][align][way]["counter_value"] == (3 if taken else 1)
         assert expected[key]["meta_entries"][align][1 - way] == original[key]["meta_entries"][align][1 - way]
     before[2]["meta_entries"][0][0]["counter_value"] = 0
@@ -97,7 +97,7 @@ def feedback():
 def test_feedback_reference_preserves_sparse_slots_and_freezes_metadata():
     transaction = feedback()
     expected = expected_mbtb_feedback(transaction)
-    assert expected["pc"] == 0x40001003 and expected["next_pc"] == 0x40001008
+    assert expected["pc"] == 0x40001003 and expected["next_pc"] == 0x40001010
     assert expected["ready"] == 1 and len(expected["resolved"]) == 8
     assert expected["resolved"][0] == {"target": 0x40009000, "taken": 0, "position": 1,
                                        "branch_type": 1, "ras_action": 0, "mispredict": 1}
@@ -155,7 +155,7 @@ def test_missing_input_or_lookup_evidence_is_reportable_not_an_index_error():
     actual = summarize_mbtb_counter_activity([frame(12, queue(enq_valid=1, deq_valid=1,
         do_enq=1, empty=0, maybe_full=1))], [], [], "blocked")
     assert actual["input_to_request_ticks"] == actual["writeback_offsets"] == (None,)
-    assert actual["peak_occupancy"] == 2 and actual["buffered_enqueues"] == ((0, 0),)
+    assert actual["peak_occupancy"] == 4 and actual["buffered_enqueues"] == ((0, 0),)
     assert actual["read_overlap"] is False
 
 

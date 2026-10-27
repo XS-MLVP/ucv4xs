@@ -1,4 +1,5 @@
 """Fetch geometry in bytes, independent of the driver's halfword arithmetic."""
+from bpuverify.common.model.configuration import *
 from dataclasses import dataclass
 
 
@@ -10,12 +11,12 @@ class AlignmentCase:
 
     def __post_init__(self):
         assert type(self.first_align) is int and self.first_align in (0, 1)
-        assert type(self.offset) is int and 0 <= self.offset < 8
-        assert type(self.position) is int and self.offset <= self.position < 16
+        assert type(self.offset) is int and 0 <= self.offset < ALIGN_HALFWORDS
+        assert type(self.position) is int and self.offset <= self.position < POSITIONS
 
     @property
     def pc(self):
-        return 0x40020000 + self.first_align * 8 + self.offset
+        return 0x40020000 + self.first_align * ALIGN_HALFWORDS + self.offset
 
     @property
     def label(self):
@@ -28,7 +29,7 @@ class AlignmentCase:
     @property
     def logical_start_pcs(self):
         byte_pc = self.pc * 2
-        return (self.pc, ((byte_pc + 16) // 16 * 16) // 2)
+        return (self.pc, ((byte_pc + ALIGN_BYTES) // ALIGN_BYTES * ALIGN_BYTES) // 2)
 
     @property
     def physical_start_pcs(self):
@@ -37,7 +38,7 @@ class AlignmentCase:
 
 
 ALL_CASES = tuple(AlignmentCase(align, offset, position)
-    for align in (0, 1) for offset in range(8) for position in range(offset, 16))
+    for align in (0, 1) for offset in range(ALIGN_HALFWORDS) for position in range(offset, POSITIONS))
 
 # Complete conditional allocation, increments/decrements and both saturations.
 PHASES = (

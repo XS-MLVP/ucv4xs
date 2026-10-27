@@ -22,6 +22,8 @@ class Suite:
     def summary(self):
         return {'suite':self.name, 'baseline':self.baseline['name'],
                 'commit':self.baseline['commit'], 'inherited_from':self.inherited_from,
+                'design_config':self.baseline['design']['config'], 'group':self.path.parent.name,
+                'visibility':self.baseline['visibility'],
                 'baseline_fingerprint':self.baseline_key, 'duts':list(self.recipe['duts'])}
 
 class Project:
@@ -44,22 +46,38 @@ class Project:
         required = {'repository','commit','recursive_submodules','design','patches','tools','firtool_options','visibility'}
         if required - data.keys() or data.get('name') != name:
             raise UcvError(f'Incomplete baseline {name}: missing {sorted(required-data.keys())}')
-        if not HEX.fullmatch(data['commit']) or not data['repository']:
+        if not isinstance(data['commit'],str) or not HEX.fullmatch(data['commit']) or not isinstance(data['repository'],str) or not data['repository']:
             raise UcvError(f'{name}: a complete repository and 40-character commit are required')
-        if not {'config','num_cores','top'} <= data['design'].keys() or not {'mill','chisel','firtool','java'} <= data['tools'].keys():
+        design, tools = data['design'], data['tools']
+        if (not isinstance(design,dict) or not isinstance(tools,dict)
+                or not {'config','num_cores','top'} <= design.keys()
+                or not {'mill','chisel','firtool','java'} <= tools.keys()):
             raise UcvError(f'{name}: incomplete design/tool versions')
-        if not all(isinstance(x, str) and x for x in data['tools'].values()):
+        if (any(not isinstance(design[k],str) or not design[k] for k in ('config','top'))
+                or type(design['num_cores']) is not int or design['num_cores'] < 1):
+            raise UcvError(f'{name}: incomplete design configuration')
+        if not all(isinstance(x, str) and x for x in tools.values()):
             raise UcvError(f'{name}: tool versions must be explicit')
+        if data['visibility'] not in {'public','internal'}:
+            raise UcvError(f'{name}: visibility must be public or internal')
+        for label, values in (('firtool_options',data['firtool_options']),
+                              ('chisel_args',design.get('chisel_args',[]))):
+            if not isinstance(values,list) or any(not isinstance(v,str) or not v for v in values):
+                raise UcvError(f'{name}: {label} must be a list of explicit arguments')
+        if not isinstance(data['recursive_submodules'],list) or not isinstance(data['patches'],list):
+            raise UcvError(f'{name}: submodule and patch locks must be lists')
         seen = set()
         for entry in data['recursive_submodules']:
-            if set(entry) != {'path','repository','commit'} or not HEX.fullmatch(entry['commit']):
+            if (not isinstance(entry,dict) or set(entry) != {'path','repository','commit'}
+                    or not isinstance(entry['commit'],str) or not HEX.fullmatch(entry['commit'])
+                    or not isinstance(entry['path'],str) or entry['path'] in {'','.','..'}):
                 raise UcvError(f'{name}: incomplete recursive submodule lock')
             contained(self.root, entry['path'])
             if entry['path'] in seen or not entry['repository']:
                 raise UcvError(f'{name}: duplicate/invalid submodule')
             seen.add(entry['path'])
         for patch in data['patches']:
-            if set(patch) != {'path','sha256'} or file_hash(contained(self.root, patch['path'])) != patch['sha256']:
+            if not isinstance(patch,dict) or set(patch) != {'path','sha256'} or file_hash(contained(self.root, patch['path'])) != patch['sha256']:
                 raise UcvError(f'{name}: patch hash mismatch')
         return data
 
@@ -83,10 +101,12 @@ class Project:
         recipe = read(path/'ucv.json')
         if not recipe.get('duts') or recipe.get('suite') != name:
             raise UcvError(f'{name}: missing DUT recipe')
+        if recipe.get('generation') not in {'soc','bpu-standalone'} or recipe.get('closure','module-dependencies') != 'module-dependencies':
+            raise UcvError(f'{name}: unsupported generation or closure recipe')
         for key, spec in recipe['duts'].items():
             if not re.fullmatch(r'\w+', key) or not {'top','export_name'} <= spec.keys():
                 raise UcvError(f'{name}/{key}: incomplete DUT recipe')
-            if {'baseline','commit','repository','patches'} & spec.keys():
+            if {'baseline','commit','repository','patches','design','config','tools','firtool_options','recursive_submodules'} & spec.keys():
                 raise UcvError(f'{name}/{key}: per-DUT baseline overrides are not supported')
         return Suite(name, path, recipe, selected, origin)
 

@@ -20,8 +20,8 @@ async def test_partial_export_retains_full_physical_schema_and_one_complete_sema
         semantic_groups = tuple(semantic_groups)
         assert group.definition.digest == mbtb_replacement_coverage_model().definition.digest
         bins = group.report()['crosses'][0]['bins']
-        assert len(bins) == 6144
-        assert group.cross_coverage('all_dimensions') == pytest.approx(100 / 1024)
+        assert len(bins) == 24576
+        assert group.cross_coverage('all_dimensions') == pytest.approx(100 / 4096)
         assert len(semantic_groups) == 2 and all(item.coverage == 25 for item in semantic_groups)
         CoverageDatabase.from_dict(CoverageDatabase([group, *semantic_groups]).report())
         writes.append(group)

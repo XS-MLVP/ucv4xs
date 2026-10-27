@@ -14,12 +14,19 @@ class NoCoverage:
     def record(self,*args,**kwargs):pass
 
 
+def wrong_victim_profile(program,victim):
+    residents=[r for r in program.prepared if r.pc==PC]
+    displaced=next(r for r in residents if r.way==victim)
+    return sorted([r for r in residents if r.way!=victim]+
+        [replace(program.new,way=victim),replace(displaced,way=4,counter=2)],key=lambda r:r.way)
+
+
 @pytest.mark.parametrize('mode',CASES)
 def test_logical_program_has_a_discriminating_old_and_new_victim_or_no_forward_control(mode):
     program=ReplacementProgram(mode)
-    assert program.old_victim==1
-    assert program.victim==(0 if mode in ('same-taken','alias-taken') else 1)
-    assert len(program.prepared)==len(program.final)==6
+    assert program.old_victim==3
+    assert program.victim==(2 if mode in ('same-taken','alias-taken') else 3)
+    assert len(program.prepared)==12 and len(program.final)==13
     assert program.new.position==3 and program.removed.position==(5 if program.forwarded else 1)
     assert all(r.counter in range(4) for r in program.final)
     a,b,c=(mbtb_replacement_geometry(pc,1) for pc in program.pcs.values())
@@ -30,13 +37,12 @@ def test_logical_program_has_a_discriminating_old_and_new_victim_or_no_forward_c
 @pytest.mark.parametrize('mode',('same-taken','alias-taken'))
 def test_lost_latest_age_is_rejected_with_expected_actual_and_program_state(mode):
     program=ReplacementProgram(mode)
-    wrong=[replace(program.new,way=program.old_victim),
-           next(r for r in program.prepared if r.pc==PC and r.way==program.victim)]
-    actual=tuple((r.way,r.position,r.target,r.counter) for r in sorted(wrong,key=lambda r:r.way))
+    wrong=wrong_victim_profile(program,program.old_victim)
+    actual=tuple((r.way,r.position,r.target,r.counter) for r in wrong)
     checks=ReplacementChecks(program,NoCoverage(),'negative-control')
     with pytest.raises(ScoreboardMismatch) as error:checks.profile(PC,actual)
-    assert error.value.context.request['program']['victim']==0
-    assert error.value.context.request['program']['old_victim']==1
+    assert error.value.context.request['program']['victim']==2
+    assert error.value.context.request['program']['old_victim']==3
     assert error.value.expected!=error.value.actual and error.value.differences
     assert isinstance(error.value,AssertionError)
 
@@ -45,12 +51,11 @@ def test_lost_latest_age_is_rejected_with_expected_actual_and_program_state(mode
                                  'independent-not-taken','lookup-only'))
 def test_false_touch_or_cross_index_forwarding_is_rejected(mode):
     program=ReplacementProgram(mode)
-    wrong=(replace(program.new,way=1-program.victim),
-           replace(next(r for r in program.prepared if r.pc==PC and r.way==program.victim),counter=0))
-    actual=tuple((r.way,r.position,r.target,r.counter) for r in sorted(wrong,key=lambda r:r.way))
+    wrong=wrong_victim_profile(program,2)
+    actual=tuple((r.way,r.position,r.target,r.counter) for r in wrong)
     checks=ReplacementChecks(program,NoCoverage(),'negative-control')
     with pytest.raises(ScoreboardMismatch) as error:checks.profile(PC,actual)
-    assert len(error.value.expected)==len(error.value.actual)==2
+    assert len(error.value.expected)==len(error.value.actual)==5
 
 
 def test_inserting_a_bubble_cannot_qualify_adjacent_feedback():

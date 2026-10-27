@@ -1,4 +1,5 @@
 """Five independent models, one base pipeline, three separate snapshot domains."""
+from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT
 from copy import deepcopy
 from dataclasses import replace
 import pytest
@@ -33,7 +34,7 @@ class Program:
         raise AssertionError('declared original learning did not become quiescent')
     def source(self,predicate=lambda _:True,*,pc=None):
         pc=self.pc if pc is None else pc
-        for _ in range(256):
+        for _ in range(8 * ((max(HISTORIES)+SHIFT-1)//SHIFT + 1)):
             token=self.step().metadata
             if token is not None and token.pc==pc and token.lookup is not None and predicate(token):
                 self.originals.append(token); self.quiet(); return token
@@ -43,7 +44,7 @@ class Program:
         require_recovery_window(self.model.history.taken_edges,source.history.taken_edges,
             capacity=WIDTH,history_bits=max(length for length,_ in LAYOUT),shift=SHIFT)
         assert source.pc==self.a
-        self.step(replace(idle,redirect=Redirect(source.history,(self.a//8)*8+4,self.pc,True)))
+        self.step(replace(idle,redirect=Redirect(source.history,(self.a//16)*16+4,self.pc,True)))
     def query(self): self.restart(); return self.source()
     def resolve(self,source,position,taken,*,wrong,room=False):
         idle=self.quiet(); target=self.pc if source.pc==self.a else self.a
@@ -51,7 +52,7 @@ class Program:
             (Outcome(position,target,Kind.CONDITIONAL if position==2 else Kind.DIRECT,taken,mispredict=wrong),),origin=source)
         if room:
             feedback=self.model.sources.feedback_for(request)
-            for _ in range(128):
+            for _ in range(TAGE_ALLOCATION_WAIT):
                 owner=self.model.sources.tage.allocation_at_next_accept(feedback)
                 if owner is not None and owner[0]<TABLES-1: break
                 self.step(idle)
@@ -78,7 +79,7 @@ class Program:
         source=self.query(); self.resolve(source,2,False,wrong=True,room=True)
         source=self.query(); self.resolve(source,2,False,wrong=False)
         source=self.query(); self.resolve(source,4,True,wrong=True)
-        edge=(path_contribution((self.a//8)*8+4,self.pc)<<SHIFT)^path_contribution((self.pc//8)*8+4,self.a); recent=0
+        edge=(path_contribution((self.a//16)*16+4,self.pc)<<SHIFT)^path_contribution((self.pc//16)*16+4,self.a); recent=0
         for bit in range(0,max(HISTORIES),2*SHIFT): recent^=edge<<bit
         recent%=1<<max(HISTORIES)
         self.restart(); self.anchor=self.source(lambda t:t.history.history%(1<<max(HISTORIES))==recent,pc=self.a)
@@ -138,7 +139,7 @@ def test_equal_or_dead_origins_cannot_borrow_any_component_snapshot(domain,fault
 def test_tage_metadata_projection_never_calls_the_ahead_namespace(monkeypatch):
     from bpuverify.bpu.checker.pipeline import tage_metadata_values
     p=Program(); token,_=p.prepare(); bank=p.model.sources; expected=bank.defined_tage_metadata(token)
-    actual=[{} for _ in range(4)]
+    actual=[{} for _ in range(10)]
     for key,value in expected.items():
         slot,field=key.split('.'); actual[int(slot)][field]=value
     def wrong_domain(_): raise AssertionError('Ahead namespace must not supply TAGE metadata')

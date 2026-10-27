@@ -1,4 +1,5 @@
 from __future__ import annotations
+from bpuverify.common.model.configuration import *
 
 from bpuverify.sc.transaction.types import ScBaseBranch
 from bpuverify.sc.transaction.types import ScBatchTraining
@@ -101,12 +102,12 @@ async def learn_masked_rows(agent, *, adjacent: bool, limits):
     for table_rows in zip(*routes):
         assert len(set(table_rows)) == 4, routes
     for selector, (prediction, counter) in enumerate(zip(cold, BIAS_COUNTERS)):
-        assert prediction.useds == (0, 0, 0, 0), prediction
+        assert prediction.useds[:SC_WAYS] == (0,) * SC_WAYS, prediction
         # SC takens are the raw correction, not the TAGE fallback when unused.
-        assert prediction.takens == (1, 1, 1, 1), prediction
-        assert prediction.meta["tagePredValid"] == (1, 1, 1, 1), prediction
-        assert prediction.meta["tageCtr"] == (counter,) * 4, prediction
-        assert prediction.meta["scBiasLowerBits"] == (selector,) * 4, prediction
+        assert prediction.takens[:SC_WAYS] == (1,) * SC_WAYS, prediction
+        assert prediction.meta["tagePredValid"][:SC_WAYS] == (1,) * SC_WAYS, prediction
+        assert prediction.meta["tageCtr"][:SC_WAYS] == (counter,) * SC_WAYS, prediction
+        assert prediction.meta["scBiasLowerBits"][:SC_WAYS] == (selector,) * SC_WAYS, prediction
 
     stages, convergence = [], []
     for slot, (outcome, limit) in enumerate(zip(MASKED_OUTCOMES, limits, strict=True)):
@@ -125,9 +126,9 @@ async def learn_masked_rows(agent, *, adjacent: bool, limits):
             predictions = await read_rows()
             for row, prediction in enumerate(predictions):
                 assert sc_row_indices(prediction) == routes[row], prediction
-                assert prediction.meta["tagePredValid"] == (1, 1, 1, 1), prediction
-                assert prediction.meta["scBiasLowerBits"] == (row,) * 4, prediction
-                for other in range(4):
+                assert prediction.meta["tagePredValid"][:SC_WAYS] == (1,) * SC_WAYS, prediction
+                assert prediction.meta["scBiasLowerBits"][:SC_WAYS] == (row,) * SC_WAYS, prediction
+                for other in range(SC_WAYS):
                     if other == slot:
                         continue
                     wanted_used = int(other < slot)

@@ -80,17 +80,18 @@ def micro_ras_parent_claims():
         depth += (token=='(')-(token==')')
         assert depth>0 or index==len(expression)-len('s2_valid&')-1
     assert depth==0
-    parent.expect(5034,'MicroRas uras (')
-    for line,expected in ((5038,'.io_stageCtrl_s2_fire(s2_valid),'),
-                          (5046,'.io_s2OverrideData_valid(s2_override),')):
-        assert re.sub(r'\s+','',parent.lines[line-1])==expected
-    child.expect(133,'if (io_s2OverrideData_valid & ~io_stageCtrl_s2_fire & s2_realPush)')
-    child.expect(134,'s2_retAddr_addr <= _s2_realPushAddr_T_3[50:1];')
+    at = parent.unique('MicroRas uras (')
+    instance = ''.join(parent.lines[at-1:]).split(');',1)[0]
+    compact = re.sub(r'\s+','',instance)
+    assert compact.count('.io_stageCtrl_s2_fire(s2_valid),') == 1
+    assert compact.count('.io_s2OverrideData_valid(s2_override),') == 1
+    first = child.unique('if (io_s2OverrideData_valid & ~io_stageCtrl_s2_fire & s2_realPush)')
+    child.expect(first+1,'s2_retAddr_addr <= _s2_realPushAddr_T_3[50:1];')
     assert not held_repair_witnesses() and held_repair_witnesses(relax_parent=True)
     # The frozen native schema lowers this source IF as an ELSIF. The parent
     # implication excludes it regardless of additional priority predicates;
     # match_native still requires this exact arm for ALL overlapping producers.
-    return [claim('rtl/bpu/MicroRas.sv',133,134,133,'elsif',
+    return [claim('rtl/bpu/MicroRas.sv',first,first+1,first,'elsif',
                   'integrated-s2-repair-implies-stage-advance')], parent
 
 

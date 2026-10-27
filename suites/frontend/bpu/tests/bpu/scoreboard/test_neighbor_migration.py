@@ -1,4 +1,5 @@
 """Normal semantic events and adversarial observations; no DUT coverage."""
+from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT
 from copy import deepcopy
 from dataclasses import replace
 from pathlib import Path
@@ -31,7 +32,7 @@ def fixture(*, initial_pc=None, checks_type=NeighborMigrationChecks, coverage_ty
         idle = quiet(model, event); request = resolution(before.token, step.outcomes)
         if step.allocation is not None:
             feedback = model.sources.feedback_for(request)
-            for _ in range(128):
+            for _ in range(TAGE_ALLOCATION_WAIT):
                 if model.sources.tage.allocation_at_next_accept(feedback) == step.allocation: break
                 model.advance(idle)
             else: raise AssertionError('normal neighbor allocation not eligible')
@@ -93,7 +94,7 @@ def serviced_fixture():
             value=deepcopy(checks.expected_plan[owner][index])))
     checks.services_complete()
     quiet(program[0], program[1])
-    assert pending_plan(program[0].sources.tage, 3, 0) == ((), ())
+    assert pending_plan(program[0].sources.tage, 7, 0) == ((), ())
     return checks, program, retired
 
 
@@ -107,9 +108,9 @@ def test_normal_preparation_distinguishes_old_target_current_target_and_independ
     checks, _, _ = fixture()
     assert len(checks.prepared_labels) == 24 and len(checks.neighbor_labels) == 8
     assert len(checks.sources) == 2 and len({id(s.token.history) for s in checks.requests}) == 4
-    assert checks.profile(checks.sources[0]) == ((1, 3), ((3, 0, 2, 0), (3, 1, 5, 0)))
-    assert checks.profile(checks.before['original']) == ((1, 3), ((3, 1, 1, 0), (3, 0, 4, 0)))
-    assert checks.profile(checks.before['neighbor']) == ((1, 3), ((3, 0, 2, 0), (3, 1, 5, 0)))
+    assert checks.profile(checks.sources[0]) == ((1, 3), ((7, 0, 2, 0), (7, 1, 5, 0)))
+    assert checks.profile(checks.before['original']) == ((1, 3), ((7, 1, 1, 0), (7, 0, 4, 0)))
+    assert checks.profile(checks.before['neighbor']) == ((1, 3), ((7, 0, 2, 0), (7, 1, 5, 0)))
     assert checks.side_payload[0]['row'] != checks.proposal[0]['row']
     assert checks.coverage.groups['checked'].coverage == 0
 
@@ -190,7 +191,7 @@ def test_each_public_input_keeps_the_neighbor_fresh_or_old_source_identity(fault
 def test_pending_comparison_requires_both_distinct_logical_results(fault):
     checks, _, _ = held_fixture()
     if fault == 'missing-offer': checks.offered.pop()
-    elif fault == 'overwritten-obligation': checks.pipeline.model.sources.tage.cache[3, 0].overflows += 1
+    elif fault == 'overwritten-obligation': checks.pipeline.model.sources.tage.cache[7, 0].overflows += 1
     else:
         owner, index = (0, 0) if fault == 'wrong-neighbor' else (0, 1)
         checks.expected_plan[owner][index]['counter'] = 6

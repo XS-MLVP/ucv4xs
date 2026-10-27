@@ -10,7 +10,7 @@ from bpuverify.ras.coverage.guard_audit import CHILD, PARENT, ROOT, audit, inspe
 def report():
     proof = inspect_sources()
     return dict(line_coverage='native LCOV DA rows', dut=dict(ras=dict(
-        source_lines=dict(total=585, hit=569), build_provenance=dict(test_fixture=True),
+        source_lines=dict(total=1000, hit=968), build_provenance=dict(test_fixture=True),
         uncovered_rtl_source_lines=proof['rows'])))
 
 
@@ -24,8 +24,8 @@ def test_native_denominator_is_retained_not_subtracted():
     native = report()
     before = deepcopy(native)
     result = audit(native)
-    assert result['classified_rows'] == 16
-    assert result['native_source_lines'] == dict(total=585, hit=569)
+    assert result['classified_rows'] == 32
+    assert result['native_source_lines'] == dict(total=1000, hit=968)
     assert result['native_denominator_unchanged'] is True
     assert native == before
 
@@ -55,8 +55,8 @@ def test_source_mutations_invalidate_guard_proof(tmp_path, drift):
         before, after = "commitValid & commitInfo_attribute_rasAction == 2'h1", "commitValid & commitInfo_attribute_rasAction == 2'h2"
     else:
         path = tmp_path / CHILD
-        before, after = (('if (_GEN_15)', 'if (_GEN_17)') if drift == 'child-priority' else
-                         ('_GEN_16 = io_commit_popValid', '_GEN_16 = io_commit_pushValid'))
+        before, after = (('if (_GEN_6)', 'if (_GEN_7)') if drift == 'child-priority' else
+                         ('_GEN_46 = io_commit_popValid', '_GEN_46 = io_commit_pushValid'))
     path.write_text(path.read_text().replace(before, after, 1))
     with pytest.raises(ValueError):
         inspect_sources(tmp_path)

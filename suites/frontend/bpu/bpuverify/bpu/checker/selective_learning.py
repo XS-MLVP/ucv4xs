@@ -14,7 +14,7 @@ class Checks(DirectionForwardingChecks):
         if program not in ALL_PROGRAMS: raise ValueError('declared selective-learning program required')
         super().__init__(pipeline, coverage)
         self.program = program
-        self.table, self.bank = 3, PC % 4
+        self.table, self.bank = 7, PC % 4
         self.holding = False
         self.keys, self.contexts, self.originals, self.definitions = (), (), (), ()
         self.counts = [0]*len(program.paths)
@@ -48,7 +48,7 @@ class Checks(DirectionForwardingChecks):
         for source in sources:
             token, values = self.values(source)
             self.check(((0, 3), self.program.initial), values, 'qualified branch and saturated companion established by real learning')
-            self.check(((3, 0), (3, 1)), self.owners(token), 'two independent longest-history providers')
+            self.check(((7, 0), (7, 1)), self.owners(token), 'two independent longest-history providers')
             reads.append(self.pipeline.model.sources.snapshot(token).read)
         self.check(len(sources), len({id(self.pipeline.source_token(s).history) for s in sources}), 'original owners are never cloned')
         ordered = reads[:len(self.program.paths)]
@@ -177,7 +177,7 @@ class Checks(DirectionForwardingChecks):
         token, values = self.values(source)
         self.check(self.contexts[history], self.pipeline.model.sources.snapshot(token).read.context, 'fresh consumer belongs to original history')
         self.check(((0, 3), tuple(counters)), values, 'new public consumer agrees with hand-derived per-branch effects')
-        self.check(((3, 0), (3, 1)), self.owners(token), 'provider identities survive selective learning')
+        self.check(((7, 0), (7, 1)), self.owners(token), 'provider identities survive selective learning')
         key = phase, history
         self.check(False, key in self.consumers, 'one separately checked consumer for this phase and history')
         self.check(True, source.prediction_tick > self.accepted[-1][0], 'old source receipt cannot replace a post-feedback consumer')

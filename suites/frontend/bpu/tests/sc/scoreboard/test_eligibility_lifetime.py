@@ -81,15 +81,15 @@ def reverse_lifetime(program,checks,*,family_fault=None,stale_consumer=False):
 @pytest.mark.parametrize('mode',('serial','pipelined'))
 def test_minimal_qualified_votes_make_both_polarities_strong_even_without_trained_bias(direction,mode):
     program=EligibilityProgram(direction,mode)
-    assert program.warm_votes==3
+    assert program.warm_votes==2
     counts={owner.name:program.warm_votes for owner in program.owners}
     program.require_strong_warm_state(counts)
     for owner in program.owners:
         normal,scores=program.expected(owner,'eligible',counts)
         lost,lost_scores=program.expected(owner,'provider-missing',counts)
-        assert normal['useds']==(1,0,0,0) and lost['useds']==(0,0,0,0)
+        assert normal['useds']==(1,)+(0,)*9 and lost['useds']==(0,)*10
         assert normal['takens'][0]==lost['takens'][0]==owner.outcome
-        assert scores[0] in (35,-25) and lost_scores[0] in (29,-19)
+        assert scores[0] in (40,-24) and lost_scores[0] in (36,-20)
     deficient={owner.name:program.warm_votes-1 for owner in program.owners}
     with pytest.raises(AssertionError):program.require_strong_warm_state(deficient)
 
@@ -173,8 +173,8 @@ def test_only_complete_original_lifetimes_and_real_cadence_acquire_checked_credi
         reverse_lifetime(program,checks)
         checks.finish()
         assert coverage.groups['checked'].coverage==25.0
-        assert len(checks.queries)==22 and len(checks.sources)==50
-        assert len(checks.spent)==17
+        assert len(checks.queries)==22 and len(checks.sources)==40
+        assert len(checks.spent)==11
     else:
         with pytest.raises(AssertionError):checks.finish()
         assert coverage.groups['checked'].coverage==0
@@ -226,18 +226,18 @@ def test_expectation_is_separate_from_cycle_model_and_signal_interfaces():
 @pytest.mark.parametrize('direction',(0,1))
 def test_exact_opposite_outcomes_cross_all_family_signs_then_override_the_unchanged_base(direction):
     program=EligibilityProgram(direction,'serial')
-    counts={owner.name:3 for owner in program.owners}
+    counts={owner.name:2 for owner in program.owners}
     for owner in program.owners:
-        steps=6 if owner.outcome else 5
+        steps=4 if owner.outcome else 3
         assert program.reversal_steps(owner)==steps
         for step in range(1,steps+1):
             expected,scores=program.expected(owner,'eligible',counts,{owner.name:step})
-            weight=(3-step)*(1 if owner.outcome else -1)
-            assert scores[0]==5*(2*weight+1)
+            weight=(2-step)*(1 if owner.outcome else -1)
+            assert scores[0]==8*(2*weight+1)
             assert all(expected['families'][family][0]==int(weight>=0) for family in FAMILIES)
             if step==steps:
                 assert expected['useds'][0]==1 and expected['takens'][0]==1-owner.outcome
-                assert program.thresholds(counts,{owner.name:step})[(owner.first_position%4)^(owner.first_position//4)]==(1129 if owner.outcome else 1134)
+                assert program.thresholds(counts,{owner.name:step})[(owner.first_position%8)^(owner.first_position//8)]==(1130 if owner.outcome else 1133)
 
 
 @pytest.mark.parametrize('direction',(0,1))

@@ -89,8 +89,8 @@ def consume(checks, program):
 def test_four_distinct_old_pairs_produce_eight_complete_versions_including_an_unchanged_upper_hold():
     checks, program, _ = fixture()
     assert len(checks.sources) == len({id(s.token.history) for s in checks.sources}) == 4
-    assert checks.profile(checks.sources[0]) == ((1, 3), ((3, 0, 2, 0), (3, 1, 5, 0)))
-    assert checks.profile(checks.before['original']) == ((0, 1), ((3, 1, 1, 0), (3, 0, 4, 0)))
+    assert checks.profile(checks.sources[0]) == ((1, 3), ((7, 0, 2, 0), (7, 1, 5, 0)))
+    assert checks.profile(checks.before['original']) == ((0, 1), ((7, 1, 1, 0), (7, 0, 4, 0)))
     old = tuple(deepcopy(s.meta.resolve) for s in checks.sources)
     assert learn(checks, program) == ((0, 5), (0, 6), (0, 7), (0, 7))
     assert tuple(s.meta.resolve for s in checks.sources) == old

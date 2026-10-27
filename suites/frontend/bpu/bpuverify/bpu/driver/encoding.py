@@ -1,6 +1,7 @@
 """bpuverify.bpu.driver.encoding components."""
 
 from __future__ import annotations
+from bpuverify.common.model.configuration import *
 from typing import Any
 from bpuverify.bpu.transaction.types import BpuBatchTraining
 from bpuverify.bpu.transaction.types import BpuBranchFeedback
@@ -38,8 +39,8 @@ def _encode_training(bits: Any, transaction: BpuBatchTraining) -> None:
             "start_pcs": tuple(
                 # FTQ supplies logical alignment starts; MainBTB rotates them
                 # to physical banks. Keep the head's sub-block offset, but
-                # advance and align the second 16-byte block (halfword PC).
-                ({"addr": transaction.pc}, {"addr": (transaction.pc + 8) & ~7})
+                # advance and align the second 32-byte block (halfword PC).
+                ({"addr": transaction.pc}, {"addr": (transaction.pc + ALIGN_HALFWORDS) & ~(ALIGN_HALFWORDS - 1)})
                 for _ in range(3)
             ),
             "branches": tuple({

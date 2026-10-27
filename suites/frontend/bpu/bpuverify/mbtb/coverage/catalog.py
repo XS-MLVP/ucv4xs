@@ -93,7 +93,7 @@ def write_mbtb_depth_coverage(coverage, root):
 
 def mbtb_replacement_coverage_model():
     points = (
-        CoverPointDef('index', {str(i): Bin.values(i) for i in range(64)}),
+        CoverPointDef('index', {str(i): Bin.values(i) for i in range(256)}),
         CoverPointDef('align', {str(i): Bin.values(i) for i in range(2)}),
         CoverPointDef('upper', {str(i): Bin.values(i) for i in range(2)}),
         CoverPointDef('mode', {value: Bin.values(value) for value in
@@ -102,7 +102,7 @@ def mbtb_replacement_coverage_model():
                                ('prepared', 'qualified', 'replaced', 'alias_replaced', 'isolated', 'revisited')}),
     )
     return CoverGroupDef('mbtb_replacement', points,
-        crosses=(CrossDef('all_dimensions', tuple(point.name for point in points), max_auto_bins=6144),)
+        crosses=(CrossDef('all_dimensions', tuple(point.name for point in points), max_auto_bins=24576),)
     ).instantiate('kunminghu_v3.mbtb.indexed_replacement')
 
 

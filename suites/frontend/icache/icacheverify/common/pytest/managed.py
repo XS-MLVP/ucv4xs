@@ -87,8 +87,10 @@ class ManagedFeatures:
         rows = []
         root = Path(config.rootpath).resolve()
         for row in native:
-            modules = {Path(path).parent.name for path in row['build']['files']
-                       if Path(path).name == '__init__.py' and Path(path).parent.parent == root/'dut'}
+            packages = {Path(path).parent.resolve() for path in row['build']['files']
+                        if Path(path).name == '__init__.py'}
+            modules = {entry.name for entry in (root/'dut').iterdir()
+                       if entry.is_dir() and entry.resolve() in packages}
             if len(modules) != 1:
                 raise ValueError('native build does not identify one canonical DUT')
             rows.append(dict(row, dut=modules.pop()))

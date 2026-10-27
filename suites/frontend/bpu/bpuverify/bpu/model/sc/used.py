@@ -3,12 +3,14 @@
 No DUT prestate seeds this reference. A read can be required even when every
 table write mask is zero. Full-dirty shadow overwrite remains explicitly open.
 """
+from bpuverify.common.model.configuration import *
+
 from copy import deepcopy
 from bpuverify.bpu.model.sc.model import ScReference
 from bpuverify.bpu.model.sc.model import width
 from bpuverify.bpu.model.sc.history import history_indices
 SC_BITS = ('scPred', 'tagePred', 'tagePredValid', 'useScPred', 'sumAboveThres')
-MINIMUM, MAXIMUM, INITIAL, THRESHOLD_WIDTH = (640, 5040, 1130, 13)
+MINIMUM, MAXIMUM, INITIAL, THRESHOLD_WIDTH = (SC_MIN_THRESHOLD, SC_MAX_THRESHOLD, 1130, 13)
 
 def uint(value, bits, name):
     if type(value) is not int or not 0 <= value < 1 << bits:
@@ -23,30 +25,30 @@ def branch_effects(transaction):
     meta = transaction['resolve_meta']
     sc = meta['sc']
     owners = [row for bank in meta['mbtb_entries'] for row in bank]
-    if len(owners) != 4:
-        raise ValueError('exact four elaborated MainBTB prediction slots required')
+    if len(owners) != RESULT_SLOTS:
+        raise ValueError('exact ten DefaultConfig prediction slots required')
     for name in SC_BITS:
-        if len(sc[name]) != 4:
-            raise ValueError((name, 'four prediction slots required'))
+        if len(sc[name]) != RESULT_SLOTS:
+            raise ValueError((name, 'ten prediction slots required'))
         for value in sc[name]:
             uint(value, 1, name)
-    if len(sc['scBiasLowerBits']) != 4:
-        raise ValueError('four bias selectors required')
+    if len(sc['scBiasLowerBits']) != RESULT_SLOTS:
+        raise ValueError('ten bias selectors required')
     for value in sc['scBiasLowerBits']:
         uint(value, 2, 'scBiasLowerBits')
     for owner in owners:
         uint(owner['rawHit'], 1, 'rawHit')
-        uint(owner['position'], 4, 'owner_position')
+        uint(owner['position'], 5, 'owner_position')
     result = []
     for slot, branch in enumerate(branches):
         if branch is None:
             continue
-        position = uint(branch['position'], 4, 'position')
+        position = uint(branch['position'], 5, 'position')
         taken = uint(branch['taken'], 1, 'taken')
         kind = uint(branch['branch_type'], 2, 'branch_type')
         hits = [index for index, owner in enumerate(owners) if owner['rawHit'] and owner['position'] == position]
         index = min(hits) if hits else None
-        way = position & 3 ^ position >> 2
+        way = position % SC_WAYS ^ position // SC_WAYS
         qualified = bool(index is not None and kind == 1 and sc['tagePredValid'][index])
         used = sc['useScPred'][index] if index is not None else 0
         predicted = sc['scPred'][index] if index is not None else 0
@@ -60,12 +62,12 @@ def branch_effects(transaction):
     return result
 
 def threshold_update(values, effects):
-    if len(values) != 4:
-        raise ValueError('four global threshold registers required')
+    if len(values) != SC_WAYS:
+        raise ValueError('eight global threshold registers required')
     values = tuple((uint(value, THRESHOLD_WIDTH, 'threshold') for value in values))
     if any((not MINIMUM <= value <= MAXIMUM for value in values)):
         raise ValueError('threshold prior state outside architectural range')
-    inc, dec = ([0] * 4, [0] * 4)
+    inc, dec = ([0] * SC_WAYS, [0] * SC_WAYS)
     for effect in effects:
         if effect['counter_update']:
             (inc if effect['threshold_delta'] > 0 else dec)[effect['way']] += 1
@@ -81,10 +83,10 @@ def used_requests(transaction, memories):
     pc, meta = (transaction['pc'], transaction['resolve_meta'])
     common, debug = (meta['commonHR'], meta['sc']['debug'])
     derived = history_indices(pc, common)
-    indices = dict(pathTable_0=debug['predPathIdx'][0], imliTable=debug['predImliIdx'], biasTable=debug['predBiasIdx'])
+    indices = dict(pathTable_0=debug['predPathIdx'][0], pathTable_1=debug['predPathIdx'][1], imliTable=debug['predImliIdx'], biasTable=debug['predBiasIdx'])
     if common['valid']:
-        for table, field in (('globalTable_0', 'predGlobalIdx'), ('bwTable_0', 'predBWIdx')):
-            if debug[field][0] != derived[table]:
+        for table, field, index in ((f'{family}_{i}', field, i) for family, field in (('globalTable', 'predGlobalIdx'), ('bwTable', 'predBWIdx')) for i in range(2)):
+            if debug[field][index] != derived[table]:
                 raise ValueError(('captured real common-history index mismatch', table))
         indices.update(derived)
     result = {}
@@ -126,7 +128,7 @@ class ThresholdReference:
         self.reset()
 
     def reset(self):
-        self.values = (INITIAL,) * 4
+        self.values = (INITIAL,) * SC_WAYS
         self.prior_fire = 0
         self.registered_effects = []
         self.prior_write = 0

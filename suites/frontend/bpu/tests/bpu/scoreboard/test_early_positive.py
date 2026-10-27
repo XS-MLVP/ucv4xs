@@ -1,3 +1,4 @@
+from bpuverify.bpu.model.early_opposition import FALLBACK
 """Two-polarity semantic program; synthetic actuals earn no DUT coverage."""
 from dataclasses import replace
 from types import SimpleNamespace as NS
@@ -20,7 +21,7 @@ class Program(NegativeProgram):
     def prepared_positive(self):
         negative=self.declared()
         negative=self.until(negative,lambda token:ahead_owner(self.model.sources,token) is not None
-            and ahead_owner(self.model.sources,token)[1]==0 and steady_history(token,4))
+            and ahead_owner(self.model.sources,token)[1]==0 and steady_history(token,FALLBACK))
         self.checks.negative_base_source(negative)
         positive=self.steer(negative,3);self.checks.main_positive(positive);return positive
 
@@ -105,7 +106,7 @@ def test_two_polarity_closure_requires_its_own_named_positive_source(fault):
 def test_main_only_positive_preparation_preserves_every_declared_seed(fault):
     program=Program();negative=program.declared();checks=program.checks
     negative=program.until(negative,lambda token:ahead_owner(program.model.sources,token) is not None
-        and ahead_owner(program.model.sources,token)[1]==0 and steady_history(token,4))
+        and ahead_owner(program.model.sources,token)[1]==0 and steady_history(token,FALLBACK))
     checks.negative_base_source(negative)
     prepared=program.steer(negative,3)
     if fault=='early-source':prepared=NS(token=prepared.token,prediction_tick=negative.meta_tick,meta_tick=prepared.meta_tick)

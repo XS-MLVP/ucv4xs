@@ -16,10 +16,10 @@ class TageAgingChecker:
         self.coverage=coverage;self.routing=SelectorRoutingCoverage();self.selector=TageSelectorChecker(routing=self.routing)
         self.board=Scoreboard('bpu.tage.useful_aging');self.case=dict(trigger=trigger)
         self.phase='setup';self.failure=None;self.last_tick=None;self.initialized=False
-        self.cells=empty_set();self.counter=0;self.busy=0;self.banks=[(0,0)]*16
+        self.cells=empty_set();self.counter=0;self.busy=0;self.banks=[(0,0)]*32
         self.plans=deque();self.pending={};self.reads={};self.effect=None;self.override=None;self.allocation_effect=None
         self.records=deque(maxlen=64);self.events=deque(maxlen=32);self.counts=Counter()
-        self.clear_addresses=[set() for _ in range(32)];self.epochs=0;self.restored_tag=None
+        self.clear_addresses=[set() for _ in range(64)];self.epochs=0;self.restored_tag=None
 
     def check(self,expected,actual,field,**context):
         self.board.check(expected=canonical(expected),actual=canonical(actual),context=CheckContext(
@@ -56,10 +56,10 @@ class TageAgingChecker:
         self.check(self.counter,a['counter'],'independent_global_failure_counter')
         self.check(self.busy,a['busy'],'global_clear_lifecycle')
         actual_banks=[(b['busy'],b['index']) for t in a['tables'] for b in t['banks']]
-        self.check(self.banks,actual_banks,'all_sixteen_bank_clearing_states')
+        self.check(self.banks,actual_banks,'all_thirty_two_bank_clearing_states')
         if s['reset']:
             self.selector.observe(s,tick)
-            self.cells=empty_set();self.counter=0;self.busy=0;self.banks=[(0,0)]*16;return
+            self.cells=empty_set();self.counter=0;self.busy=0;self.banks=[(0,0)]*32;return
         if self.effect is not None:
             self.check(self.effect['tick'],tick,'next_actual_counter_commit')
             if self.effect['rule']=='allocation-restored':
@@ -80,9 +80,9 @@ class TageAgingChecker:
         source=self.reads.pop(tick,None)
         if source is not None:
             pc=source['bits']['start_pcs'][0][0]['addr']
-            self.check((1,[2]*4,[((pc>>9)&8191)]*4),(a['bank'],a['sets'],s['raw_tags']),'one_known_candidate_set_and_independent_tags')
+            self.check((1,[2]*8,[((pc>>11)&8191)]*8),(a['bank'],a['sets'],s['raw_tags']),'one_known_candidate_set_and_independent_tags')
             if not s['use_meta']:
-                self.check(self.cells,s['reads'],'all_eight_valid_training_read_operands_from_expected_writes')
+                self.check(self.cells,s['reads'],'all_sixteen_valid_training_read_operands_from_expected_writes')
         source=self.pending.pop(tick,None);result=None
         if source is not None:
             bits=source['bits'];branch=bits['branches'][0]['bits'];pc=bits['start_pcs'][0][0]['addr']
@@ -99,7 +99,7 @@ class TageAgingChecker:
         elif result and result['need'] and not result['can'] and not self.busy:
             rule='failed-saturates' if after==255 else 'failed-increment';self.counts['increments']+=1
         elif result and result['allocate'] and self.epochs:
-            rule='allocation-restored';self.restored_tag=((pc>>9)&8191)^branch['cfiPosition']
+            rule='allocation-restored';self.restored_tag=((pc>>11)&8191)^branch['cfiPosition']
         if rule:
             self.sample('training','reached',rule,source=source)
             self.effect=dict(tick=tick+2,rule=rule,source=source)
@@ -130,7 +130,7 @@ class TageAgingChecker:
                             if start:self.override=dict(tick=tick+2,table=t,way=w,source=source)
             self.cells=result['after'];self.counts['T3']+=1;self.counts['allocations']+=result['allocate']
         if start:
-            self.epochs+=1;self.clear_addresses=[set() for _ in range(32)]
+            self.epochs+=1;self.clear_addresses=[set() for _ in range(64)]
             for table in self.cells:
                 for entry in table:entry['useful']=0
         if self.override is not None and self.override['tick']==tick:
@@ -141,7 +141,7 @@ class TageAgingChecker:
                 'actual_staged_useful_update_is_suppressed_during_clear')
             self.sample('maintenance','checked','clear-overrides-normal-useful-update',source=o['source']);self.override=None
         ready=[]
-        self.check([start]*32,[p['flush'] for table in a['tables'] for bank in table['banks'] for p in bank['ports']],
+        self.check([start]*64,[p['flush'] for table in a['tables'] for bank in table['banks'] for p in bank['ports']],
             'all_useful_queues_receive_the_exact_common_flush_start')
         for t,table in enumerate(a['tables']):
             self.check(int(any(b for b,_ in self.banks[t*4:t*4+4])),table['busy'],'table_busy_OR')
@@ -157,7 +157,7 @@ class TageAgingChecker:
         self.banks=clear_step(self.banks,start=start,ready=ready);self.counter=after
         if old_busy and not self.busy:
             self.sample('maintenance','reached','all-banks-complete')
-            self.check([set(range(SETS))]*32,self.clear_addresses,'all_rows_cleared_by_actual_write_handshakes')
+            self.check([set(range(SETS))]*64,self.clear_addresses,'all_rows_cleared_by_actual_write_handshakes')
             # The global register takes one more edge to reflect this independently derived completion.
             self.completed_tick=tick+2
         if getattr(self,'completed_tick',None)==tick:
@@ -169,7 +169,7 @@ class TageAgingChecker:
         self.check(1,len(frames),'one_exact_S2_for_this_public_source')
         reference=frames[0]['expected_selectors']
         expected=prediction(self.cells,pc,position,owner['counter_value'],reference)
-        tag=((pc>>9)&8191)^position;rule=None
+        tag=((pc>>11)&8191)^position;rule=None
         if self.epochs and expected['hasProvider']:
             rule='new-provider' if tag==self.restored_tag else 'retained-provider'
             self.sample('consumer','reached',rule,prediction_tick=source.prediction_tick,meta_tick=source.meta_tick)

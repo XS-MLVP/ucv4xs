@@ -1,4 +1,5 @@
 """Qualified threshold events: reached and checked are separate measurements."""
+from bpuverify.common.model.configuration import *
 
 from bpuverify.common.coverage.exports import write_functional_coverage
 from collections import Counter, deque
@@ -16,7 +17,7 @@ def bounds_coverage(status):
     if status not in ('reached','checked'):
         raise ValueError('threshold coverage status must be reached or checked')
     return CoverGroupDef('sc_threshold_vote_resolution_v2',(
-        CoverPointDef('way',{str(i):Bin.values(i) for i in range(4)}),
+        CoverPointDef('way',{str(i):Bin.values(i) for i in range(SC_WAYS)}),
         CoverPointDef('rule',{name:Bin.values(name) for name in RULES}),
     ),crosses=(CrossDef('way_rule',('way','rule')),)).instantiate(
         f'kunminghu_v3.bpu.sc_threshold_votes.{status}',

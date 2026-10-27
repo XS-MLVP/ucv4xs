@@ -138,7 +138,7 @@ def test_every_half_fetch_offset_has_a_real_preceding_CFI_checkpoint(offset):
     route = checkpoint_route(pc)
     source = route['cold_lead']
     for target in route['actual_not_taken_checkpoint_targets']:
-        assert source & ~7 == (target - 1) & ~7 and source <= target - 1
+        assert source & ~15 == (target - 1) & ~15 and source <= target - 1
         source = target
     assert source == pc - 1
     assert source & ~7 == (pc - 1) & ~7

@@ -13,9 +13,9 @@ def test_mixed_payloads_derive_both_port_identities(pc, way):
     expected = expected_tage_mixed_writes(pc, 6, way, 2)
     assert expected['beats'] == 1 and expected['latency_ticks'] == 8
     ports = expected['banks'][pc & 3]
-    assert ports[way] == {'set_idx': (pc >> 2) & 127, 'tag': ((pc >> 9) & 8191) ^ 6,
+    assert ports[way] == {'set_idx': (pc >> 2) & 511, 'tag': ((pc >> 11) & 8191) ^ 6,
                           'counter': 1, 'entry_valid': 1, 'taken': 0}
-    assert ports[1-way] == {'set_idx': (pc >> 2) & 127, 'tag': ((pc >> 9) & 8191) ^ 9,
+    assert ports[1-way] == {'set_idx': (pc >> 2) & 511, 'tag': ((pc >> 11) & 8191) ^ 17,
                             'counter': 4, 'entry_valid': 1, 'taken': 1}
     assert all(bank == (None, None) for i, bank in enumerate(expected['banks']) if i != (pc & 3))
 
@@ -30,7 +30,7 @@ def test_hold_and_gate_do_not_fabricate_a_second_write(counter, qualified, alloc
         assert expected == {'beats': 0}
 
 
-@pytest.mark.parametrize('pc, pos, way, counter', ((-1, 6, 0, 1), (0, 6, 2, 1), (0, 6, 0, 3), (0, 9, 0, 1)))
+@pytest.mark.parametrize('pc, pos, way, counter', ((-1, 6, 0, 1), (0, 6, 2, 1), (0, 6, 0, 3), (0, 17, 0, 1)))
 def test_mixed_reference_rejects_out_of_scope_geometry(pc, pos, way, counter):
     with pytest.raises(ValueError):
         expected_tage_mixed_writes(pc, pos, way, counter)

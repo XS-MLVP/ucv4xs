@@ -13,7 +13,7 @@ def program():
     for name, taken in (('positive', True), ('negative', False)):
         value[name] = phase_contexts(value, taken)
         context = value[name][value['pc']]
-        if context['indices'][0] != 462 or context['tags'][0] != 208 or context['index_pc'] != nodes[3]:
+        if context['indices'][0] != 494 or context['tags'][0] != 112 or context['index_pc'] != nodes[3]:
             raise AssertionError('high index / low lower-tag ancestry changed')
     counts = Counter()
     for pc, _, position in (*edges(value, True), edges(value, False)[0]):

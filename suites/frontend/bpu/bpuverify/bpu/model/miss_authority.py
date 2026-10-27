@@ -27,7 +27,7 @@ class Program:
     @property
     def taken(self):return int(self.allocate)
     @property
-    def direction(self):return dict(row=coordinate(PC)[2],mask=1,values={'0':2}) if self.allocate else None
+    def direction(self):return dict(row=coordinate(PC)[2],mask=4,values={'2':2}) if self.allocate else None
     def state(self):return dict(allocate=self.allocate,same_position=self.same_position,pc=PC,foreign_pc=FOREIGN_PC,
         resident_position=RESIDENT_POSITION,feedback_position=self.position,resident_counter=2,
         semantic_event='miss payload cannot train a resident; allocation initializes only its new identity',

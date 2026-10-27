@@ -12,7 +12,7 @@ def branch(record, *, taken=True, wrong=False):
 
 def actual_profile(prediction):
     return tuple((slot,entry.position,entry.target,
-                  prediction.meta_entries[slot//2][slot%2]['counter_value'])
+                  prediction.meta_entries[slot//5][slot%5]['counter_value'])
                  for slot,entry in enumerate(prediction.entries) if entry.valid)
 
 

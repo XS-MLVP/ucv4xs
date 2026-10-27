@@ -2,7 +2,8 @@
 from bpuverify.mbtb.model.semantic import Entry,Target,coordinate,tag
 
 PC=0x40000800
-PCS=(PC,PC+0x20)
+PCS=(PC,PC+0x80)
+PEER_WAY,TARGET_WAY,DIRECTION_PORT=2,3,4
 PEER_POSITION,POSITION=1,5
 STREAM_PC=PC+0x300
 # Old consumers immediately return to the normally learned early self-loop;
@@ -48,4 +49,4 @@ def observed_counter(bits):
 def entry_plan(main,alignment,bank):
     cache=main.entries[alignment,bank]
     return tuple(tuple(entry_payload(v.write.row,v.write.entry) for v in sorted(cache.records.values(),key=lambda v:v.rank)
-        if v.write.way==way and v.sequence in cache.outstanding) for way in range(2))
+        if v.write.way==way and v.sequence in cache.outstanding) for way in range(4))

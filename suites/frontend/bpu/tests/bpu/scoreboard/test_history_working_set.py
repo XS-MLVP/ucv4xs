@@ -82,7 +82,7 @@ def test_mixed_incoming_program_has_real_independent_consumers_and_nonmasking_te
         assert not originals & {item.read_indices[1] for item in companions}
         assert {(item.read_indices[0],item.tags[0]) for item in companions}=={(path.read_indices[0],path.tags[0])}
         assert all(max(item.tags)<256 for item in companions)  # Full tags, never masked to eight bits.
-        assert max(map(main_capacity,companions))==2
+        assert max(map(main_capacity,companions))<=4
     assert not p.state()['physical_enumeration'] and not p.state()['new_predictor_algorithm']
 
 
@@ -152,20 +152,21 @@ def test_mixed_short_storage_requires_actual_payload_and_real_shadow_turnover(fa
 def test_declared_lifetime_is_capacity_safe_and_has_distinct_real_history_identities(profile):
     p = HistoryWorkingSetProgram(profile)
     assert len({path.read_indices[1] for path in p.paths}) == len(p.paths)
-    assert len({path.ahead_key for path in p.paths}) == 1
+    assert len({path.ahead_key for path in p.paths}) == (16 if profile=='capacity-reverse' else 1)
     assert len(p.positives)+len(p.helpers) == len(p.paths)
-    assert max(max(path.tags) for path in p.paths) <= 63
-    assert max(main_capacity(path) for path in p.paths) == 2
+    assert max(max(path.tags) for path in p.paths) < 256
+    assert max(main_capacity(path) for path in p.paths) <= 4
     assert all(path.edges()[-1].target == ANCHOR for path in p.paths)
     assert all(len({pc for pc in path.pcs}) == 8 for path in p.paths)
-    assert all(edge.pc <= edge.cfi_pc < edge.pc+8 for path in p.paths for edge in path.edges())
+    assert all(edge.pc <= edge.cfi_pc < edge.pc+16 for path in p.paths for edge in path.edges())
     assert all(p.helper_for(path).tail_variant == path.tail_variant for path in p.paths)
+    assert all(p.helper_for(path).ahead_key == path.ahead_key for path in p.paths)
     assert all(path in p.positives for path in p.selected)
     assert p.paths is p.paths and p.positives is p.positives
-    assert all(path.word & 255 == 0 for path in p.helpers)
+    assert all(path.word & 31 == 0 for path in p.helpers)
     assert {path.read_indices[0] for path in p.short_consumers} == {path.read_indices[0] for path in p.paths}
     if profile == 'capacity-reverse':
-        assert len(p.paths) == 512 and len(p.positives) == 510 and len(p.short_prerequisites) == 8
+        assert len(p.paths) == 512 and len(p.positives) == 496 and len(p.short_prerequisites) == 32
 
 
 @pytest.mark.parametrize('profile',SHORT_PROFILES)
@@ -175,9 +176,9 @@ def test_incoming_short_program_has_distinct_owners_without_a_physical_matrix(pr
     assert len({path.read_indices[0] for path in p.paths})==len(p.paths)
     assert len({path.read_indices[1] for path in p.paths})==len(p.paths)
     assert len({path.ahead_key for path in p.paths})==1
-    assert {path.tags[0] for path in p.paths}=={39}
+    assert all(0<=path.tags[0]<32 for path in p.paths)
     assert len({path.tail_variant for path in p.paths})==len(p.paths)
-    assert max(main_capacity(path) for path in p.paths)==2
+    assert max(main_capacity(path) for path in p.paths)<=4
     assert p.selected[0] == (p.positives[0] if profile.endswith('-oldest') else p.positives[-1])
     assert p.helper.read_indices[0] not in {path.read_indices[0] for path in p.positives}
     assert not p.state()['physical_enumeration'] and not p.state()['new_predictor_algorithm']
@@ -232,12 +233,12 @@ def steady_model_source(path):
     edges = ((ANCHOR,12,path.pcs[0]),)+tuple((edge.pc,edge.position,edge.target) for edge in path.edges())
     ways = Counter()
     for pc,pos,destination in edges:
-        address = (pc&~7)+(pos//8)*8
+        address = (pc&~15)+(pos//16)*16
         alignment,bank,row = coordinate(address)
         way = ways[alignment,bank,row]
         ways[alignment,bank,row] += 1
         model.sources.main.memory[alignment,bank,row,way] = MainEntry(
-            tag(address),pos%8,3,0,Target.encode(address,destination))
+            tag(address),pos%16,3,0,Target.encode(address,destination))
         model.sources.main.counters[alignment,bank,row,way] = 2
     samples,early_identities = [],set()
     for _ in range(180):

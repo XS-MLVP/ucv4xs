@@ -108,8 +108,8 @@ def test_numeric_history_alias_requires_an_explicit_owner_not_latest_or_oldest_g
     # taken-edge events: one differing path word, then shifts that hide it
     # from the 13-bit encoding. This is NOT a native FTQ legality proof.
     history=checker.model.history
-    for edge in range(52):
-        checkpoint=history.advance(taken=True,cfi_pc=0,target=2 if edge==40 else 0,
+    for edge in range(532):
+        checkpoint=history.advance(taken=True,cfi_pc=0,target=2 if edge==520 else 0,
             restore=token.history if edge==0 else None)
     assert checkpoint.metadata()==token.history.metadata() and checkpoint.history!=token.history.history
     alias=replace(token,sequence=max(checker.model.published)+1,history=checkpoint)

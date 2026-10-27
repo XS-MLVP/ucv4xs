@@ -15,15 +15,15 @@ def test_main_geometry_is_not_disguised_as_a_history_table_and_all_payloads_are_
     monkeypatch.setattr(module,'memory_signal',signal)
     binding,ports=module.main_service_binding(NS(dut=NS(clock=object())),alignment=0,bank=0)
     sampler=binding.bits.compile_sampler();before=_plain(sampler())
-    assert len(ports)==3
+    assert len(ports)==5
     assert set(before['writes'][0]['bits'])=={'row','tag','position','kind','action','carry','offset'}
-    assert set(before['writes'][2]['bits'])=={'row','mask','counters'}
+    assert set(before['writes'][4]['bits'])=={'row','mask','counters'}
     base='unit.mbtb.alignBanks_0.internalBanks_0.'
     signals[base+'entryWriteBuffer.io_read_1_bits_entry_targetLowerBits'].value=0x1200
     signals[base+'counterWriteBuffer.io_deq_bits_counters_0_value'].value=3
     after=_plain(sampler())
     assert before['writes'][1]['bits']['offset']==0 and after['writes'][1]['bits']['offset']==0x1200
-    assert before['writes'][2]['bits']['counters']==(0,0) and after['writes'][2]['bits']['counters']==(3,0)
+    assert before['writes'][4]['bits']['counters']==(0,0,0,0) and after['writes'][4]['bits']['counters']==(3,0,0,0)
     assert not any('tables_' in name or '__Vdly' in name for name in signals)
 
 
@@ -33,7 +33,7 @@ def test_SC_training_read_observation_has_independent_valid_index_and_bank():
     def signal(name):return signals.setdefault(name,Signal())
     sampler=statistical_bundle(signal).compile_sampler()
     before=_plain(sampler())
-    assert len(before['reads'])==5 and len(before['updates'])==5
+    assert len(before['reads'])==8 and len(before['updates'])==8
     signals['sc.pathTable_0.io_trainReadReq_valid'].value=1
     signals['sc.pathTable_0.io_trainReadReq_bits_setIdx'].value=69
     signals['sc.pathTable_0.io_trainReadReq_bits_bankMask'].value=1
@@ -49,8 +49,8 @@ def test_SC_full_numeric_reads_and_consumed_evidence_have_separate_immutable_sna
     def signal(name):return signals.setdefault(name,Signal())
     sample=statistical_bundle(signal).compile_sampler()
     before=_plain(sample())
-    assert tuple(map(len,before['prediction_read']['words']))==(4,4,4,4,16)
-    assert tuple(map(len,before['prediction_evidence']['words']))==(4,4,4,4,16)
+    assert tuple(map(len,before['prediction_read']['words']))==(8,8,8,8,8,8,8,32)
+    assert tuple(map(len,before['prediction_evidence']['words']))==(8,8,8,8,32)
     signals['sc.globalTable_0.io_predictReadResp_0_ctr_value'].value=63
     signals['sc.s1_globalIdx_0'].value=17
     signals['sc.s1_commonHRValid'].value=1
@@ -58,12 +58,12 @@ def test_SC_full_numeric_reads_and_consumed_evidence_have_separate_immutable_sna
     signals['sc.s2_globalPercsum_r'].value=127
     signals['sc.s2_globalIdx_0'].value=17
     after=_plain(sample())
-    assert before['prediction_read']['words'][1][0]==0
-    assert after['prediction_read']['words'][1][0]==63
-    assert after['prediction_read']['indices'][1]==17 and after['prediction_read']['history_valid']==1
-    assert after['prediction_read']['banks'][1]==2
+    assert before['prediction_read']['words'][2][0]==0
+    assert after['prediction_read']['words'][2][0]==63
+    assert after['prediction_read']['indices'][2]==17 and after['prediction_read']['history_valid']==1
+    assert after['prediction_read']['banks'][2]==2
     assert after['prediction_evidence']['words'][1][0]==127
-    assert after['prediction_evidence']['indices'][1]==17
+    assert after['prediction_evidence']['indices'][2]==17
     assert not any('__Vdly' in name for name in signals)
 
 
@@ -80,7 +80,7 @@ def test_main_learning_receipts_preserve_independent_expected_and_actual_values(
     receipts.capture_state(NS(tick=10),row)
     row['direction']['bits']['counters']=(0,0)
     result=receipts.state()
-    assert result['offers'][0]['expected']['values']==(None,0)
+    assert result['offers'][0]['expected']['values']==(None,0,None,None)
     assert result['offers'][0]['direction']['bits']['counters']==(0,2)
     assert pickle.dumps(main)==before and not result['truncated']
     result['offers'].clear()

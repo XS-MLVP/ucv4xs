@@ -14,11 +14,11 @@ from bpuverify.tage.agent.main import TageAgent
 def test_overlap_requests_keep_bank_set_way_and_two_cold_tags(pc, way):
     expected = expected_tage_overlapped_writes(pc, 6, way, 2, mode='adjacent')
     assert expected['beats'] == 2 and expected['latency_ticks'] == (8, 8)
-    for frame, newcomer in zip(expected['banks'], (9, 10), strict=True):
+    for frame, newcomer in zip(expected['banks'], (17, 18), strict=True):
         ports = frame[pc & 3]
-        assert ports[way] == {'set_idx':(pc >> 2)&127, 'tag':((pc >> 9)&8191)^6,
+        assert ports[way] == {'set_idx':(pc >> 2)&511, 'tag':((pc >> 11)&8191)^6,
                              'counter':1, 'entry_valid':1, 'taken':0}
-        assert ports[1-way] == {'set_idx':(pc >> 2)&127, 'tag':((pc >> 9)&8191)^newcomer,
+        assert ports[1-way] == {'set_idx':(pc >> 2)&511, 'tag':((pc >> 11)&8191)^newcomer,
                                'counter':4, 'entry_valid':1, 'taken':1}
         assert all(bank == (None,None) for i,bank in enumerate(frame) if i != pc&3)
 
@@ -32,11 +32,11 @@ def test_adjacent_old_read_and_separated_current_read_have_distinct_requests(cou
         assert second[0][0] is None
     else:
         assert second[0][0]['counter'] == (counter-1 if mode == 'adjacent' else counter-2)
-    assert second[0][1]['counter'] == 4 and second[0][1]['tag'] == 10
+    assert second[0][1]['counter'] == 4 and second[0][1]['tag'] == 18
 
 
 @pytest.mark.parametrize('pc,position,way,counter,mode', (
-    (-1,6,0,1,'adjacent'), (0,9,0,1,'adjacent'), (0,6,2,1,'adjacent'),
+    (-1,6,0,1,'adjacent'), (0,17,0,1,'adjacent'), (0,6,2,1,'adjacent'),
     (0,6,0,0,'adjacent'), (0,6,0,3,'adjacent'), (0,6,0,1,'fresh'),
 ))
 def test_overlap_reference_rejects_unsupported_scope(pc, position, way, counter, mode):
@@ -52,9 +52,9 @@ def test_write_frames_do_not_share_mutable_port_payloads():
 
 def prepared_states():
     return {6:{'valid':1,'meta':{'providerTakenCtr_value':2,'providerUsefulCtr_value':3,
-                              'providerTableIdx':3,'providerWayIdx':0}},
+                              'providerTableIdx':7,'providerWayIdx':0}},
                 7:{'valid':1,'meta':{'providerTakenCtr_value':5,'providerUsefulCtr_value':0,
-                                   'providerTableIdx':3,'providerWayIdx':1}},
+                                   'providerTableIdx':7,'providerWayIdx':1}},
                 2:{'valid':1,'meta':{'providerTakenCtr_value':7,'providerUsefulCtr_value':3}}}
 
 
@@ -64,8 +64,8 @@ def test_final_reference_saturates_target_replaces_two_victims_and_is_frozen():
     states = expected_tage_overlapped_states(prepared,6,7,0)
     assert prepared == original and states[6]['meta']['providerTakenCtr_value'] == 0
     assert states[6]['meta']['providerUsefulCtr_value'] == 3
-    assert states[7] is states[9] is None and states[2] == prepared[2]
-    assert states[10]['meta']['providerWayIdx'] == 1 and states[10]['meta']['providerTakenCtr_value'] == 4
+    assert states[7] is states[17] is None and states[2] == prepared[2]
+    assert states[18]['meta']['providerWayIdx'] == 1 and states[18]['meta']['providerTakenCtr_value'] == 4
     prepared[2]['meta']['providerTakenCtr_value'] = 0
     assert states[2]['meta']['providerTakenCtr_value'] == 7
 

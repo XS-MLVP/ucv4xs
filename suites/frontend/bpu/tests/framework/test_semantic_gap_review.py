@@ -79,7 +79,7 @@ def test_bpu_parent_excludes_held_s2_call_repair_but_standalone_input_does_not()
     assert held_repair_witnesses(relax_parent=True)
     claims,parent=micro_ras_parent_claims()
     assert parent.path=='rtl/bpu/Bpu.sv'
-    assert {(c['first'],c['last'],c['arm']) for c in claims}=={(133,134,'elsif')}
+    assert {(c['first'],c['last'],c['arm']) for c in claims}=={(135,136,'elsif')}
 
 
 def test_recipe_is_preserved_separately_from_readable_requirement():

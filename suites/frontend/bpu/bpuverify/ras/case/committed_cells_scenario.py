@@ -1,4 +1,5 @@
 """Check complete retained committed cells every cycle using public operations."""
+from bpuverify.common.model.configuration import *
 from copy import deepcopy
 from dataclasses import asdict
 
@@ -15,8 +16,8 @@ def projection(state):
 
 
 async def check_case(agent, observations, *, slot, mode):
-    if type(slot) is not int or slot not in range(8) or mode not in ('normal', 'saturated'):
-        raise ValueError('indexed scope is eight SSP slots times normal/saturated')
+    if type(slot) is not int or slot not in range(RAS_GROUPS) or mode not in ('normal', 'saturated'):
+        raise ValueError('indexed scope is configured SSP slots times normal/saturated')
     await agent.reset()
     reference, checks, records = CommittedStack(), Scoreboard('ras.committed_cells'), []
 
@@ -80,7 +81,7 @@ async def check_case(agent, observations, *, slot, mode):
             cycles=[dict(tick=sample.event.tick, **sample.value) for sample in samples]))
         reference = following
 
-    for index in range((slot - 1) % 8):
+    for index in range((slot - 1) % RAS_GROUPS):
         await operation(2, pc=0x92000000 + 0x40 * index, position=index % 8 + 1, phase='prefix')
     repetitions = 3 if mode == 'normal' else 9
     for index in range(repetitions):
@@ -88,7 +89,7 @@ async def check_case(agent, observations, *, slot, mode):
         if index == 0:
             checks.check(expected=slot, actual=reference.head)
     before_reuse = reference.projection()
-    for index in range(24):
+    for index in range(RAS_SPEC_ENTRIES + 8):
         await operation(2, pc=0x96000000 + 0x40 * index, position=index % 8 + 1, phase='queue_reuse_push')
         await operation(1, phase='queue_reuse_pop')
         checks.check(expected=before_reuse, actual=reference.projection())

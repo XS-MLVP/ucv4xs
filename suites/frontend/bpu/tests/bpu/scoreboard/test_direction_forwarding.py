@@ -1,4 +1,5 @@
 """Own-event programs and synthetic checker faults, not actual DUT coverage."""
+from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT
 from dataclasses import replace
 from copy import deepcopy
 from pathlib import Path
@@ -60,7 +61,7 @@ def establish(**source_options):
         assert tuple(POSITIONS[index] for index,_,is_wrong in path if is_wrong)==(() if wrong is None else (wrong,))
         if operation=='allocate':
             request=model.sources.feedback_for(feedback)
-            for _ in range(128):
+            for _ in range(TAGE_ALLOCATION_WAIT):
                 if model.sources.tage.allocation_at_next_accept(request)==owner:break
                 model.advance(idle)
             else:raise AssertionError('independent allocation opportunity not reached')
@@ -77,7 +78,7 @@ def test_full_semantic_preparation_derives_two_opposite_longest_history_owners_w
     assert first is not second and first.history is not second.history
     assert model.sources.snapshot(first).read==model.sources.snapshot(second).read
     assert values(model,first)==values(model,second)==((1,2),(2,5))
-    assert tuple(model.sources.snapshot(first).read.matches(position)[-1][:2] for position in POSITIONS)==((3,0),(3,1))
+    assert tuple(model.sources.snapshot(first).read.matches(position)[-1][:2] for position in POSITIONS)==((7,0),(7,1))
 
 
 def test_adjacent_feedback_uses_immutable_old_hints_but_forwards_both_learning_results():

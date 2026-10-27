@@ -1,6 +1,7 @@
 """Opposite outcomes to one SC way cancel within a single feedback beat."""
 
 from __future__ import annotations
+from bpuverify.common.model.configuration import *
 
 import pytest
 
@@ -17,7 +18,7 @@ from bpuverify.common.env.paths import REPO_ROOT
 
 
 EARLIER_POSITION = 1
-LATER_POSITION = 4
+LATER_POSITION = 8
 
 
 @pytest.mark.feature("BPU-SC-014")

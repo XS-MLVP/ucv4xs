@@ -1,6 +1,7 @@
 """bpuverify.tage.agent.main components."""
 
 from __future__ import annotations
+from bpuverify.common.model.configuration import TAGE_TABLES
 import asyncio
 from contextlib import suppress
 from copy import deepcopy
@@ -76,6 +77,7 @@ class TageAgent:
                 ),
                 "tage.lookup_s0_s1",
             ),
+            capacity=4 * (2 * TAGE_TABLES + 2),
             idle=lambda request: {
                 "s0_fire": 0,
                 "s1_fire": 0 if request is None else 1,
@@ -109,6 +111,7 @@ class TageAgent:
         self.reference_monitor = TageSemanticMonitor(dut, self.ports)
         self.prediction_scoreboard = Scoreboard(
             "tage.prediction",
+            capacity=4 * (2 * TAGE_TABLES + 2),
             compare=compare_prediction,
             expected=self.reference.response_expected,
         )
@@ -386,7 +389,7 @@ class TageAgent:
         return await self.submit_predict_branches(pc, branches, history=history)
 
     async def drain_predictions(self):
-        result = await self.prediction_scoreboard.drain(timeout_cycles=64)
+        result = await self.prediction_scoreboard.drain(timeout_cycles=self.prediction_scoreboard.capacity + 4)
         await self._drain_base_tasks()
         self.reference.raise_failure()
         return result

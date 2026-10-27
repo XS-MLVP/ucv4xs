@@ -64,7 +64,7 @@ def test_normal_single_owner_pressure_creates_different_logical_service_orders_w
             model.advance(event)
             if not learning_inflight(model.sources.tage):
                 break
-        assert pending_plan(model.sources.tage, 3, PC % 4) == concrete_plan(checks, model, inputs, expected)
+        assert pending_plan(model.sources.tage, 7, PC % 4) == concrete_plan(checks, model, inputs, expected)
     assert SERVICE_IDENTITIES[0] != SERVICE_IDENTITIES[1]
     for name, path in HISTORY_PATHS.items():
         middle = streaming_query(model, event, anchor.history, path, anchor.pc + 4)

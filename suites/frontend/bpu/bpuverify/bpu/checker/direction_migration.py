@@ -13,7 +13,7 @@ class DirectionMigrationChecks:
         self.pipeline,self.coverage,self.original_way=pipeline,coverage,original_way
         self.rules=getattr(coverage,'rules',RULES)
         self.commit_counters=(5,)
-        self.table,self.bank=3,PC%4
+        self.table,self.bank=7,PC%4
         self.prepared_labels=[]
         self.preparing=None
         self.original=None
@@ -90,8 +90,8 @@ class DirectionMigrationChecks:
         self.check(None,self.before,'one delayed-source experiment')
         self.check(True,self.original is not None,'genuine original source retained before migration')
         self.check(set(PATHS),set(profile),'all three logical keys, not only the migrated one')
-        self.check((3,(3,self.original_way,5,0)),self.value(self.original),'old provider owner/counter and agreeing taken base')
-        expected=dict(original=(2,(3,1-self.original_way,4,0)),newcomer=(2,(3,self.original_way,5,1)),blocker=(2,None))
+        self.check((3,(7,self.original_way,5,0)),self.value(self.original),'old provider owner/counter and agreeing taken base')
+        expected=dict(original=(2,(7,1-self.original_way,4,0)),newcomer=(2,(7,self.original_way,5,1)),blocker=(2,None))
         for name,source in profile.items():self.check(expected[name],self.value(source),'current migrated/neighbor/displaced-key profile')
         reads={name:self.read(source) for name,source in profile.items()}
         self.check(3,len({r.context for r in reads.values()}),'three genuine history identities')
@@ -151,7 +151,7 @@ class DirectionMigrationChecks:
         self.check(True,name in PATHS and name not in self.consumers,'one new consumer for each exact logical key')
         self.check(True,source.prediction_tick>self.written[-1][0],'consumer is a new post-commit lookup')
         self.check(self.read(self.before[name]).context,self.read(source).context,'consumer belongs to its original logical history')
-        expected=dict(original=(3,(3,1-self.original_way,self.commit_counters[-1],0)),newcomer=(3,(3,self.original_way,5,1)),blocker=(3,None))
+        expected=dict(original=(3,(7,1-self.original_way,self.commit_counters[-1],0)),newcomer=(3,(7,self.original_way,5,1)),blocker=(3,None))
         self.check(expected[name],self.value(source),'migrated result, neighbour useful and displaced-key miss')
         self.check(((source.prediction_tick+2,2),),self.pipeline.corrections_for_source(source),'complete consumer repair sequence')
         self.consumers[name]=source

@@ -1,4 +1,5 @@
 """Bounded, independent MainBTB multi-hit cleanup plus retarget expectations."""
+from bpuverify.common.model.configuration import *
 from copy import deepcopy
 from dataclasses import replace
 
@@ -10,26 +11,26 @@ def expected_mbtb_cleanup_states(duplicate, neighbor, pc, align, way, target):
     not initialize counters, and a same-attribute indirect retarget preserves
     them. Inputs are immutable full public profiles, not encoder output.
     """
-    if align not in (0, 1) or way not in (0, 1):
+    if align not in (0, 1) or way not in range(MAIN_WAYS):
         raise ValueError('cleanup requires a physical align bank and way')
-    lower, upper = align * 2, align * 2 + 1
+    lower, upper = align * (MAIN_WAYS + 1), align * (MAIN_WAYS + 1) + 1
     entries = duplicate['entries']
-    if len(entries) != 4 or any(entry.valid for index, entry in enumerate(entries) if index not in (lower, upper)):
+    if len(entries) != RESULT_SLOTS or any(entry.valid for index, entry in enumerate(entries) if index not in (lower, upper)):
         raise ValueError('cleanup requires exactly two active duplicate ways')
     if not all(entries[index].valid and entries[index].branch_type == 3 for index in (lower, upper)) or entries[lower].position != entries[upper].position:
         raise ValueError('cleanup requires same-position indirect duplicates')
     if any(duplicate['meta_entries'][align][index]['counter_value'] != 2 for index in range(2)):
         raise ValueError('cleanup reference requires weak-positive duplicate counters')
-    chosen = neighbor['entries'][align * 2 + way]
+    chosen = neighbor['entries'][align * (MAIN_WAYS + 1) + way]
     if not chosen.valid or chosen.branch_type != 3 or neighbor['meta_entries'][align][way]['counter_value'] != 2:
         raise ValueError('cleanup reference requires a weak-positive indirect neighbor')
     cleaned, updated = deepcopy(duplicate), deepcopy(neighbor)
     cleaned['entries'] = tuple(replace(entry, valid=0, target=pc & ~((1 << 20) - 1),
-        position=align * 8, branch_type=0, ras_action=0) if index == upper else entry
+        position=align * ALIGN_HALFWORDS, branch_type=0, ras_action=0) if index == upper else entry
         for index, entry in enumerate(entries))
-    cleaned['meta_entries'][align][1].update(rawHit=0, position=align * 8,
+    cleaned['meta_entries'][align][1].update(rawHit=0, position=align * ALIGN_HALFWORDS,
         attribute=dict(branchType=0, rasAction=0))
-    updated['entries'] = tuple(replace(entry, target=target) if index == align * 2 + way else entry
+    updated['entries'] = tuple(replace(entry, target=target) if index == align * (MAIN_WAYS + 1) + way else entry
         for index, entry in enumerate(updated['entries']))
     return cleaned, updated
 
@@ -38,8 +39,8 @@ def mbtb_entry_slot(vector, *, dirty=0):
     """This scenario uses Fit targets and positions within one align bank."""
     if vector.pc >> 20 != vector.target >> 20:
         raise ValueError('cleanup native reference requires a Fit target')
-    return dict(valid=1, dirty=dirty, set_idx=(vector.pc >> 5) & 63,
-        tag=(vector.pc >> 11) & 65535, position=vector.position % 8,
+    return dict(valid=1, dirty=dirty, set_idx=(vector.pc >> 7) & (MAIN_ROWS - 1),
+        tag=(vector.pc >> 15) & 65535, position=vector.position % ALIGN_HALFWORDS,
         branch_type=vector.branch_type, ras_action=0, carry=0,
         lower=vector.target & ((1 << 20) - 1))
 
@@ -50,7 +51,7 @@ def expected_mbtb_cleanup_dual(original, changed, extra, updated, depth, shadow_
         raise ValueError('cleanup native reference requires depth zero/one and dirty/clean')
     empty = dict(valid=0, dirty=0, set_idx=0, tag=0, position=0,
                  branch_type=0, ras_action=0, carry=0, lower=0)
-    clear = dict(empty, valid=1, set_idx=(original.pc >> 5) & 63,
+    clear = dict(empty, valid=1, set_idx=(original.pc >> 7) & (MAIN_ROWS - 1),
                  dirty=int(shadow_state == 'dirty'))
     before = [[mbtb_entry_slot(changed), mbtb_entry_slot(extra) if depth else deepcopy(empty)],
               [clear, deepcopy(empty)]]

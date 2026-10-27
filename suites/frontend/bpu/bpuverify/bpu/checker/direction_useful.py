@@ -12,7 +12,7 @@ from bpuverify.bpu.model.tage.useful_service import PROGRAM,pending_useful,occup
 class DirectionUsefulChecks(DirectionForwardingChecks):
     def __init__(self,pipeline,coverage):
         super().__init__(pipeline,coverage)
-        self.program=PROGRAM;self.table,self.bank=3,PC%4
+        self.program=PROGRAM;self.table,self.bank=7,PC%4
         self.plan=();self.contexts=();self.original_metadata=()
         self.input_ticks=[];self.proposals=[];self.written=[]
         self.holding=False;self.last=None;self.pending_checked=False;self.release_tick=None
@@ -29,7 +29,7 @@ class DirectionUsefulChecks(DirectionForwardingChecks):
         values=[]
         for position in POSITIONS:
             matches=read.matches(position)
-            self.check(((3,len(values)),),tuple(match[:2] for match in matches),'exact original longest-history owners')
+            self.check(((7,len(values)),),tuple(match[:2] for match in matches),'exact original longest-history owners')
             values.append(matches[-1][3])
         return tuple(values)
 
@@ -39,7 +39,7 @@ class DirectionUsefulChecks(DirectionForwardingChecks):
         tokens=tuple(self.values(source)[0] for source in sources)
         self.check(len(tokens),len({id(token.history) for token in tokens}),'distinct immutable checkpoint owners')
         reads=tuple(self.read(source) for source in sources)
-        self.check(True,reads[0].context!=reads[1].context and reads[0].rows[3]!=reads[1].rows[3],
+        self.check(True,reads[0].context!=reads[1].context and reads[0].rows[7]!=reads[1].rows[7],
             'two genuine histories and distinct useful rows, not duplicate labels')
         self.check((reads[0],reads[1]),(reads[2],reads[3]),'revisited histories retain identical original reads')
         for index,(source,token) in enumerate(zip(sources,tokens,strict=True)):
@@ -55,7 +55,7 @@ class DirectionUsefulChecks(DirectionForwardingChecks):
                         'negative provider is correct against a positive original base, without a reread')
         self.sources=tuple(sources);self.contexts=tuple(read.context for read in reads[:2])
         self.original_metadata=tuple(deepcopy(self.pipeline.model.sources.defined_metadata(token)) for token in tokens)
-        self.plan=tuple(dict(row=read.rows[3],value=1) for read in reads)
+        self.plan=tuple(dict(row=read.rows[7],value=1) for read in reads)
 
     def begin_read_window(self):
         self.check(4,len(self.sources),'source qualification precedes continuous read service')

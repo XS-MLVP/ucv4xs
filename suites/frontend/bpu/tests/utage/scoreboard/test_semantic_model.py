@@ -47,20 +47,20 @@ def learn(model, request):
 def test_algorithm_has_no_native_driver_or_framework_dependency():
     tree = ast.parse(Path('bpuverify/utage/model/semantic.py').read_text())
     assert [node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)] == [
-        'dataclasses', 'bpuverify.common.model.folded_history']
+        'dataclasses', 'bpuverify.common.model.configuration', 'bpuverify.common.model.folded_history']
     assert not any(isinstance(node, ast.Import) for node in ast.walk(tree))
 
 
 @pytest.mark.parametrize('history', (0, 1, 63, 64, 255, 511, 4095, (1 << 31) - 1))
 def test_history_features_use_bit_parity_not_driver_chunk_algorithm(history):
     context = Context.from_recent(history)
-    low, high = history & 63, history & 4095
-    assert indices(PC, context) == (low, (high & 511) ^ (high >> 9))
+    low, high = history & 31, history & 511
+    assert indices(PC, context) == (low, high)
     assert context.folds[0] == history & 15
 
 
-@pytest.mark.parametrize('pc,expected', ((PC, (0, 0)), (PC | 2, (64, 64)), (PC | 512, (8192, 1024))))
-def test_tag_preserves_declared_fifteen_bit_address_features(pc, expected):
+@pytest.mark.parametrize('pc,expected', ((PC, (0, 0)), (PC | 2, (32, 0)), (PC | 8, (128, 0)), (PC | 1024, (16, 32)), (PC | 16384, (0, 128))))
+def test_tag_preserves_configured_eight_bit_address_features(pc, expected):
     assert tuple(tag(pc, Context(), table) for table in range(2)) == expected
 
 
@@ -273,17 +273,17 @@ def test_s3_override_uses_pre_boundary_older_snapshot_not_newly_advanced_frame()
 
 def test_full_tag_entry_survives_eviction_from_recent_versions_without_truncation():
     model = UtageReference()
-    pc = PC | 512
+    pc = PC | 8
     learn(model, feedback(lookup(model, pc)))
-    entry = model.updates[0].newest(0).entry
-    assert entry.tag == 8192
+    entry = model.updates[0].newest(8).entry
+    assert entry.tag == 128
     # Model-only retirement and eight different keys replace retained versions.
-    for index in range(1, 10):
+    for index in range(16, 25):
         write = model.updates[0].advance(index % 4, (index, Entry(True, index, 5, 4)))
         if write is not None:
             model.memory[0][write.index] = write.entry
-    assert model.updates[0].newest(0) is None
-    assert model.memory[0][0].tag == 8192
+    assert model.updates[0].newest(8) is None
+    assert model.memory[0][8].tag == 128
 
 
 def test_learning_hold_indices_are_still_obligations_for_actual_comparison():

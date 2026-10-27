@@ -1,7 +1,8 @@
 """Sparse resolve-port contracts; no claim of full-program FTQ trace legality."""
+from bpuverify.common.model.configuration import *
 from bpuverify.tage.transaction.types import TageBatchTraining
 from bpuverify.tage.transaction.types import TageBranchFeedback
-from bpuverify.tage.checker.assertions import prepare_highest_provider
+from bpuverify.tage.checker.assertions import prepare_highest_provider, await_cold_allocation
 from bpuverify.tage.case.definitions import PC
 
 
@@ -57,14 +58,15 @@ async def check_provider_matrix(agent, coverage):
             expected = {}
             seen = set()
             async with agent.observe_training() as observations:
-                for position in range(16):
+                for position in range(TAGE_TABLES):
                     cold = await agent.predict(PC, position, base, base_conf=1)
                     assert cold.meta['hasProvider'] == 0, cold
+                    desired = await await_cold_allocation(agent, pc=PC, position=position, taken=direction, base=base, table=position)
                     await agent.train_checked(sparse(slot, feedback(position, cold, direction, base)), observations)
                     allocated = await agent.predict(PC, position, base, base_conf=1)
                     assert allocated.meta['hasProvider'] == 1 and allocated.meta['hasAlt'] == 0, allocated
                     depth, way = allocated.meta['providerTableIdx'], allocated.meta['providerWayIdx']
-                    assert depth in range(4) and way in range(2)
+                    assert (depth, way) == desired
                     counter = 4 if direction else 3
                     expected[position] = (1, depth, way, counter, 0)
                     current = await read_residents(agent, tuple(expected), base, expected)
@@ -80,9 +82,9 @@ async def check_provider_matrix(agent, coverage):
                         current = await read_residents(agent, tuple(expected), base, expected, taken=direction)
                         coverage.sample({'slot': slot, 'direction': direction, 'depth': depth, 'phase': phase})
                     seen.add(depth)
-                    if seen == {0, 1, 2, 3}:
+                    if seen == set(range(TAGE_TABLES)):
                         break
-                assert seen == {0, 1, 2, 3}, (slot, direction, seen)
+                assert seen == set(range(TAGE_TABLES)), (slot, direction, seen)
 
 
 async def check_qualification_matrix(agent, coverage):

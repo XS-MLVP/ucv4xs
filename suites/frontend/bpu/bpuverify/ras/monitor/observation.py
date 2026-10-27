@@ -1,4 +1,6 @@
 """bpuverify.ras.monitor.observation components."""
+from bpuverify.common.model.configuration import *
+
 
 from bpuverify.common.env.memory_direct import memory_signal
 from bpuverify.common.env.memory_direct import memory_signal_names
@@ -20,7 +22,7 @@ def committed_state(dut):
         return memory_signal(dut, matches[0].split('.', 1)[1])
 
     return Bundle(head=signal('nsp'), cells=tuple(Bundle(address=signal(f'commitStack_{slot}_retAddr_addr'),
-        counter=signal(f'commitStack_{slot}_ctr')) for slot in range(8)))
+        counter=signal(f'commitStack_{slot}_ctr')) for slot in range(RAS_GROUPS)))
 
 
 class RasCommittedMonitor(CycleMonitor):
@@ -36,7 +38,7 @@ class RasCommittedMonitor(CycleMonitor):
             return memory_signal(dut, matches[0].split('.', 1)[1])
 
         cells = tuple(Bundle(address=signal(f'commitStack_{slot}_retAddr_addr'),
-            counter=signal(f'commitStack_{slot}_ctr')) for slot in range(8))
+            counter=signal(f'commitStack_{slot}_ctr')) for slot in range(RAS_GROUPS))
         binding = PortBinding(dut.clock, Bundle(reset=dut.reset, enable=agent.ports.speculative.bits.enable,
             speculative=Bundle(valid=agent.ports.speculative.valid, bits=agent.ports.speculative.bits),
             commit=Bundle(valid=agent.ports.commit.valid, bits=agent.ports.commit.bits),

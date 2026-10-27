@@ -1,4 +1,5 @@
 """Five-edge recurrence: vary cadence without weakening physical requirements."""
+from bpuverify.common.model.configuration import PHR_STORAGE_BITS, MAIN_WAYS
 from collections import Counter
 from bpuverify.bpu.model.phr.model import BpuPhrReference
 from bpuverify.bpu.model.phr.model import MASK
@@ -38,7 +39,7 @@ def steady_indices(intent, alias, goal):
             if cycle:
                 result[row['pc']] = created[-2]
             created.append(physical_index(row['target'], history))
-            branch_pc = (row['pc'] & ~7) + row['position']
+            branch_pc = (row['pc'] & ~15) + row['position']
             history = (history << 2 ^ path_hash(branch_pc, row['target'])) & 15
     return result
 
@@ -51,7 +52,7 @@ def plan(bank, entry_set):
             continue
         intent['extra_pcs'] = extra
         residents = capacity(intent)
-        if max(residents.values()) > 2:
+        if max(residents.values()) > MAIN_WAYS:
             continue
         peers, okay = (set(), True)
         for alias, (a, _, _, _) in enumerate(intent['cycles']):
@@ -70,6 +71,7 @@ def plan(bank, entry_set):
     raise AssertionError(('no five-node full-alias layout', bank, entry_set))
 
 def joint_proof(intent, rounds=16):
+    rounds=max(rounds,(PHR_STORAGE_BITS+7)//8+2)
     full_checks = target_checks = 0
     for alias, (a, _, _, d) in enumerate(intent['cycles']):
         model, index, history = (BpuPhrReference(), IndexReference(), 0)
@@ -95,7 +97,7 @@ def joint_proof(intent, rounds=16):
                     inputs = boundary(model, source, target)
                     inputs['s1']['prediction'].update(position=position, taken=1)
                     model.advance(inputs, reset=0)
-                    history = (history << 2 ^ path_hash((source & ~7) + position, target)) & MASK
+                    history = (history << 2 ^ path_hash((source & ~15) + position, target)) & MASK
                     assert model.logical() == history
                     if cycle >= 1:
                         assert history != 0

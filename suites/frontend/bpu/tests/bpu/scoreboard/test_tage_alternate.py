@@ -160,18 +160,20 @@ def statement(source,name):
     return re.sub(r'\s+','',text[start:text.index(';',start)])
 
 
-@pytest.mark.parametrize('presence',range(16))
+@pytest.mark.parametrize('presence',range(256))
 def test_compiled_highest_table_alt_guard_does_not_make_the_outer_alt_expression_unreachable(presence):
     # Local two-state Boolean review only: no native denominator exclusion,
     # no broad formal claim, and no runtime/golden use of compiled RTL text.
     source = Path('rtl/bpu/Tage.sv').read_text()
-    assert statement(source,'_GEN_5') == '_GEN_5={s2_hits_2_3,s2_hits_2_2}'
-    assert statement(source,'providerTableOH_2') == "providerTableOH_2=(|_GEN_5)?((|s2_hits_2_3)?4'h8:4'h4):(|s2_hits_2_1)?4'h2:4'h1"
+    assert statement(source,'_GEN_9') == '_GEN_9={s2_hits_2_7,s2_hits_2_6}'
+    assert statement(source,'_GEN_10') == '_GEN_10={s2_hits_2_7,s2_hits_2_6,s2_hits_2_5,s2_hits_2_4}'
+    assert statement(source,'_GEN_11') == '_GEN_11={s2_hits_2_3,s2_hits_2_2}'
+    assert statement(source,'providerTableOH_2') == "providerTableOH_2=(|_GEN_10)?((|_GEN_9)?((|s2_hits_2_7)?8'h80:8'h40):(|s2_hits_2_5)?8'h20:8'h10):(|_GEN_11)?((|s2_hits_2_3)?8'h8:8'h4):(|s2_hits_2_1)?8'h2:8'h1"
     assert statement(source,'_hitTableMaskNoProvider_T_2') == '_hitTableMaskNoProvider_T_2=~providerTableOH_2'
-    assert statement(source,'_alt_T_21') == '_alt_T_21=(|s2_hits_2_3)&_hitTableMaskNoProvider_T_2[3]'
-    hit = tuple(bool(presence & (1<<table)) for table in range(4))
-    provider = 8 if hit[3] else 4 if hit[2] else 2 if hit[1] else 1
-    highest_alt = hit[3] and not (provider & 8)
-    shorter_alt = hit[2] and not (provider & 4)
+    assert statement(source,'_alt_T_49') == '_alt_T_49=(|s2_hits_2_7)&_hitTableMaskNoProvider_T_2[7]'
+    hit = tuple(bool(presence & (1<<table)) for table in range(8))
+    provider = 1 << max((t for t in range(8) if hit[t]), default=0)
+    highest_alt = hit[7] and not (provider & 128)
+    shorter_alt = hit[6] and not (provider & 64)
     assert not highest_alt
-    assert bool(highest_alt or shorter_alt) == bool(hit[3] and hit[2])
+    assert bool(highest_alt or shorter_alt) == bool(hit[7] and hit[6])

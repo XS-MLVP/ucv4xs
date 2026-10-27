@@ -76,9 +76,9 @@ def test_opposed_paths_accumulate_from_distinct_sources_and_recover_without_shar
 
 def test_program_geometry_shares_short_but_distinguishes_long_and_cold_without_a_bank_sweep():
     model = LongHistoryLearning()
-    assert {address(p)[0] for p in ('a','b','fallback')}=={32}
-    assert tuple(address(p)[1] for p in ('a','b','fallback'))==(161,165,163)
-    assert address('cold')[0]!=32
+    assert {address(p)[0] for p in ('a','b','fallback')}=={0}
+    assert tuple(address(p)[1] for p in ('a','b','fallback'))==(32,160,96)
+    assert address('cold')[0]!=0
     assert model.states==dict(a=ProtectionState(3,2),b=ProtectionState(4,2))
 
 

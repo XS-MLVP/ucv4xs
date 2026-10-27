@@ -8,7 +8,7 @@ from bpuverify.mbtb.model.semantic import MbtbReference,Events,Feedback,Branch,c
 
 
 def pending(model):
-    return model.offered is not None or any(model.entry_offers.values()) or any(
+    return bool(model.snapshots or model.cleanup) or model.offered is not None or any(model.entry_offers.values()) or any(
         c.outstanding for c in model.entries.values()) or any(q.pending for q in model.directions.values())
 
 
@@ -22,7 +22,7 @@ def settle(model,*,busy=False,service=True):
 
 
 def feedback(frame,position,target,kind,*,taken=True,wrong=True):
-    return Feedback((frame.pc,(frame.pc//8+1)*8),source_entries(frame),
+    return Feedback((frame.pc,(frame.pc//16+1)*16),source_entries(frame),
         (Branch(target,taken,position,kind,0,wrong),))
 
 
@@ -40,7 +40,7 @@ def test_existing_independent_Main_model_derives_last_arrival_and_unchanged_sibl
     teach(model,model.lookup_snapshot(PC+EARLIER+1),LATER,LATER_TARGET,1)
     for _ in range(2-counter):
         frame=model.lookup_snapshot(PC+EARLIER+1)
-        teach(model,frame,LATER,LATER_TARGET,1,taken=False,wrong=bool(frame.values()['1.taken']))
+        teach(model,frame,LATER,LATER_TARGET,1,taken=False,wrong=bool(frame.values()['3.taken']))
     teach(model,model.lookup_snapshot(PC),EARLIER,INITIAL_TARGET,3)
     frames=tuple(model.lookup_snapshot(PC) for _ in range(2));original=deepcopy(frames)
     before_entries=model.entry_commits;before_directions=model.counter_commits
@@ -54,8 +54,8 @@ def test_existing_independent_Main_model_derives_last_arrival_and_unchanged_sibl
     assert model.entry_commits-before_entries==len(p.services)
     assert model.counter_commits-before_directions==2
     values=model.lookup_snapshot(PC).values()
-    assert (values['0.position'],values['0.target'],values['0.counter'])==(EARLIER,p.final_target,2)
-    assert (values['1.position'],values['1.target'],values['1.counter'],values['1.taken'])==(LATER,LATER_TARGET,counter,False)
+    assert (values['2.position'],values['2.target'],values['2.counter'])==(EARLIER,p.final_target,2)
+    assert (values['3.position'],values['3.target'],values['3.counter'],values['3.taken'])==(LATER,LATER_TARGET,counter,False)
     assert frames==original and frames[0] is not frames[1]
 
 

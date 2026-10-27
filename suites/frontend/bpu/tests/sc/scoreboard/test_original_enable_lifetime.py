@@ -54,9 +54,9 @@ def disabled_queries(program,checks,*,fault=None):
     for ordinal,owner in enumerate(program.owners):
         item=transfer(program,owner,1100+ordinal,1100+4*ordinal)
         witness=dict(program.actual_input(owner),enabled=False)
-        prediction=ScPrediction(0,0,{'undefined_disabled_payload':owner.name},(0,0,0,0),(0,0,0,0))
+        prediction=ScPrediction(0,0,{'undefined_disabled_payload':owner.name},(0,)*10,(0,)*10)
         if fault=='wrong-enabled':witness['enabled']=True
-        elif fault=='used-invalid':prediction=replace(prediction,useds=(1,0,0,0))
+        elif fault=='used-invalid':prediction=replace(prediction,useds=(1,)+(0,)*9)
         elif fault=='old-query':item=transfer(program,owner,1100+ordinal,900)
         elif fault=='wrong-owner':witness['pc']=program.owners[1-ordinal].pc
         checks.disabled_query(owner,item,prediction,witness)
@@ -98,7 +98,7 @@ def positive_controls(program,checks,*,family_fault=None):
             prediction=actual(expected)
             if family_fault is not None:
                 family,offset=family_fault
-                weight=(3-step)*(1 if owner.outcome else -1)+offset
+                weight=(program.warm_votes-step)*(1 if owner.outcome else -1)+offset
                 prediction.meta['debug'][family]=(int(weight>=0),*prediction.meta['debug'][family][1:])
             checks.reverse_consumer(owner,transfer(program,owner,sequence+1,tick+6),prediction,program.actual_input(owner))
             sequence+=2
@@ -114,7 +114,7 @@ def test_both_original_branches_survive_disable_and_only_fresh_enabled_controls_
     assert coverage.groups['checked'].coverage==0
     positive_controls(program,checks)
     checks.finish()
-    assert len(checks.sources)==56 and len(checks.spent)==19
+    assert len(checks.sources)==46 and len(checks.spent)==13
     assert checks.fresh_same_results=={'a','b'}
     assert coverage.groups['checked'].coverage==25.0
     with pytest.raises(AssertionError):checks.finish()

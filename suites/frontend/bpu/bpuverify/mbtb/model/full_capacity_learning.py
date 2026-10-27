@@ -5,6 +5,7 @@ Capacity and LRU belong to this configuration; neither observed ways nor
 invalid metadata counters are used to construct the expected residents.
 """
 from dataclasses import dataclass, replace
+from bpuverify.mbtb.model.replacement import MbtbFourWayLru
 
 MODES = ('serial', 'adjacent')
 ORDERS = ('forward', 'reverse')
@@ -29,7 +30,7 @@ class Branch:
     way: int = -1
 
     def values(self):
-        return (self.way, self.position, self.target,
+        return (((self.pc // 16) % 2) * 5 + self.way, self.position, self.target,
                 int(self.kind != 1 or self.counter >= 2), self.kind, self.action, self.counter)
 
 
@@ -46,15 +47,20 @@ class FullCapacityProgram:
         self.branches = {r.owner: r for r in (
             Branch('old-a', PC, 1, 0x40008020),
             Branch('old-b', PC + TAG_STRIDE, 5, 0x40008140),
+            Branch('old-c', PC + 5 * TAG_STRIDE, 7, 0x40008240),
+            Branch('old-d', PC + 6 * TAG_STRIDE, 9, 0x40008340),
             Branch('new-a', PC + 2 * TAG_STRIDE, new_positions[0], 0x40009260),
             Branch('new-b', PC + 3 * TAG_STRIDE, new_positions[1], 0x4000A380),
             Branch('target-probe', PC + 4 * TAG_STRIDE, 3, 0x4000B4A0),
             Branch('neighbor-a', NEIGHBOR, 3, 0x4000C5C0),
             Branch('neighbor-b', NEIGHBOR + TAG_STRIDE, 5, 0x4000D6E0, kind=2, action=1),
             Branch('neighbor-probe', NEIGHBOR + 2 * TAG_STRIDE, 1, 0x4000E800),
+            Branch('neighbor-c', NEIGHBOR + 3 * TAG_STRIDE, 7, 0x4000D800),
+            Branch('neighbor-d', NEIGHBOR + 4 * TAG_STRIDE, 9, 0x4000DA00),
         )}
         self.sequence = ('new-a', 'new-b') if order == 'forward' else ('new-b', 'new-a')
-        residents, victim = {}, dict(target=1, neighbor=1)
+        residents, displaced = {}, {}
+        ages = {name:MbtbFourWayLru() for name in ('target','neighbor')}
         self.stages, self.victims = {}, {}
 
         def group(owner):
@@ -62,26 +68,28 @@ class FullCapacityProgram:
 
         def allocate(owner):
             r = self.branches[owner]
-            way = victim[group(owner)]
+            way = ages[group(owner)].allocate()
             for old, resident in tuple(residents.items()):
                 if group(old) == group(owner) and resident.way == way:
+                    displaced[old] = replace(resident,way=4,counter=2)
                     del residents[old]
             residents[owner] = replace(r, way=way)
-            victim[group(owner)] = 1 - way
 
         def learn(owner, taken):
             r = residents[owner]
             residents[owner] = replace(r, counter=max(0, min(3, r.counter + (1 if taken else -1))))
             if taken:
-                victim[group(owner)] = 1 - r.way
+                ages[group(owner)].touch(r.way)
 
         def save(stage):
-            self.stages[stage] = tuple(residents.values())
-            self.victims[stage] = dict(victim)
+            self.stages[stage] = (*residents.values(),*displaced.values())
+            self.victims[stage] = {name:age.victim for name,age in ages.items()}
 
         allocate('old-a'); allocate('old-b')
         learn('old-a', False); learn('old-a', False); learn('old-b', True)
-        allocate('neighbor-a'); allocate('neighbor-b'); learn('neighbor-a', True)
+        allocate('old-c'); allocate('old-d')
+        allocate('neighbor-a'); allocate('neighbor-b')
+        allocate('neighbor-c'); allocate('neighbor-d'); learn('neighbor-a', True)
         save('prepared')
         for owner in self.sequence:
             allocate(owner)
@@ -96,6 +104,20 @@ class FullCapacityProgram:
     def profile(self, stage, owner):
         pc = self.branches[owner].pc
         return tuple(r.values() for r in self.stages[stage] if r.pc == pc)
+
+    def raw_hits(self, stage, owner):
+        # Main metadata reports tag hits even when the adjacent window is
+        # suppressed at a page boundary. Victim results remain qualified.
+        pc = self.branches[owner].pc
+        hits = [0] * 10
+        for address in (pc, (pc // 16 + 1) * 16):
+            for record in self.stages[stage]:
+                if record.pc != address:
+                    continue
+                if record.way == 4 and address // 2048 != pc // 2048:
+                    continue
+                hits[((address // 16) % 2) * 5 + record.way] = 1
+        return tuple(hits)
 
     def state(self):
         return dict(order=self.order, position_relation=self.position_relation,

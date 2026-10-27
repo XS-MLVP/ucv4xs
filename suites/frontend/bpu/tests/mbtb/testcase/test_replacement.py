@@ -25,7 +25,10 @@ async def test_fifth_same_physical_set_entry_replaces_one_way(mbtb_agent):
         if any(entry.valid for entry in prediction.entries)
     ]
 
-    assert len(hits) == NUM_WAYS
+    assert len(hits) == NUM_WAYS + 1
+    main_hits = sum(any(entry.valid for slot, entry in enumerate(p.entries) if slot % 5 != 4) for p in predictions)
+    victim_hits = sum(any(entry.valid for slot, entry in enumerate(p.entries) if slot % 5 == 4) for p in predictions)
+    assert (main_hits, victim_hits) == (NUM_WAYS, 1)
     assert any(entry.valid for entry in predictions[-1].entries)
     for vector, prediction in hits:
         assert_vector_hit(prediction, vector)

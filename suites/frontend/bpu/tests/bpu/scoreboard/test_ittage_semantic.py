@@ -19,7 +19,7 @@ def scalar(value):
 
 
 def inputs(*, training=False, qualified=True):
-    context = tuple(SimpleNamespace(index=scalar(0), tag=scalar(0), secondary=scalar(0)) for _ in range(3))
+    context = tuple(SimpleNamespace(index=scalar(0), tag=scalar(0), secondary=scalar(0)) for _ in range(5))
     metadata = SimpleNamespace(provider=SimpleNamespace(valid=scalar(0), bits=scalar(3)),
         altProvider=SimpleNamespace(valid=scalar(0), bits=scalar(3)),
         allocate=SimpleNamespace(valid=scalar(1), bits=scalar(0)), altDiffers=scalar(0))
@@ -84,7 +84,7 @@ def test_wrong_result_or_source_association_is_not_repaired_from_observation(fau
 @pytest.mark.parametrize('fault', ['counter', 'cursor'])
 def test_checked_hardware_timing_cannot_shift_the_independent_model(fault):
     reference=IttageSemanticComponentChecker(audit=SimpleNamespace(
-        counter=0,tables=[(0,0)]*3,raise_failure=lambda:None))
+        counter=0,tables=[(0,0)]*5,raise_failure=lambda:None))
     reference.capture_input(SimpleNamespace(tick=0),Events(reset=True))
     reference.capture_output(SimpleNamespace(tick=1),SimpleNamespace(),visible=False,baseline=0)
     reference.capture_input(SimpleNamespace(tick=2),Events())
@@ -93,4 +93,4 @@ def test_checked_hardware_timing_cannot_shift_the_independent_model(fault):
     reference.capture_output(SimpleNamespace(tick=3),SimpleNamespace(meta={'valid':0},hit=0),
         visible=False,baseline=0)
     with pytest.raises(ScoreboardMismatch):reference.raise_failure()
-    assert reference.model.tick==0 and reference.model.maintenance==[(False,0)]*3
+    assert reference.model.tick==0 and reference.model.maintenance==[(False,0)]*5

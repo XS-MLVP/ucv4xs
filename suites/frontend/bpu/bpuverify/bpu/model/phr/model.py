@@ -1,18 +1,21 @@
-"""Independent 52-cell circular-history reference; never reads observed state."""
+"""Independent DefaultConfig circular-cell circular-history reference; never reads observed state."""
+from bpuverify.common.model.configuration import *
+
 from copy import deepcopy
 
-LENGTH = 52
+LENGTH = PHR_STORAGE_BITS
 MASK = (1 << LENGTH) - 1
 LOW = (1 << 13) - 1
-LAYOUT = ((4, 4), (6, 5), (6, 6), (8, 6), (8, 7), (9, 7), (9, 9),
-    (12, 5), (12, 6), (12, 9), (16, 6), (16, 7), (16, 8), (17, 7),
-    (17, 12), (17, 13), (31, 7), (31, 12), (31, 13))
+LAYOUT = PHR_FOLDS
 
 
 def fold(history, length, width):
-    result = 0
-    for bit in range(length):
-        result ^= ((history >> bit) & 1) << (bit % width)
+    # XOR complete width-bit chunks, including the partial most-significant
+    # chunk. This is the same polynomial fold as the per-bit definition.
+    result, remaining, mask = 0, history & ((1 << length) - 1), (1 << width) - 1
+    while remaining:
+        result ^= remaining & mask
+        remaining >>= width
     return result
 
 
@@ -40,7 +43,7 @@ class BpuPhrReference:
         self.meta3 = deepcopy(self.meta2)
         self.state = dict(cells=[0] * LENGTH, pointer=dict(flag=0, value=0),
             s1_pointer=dict(flag=0, value=0), pending=dict(valid=0, taken=0, low=0, shift=0),
-            fold0_reg=[0] * 19, fold1=[0] * 19, fold2=[0] * 19, fold3=[0] * 19)
+            fold0_reg=[0] * len(LAYOUT), fold1=[0] * len(LAYOUT), fold2=[0] * len(LAYOUT), fold3=[0] * len(LAYOUT))
 
     def physical_read(self, pointer):
         cells = self.state['cells']
@@ -71,7 +74,7 @@ class BpuPhrReference:
             row = boundary[stage]
             prediction = row['prediction']
             requests[stage] = dict(valid=row['valid'], taken=prediction['taken'],
-                cfi_pc=(row['start_pc'] & ~7) + prediction['position'], target=prediction['target'],
+                cfi_pc=(row['start_pc'] // ALIGN_HALFWORDS * ALIGN_HALFWORDS) + prediction['position'], target=prediction['target'],
                 meta=dict(pointer=previous['s1_pointer'], low=logical & LOW) if stage == 's1'
                     else deepcopy(self.meta2 if stage == 's2' else self.meta3))
         requests['redirect'] = boundary['redirect']

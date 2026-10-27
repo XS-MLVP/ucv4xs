@@ -25,9 +25,9 @@ def fixture_row(checker, events):
         indirect_read=dict(pc=0,folds=()),indirect_random=(0,)*15,
         prediction=dict(valid=0,pc=0,target=0,taken=0,position=0,repair2=0,repair3=0),
         metadata=dict(valid=0,pc=0,history={},main=tuple(tuple(dict(hit=0,position=0,kind=0,action=0,counter=0)
-            for _ in range(2)) for _ in range(2)),tage=tuple(dict.fromkeys((
+            for _ in range(5)) for _ in range(2)),tage=tuple(dict.fromkeys((
                 'hasProvider','hasAlt','useProvider','providerTableIdx','providerWayIdx',
-                'providerTakenCtr_value','providerUsefulCtr_value','altOrBasePred','altConf'),0) for _ in range(4))))
+                'providerTakenCtr_value','providerUsefulCtr_value','altOrBasePred','altConf'),0) for _ in range(10))))
     if getattr(checker.model.sources,'has_own_ittage',False):
         observed['metadata']['ittage']=dict(valid=0,provider=dict(valid=0,bits=0),altProvider=dict(valid=0,bits=0),
             allocate=dict(valid=0,bits=0),altDiffers=0,providerCnt_value=0,providerUsefulCnt_value=0,

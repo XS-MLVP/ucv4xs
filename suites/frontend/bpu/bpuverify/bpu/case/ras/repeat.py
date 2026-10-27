@@ -22,7 +22,7 @@ def expected_repeat_state(count):
         raise ValueError('bounded repeated-call burst must contain 1..13 calls')
     head = 1 if count <= 8 else 2
     address = return_address(CALL_PC, POSITION)
-    cells = [dict(address=0, counter=0) for _ in range(8)]
+    cells = [dict(address=0, counter=0) for _ in range(16)]
     cells[1] = dict(address=address, counter=min(count - 1, 7))
     if count > 8:
         cells[2] = dict(address=address, counter=count - 9)

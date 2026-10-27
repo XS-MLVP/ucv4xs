@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+from ucv.runtime import historical_path
 
 import pytest
 
@@ -18,8 +19,8 @@ from vagqverify.vagq.scenario_matrix import legal_public_feature_cases
 
 
 ROOT = Path(__file__).resolve().parents[2]
-ORIGINAL = ROOT / 'results/vagq-exhaustive-20261020-v1'
-REVIEW = ROOT / 'results/vagq-exhaustive-review-20261020-v1'
+ORIGINAL = historical_path('vagq', 'results/vagq-exhaustive-20261020-v1')
+REVIEW = historical_path('vagq', 'results/vagq-exhaustive-review-20261020-v1')
 
 
 @pytest.mark.parametrize('ordinal,mutation', (

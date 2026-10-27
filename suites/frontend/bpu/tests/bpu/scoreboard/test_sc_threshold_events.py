@@ -1,4 +1,5 @@
 """Pure event contracts; synthetic samples never claim native reachability."""
+from bpuverify.common.model.configuration import *
 import pytest
 from toffee import Scoreboard, ScoreboardMismatch, CoverageDatabase, CheckContext, ScoreboardMode
 from bpuverify.bpu.coverage.sc.bounds import ThresholdCoverage, RULES
@@ -23,7 +24,7 @@ CASES=(
 
 
 def update(way,value,directions):
-    before=[INITIAL]*4
+    before=[INITIAL]*SC_WAYS
     before[way]=value
     return threshold_update(before,[dict(way=way,counter_update=True,threshold_delta=d) for d in directions])
 
@@ -34,7 +35,7 @@ def comparisons():
         context=CheckContext(scoreboard=board.name,mode=ScoreboardMode.DIRECT,request=details))
 
 
-@pytest.mark.parametrize('way',range(4))
+@pytest.mark.parametrize('way',range(SC_WAYS))
 @pytest.mark.parametrize('rule,value,directions',CASES)
 def test_event_is_classified_from_qualified_votes_and_prestate_not_test_label(way,rule,value,directions):
     transition=update(way,value,directions)
@@ -106,7 +107,7 @@ def test_actual_qualified_two_vote_zero_is_different_from_unqualified_hold():
 def test_all_52_event_bins_require_real_samples_not_a_list_of_rule_names():
     coverage=ThresholdCoverage()
     assert set(RULES)=={row[0] for row in CASES}
-    for way in range(4):
+    for way in range(SC_WAYS):
         for index,(_,value,directions) in enumerate(CASES):
             transition=update(way,value,directions);accepted=2*index+1
             coverage.reach(transition,accepted_tick=accepted,controls_tick=accepted+1)

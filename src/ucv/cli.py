@@ -43,7 +43,7 @@ def main(argv=None):
             from .report import report
             path=args.directory or Path(read(project.root/'.ucv/last-run.json')['path'])
             result=report(path,args.compare)
-            print(json.dumps({k:v for k,v in result.items() if k not in {'cases','coverage_reports'}},ensure_ascii=False,indent=2))
+            print(json.dumps({k:v for k,v in result.items() if k not in {'cases','coverage_reports','coverage_artifacts'}},ensure_ascii=False,indent=2))
             return 0 if result['hardware_verdict']=='PASS' else 1
         suites=project.select(args.selection,args.require_unified_baseline)
         if args.command in {'list','doctor'}:
@@ -61,10 +61,14 @@ def main(argv=None):
                     if suite.baseline['visibility']=='internal':
                         path=project.local.get('source_mirrors',{}).get(suite.baseline['name'])
                         if not path or not Path(path).is_dir():errors.append('Missing external source: '+suite.name)
+                if not errors:
+                    from .validation import installed_tools
+                    try:installed_tools(project)
+                    except (UcvError,OSError) as error:errors.append(str(error))
                 result['errors']=errors
             if args.json:print(json.dumps(result,ensure_ascii=False,indent=2))
             else:
-                for s in suites:print(f"{s.name:9} {len(s.recipe['duts']):2} DUTs  {s.baseline['commit'][:12]}  {s.inherited_from}")
+                for s in suites:print(f"{s.name:9} {len(s.recipe['duts']):2} DUTs  {s.baseline['commit'][:12]}  {s.baseline['design']['config']}  {s.baseline['name']} <- {s.inherited_from}")
                 print('MIXED BASELINES' if result['mixed_baseline'] else 'UNIFIED BASELINE')
                 for error in errors:print('ERROR: '+error)
             return int(bool(errors))

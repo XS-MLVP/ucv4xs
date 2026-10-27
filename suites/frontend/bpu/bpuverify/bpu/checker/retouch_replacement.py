@@ -168,7 +168,7 @@ class RetouchReplacementChecks(DirectionServiceChecks):
         history=self.contexts.index(context)
         self.check((self.program.initial_base,self.program.initial_counters(history)),values,'old Main/TAGE storage preserved under read competition')
         self.check(True,source.prediction_tick>self.accepted[-1][0] and self.holding,'old consumer precedes service and follows all inputs')
-        self.check(((3,0),(3,1)),self.owners(token),'old complete provider identities')
+        self.check(((7,0),(7,1)),self.owners(token),'old complete provider identities')
         self.check(((source.prediction_tick+2,2),),self.pipeline.corrections_for_source(source),'old complete correction window')
         self.compare_retained(self.last_packet,self.trace[-1],'old-consumer preservation')
         self.old_sources[context]=source
@@ -197,7 +197,7 @@ class RetouchReplacementChecks(DirectionServiceChecks):
         history=self.contexts.index(context)
         self.check((self.program.initial_base,self.program.expected_counters(history)),values,
                    'victim retains old SRAM; every survivor and new history consume their own result')
-        self.check(((3,0),(3,1)),self.owners(token),'complete final provider identities')
+        self.check(((7,0),(7,1)),self.owners(token),'complete final provider identities')
         self.check(True,source.prediction_tick>max(t for events in self.written.values() for t,_ in events),'fresh consumer after all SDK acceptances')
         self.check(((source.prediction_tick+2,2),),self.pipeline.corrections_for_source(source),'complete final correction window')
         self.new_sources[context]=source

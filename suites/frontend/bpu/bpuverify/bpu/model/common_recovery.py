@@ -41,11 +41,11 @@ class RecoveryProfile:
 
 PROFILES = (
     RecoveryProfile('forward-conditional', 'backward', Branch(1, FORWARD, Kind.CONDITIONAL, True),
-                    Value(True, 255, 15), Value(False, 255, 14)),
+                    Value(True, 65535, 255), Value(False, 65535, 254)),
     RecoveryProfile('backward-conditional', 'forward', Branch(1, BACKWARD, Kind.CONDITIONAL, True),
-                    Value(True, 255, 0), Value(False, 255, 1)),
+                    Value(True, 65535, 0), Value(False, 65535, 1)),
     RecoveryProfile('direct-without-prefix', 'backward', Branch(1, FORWARD, Kind.DIRECT, True),
-                    Value(True, 255, 15), Value(False, 255, 15)),
+                    Value(True, 65535, 255), Value(False, 65535, 255)),
     RecoveryProfile('direct-after-prefix', 'alternating', Branch(5, FORWARD, Kind.DIRECT, True),
-                    Value(True, 85, 5), Value(False, 170, 10)),
+                    Value(True, 21845, 85), Value(False, 43690, 170)),
 )

@@ -26,7 +26,7 @@ def retire(model, before, action):
 
 def test_reference_only_imports_plain_data_not_native_state_or_driver():
     tree = ast.parse(Path('bpuverify/ras/model/semantic.py').read_text())
-    assert [node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)] == ['dataclasses', 'copy']
+    assert [node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)] == ['dataclasses', 'bpuverify.common.model.configuration', 'copy']
     assert not any(isinstance(node, ast.Import) for node in ast.walk(tree))
 
 
@@ -36,17 +36,17 @@ def test_return_address_uses_instruction_end_not_raw_start_pc(position, offset):
     assert instruction_return(0x40001000 + offset, position) == 0x40001002 + 2 * position
 
 
-@pytest.mark.parametrize('depth', (1, 2, 7, 8, 12))
+@pytest.mark.parametrize('depth', (1, 2, 7, 8, 12, 15, 16))
 def test_lifo_program_across_retained_group_capacity(depth):
     model = RasReference()
     addresses = [0x40001000 + 0x100 * index for index in range(depth)]
     for index, address in enumerate(addresses, 1):
         actual = act(model, 2, address)
-        assert actual == dict(top=address // 2, group=index % 8, repeat=0, calls=index)
+        assert actual == dict(top=address // 2, group=index % 16, repeat=0, calls=index)
     for index in range(depth - 1, -1, -1):
         actual = act(model, 1)
         assert actual['top'] == (addresses[index - 1] // 2 if index else 0)
-        assert actual['group'] == index % 8
+        assert actual['group'] == index % 16
 
 
 @pytest.mark.parametrize('repeats', (1, 2, 7, 8, 9, 12))
@@ -146,7 +146,7 @@ def test_disabled_operations_preserve_owned_program():
 def test_near_overflow_blocks_both_actions_and_recovery_releases_credit():
     model = RasReference()
     saved = act(model, 2, 0x40001000)
-    for index in range(1, 15):
+    for index in range(1, 31):
         act(model, 2, 0x40001000 + 0x100 * index)
     before = model.program
     act(model, 2, 0x40009000)
@@ -246,7 +246,7 @@ def test_retirement_coverage_cannot_be_closed_by_a_live_speculative_same_target(
 
 def test_last_accepted_adjacent_call_is_reached_even_when_it_sets_overflow_guard():
     model, coverage = RasReference(), RasActionCoverage()
-    for index in range(15):
+    for index in range(31):
         model.advance(Events(2, 0x40001000 + 0x100 * index))
     event = Events(3, 0x40003000)
     model.advance(event)
@@ -258,7 +258,7 @@ def test_last_accepted_adjacent_call_is_reached_even_when_it_sets_overflow_guard
 
 def test_blocked_combined_action_does_not_receive_reached_credit():
     model, coverage = RasReference(), RasActionCoverage()
-    for index in range(16):
+    for index in range(32):
         model.advance(Events(2, 0x40001000 + 0x100 * index))
     event = Events(3, 0x40003000)
     model.advance(event)
@@ -274,7 +274,7 @@ def test_wrong_retained_actual_state_cannot_seed_or_correct_the_model(field):
     checker.capture_input(SimpleNamespace(tick=1), Events())
     public = dict(top=0, redirect_meta=dict(ssp=0,sctr=0,tosw=dict(flag=0,value=0)),
                   commit_meta=dict(ssp=0,tosw=dict(flag=0,value=0)))
-    retained = dict(head=0, cells=[dict(address=0,counter=0) for _ in range(8)])
+    retained = dict(head=0, cells=[dict(address=0,counter=0) for _ in range(16)])
     if field == 'head':
         retained['head'] = 1
     else:

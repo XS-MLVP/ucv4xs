@@ -1,15 +1,17 @@
 """Threshold scenarios consume real metadata and compare full monitored state.
 
 These are standalone SC feedback-port contracts, not full-program FTQ traces.
-The four-way minimal configuration and picker GuardedPc.addr units are explicit.
+The eight-way DefaultConfig and picker GuardedPc.addr units are explicit.
 """
+from bpuverify.common.model.configuration import SC_WAYS, SC_TABLES, RESULT_SLOTS, MAIN_WAYS, SC_MIN_THRESHOLD, SC_MAX_THRESHOLD
+
 from bpuverify.sc.transaction.types import ScBaseBranch
 from bpuverify.sc.transaction.types import ScBatchTraining
 from bpuverify.sc.transaction.types import ScBranchFeedback
 from bpuverify.sc.model.threshold import ScThresholdModel
 
-INITIAL, MINIMUM, MAXIMUM = 1130, 640, 5040
-POSITIONS_BY_WAY = ((0, 5, 10, 15), (1, 4, 11, 14), (2, 7, 8, 13), (3, 6, 9, 12))
+INITIAL, MINIMUM, MAXIMUM = 1130, SC_MIN_THRESHOLD, SC_MAX_THRESHOLD
+POSITIONS_BY_WAY = tuple(tuple(p for p in range(32) if (p % SC_WAYS) ^ (p // SC_WAYS) == way) for way in range(SC_WAYS))
 
 
 def make_feedback(pc, prediction, positions, wrong, *, slots=None, **branch_changes):
@@ -35,51 +37,51 @@ def lower_pc(step):
 
 
 async def check_single_boundaries(agent, coverage):
-    positions = (4, 5, 6, 7)
+    positions = tuple(range(SC_WAYS))
     layout = tuple(ScBaseBranch(position, 7) for position in positions)
-    for boundary, target, limit in (('lower', MINIMUM, 800), ('upper', MAXIMUM, 3940)):
+    for boundary, target, limit in (('lower', MINIMUM, 800), ('upper', MAXIMUM, MAXIMUM - INITIAL + 16)):
         await agent.reset()
-        model = ScThresholdModel()
+        model = ScThresholdModel.for_default()
         await agent.check_thresholds(model.values)
-        rejected = [0] * 4
+        rejected = [0] * SC_WAYS
         rows = set()
         reached = False
         for step in range(1, limit + 1):
             pc = lower_pc(step) if boundary == 'lower' else 0x40000040
             prediction = await agent.predict_branches(pc, layout)
             rows.add((pc & 1, prediction.meta['debug']['predBiasIdx']))
-            feedback = make_feedback(pc, prediction, positions, (boundary == 'upper',) * 4)
+            feedback = make_feedback(pc, prediction, positions, (boundary == 'upper',) * SC_WAYS)
             update = await check_feedback(agent, model, feedback)
             for way in update.rejected_ways:
                 rejected[way] += 1
                 assert update.before[way] == update.after[way] == target
-            if model.values == (target,) * 4 and not reached:
+            if model.values == (target,) * SC_WAYS and not reached:
                 reached = True
-                for way in range(4):
+                for way in range(SC_WAYS):
                     coverage.sample({'boundary': boundary, 'way': way, 'phase': 'approach'})
             if reached and min(rejected) >= 4:
                 break
         assert reached and min(rejected) >= 4, (boundary, model.values, rejected)
         if boundary == 'lower':
-            assert len(rows) == 128, rows
-        for way in range(4):
+            assert len(rows) == min(step, 256), rows
+        for way in range(SC_WAYS):
             coverage.sample({'boundary': boundary, 'way': way, 'phase': 'reject'})
         prediction = await agent.predict_branches(pc, layout)
-        feedback = make_feedback(pc, prediction, positions, (boundary == 'lower',) * 4)
+        feedback = make_feedback(pc, prediction, positions, (boundary == 'lower',) * SC_WAYS)
         update = await check_feedback(agent, model, feedback)
-        assert len(update.qualifying_slots) == 4
+        assert len(update.qualifying_slots) == SC_WAYS
         inward = 1 if boundary == 'lower' else -1
-        assert update.after == (target + inward,) * 4
-        for way in range(4):
+        assert update.after == (target + inward,) * SC_WAYS
+        for way in range(SC_WAYS):
             coverage.sample({'boundary': boundary, 'way': way, 'phase': 'recover'})
 
 
 async def check_multi_boundaries(agent, coverage):
     for way, positions in enumerate(POSITIONS_BY_WAY):
         layout = tuple(ScBaseBranch(position, 7) for position in positions)
-        for boundary, target, limit in (('lower', 642, 160), ('upper', 5038, 1000)):
+        for boundary, target, limit in (('lower', MINIMUM + (INITIAL - MINIMUM) % 4, (INITIAL - MINIMUM) // 4 + 16), ('upper', MAXIMUM - (MAXIMUM - INITIAL) % 4, (MAXIMUM - INITIAL) // 4 + 16)):
             await agent.reset()
-            model = ScThresholdModel()
+            model = ScThresholdModel.for_default()
             await agent.check_thresholds(model.values)
             rejects = 0
             reached = False
@@ -113,10 +115,10 @@ async def check_multi_boundaries(agent, coverage):
 async def check_qualification_and_aggregation(agent, coverage):
     for way, positions in enumerate(POSITIONS_BY_WAY):
         await agent.reset()
-        model = ScThresholdModel()
+        model = ScThresholdModel.for_default()
         await agent.check_thresholds(model.values)
         pc = 0x40000040
-        layout = tuple(ScBaseBranch(positions[0], 7) if slot == way else None for slot in range(4))
+        layout = tuple(ScBaseBranch(positions[0], 7) if slot == way else None for slot in range(RESULT_SLOTS))
         prediction = await agent.predict_branches(pc, layout)
         feedback = make_feedback(pc, prediction, positions[:1], (True,), slots=(way,))
         update = await check_feedback(agent, model, feedback)
@@ -132,7 +134,7 @@ async def check_qualification_and_aggregation(agent, coverage):
             coverage.sample({'way': way, 'reason': reason})
 
         invalid_layout = tuple(ScBaseBranch(positions[0], 7, provider_valid=0) if slot == way else None
-                               for slot in range(4))
+                               for slot in range(RESULT_SLOTS))
         prediction = await agent.predict_branches(pc, invalid_layout)
         assert prediction.meta['tagePredValid'][way] == 0
         update = await check_feedback(agent, model, make_feedback(

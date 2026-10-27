@@ -1,4 +1,5 @@
 """Learn four rows, drain, and rewrite one selected way of an existing row."""
+from bpuverify.common.model.configuration import *
 
 from bpuverify.sc.transaction.types import ScBatchTraining
 from bpuverify.sc.transaction.types import ScBranchFeedback
@@ -17,17 +18,17 @@ async def check_clean_reactivation_mode(agent, coverage, *, adjacent):
     routes = tuple(sc_row_indices(predictions[row, 0]) for row in range(4))
     for indices in zip(*routes, strict=True):
         assert len(set(indices)) == 4, routes
-    expected = {(row, selector, slot): 1 for row in range(4) for selector in range(4) for slot in range(4)}
+    expected = {(row, selector, slot): 1 for row in range(4) for selector in range(4) for slot in range(SC_WAYS)}
 
     def sample_phase(phase):
         require_bias_grid(predictions, routes, expected, phase=phase)
         for row, selector, slot in expected:
             coverage.sample({"setup": mode, "phase": phase, "row": row, "bias": selector,
-                             "way": (MASKED_POSITIONS[slot] & 3) ^ (MASKED_POSITIONS[slot] >> 2)})
+                             "way": (MASKED_POSITIONS[slot] % SC_WAYS) ^ (MASKED_POSITIONS[slot] // SC_WAYS)})
 
     sample_phase("cold")
     for prediction in predictions.values():
-        assert prediction.useds == (0, 0, 0, 0), prediction
+        assert prediction.useds[:SC_WAYS] == (0,) * SC_WAYS, prediction
     cold = predictions
     positive_feedback = tuple(ScBatchTraining(SAME_BANK_PCS[row], cold[row, 0].meta,
         tuple(ScBranchFeedback(position, 1, slot) for slot, position in enumerate(MASKED_POSITIONS)))
@@ -36,8 +37,8 @@ async def check_clean_reactivation_mode(agent, coverage, *, adjacent):
         await send_bias_feedback(agent, positive_feedback, adjacent=adjacent)
         predictions = await read_bias_grid(agent)
         require_bias_grid(predictions, routes, expected, phase=("learning", mode, attempt))
-        if all(predictions[row, 0].useds == (1, 1, 1, 1) and
-               predictions[row, 0].takens == (1, 1, 1, 1) for row in range(4)):
+        if all(predictions[row, 0].useds[:SC_WAYS] == (1,) * SC_WAYS and
+               predictions[row, 0].takens[:SC_WAYS] == (1,) * SC_WAYS for row in range(4)):
             break
     else:
         raise AssertionError(("four-row positive learning did not converge", mode, predictions))
@@ -47,7 +48,7 @@ async def check_clean_reactivation_mode(agent, coverage, *, adjacent):
     # train_batches waits through the update pipeline and four-slot drain;
     # readback is also finished before sending each spaced feedback. The
     # next update addresses already written rows, not newly allocated rows.
-    for slot in range(4):
+    for slot in range(SC_WAYS):
         selected = {(row, 0, slot) for row in range(4)}
         feedback = tuple(ScBatchTraining(SAME_BANK_PCS[row], positive[row, 0].meta,
             (ScBranchFeedback(MASKED_POSITIONS[slot], 0, slot),)) for row in range(4))
@@ -68,10 +69,10 @@ async def check_clean_reactivation_mode(agent, coverage, *, adjacent):
         sample_phase(f"negative_slot_{slot}")
 
     negative = predictions
-    assert all(predictions[row, 0].takens == (0, 0, 0, 0) for row in range(4)), predictions
-    selected = {(row, 0, slot) for row in range(4) for slot in range(4) if (row + slot) % 2 == 0}
+    assert all(predictions[row, 0].takens[:SC_WAYS] == (0,) * SC_WAYS for row in range(4)), predictions
+    selected = {(row, 0, slot) for row in range(4) for slot in range(SC_WAYS) if (row + slot) % 2 == 0}
     feedback = tuple(ScBatchTraining(SAME_BANK_PCS[row], negative[row, 0].meta,
-        tuple(ScBranchFeedback(MASKED_POSITIONS[slot], 1, slot) for slot in range(4)
+        tuple(ScBranchFeedback(MASKED_POSITIONS[slot], 1, slot) for slot in range(SC_WAYS)
               if (row, 0, slot) in selected)) for row in range(4))
     for attempt in range(64):
         await send_bias_feedback(agent, feedback, adjacent=False)

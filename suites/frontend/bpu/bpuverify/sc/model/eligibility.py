@@ -1,4 +1,6 @@
 """Closed-form warm correction ownership; no DUT or cycle-reference inputs."""
+from bpuverify.common.model.configuration import SC_WAYS, SC_TABLES, RESULT_SLOTS, MAIN_WAYS, SC_MIN_THRESHOLD, SC_MAX_THRESHOLD
+
 from dataclasses import dataclass,replace
 
 from bpuverify.sc.transaction.types import ScBaseBranch,ScLookup,ScBatchTraining,ScBranchFeedback
@@ -11,7 +13,7 @@ RULES=('qualified-warm-learning',*GATES,'original-query-ownership','fresh-restor
 INITIAL_THRESHOLD=1130
 
 
-def slot(position):return (position%4)^(position//4)
+def slot(position):return (position%SC_WAYS)^(position//SC_WAYS)
 
 
 @dataclass(frozen=True)
@@ -29,7 +31,8 @@ class Owner:
 
     def layout(self,gate='eligible'):
         if gate not in ('eligible',*GATES):raise ValueError('unknown query eligibility')
-        branches=tuple(ScBaseBranch(self.first_position+i,self.counter) for i in range(4))
+        positions=(self.first_position, *(p for p in range(32) if slot(p) != slot(self.first_position)))
+        branches=tuple(ScBaseBranch(p,self.counter) for p in positions[:RESULT_SLOTS])
         field={'provider-missing':dict(provider_valid=0),'main-miss':dict(mbtb_valid=0),
                'nonconditional':dict(branch_type=2)}.get(gate,{})
         return (replace(branches[0],**field),*branches[1:])
@@ -62,11 +65,11 @@ class EligibilityProgram:
 
     @property
     def warm_votes(self):
-        # Four learned families must still beat confidence when provider loss
+        # Seven learned tables must still beat confidence when provider loss
         # selects the never-trained bias feature. The count is an outcome
         # requirement, not a duration or a loop that polls DUT weights.
         for votes in range(1,32):
-            if all(abs(4*(2*(votes if outcome else -votes)+1)+1)>
+            if all(abs((SC_TABLES-1)*(2*(votes if outcome else -votes)+1)+1)>
                    (INITIAL_THRESHOLD+votes*(1 if not outcome else -1))//64 for outcome in (0,1)):
                 return votes
         raise AssertionError('no discriminating legal warm state')
@@ -92,7 +95,7 @@ class EligibilityProgram:
 
     def thresholds(self,counts,reversals=None):
         reversals={} if reversals is None else reversals
-        values=[INITIAL_THRESHOLD]*4
+        values=[INITIAL_THRESHOLD]*SC_WAYS
         for owner in self.owners:
             count=counts.get(owner.name,0)
             if type(count) is not int or not 0<=count<=self.warm_votes:
@@ -118,7 +121,7 @@ class EligibilityProgram:
         scores=[]; signs=[]; used=[]; above=[]; components=[]
         for ordinal,(branch,selector) in enumerate(zip(layout,selectors,strict=True)):
             weight=learned if ordinal==0 else 0
-            selected=(weight,)*4+(weight if selector==owner.selector else 0,)
+            selected=(weight,)*(SC_TABLES-1)+(weight if selector==owner.selector else 0,)
             votes=tuple(2*value+1 for value in selected)
             total=sum(votes)
             eligible=bool(branch.provider_valid and branch.mbtb_valid and branch.branch_type==1)
@@ -127,7 +130,7 @@ class EligibilityProgram:
             strong=abs(total)>thresholds[slot(branch.position)]//64
             scores.append(total);signs.append(int(total>=0));used.append(int(eligible and strong))
             above.append(int(strong if eligible else True))
-            components.append(tuple(int(vote>=0) for vote in votes))
+            components.append(tuple(int(sum(votes[i] for i in indices)>=0) for indices in ((0,1),(2,3),(4,5),(6,),(7,))))
         return dict(takens=tuple(signs),useds=tuple(used),
             meta=dict(scBiasLowerBits=selectors,scPred=tuple(signs),useScPred=tuple(used),
                 sumAboveThres=tuple(above),tageCtr=tuple(branch.tage_counter for branch in layout),

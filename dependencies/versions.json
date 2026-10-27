@@ -19,14 +19,28 @@
         "repository": "https://github.com/MikePopoloski/slang.git",
         "commit": "7ddf4059f79eff508dd486eb42fd650cdf320d52"
       }
-    }
+    },
+    "patches": [
+      {
+        "path": "dependencies/patches/picker-trace-callgraph.patch",
+        "sha256": "2823ef36bfd4ee06853670c3c23543301abbef6da27b189779063e08072ad6f4",
+        "purpose": "Preserve scope across Verilator 5.052 split trace initialization calls"
+      }
+    ]
   },
   "xcomm": {
     "repository": "https://github.com/XS-MLVP/xcomm.git",
     "commit": "c39db6652cd08d46df05d08f0bb5a033b83e4d2f",
     "package_version": "0.3.0.dev3",
     "native_abi": 3,
-    "coverage_protocol": 5
+    "coverage_protocol": 5,
+    "patches": [
+      {
+        "path": "dependencies/patches/xcomm-wide-trace-word.patch",
+        "sha256": "a25e2833b41872a2e170c5b024534f19b141aee7c9fc8e94102a76e4a81bdec7",
+        "purpose": "Read bounded live 32-bit VlWide words in Verilator trace-derived expressions"
+      }
+    ]
   },
   "verilator": {
     "version": "5.052",

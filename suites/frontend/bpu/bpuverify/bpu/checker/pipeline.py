@@ -266,10 +266,12 @@ def _watch_duplicate_reads(checker, tick, expected, actual):
 
 def main_metadata_values(frame,actual):
     from bpuverify.bpu.model.main_sources import source_entries
+    from bpuverify.common.model.configuration import MAIN_WAYS
     sources = source_entries(frame) if frame is not None else None
+    assert len(actual)==2 and all(len(row)==MAIN_WAYS+1 for row in actual), 'complete Main/Victim metadata required'
     expected,observed = {},{}
     for alignment in range(2):
-        for way in range(2):
+        for way in range(MAIN_WAYS+1):
             source = None if sources is None else sources[alignment][way]
             fields = dict(hit=int(source is not None and source.hit))
             if fields['hit']:

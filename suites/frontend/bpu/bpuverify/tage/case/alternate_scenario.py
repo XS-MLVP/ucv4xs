@@ -1,4 +1,5 @@
-"""Current MinimalConfig pair contracts, not complete-program FTQ traces."""
+"""Current DefaultConfig pair contracts, not complete-program FTQ traces."""
+from bpuverify.common.model.configuration import TAGE_TABLES, RESULT_SLOTS, POSITIONS
 from bpuverify.tage.transaction.types import TageBaseBranch
 from bpuverify.tage.transaction.types import TageBatchTraining
 from bpuverify.tage.transaction.types import TageBranchFeedback
@@ -19,12 +20,12 @@ def pair_checker(model, slot, branches, residents=None):
         assert prediction.table_states[slot] == tables, (tables, prediction.table_states)
         assert prediction.alternate_counters[slot] == counter, (counter, prediction.alternate_counters)
         assert (prediction.valids[slot], prediction.takens[slot]) == (1, taken)
-        assert prediction.provider_counter_valids == tuple(int(branch is not None) for branch in branches) + (0,)*(4-len(branches))
+        assert prediction.provider_counter_valids == tuple(int(branch is not None) for branch in branches) + (0,)*(RESULT_SLOTS-len(branches))
         for neighbor_slot, branch in enumerate(branches):
             if neighbor_slot == slot or branch is None:
                 continue
             table, resident = residents[branch.position]
-            expected_tables = tuple(resident if index == table else None for index in range(4))
+            expected_tables = tuple(resident if index == table else None for index in range(TAGE_TABLES))
             assert prediction.table_states[neighbor_slot] == expected_tables, (branch, prediction.table_states)
             meta = prediction.metas[neighbor_slot]
             assert meta == {'hasProvider': 1, 'hasAlt': 0, 'providerTableIdx': table,
@@ -37,7 +38,7 @@ def pair_checker(model, slot, branches, residents=None):
 
 async def prepare_pair(agent, direction, observations):
     residents = {}
-    for position in range(16):
+    for position in range(POSITIONS):
         cold = await agent.predict(PC, position, 1-direction, base_conf=1)
         assert cold.meta['hasProvider'] == 0
         await agent.train_checked(TageBatchTraining(PC, (TageBranchFeedback(
@@ -47,9 +48,9 @@ async def prepare_pair(agent, direction, observations):
         assert allocated.meta['hasProvider'] == 1 and allocated.meta['hasAlt'] == 0
         assert allocated.meta['providerTakenCtr_value'] == (4 if direction else 3)
         # Allocation is LFSR-selected. Do not protect an incidental highest
-        # table entry: the table2 -> table3 pair needs a replaceable candidate.
+        # table entry: the next-highest -> highest-table pair needs a replaceable candidate.
         # Lower-table residents remain protected for the mixed-slot checker.
-        if table == 3:
+        if table == TAGE_TABLES - 1:
             continue
         for _ in range(4):
             actual_prediction = allocated.taken if allocated.valid else 1-direction
@@ -59,16 +60,16 @@ async def prepare_pair(agent, direction, observations):
             allocated = await agent.predict(PC, position, 1-direction, base_conf=1)
         assert allocated.meta['providerTakenCtr_value'] == (7 if direction else 0)
         assert allocated.meta['providerUsefulCtr_value'] == 3
-        if table == 2:
+        if table == TAGE_TABLES - 2:
             alternate_way = way
             break
         residents[position] = (table, TageTableState(1 << way, 7 if direction else 0, 3))
     else:
-        raise AssertionError('normal allocation did not reach table2')
+        raise AssertionError('normal allocation did not reach the next-highest table')
     await agent.train_checked(TageBatchTraining(PC, (TageBranchFeedback(
         position, 1-direction, direction, allocated.meta, mispredict=1),)), observations)
     prediction = await agent.predict(PC, position, direction, base_conf=1)
-    assert prediction.meta['providerTableIdx'] == 3 and prediction.meta['hasAlt'] == 1
+    assert prediction.meta['providerTableIdx'] == TAGE_TABLES - 1 and prediction.meta['hasAlt'] == 1
     assert prediction.meta['providerTakenCtr_value'] == (3 if direction else 4)
     model = TagePairModel(direction, alternate_way=alternate_way, provider_way=prediction.meta['providerWayIdx'])
     return position, model, residents
@@ -76,7 +77,7 @@ async def prepare_pair(agent, direction, observations):
 
 async def read_slots(agent, position, model, coverage, phase):
     entries = []
-    for slot in range(4):
+    for slot in range(RESULT_SLOTS):
         for base_conf in range(2):
             branches = (None,)*slot + (TageBaseBranch(position, model.direction, base_conf),)
             transfer = agent.submit_predict_branches(PC, branches, expected=pair_checker(model, slot, branches))

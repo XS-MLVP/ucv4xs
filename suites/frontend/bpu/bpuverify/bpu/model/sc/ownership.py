@@ -6,6 +6,8 @@ Only the path feature is certified here against the exact path checkpoint.
 Weights, decisions and learning belong to the existing independent SC model.
 This layer neither samples hardware nor advances any other predictor.
 """
+from bpuverify.common.model.configuration import *
+
 from dataclasses import dataclass
 
 from bpuverify.bpu.model.direction_sources import DirectionSnapshot, candidates
@@ -49,7 +51,7 @@ class OwnedStatisticalReference:
     def capture(self, token, *, history):
         if type(token) is not Token or type(history) is not ScHistory:
             raise TypeError('SC capture needs an owned token and independent semantic history')
-        if history.path != token.history.history % (1 << 31):
+        if history.path != token.history.history % (1 << PHR_BITS):
             raise ValueError('SC path history does not belong to the original checkpoint')
         key = token.history.sequence
         if key in self.reads:
@@ -90,7 +92,7 @@ class OwnedStatisticalReference:
             0 if branch is None else int(branch.kind)) for slot, branch in enumerate(branches))
         prediction = decide(source.read, bases, self.model.thresholds.values, enabled=enabled)
         directions = tuple(bool(tagged[f'{slot}.taken']) if tagged.get(f'{slot}.valid') else None
-                           for slot in range(4))
+                           for slot in range(RESULT_SLOTS))
         statistical = tuple(bool(taken) if used else None
                             for taken, used in zip(prediction.directions, prediction.used, strict=True))
         indirect = target.prediction

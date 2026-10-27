@@ -29,7 +29,7 @@ async def test_high_confidence_base_and_weak_provider_remain_consistent(tage_age
 
     weak = await tage_agent.predict(PC, POSITION, 0, base_conf=1)
     assert weak.meta["hasProvider"] == 1
-    assert weak.meta["providerTableIdx"] == 0
+    assert weak.meta["providerTableIdx"] == low.meta["providerTableIdx"]
     assert weak.meta["hasAlt"] == 0, weak.meta
     assert weak.meta["altConf"] == 1
     assert weak.meta["providerTakenCtr_value"] == 4

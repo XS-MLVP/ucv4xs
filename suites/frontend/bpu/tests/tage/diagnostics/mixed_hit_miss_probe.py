@@ -1,6 +1,7 @@
 """Real two-branch hit/allocation diagnostic, excluded from formal coverage."""
 
 from __future__ import annotations
+from bpuverify.common.model.configuration import *
 import ucv.runtime as ucv_paths
 
 import argparse
@@ -34,7 +35,7 @@ async def scenario(agent, pc):
     # Only the highest-table way1 may be replaced. The lower six residents
     # remain protected; the existing way0 is made strongly not-taken/useful.
     await prepare_unprotected_highest_ways(agent, pc, origin_way=1)
-    residents = await read_grid(agent, pc, positions=tuple(range(9)))
+    residents = await read_grid(agent, pc, positions=tuple(range((2 * TAGE_TABLES + 1))))
     target = next(position for position, pred in residents.items() if cell(pred) == (HIGHEST_TABLE, 0))
     victim = next(position for position, pred in residents.items() if cell(pred) == (HIGHEST_TABLE, 1))
     async with agent.observe_training() as observed:
@@ -57,11 +58,11 @@ async def scenario(agent, pc):
         assert prediction.meta['providerTakenCtr_value'] == 0
         await agent.train_checked(TageBatchTraining(pc, (TageBranchFeedback(
             target, 1, 0, prediction.meta, mispredict=1),)), observed)
-        before = await read_grid(agent, pc, positions=tuple(range(9)))
+        before = await read_grid(agent, pc, positions=tuple(range((2 * TAGE_TABLES + 1))))
         assert before[target].meta['providerTakenCtr_value'] == 1
         assert before[target].meta['providerUsefulCtr_value'] == 3
         assert before[victim].meta['providerUsefulCtr_value'] == 0
-        newcomer = 9
+        newcomer = (2 * TAGE_TABLES + 1)
         assert target < newcomer and newcomer not in before
         prediction = await agent.predict_branches(
             pc, (TageBaseBranch(target, 0), TageBaseBranch(newcomer, 0)))

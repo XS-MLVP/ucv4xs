@@ -3,7 +3,7 @@ from collections import deque
 
 from toffee import CheckContext, Scoreboard, ScoreboardMode
 
-from bpuverify.mbtb.model.semantic import MbtbReference, tag
+from bpuverify.mbtb.model.semantic import MbtbReference, tag, WAYS, ALIGN_HALFWORDS
 
 
 def prediction_values(expected, actual):
@@ -13,7 +13,7 @@ def prediction_values(expected, actual):
                                     kind='branch_type', action='ras_action').items():
             if f'{slot}.{name}' in expected:
                 observed[f'{slot}.{name}'] = getattr(entry, attribute)
-        source = actual.meta_entries[slot // 2][slot % 2]
+        source = actual.meta_entries[slot // (WAYS + 1)][slot % (WAYS + 1)]
         names = dict(raw_hit=source['rawHit'], meta_position=source['position'],
             meta_kind=source['attribute']['branchType'], meta_action=source['attribute']['rasAction'],
             counter=source['counter_value'])
@@ -52,7 +52,7 @@ class MbtbSemanticChecker:
                 if not events.reset and events.ready and events.consume and previous is not None:
                     for align, read in enumerate(previous.banks):
                         eligible = [(way, entry) for way, entry in enumerate(read.entries)
-                            if entry.valid and entry.tag == tag(read.pc) and entry.position >= read.pc % 8
+                            if entry.valid and entry.tag == tag(read.pc) and entry.position >= read.pc % ALIGN_HALFWORDS
                             and not read.cross_page]
                         if len(eligible) == 2 and eligible[0][1].position == eligible[1][1].position:
                             self.accepted_cleanup.append(dict(tick=event.tick, align=align, bank=read.bank,

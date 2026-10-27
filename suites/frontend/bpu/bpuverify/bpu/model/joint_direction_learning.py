@@ -1,4 +1,6 @@
 """One outcome, separately qualified direction and correction experience."""
+from bpuverify.common.model.configuration import SC_TABLES, TAGE_TABLES
+
 from dataclasses import dataclass
 from bpuverify.bpu.model.sc_loop_experience import Program as LoopProgram,PROFILES,RULES as LOOP_RULES
 from bpuverify.sc.model.threshold import ScThresholdModel
@@ -28,8 +30,8 @@ class Program(LoopProgram):
     def teaching_count(self):
         # SC must stay discriminating at the strongest TAGE confidence,
         # including after one real wrong outcome, not just at counter five.
-        threshold=ScThresholdModel().initial[0]
-        return next(n for n in range(1,32) if 5*(2*(n-1)+1)>threshold//16)
+        threshold=ScThresholdModel.for_default().initial[0]
+        return next(n for n in range(1,32) if SC_TABLES*(2*(n-1)+1)>threshold//16)
     def state(self):
         return dict(LoopProgram.state(self),core_original_counters=(5,6,7),
             fresh_counters=(6,7,6),core_TAGE_and_SC_enabled=True,
@@ -39,7 +41,7 @@ class Program(LoopProgram):
 
 def tage_offer_values(writes,useful,actual):
     """Project every defined offer bit; never gate expected fields by DUT valid."""
-    if len(actual)!=4:raise ValueError('all four TAGE table offers must be observed')
+    if len(actual)!=TAGE_TABLES:raise ValueError('all eight TAGE table offers must be observed')
     expected,observed={},{}
     for table,row in enumerate(actual):
         entries={way:(bank,value) for (t,bank,way),value in writes.items() if t==table}

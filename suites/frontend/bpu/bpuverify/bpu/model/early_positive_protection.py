@@ -14,9 +14,9 @@ EDGES = dict(STRENGTH_EDGES, **{
 
 # Both paths finish with the same recent taken history. Their older outcomes
 # differ so an already protected long record cannot masquerade as a new one.
-OLDER_PATHS = ((CONDITIONAL,) * (max(HISTORIES)//SHIFT),
-               (FALLBACK,) * ((max(HISTORIES)-min(HISTORIES))//SHIFT)
-               + (CONDITIONAL,) * (min(HISTORIES)//SHIFT))
+OLDER_PATHS = ((CONDITIONAL,) * 5,
+               (CONDITIONAL, CONDITIONAL, CONDITIONAL, FALLBACK, CONDITIONAL))
+
 EXTRA = ('confirmed-T-seed', 'neutral-direction-strength', 'short-not-long-provider',
          'actual-acceptance-window')
 

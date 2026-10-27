@@ -8,7 +8,7 @@ def definition():
     return CoverGroupDef('integrated_bpu_training_alignment_all_legal_cases', (
         CoverPointDef('case', {case.label: Bin.values(case.label) for case in ALL_CASES}, weight=0),
         CoverPointDef('phase', {phase: Bin.values(phase) for phase, _, _ in PHASES}, weight=0),
-    ), crosses=(CrossDef('legal_case_phase', ('case', 'phase'), max_auto_bins=2000),))
+    ), crosses=(CrossDef('legal_case_phase', ('case', 'phase'), max_auto_bins=7840),))
 
 
 def coverage():

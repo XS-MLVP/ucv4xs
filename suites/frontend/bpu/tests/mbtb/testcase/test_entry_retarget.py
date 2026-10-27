@@ -1,4 +1,5 @@
 """Latest pending target versus ordered write-through, with carry transitions."""
+from bpuverify.common.model.configuration import *
 import pytest
 
 from bpuverify.mbtb.coverage.catalog import mbtb_entry_retarget_coverage_model
@@ -14,8 +15,8 @@ async def test_pending_indirect_retargets_preserve_latest_carry_and_other_reside
     coverage = mbtb_entry_retarget_coverage_model()
     for context in range(len(INDEX_CONTEXTS)):
         for align in range(2):
-            for bank in range(2):
-                for way in range(2):
+            for bank in range(MAIN_BANKS):
+                for way in range(MAIN_WAYS):
                     for mode in ("blocked", "flow"):
                         for pattern in CARRY_PATTERNS:
                             await check_case(mbtb_agent, coverage, context, align, bank, way, mode, pattern)

@@ -1,4 +1,5 @@
 """Passive threshold observation; picker/memory-direct details stay outside testcases."""
+from bpuverify.common.model.configuration import *
 from bpuverify.common.env.memory_direct import memory_signal
 from bpuverify.common.env.memory_direct import memory_signal_names
 from operator import index
@@ -10,7 +11,7 @@ from bpuverify.common.monitor.cycle import CycleMonitor
 
 
 class ScThresholdMonitor(CycleMonitor[tuple[int, ...]]):
-    def __init__(self, dut, *, ways=4):
+    def __init__(self, dut, *, ways=SC_WAYS):
         ways = index(ways)
         if ways <= 0:
             raise ValueError('SC threshold monitor needs at least one way')

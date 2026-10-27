@@ -1,3 +1,4 @@
+from bpuverify.bpu.model.early_opposition import FALLBACK
 """Independent two-consumer paths and adversarial actual response controls."""
 import ast
 from dataclasses import replace
@@ -14,13 +15,13 @@ from tests.bpu.scoreboard.test_early_short_protection import Program as WindowPr
 
 
 class Program(ProtectionProgram):
-    recovery_position=4
+    recovery_position=FALLBACK
     def __init__(self,profile):
         self.revisit_profile=profile; super().__init__(program(profile).base_name)
     def make_checks(self,pc,tag_class): return Checks(Coverage(self.revisit_profile),self.revisit_profile)
     def step(self,event=None,*,mutate=None):
         if self.actual_fallback and event is not None and event.redirect is not None:
-            event=replace(event,redirect=replace(event.redirect,cfi_pc=(self.pc//8)*8+self.recovery_position))
+            event=replace(event,redirect=replace(event.redirect,cfi_pc=(self.pc//16)*16+self.recovery_position))
         return WindowProgram.step(self,event,mutate=mutate)
     def quiet(self):
         idle=super().quiet()
@@ -28,7 +29,7 @@ class Program(ProtectionProgram):
         assert self.checks.pending_long is None
         return idle
     def flow(self,source,predicate):
-        self.recovery_position=4; self.quiet()
+        self.recovery_position=FALLBACK; self.quiet()
         self.step(replace(self.event,redirect=Redirect(source.token.history,self.checks.program.fallback_pc,self.pc,True)))
         self.step()
         for _ in range(64):
@@ -49,7 +50,7 @@ class Program(ProtectionProgram):
         for position in self.checks.revisit.positions:
             self.recovery_position=position; before=source
             source=self.query(before); self.checks.path_receipt(before,position,source)
-        self.recovery_position=4; self.checks.path_ready(); return source
+        self.recovery_position=FALLBACK; self.checks.path_ready(); return source
     def consume_short(self,source):
         self.enable(True)
         def match(token):

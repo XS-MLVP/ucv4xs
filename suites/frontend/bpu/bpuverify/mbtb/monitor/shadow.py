@@ -3,6 +3,7 @@
 This observes retained ownership only. It neither chooses expected owners nor
 drives internal state; architectural predictions still use the public monitor.
 """
+from bpuverify.common.model.configuration import *
 from bpuverify.common.env.memory_direct import memory_signal
 from bpuverify.common.env.memory_direct import memory_signal_names
 from toffee import Bundle
@@ -30,8 +31,8 @@ class MbtbEntryShadowMonitor(CycleMonitor):
                            for key, name in ENTRY_FIELDS})
             return Bundle(**values)
 
-        banks = tuple(tuple(tuple(tuple(slot(align, bank, owner, depth) for depth in range(2))
-                                  for owner in range(2)) for bank in range(2)) for align in range(2))
+        banks = tuple(tuple(tuple(tuple(slot(align, bank, owner, depth) for depth in range(MAIN_RETAINED))
+                                  for owner in range(MAIN_WAYS)) for bank in range(MAIN_BANKS)) for align in range(2))
         super().__init__(PortBinding(dut.clock, Bundle(banks=banks), 'mbtb.entry_shadow'), decoder=self.decode)
 
     @staticmethod

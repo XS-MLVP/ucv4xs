@@ -1,0 +1,12 @@
+{
+  "historical_command_source": "history://internal-source/build/time.log",
+  "source_sha256": "5433b8f73500a26c859d0255848abcfa95618c8cce567fdbe726212ed3d7744a",
+  "top": "top.XiangShanSim",
+  "mill_target": "xiangshan.test.runMain",
+  "config": "DefaultConfig",
+  "num_cores": 1,
+  "enable_difftest": true,
+  "layer_specialization": "enable",
+  "historical_elapsed": "17:10.74",
+  "rejected_attempt": "Release XSTop disabled assertion-layer inputs and difftest metadata; that attempt is not the accepted VAGQ baseline."
+}

@@ -1,4 +1,5 @@
 """Read-priority retention versus bank-disjoint flow, across physical geometry."""
+from bpuverify.common.model.configuration import *
 import pytest
 
 from bpuverify.mbtb.coverage.catalog import mbtb_counter_pending_coverage_model
@@ -13,8 +14,8 @@ async def test_two_counter_updates_survive_live_reads_across_banks_and_ways(mbtb
     coverage = mbtb_counter_pending_coverage_model()
     for context in range(len(INDEX_CONTEXTS)):
         for align in range(2):
-            for bank in range(2):
-                for way in range(2):
+            for bank in range(MAIN_BANKS):
+                for way in range(MAIN_WAYS):
                     for taken in range(2):
                         for mode in ("blocked", "flow"):
                             await check_case(mbtb_agent, coverage, context, align, bank, way, taken, mode)

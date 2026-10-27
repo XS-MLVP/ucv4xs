@@ -19,7 +19,7 @@ def prepare(pc=0x40000000):
     else:raise AssertionError('owned cold Main source did not retire')
     source=query(model,event,anchor,pc)
     idle=quiet(model,event)
-    model.advance(replace(idle,feedback=Resolution(source.history,pc,(Outcome(2,pc,Kind.CONDITIONAL,True,mispredict=True),),origin=source)))
+    model.advance(replace(idle,feedback=Resolution(source.history,pc,(Outcome(2+(pc&8),pc,Kind.CONDITIONAL,True,mispredict=True),),origin=source)))
     quiet(model,event)
     model.advance(replace(idle,redirect=Redirect(anchor.history,anchor.pc+4,pc,True)))
     latest=source
@@ -32,7 +32,7 @@ def prepare(pc=0x40000000):
             for _ in range(32):
                 owned=model.advance(event).metadata
                 if owned is not None and owned.pc==pc and owned.early.source=='ahead':
-                    assert owned.early.branch.position==2
+                    assert owned.early.branch.position==2+(pc&8)
                     quiet(model,event);return model,event,latest,owned
             raise AssertionError('committed Ahead provider did not reach a new owned consumer')
     raise AssertionError('independent Ahead conditional source did not become visible')
@@ -164,7 +164,7 @@ def test_reset_and_explicit_retirement_release_both_owned_early_source_banks():
 
 
 def test_full_configured_tag_width_is_not_normalized_to_the_implementation_container():
-    model,event,anchor,source=prepare(0x40000800)
+    model,event,anchor,source=prepare(0x40000008)
     saved=model.sources.short_snapshot(source)
-    assert tag(source.pc,saved.prediction.frame.context,0)>=256
-    assert tag(source.pc,saved.prediction.frame.context,0)!=tag(source.pc,saved.prediction.frame.context,0)%256
+    assert tag(source.pc,saved.prediction.frame.context,0)>=128
+    assert tag(source.pc,saved.prediction.frame.context,0)!=tag(source.pc,saved.prediction.frame.context,0)%128

@@ -1,3 +1,4 @@
+from bpuverify.bpu.model.early_opposition import FALLBACK
 """Taken protection programs use synthetic actuals here, never DUT credit."""
 import ast
 from dataclasses import replace
@@ -28,7 +29,7 @@ class Program(WindowProgram, PositiveProgram):
         for _ in range(128):
             token = self.step().metadata
             if (token is not None and main_counter(token) == (3 if taken else 0)
-                    and steady_history(token, 2 if taken else 4)
+                    and steady_history(token, 2 if taken else FALLBACK)
                     and (owner := ahead_owner(self.model.sources, token)) is not None
                     and owner[1] == (3 if taken else 0)):
                 source = self.receipt(token); self.quiet()
@@ -42,7 +43,7 @@ class Program(WindowProgram, PositiveProgram):
             for position in older:
                 self.recovery_position = position
                 source = self.query(source)
-            self.recovery_position = 4
+            self.recovery_position = FALLBACK
         self.enable(True)
         return self.bounded_source(source, longer=longer, mutate=mutate, expect_taken=expect_taken)
 

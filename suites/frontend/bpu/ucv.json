@@ -49,5 +49,7 @@
   "tests": [
     "tests"
   ],
-  "process_isolation": "dut"
+  "process_isolation": "dut",
+  "historical_standalone_entry": "docs/history/bpu/BpuVerifyMain.original.scala",
+  "generation_note": "Each DUT is elaborated with the shared DefaultConfig baseline; the standalone entry supplies functional SRAM broadcast controls and preserves complete public ports."
 }

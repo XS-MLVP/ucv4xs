@@ -1,5 +1,6 @@
 """Different older branches followed by the same recent fallback path."""
 from dataclasses import dataclass
+from bpuverify.bpu.model.early_opposition import FALLBACK
 from bpuverify.bpu.model.block_entry_learning import PROGRAMS as ENTRIES
 from bpuverify.bpu.model.entry_protection import rules as protection_rules
 from bpuverify.bpu.model.path_history import SHIFT
@@ -17,10 +18,10 @@ class Program:
     @property
     def pc(self): return self.entry.pc
     @property
-    def positions(self): return (self.older,)+(4,)*((HISTORIES[0]+SHIFT-1)//SHIFT)
+    def positions(self): return (self.older,)+(FALLBACK,)*((HISTORIES[0]+SHIFT-1)//SHIFT)
 
 
-PROGRAMS=tuple(Program(entry,older) for entry in ENTRIES for older in (2,4))
+PROGRAMS=tuple(Program(entry,older) for entry in ENTRIES for older in (2,FALLBACK))
 PROFILES=tuple(p.name for p in PROGRAMS)
 EXTRA=('exact-recovery-read-ancestor','wrong-short-and-long-allocation-same-original',
     'long-allocation-next-actual-confirmed','fresh-long-consumer-and-priority',

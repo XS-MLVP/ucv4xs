@@ -31,7 +31,7 @@ async def _check_override(utage_agent, stage: str) -> None:
         POSITION,
         0,
         stage=stage,
-        override_pc=PASSING_PC + 0x20,
+        override_pc=PASSING_PC + 0x10,
     )
     assert retagged.hit == 0, retagged
 

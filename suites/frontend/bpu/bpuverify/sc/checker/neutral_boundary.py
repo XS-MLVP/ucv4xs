@@ -1,4 +1,5 @@
 """Whole-source lifetime and observable boundary-neutrality comparisons."""
+from bpuverify.common.model.configuration import RESULT_SLOTS, MAIN_WAYS, SC_WAYS
 from hashlib import sha256
 import json
 
@@ -14,7 +15,7 @@ def expected_feedback(transaction, *, branch_count, fold_count):
     history = transaction.history
     assert (history.path, history.global_history, history.backward, history.loop, history.common_valid) == (0, 0, 0, 0, True)
     entries = []
-    for slot in range(4):
+    for slot in range(RESULT_SLOTS):
         b = by_slot.get(slot)
         entries.append(dict(rawHit=0 if b is None else b.mbtb_hit,
             position=0 if b is None else b.position,
@@ -26,7 +27,7 @@ def expected_feedback(transaction, *, branch_count, fold_count):
         for i in range(branch_count))
     return dict(valid=1, ready=1, pc=transaction.pc, history=(1, 0, 0, 0, (0,) * fold_count),
         meta={k: tuple(transaction.meta[k]) for k in META_FIELDS},
-        mbtb_meta=(tuple(entries[:2]), tuple(entries[2:])), branches=branches)
+        mbtb_meta=(tuple(entries[:MAIN_WAYS+1]), tuple(entries[MAIN_WAYS+1:])), branches=branches)
 
 
 class NeutralBoundaryChecks(ScBoundaryChecks):
@@ -63,7 +64,7 @@ class NeutralBoundaryChecks(ScBoundaryChecks):
             self.reverse_witnesses[step] = dict(accepted=transfer.accepted_event.tick,
                 completed=transfer.completed_event.tick, takens=actual.takens, useds=actual.useds,
                 meta={k: tuple(actual.meta[k]) for k in ('scPred', 'useScPred', 'sumAboveThres')},
-                families={k: tuple(actual.meta['debug'][k]) for k in self.program.expected(0, (1130,) * 4)['families']})
+                families={k: tuple(actual.meta['debug'][k]) for k in self.program.expected(0, (1130,) * SC_WAYS)['families']})
 
     def finish(self):
         self.check(set(RULES), self.completed, request='every semantic obligation reached before checked credit')

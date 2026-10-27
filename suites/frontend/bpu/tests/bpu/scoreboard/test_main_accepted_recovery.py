@@ -1,4 +1,5 @@
 """Separate original eligibility from the lifetime of accepted learning."""
+from bpuverify.common.model.configuration import *
 from concurrent.futures import Future
 from copy import deepcopy
 from types import SimpleNamespace as NS
@@ -26,13 +27,13 @@ def new_checker(p):
 
 
 def packet(c,*,training=False,proposal=False,retained=False,direction=False):
-    p=c.program;d=dict(row=p.direction['row'],mask=p.direction['mask'],counters=[2,1])
-    writes=[dict(valid=0,ready=0,bits={}) for _ in range(3)]
+    p=c.program;d=dict(row=p.direction['row'],mask=p.direction['mask'],counters=[2,2,2,1])
+    writes=[dict(valid=0,ready=0,bits={}) for _ in range(MAIN_WAYS + 1)]
     if retained:
-        writes[p.owner]=dict(valid=1,ready=0,bits=deepcopy(p.effect));writes[2]=dict(valid=1,ready=0,bits=d)
-    incoming=[dict(valid=0,bits={}) for _ in range(2)]
+        writes[p.owner]=dict(valid=1,ready=0,bits=deepcopy(p.effect));writes[MAIN_WAYS]=dict(valid=1,ready=0,bits=d)
+    incoming=[dict(valid=0,bits={}) for _ in range(MAIN_WAYS)]
     if proposal:incoming[p.owner]=dict(valid=1,bits=deepcopy(p.effect))
-    dirty=[[0,0],[0,0]]
+    dirty=[[0] * MAIN_RETAINED for _ in range(MAIN_WAYS)]
     if retained:dirty[p.owner][0]=1
     return dict(training=dict(valid=int(training),ready=1),incoming=incoming,
         direction=dict(valid=int(direction),ready=1,bits=d),writes=writes,dirty=dirty,
@@ -89,8 +90,8 @@ def test_full_retained_copy_and_actual_services_follow_the_declared_recovery_bou
     c=retained_checker(p)
     assert c.first_retained['tick']==6 and c.retained_witness
     c.write_accepted(p.owner,transfer(11,deepcopy(p.effect)))
-    bits=dict(row=p.direction['row'],mask=p.direction['mask'],counters=[2,1])
-    c.write_accepted(2,transfer(11,bits))
+    bits=dict(row=p.direction['row'],mask=p.direction['mask'],counters=[2,2,2,1])
+    c.write_accepted(MAIN_WAYS,transfer(11,bits))
     assert c.complete() and c.board.status.failed==0
 
 
@@ -120,7 +121,7 @@ def test_wrong_actual_payload_source_fate_or_service_latches_first_error_without
         if damage in ('wrong-entry','wrong-owner','wrong-direction','duplicate-input'):
             row=packet(c,training=True,direction=True,proposal=True)
             if damage=='wrong-entry':row['incoming'][p.owner]['bits']['tag']^=1
-            elif damage=='wrong-owner':row['incoming'][1-p.owner],row['incoming'][p.owner]=row['incoming'][p.owner],row['incoming'][1-p.owner]
+            elif damage=='wrong-owner':row['incoming'][(p.owner+1)%MAIN_WAYS],row['incoming'][p.owner]=row['incoming'][p.owner],row['incoming'][(p.owner+1)%MAIN_WAYS]
             elif damage=='wrong-direction':row['direction']['bits']['mask']^=3
             else:c.inputs.append(1)
             capture(c,2,row)
@@ -137,7 +138,7 @@ def test_wrong_actual_payload_source_fate_or_service_latches_first_error_without
         else:
             c=retained_checker(p)
             if damage=='stale-direction-service':
-                c.write_accepted(2,transfer(11,dict(row=p.direction['row'],mask=p.direction['mask'],counters=[1,1])))
+                c.write_accepted(MAIN_WAYS,transfer(11,dict(row=p.direction['row'],mask=p.direction['mask'],counters=[1]*MAIN_WAYS)))
             else:
                 c.write_accepted(p.owner,transfer(11,deepcopy(p.effect)))
                 c.write_accepted(p.owner,transfer(13,deepcopy(p.effect)))

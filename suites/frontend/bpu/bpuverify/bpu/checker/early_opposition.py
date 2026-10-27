@@ -7,6 +7,7 @@ from bpuverify.bpu.model.early_opposition import provider,ahead_owner,resident,m
 
 
 class EarlyOppositionChecks(EarlyDirectionChecks):
+    fallback_position = FALLBACK
     completion_rules=RULES
 
     def __init__(self,coverage,pc):

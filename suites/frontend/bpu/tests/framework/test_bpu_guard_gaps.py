@@ -22,11 +22,11 @@ def integrated_baseline(baseline):
     report.write_text(json.dumps(native))
     epoch=baseline/'source-epoch.json'
     frozen=json.loads(epoch.read_text())
-    frozen.update({str(ROOT/row['file']):row['sha256'] for row in sources})
+    frozen.update({str((ROOT/row['file']).resolve()):row['sha256'] for row in sources})
     epoch.write_text(json.dumps(frozen))
     records=[]
     for item in claims:
-        fields=dict(f=str(ROOT/COMPILED),l=str(item['guard']),o=item['arm'],page='v_branch/WriteBuffer_8',
+        fields=dict(f=str((ROOT/COMPILED).resolve()),l=str(item['guard']),o=item['arm'],page='v_branch/WriteBuffer_8',
             S=f"{item['first']}-{item['last']}")
         meta=''.join('\x01'+key+'\x02'+value for key,value in fields.items())
         records.append(f"C '{meta}' 0\n")
@@ -64,7 +64,7 @@ def test_any_changed_integrated_body_or_module_rejects_proof_transfer(integrated
 def test_source_similarity_alone_cannot_waive_current_native_evidence(integrated_baseline,fault):
     run=integrated_baseline
     if fault=='stale-source':
-        p=run/'source-epoch.json';data=json.loads(p.read_text());data[str(ROOT/COMPILED)]='0'*64;p.write_text(json.dumps(data))
+        p=run/'source-epoch.json';data=json.loads(p.read_text());data[str((ROOT/COMPILED).resolve())]='0'*64;p.write_text(json.dumps(data))
     else:
         p=run/'pytest-artifacts/workers/gw0/native/bpu/native-merged.dat';data=p.read_text()
         p.write_text(data.replace("' 0\n","' 1\n",1) if fault=='nonzero-producer' else data.replace('\x01o\x02else','\x01o\x02if',1))

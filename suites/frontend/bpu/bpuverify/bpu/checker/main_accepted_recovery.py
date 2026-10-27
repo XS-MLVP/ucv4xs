@@ -1,4 +1,5 @@
 """A source may die after acceptance; its complete learning must not disappear."""
+from bpuverify.common.model.configuration import *
 from copy import deepcopy
 from bpuverify.bpu.checker.main_original_order import Checks as OriginalChecks
 from bpuverify.bpu.model.main_service import observed_counter
@@ -33,7 +34,7 @@ class Checks(OriginalChecks):
             and not port['ready'] and port['bits']==self.program.effect)
         if retained:
             self.check(1,sum(sum(v) for v in row['dirty']),'one complete retained entry, not a cancelled or duplicated copy')
-            d=row['writes'][2]
+            d=row['writes'][MAIN_WAYS]
             self.check((1,0,self.program.direction),(d['valid'],d['ready'],observed_counter(d['bits'])),
                 'independent direction remains read-blocked beside the complete entry')
             if self.first_retained is None:self.first_retained=dict(tick=event.tick,entry=deepcopy(port['bits']))
@@ -52,7 +53,7 @@ class Checks(OriginalChecks):
                 self.recovery=deepcopy(record)
         future=self.close_when_retained
         if retained and self.recovery is not None and future is not None and not future.done():
-            self.check([[],[],[]],self.written,'accepted effects remain pending until the compared post-recovery boundary')
+            self.check([[] for _ in range(MAIN_WAYS+1)],self.written,'accepted effects remain pending until the compared post-recovery boundary')
             publication=self.first_retained['tick'];recovery=self.recovery['tick']
             self.check(getattr(self.program,'simultaneous',False) or self.program.moment=='publication-overlap',recovery<=publication,
                 'actual recovery crosses the declared publication or already-retained boundary')
@@ -63,16 +64,16 @@ class Checks(OriginalChecks):
     def write_accepted(self,owner,transfer):
         self.check(True,self.retained_witness is not None,'actual service follows compared retained copy after recovery')
         self.check(True,transfer.accepted_tick>self.recovery['tick'],'accepted copy services after its source fate was checked')
-        expected=self.program.direction if owner==2 else self.program.effect
-        actual=observed_counter(transfer.value) if owner==2 else transfer.value
-        self.check(True,owner in (self.program.owner,2),'unexecuted sibling receives no entry service')
+        expected=self.program.direction if owner==MAIN_WAYS else self.program.effect
+        actual=observed_counter(transfer.value) if owner==MAIN_WAYS else transfer.value
+        self.check(True,owner in (self.program.owner,MAIN_WAYS),'unexecuted sibling receives no entry service')
         self.check(expected,actual,'full SDK-confirmed service belongs to the accepted learning')
         self.check(0,len(self.written[owner]),'one actual entry and one actual direction service only')
         super().write_accepted(owner,transfer)
 
     def complete(self):
         self.raise_failure()
-        return tuple(map(len,self.written))==tuple(1 if i in (self.program.owner,2) else 0 for i in range(3))
+        return tuple(map(len,self.written))==tuple(1 if i in (self.program.owner,MAIN_WAYS) else 0 for i in range(MAIN_WAYS+1))
 
     def summary(self):
         return dict(super().summary(),recovery=deepcopy(self.recovery),first_retained=deepcopy(self.first_retained))

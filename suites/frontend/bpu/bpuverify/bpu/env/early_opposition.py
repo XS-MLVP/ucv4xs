@@ -5,6 +5,7 @@ from bpuverify.bpu.transaction.types import BpuBranchFeedback
 
 
 class EarlyOppositionProgram(EarlyDirectionProgram):
+    fallback_position = FALLBACK
     def __init__(self,*args):
         super().__init__(*args)
         self.owners=[]

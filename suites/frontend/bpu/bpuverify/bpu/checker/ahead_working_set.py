@@ -1,4 +1,5 @@
 """Independent program ownership and complete actual counter-state closure."""
+from bpuverify.common.model.configuration import *
 from copy import deepcopy
 from dataclasses import asdict, fields
 
@@ -10,7 +11,7 @@ from bpuverify.bpu.model.ahead_working_set import expected_branch, strong_counte
 
 def prefix_main_counts(token):
     values=token.lookup.values()
-    return {values[f'{slot}.position']:values[f'{slot}.counter'] for slot in range(4)
+    return {values[f'{slot}.position']:values[f'{slot}.counter'] for slot in range(RESULT_SLOTS)
         if values[f'{slot}.valid']}
 
 
@@ -170,7 +171,7 @@ class AheadWorkingSetChecks:
         main = self.pipeline.model.sources.main
         patches = main.direction_proposals()
         for owner, direction in enumerate(self._direction_snapshot):
-            patch = patches.get(divmod(owner, 2))
+            patch = patches.get(divmod(owner, MAIN_BANKS))
             wanted = dict(valid=int(patch is not None))
             actual = dict(valid=direction['valid'])
             if patch is not None:

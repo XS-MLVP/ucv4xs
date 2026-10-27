@@ -90,7 +90,7 @@ def test_logical_working_set_geometry_and_full_tags_are_explicit_without_missing
     program = WorkingSetProgram(size, 'serial')
     assert len(program.histories) == len(set(program.histories)) == SIZES[size]
     assert len({address(history)[1] for history in program.histories}) == SIZES[size]
-    assert all(tag(PC, Context.from_recent(history), table) < 64
+    assert all(tag(PC, Context.from_recent(history), table) < 256
                for history in program.histories for table in (0, 1))
     assert len(program.histories) > 8
     assert len(program.selected) < len(program.histories)

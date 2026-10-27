@@ -21,11 +21,11 @@ def choice(position=1,*,taken=True,kind=Kind.CONDITIONAL,target=PC):return Branc
 
 @pytest.mark.parametrize('positions',((1,5),(5,1),(1,1,5,5)))
 def test_not_taken_recovery_appends_only_executed_prefix_not_later_predicted_conditionals(positions):
-    block=Block(PC,positions);source=Value(True,255,15)
+    block=Block(PC,positions);source=Value(True,65535,255)
     assert block.conditionals==(1,5)
-    assert source.append(block.outcomes(choice(taken=False),recovering=True),valid=False)==Value(False,254,14)
+    assert source.append(block.outcomes(choice(taken=False),recovering=True),valid=False)==Value(False,65534,254)
     # Completing the ENTIRE block as fallthrough is a different semantic event.
-    assert source.append(block.outcomes(choice(taken=False)),valid=True)==Value(True,252,12)
+    assert source.append(block.outcomes(choice(taken=False)),valid=True)==Value(True,65532,252)
 
 
 @pytest.mark.parametrize('position',(1,3,5,7))
@@ -52,16 +52,16 @@ def test_backward_bit_uses_pinned_partial_target_comparison_not_full_region_orde
 
 def test_eight_real_taken_conditionals_saturate_history_then_future_conditional_extends_only_after_recovery():
     model=CommonDirectionReference();block=Block(PC,(1,5));owner=object()
-    for _ in range(8):model.advance(completed=(block,choice()))
-    assert model.value==Value(True,255,15)
+    for _ in range(16):model.advance(completed=(block,choice()))
+    assert model.value==Value(True,65535,255)
     original=model.checkpoint(owner,block)
     model.advance(redirect=(original,choice(taken=False)))
-    assert model.value==Value(True,255,15) and model.recoveries==0
+    assert model.value==Value(True,65535,255) and model.recoveries==0
     model.advance(completed=(block,choice(5)))
-    assert model.value==Value(False,254,14) and model.recoveries==1
+    assert model.value==Value(False,65534,254) and model.recoveries==1
     model.advance(completed=(Block(PC+3,(5,)),choice(5,target=FALL)))
-    assert model.value==Value(True,253,12)
-    assert original.value==Value(True,255,15)
+    assert model.value==Value(True,65533,252)
+    assert original.value==Value(True,65535,255)
 
 
 @pytest.mark.parametrize('fault',('foreign','copied','retired','reset'))
@@ -90,7 +90,7 @@ def test_lookup_history_api_rejects_signal_or_mapping_seeds():
     with pytest.raises(TypeError):model.checkpoint(object(),Block(PC),value=Value().mapping())
 
 
-@pytest.mark.parametrize('args',((1,0,0),(True,-1,0),(True,256,0),(True,0,16),(True,0,-1)))
+@pytest.mark.parametrize('args',((1,0,0),(True,-1,0),(True,65536,0),(True,0,256),(True,0,-1)))
 def test_history_rejects_invalid_semantic_values_instead_of_truncating_inputs(args):
     with pytest.raises(ValueError):Value(*args)
 
@@ -113,11 +113,11 @@ def fixture(*,later_conditional=True,public_only=False):
     coverage=CommonHistoryCoverage(later_conditional=later_conditional,public_only=public_only)
     checks=CommonHistoryChecks(pipeline,observe_state=not public_only,coverage=coverage);checks.initialized=True
     block=Block.from_token(token)
-    for _ in range(8):checks.model.advance(completed=(block,choice()))
+    for _ in range(16):checks.model.advance(completed=(block,choice()))
     checkpoint=checks.model.checkpoint(token.history,block);checks.sources[token.history.sequence]=checkpoint
     def receipt(t,value,*,pred=96,at=100):
         values={} if t.lookup is None else t.lookup.values();hits=[];positions=[];attrs=[];seen=set()
-        for i in range(4):
+        for i in range(10):
             position=values.get(f'{i}.position',0);kind=values.get(f'{i}.kind',0)
             hit=bool(values.get(f'{i}.valid') and kind==1 and position not in seen)
             if hit:seen.add(position)
@@ -163,9 +163,9 @@ def test_complete_prefix_contract_keeps_checked_empty_until_selected_endpoint_an
 def test_corrupted_actual_redirect_never_seeds_or_advances_the_reference(fault):
     checks,_,r,_,_=fixture()
     if fault in ('ghr','bw'):r['meta'][fault]^=1
-    elif fault=='hits':r['meta']['hits']=(0,0,0,0)
-    elif fault=='duplicate':r['meta']['positions']=(1,1,0,0)
-    elif fault=='hit-kind':r['meta']['kinds']=(2,1,0,0)
+    elif fault=='hits':r['meta']['hits']=(0,)*10
+    elif fault=='duplicate':r['meta']['positions']=(1,1)+(0,)*8
+    elif fault=='hit-kind':r['meta']['kinds']=(2,1)+(0,)*8
     else:r[fault]^=1
     before=checks.model.value,checks.model.pending,len(checks.plans)
     with pytest.raises(AssertionError) as first:sample(checks,100,redirect=r)
@@ -177,10 +177,10 @@ def test_corrupted_actual_redirect_never_seeds_or_advances_the_reference(fault):
 @pytest.mark.parametrize('fault',('extra-zero','wrong-backward','wrong-valid'))
 def test_wrong_recovered_state_is_rejected_without_golden_repair(fault):
     checks,_,r,_,_=fixture();sample(checks,100,redirect=r);sample(checks,102)
-    state=Value(False,252,12) if fault=='extra-zero' else Value(False,254,0) if fault=='wrong-backward' else Value(True,254,14)
+    state=Value(False,65532,252) if fault=='extra-zero' else Value(False,65534,0) if fault=='wrong-backward' else Value(True,65534,254)
     before=checks.model.value
     with pytest.raises(AssertionError):sample(checks,104,state=state)
-    assert checks.model.value==before==Value(False,254,14)
+    assert checks.model.value==before==Value(False,65534,254)
 
 
 @pytest.mark.parametrize('fault',('zero-valid','wrong-ghr','wrong-bw','foreign-owner','missing-known-source','changed-original'))
@@ -200,7 +200,7 @@ def test_public_only_oracle_rejects_defined_bad_payloads_and_never_reads_interna
     with pytest.raises(AssertionError):
         checks.consumed(consumer,later_conditional=True)
         checks.finish(public_only=True)
-    assert checks.model.value==before==Value(True,253,12)
+    assert checks.model.value==before==Value(True,65533,252)
     assert checks.coverage.groups['checked'].coverage==0
 
 
@@ -214,7 +214,7 @@ def test_preparation_or_recovery_without_the_required_endpoint_is_not_success(pu
 
 def test_expected_recovery_without_a_post_restore_comparison_cannot_receive_endpoint_credit():
     checks,_,r,_,_=fixture();sample(checks,100,redirect=r);sample(checks,102)
-    assert checks.model.value==Value(False,254,14)
+    assert checks.model.value==Value(False,65534,254)
     with pytest.raises(AssertionError,match='post-restore'):checks.recovered(100)
     assert checks.coverage.groups['checked'].coverage==0
 

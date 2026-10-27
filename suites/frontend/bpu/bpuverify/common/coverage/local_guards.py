@@ -25,10 +25,20 @@ class Source:
         assert self.lines[line-1]==text,(self.path,line,text,self.lines[line-1])
 
     def definition(self,name,expression):
-        expected = re.sub(r'\s+','',name+'='+expression+';')
-        found = [number for number,line in enumerate(self.lines,1) if re.sub(r'\s+','',line)==expected]
-        assert len(found)==1,(self.path,name,expression,found)
-        return found[0]
+        # firtool can emit a wire initializer on one or several lines.
+        # Match the unique assignment and its complete RHS, not a substring.
+        text = '\n'.join(self.lines)
+        pattern = r'(?<![\w])'+re.escape(name)+r'\s*=(?!=)\s*([^;]*);'
+        matches = list(re.finditer(pattern,text))
+        assert len(matches)==1,(self.path,name,'ambiguous definition',len(matches))
+        match, = matches
+        assert re.sub(r'\s+','',match[1])==re.sub(r'\s+','',expression), (self.path,name,expression,match[1])
+        return text[:match.start()].count('\n')+1
+
+    def unique(self,text):
+        matches = [n for n,line in enumerate(self.lines,1) if line==text]
+        assert len(matches)==1,(self.path,text,matches)
+        return matches[0]
 
     def closing(self,line):
         assert self.lines[line-1].endswith('begin'),(self.path,line,'not a supported begin block')
@@ -101,7 +111,7 @@ def match_native(claims,report,dut,points):
                 'native DA producer is not the proven arm',key,fields,item)
         assert count==0,('contradictory guard producer has nonzero count; investigate compiler/evidence',fields,count)
         seen.update(relevant)
-        producers.append(dict(file=str(Path(source).relative_to(ROOT)),page=fields['page'],line=int(fields['l']),
+        producers.append(dict(file=keys[next(iter(_covered_lines(fields) & keys.keys()))][0],page=fields['page'],line=int(fields['l']),
             arm=fields.get('o'),span=fields.get('S',''),context=fields.get('h',''),count=count))
     assert seen==assertions.keys(),('missing native producers; never assume zero',sorted(assertions.keys()-seen))
     return dict(native_source_lines=report['dut'][dut]['source_lines'],raw_missing=len(raw),

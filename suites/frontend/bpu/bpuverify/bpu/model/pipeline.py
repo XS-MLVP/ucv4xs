@@ -6,6 +6,8 @@ The source-bank protocol is deliberately independent of signal sampling;
 adapters must use owned predictor models. All-predictor adapters are not yet
 complete: MicroOnlySources below explicitly rejects unsupported learning.
 """
+from bpuverify.common.model.configuration import *
+
 from dataclasses import dataclass, replace
 
 from bpuverify.bpu.model.path_history import Checkpoint, PathHistoryReference, path_contribution
@@ -71,7 +73,7 @@ class Outcome:
     def __post_init__(self):
         if type(self.kind) is not Kind or type(self.action) is not StackAction or type(self.taken) is not bool or type(self.mispredict) is not bool:
             raise ValueError('resolved branch requires semantic kind/action/directions')
-        if type(self.position) is not int or not 0 <= self.position < 16 or type(self.target) is not int or not 0 <= self.target < 1 << 49:
+        if type(self.position) is not int or not 0 <= self.position < POSITIONS or type(self.target) is not int or not 0 <= self.target < 1 << 49:
             raise ValueError('resolved branch is outside the current position/address contract')
 
 
@@ -176,7 +178,7 @@ class PipelineReference:
                    if token.history.metadata() == metadata and (source_pc is None or token.pc == source_pc)]
         if not matches:
             raise ValueError('BPU metadata has no owned published source')
-        if len({(item.history, item.taken_edges % 52) for item in matches}) != 1:
+        if len({(item.history, item.taken_edges % PHR_STORAGE_BITS) for item in matches}) != 1:
             raise ValueError('BPU metadata aliases different history owners; full FTQ association required')
         return matches[0]
 
@@ -242,11 +244,11 @@ class PipelineReference:
         elif cycle.final_repair or cycle.middle_repair:
             token, decision = (third, late) if cycle.final_repair else (second, middle)
             transient = self.history.advance(taken=decision.branch.taken,
-                cfi_pc=(token.pc // 8) * 8 + decision.branch.position,
+                cfi_pc=(token.pc // ALIGN_HALFWORDS) * ALIGN_HALFWORDS + decision.branch.position,
                 target=decision.branch.target, restore=token.history)
             self.history.retire(transient)
         elif cycle.fires[1] and early.branch.taken:
-            transient = self.history.advance(taken=True, cfi_pc=(first.pc // 8) * 8 + early.branch.position,
+            transient = self.history.advance(taken=True, cfi_pc=(first.pc // ALIGN_HALFWORDS) * ALIGN_HALFWORDS + early.branch.position,
                                              target=early.branch.target)
             self.history.retire(transient)
         issued = None
@@ -296,13 +298,13 @@ class PipelineReference:
         elif cycle.final_repair or cycle.middle_repair:
             token, decision = (third, late) if cycle.final_repair else (second, middle)
             source, taken = token.history, decision.branch.taken
-            pc, target = (token.pc // 8) * 8 + decision.branch.position, decision.branch.target
+            pc, target = (token.pc // ALIGN_HALFWORDS) * ALIGN_HALFWORDS + decision.branch.position, decision.branch.target
         elif cycle.fires[1] and early.branch.taken:
             source, taken = Checkpoint(-1,self.history.history,self.history.taken_edges), True
-            pc, target = (first.pc // 8) * 8 + early.branch.position, early.branch.target
+            pc, target = (first.pc // ALIGN_HALFWORDS) * ALIGN_HALFWORDS + early.branch.position, early.branch.target
         else:
             return Checkpoint(-1,self.history.history,self.history.taken_edges)
-        word = ((source.history * 4) ^ path_contribution(pc,target)) % (1 << 52) if taken else source.history
+        word = ((source.history * 4) ^ path_contribution(pc,target)) % (1 << PHR_STORAGE_BITS) if taken else source.history
         return Checkpoint(-1,word,source.taken_edges + int(taken))
 
     def retire_source(self, sequence):

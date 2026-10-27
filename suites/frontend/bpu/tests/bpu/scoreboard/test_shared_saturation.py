@@ -38,7 +38,7 @@ def reference(p):
     baseline=model.sources.tage.commits;offers=[]
     def advance(request=None):
         model.advance(replace(event,feedback=request))
-        rows=model.sources.tage.offers.get((3,PC%4),())
+        rows=model.sources.tage.offers.get((7,PC%4),())
         if rows:offers.append(tuple((r.way,r.entry.counter) for r in rows))
     for source in sources:
         request=resolution(source,resolved_path());assert not model.sources.feedback_for(request).reread
@@ -49,8 +49,8 @@ def reference(p):
     else:raise AssertionError('independent shared learning did not mature')
     assert offers==[((0,1),(1,6))]*12
     assert model.sources.tage.commits==baseline
-    assert tuple(tuple(row['counter'] for row in way) for way in pending_plan(model.sources.tage,3,PC%4))==((0,)*4,(7,)*4)
-    assert model.sources.tage.cache[3,PC%4].overflows==0
+    assert tuple(tuple(row['counter'] for row in way) for way in pending_plan(model.sources.tage,7,PC%4))==((0,)*4,(7,)*4)
+    assert model.sources.tage.cache[7,PC%4].overflows==0
     old=[]
     for path in p.paths:
         middle=anchor if path is None else streaming_query(model,event,anchor.history,path,anchor.pc+4)
@@ -82,7 +82,7 @@ def packet(checks,counts,ordinal=None):
     row=dict(reset=0,reads=({'valid':1,'mask':1},{'valid':0,'mask':0}),
         training=dict(valid=0,ready=1),prediction=dict(valid=1,ready=1,pc=STREAM_PC),
         writes=tuple(dict(valid=int(bool(way)),ready=0,bits=way[0] if way else dict(row=0,valid=0,tag=0,counter=0))
-            for way in pending_plan(checks.pipeline.model.sources.tage,3,PC%4)),
+            for way in pending_plan(checks.pipeline.model.sources.tage,7,PC%4)),
         dirty=tuple(tuple(int(bool(count)) for count in counts) for _ in range(2)),
         incoming=tuple(dict(valid=int(ordinal is not None),bits={} if ordinal is None else deepcopy(value))
             for value in (checks.expected_offers[ordinal] if ordinal is not None else ({},{}))))
@@ -111,7 +111,7 @@ def completed(p):
         for rank,value in enumerate(values):checks.write_accepted(owner,NS(accepted_tick=1210+2*rank,value=deepcopy(value)))
     model,event,anchor=reference;quiet(model,event)
     assert model.sources.tage.commits==baseline+8
-    assert pending_plan(model.sources.tage,3,PC%4)==((),())
+    assert pending_plan(model.sources.tage,7,PC%4)==((),())
     tokens=tuple(revisit(model,event,anchor,PC) if path is None else via(model,event,anchor,path) for path in p.paths)
     final=packet(checks,(3,)*4)
     final['state']['reads'][0]['valid']=0

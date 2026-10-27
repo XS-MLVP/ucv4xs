@@ -1,4 +1,6 @@
 """One Main/Micro/TAGE pipeline plus an independently owned ITTAGE facet."""
+from bpuverify.common.model.configuration import *
+
 from dataclasses import replace
 
 from bpuverify.bpu.model.direction_sources import DirectionSources
@@ -107,9 +109,9 @@ class JointLateSources(DirectionSources):
             elif enabled and second.lookup is not None:
                 raise ValueError('enabled joint target has no independently owned S1 read')
             branches,wanted,_=self.decision(second,bool(cycle.enabled[2] and cycle.enabled[3]))
-            directions=tuple(bool(wanted[f'{slot}.taken']) if wanted.get(f'{slot}.valid') else None for slot in range(4))
+            directions=tuple(bool(wanted[f'{slot}.taken']) if wanted.get(f'{slot}.valid') else None for slot in range(RESULT_SLOTS))
             target=None if prediction is None or prediction.provider is None else prediction.target//2
-            joint=final(second.pc,branches,directions,(None,)*4,indirect_target=target)
+            joint=final(second.pc,branches,directions,(None,)*RESULT_SLOTS,indirect_target=target)
             self.targets.resolved[second.history.sequence]=replace(source,enabled=enabled,
                 prediction=prediction,allocation=None if prediction is None else allocation(prediction,random),late=joint)
         feedback=self.targets.feedback_for(events.feedback) if events.feedback is not None and enabled else None

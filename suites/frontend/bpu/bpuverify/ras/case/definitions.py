@@ -1,13 +1,14 @@
 """Deterministic RAS call vectors and queue geometry."""
 
 from __future__ import annotations
+from bpuverify.common.model.configuration import *
 
 from dataclasses import dataclass
 
 
-# The rebuilt DUT uses MinimalConfig (top/Configs.scala), not RasParameters'
-# standalone defaults. Its committed stack has 8 entries and spec queue 16.
-SPEC_QUEUE_SIZE = 16
+# The rebuilt DUT uses DefaultConfig (top/Configs.scala), not RasParameters'
+# standalone defaults. Its committed stack has 16 entries and spec queue 32.
+SPEC_QUEUE_SIZE = 32
 STACK_COUNTER_MAX = 7
 
 

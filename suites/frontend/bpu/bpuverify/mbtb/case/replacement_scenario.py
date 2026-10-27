@@ -21,12 +21,12 @@ PHASES = ('prepared', 'qualified', 'replaced', 'alias_replaced', 'isolated', 're
 
 
 def replacement_vectors(index, align, upper):
-    if not isinstance(index, int) or not 0 <= index < 64 or align not in (0, 1) or upper not in (0, 1):
-        raise ValueError('replacement scenario requires index 0..63 and alignment/upper-set bit 0/1')
-    pc = 0x40001000 + (index << 4) + (upper << 10)
-    return tuple(BranchVector(address, 0x40009000 + ordinal * 0x1000, 1 + 8 * row, 1)
-                 for ordinal, (address, row) in enumerate(((pc, align), (pc ^ 0x400, align),
-                                                           (pc ^ 0x20, align), (pc, 1 - align))))
+    if not isinstance(index, int) or not 0 <= index < 256 or align not in (0, 1) or upper not in (0, 1):
+        raise ValueError('replacement scenario requires index 0..255 and alignment/upper-set bit 0/1')
+    pc = 0x40000000 + (index << 5) + (upper << 13)
+    return tuple(BranchVector(address, 0x40009000 + ordinal * 0x1000, 1 + 16 * row, 1)
+                 for ordinal, (address, row) in enumerate(((pc, align), (pc ^ 0x2000, align),
+                                                           (pc ^ 0x80, align), (pc, 1 - align))))
 
 
 async def read_profiles(agent, vectors, states, *, reverse=False):
@@ -49,7 +49,7 @@ async def allocate(agent, model, vector):
                                   deepcopy(before.meta_entries), mispredict=1))
     after = await agent.predict(vector.pc)
     assert matching_entry(after, vector) == MbtbEntry(1, 1, vector.target, vector.position, 1, 0)
-    assert matching_way(after, vector) == 2 * (vector.position // 8) + wanted_way
+    assert matching_way(after, vector) == 5 * (vector.position // 16) + wanted_way
     assert matching_counter(after, vector) == 2
     return after
 
@@ -62,7 +62,7 @@ async def check_case(agent, coverage, index, align, upper, mode):
     model = MbtbReplacementState()
     residents = []
     for vector in vectors:
-        pair = (vector, replace(vector, position=vector.position + 1, target=vector.target + 0x400))
+        pair = tuple(replace(vector, position=vector.position + i, target=vector.target + i * 0x400) for i in range(4))
         residents.extend(pair)
         for newcomer in pair:
             await allocate(agent, model, newcomer)
@@ -72,28 +72,29 @@ async def check_case(agent, coverage, index, align, upper, mode):
     for ordinal, vector in enumerate(residents):
         prediction = await agent.predict(vector.pc)
         assert matching_entry(prediction, vector) == MbtbEntry(1, 1, vector.target, vector.position, 1, 0)
-        assert matching_way(prediction, vector) == 2 * (vector.position // 8) + (1 if ordinal % 2 == 0 else 0)
+        assert matching_way(prediction, vector) == 5 * (vector.position // 16) + (3 - ordinal % 4)
         assert matching_counter(prediction, vector) == 2
     sample = dict(index=index, align=align, upper=upper, mode=mode)
     await read_profiles(agent, vectors, states)
     coverage.sample(dict(sample, phase='prepared'))
 
     alias = vectors[1]
-    if mode == 'taken_way0':
-        # Both setup allocations end with way0 touched. A second way0 touch
-        # would otherwise leave the age unchanged and fail to prove it works.
-        # Steer with genuine correct-taken way1 feedback first, then test the
-        # way0 transition from its discriminating opposite age.
-        opposite = expected_mbtb_replacement_feedback(states[alias.pc], align, 1, taken=1)
-        model.feedback(alias.pc, alias.position, 1, taken=1)
-        await agent.train(MbtbTraining(alias.pc, alias.target, 1, alias.position, 1,
-                                      deepcopy(states[alias.pc]['meta_entries']), mispredict=0))
-        states[alias.pc] = opposite
-        await read_profiles(agent, vectors, states)
-    before_victim = model.victim(alias.pc, alias.position)
     touch_way = 0 if mode == 'taken_way0' else 1
-    touched = replace(alias, position=alias.position + int(touch_way == 0),
-                      target=alias.target + 0x400 * int(touch_way == 0))
+    # Make the selected way oldest by touching all three peers through real
+    # correct-taken feedback. This proves a four-way age transition, not just
+    # a counter change or an already-MRU no-op.
+    for peer in reversed(tuple(way for way in range(4) if way != touch_way)):
+        entry = states[alias.pc]['entries'][align * 5 + peer]
+        expected = expected_mbtb_replacement_feedback(states[alias.pc], align, peer, taken=1)
+        model.feedback(alias.pc, entry.position, peer, taken=1)
+        await agent.train(MbtbTraining(alias.pc, entry.target, 1, entry.position, 1,
+                                      deepcopy(states[alias.pc]['meta_entries']), mispredict=0))
+        states[alias.pc] = expected
+    await read_profiles(agent, vectors, states)
+    before_victim = model.victim(alias.pc, alias.position)
+    assert before_victim == touch_way
+    touched = replace(alias, position=alias.position + 3 - touch_way,
+                      target=alias.target + 0x400 * (3 - touch_way))
     if mode == 'lookup_only':
         await agent.predict(alias.pc)
     else:
@@ -111,9 +112,9 @@ async def check_case(agent, coverage, index, align, upper, mode):
     coverage.sample(dict(sample, phase='qualified'))
 
     for ordinal, vector in enumerate(vectors):
-        newcomer = replace(vector, position=vector.position + 2, target=vector.target + 0x800)
+        newcomer = replace(vector, position=vector.position + 4, target=vector.target + 0x1000)
         # Freeze the complete expected result before sending fresh, normal
-        # feedback. A and its set+32 alias share LRU, C and D do not.
+        # feedback. A and its set+64 alias share LRU, C and D do not.
         geometry = mbtb_replacement_geometry(vector.pc, vector.position)
         way = model.allocate(vector.pc, vector.position)
         expected = expected_mbtb_replacement_state(states[vector.pc], geometry.align, way, newcomer)

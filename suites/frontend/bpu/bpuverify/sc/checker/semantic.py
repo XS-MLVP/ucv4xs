@@ -10,10 +10,11 @@ def prediction_values(prediction, actual):
     expected = prediction.metadata()
     observed = {key: tuple(actual[key]) for key in expected}
     debug = actual['debug']
-    for table, name in enumerate(('predPathIdx', 'predGlobalIdx', 'predBWIdx', 'predImliIdx', 'predBiasIdx')):
-        expected[name] = prediction.read.indices[table]
+    for indices, name in zip(((0, 1), (2, 3), (4, 5), (6,), (7,)),
+                             ('predPathIdx', 'predGlobalIdx', 'predBWIdx', 'predImliIdx', 'predBiasIdx'), strict=True):
+        expected[name] = tuple(prediction.read.indices[table] for table in indices)
         value = debug[name]
-        observed[name] = value[0] if isinstance(value, (tuple, list)) else value
+        observed[name] = tuple(value) if isinstance(value, (tuple, list)) else (value,)
     for table, name in enumerate(('scPathTakenVec', 'scGlobalTakenVec', 'scBWTakenVec',
                                   'scImliTakenVec', 'scBiasTakenVec')):
         expected[name] = tuple(row[table] for row in prediction.components)
@@ -85,7 +86,7 @@ class ScSemanticChecker:
             if prediction is None:
                 if enabled:
                     raise AssertionError('accepted SC lookup has no reference snapshot')
-                self.board.check(expected=(0,) * 4, actual=actual.useds, context=context)
+                self.board.check(expected=(0,) * len(actual.useds), actual=actual.useds, context=context)
                 return
             if enabled:
                 self.board.check(expected=(request.pc, Context.from_history(request.history)),
@@ -94,7 +95,7 @@ class ScSemanticChecker:
                 expected.update(takens=prediction.directions, useds=prediction.used)
                 observed.update(takens=actual.takens, useds=actual.useds)
             else:
-                expected, observed = dict(useds=(0,) * 4), dict(useds=actual.useds)
+                expected, observed = dict(useds=(0,) * len(actual.useds)), dict(useds=actual.useds)
             self.board.check(expected=expected, actual=observed, context=context)
 
         return compare

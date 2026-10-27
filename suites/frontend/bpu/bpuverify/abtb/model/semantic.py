@@ -11,6 +11,8 @@ Different branch positions must not cancel one another merely because their
 partial tags agree. The visibility contract is separate from branch learning;
 it does not import the old slot/dirty-mask implementation audit.
 """
+from bpuverify.common.model.configuration import *
+
 from dataclasses import dataclass, replace
 
 
@@ -51,7 +53,7 @@ class Source:
     def __post_init__(self):
         if type(self.hit) is not bool:
             raise ValueError('ABTB source hit must be a semantic bool')
-        for value, limit, name in ((self.position, 16, 'position'), (self.kind, 4, 'branch kind'),
+        for value, limit, name in ((self.position, POSITIONS, 'position'), (self.kind, 4, 'branch kind'),
                                   (self.action, 4, 'stack action'), (self.target, TARGET_SIZE, 'local target')):
             unsigned(value, limit, name)
 
@@ -71,7 +73,7 @@ class Feedback:
 
     def __post_init__(self):
         for value, limit, name in ((self.pc, 1 << 49, 'halfword PC'), (self.target, 1 << 49, 'halfword target'),
-            (self.position, 16, 'position'), (self.kind, 4, 'branch kind'), (self.action, 4, 'stack action'),
+            (self.position, POSITIONS, 'position'), (self.kind, 4, 'branch kind'), (self.action, 4, 'stack action'),
             (self.row, ROWS, 'row'), (self.banks, 1 << BANKS, 'bank mask')):
             unsigned(value, limit, name)
         if type(self.taken) is not bool or type(self.valid) is not bool:

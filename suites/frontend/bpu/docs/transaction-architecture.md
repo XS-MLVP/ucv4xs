@@ -251,7 +251,7 @@ be starved by repeated cleanup and a first SRAM read can be stale without data
 loss. Only successful post-retirement comparisons count as diagnostic PASS;
 none of these raw files or observations receives formal coverage credit.
 
-`mbtb_replacement_model` owns the shared `MbtbTwoWayLru` policy and a bounded
+`mbtb_replacement_model` owns the shared `MbtbFourWayLru` policy and a bounded
 `MbtbReplacementState` indexed by alignment bank and halfword PC[9:4]. Entry
 SRAM set PC[10:5] and internal bank PC[4] are a different identity: changing
 PC[10] changes the SRAM set but shares replacement state. The reference is

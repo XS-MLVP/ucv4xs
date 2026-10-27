@@ -46,18 +46,18 @@ class IndirectLearningChecks:
     def cold(self,source):
         self.check([],self.sources,'one initial source before learning')
         token,snapshot=self.save(source)
-        self.check((None,2),(snapshot.prediction.provider,snapshot.allocation),'independent cold allocation chooses the longest table')
+        self.check((None,4),(snapshot.prediction.provider,snapshot.allocation),'independent cold allocation chooses the longest table')
         self.check(False,token.early.branch.taken,'cold source is a genuine fallthrough, not a preinstalled branch')
 
     def consumed(self,source,*,confidence,main,target,repair):
         self.check(True,bool(self.accepted),'new target consumption follows actual feedback')
         self.check(True,source.prediction_tick>self.accepted[-1][0],'consumer is a fresh post-feedback request')
         token,snapshot=self.save(source);prediction=snapshot.prediction
-        self.check((2,None,confidence,0,target*2),
+        self.check((4,None,confidence,0,target*2),
             (prediction.provider,prediction.alternate,prediction.confidence,prediction.useful,prediction.provider_target),
             'independently learned longest provider, exact confidence and full target')
         self.check(None,snapshot.allocation,'longest provider cannot allocate a longer history')
-        values=token.lookup.values();branches=tuple(values[f'{slot}.target'] for slot in range(4)
+        values=token.lookup.values();branches=tuple(values[f'{slot}.target'] for slot in range(10)
             if values.get(f'{slot}.valid') and values[f'{slot}.position']==self.position)
         self.check((main,),branches,'own Main target is checked independently from ITTAGE')
         self.check((self.position,target,Kind.INDIRECT,True,'indirect-history'),

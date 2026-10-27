@@ -1,4 +1,6 @@
 """Pure projection and SC request derivation from the actual public inputs."""
+from bpuverify.common.model.configuration import *
+
 
 SC_FIELDS = ('scBiasLowerBits', 'scPred', 'tagePred', 'tageCtr',
              'tagePredValid', 'useScPred', 'sumAboveThres')
@@ -17,9 +19,9 @@ def project_inputs(bits):
                        for entry in bank] for bank in meta['mbtb_entries']],
         commonHR=meta['commonHR'], sc={name: sc[name] for name in SC_FIELDS},
         debug={name: sc['debug'][name] for name in DEBUG_VECTORS} | dict(
-            predPathIdx=sc['debug']['predPathIdx'][0],
-            predGlobalIdx=sc['debug']['predGlobalIdx'][0],
-            predBWIdx=sc['debug']['predBWIdx'][0],
+            predPathIdx=tuple(sc['debug']['predPathIdx']),
+            predGlobalIdx=tuple(sc['debug']['predGlobalIdx']),
+            predBWIdx=tuple(sc['debug']['predBWIdx']),
             predImliIdx=sc['debug']['predImliIdx'], predBiasIdx=sc['debug']['predBiasIdx']))
 
 
@@ -45,9 +47,12 @@ def train_need_write(bits):
 
 
 def training_indices(pc, folded_path, common):
-    base = (pc >> 3) & 127
-    fold = lambda value: (value & 127) ^ (value >> 7)
-    return dict(pathTable_0=base ^ folded_path,
-        globalTable_0=base ^ fold(common['ghr']), bwTable_0=base ^ common['bw'],
-        imliTable=base ^ fold(common['imli']), biasTable=base)
-
+    from bpuverify.bpu.model.sc.history import history_indices
+    base = (pc // ALIGN_HALFWORDS) & 127
+    if folded_path == 0:
+        folded_path = (0, 0)
+    if not isinstance(folded_path, (tuple, list)) or len(folded_path) != 2:
+        raise ValueError('DefaultConfig needs the independent 8/16-bit path folds')
+    loop = (common['imli'] & 127) ^ (common['imli'] >> 7)
+    return dict(pathTable_0=base ^ folded_path[0], pathTable_1=base ^ folded_path[1],
+        **history_indices(pc, common), imliTable=base ^ loop, biasTable=base)

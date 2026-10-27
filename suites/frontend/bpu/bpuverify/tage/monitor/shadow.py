@@ -1,4 +1,5 @@
 """Read-only, same-event TAGE shadow ownership and drain arbitration."""
+from bpuverify.common.model.configuration import *
 from bpuverify.common.env.memory_direct import memory_signal
 from bpuverify.common.env.memory_direct import memory_signal_names
 from toffee import Bundle
@@ -11,9 +12,9 @@ from bpuverify.tage.model.shadow import SLOT_FIELDS
 class TageShadowMonitor(CycleMonitor):
     """Snapshot every bank/owner/depth; never derive expected state here."""
 
-    def __init__(self, dut, *, table=3):
-        if not isinstance(table, int) or not 0 <= table < 4:
-            raise ValueError('TAGE shadow table must be 0..3')
+    def __init__(self, dut, *, table=TAGE_TABLES - 1):
+        if not isinstance(table, int) or not 0 <= table < TAGE_TABLES:
+            raise ValueError('TAGE shadow table must be a configured table')
         names = tuple(memory_signal_names(dut))
 
         def signal(bank, field):

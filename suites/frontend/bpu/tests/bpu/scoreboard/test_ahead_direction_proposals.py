@@ -18,8 +18,8 @@ from bpuverify.mbtb.model.semantic import Accepted, Branch, Feedback, MbtbRefere
 
 def main_model(*, hit=False, kind=1, counter=2, taken=True, correction=True):
     main = MbtbReference()
-    sources = ((Source(), Source(hit, 7, kind, 0, counter)), (Source(), Source()))
-    feedback = Feedback((BASE, BASE+8), sources,
+    sources = ((Source(), Source(hit, 7, kind, 0, counter), Source(), Source(), Source()), (Source(),)*5)
+    feedback = Feedback((BASE, BASE+16), sources,
                         (Branch(BASE+17, taken, 7, 1, mispredict=correction),))
     main.offered = Accepted(feedback, (0, 0))
     return main
@@ -29,7 +29,7 @@ def checks_for(main):
     program = AheadWorkingSetProgram('turnover', 'conditional', 'coexisting')
     checks = AheadWorkingSetChecks(program, AheadWorkingSetCoverage(program))
     checks.pipeline = NS(model=NS(sources=NS(main=main)), current_event=NS(tick=123))
-    checks._direction_snapshot = tuple(dict(valid=0) for _ in range(4))
+    checks._direction_snapshot = tuple(dict(valid=0) for _ in range(8))
     return checks
 
 
@@ -51,14 +51,14 @@ def test_only_original_conditional_hit_owns_direction_learning(hit, kind, counte
     if expected is None:
         assert proposals == {}
     else:
-        assert proposals[0, 0].values == (None, expected)
+        assert proposals[0, 0].values == (None, expected, None, None)
 
 
 def test_miss_payload_cannot_update_an_unrelated_way_and_preview_does_not_mutate():
     main = main_model()
     before = pickle.dumps(main)
-    assert main.direction_proposals()[0, 0].values == (2, None)
-    assert main.direction_proposals()[0, 0].values == (2, None)
+    assert main.direction_proposals()[0, 0].values == (2, None, None, None)
+    assert main.direction_proposals()[0, 0].values == (2, None, None, None)
     assert pickle.dumps(main) == before
     assert not main.recency and not main.memory and main.cycles == 0
 

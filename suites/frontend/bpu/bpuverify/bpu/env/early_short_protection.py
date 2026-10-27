@@ -1,3 +1,4 @@
+from bpuverify.bpu.model.early_opposition import FALLBACK
 """Owned recovery paths and a monitor-terminated short-provider issue window."""
 from contextlib import asynccontextmanager
 
@@ -9,7 +10,7 @@ from bpuverify.bpu.monitor.early_aging import EarlyAgingDiagnostics
 
 
 class EarlyShortProtectionProgram(EarlyProtectionProgram):
-    recovery_position = 4
+    recovery_position = FALLBACK
 
     async def restart(self, source):
         await self.pause()
@@ -23,12 +24,12 @@ class EarlyShortProtectionProgram(EarlyProtectionProgram):
         for position in older:
             self.recovery_position = position
             source = await self.query(source)
-        self.recovery_position = 4
+        self.recovery_position = FALLBACK
         source = await self.query(source)
         await self.agent.configure_predictors(abtb=True, settle=True)
         await self.settled(checks)
         accepted = checks.open_original(longer=longer)
-        await self.recovery.send(source, position=4, branch_type=2, until=accepted)
+        await self.recovery.send(source, position=FALLBACK, branch_type=2, until=accepted)
         source = await self.agent.next_transaction(start_pc=self.pc, after_tick=checks.selected_tick-1)
         checks.window_receipt(source)
         self.owners.append(source)

@@ -18,7 +18,14 @@ from bpuverify.utage.model.usefulness_events import ProtectionState
 
 ANCHOR, SHORT_POSITION, POSITION, FALLBACK = 0x40000000, 2, 10, 12
 PROFILES = {'turnover-forward': (32, False), 'turnover-reverse': (32, True), 'capacity-reverse': (512, True)}
-CONTROLS = tuple(((site, bit),) for site in range(1, 5) for bit in (1, 2)) + (((5, 2), (6, 7), (7, 2)),)
+# The first four decisions change only long-history bits 5..8; they
+# preserve the short owner's index and tag. The fifth contributes bit 4.
+# The last four decisions change the real tail and contribute bits 0..3.
+# In DefaultConfig the 9-bit long history is an unfurled index, so a single
+# Ahead index cannot own all 512 rows. Sixteen declared tail/helper pairs
+# cover every row while preserving ordinary, independently owned feedback.
+CONTROLS = tuple(((site, bit),) for site,bit in
+                 ((3,2),(3,1),(4,2),(2,1),(4,1),(5,1),(5,2),(6,1),(6,2)))
 FEATURES = tuple(sorted(set((*INDEX_FOLDS, *TAG_FOLDS, *ALT_FOLDS))))
 RULES = ('genuine-predecessor-paths', 'distinct-original-history-owners', 'protected-short-prerequisites',
          'long-history-admissions', 'retained-after-shadow-turnover', 'correct-opposition-reward',
@@ -52,10 +59,10 @@ class HistoryPath:
     tail_key: tuple[int, ...] | None = None
 
     @property
-    def tail_variant(self): return bool(self.word & 256) if self.tail_key is None else self.tail_key
+    def tail_variant(self): return tuple(self.pcs[5:]) if self.tail_key is None else self.tail_key
 
     def edges(self):
-        return tuple(Edge(pc, self.pcs[i+1] if i<7 else ANCHOR, 3)
+        return tuple(Edge(pc, self.pcs[i+1] if i<7 else ANCHOR, 3, max(7,pc%16))
                      for i, pc in enumerate(self.pcs))
 
 
@@ -70,7 +77,7 @@ def history_path(ordinal):
             for site, bit in changes: pcs[site] ^= 1 << bit
     history, samples = PathHistoryReference(), [0]
     for i, pc in enumerate(pcs):
-        samples.append(history.advance(taken=True, cfi_pc=(pc&~7)+7,
+        samples.append(history.advance(taken=True, cfi_pc=(pc&~15)+max(7,pc%16),
             target=pcs[i+1] if i<7 else ANCHOR).history)
     index_context, tag_context = (Context.from_recent(samples[i]&4095) for i in (6, 7))
     return HistoryPath(ordinal, word, tuple(pcs), indices(pcs[7], index_context),
@@ -86,11 +93,14 @@ def short_history_path(ordinal):
         raise ValueError('one of the sixteen declared incoming program paths required')
     word = ordinal^(ordinal>>1)
     pcs = list(history_path(0).pcs)
-    pcs[6] ^= (word&3)<<5
-    pcs[7] ^= (word>>2)<<7
+    # Paired real tail choices keep the Ahead index fixed. They vary only
+    # the low five long-index bits, leaving the four older bits available
+    # for independent learning companions with the same short identity.
+    pcs[6] ^= ((word&7)<<2) | ((word&8)<<2)
+    pcs[7] ^= word&7
     history,samples = PathHistoryReference(),[0]
     for i,pc in enumerate(pcs):
-        samples.append(history.advance(taken=True,cfi_pc=(pc&~7)+7,
+        samples.append(history.advance(taken=True,cfi_pc=(pc&~15)+max(7,pc%16),
             target=pcs[i+1] if i<7 else ANCHOR).history)
     read,match = Context.from_recent(samples[6]&4095),Context.from_recent(samples[7]&4095)
     return HistoryPath(ordinal,word,tuple(pcs),indices(pcs[7],read),
@@ -149,7 +159,7 @@ def short_learning_path(ordinal, older):
     pcs=(*history_path(older).pcs[:-2],*original.pcs[-2:])
     history,samples=PathHistoryReference(),[0]
     for i,pc in enumerate(pcs):
-        samples.append(history.advance(taken=True,cfi_pc=(pc&~7)+7,
+        samples.append(history.advance(taken=True,cfi_pc=(pc&~15)+max(7,pc%16),
             target=pcs[i+1] if i<7 else ANCHOR).history)
     read,match=Context.from_recent(samples[6]),Context.from_recent(samples[7])
     return replace(original,pcs=pcs,read_indices=indices(pcs[7],read),
@@ -228,10 +238,10 @@ class HistoryWorkingSetProgram:
     @property
     @lru_cache(maxsize=len(PROFILES))
     def helpers(self):
-        # These two words use the fixed Main predecessor choices followed by
+        # These words use the fixed Main predecessor choices followed by
         # their declared tail variant. Helpers can run naturally; a helper is
         # not rebuilt with six recoveries for every protection update.
-        return tuple(path for path in self.paths if path.word & 255 == 0)
+        return tuple(path for path in self.paths if path.word & 31 == 0)
 
     def helper_for(self, path):
         return next(helper for helper in self.helpers if helper.tail_variant == path.tail_variant)

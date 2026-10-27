@@ -19,7 +19,7 @@ async def test_two_branch_feedback_takes_two_selector_steps(tage_agent):
     await tage_agent.reset()
     coverage = tage_selector_coverage_model("batch")
     earlier_position, later_position = await allocate_weak_pair_in_one_table(
-        tage_agent, tuple(position % 2 for position in range(8)), (1, 0)
+        tage_agent, tuple(position % 2 for position in range(32)), (1, 0)
     )
     earlier = await tage_agent.predict(PC, earlier_position, 0, base_conf=1)
     later = await tage_agent.predict(PC, later_position, 1, base_conf=1)

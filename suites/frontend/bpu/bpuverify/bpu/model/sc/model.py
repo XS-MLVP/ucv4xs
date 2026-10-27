@@ -3,9 +3,11 @@
 Common-history invalid, no full-row overwrite and no flush are intentional
 scope restrictions. Arbitration ready is an observed input, not predicted.
 """
+from bpuverify.common.model.configuration import *
+
 from copy import deepcopy
 
-TABLES = ('pathTable_0', 'globalTable_0', 'bwTable_0', 'imliTable', 'biasTable')
+TABLES = ('pathTable_0', 'pathTable_1', 'globalTable_0', 'globalTable_1', 'bwTable_0', 'bwTable_1', 'imliTable', 'biasTable')
 NAMES = tuple(f'{table}_bank{bank}' for table in TABLES for bank in range(2))
 
 
@@ -18,7 +20,7 @@ def canonical(value):
 
 
 def width(name):
-    return 16 if name.startswith('biasTable') else 4
+    return 4 * SC_WAYS if name.startswith('biasTable') else SC_WAYS
 
 
 def zero_slots(ways):
@@ -26,14 +28,14 @@ def zero_slots(ways):
             for _ in range(4)]
 
 
-def encoded_payload(transaction, capacity=8):
+def encoded_payload(transaction, capacity=16):
     if not 1 <= len(transaction['branches']) <= capacity:
         raise ValueError('invalid feedback slot count')
     branches = transaction['branches'] + [None] * (capacity - len(transaction['branches']))
     return dict(meta=deepcopy(transaction['resolve_meta']),
         # Independent byte geometry, not the driver's halfword bit mask.
         start_pcs=[[dict(addr=transaction['pc']),
-                    dict(addr=(((transaction['pc'] * 2 + 16) // 16) * 16) // 2)]
+                    dict(addr=((transaction['pc'] // ALIGN_HALFWORDS) + 1) * ALIGN_HALFWORDS)]
                    for _ in range(3)],
         branches=[dict(valid=int(branch is not None), bits=dict(
             target_addr=0 if branch is None else branch['target'], taken=0 if branch is None else branch['taken'],
@@ -67,10 +69,10 @@ def sc_requests(transaction, memories):
         if sc['useScPred'][index]:
             raise ValueError('SC-used metadata outside qualified masked setup')
         if sc['scPred'][index] != taken or not sc['sumAboveThres'][index]:
-            way = (branch['position'] & 3) ^ (branch['position'] >> 2)
+            way = (branch['position'] % SC_WAYS) ^ (branch['position'] // SC_WAYS)
             updates.append((way, way * 4 + sc['scBiasLowerBits'][index], 1 if taken else -1))
     debug = sc['debug']
-    indices = {'pathTable_0': debug['predPathIdx'][0],
+    indices = {'pathTable_0': debug['predPathIdx'][0], 'pathTable_1': debug['predPathIdx'][1],
                'imliTable': debug['predImliIdx'], 'biasTable': debug['predBiasIdx']}
     requests = {}
     for table, set_index in indices.items():

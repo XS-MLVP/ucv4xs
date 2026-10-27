@@ -53,12 +53,12 @@ def test_four_histories_fill_both_owners_and_retouch_composes_without_losing_any
     assert len({read.context for read in reads})==len({read.rows[3] for read in reads})==4
     assert reads[0]==reads[-1] and all(counters(read)==(2,5) for read in reads)
     assert tage.commits==baseline
-    plan=pending_plan(tage,3,PC%4)
+    plan=pending_plan(tage,7,PC%4)
     assert tuple(tuple(payload['counter'] for payload in way) for way in plan)==((0,1,1,1),(7,6,6,6))
-    assert tage.cache[3,PC%4].overflows==0
+    assert tage.cache[7,PC%4].overflows==0
     assert all(counters(tage.lookup_snapshot(PC,read.context))==(2,5) for read in reads)
     quiet(model,event)
-    assert tage.commits==baseline+8 and pending_plan(tage,3,PC%4)==((),())
+    assert tage.commits==baseline+8 and pending_plan(tage,7,PC%4)==((),())
     for history,read in enumerate(reads[:4]):
         assert counters(tage.lookup_snapshot(PC,read.context))==FULL_RETAINED_RETOUCH.expected_counters(history)
 
@@ -87,7 +87,7 @@ def fixture():
     checks=DirectionCapacityChecks(pipeline,DirectionCapacityCoverage())
     row=dict(reset=0,reads=({'valid':1,'mask':1},{'valid':0,'mask':0}),
         training=dict(valid=0,ready=1),prediction=dict(valid=1,ready=1,pc=STREAM_PC),
-        writes=tuple(dict(valid=1,ready=0,bits=way[0]) for way in pending_plan(model.sources.tage,3,0)),
+        writes=tuple(dict(valid=1,ready=0,bits=way[0]) for way in pending_plan(model.sources.tage,7,0)),
         dirty=((1,)*4,)*2,incoming=tuple(dict(valid=0,bits={}) for _ in range(2)))
     consumers=tuple(NS(token=token,prediction_tick=230+10*index,meta_tick=234+10*index) for index,token in enumerate(old))
     return checks,sources,events,row,consumers,(model,event,anchor),retired
@@ -183,7 +183,7 @@ def test_actual_capacity_and_complete_input_identity_are_required_without_reseed
 @pytest.mark.parametrize('fault',('overwritten-obligation','missing-version','wrong-counter','missing-full-witness'))
 def test_pending_must_keep_every_closed_form_history_result_and_the_full_hit_witness(fault):
     checks,_,_,_,_=armed()
-    cache=checks.pipeline.model.sources.tage.cache[3,0]
+    cache=checks.pipeline.model.sources.tage.cache[7,0]
     if fault=='overwritten-obligation':cache.overflows+=1
     elif fault=='missing-full-witness':checks.full_event_tick=None
     else:

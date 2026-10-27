@@ -12,9 +12,9 @@ def neighbor_preparation():
     yield Step('neighbor-base-positive-first', 'neighbor', ((0, True, True),), ((1, 0), (None, None)), False)
     yield Step('neighbor-base-positive', 'neighbor', ((0, True, True),), ((2, 0), (None, None)), False)
     yield Step('neighbor-earlier-install', 'neighbor', ((0, False, True), (1, False, False)),
-               ((1, 0), (provider(0, 3), None)), allocation=(3, 0))
+               ((1, 0), (provider(0, 3), None)), allocation=(7, 0))
     yield Step('neighbor-later-install', 'neighbor', ((0, False, False), (1, True, True)),
-               ((0, 1), (provider(0, 2), provider(1, 4))), allocation=(3, 1))
+               ((0, 1), (provider(0, 2), provider(1, 4))), allocation=(7, 1))
     yield Step('neighbor-base-agrees-before-strengthening', 'neighbor', ((0, False, False), (1, True, True)),
                ((0, 2), (None, None)), False)
     yield Step('neighbor-later-strong-without-protection', 'neighbor', OUTCOMES, ((0, 3), (provider(0, 1), provider(1, 5))))

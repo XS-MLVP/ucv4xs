@@ -19,10 +19,10 @@ def query(model,pc):
 
 
 def feedback(frame,branch,*,taken=True,allocate=True):
-    sources=tuple(tuple(Source(entry.valid and entry.tag==tag(read.pc),read.ordinal*8+entry.position,
-        entry.kind,entry.action,counter) for entry,counter in zip(read.entries,read.counters,strict=True))
+    sources=tuple(tuple(Source(entry.valid and entry.tag==tag(read.pc),read.ordinal*16+entry.position,
+        entry.kind,entry.action,counter) for entry,counter in zip(read.entries,read.counters,strict=True))+(Source(),)
         for read in frame.banks)
-    return Feedback((frame.pc,(frame.pc//8+1)*8),sources,(
+    return Feedback((frame.pc,(frame.pc//16+1)*16),sources,(
         Outcome(branch.target,taken,branch.position,branch.kind,mispredict=allocate),))
 
 
@@ -31,7 +31,7 @@ def idle(model):
         model.advance()
         if (model.offered is None and not any(model.entry_offers.values())
                 and not any(cache.outstanding for cache in model.entries.values())
-                and not any(queue.pending for queue in model.directions.values()) and not model.cleanup):return
+                and not any(queue.pending for queue in model.directions.values()) and not model.cleanup and not model.snapshots):return
     raise AssertionError('independent branch obligations did not drain')
 
 
@@ -45,6 +45,9 @@ def duplicates(program):
     old=query(model,program.old.pc)
     neighbor=query(model,program.neighbor.pc)
     learn(model,old,program.old)
+    for ordinal in range(1,4):
+        branch=replace(program.neighbor,pc=program.neighbor.pc+128*ordinal,target=program.neighbor.target+0x200*ordinal)
+        learn(model,query(model,branch.pc),branch)
     learn(model,neighbor,program.neighbor)
     learn(model,old,program.changed)
     frame=query(model,program.old.pc)
@@ -56,23 +59,23 @@ def test_legal_old_sources_derive_both_cleanup_reset_phases_without_state_seedin
     program=Program(profile)
     model,frame=duplicates(program)
     values=frame.values()
-    assert sorted(values[f'{slot}.target'] for slot in range(4) if values[f'{slot}.valid'])==sorted((program.old.target,program.changed.target))
+    assert sorted(values[f'{slot}.target'] for slot in range(10) if values[f'{slot}.valid'])==sorted((program.old.target,program.changed.target))
     assert not model.cleanup and not any(model.entry_offers.values())
     frozen=deepcopy(frame)
     if profile=='registered-invalidation':
         model.advance(Events(consume=True))
         clear=[write for writes in model.entry_offers.values() for write in writes]
-        assert len(clear)==1 and clear[0].entry is None and clear[0].way==1
+        assert len(clear)==1 and clear[0].entry is None and clear[0].way==3
     model.advance(Events(reset=True))
     assert not model.memory and not model.counters and model.read is model.frame is model.offered is None
     assert not model.cleanup and not any(model.entry_offers.values())
     assert all(not cache.records and not cache.outstanding for cache in model.entries.values())
     for branch in (program.new,program.new_neighbor):
         cold=query(model,branch.pc)
-        assert not any(cold.values()[f'{slot}.raw_hit'] for slot in range(4))
+        assert not any(cold.values()[f'{slot}.raw_hit'] for slot in range(10))
         learn(model,cold,branch)
     new=query(model,program.new.pc)
-    active=next(slot for slot in range(4) if new.values()[f'{slot}.valid'])
+    active=next(slot for slot in range(10) if new.values()[f'{slot}.valid'])
     assert (new.values()[f'{active}.target'],new.values()[f'{active}.kind'],new.values()[f'{active}.counter'])==(
         program.new.target,program.new.kind,2)
     learn(model,new,program.new,taken=False,allocate=False)
@@ -84,8 +87,8 @@ def test_legal_old_sources_derive_both_cleanup_reset_phases_without_state_seedin
 def registered():
     program=Program('registered-invalidation')
     align,bank,row=coordinate(program.old.pc)
-    receipt=dict(tick=9,align=align,bank=bank,row=row,way=1,tag=tag(program.old.pc),position=program.old.position)
-    clear=dict(align=align,bank=bank,row=row,way=1,tag=0,position=0,kind=0,action=0,carry=0,lower=0)
+    receipt=dict(tick=9,align=align,bank=bank,row=row,way=3,tag=tag(program.old.pc),position=program.old.position)
+    clear=dict(align=align,bank=bank,row=row,way=3,tag=0,position=0,kind=0,action=0,carry=0,lower=0)
     return program,[receipt],dict(tick=10,clears=[clear],consumed_reset=False)
 
 
@@ -121,7 +124,7 @@ def test_cached_only_control_cannot_hide_an_already_accepted_cleanup(fault):
 
 
 def prediction(branch,*,counter):
-    entries=[MbtbEntry(0,0,0,0,0,0) for _ in range(4)]
+    entries=[MbtbEntry(0,0,0,0,0,0) for _ in range(10)]
     entries[1]=MbtbEntry(1,int(counter>=2),branch.target,branch.position,branch.kind,0)
     meta=[[dict(rawHit=0,position=0,attribute=dict(branchType=0,rasAction=0),counter_value=0) for _ in range(2)] for _ in range(2)]
     meta[0][1]=dict(rawHit=1,position=branch.position,attribute=dict(branchType=branch.kind,rasAction=0),counter_value=counter)

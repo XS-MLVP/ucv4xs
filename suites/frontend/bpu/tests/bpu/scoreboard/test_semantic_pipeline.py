@@ -54,7 +54,7 @@ def published(model, event):
 def test_fallthrough_tokens_own_pc_and_metadata_not_current_s1_payload():
     model, event = boot()
     source = published(model, event)
-    assert source.pc == PC and model.stages[0].pc == PC + 48
+    assert source.pc == PC and model.stages[0].pc == PC + 96
     assert source.history.history == 0
     assert model.checkpoint_for(source.history.metadata(), source_pc=PC) is source.history
 

@@ -31,8 +31,8 @@ def full_advance(slots, *, plru, ready, write):
     if len(slots) != 4:
         raise ValueError('all four physical SC slots required')
     ways = len(slots[0]['payload']['masks'])
-    if ways not in (4, 16):
-        raise ValueError('elaborated SC data width must be four or sixteen')
+    if ways not in (8, 32):
+        raise ValueError('elaborated SC data width must be eight or thirty-two')
     for entry in slots:
         if set(entry) != {'valid', 'dirty', 'payload'}:
             raise ValueError('complete SC slot required')
@@ -67,7 +67,7 @@ def full_advance(slots, *, plru, ready, write):
     return (new, next_plru, drained, action)
 
 class FullScReference(UsedScReference):
-    """All ten buffers, four full slots, SRAM persistence and PLRU from reset."""
+    """All sixteen buffers, four full slots, SRAM persistence and PLRU from reset."""
 
     def reset(self):
         super().reset()
@@ -75,7 +75,7 @@ class FullScReference(UsedScReference):
 
     def step(self, requests, ready):
         if set(ready) != set(NAMES) or not set(requests) <= set(NAMES):
-            raise ValueError('all ten readiness inputs and known SC requests required')
+            raise ValueError('all sixteen readiness inputs and known SC requests required')
         transitions = {name: full_advance(self.slots[name], plru=self.plru[name], ready=ready[name], write=requests.get(name)) for name in NAMES}
         drains, actions = ([], [])
         for name, (slots, plru, drained, action) in transitions.items():

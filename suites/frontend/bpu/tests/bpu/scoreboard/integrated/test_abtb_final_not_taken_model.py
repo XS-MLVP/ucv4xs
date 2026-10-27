@@ -1,3 +1,4 @@
+from bpuverify.common.model.configuration import PHR_STORAGE_BITS
 from copy import deepcopy
 from pathlib import Path
 import pytest
@@ -20,50 +21,50 @@ def test_all_coordinates_have_real_final_NT_fallthrough_and_same_target_index(ba
     intent = plan(bank, entry_set)
     assert len(intent['cycles']) == 5 and len(intent['branch_programs']) == 20
     assert len({pc for triple in intent['cycles'] for pc in triple}) == 20
-    assert max(capacity(intent['cycles']).values()) <= 2
+    assert max(capacity(intent['cycles']).values()) <= 4
     for a, b, c, d in intent['cycles']:
         assert fall_through(a)['target'] == b and fall_through(a)['taken'] == 0
         assert physical_index(d, intent['low4_index_source_history']) == bank + entry_set * 4
     assert not nonzero_violations(intent['cycles'])
     result = scalar_proof(intent)
-    assert result['scalar_full52_checks'] == 960
-    assert result['target_index_checks'] == 235
+    assert result['scalar_full52_checks'] == 5 * 3 * ((PHR_STORAGE_BITS+5)//6+2) * 4
+    assert result['target_index_checks'] == 5 * (3 * ((PHR_STORAGE_BITS+5)//6+2) - 1)
 
 
 @pytest.mark.parametrize('bank,entry_set', ALL_CASES)
 def test_all_coordinates_joint_full_PHR_and_pipeline_index_reference(bank, entry_set):
     result = joint_reference(plan(bank, entry_set))
-    assert result['full52_reference_checks'] == 960
-    assert result['joint_index_checks'] == 950
-    assert result['final_NT_history_and_pointer_holds'] == 80
+    assert result['full52_reference_checks'] == 5 * 3 * ((PHR_STORAGE_BITS+5)//6+2) * 4
+    assert result['joint_index_checks'] == 5 * (3 * ((PHR_STORAGE_BITS+5)//6+2) * 4 - 2)
+    assert result['final_NT_history_and_pointer_holds'] == 5 * ((PHR_STORAGE_BITS+5)//6+2)
 
 
 @pytest.mark.parametrize('bank,entry_set', [(0, 0), (1, 0), (2, 31), (3, 63)])
 def test_held_cycles_preserve_complete_reference(bank, entry_set):
     result = joint_reference(plan(bank, entry_set), idle_cycles=2)
-    assert result['full52_reference_checks'] == 2880
-    assert result['joint_index_checks'] == 950
-    assert result['final_NT_history_and_pointer_holds'] == 80
+    assert result['full52_reference_checks'] == 5 * 3 * ((PHR_STORAGE_BITS+5)//6+2) * 4 * 3
+    assert result['joint_index_checks'] == 5 * (3 * ((PHR_STORAGE_BITS+5)//6+2) * 4 - 2)
+    assert result['final_NT_history_and_pointer_holds'] == 5 * ((PHR_STORAGE_BITS+5)//6+2)
 
 
 def test_geometric_fallthrough_matches_literal_generated_RTL_for_two_pages():
     for addr in range(4096):
-        raw = (addr << 1) + 32
+        raw = (addr << 1) + 64
         same_page = ((addr >> 11) & 1) == ((raw >> 12) & 1)
-        target = (raw >> 4) << 3 if same_page else (raw >> 12) << 11
-        position = 15 if same_page else ((1 - ((raw >> 4) & 1)) << 3) | 7
+        target = (raw >> 5) << 4 if same_page else (raw >> 12) << 11
+        position = 31 if same_page else ((1 - ((raw >> 5) & 1)) << 4) | 15
         actual = fall_through(addr)
         assert actual['target'] == target and actual['position'] == position
         assert actual['cross_page'] == (not same_page)
-        assert 7 <= position <= 15
+        assert 15 <= position <= 31
 
 
-def test_page_crossing_is_not_unconditionally_plus16_halfwords():
+def test_page_crossing_is_not_unconditionally_plus32_halfwords():
     assert fall_through(0xff0 >> 1)['target'] == 0x1000 >> 1
-    assert fall_through(0xff0 >> 1)['position'] == 7
+    assert fall_through(0xff0 >> 1)['position'] == 15
     assert fall_through(0xfe0 >> 1)['position'] == 15
-    assert fall_through(0x100 >> 1)['target'] == 0x120 >> 1
-    assert fall_through((0x100 >> 1) + 6)['target'] == 0x120 >> 1
+    assert fall_through(0x100 >> 1)['target'] == 0x140 >> 1
+    assert fall_through((0x100 >> 1) + 6)['target'] == 0x140 >> 1
 
 
 @pytest.mark.parametrize('bank,entry_set', [(-1, 0), (4, 0), (True, 0), ('0', 0),
@@ -93,7 +94,7 @@ def test_invalid_idle_rejected(idle):
 
 def test_low_index_fold_is_checked_against_full_fold_layout():
     for history in (0, 1, 3, 63, 64, (1 << 52) - 1, 0x123456789abcd):
-        assert folds(history)[2] == history & 63
+        assert folds(history)[2] == history & 31
 
 
 def feedback(way, *, taken, final_position):

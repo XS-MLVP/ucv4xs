@@ -40,7 +40,7 @@ def pending_replacement_program():
     model.advance(replace(event,redirect=Redirect(anchor.history,anchor.pc+4,STREAM_PC,True)))
     for _ in range(8):model.advance(event)
     baseline=model.sources.tage.commits
-    before_overflows=model.sources.tage.cache[3,PC%4].overflows
+    before_overflows=model.sources.tage.cache[7,PC%4].overflows
     for source in sources:model.advance(replace(event,feedback=resolution(source,resolved_path())))
     for _ in range(16):
         model.advance(event)
@@ -55,15 +55,15 @@ def test_full_miss_keeps_new_own_counter_seed_and_all_three_nonvictims_then_drai
     reads=tuple(model.sources.snapshot(source).read for source in sources)
     assert len({read.context for read in reads})==len({read.rows[3] for read in reads})==5
     assert tuple(counters(read) for read in reads)==((1,6),*((2,5),)*4)
-    assert before_overflows==0 and tage.commits==baseline and tage.cache[3,PC%4].overflows==2
-    plan=pending_plan(tage,3,PC%4)
+    assert before_overflows==0 and tage.commits==baseline and tage.cache[7,PC%4].overflows==2
+    plan=pending_plan(tage,7,PC%4)
     assert tuple(tuple(payload['counter'] for payload in way) for way in plan)==((1,)*4,(6,)*4)
     for owner,way in enumerate(plan):
         assert tuple(payload['row'] for payload in way)==tuple(reads[h].rows[3] for h in (4,1,2,3))
         assert all(payload['row']!=reads[0].rows[3] for payload in way)
     assert tuple(counters(tage.lookup_snapshot(PC,read.context)) for read in reads)==((1,6),*((2,5),)*4)
     quiet(model,event)
-    assert tage.commits==baseline+8 and pending_plan(tage,3,PC%4)==((),())
+    assert tage.commits==baseline+8 and pending_plan(tage,7,PC%4)==((),())
     assert tuple(counters(tage.lookup_snapshot(PC,read.context)) for read in reads)==((1,6),)*5
 
 
@@ -84,7 +84,7 @@ def fixture():
     checks=DirectionReplacementChecks(pipeline,DirectionReplacementCoverage())
     row=dict(reset=0,reads=({'valid':1,'mask':1},{'valid':0,'mask':0}),
         training=dict(valid=0,ready=1),prediction=dict(valid=1,ready=1,pc=STREAM_PC),
-        writes=tuple(dict(valid=1,ready=0,bits=way[0]) for way in pending_plan(model.sources.tage,3,0)),
+        writes=tuple(dict(valid=1,ready=0,bits=way[0]) for way in pending_plan(model.sources.tage,7,0)),
         dirty=((1,)*4,)*2,incoming=tuple(dict(valid=0,bits={}) for _ in range(2)))
     old=tuple(NS(token=token,prediction_tick=230+10*index,meta_tick=234+10*index) for index,token in enumerate(consumers))
     return checks,sources,events,row,old,(model,event,anchor),retired
@@ -182,7 +182,7 @@ def test_fifth_new_key_and_real_fullness_are_preconditions_not_names(fault):
 @pytest.mark.parametrize('fault',('zero-loss','extra-loss','retained-victim','lost-nonvictim','victim-counter-inherited','missing-full-proof'))
 def test_exact_two_losses_and_every_new_or_surviving_counter_are_independently_required(fault):
     checks,_,_,_,_=armed()
-    cache=checks.pipeline.model.sources.tage.cache[3,0]
+    cache=checks.pipeline.model.sources.tage.cache[7,0]
     if fault=='zero-loss':cache.overflows=checks.initial_overflows
     elif fault=='extra-loss':cache.overflows+=1
     elif fault=='missing-full-proof':checks.full_event_tick=None

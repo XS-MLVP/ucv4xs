@@ -1,4 +1,6 @@
 """Static read-only MicroTAGE IO and the parent's original S3 metadata."""
+from bpuverify.common.model.configuration import *
+
 from toffee import Bundle
 
 
@@ -17,7 +19,7 @@ def early_direction_bundle(signal):
         return Bundle(entries=tuple(Bundle(**{key:signal(f'{base}abtbResult_{way}_{field}')
             for key,field in FIELDS}) for way in range(4)),
             indices=tuple(signal(f'{base}readIndex_{table}') for table in range(2)),
-            history=tuple(signal(f'{base}foldedPathHistForTrain_hist_{index}_foldedHist') for index in range(19)))
+            history=tuple(signal(f'{base}foldedPathHistForTrain_hist_{index}_foldedHist') for index in range(len(PHR_FOLDS))))
     return Bundle(meta=metadata('utage.io_meta_bits_'),
         maintenance=Bundle(low=signal('utage.lowTickCounter'),fire=signal('utage.t1_fire'),
             need=signal('utage.t1_needAlloc'),mask=signal('utage.t1_normalAllocMask'),

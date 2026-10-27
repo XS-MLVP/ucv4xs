@@ -5,7 +5,10 @@ not-taken path uses a later unconditional CFI to the same B, not a fictitious
 fall-through. These are input-only predictions; runtime stalls and overrides
 must still pass the independent index pipeline checker.
 """
+from bpuverify.common.model.configuration import PHR_STORAGE_BITS, PHR_FOLDS
 from collections import Counter
+
+HISTORY_ROUNDS = (PHR_STORAGE_BITS+7)//8+2
 
 from bpuverify.bpu.case.bypass.history_plan import full_tags, read_indices
 from bpuverify.bpu.model.abtb.alias import boundary, mainbtb_route
@@ -22,11 +25,11 @@ def edges(program, taken):
 def phase_contexts(program, taken):
     """Scalar full-history and explicit two-earlier-request queue, no DUT."""
     history, requests, contexts = 0, [], {}
-    # 14 rounds cover the 52-bit history's 26 taken-branch flush horizon.
-    for round_ in range(14):
+    # Flush the entire configured circular history with four taken edges per round.
+    for round_ in range(HISTORY_ROUNDS):
         for pc, target, position in edges(program, taken):
-            normal_folds = (fold(history, 6, 6), fold(history, 12, 9))
-            if round_ == 13:
+            normal_folds = (fold(history, 5, 5), fold(history, 9, 9))
+            if round_ == HISTORY_ROUNDS-1:
                 context = requests[-2]
                 contexts[pc] = dict(history=history, index_pc=context['pc'],
                     index_folds=context['folds'], indices=context['indices'], target=target, position=position)
@@ -57,7 +60,7 @@ def recipe():
     for pc, _, position in residents:
         route = mainbtb_route(pc, position)
         counts[(route['selected_physical_align'], route['internal_bank'], route['entry_set'])] += 1
-    if max(counts.values()) > 2:
+    if max(counts.values()) > 4:
         raise AssertionError('sparse program exceeds genuine MainBTB capacity')
     for program in programs:
         for phase in ('positive', 'negative'):
@@ -75,9 +78,9 @@ def joint_proof(program):
     history, model, index, tick, checks = 0, BpuPhrReference(), IndexPipeline(), 0, 0
     previous_history = None
     for taken in (False, True, False, True):
-        for round_ in range(14):
+        for round_ in range(HISTORY_ROUNDS):
             for pc, target, position in edges(program, taken):
-                if round_ == 13:
+                if round_ == HISTORY_ROUNDS-1:
                     wanted = program['positive' if taken else 'negative'][pc]
                     if (history, index.a2['pc'], index.a2['folds'], index.a2['indices']) != (
                             wanted['history'], wanted['index_pc'], wanted['index_folds'], wanted['indices']):
@@ -85,7 +88,7 @@ def joint_proof(program):
                     if previous_history != wanted['tag_history']:
                         raise AssertionError('tag must use the previous S1 request history')
                 index.advance(reset=0, enable=1, fire0=1, fire2=1, s2=0, s3=0,
-                    pc=target, normal_folds=(fold(history, 6, 6), fold(history, 12, 9)), tick=tick)
+                    pc=target, normal_folds=(fold(history, 5, 5), fold(history, 9, 9)), tick=tick)
                 inputs = boundary(model, pc, target)
                 inputs['s1']['prediction'].update(position=position, taken=1)
                 model.advance(inputs, reset=0)
@@ -106,5 +109,5 @@ def qualifies_return_request(token, hash_inputs, *, program, after_tick, phase='
         and token['source_tick'] > after_tick and token['pc'] == context['index_pc']
         and token['folds'] == context['index_folds'] and token['indices'] == context['indices']
         and hash_inputs['new_pc'] == program['pc']
-        and hash_inputs['s1_folds'] == tuple(tag_folds[i] for i in (1, 2, 7, 8))
+        and hash_inputs['s1_folds'] == tuple(tag_folds[i] for i in (PHR_FOLDS.index(p) for p in ((5,4),(5,5),(9,7),(9,8))))
         and not any(hash_inputs[name] for name in ('redirect_valid', 's2_override', 's3_override')))

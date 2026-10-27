@@ -9,7 +9,7 @@ class CleanupResetAgent(MbtbAgent):
         if not self._multi_hit_cleanup_scope_active or not self._defer_multi_hit_cleanup:
             raise RuntimeError('an owned deferred duplicate scope is required')
         self._defer_multi_hit_cleanup=False
-        self.lookup_driver.quiesce()
+        self._quiesce_lookup()
         try:
             result=await wait_condition(self.dut.clock,sample=monitor.status,
                 satisfied=lambda value:value is not None and bool(value['clears']),
@@ -19,4 +19,4 @@ class CleanupResetAgent(MbtbAgent):
             # Stop replaying the cached observation before reset. Neither the
             # invalidation nor its SRAM write is drained by this operation.
             self._defer_multi_hit_cleanup=True
-            self.lookup_driver.quiesce()
+            self._quiesce_lookup()

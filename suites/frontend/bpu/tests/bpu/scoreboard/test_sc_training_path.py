@@ -1,3 +1,4 @@
+from bpuverify.common.model.configuration import *
 from copy import deepcopy
 from itertools import product
 
@@ -43,17 +44,17 @@ def test_saturated_counter_still_requires_training_read(bank, taken):
     tx, ref = minimal_transaction(bank=bank, taken=taken), ScReference()
     tx['resolve_meta']['sc']['tagePred'] = [0]
     for name, memory in ref.memories.items():
-        selected = 4 if name.startswith('biasTable') else 1
-        ways = 16 if name.startswith('biasTable') else 4
+        selected = 16 if name.startswith('biasTable') else 4
+        ways = 4 * SC_WAYS if name.startswith('biasTable') else SC_WAYS
         memory[5] = [((31 if taken else 32) if way == selected else 0) for way in range(ways)]
     assert sc_requests(tx, ref.memories) == {}
     assert train_need_write(encoded_payload(tx)) == 1
 
 
 @pytest.mark.parametrize('pc,path,common,expected', (
-    (0x40000800, 0, dict(ghr=0, bw=0, imli=0), (0, 0, 0, 0, 0)),
-    (0x40000809, 2, dict(ghr=128, bw=15, imli=255), (3, 0, 14, 127, 1)),
-    (0x40000bf8, 127, dict(ghr=255, bw=15, imli=128), (0, 1, 112, 126, 127)),
+    (0x40000800, (0, 0), dict(valid=1, ghr=0, bw=0, imli=0), (0, 0, 0, 0, 0, 0, 0, 0)),
+    (0x40000809, (2, 4), dict(valid=1, ghr=128, bw=15, imli=255), (2, 4, 1, 1, 15, 15, 126, 0)),
+    (0x40000bf8, (127, 63), dict(valid=1, ghr=255, bw=15, imli=128), (64, 0, 65, 65, 48, 48, 62, 63)),
 ))
 def test_training_hash_hand_vectors(pc, path, common, expected):
     assert tuple(training_indices(pc, path, common).values()) == expected

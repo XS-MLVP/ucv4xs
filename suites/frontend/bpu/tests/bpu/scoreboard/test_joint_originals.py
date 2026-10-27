@@ -26,7 +26,7 @@ def test_program_separates_executable_outcomes_and_feedback_age_order(profile):
 @pytest.mark.parametrize('gap',(1,5))
 def test_shared_experience_follows_the_owned_read_view_not_assumed_serial_equivalence(profile,gap):
     p=Program(profile);m=ScReference()
-    branches=(ScBaseBranch(p.position,6),*(ScBaseBranch(i,0,0,0,0) for i in (0,2,3)))
+    branches=(ScBaseBranch(p.position,6),*(ScBaseBranch(i,0,0,0,0) for i in (0,2,3,4,5,6,7,8,9)))
     histories=tuple(ScHistory(0x93,255,15,i) for i in p.iterations)
     if p.trained:
         teacher=decide(m.snapshot(p.b,Context.from_history(histories[0])),branches,m.thresholds.values)
@@ -46,7 +46,7 @@ def test_shared_experience_follows_the_owned_read_view_not_assumed_serial_equiva
     assert accepted[0].weights==p.training_weights(p.iterations[p.arrival_order[0]])
     if gap==1:
         assert all(read.weights==p.training_weights(p.iterations[age]) for read,age in zip(accepted,p.arrival_order,strict=True))
-    shared=lambda read:tuple(read.weights[i] for i in (0,1,2,4))
+    shared=lambda read:tuple(read.weights[i] for i in (0,1,2,3,4,5,7))
     assert (shared(accepted[0])==shared(accepted[1]))==(gap==1)
 
 
@@ -108,7 +108,7 @@ def test_public_memory_direct_layout_has_every_complete_training_response_word()
     names={r['name'] for field in ('variables','signals') for r in layout.get(field,())}
     anchor,=[n for n in names if n.endswith('.sc.io_trainReady')]
     prefix=anchor.removesuffix('io_trainReady')
-    assert {prefix+f'{table}.io_trainReadResp_{i}_ctr_value' for table in TABLES for i in range(16 if table=='biasTable' else 4)}<=names
+    assert {prefix+f'{table}.io_trainReadResp_{i}_ctr_value' for table in TABLES for i in range(32 if table=='biasTable' else 8)}<=names
 
 
 def test_case_and_bundle_keep_dynamic_and_static_responsibilities_separate():

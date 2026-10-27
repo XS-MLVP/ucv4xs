@@ -1,5 +1,6 @@
 """Normal old-metadata training, effective reset and fresh independent learning."""
 from copy import deepcopy
+from bpuverify.mbtb.case.retained_pressure import preceding_displacers
 
 from bpuverify.mbtb.transaction.types import MbtbBatchTraining,MbtbBranchFeedback
 from bpuverify.mbtb.env.full_capacity_learning import planned_payload,observed_payload
@@ -41,6 +42,8 @@ class CleanupReset:
             floor=len(agent.reference.accepted_cleanup)
             async with agent.defer_multi_hit_cleanup():
                 await self.teach(program.old,old)
+                await preceding_displacers(agent,program.neighbor.pc,program.neighbor.position,
+                                           program.neighbor.target,program.neighbor.kind)
                 await self.teach(program.neighbor,neighbor)
                 checks.resident(await self.predict(program.old.pc),program.old,counter=2)
                 checks.resident(await self.predict(program.neighbor.pc),program.neighbor,counter=2)

@@ -4,13 +4,13 @@ from types import SimpleNamespace
 from bpuverify.bpu.checker.bypass.checker import BypassChecker
 
 
-def collect_updates(frames, *, index=462, tag=208, position=6):
+def collect_updates(frames, *, index=494, tag=112, position=6):
     """The caller separately checks parent policy and genuine public metadata.
 
     No observed useful value seeds expected state; both tables are replayed.
     This collector alone does not establish integrated input legality.
     """
-    for name, value, limit in (('index', index, 512), ('tag', tag, 256), ('position', position, 16)):
+    for name, value, limit in (('index', index, 512), ('tag', tag, 256), ('position', position, 32)):
         if type(value) is not int or value not in range(limit):
             raise ValueError(f'invalid high-row {name}')
     if not frames:

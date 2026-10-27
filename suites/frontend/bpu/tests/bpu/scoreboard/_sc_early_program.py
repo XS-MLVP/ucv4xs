@@ -1,4 +1,5 @@
 """Synthetic actuals qualify checkers only; all predictors start from reset."""
+from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT
 from dataclasses import replace
 from types import SimpleNamespace as NS
 
@@ -37,7 +38,7 @@ class Program(Foundation):
         c = self.checks
         if event.feedback is not None:
             request = event.feedback
-            is_sc = request.pc==self.pc+0x400 and self.model.control_pipe[-1][4]
+            is_sc = request.pc==self.pc+0x10000 and self.model.control_pipe[-1][4]
             name = f'SC-negative-experience-{len(c.accepted_SC_inputs)}' if is_sc else f'preparation-{len(c.plans)}'
             c.plan(name,self.receipt(request.origin),tuple(b for b in request.branches if b is not None))
         cycle = self.model.evaluate(event)
@@ -68,11 +69,11 @@ class Program(Foundation):
 
     def restart(self):
         self.quiet()
-        self.step(replace(self.event,redirect=Redirect(self.anchor.history,self.a//8*8+4,self.pc,True,Kind.DIRECT)))
+        self.step(replace(self.event,redirect=Redirect(self.anchor.history,self.a//16*16+4,self.pc,True,Kind.DIRECT)))
 
     def query_pc(self,pc):
         self.quiet()
-        self.step(replace(self.event,redirect=Redirect(self.anchor.history,self.a//8*8+4,pc,True,Kind.DIRECT)))
+        self.step(replace(self.event,redirect=Redirect(self.anchor.history,self.a//16*16+4,pc,True,Kind.DIRECT)))
         return self.source(pc=pc)
 
     def configure_sc(self,enabled):
@@ -94,7 +95,7 @@ class Program(Foundation):
         request = Resolution(source.history,source.pc,branches,origin=source)
         if maximum:
             feedback = self.bank.feedback_for(request)
-            for _ in range(128):
+            for _ in range(TAGE_ALLOCATION_WAIT):
                 candidate = self.bank.tage.allocation_at_next_accept(feedback)
                 if candidate is not None and candidate[0]==TABLES-1:
                     break
@@ -115,10 +116,10 @@ class Program(Foundation):
         self.configure(tage=True)
         self.conditional(self.query(),wrong=True)
         assert self.direction_ready(self.query())
-        self.teaching_outcome(self.query_pc(self.pc+0x400),taken=True)
-        self.teaching_outcome(self.query_pc(self.pc+0x400),taken=False,maximum=True)
+        self.teaching_outcome(self.query_pc(self.pc+0x10000),taken=True)
+        self.teaching_outcome(self.query_pc(self.pc+0x10000),taken=False,maximum=True)
         self.configure_sc(True)
-        originals = tuple(self.query_pc(self.pc+0x400) for _ in range(4))
+        originals = tuple(self.query_pc(self.pc+0x10000) for _ in range(4))
         for source in originals:
             self.teaching_outcome(source,taken=False)
         c.sc_control = self.receipt(self.query())

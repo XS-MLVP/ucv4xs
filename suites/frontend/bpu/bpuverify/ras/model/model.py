@@ -5,6 +5,7 @@ recovery, empty returns, arbitrary stale SSP and unbounded capacity are outside
 this model. Calls/returns retire in the same order as public speculation.
 """
 from dataclasses import dataclass
+from bpuverify.common.model.configuration import RAS_GROUPS, RAS_SPEC_ENTRIES, RAS_POINTER_MODULUS, ALIGN_BYTES, POSITIONS
 
 
 @dataclass(frozen=True, slots=True)
@@ -23,7 +24,7 @@ class Group:
 @dataclass(frozen=True, slots=True)
 class CommittedStack:
     groups: tuple[Group, ...] = (Group(0, 0, 0),)
-    cells: tuple[Cell, ...] = (Cell(),) * 8
+    cells: tuple[Cell, ...] = (Cell(),) * RAS_GROUPS
     evicted: tuple[Group, ...] = ()
 
     @property
@@ -43,8 +44,8 @@ def advance(state, action, *, address=None):
         raise ValueError('expected a bounded committed stack')
     if type(action) is not int or action not in (1, 2):
         raise ValueError('only an ordered call or return is modeled')
-    if len(state.cells) != 8 or not 1 <= len(state.groups) <= 8:
-        raise ValueError('the MiniConfig committed capacity is eight groups')
+    if len(state.cells) != RAS_GROUPS or not 1 <= len(state.groups) <= RAS_GROUPS:
+        raise ValueError('the DefaultConfig committed capacity is sixteen groups')
     if len({group.slot for group in state.groups}) != len(state.groups):
         raise ValueError('live logical groups cannot alias a physical slot')
     for cell in state.cells:
@@ -53,7 +54,7 @@ def advance(state, action, *, address=None):
         if type(cell.counter) is not int or not 0 <= cell.counter <= 7:
             raise ValueError('repeat counters are unsigned three-bit values')
     for group in state.groups:
-        if not isinstance(group, Group) or type(group.slot) is not int or not 0 <= group.slot < 8:
+        if not isinstance(group, Group) or type(group.slot) is not int or not 0 <= group.slot < RAS_GROUPS:
             raise ValueError('a logical group needs a valid physical slot')
         if Cell(group.address, group.counter) != state.cells[group.slot]:
             raise ValueError('live groups and retained storage disagree')
@@ -65,8 +66,8 @@ def advance(state, action, *, address=None):
         if address == top.address and top.counter < 7:
             groups[-1] = Group(address, top.counter + 1, top.slot)
         else:
-            following = (top.slot + 1) % 8
-            if len(groups) == 8:
+            following = (top.slot + 1) % RAS_GROUPS
+            if len(groups) == RAS_GROUPS:
                 if groups[0].slot != following:
                     raise ValueError('a full bounded stack must evict its oldest group')
                 evicted += (groups.pop(0),)

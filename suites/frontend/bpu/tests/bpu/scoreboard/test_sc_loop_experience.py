@@ -15,7 +15,7 @@ def lookup(model,program,history):
     model.advance(Events(pc=program.b,context=Context.from_history(history)))
     model.advance(Events(advance=True))
     model.advance(Events(select=True,branches=(ScBaseBranch(program.position,program.provider_counter),
-        *(ScBaseBranch(i,0,0,0,0) for i in (0,2,3)))))
+        *(ScBaseBranch(i,0,0,0,0) for i in range(1,10)))))
     return model.prediction
 
 
@@ -55,8 +55,8 @@ def test_existing_reference_keeps_old_loop_feedback_and_young_private_experience
     changed=lookup(model,p,old);fresh_young=lookup(model,p,young)
     assert changed.used[0]==1 and changed.directions[0]==1
     assert all(a!=b for a,b in zip(correct.read.weights,changed.read.weights,strict=True))
-    assert fresh_young.read.weights[3]==young_before.read.weights[3]
-    assert fresh_young.read.weights[4]!=young_before.read.weights[4]
+    assert fresh_young.read.weights[6]==young_before.read.weights[6]
+    assert fresh_young.read.weights[7]!=young_before.read.weights[7]
     assert originals==snapshots
 
 
@@ -64,9 +64,9 @@ def test_existing_reference_keeps_old_loop_feedback_and_young_private_experience
 def test_instruction_stage_and_submission_mode_are_not_storage_coordinate_parameters(profile):
     p=Program(profile)
     assert p.young_iteration>p.old_iteration>0 and p.old_iteration!=p.young_iteration
-    assert p.teaching_count==5
-    assert 5*(2*(p.teaching_count-1)+1)>1130//32
-    assert 5*(2*(p.teaching_count-2)+1)<=1130//32
+    assert p.teaching_count==3
+    assert 8*(2*(p.teaching_count-1)+1)>1130//32
+    assert 8*(2*(p.teaching_count-2)+1)<=1130//32
     assert p.state()['physical_enumeration'] is False
     assert p.state()['new_predictor_algorithm'] is False
 

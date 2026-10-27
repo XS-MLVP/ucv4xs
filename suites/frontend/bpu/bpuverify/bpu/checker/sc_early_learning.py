@@ -103,10 +103,10 @@ class Checks(_ObservedChecks):
             token = self.cycle.metadata
             value = self.bank.statistical_snapshot(token,resolved=True)
             fields = dict(self.bank.tage_snapshot(token,resolved=True).wanted)
-            slot, = [i for i in range(4) if fields.get(f'{i}.has_provider')]
+            slot, = [i for i in range(10) if fields.get(f'{i}.has_provider')]
             self.check((3,0,1),(fields[f'{slot}.counter'],fields[f'{slot}.use_provider'],
                 fields[f'{slot}.alternative']),'original weak negative provider gives final authority to taken Main')
-            self.check((True,1,0,-19),(value.enabled,value.prediction.used[slot],
+            self.check((True,1,0,-24),(value.enabled,value.prediction.used[slot],
                 value.prediction.directions[slot],value.prediction.sums[slot]),'SC really changes this original final direction')
             self.check(True,value.original.owner is token.history,'SC read and final teacher have the same original owner')
             self.SC_witness = dict(owner=token.sequence,tick=tick,sum=value.prediction.sums[slot],

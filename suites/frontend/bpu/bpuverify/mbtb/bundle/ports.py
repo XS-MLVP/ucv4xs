@@ -29,6 +29,8 @@ class MbtbPorts:
                 s0_fire=io.stageCtrl.s0_fire,
                 s1_fire=io.stageCtrl.s1_fire,
                 s2_fire=io.stageCtrl.s2_fire,
+                s3_fire=io.stageCtrl.s3_fire,
+                victim_taken=(io.s3_takenMask[4], io.s3_takenMask[9]),
                 start_pc=io.startPc_addr,
             ),
             "mbtb.lookup",
