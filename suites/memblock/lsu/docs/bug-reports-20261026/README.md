@@ -12,9 +12,9 @@
 - **历史17次FAIL无法完整逐节点追溯**：5个run只有计数，没有原始traceback和测试版本；另1个run是收集失败。撤回“历史失败全是误报”的笼统结论。
 - **不承诺所有假阳性/假阴性已穷尽消除**：逐bin独立reached/checked、全局合法随机约束和初始化盲区的完整证明仍有限制。证据一致性审计PASS，**当前交付验收为FAIL**，不能再称整体关闭。
 
-> 验证踩坑与防复发 skill：[`CARD.md`](../../../../skills/rtl-verification-soundness/CARD.md)（速查卡）、[`SKILL.md`](../../../../skills/rtl-verification-soundness/SKILL.md)（实际问题、修正办法与成对回归）
+> 验证踩坑与防复发 skill：[`CARD.md`](../../../../../skills/rtl-verification-soundness/CARD.md)（速查卡）、[`SKILL.md`](../../../../../skills/rtl-verification-soundness/SKILL.md)（实际问题、修正办法与成对回归）
 >
-> 跨模块假阴性总结（LSQ、Sbuffer、DCache、ICache、MMU、VAGQ 经验）：[`../../../../KMH-V3-VERIFICATION-FALSE-NEGATIVE-LESSONS-20261026.md`](../../../../KMH-V3-VERIFICATION-FALSE-NEGATIVE-LESSONS-20261026.md)
+> 跨模块假阴性总结（LSQ、Sbuffer、DCache、ICache、MMU、VAGQ 经验）：[跨模块假阴性总结](../../../../../docs/lessons/false-negatives-20261026.md)
 
 ## 2. 每类问题一个入口
 

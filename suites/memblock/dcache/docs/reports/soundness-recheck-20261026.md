@@ -1,7 +1,7 @@
 # DCache 用例可信度复核（按 KMH-v3 假阴性经验，2026-10-26）
 
-> 依据：`KMH-V3-VERIFICATION-FALSE-NEGATIVE-LESSONS-20261026.md` 与
-> `skills/rtl-verification-soundness/SKILL.md`（P01–P12）。
+> 依据：[跨模块假阴性总结](../../../../../docs/lessons/false-negatives-20261026.md) 与
+> [防复发手册](../../../../../skills/rtl-verification-soundness/SKILL.md)（P01–P12）。
 >
 > 本文只做“已有用例是否真的检查了它声称的东西”的复核，并给出成对证据。
 > 结论绑定 `results/soundness-recheck-03`（210 passed + 3 xfailed / 219.28 s）、

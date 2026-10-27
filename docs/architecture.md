@@ -12,10 +12,20 @@ ucv4xs/
 │   ├── frontend/{bpu,icache}/
 │   ├── memblock/{lsq,dcache,mmu,sbuffer,lsu}/
 │   └── vector/vagq/
+├── skills/                     # 跨模块防复发手册与速查卡
 ├── tests/                      # 编排层与工具补丁的检查
 ├── scripts/                    # 启动入口、资产审计、历史比较
-└── docs/                       # 维护约定、状态、历史哈希索引
+└── docs/
+    ├── architecture.md         # 结构与扩展方式
+    ├── baselines.md            # 基线与构建
+    ├── local-configuration.md  # 本地源码和历史证据接入
+    ├── maintenance.md          # 维护与验收
+    ├── status.md               # 阶段状态
+    ├── lessons/                # 经验统一入口、跨模块案例总结
+    └── history/                # 迁移记录、来源哈希与证据索引
 ```
+
+验证经验从 [经验与复盘索引](lessons/README.md) 进入：`skills/` 保留可复用方法，工程 `docs/` 保留合同、缺陷与具体复盘，`docs/history/` 记录来源和历史证据。
 
 每个工程保留 `ucv.json`、`pytest.ini`、独立验证包、`tests/` 和领域文档。共享层不导入任何工程的领域模型；各工程通过 `ucv.runtime` 解析项目工具、有效源码和历史证据路径。历史 `manifest/` 和审计文档保留原基线含义，当前构建以缓存中的 `source.json`、`generation.json`、`build.json` 为准。
 

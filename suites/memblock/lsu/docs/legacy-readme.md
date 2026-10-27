@@ -127,9 +127,9 @@ python3 tools/verify_delivery.py
 
 运行名必须是全新目录；已存在的 DUT/运行目录拒绝覆盖。
 
-> 验证踩坑与防复发 skill：[`CARD.md`](../../skills/rtl-verification-soundness/CARD.md)（速查卡）、[`SKILL.md`](../../skills/rtl-verification-soundness/SKILL.md)（实际问题、修正办法与成对回归）
+> 验证踩坑与防复发 skill：[`CARD.md`](../../../../skills/rtl-verification-soundness/CARD.md)（速查卡）、[`SKILL.md`](../../../../skills/rtl-verification-soundness/SKILL.md)（实际问题、修正办法与成对回归）
 >
-> 跨模块假阴性经验总结（LSU + LSQ/Sbuffer/DCache/ICache/MMU/VAGQ）：[`../../KMH-V3-VERIFICATION-FALSE-NEGATIVE-LESSONS-20261026.md`](../../KMH-V3-VERIFICATION-FALSE-NEGATIVE-LESSONS-20261026.md)
+> 跨模块假阴性经验总结（LSU + LSQ/Sbuffer/DCache/ICache/MMU/VAGQ）：[跨模块假阴性总结](../../../../docs/lessons/false-negatives-20261026.md)
 
 ## 6. 当前状态（2026-10-26失败复核更正）
 

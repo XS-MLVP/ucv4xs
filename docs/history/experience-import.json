@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "kind": "verification-experience-import",
+  "created_at": "2026-10-27T13:44:59.304890+00:00",
+  "source_workspace": "kmh-v3-test",
+  "historical_content_date": "2026-10-26",
+  "files": [
+    {
+      "source_path": "skills/README.md",
+      "source_sha256": "e5f64fcd7fb89430d275b2d2dbfc1ae1b4dbaeaed4c1b334f365f39de93a47ed",
+      "source_bytes": 1545,
+      "destination": "skills/README.md",
+      "import_sha256": "ec537f023e55b710ead0a1c243455d6ee60482c72c13146932f3260b758f87fe",
+      "import_bytes": 1646
+    },
+    {
+      "source_path": "skills/rtl-verification-soundness/SKILL.md",
+      "source_sha256": "e3de206ceb38fd53524e240a8c54f87d55cbc2c8dfa2eebe18127766d72aef87",
+      "source_bytes": 29315,
+      "destination": "skills/rtl-verification-soundness/SKILL.md",
+      "import_sha256": "911bc4094f95afe7e7eb8674494c1b773305fc7d902f08d1aa49fb3a5732fc1b",
+      "import_bytes": 29789
+    },
+    {
+      "source_path": "skills/rtl-verification-soundness/CARD.md",
+      "source_sha256": "967d72abdb5544ee2e3d845ba0b46b4696c3f734621cd452ddfe8183e64a4190",
+      "source_bytes": 3338,
+      "destination": "skills/rtl-verification-soundness/CARD.md",
+      "import_sha256": "967d72abdb5544ee2e3d845ba0b46b4696c3f734621cd452ddfe8183e64a4190",
+      "import_bytes": 3338
+    },
+    {
+      "source_path": "KMH-V3-VERIFICATION-FALSE-NEGATIVE-LESSONS-20261026.md",
+      "source_sha256": "5ecfe6713f01dad811a78bce216fd8a1175549b73145345eaa35f3e3ef0c6b61",
+      "source_bytes": 42414,
+      "destination": "docs/lessons/false-negatives-20261026.md",
+      "import_sha256": "e8acd014ee7c329043718d243d4a1defb7018f4bb456e0c3a32a9afa31d0fbf3",
+      "import_bytes": 42775
+    }
+  ],
+  "existing_report_links_repaired": [
+    "suites/memblock/lsu/docs/bug-reports-20261026/README.md",
+    "suites/memblock/lsu/docs/legacy-readme.md",
+    "suites/memblock/dcache/docs/reports/status-20261025.md",
+    "suites/memblock/dcache/docs/reports/soundness-recheck-20261026.md"
+  ],
+  "notes": [
+    "Historical case descriptions, counts, verdicts and limitations were retained; only navigation and explicit migration notes were added.",
+    "The summary keeps original code locations and commands as historical references; docs/lessons/README.md maps their workspaces.",
+    "VAGQ evidence remains external with existing history:// identities and SHA-256 records.",
+    "Hashes describe this import snapshot, not a requirement to keep the living handbook unchanged.",
+    "Documentation migration does not certify new hardware results or automatic skill registration."
+  ]
+}

@@ -30,4 +30,6 @@ PYTHONPATH=src python3 -m ucv setup --jobs 16
 
 全部工程使用 DefaultConfig。公开工程共享完整香山 RTL 的生成，BPU 同样只提取模块闭包；每个 DUT 仍单独进行 Picker 构建与 UT。公开七工程默认继承 `893e1580b705d81f113c30c7a05734e09a08050e`。VAGQ 显式使用 internal `d4566d58a5ace1f6a5df4409b37a84b971f48e43`，因此 `ucv run full --require-unified-baseline` 会在执行前报错。
 
+既往验证经验从 [经验与复盘索引](docs/lessons/README.md) 查阅，包含跨模块防复发手册、速查卡和各工程复盘入口。
+
 目录职责与扩展方式见 [结构说明](docs/architecture.md)。详细说明见 [基线与构建](docs/baselines.md)、[外部接入](docs/local-configuration.md)、[维护与验收](docs/maintenance.md) 和 [许可](NOTICE.md)。历史证据只能证明对应历史产物，不能代替重建版本的验收。
