@@ -3,9 +3,9 @@ requires = ["setuptools>=75"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "xiangshan-ucv"
+name = "ucv4xs"
 version = "0.1.0"
-description = "Unified XiangShan block verification"
+description = "UnityChip-based unit testing for XiangShan"
 requires-python = ">=3.12,<3.13"
 license = {text = "MPL-2.0"}
 

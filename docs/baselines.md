@@ -4,7 +4,7 @@
 
 基线完整定义包含源码 URL、40 位 commit、递归子模块 gitlink、设计配置、Chisel 参数、firtool 参数、Mill/Chisel/firtool/Java 版本和带 SHA-256 的补丁列表。初始所有硬件分组均继承根；仅 VAGQ 工程 override。设计补丁必须列入命名基线。BPU 原修复及工作区修改存于 `docs/history/bpu/`，默认补丁列表为空。
 
-公开基线使用原 Makefile 的发布参数：DefaultConfig、单核、`--fpga-platform --reset-gen --issue E.b --llc OpenLLC`、firtool 1.149.0 的发布优化、关闭 layer specialization。直接调用 `top.TopMain`，保留 Chisel 原始断言，不对生成 RTL 做硬件逻辑改写。BPU 使用 `recipes/bpu/BpuVerifyMain.scala` 为十个 DUT 分别生成独立顶层，同样使用 DefaultConfig。入口按 XSTile 的方式提取核心参数，并在独立边界将 SRAM DFT 广播控制固定为功能模式。接口保留完整公开端口，避免 SoC 优化裁剪验证接口。原入口保存在 `docs/history/bpu/BpuVerifyMain.original.scala`，其历史 MinimalConfig 不参与当前生成。
+公开基线使用原 Makefile 的发布参数：DefaultConfig、单核、`--fpga-platform --reset-gen --issue E.b --llc OpenLLC`、firtool 1.149.0 的发布优化、关闭 layer specialization。直接调用 `top.TopMain`，保留 Chisel 原始断言，不对生成 RTL 做硬件逻辑改写。BPU 与其他公开工程共享这次完整生成的 RTL，十个 DUT 均从整芯片产物提取闭包。没有 BPU 专用生成入口、额外 Scala 注入或单模块 elaboration。UT 绑定以整芯片优化后的实际端口为准，旧用例的接口差异由模型、适配层和用例处理，不为了保留旧接口改写 RTL。历史独立入口只保存在 `docs/history/bpu/BpuVerifyMain.original.scala` 和 Git 历史中，不参与当前构建。
 
 internal 基线按原 `build/time.log` 中的命令使用 `xiangshan.test.runMain top.XiangShanSim`、DefaultConfig、单核、`--enable-difftest` 和启用的 layer specialization。此配置保留 VAGQ 的断言层输入与 difftest 元数据端口。它独立记录在 internal 命名基线中，不影响公开工程。
 

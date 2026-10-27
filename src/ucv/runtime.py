@@ -23,8 +23,9 @@ def source_path(baseline='public-893e1580b'):
 
 def soc_rtl(baseline='public-893e1580b'):
     from .common import digest
+    from .sources import generation_spec
     project=Project()
-    spec={'baseline':project.baseline(baseline),'generation':'soc','dut':None,'overlay':None}
+    spec=generation_spec(project.baseline(baseline))
     return project.root/'.cache/generated'/digest(spec)/'rtl'
 
 def historical_path(suite,relative=''):

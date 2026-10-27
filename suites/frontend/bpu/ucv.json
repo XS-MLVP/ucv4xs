@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "suite": "bpu",
-  "generation": "bpu-standalone",
+  "generation": "soc",
   "closure": "module-dependencies",
   "duts": {
     "bpu": {
@@ -49,7 +49,5 @@
   "tests": [
     "tests"
   ],
-  "process_isolation": "dut",
-  "historical_standalone_entry": "docs/history/bpu/BpuVerifyMain.original.scala",
-  "generation_note": "Each DUT is elaborated with the shared DefaultConfig baseline; the standalone entry supplies functional SRAM broadcast controls and preserves complete public ports."
+  "process_isolation": "dut"
 }

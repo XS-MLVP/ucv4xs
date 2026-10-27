@@ -1,8 +1,6 @@
 """Exact independent source checkouts and Chisel generation. MPL-2.0."""
 from concurrent.futures import ThreadPoolExecutor
-import os
 from pathlib import Path
-import shutil
 from .common import UcvError, digest, execute, file_hash, lock, now, read, write
 
 def git(path, *args):
@@ -73,12 +71,14 @@ def source(project, baseline):
         write(target/'.ucv-source.json',{'baseline':baseline,'checked_at':now()})
     return target
 
-def generate(project, suite, dut=None):
+def generation_spec(baseline):
+    # Preserve the identity of existing whole-chip RTL caches. The two null
+    # fields are legacy schema slots, never configurable generation overrides.
+    return {'baseline':baseline,'generation':'soc','dut':None,'overlay':None}
+
+def generate(project, suite):
     baseline = suite.baseline
-    standalone = suite.recipe['generation']=='bpu-standalone'
-    overlay = project.root/'recipes/bpu/BpuVerifyMain.scala'
-    spec = {'baseline':baseline,'generation':suite.recipe['generation'],
-            'dut':dut if standalone else None,'overlay':file_hash(overlay) if standalone else None}
+    spec = generation_spec(baseline)
     key = digest(spec)
     destination = project.root/'.cache/generated'/key
     receipt = destination/'generation.json'
@@ -106,20 +106,14 @@ def generate(project, suite, dut=None):
         output = destination/'rtl'
         output.mkdir(parents=True,exist_ok=True)
         command = [mill,'-i','-Djvm-xmx=64G','-Djvm-xss=64m',baseline['design'].get('mill_target','xiangshan.runMain'),
-                   'bpuverify.BpuVerifyMain' if standalone else baseline['design']['top'],
+                   baseline['design']['top'],
                    '--target-dir',output,'--config',baseline['design']['config'],
                    '--num-cores',str(baseline['design']['num_cores']),
                    '--target','systemverilog','--split-verilog','--dump-fir',
                    '--firtool-binary-path',firtool,'--firtool-opt',' '.join(baseline['firtool_options'])]
-        if standalone:
-            command += ['--bpu-dut',dut]
         # Mill writes build state: all generations using the same checkout serialize.
         command += baseline['design'].get('chisel_args',[])
         with lock(project.root/'.cache/locks'/f'mill-{source_key(baseline)}'):
-            if standalone:
-                target = checkout_root/'src/main/scala/bpuverify/BpuVerifyMain.scala'
-                target.parent.mkdir(parents=True,exist_ok=True)
-                shutil.copy2(overlay,target)
             execute(command,cwd=checkout_root,env=env,log=destination/'generate.log')
         rtl = {str(p.relative_to(output)):file_hash(p) for p in sorted(output.rglob('*'))
                if p.is_file() and p.suffix in {'.sv','.v','.vh','.svh'}}

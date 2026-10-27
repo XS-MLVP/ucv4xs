@@ -3,11 +3,10 @@
 本仓库的结构版统一工程组织、源码基线、命令入口和产物归属。硬件失败和 BPU 的后续适配单独登记在 [阶段状态](status.md)。
 
 ```text
-xiangshan-verify/
+ucv4xs/
 ├── ucv.json                    # 根基线、工程注册、public/full 集合
 ├── baselines/                  # 完整命名基线与递归源码锁
 ├── dependencies/               # Python/原生工具锁与带哈希的工具补丁
-├── recipes/bpu/                # DefaultConfig 独立 Chisel 生成入口
 ├── src/ucv/                    # 公共编排、路径、运行记录与报告
 ├── suites/
 │   ├── frontend/{bpu,icache}/
@@ -29,7 +28,7 @@ xiangshan-verify/
 
 引用最近一级显式基线，不合并命名基线的内部字段。三个初始分组均继承根；VAGQ 单独引用 internal 基线。新增基线要复制完整定义并更新名称、commit、递归 gitlink、生成配置、工具版本和补丁哈希。所有当前工程使用 DefaultConfig。
 
-命令链为 `setup → prepare → build → run → report`。`list` 和 `doctor` 用于确认选择、继承来源和环境。`prepare` 获取独立源码、生成 RTL、提取闭包；`build` 构建并在独立进程冒烟；`run` 按工程隔离进程，BPU 进一步按 DUT 分区，共享一个 worker 预算。显式用例路径替代默认测试目录，`-k`/`-m` 作用于默认集合。构建与运行共享工程锁，避免活动链接在回归期间被切换。
+命令链为 `setup → prepare → build → run → report`。`list` 和 `doctor` 用于确认选择、继承来源和环境。`prepare` 获取精确源码并按有效基线完整生成香山 RTL，同基线共享一次生成结果。各工程（包括 BPU）从这份产物提取模块闭包，不注入验证专用 Scala 入口。`build` 为各 DUT 调用 Picker 并在独立进程冒烟；`run` 按工程隔离进程，BPU 进一步按 DUT 分区，共享一个 worker 预算。显式用例路径替代默认测试目录，`-k`/`-m` 作用于默认集合。构建与运行共享工程锁，避免活动链接在回归期间被切换。
 
 所有安装、源码和产物都属于当前检出：`.venv/`、`.tools/`、`.cache/`、`results/` 均忽略；工程中的 `rtl/`、`dut/`、`XiangShan` 是运行时创建的相对链接。`.ucv/local.json` 保存机器配置，Git 中没有通往旧工作区的链接。源目录移动后应重新建立虚拟环境和工具，不复用含绝对路径的二进制缓存。
 

@@ -101,7 +101,7 @@ class Project:
         recipe = read(path/'ucv.json')
         if not recipe.get('duts') or recipe.get('suite') != name:
             raise UcvError(f'{name}: missing DUT recipe')
-        if recipe.get('generation') not in {'soc','bpu-standalone'} or recipe.get('closure','module-dependencies') != 'module-dependencies':
+        if recipe.get('generation') != 'soc' or recipe.get('closure','module-dependencies') != 'module-dependencies':
             raise UcvError(f'{name}: unsupported generation or closure recipe')
         for key, spec in recipe['duts'].items():
             if not re.fullmatch(r'\w+', key) or not {'top','export_name'} <= spec.keys():
@@ -128,12 +128,13 @@ class Project:
         return suites
 
     def cache_key(self, suite, dut, options=None):
-        overlay = self.root/'recipes/bpu/BpuVerifyMain.scala'
+        # Keep the null slot in the existing SoC cache format. Generation never
+        # injects Scala sources; the suite recipe change invalidates old BPU DUTs.
         return digest({'baseline':suite.baseline_key, 'suite':suite.name, 'dut':dut,
                        'recipe':suite.recipe, 'tools':self.tools, 'options':options or {},
                        'pipeline_version':1,
                        'build_options':self.config.get('build_options',{}),
-                       'overlay':file_hash(overlay) if suite.recipe['generation']=='bpu-standalone' else None})
+                       'overlay':None})
 
     def environment(self):
         env = dict(os.environ)

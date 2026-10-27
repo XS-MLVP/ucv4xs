@@ -1,4 +1,6 @@
-# 香山统一验证仓库
+# ucv4xs
+
+基于 UnityChip 的香山单元测试（UT）仓库。仓库和 Python 发行包名为 `ucv4xs`，命令与 Python 导入名均为 `ucv`。
 
 当前交付为**结构整合版**：工程组织、基线管理与执行入口已落地；完整硬件回归和 BPU DefaultConfig 用例适配继续单独推进。详见 [阶段状态](docs/status.md)。
 
@@ -26,6 +28,6 @@ PYTHONPATH=src python3 -m ucv setup --jobs 16
 
 `--workers` 是一次顶层运行的总 worker 预算。工程运行在独立进程中，BPU 还按冻结的 DUT 分区分别启动进程。每次运行创建新目录，记录用例集合、逐阶段判定、源码哈希、基线、RTL、原生库、工具版本和种子；覆盖率由 toffee 管理。
 
-全部工程使用 DefaultConfig。公开七工程默认继承 `893e1580b705d81f113c30c7a05734e09a08050e`。VAGQ 显式使用 internal `d4566d58a5ace1f6a5df4409b37a84b971f48e43`，因此 `ucv run full --require-unified-baseline` 会在执行前报错。
+全部工程使用 DefaultConfig。公开工程共享完整香山 RTL 的生成，BPU 同样只提取模块闭包；每个 DUT 仍单独进行 Picker 构建与 UT。公开七工程默认继承 `893e1580b705d81f113c30c7a05734e09a08050e`。VAGQ 显式使用 internal `d4566d58a5ace1f6a5df4409b37a84b971f48e43`，因此 `ucv run full --require-unified-baseline` 会在执行前报错。
 
 目录职责与扩展方式见 [结构说明](docs/architecture.md)。详细说明见 [基线与构建](docs/baselines.md)、[外部接入](docs/local-configuration.md)、[维护与验收](docs/maintenance.md) 和 [许可](NOTICE.md)。历史证据只能证明对应历史产物，不能代替重建版本的验收。

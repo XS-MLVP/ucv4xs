@@ -83,3 +83,65 @@ def test_dut_cannot_override_design_configuration(project):
     path=project.root/'suites/frontend/bpu/ucv.json';data=json.loads(path.read_text())
     data['duts']['unit']['config']='MinimalConfig';write(path,data)
     with pytest.raises(UcvError,match='per-DUT'):project.suite('bpu')
+
+
+def test_standalone_generation_is_rejected(project):
+    path = project.root/'suites/frontend/bpu/ucv.json'
+    data = json.loads(path.read_text())
+    data['generation'] = 'bpu-standalone'
+    write(path, data)
+    with pytest.raises(UcvError, match='unsupported generation'):
+        project.suite('bpu')
+
+
+def test_whole_chip_generation_is_shared_and_tracks_baseline(project, monkeypatch):
+    from subprocess import CompletedProcess
+    from ucv import sources
+    from ucv.build import prepare
+    from ucv.runtime import soc_rtl
+
+    checkout = project.root/'.cache/test-source'
+    checkout.mkdir(parents=True)
+    (checkout/'.mill-version').write_text('0.12.17\n')
+    (checkout/'build.sc').write_text('chiselVersion = "7.13.0"\n')
+    tools = project.root/'.tools/bin'
+    tools.mkdir(parents=True)
+    for name in ('mill', 'firtool'):
+        (tools/name).touch()
+    calls = []
+
+    def compiler(command, **kwargs):
+        if str(command[0]).endswith('/firtool'):
+            return CompletedProcess(command, 0, stdout='firtool-1.149.0')
+        calls.append(command)
+        assert command[5] == 'top.TopMain'
+        assert command[command.index('--config')+1] == 'DefaultConfig'
+        output = Path(command[command.index('--target-dir')+1])
+        (output/'Unit.sv').write_text('module Unit(input clock); endmodule\n')
+        return CompletedProcess(command, 0, stdout='')
+
+    monkeypatch.setattr(sources, 'source', lambda *args: checkout)
+    monkeypatch.setattr(sources, 'execute', compiler)
+    monkeypatch.setenv('UCV_ROOT', str(project.root))
+    # Real closure extraction: two suites share generation but own their DUT caches.
+    first = prepare(project, project.suite('bpu'), 'unit')
+    second = prepare(project, project.suite('lsq'), 'unit')
+    assert first != second
+    before = json.loads((first/'rtl/source.json').read_text())
+    peer = json.loads((second/'rtl/source.json').read_text())
+    assert before['source'] == peer['source'] == str(soc_rtl('a'))
+    assert before['files'] == peer['files']
+    assert len(calls) == 1
+    assert not (checkout/'src').exists()  # No injected Scala entry.
+    # A group override generates another whole-chip design; no cross-baseline reuse.
+    write(project.root/'suites/frontend/ucv.json', {'baseline':'b'})
+    changed = prepare(project, project.suite('bpu'), 'unit')
+    assert changed != first
+    assert len(calls) == 2
+    after = json.loads((changed/'rtl/source.json').read_text())
+    assert after['source'] != before['source']
+    assert after['source'] == str(soc_rtl('b'))
+    # A corrupt shared result must never be accepted as another suite's RTL.
+    (Path(before['source'])/'Unit.sv').write_text('corrupt')
+    with pytest.raises(UcvError, match='cache is corrupt'):
+        sources.generate(project, project.suite('lsq'))

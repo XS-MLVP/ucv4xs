@@ -56,7 +56,7 @@ def prepare(project, suite, dut):
             if any(file_hash(rtl/name)!=h for name,h in data['files'].items()):
                 raise UcvError(f'RTL closure cache changed: {rtl}')
         else:
-            source = generate(project,suite,dut)
+            source = generate(project,suite)
             needed = closure(source,spec['top'])
             rtl.mkdir(parents=True,exist_ok=True)
             for path in needed:shutil.copy2(path,rtl/path.name)

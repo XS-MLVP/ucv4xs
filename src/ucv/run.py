@@ -10,7 +10,7 @@ from .sources import git
 
 def source_identity(project,suites):
     files={}
-    for directory in [project.root/'src',project.root/'baselines',project.root/'recipes',*[s.path for s in suites]]:
+    for directory in [project.root/'src',project.root/'baselines',*[s.path for s in suites]]:
         for p in directory.rglob('*'):
             if p.is_file() and p.suffix in {'.py','.ini','.json','.toml','.scala','.patch'} and not p.is_symlink() and not {'rtl','dut','results','__pycache__'} & set(p.relative_to(directory).parts):
                 files[str(p.relative_to(project.root))]=file_hash(p)
