@@ -41,6 +41,10 @@ BPU 已切换为从与其他公开工程共享的完整 DefaultConfig 香山 RTL
 
 BPU 同一历史 RTL 上的框架比较保存在 `history/bpu-framework-verdict-comparison.json`：大部分原生 DUT 判定一致，MicroTAGE 有一个 strict XFAIL 变为 FAIL，覆盖率打包完整性亦未认证。历史产物是 MinimalConfig，不能证明新 DefaultConfig 的硬件正确性。
 
+## 文档与本地空间整理
+
+已补齐 README、仓库协作约定 `AGENTS.md`、项目工作流 skill、历史验证经验和编译构建经验入口。2026-10-28 按用户要求回收一轮异常 BPU 调试留下的 224 个覆盖率文件，约 25.8 GiB；日志和原状态保留，删除文件清单见 [回收记录](history/storage-reclamation-20261028.json)。该清理不产生新的硬件验收结论；覆盖率按字节控制与异常自动回收仍待实现。
+
 ## 后续工作
 
 BPU 剩余适配、其完整生产回归、全新环境空构建缓存下的全工程链路，以及最终硬件失败和覆盖缺口分析继续单独推进。现有失败、XFAIL 和 SKIP 均保留，未以删除用例或扩大豁免替代验证。

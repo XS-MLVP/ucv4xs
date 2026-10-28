@@ -1,6 +1,10 @@
-# 验证经验 Skill 索引
+# ucv4xs Skill 索引
 
 全部工程的经验入口见 [验证经验与复盘](../docs/lessons/README.md)。
+
+## ucv4xs-workflow
+
+[项目工作流](ucv4xs-workflow/SKILL.md)：面向本仓库的基线管理、项目内安装、完整 RTL 生成、DUT 构建、隔离回归及新增工程。仓库协作约定见 [AGENTS.md](../AGENTS.md)。
 
 ## rtl-verification-soundness
 

@@ -6,8 +6,12 @@ build-backend = "setuptools.build_meta"
 name = "ucv4xs"
 version = "0.1.0"
 description = "UnityChip-based unit testing for XiangShan"
+readme = "README.md"
 requires-python = ">=3.12,<3.13"
 license = {text = "MPL-2.0"}
+
+[project.urls]
+Repository = "https://github.com/XS-MLVP/ucv4xs"
 
 [project.scripts]
 ucv = "ucv.cli:main"

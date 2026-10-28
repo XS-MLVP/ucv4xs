@@ -1,0 +1,1837 @@
+{
+  "schema": 1,
+  "kind": "authorized-storage-reclamation",
+  "status": "complete",
+  "started_at": "2026-10-28T03:03:24.044070+00:00",
+  "run": "results/bpu-default-native-20261027T053746Z",
+  "reason": "User requested deletion of coverage intermediates left by the interrupted BPU diagnostic run.",
+  "original_manifest_state": "running",
+  "scope": "207 raw coverage files, 16 worker aggregates, and one unfinished merge temporary file.",
+  "retained_files": [
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu.log",
+      "bytes": 6898,
+      "sha256": "397932c3a76e421f5fd82248382d3d6211f0d40a4c79ee53eb4fbaa638d22458"
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/manifest.json",
+      "bytes": 75,
+      "sha256": "3c50e1e7e9bffb16f15d7f898d92b7de63896f7ef22975ace21fa6b563324705"
+    }
+  ],
+  "files": [
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw0/native/c1f2d68af55a23732d25091b7a3722131e8481d48ecbd20a3aa95019ef4ec512/merged.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080008028118816,
+      "device": 2050,
+      "inode": 25968247
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw0/native/raw/dut-0at8ycu1.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080043424079990,
+      "device": 2050,
+      "inode": 25860601
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw0/native/raw/dut-0dmgiiir.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080078296041740,
+      "device": 2050,
+      "inode": 25862538
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw0/native/raw/dut-95zc9bnw.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080090754028074,
+      "device": 2050,
+      "inode": 25862554
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw0/native/raw/dut-_d0wz_ro.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080052612069912,
+      "device": 2050,
+      "inode": 25862402
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw0/native/raw/dut-b2_qz3n1.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080142066971792,
+      "device": 2050,
+      "inode": 25862497
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw0/native/raw/dut-cdcqe939.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080100612017261,
+      "device": 2050,
+      "inode": 25862986
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw0/native/raw/dut-cvysfinu.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080120742995181,
+      "device": 2050,
+      "inode": 25862428
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw0/native/raw/dut-e11m_gyn.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080033358091032,
+      "device": 2050,
+      "inode": 25863030
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw0/native/raw/dut-gagoll8h.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080064527056842,
+      "device": 2050,
+      "inode": 25862520
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw0/native/raw/dut-gf47frsr.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080109494007519,
+      "device": 2050,
+      "inode": 25862349
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw0/native/raw/dut-jv8b6bow.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080177999932376,
+      "device": 2050,
+      "inode": 25862902
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw0/native/raw/dut-r30ns968.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080131809983042,
+      "device": 2050,
+      "inode": 25862469
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw0/native/raw/dut-tbpohv_f.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080159822952316,
+      "device": 2050,
+      "inode": 25862783
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw0/native/raw/dut-v_s9i70j.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080150985962008,
+      "device": 2050,
+      "inode": 25862754
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw0/native/raw/dut-x7dlam_f.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080019636106083,
+      "device": 2050,
+      "inode": 25860494
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw0/native/raw/dut-zrbonjgw.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080168676942603,
+      "device": 2050,
+      "inode": 25862822
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw1/native/c1f2d68af55a23732d25091b7a3722131e8481d48ecbd20a3aa95019ef4ec512/merged.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080019089106683,
+      "device": 2050,
+      "inode": 25968256
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw1/native/raw/dut-4joo5yqq.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080118982997111,
+      "device": 2050,
+      "inode": 25862422
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw1/native/raw/dut-6zodr2tm.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080106283011040,
+      "device": 2050,
+      "inode": 25860619
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw1/native/raw/dut-9r6zzhm6.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080034949089286,
+      "device": 2050,
+      "inode": 25863056
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw1/native/raw/dut-afxc_5j8.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080070523050265,
+      "device": 2050,
+      "inode": 25862524
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw1/native/raw/dut-bmv2f4j0.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080193731915120,
+      "device": 2050,
+      "inode": 25862945
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw1/native/raw/dut-cho62mgp.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080164647947023,
+      "device": 2050,
+      "inode": 25862810
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw1/native/raw/dut-ct1kvqff.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080146784966617,
+      "device": 2050,
+      "inode": 25862743
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw1/native/raw/dut-g5po47w9.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080174206936537,
+      "device": 2050,
+      "inode": 25862870
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw1/native/raw/dut-hxscseje.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080137888976374,
+      "device": 2050,
+      "inode": 25862489
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw1/native/raw/dut-j1vkn_ga.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080184666925063,
+      "device": 2050,
+      "inode": 25862913
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw1/native/raw/dut-k4b9f84o.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080092902025718,
+      "device": 2050,
+      "inode": 25862811
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw1/native/raw/dut-l8p6j2xg.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080155636956907,
+      "device": 2050,
+      "inode": 25862770
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw1/native/raw/dut-mossa2k7.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080048283074661,
+      "device": 2050,
+      "inode": 25860613
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw1/native/raw/dut-n0l4cvor.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080080265039580,
+      "device": 2050,
+      "inode": 25862546
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw1/native/raw/dut-tpoh51bs.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080128933986196,
+      "device": 2050,
+      "inode": 25862461
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw1/native/raw/dut-vnf17rrr.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080060879060843,
+      "device": 2050,
+      "inode": 25862506
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw10/native/c1f2d68af55a23732d25091b7a3722131e8481d48ecbd20a3aa95019ef4ec512/merged.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080006164120861,
+      "device": 2050,
+      "inode": 25968246
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw10/native/raw/dut-1j7xuhhl.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080040705082973,
+      "device": 2050,
+      "inode": 25860441
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw10/native/raw/dut-1xp8brgj.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080088629030405,
+      "device": 2050,
+      "inode": 25862551
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw10/native/raw/dut-3k9nx7p_.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080064052057363,
+      "device": 2050,
+      "inode": 25862514
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw10/native/raw/dut-3l3oq6bd.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080106573010722,
+      "device": 2050,
+      "inode": 25860637
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw10/native/raw/dut-6bw65d94.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080018469107363,
+      "device": 2050,
+      "inode": 25860487
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw10/native/raw/dut-a88c7uq6.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080156756955678,
+      "device": 2050,
+      "inode": 25862779
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw10/native/raw/dut-bwc4_964.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080031241093354,
+      "device": 2050,
+      "inode": 25862847
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw10/native/raw/dut-fxjzjo69.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080050206072551,
+      "device": 2050,
+      "inode": 25862146
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw10/native/raw/dut-fzxmkxze.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080130093984923,
+      "device": 2050,
+      "inode": 25862463
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw10/native/raw/dut-kr8e_wwp.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080097534020637,
+      "device": 2050,
+      "inode": 25862966
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw10/native/raw/dut-lza6sy26.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080139261974869,
+      "device": 2050,
+      "inode": 25862491
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw10/native/raw/dut-p6vxnkw2.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080077840042240,
+      "device": 2050,
+      "inode": 25862532
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw10/native/raw/dut-wrp7k1an.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080119238996830,
+      "device": 2050,
+      "inode": 25862424
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw10/native/raw/dut-xj3p6799.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080165584945994,
+      "device": 2050,
+      "inode": 25862816
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw10/native/raw/dut-zbr8cbh6.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080147922965368,
+      "device": 2050,
+      "inode": 25862747
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw10/native/raw/dut-zj2a3r27.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080175599935009,
+      "device": 2050,
+      "inode": 25862885
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw11/native/c1f2d68af55a23732d25091b7a3722131e8481d48ecbd20a3aa95019ef4ec512/merged.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080223823882112,
+      "device": 2050,
+      "inode": 25968486
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw11/native/raw/dut-0k3j0f7i.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080136356978054,
+      "device": 2050,
+      "inode": 25862485
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw11/native/raw/dut-cn5ieu5j.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080163170948642,
+      "device": 2050,
+      "inode": 25862808
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw11/native/raw/dut-cu2osun2.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080127321987965,
+      "device": 2050,
+      "inode": 25862450
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw11/native/raw/dut-o2zkp28n.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080173311937519,
+      "device": 2050,
+      "inode": 25862846
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw11/native/raw/dut-sl3dkqgn.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080145095968469,
+      "device": 2050,
+      "inode": 25862741
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw11/native/raw/dut-x93yskfy.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080153821958897,
+      "device": 2050,
+      "inode": 25862766
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw12/native/c1f2d68af55a23732d25091b7a3722131e8481d48ecbd20a3aa95019ef4ec512/merged.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080020666104953,
+      "device": 2050,
+      "inode": 25968258
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw12/native/raw/dut-5ophz_21.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080166923944526,
+      "device": 2050,
+      "inode": 25862818
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw12/native/raw/dut-6nje40na.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080048904073980,
+      "device": 2050,
+      "inode": 25860624
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw12/native/raw/dut-7i8j1yv8.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080072376048232,
+      "device": 2050,
+      "inode": 25862526
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw12/native/raw/dut-81bz_64r.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080176137934419,
+      "device": 2050,
+      "inode": 25862896
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw12/native/raw/dut-920869hu.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080158173954124,
+      "device": 2050,
+      "inode": 25862781
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw12/native/raw/dut-bczseq0r.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080149280963878,
+      "device": 2050,
+      "inode": 25862751
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw12/native/raw/dut-bzzf7ann.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080081197038557,
+      "device": 2050,
+      "inode": 25862547
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw12/native/raw/dut-eg7c8olv.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080062847058684,
+      "device": 2050,
+      "inode": 25862510
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw12/native/raw/dut-enxwa675.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080196426912164,
+      "device": 2050,
+      "inode": 25862952
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw12/native/raw/dut-fu7_0vaf.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080119431996619,
+      "device": 2050,
+      "inode": 25862425
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw12/native/raw/dut-j_4n7e5r.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080131183983728,
+      "device": 2050,
+      "inode": 25862466
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw12/native/raw/dut-kztewg0j.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080036191087924,
+      "device": 2050,
+      "inode": 25860435
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw12/native/raw/dut-obdnu3sx.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080187066922431,
+      "device": 2050,
+      "inode": 25862936
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw12/native/raw/dut-s1tudfo2.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080106505010797,
+      "device": 2050,
+      "inode": 25860630
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw12/native/raw/dut-vbt1cop5.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080092737025899,
+      "device": 2050,
+      "inode": 25862666
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw12/native/raw/dut-vv4ui4ft.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080140476973536,
+      "device": 2050,
+      "inode": 25862495
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw13/native/c1f2d68af55a23732d25091b7a3722131e8481d48ecbd20a3aa95019ef4ec512/merged.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793079995036133067,
+      "device": 2050,
+      "inode": 25968236
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw13/native/raw/dut-0goei9ql.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080049490073337,
+      "device": 2050,
+      "inode": 25860633
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw13/native/raw/dut-1eo_9ai9.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080132534982246,
+      "device": 2050,
+      "inode": 25862478
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw13/native/raw/dut-1k01lr2q.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080005809121250,
+      "device": 2050,
+      "inode": 25860159
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw13/native/raw/dut-2egtwuxr.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080023977101321,
+      "device": 2050,
+      "inode": 25862814
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw13/native/raw/dut-7c03rlbs.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080163015948813,
+      "device": 2050,
+      "inode": 25862799
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw13/native/raw/dut-8t7gcrws.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080014769111422,
+      "device": 2050,
+      "inode": 25860447
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw13/native/raw/dut-9koqqzjp.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080035855088293,
+      "device": 2050,
+      "inode": 25860160
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw13/native/raw/dut-c7pj144k.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080152622960212,
+      "device": 2050,
+      "inode": 25862760
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw13/native/raw/dut-ekmc383m.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080173347937479,
+      "device": 2050,
+      "inode": 25862845
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw13/native/raw/dut-l17cai39.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080143008970759,
+      "device": 2050,
+      "inode": 25862733
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw13/native/raw/dut-ltmeza51.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080092949025666,
+      "device": 2050,
+      "inode": 25862750
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw13/native/raw/dut-njtgyj7_.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080107721009463,
+      "device": 2050,
+      "inode": 25862145
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw13/native/raw/dut-rihn2nfp.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080079181040769,
+      "device": 2050,
+      "inode": 25862542
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw13/native/raw/dut-t1w4vf82.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080183899925905,
+      "device": 2050,
+      "inode": 25862911
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw13/native/raw/dut-v05ywbm5.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080064448056928,
+      "device": 2050,
+      "inode": 25862515
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw13/native/raw/dut-xp8xre5f.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080121371994490,
+      "device": 2050,
+      "inode": 25862432
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw14/native/c1f2d68af55a23732d25091b7a3722131e8481d48ecbd20a3aa95019ef4ec512/.native-merge-9mk_4upk",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080238387866137,
+      "device": 2050,
+      "inode": 25968237
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw14/native/c1f2d68af55a23732d25091b7a3722131e8481d48ecbd20a3aa95019ef4ec512/merged.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080218793887630,
+      "device": 2050,
+      "inode": 25968470
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw14/native/raw/dut-hm3mlzp2.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080229650875720,
+      "device": 2050,
+      "inode": 25860438
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw15/native/c1f2d68af55a23732d25091b7a3722131e8481d48ecbd20a3aa95019ef4ec512/merged.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080021877103625,
+      "device": 2050,
+      "inode": 25968259
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw15/native/raw/dut-009er4z6.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080175350935282,
+      "device": 2050,
+      "inode": 25862880
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw15/native/raw/dut-7wg05e1q.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080105922011437,
+      "device": 2050,
+      "inode": 25860612
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw15/native/raw/dut-8ohl6svl.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080165035946597,
+      "device": 2050,
+      "inode": 25862812
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw15/native/raw/dut-9ax8mweb.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080137233977093,
+      "device": 2050,
+      "inode": 25862486
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw15/native/raw/dut-_ok3h9k2.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080050373072368,
+      "device": 2050,
+      "inode": 25860639
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw15/native/raw/dut-dq8anfke.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080205650902046,
+      "device": 2050,
+      "inode": 25862964
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw15/native/raw/dut-etwhm8pf.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080092427026239,
+      "device": 2050,
+      "inode": 25862557
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw15/native/raw/dut-fv6054u4.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080118063998119,
+      "device": 2050,
+      "inode": 25862420
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw15/native/raw/dut-iq9r4bqx.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080078830041153,
+      "device": 2050,
+      "inode": 25862541
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw15/native/raw/dut-l6gs6pmw.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080127290987998,
+      "device": 2050,
+      "inode": 25862449
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw15/native/raw/dut-msbmbjvg.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080186251923325,
+      "device": 2050,
+      "inode": 25862924
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw15/native/raw/dut-pdnkyyr3.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080036838087214,
+      "device": 2050,
+      "inode": 25860436
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw15/native/raw/dut-qyuh8fax.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080064591056771,
+      "device": 2050,
+      "inode": 25862518
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw15/native/raw/dut-tgv2ll_1.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080146477966953,
+      "device": 2050,
+      "inode": 25862742
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw15/native/raw/dut-vab6qwmu.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080195941912696,
+      "device": 2050,
+      "inode": 25862950
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw15/native/raw/dut-x08ah95y.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080155577956971,
+      "device": 2050,
+      "inode": 25862769
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw2/native/c1f2d68af55a23732d25091b7a3722131e8481d48ecbd20a3aa95019ef4ec512/merged.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080011018115536,
+      "device": 2050,
+      "inode": 25968249
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw2/native/raw/dut-15ri7cvp.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080183288926575,
+      "device": 2050,
+      "inode": 25862910
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw2/native/raw/dut-2_n5fd25.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080078545041466,
+      "device": 2050,
+      "inode": 25862540
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw2/native/raw/dut-3xxe15x9.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080065228056073,
+      "device": 2050,
+      "inode": 25862521
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw2/native/raw/dut-4sqcs84i.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080034571089701,
+      "device": 2050,
+      "inode": 25863037
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw2/native/raw/dut-5pxzivqs.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080162818949029,
+      "device": 2050,
+      "inode": 25862798
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw2/native/raw/dut-6lwt1vke.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080102291015419,
+      "device": 2050,
+      "inode": 25860604
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw2/native/raw/dut-6m6bmwfx.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080091322027451,
+      "device": 2050,
+      "inode": 25862556
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw2/native/raw/dut-7jmp3dyo.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080022120103358,
+      "device": 2050,
+      "inode": 25860497
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw2/native/raw/dut-_ojhxwre.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080121091994798,
+      "device": 2050,
+      "inode": 25862434
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw2/native/raw/dut-c7t9gqap.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080131970982865,
+      "device": 2050,
+      "inode": 25862473
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw2/native/raw/dut-kwtok31c.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080111197005651,
+      "device": 2050,
+      "inode": 25862405
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw2/native/raw/dut-l_9ds9sj.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080056222065952,
+      "device": 2050,
+      "inode": 25862404
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw2/native/raw/dut-q017ulbw.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080142367971462,
+      "device": 2050,
+      "inode": 25862499
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw2/native/raw/dut-q6ldzcb5.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080152576960263,
+      "device": 2050,
+      "inode": 25862759
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw2/native/raw/dut-s31uou4v.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080046712076384,
+      "device": 2050,
+      "inode": 25860606
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw2/native/raw/dut-ze7xn95a.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080173212937627,
+      "device": 2050,
+      "inode": 25862843
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw3/native/c1f2d68af55a23732d25091b7a3722131e8481d48ecbd20a3aa95019ef4ec512/merged.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080223936881988,
+      "device": 2050,
+      "inode": 25968487
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw3/native/raw/dut-cfv3e31w.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080110059006899,
+      "device": 2050,
+      "inode": 25862396
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw3/native/raw/dut-ch38m1pk.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080121116994770,
+      "device": 2050,
+      "inode": 25862433
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw3/native/raw/dut-ebpj1k2i.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080163148948666,
+      "device": 2050,
+      "inode": 25862801
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw3/native/raw/dut-iredmpq1.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080152806960010,
+      "device": 2050,
+      "inode": 25862764
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw3/native/raw/dut-kz306y90.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080142370971458,
+      "device": 2050,
+      "inode": 25862500
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw3/native/raw/dut-pfktoutr.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080132103982719,
+      "device": 2050,
+      "inode": 25862477
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw3/native/raw/dut-rj60ggjk.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080173439937378,
+      "device": 2050,
+      "inode": 25862860
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw4/native/c1f2d68af55a23732d25091b7a3722131e8481d48ecbd20a3aa95019ef4ec512/merged.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080221670884474,
+      "device": 2050,
+      "inode": 25968482
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw4/native/raw/dut-x6l9tgex.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080232698872377,
+      "device": 2050,
+      "inode": 25860476
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw5/native/c1f2d68af55a23732d25091b7a3722131e8481d48ecbd20a3aa95019ef4ec512/merged.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080029119095682,
+      "device": 2050,
+      "inode": 25968261
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw5/native/raw/dut-1w6gwzu2.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080151411961541,
+      "device": 2050,
+      "inode": 25862755
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw5/native/raw/dut-3uevtvaz.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080187697921739,
+      "device": 2050,
+      "inode": 25862944
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw5/native/raw/dut-5si5qrat.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080050525072202,
+      "device": 2050,
+      "inode": 25862338
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw5/native/raw/dut-6jynqbpw.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080160264951831,
+      "device": 2050,
+      "inode": 25862792
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw5/native/raw/dut-_bb42n4g.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080110345006585,
+      "device": 2050,
+      "inode": 25862399
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw5/native/raw/dut-d_j0kavg.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080177957932422,
+      "device": 2050,
+      "inode": 25862908
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw5/native/raw/dut-e23x62ws.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080091096027699,
+      "device": 2050,
+      "inode": 25862555
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw5/native/raw/dut-er5vg0rt.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080121032994862,
+      "device": 2050,
+      "inode": 25862429
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw5/native/raw/dut-fztx9kv3.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080101460016330,
+      "device": 2050,
+      "inode": 25862987
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw5/native/raw/dut-hspchq7g.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080197090911436,
+      "device": 2050,
+      "inode": 25862955
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw5/native/raw/dut-kid03xpm.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080131898982944,
+      "device": 2050,
+      "inode": 25862472
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw5/native/raw/dut-mtesv__5.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080078335041697,
+      "device": 2050,
+      "inode": 25862539
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw5/native/raw/dut-n4c_n9d3.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080041120082518,
+      "device": 2050,
+      "inode": 25860449
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw5/native/raw/dut-n6gabvmc.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080142192971654,
+      "device": 2050,
+      "inode": 25862498
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw5/native/raw/dut-pn18fi1f.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080064329057059,
+      "device": 2050,
+      "inode": 25862517
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw5/native/raw/dut-qlxuyzxo.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080169030942214,
+      "device": 2050,
+      "inode": 25862836
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw6/native/c1f2d68af55a23732d25091b7a3722131e8481d48ecbd20a3aa95019ef4ec512/merged.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080019678106037,
+      "device": 2050,
+      "inode": 25968257
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw6/native/raw/dut-0rqxp8s0.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080094881023547,
+      "device": 2050,
+      "inode": 25862948
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw6/native/raw/dut-1jzit1pv.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080156573955879,
+      "device": 2050,
+      "inode": 25862778
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw6/native/raw/dut-_mupkoa5.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080048823074068,
+      "device": 2050,
+      "inode": 25860621
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw6/native/raw/dut-ake156j5.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080063339058145,
+      "device": 2050,
+      "inode": 25862512
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw6/native/raw/dut-az0g0n0h.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080106459010847,
+      "device": 2050,
+      "inode": 25860635
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw6/native/raw/dut-azjljmog.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080138928975234,
+      "device": 2050,
+      "inode": 25862490
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw6/native/raw/dut-crt5kty_.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080085784033525,
+      "device": 2050,
+      "inode": 25862550
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw6/native/raw/dut-dldufby_.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080035865088282,
+      "device": 2050,
+      "inode": 25860175
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw6/native/raw/dut-ito_08vn.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080186091923500,
+      "device": 2050,
+      "inode": 25862923
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw6/native/raw/dut-oa_5_xft.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080076540043666,
+      "device": 2050,
+      "inode": 25862531
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw6/native/raw/dut-qb6i0ssp.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080165281946327,
+      "device": 2050,
+      "inode": 25862813
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw6/native/raw/dut-rhi1yfi3.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080175342935291,
+      "device": 2050,
+      "inode": 25862881
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw6/native/raw/dut-sr38fay_.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080119171996904,
+      "device": 2050,
+      "inode": 25862423
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw6/native/raw/dut-w485k8_c.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080147717965593,
+      "device": 2050,
+      "inode": 25862744
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw6/native/raw/dut-yc16sxvg.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080195072913649,
+      "device": 2050,
+      "inode": 25862949
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw6/native/raw/dut-zaqrvv3c.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080129861985178,
+      "device": 2050,
+      "inode": 25862462
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw7/native/c1f2d68af55a23732d25091b7a3722131e8481d48ecbd20a3aa95019ef4ec512/merged.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080018572107250,
+      "device": 2050,
+      "inode": 25968251
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw7/native/raw/dut-1fqxkozc.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080079273040668,
+      "device": 2050,
+      "inode": 25862544
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw7/native/raw/dut-2gbezr9y.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080092682025959,
+      "device": 2050,
+      "inode": 25862653
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw7/native/raw/dut-348f0wce.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080119650996378,
+      "device": 2050,
+      "inode": 25862426
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw7/native/raw/dut-3ywcfwew.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080158970953250,
+      "device": 2050,
+      "inode": 25862782
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw7/native/raw/dut-46cm7ghe.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080176881933603,
+      "device": 2050,
+      "inode": 25862899
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw7/native/raw/dut-57v_xa8o.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080167883943473,
+      "device": 2050,
+      "inode": 25862821
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw7/native/raw/dut-5s8cbpdr.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080141009972951,
+      "device": 2050,
+      "inode": 25862496
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw7/native/raw/dut-7v_pd7rz.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080066721054435,
+      "device": 2050,
+      "inode": 25862522
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw7/native/raw/dut-_15o0ovq.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080034432089854,
+      "device": 2050,
+      "inode": 25862929
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw7/native/raw/dut-cj4ept58.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080056981065119,
+      "device": 2050,
+      "inode": 25862503
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw7/native/raw/dut-jll8zpb9.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080106393010920,
+      "device": 2050,
+      "inode": 25860628
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw7/native/raw/dut-ka55fv5t.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080131368983525,
+      "device": 2050,
+      "inode": 25862467
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw7/native/raw/dut-o8_1tfn3.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080046998076070,
+      "device": 2050,
+      "inode": 25860607
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw7/native/raw/dut-pqodiv2k.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080197070911458,
+      "device": 2050,
+      "inode": 25862954
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw7/native/raw/dut-v3u0o9_6.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080187651921789,
+      "device": 2050,
+      "inode": 25862939
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw7/native/raw/dut-yilmxp18.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080150015963072,
+      "device": 2050,
+      "inode": 25862752
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw8/native/c1f2d68af55a23732d25091b7a3722131e8481d48ecbd20a3aa95019ef4ec512/merged.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080011429115086,
+      "device": 2050,
+      "inode": 25968250
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw8/native/raw/dut-1yrybmck.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080163295948505,
+      "device": 2050,
+      "inode": 25862809
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw8/native/raw/dut-3lkcxqlm.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080114342002201,
+      "device": 2050,
+      "inode": 25862407
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw8/native/raw/dut-4g6_xkb4.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080105413011995,
+      "device": 2050,
+      "inode": 25860605
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw8/native/raw/dut-_xlzgm7q.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080132412982380,
+      "device": 2050,
+      "inode": 25862479
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw8/native/raw/dut-d879thl0.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080070653050122,
+      "device": 2050,
+      "inode": 25862525
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw8/native/raw/dut-er349rt_.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080035318088882,
+      "device": 2050,
+      "inode": 25863082
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw8/native/raw/dut-faugju3i.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080143907969772,
+      "device": 2050,
+      "inode": 25862736
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw8/native/raw/dut-l8saeet6.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080173952936816,
+      "device": 2050,
+      "inode": 25862861
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw8/native/raw/dut-mmdjb1_j.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080048401074531,
+      "device": 2050,
+      "inode": 25860616
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw8/native/raw/dut-ns_9io2c.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080184436925316,
+      "device": 2050,
+      "inode": 25862912
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw8/native/raw/dut-nxux9k9k.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080153456959298,
+      "device": 2050,
+      "inode": 25862765
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw8/native/raw/dut-smvvxjga.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080092432026234,
+      "device": 2050,
+      "inode": 25862558
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw8/native/raw/dut-wl8k1cpw.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080061168060526,
+      "device": 2050,
+      "inode": 25862509
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw8/native/raw/dut-yj_k2wqo.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080123143992547,
+      "device": 2050,
+      "inode": 25862440
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw8/native/raw/dut-yz20nqda.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080022660102766,
+      "device": 2050,
+      "inode": 25860498
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw8/native/raw/dut-yzg4umlj.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080080096039765,
+      "device": 2050,
+      "inode": 25862545
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw9/native/c1f2d68af55a23732d25091b7a3722131e8481d48ecbd20a3aa95019ef4ec512/merged.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080030592094066,
+      "device": 2050,
+      "inode": 25968264
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw9/native/raw/dut-1gwfudlf.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080139720974365,
+      "device": 2050,
+      "inode": 25862494
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw9/native/raw/dut-3af4a4a4.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080119491996553,
+      "device": 2050,
+      "inode": 25862427
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw9/native/raw/dut-3vzlzd6n.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080064291057101,
+      "device": 2050,
+      "inode": 25862516
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw9/native/raw/dut-776x2fvk.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080098111020004,
+      "device": 2050,
+      "inode": 25862985
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw9/native/raw/dut-b4kddtwi.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080130853984090,
+      "device": 2050,
+      "inode": 25862465
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw9/native/raw/dut-fth7hq_g.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080089201029777,
+      "device": 2050,
+      "inode": 25862552
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw9/native/raw/dut-fwge78nv.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080148363964884,
+      "device": 2050,
+      "inode": 25862748
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw9/native/raw/dut-g0q9koqc.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080186703922829,
+      "device": 2050,
+      "inode": 25862935
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw9/native/raw/dut-jm7hj705.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080106835010435,
+      "device": 2050,
+      "inode": 25862307
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw9/native/raw/dut-k7vzxtrv.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123633664,
+      "mtime_ns": 1793080157165955230,
+      "device": 2050,
+      "inode": 25862780
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw9/native/raw/dut-nl9u42hk.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080042333081187,
+      "device": 2050,
+      "inode": 25860473
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw9/native/raw/dut-p4m6ffnh.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080195974912660,
+      "device": 2050,
+      "inode": 25862951
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw9/native/raw/dut-rps7ra4h.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080165864945687,
+      "device": 2050,
+      "inode": 25862817
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw9/native/raw/dut-txp2t09k.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080051516071114,
+      "device": 2050,
+      "inode": 25862392
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw9/native/raw/dut-x2u1xrut.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080175827934759,
+      "device": 2050,
+      "inode": 25862895
+    },
+    {
+      "path": "results/bpu-default-native-20261027T053746Z/bpu/_workers/gw9/native/raw/dut-xivq3pgm.dat",
+      "bytes": 123632829,
+      "allocated_bytes": 123637760,
+      "mtime_ns": 1793080077881042195,
+      "device": 2050,
+      "inode": 25862534
+    }
+  ],
+  "deleted_count": 224,
+  "before_bytes": {
+    "repository": 67883851776,
+    "results": 39830900736,
+    "target": 27701358592
+  },
+  "coverage_inputs_available_after_cleanup": false,
+  "notes": [
+    "Original logs, original state manifest and other diagnostic metadata were preserved.",
+    "This run remains incomplete. Deletion is not successful coverage merging or hardware acceptance.",
+    "No current DUT cache, source cache or migration backup was removed.",
+    "Deleted-file content hashes were not recorded; the deletion inventory records paths, sizes and file metadata."
+  ],
+  "completed_at": "2026-10-28T03:03:31.589618+00:00",
+  "after_bytes": {
+    "repository": 40189227008,
+    "results": 12136210432,
+    "target": 6668288
+  },
+  "removed_allocated_bytes": 27694690304,
+  "results_reclaimed_bytes": 27694690304
+}

@@ -12,7 +12,8 @@ ucv4xs/
 │   ├── frontend/{bpu,icache}/
 │   ├── memblock/{lsq,dcache,mmu,sbuffer,lsu}/
 │   └── vector/vagq/
-├── skills/                     # 跨模块防复发手册与速查卡
+├── skills/                     # 项目工作流、跨模块防复发手册与速查卡
+├── AGENTS.md                   # 仓库协作约定
 ├── tests/                      # 编排层与工具补丁的检查
 ├── scripts/                    # 启动入口、资产审计、历史比较
 └── docs/
