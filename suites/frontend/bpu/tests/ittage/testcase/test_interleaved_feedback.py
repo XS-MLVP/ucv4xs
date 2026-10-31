@@ -6,19 +6,19 @@ from functools import partial
 
 import pytest
 
-from bpuverify.ittage.transaction.types import IttageBatchTraining
-from bpuverify.ittage.transaction.types import IttageBranchFeedback
-from bpuverify.ittage.transaction.types import IttageTraining
-from bpuverify.ittage.coverage.catalog import ittage_pending_feedback_coverage_model
-from bpuverify.ittage.coverage.catalog import write_ittage_pending_feedback_coverage
-from bpuverify.ittage.checker.assertions import prepare_first_provider
-from bpuverify.ittage.checker.assertions import prepare_null_highest_provider
-from bpuverify.ittage.checker.assertions import require_snapshot
-from bpuverify.ittage.case.definitions import HIGHEST_TABLE
-from bpuverify.ittage.case.definitions import PENDING_TARGETS
-from bpuverify.ittage.case.definitions import POSITION
-from bpuverify.ittage.case.definitions import SAME_BANK_PCS
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.ittage.transaction.types import IttageBatchTraining
+from suites.frontend.bpu.ittage.transaction.types import IttageBranchFeedback
+from suites.frontend.bpu.ittage.transaction.types import IttageTraining
+from suites.frontend.bpu.ittage.coverage.catalog import ittage_pending_feedback_coverage_model
+from suites.frontend.bpu.ittage.coverage.catalog import write_ittage_pending_feedback_coverage
+from suites.frontend.bpu.ittage.checker.assertions import prepare_first_provider
+from suites.frontend.bpu.ittage.checker.assertions import prepare_null_highest_provider
+from suites.frontend.bpu.ittage.checker.assertions import require_snapshot
+from suites.frontend.bpu.ittage.case.definitions import HIGHEST_TABLE
+from suites.frontend.bpu.ittage.case.definitions import PENDING_TARGETS
+from suites.frontend.bpu.ittage.case.definitions import POSITION
+from suites.frontend.bpu.ittage.case.definitions import SAME_BANK_PCS
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 async def check_pending_mode(agent, coverage, *, mode: str, bank: int, overlap: bool):

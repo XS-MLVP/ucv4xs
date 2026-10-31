@@ -1,7 +1,7 @@
 """Raw MaskGen protocol qualification; architectural policy has separate tests."""
 import pytest
 
-from vagqverify.maskgen.reference import MaskRequest, evaluate_protocol, mop_info
+from suites.vector.vagq.maskgen.reference import MaskRequest, evaluate_protocol, mop_info
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)
 

@@ -1,9 +1,8 @@
 """Boundary-adapter controls; synthetic events do not obtain hardware credit."""
 from types import SimpleNamespace as N
 import pytest
-from bpuverify.bpu.monitor.window_lifetime import AcceptedWindowEvents
-from bpuverify.bpu.model.window_lifetime import LifetimeError
-
+from suites.frontend.bpu.bpu.monitor.window_lifetime import AcceptedWindowEvents
+from suites.frontend.bpu.bpu.model.window_lifetime import LifetimeError
 
 
 def token(sequence, pc=0x40000800):

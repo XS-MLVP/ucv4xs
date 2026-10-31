@@ -3,11 +3,11 @@ from dataclasses import replace
 from pathlib import Path
 import ast
 import pytest
-from bpuverify.bpu.model.entry_protection import PROFILES,program,rules
-from bpuverify.bpu.model.early_opposition import provider,main_counter
-from bpuverify.bpu.model.pipeline import Redirect
-from bpuverify.bpu.checker.entry_protection import Checks
-from bpuverify.bpu.coverage.entry_protection import Coverage
+from suites.frontend.bpu.bpu.model.entry_protection import PROFILES,program,rules
+from suites.frontend.bpu.bpu.model.early_opposition import provider,main_counter
+from suites.frontend.bpu.bpu.model.pipeline import Redirect
+from suites.frontend.bpu.bpu.checker.entry_protection import Checks
+from suites.frontend.bpu.bpu.coverage.entry_protection import Coverage
 from tests.bpu.scoreboard.test_early_opposition import Program as SourceProgram
 from tests.bpu.scoreboard.test_early_short_protection import Program as WindowProgram
 
@@ -106,7 +106,7 @@ def test_every_original_protection_obligation_is_mandatory_before_atomic_credit(
 
 
 def test_case_hides_edges_io_and_concurrency_scheduling():
-    for name in ('bpuverify/bpu/case/entry_protection.py','tests/bpu/testcase/test_entry_protection.py'):
+    for name in ('bpu/case/entry_protection.py','tests/bpu/testcase/test_entry_protection.py'):
         tree=ast.parse(Path(name).read_text()); forbidden={'RisingEdge','FallingEdge','ClockCycles','get_','set_','gather','create_task'}
         assert not {n.id for n in ast.walk(tree) if isinstance(n,ast.Name)} & forbidden
         assert not {n.attr for n in ast.walk(tree) if isinstance(n,ast.Attribute)} & forbidden

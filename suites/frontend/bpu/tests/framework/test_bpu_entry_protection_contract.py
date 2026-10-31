@@ -1,8 +1,8 @@
 """Actual original contribution/error requirements, not address enumeration."""
 from pathlib import Path
 import json
-from bpuverify.bpu.model.entry_protection import PROFILES,rules
-from bpuverify.bpu.coverage.entry_protection import lifetime_coverage
+from suites.frontend.bpu.bpu.model.entry_protection import PROFILES,rules
+from suites.frontend.bpu.bpu.coverage.entry_protection import lifetime_coverage
 
 
 def test_requirement_keeps_original_entry_and_actual_confirmation_scope():

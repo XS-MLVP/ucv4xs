@@ -1,5 +1,8 @@
 # LoadQueueUncache：真实父块闭环与未通过项
 
+> 路径迁移说明（2026-10-31）：本文记录中的 *verify/common 为当时源码路径；当前实现已迁入 suites.<group>.<suite> 工程根。历史判定、命令与哈希不据此重标；当前映射见仓库 docs/lessons/suite-namespace-refactor-20261031.md。
+
+
 **结论：NOT_PASS，仍未验收。** 完整 `load-uncache-expanded-03` 为 **64 PASS/8 FAIL，42个语义情形reached、40个checked**。真实22文件闭包未替换任何下级，原始RTL/Chisel未修改。SID合法重用存在数据与错误保持问题；另有一项明确不属于常规ROB许可域的多MMIO selector接口边界失败，二者分开统计。
 
 ## 1. 请求到交付物的检查清单

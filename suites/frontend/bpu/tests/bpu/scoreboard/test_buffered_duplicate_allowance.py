@@ -9,7 +9,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.bpu.checker.pipeline import buffered_duplicate_allowances
+from suites.frontend.bpu.bpu.checker.pipeline import buffered_duplicate_allowances
 
 ROW, BANK, WAY, SURVIVOR = 1, 3, 1, 3
 ENTRY = dict(valid=True, tag=1, position=2, kind=1, action=0, target=515)

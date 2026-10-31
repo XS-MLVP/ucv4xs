@@ -22,7 +22,7 @@ BPU32957/46541，14,702 PASS/7 strict XFAIL/0 SKIP，298功能点全执行；
 - 243–258：写回成功只清 dirty，不清掉 buffer entry 的 valid/index/payload。
   因此“已经写回 SRAM”不等于“shadow 中不存在旧索引”。
 
-独立模型对应 `bpuverify/bpu/model/bypass/model.py` 的 `select/advance/outputs`；
+独立模型对应 `suites/frontend/bpu/bpu/model/bypass/model.py` 的 `select/advance/outputs`；
 模型从 reset 和实际边界输入推进，不从 DUT shadow 状态初始化。
 
 ## 真正缺少的状态组合
@@ -48,7 +48,7 @@ slot0 fallback 由 reset 清空 hits 与非零前缀总含 bit0 的不变量排�
 
 ## 与现有两程序场景的区别
 
-`bpuverify/bpu/case/bypass/two_program.py` 的目标是第二程序完成全部 8 slot 驱逐，
+`suites/frontend/bpu/bpu/case/bypass/two_program.py` 的目标是第二程序完成全部 8 slot 驱逐，
 随后从 SRAM 读回旧程序。它要求返回前 shadow 中完全没有旧 index。
 这与“部分回绕、旧项仍保留、mask 不选它”的 fallback 前提不同；
 延长同一场景的固定运行窗口通常会把所需旧项驱逐掉，而不是补齐缺口。

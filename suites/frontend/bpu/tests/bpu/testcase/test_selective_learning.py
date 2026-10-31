@@ -1,11 +1,11 @@
 """An inactive companion cannot suppress another branch's late learning."""
 import json
 import pytest
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.bpu.model.tage.selective_learning import PROGRAMS, LATER_PROGRAMS
-from bpuverify.bpu.coverage.selective_learning import Coverage
-from bpuverify.bpu.case.selective_learning import check_selective_learning
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.bpu.model.tage.selective_learning import PROGRAMS, LATER_PROGRAMS
+from suites.frontend.bpu.bpu.coverage.selective_learning import Coverage
+from suites.frontend.bpu.bpu.case.selective_learning import check_selective_learning
 
 
 @pytest.mark.feature('BPU-INT-086')

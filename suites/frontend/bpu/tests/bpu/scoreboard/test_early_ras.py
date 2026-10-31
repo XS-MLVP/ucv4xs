@@ -4,9 +4,9 @@ from itertools import product
 from types import SimpleNamespace
 import pytest
 from toffee import ScoreboardMismatch
-from bpuverify.uras.model.pipeline import advance, empty_state, return_address, selected_output
-from bpuverify.bpu.checker.ras.micro import MicroRasChecker
-from bpuverify.bpu.case.ras.early import early_program
+from suites.frontend.bpu.uras.model.pipeline import advance, empty_state, return_address, selected_output
+from suites.frontend.bpu.bpu.checker.ras.micro import MicroRasChecker
+from suites.frontend.bpu.bpu.case.ras.early import early_program
 
 
 def inputs(action=0, **values):

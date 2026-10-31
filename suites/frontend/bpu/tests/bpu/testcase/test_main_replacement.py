@@ -1,9 +1,9 @@
 """Integrated semantic intent; no clock edges, tasks, gathers or raw writes."""
 import pytest
 
-from bpuverify.bpu.case.main_replacement import check_main_replacement
-from bpuverify.mbtb.coverage.replacement_overlap import ReplacementCoverage
-from bpuverify.mbtb.model.replacement_overlap import CASES
+from suites.frontend.bpu.bpu.case.main_replacement import check_main_replacement
+from suites.frontend.bpu.mbtb.coverage.replacement_overlap import ReplacementCoverage
+from suites.frontend.bpu.mbtb.model.replacement_overlap import CASES
 
 
 @pytest.mark.feature('BPU-INT-097')

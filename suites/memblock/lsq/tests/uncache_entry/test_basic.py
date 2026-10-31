@@ -1,5 +1,5 @@
 """First complete lifecycles, independently parameterized over all 16 native IDs."""
-from lsqverify.uncache_entry.types import RobPtr
+from suites.memblock.lsq.uncache_entry.types import RobPtr
 
 
 async def test_idle_has_no_request_wakeup_output_or_report(entry):

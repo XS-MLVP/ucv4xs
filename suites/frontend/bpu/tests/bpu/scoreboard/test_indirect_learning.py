@@ -1,13 +1,13 @@
 """Learning credit requires real original-source feedback and all consumers."""
-from bpuverify.common.model.configuration import ITTAGE_ALLOCATION_WAIT
+from suites.frontend.bpu.models.configuration import ITTAGE_ALLOCATION_WAIT
 
 from dataclasses import replace
 from types import SimpleNamespace as NS
 import pytest
 from toffee import Scoreboard
 
-from bpuverify.bpu.checker.indirect_learning import IndirectLearningChecks
-from bpuverify.bpu.coverage.indirect_learning import IndirectLearningCoverage
+from suites.frontend.bpu.bpu.checker.indirect_learning import IndirectLearningChecks
+from suites.frontend.bpu.bpu.coverage.indirect_learning import IndirectLearningCoverage
 from tests.bpu.scoreboard.test_indirect_sources import prepared,resolution,resolve,ENABLED
 from tests.bpu.scoreboard.test_direction_sources import revisit
 

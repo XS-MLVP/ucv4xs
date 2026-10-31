@@ -5,10 +5,10 @@ from types import SimpleNamespace as NS
 import pytest
 from toffee import Scoreboard
 
-from bpuverify.bpu.checker.direction_learning import DirectionLearningChecks
-from bpuverify.bpu.coverage.direction_learning import DirectionCoverage
-from bpuverify.bpu.model.pipeline import Outcome,Resolution
-from bpuverify.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.checker.direction_learning import DirectionLearningChecks
+from suites.frontend.bpu.bpu.coverage.direction_learning import DirectionCoverage
+from suites.frontend.bpu.bpu.model.pipeline import Outcome,Resolution
+from suites.frontend.bpu.bpu.model.selection import Kind
 from tests.bpu.scoreboard.test_direction_sources import prepared,resolve,revisit,ENABLED
 
 

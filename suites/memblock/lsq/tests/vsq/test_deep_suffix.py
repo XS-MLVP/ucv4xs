@@ -1,4 +1,4 @@
-from lsqverify.vlq.types import Redirect, RobPtr
+from suites.memblock.lsq.vlq.types import Redirect, RobPtr
 
 
 async def test_redirect_cancels_eight_real_younger_uids_and_reuses_exact_suffix(vsq):

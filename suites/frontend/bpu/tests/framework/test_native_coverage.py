@@ -6,12 +6,12 @@ import subprocess
 
 import pytest
 
-from bpuverify.common.coverage.native import NativeCoverageRun
-from bpuverify.common.coverage.native import collect_native_coverage
-from bpuverify.common.coverage.native import native_coverage_path
-from bpuverify.common.coverage.native import reset_native_coverage_run
-from bpuverify.common.coverage.native import set_native_coverage_run
-from bpuverify.common.coverage.rtl import _coverage_tool
+from suites.frontend.bpu.coverage.native import NativeCoverageRun
+from suites.frontend.bpu.coverage.native import collect_native_coverage
+from suites.frontend.bpu.coverage.native import native_coverage_path
+from suites.frontend.bpu.coverage.native import reset_native_coverage_run
+from suites.frontend.bpu.coverage.native import set_native_coverage_run
+from suites.frontend.bpu.coverage.rtl import _coverage_tool
 
 
 @pytest.fixture(autouse=True)

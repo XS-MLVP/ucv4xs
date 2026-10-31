@@ -1,5 +1,8 @@
 # LoadQueueReplay：独立重放生命周期与覆盖迭代
 
+> 路径迁移说明（2026-10-31）：本文记录中的 *verify/common 为当时源码路径；当前实现已迁入 suites.<group>.<suite> 工程根。历史判定、命令与哈希不据此重标；当前映射见仓库 docs/lessons/suite-namespace-refactor-20261031.md。
+
+
 ## 结论与范围
 
 **尚未验收（NOT_PASS）。** 已发现严格store地址依赖提前重放问题 `LRQ-STRICT-001`，保留普通失败，不修改目标RTL、不用xfail或收窄invalid payload域。整体LSQ目标也未完成。

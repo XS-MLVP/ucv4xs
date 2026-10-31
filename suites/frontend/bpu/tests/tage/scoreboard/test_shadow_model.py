@@ -3,8 +3,8 @@ from copy import deepcopy
 
 import pytest
 
-from bpuverify.tage.model.shadow import advance_tage_shadow
-from bpuverify.tage.model.shadow import expected_tage_cross_owner_writes
+from suites.frontend.bpu.tage.model.shadow import advance_tage_shadow
+from suites.frontend.bpu.tage.model.shadow import expected_tage_cross_owner_writes
 
 
 def empty_banks():

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.sc.checker.assertions import learn
+from suites.frontend.bpu.sc.checker.assertions import learn
 
 
 @pytest.mark.feature("BPU-SC-003")

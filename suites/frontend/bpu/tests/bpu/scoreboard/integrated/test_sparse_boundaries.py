@@ -4,9 +4,9 @@ from types import SimpleNamespace
 import pytest
 from toffee import Scoreboard, ScoreboardMismatch
 
-from bpuverify.bpu.case.bypass.sparse_wrap import check_sparse_wrap
-from bpuverify.bpu.env.bypass.sparse import SparseProgramEnvironment
-from bpuverify.bpu.model.bypass.model import BypassReference
+from suites.frontend.bpu.bpu.case.bypass.sparse_wrap import check_sparse_wrap
+from suites.frontend.bpu.bpu.env.bypass.sparse import SparseProgramEnvironment
+from suites.frontend.bpu.bpu.model.bypass.model import BypassReference
 from tests.bpu.scoreboard.integrated.test_partial_wrap_preparation import allocate
 
 

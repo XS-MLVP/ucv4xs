@@ -12,8 +12,8 @@ import random
 
 import pytest
 
-from icacheverify.waylookup.transaction.types import ItlbException
-from icacheverify.waylookup.transaction.types import WayLookupEntry
+from suites.frontend.icache.waylookup.transaction.types import ItlbException
+from suites.frontend.icache.waylookup.transaction.types import WayLookupEntry
 
 
 def random_entry(rng: random.Random) -> WayLookupEntry:
@@ -95,7 +95,7 @@ async def test_random_exception_payload_is_read_out(waylookup_agent):
 async def test_random_refill_maps_update_a_resident_entry(waylookup_agent):
     """A refill rewrites the resident entry's way mask and RVC map verbatim."""
     agent = waylookup_agent
-    from icacheverify.waylookup.case.definitions import block
+    from suites.frontend.icache.waylookup.case.definitions import block
     rng = random.Random(0x5A17_2EF1)
     for _ in range(12):
         tag, set_index = rng.getrandbits(34), rng.randrange(256)

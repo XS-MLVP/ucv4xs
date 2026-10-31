@@ -12,8 +12,8 @@ from __future__ import annotations
 
 import pytest
 
-from icacheverify.icache.case.definitions import make_fetch
-from icacheverify.icache.model import icache as model
+from suites.frontend.icache.icache.case.definitions import make_fetch
+from suites.frontend.icache.icache.model import icache as model
 
 
 def same_set_vaddr(set_index: int, tag_index: int) -> int:

@@ -1,5 +1,8 @@
 # LSQ本地reset保留旧外部请求：15 PASS，原DA新增3502
 
+> 路径迁移说明（2026-10-31）：本文记录中的 *verify/common 为当时源码路径；当前实现已迁入 suites.<group>.<suite> 工程根。历史判定、命令与哈希不据此重标；当前映射见仓库 docs/lessons/suite-namespace-refactor-20261031.md。
+
+
 ## 本轮结论与边界
 
 真实53文件LsqWrapper、Picker＋xreactor新增独立`tests/local_reset/`。首轮12 PASS，

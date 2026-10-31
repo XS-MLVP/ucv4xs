@@ -4,11 +4,11 @@ from dataclasses import replace
 from types import SimpleNamespace
 
 import pytest
-from bpuverify.mbtb.agent.main import MbtbAgent
-from bpuverify.mbtb.transaction.types import MbtbEntry
-from bpuverify.mbtb.model.cleanup import expected_mbtb_cleanup_states
-from bpuverify.mbtb.model.cleanup import expected_mbtb_cleanup_dual
-from bpuverify.mbtb.case.definitions import BranchVector
+from suites.frontend.bpu.mbtb.agent.main import MbtbAgent
+from suites.frontend.bpu.mbtb.transaction.types import MbtbEntry
+from suites.frontend.bpu.mbtb.model.cleanup import expected_mbtb_cleanup_states
+from suites.frontend.bpu.mbtb.model.cleanup import expected_mbtb_cleanup_dual
+from suites.frontend.bpu.mbtb.case.definitions import BranchVector
 
 
 def profiles(align):
@@ -102,7 +102,7 @@ async def test_agent_owns_cleanup_phase_sequence(monkeypatch, shadow_state):
         assert groups == ('pipeline', 'writes')
         log.append(('idle', agent._defer_multi_hit_cleanup))
     agent.training_activity = SimpleNamespace(wait_idle=idle)
-    monkeypatch.setattr('bpuverify.mbtb.agent.main.ClockCycles', cycles)
+    monkeypatch.setattr('suites.frontend.bpu.mbtb.agent.main.ClockCycles', cycles)
     await agent.train_during_multi_hit_cleanup('feedback', shadow_state=shadow_state)
     expected = [('s2', True), ('cycles', 1), ('s2', False), ('idle', True)] if shadow_state == 'clean' else []
     assert log == expected + [('s2', True), ('train', dict(payload='feedback')),
@@ -133,7 +133,7 @@ async def test_cleanup_scope_cannot_be_nested_after_resume(monkeypatch):
     agent.consume_driver = SimpleNamespace(quiesce=lambda: None)
     async def cycles(_clock, _count):
         pass
-    monkeypatch.setattr('bpuverify.mbtb.agent.main.ClockCycles', cycles)
+    monkeypatch.setattr('suites.frontend.bpu.mbtb.agent.main.ClockCycles', cycles)
     async def idle(*_groups):
         pass
     agent.training_activity = SimpleNamespace(wait_idle=idle)
@@ -155,7 +155,7 @@ async def test_failed_clean_pulse_restores_deferred_gate(monkeypatch):
     agent._encode_training = lambda value: value
     async def cycles(_clock, _count):
         raise RuntimeError('interrupted pulse')
-    monkeypatch.setattr('bpuverify.mbtb.agent.main.ClockCycles', cycles)
+    monkeypatch.setattr('suites.frontend.bpu.mbtb.agent.main.ClockCycles', cycles)
     with pytest.raises(RuntimeError, match='interrupted pulse'):
         await agent.train_during_multi_hit_cleanup('feedback', shadow_state='clean')
     assert agent._multi_hit_cleanup_scope_active and agent._defer_multi_hit_cleanup

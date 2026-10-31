@@ -1,5 +1,8 @@
 # 中性S2修正：保留较老CALL并冲刷真实较年轻CALL
 
+> 路径迁移说明（2026-10-31）：本报告仍属于原日期、基线和执行源码；实现文件已迁到工程根。可点击源码链接更新到当前位置，不据此重标历史 PASS/FAIL 或覆盖结论。参见[本轮命名空间迁移](../../../../docs/lessons/suite-namespace-refactor-20261031.md)。
+
+
 归因起点为已发布的 `production-early-ras-pipeline-20261013-v1`：BPU33119/46541，
 集成MicroRAS87/91。剩余180/181是中性S2 correction与较老S3 push的地址前递，
 不能由普通连续call/return或独立MicroRAS的91/91替代。133/134仍受当前集成推进
@@ -18,8 +21,8 @@ MicroBTB和真实RAS，从先前真实checkpoint恢复程序。这样中性跳�
 FALLTHROUGH、S2修正为taken，不能靠修改target就假定出现S2 override：当前S2
 只比较taken、position和attribute。
 
-[`case`](../bpuverify/bpu/case/ras/correction.py) 仅编排输入与已有agent/retirement
-driver；[`checker`](../bpuverify/bpu/checker/ras/correction.py) 负责精确来源关联、
+[`case`](../bpu/case/ras/correction.py) 仅编排输入与已有agent/retirement
+driver；[`checker`](../bpu/checker/ras/correction.py) 负责精确来源关联、
 完整S1/S3目标、真实S2修正及错误路径排除。不增加时钟边沿操作或经验性settle。
 沿用静态memory-direct Bundle、lossless @on Monitor和reset-derived九寄存器
 MicroRAS参考，不新增调度器、队列或框架hack。

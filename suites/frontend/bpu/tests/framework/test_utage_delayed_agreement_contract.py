@@ -1,8 +1,8 @@
 """One readable original-agreement requirement, not a new address matrix."""
 import json
 from pathlib import Path
-from bpuverify.utage.model.delayed_agreement import PROGRAMS, RULES
-from bpuverify.utage.coverage.delayed_agreement import lifetime_coverage
+from suites.frontend.bpu.utage.model.delayed_agreement import PROGRAMS, RULES
+from suites.frontend.bpu.utage.coverage.delayed_agreement import lifetime_coverage
 
 
 def test_nonzero_prestate_and_direction_learning_are_explicit():
@@ -23,7 +23,7 @@ def test_old_denominator_and_old_case_remain_required():
     for status in ('reached', 'checked'):
         for family in ('delayed-protection', 'delayed-agreement'):
             assert 'kunminghu_v3.utage.'+family+'.'+status in feature['evidence']['coverage'][status]
-    assert 'bpuverify/utage/env/delayed_protection.py' in feature['evidence']['checks']
+    assert 'utage/env/delayed_protection.py' in feature['evidence']['checks']
     assert 'tests/utage/testcase/test_delayed_agreement.py' in feature['evidence']['checks']
 
 

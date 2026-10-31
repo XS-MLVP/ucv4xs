@@ -1,12 +1,12 @@
 """Real signal ownership/cleanup and canonical payload compatibility."""
 import pytest
 
-from bpuverify.abtb.transaction.types import AbtbTraining
-from bpuverify.abtb.env.state.session import StateObservation
-from bpuverify.abtb.driver.state.training_driver import AcceptedPulseDriver
-from bpuverify.abtb.checker.state.writebuffer import CapacityChecker
-from bpuverify.abtb.monitor.state.writebuffer import CapacityMonitor
-from bpuverify.abtb.case.state.vectors import interior_set_vectors
+from suites.frontend.bpu.abtb.transaction.types import AbtbTraining
+from suites.frontend.bpu.abtb.env.state.session import StateObservation
+from suites.frontend.bpu.abtb.driver.state.training_driver import AcceptedPulseDriver
+from suites.frontend.bpu.abtb.checker.state.writebuffer import CapacityChecker
+from suites.frontend.bpu.abtb.monitor.state.writebuffer import CapacityMonitor
+from suites.frontend.bpu.abtb.case.state.vectors import interior_set_vectors
 
 
 @pytest.mark.parametrize('bank', (0, 3))

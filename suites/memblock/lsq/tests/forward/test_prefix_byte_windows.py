@@ -1,10 +1,12 @@
 """Public bank age-prefix filtering, not a persistent Store lifecycle claim."""
+
 import hashlib
 
-from lsqverify.forward.types import Translation
-from lsqverify.raw.types import SqPtr
-from lsqverify.store_payload import add_digest
-from lsqverify.store_prefix import WINDOWS, check_byte, lifetime, producer, save_witness
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.forward.types import Translation
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.store_payload import add_digest
+from suites.memblock.lsq.store_prefix import WINDOWS, check_byte, lifetime, producer, save_witness
 
 
 async def test_nonfull_wrapped_exclusive_prefix_and_byte_offsets(forward, tmp_path):
@@ -23,7 +25,7 @@ async def test_nonfull_wrapped_exclusive_prefix_and_byte_offsets(forward, tmp_pa
             env.arm(("FWD-WINDOW.prefix_byte",), current)
             await env.cycle(translations=(Translation(expected[1]),) * 3)
             for lane in range(3):
-                check_byte(env.observed, f"io_query_{lane}_s2Resp_", expected)
+                check_byte(env.observed, P.io(f"query_{lane}_s2Resp_"), expected)
                 add_digest(stream, [gen, position, position + 1, lane, *expected])
                 responses += 1
             uids.extend(current)

@@ -3,7 +3,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.sc.monitor.threshold import ScThresholdMonitor
+from suites.frontend.bpu.sc.monitor.threshold import ScThresholdMonitor
 from tests.framework.fakes import native_name_dut
 
 

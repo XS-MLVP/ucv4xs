@@ -2,7 +2,7 @@
 import ast
 from pathlib import Path
 import pytest
-from bpuverify.bpu.model.source_eligibility import Program,MODES,FATAL
+from suites.frontend.bpu.bpu.model.source_eligibility import Program,MODES,FATAL
 
 
 @pytest.mark.parametrize('mode',MODES)
@@ -21,7 +21,7 @@ def test_ambiguous_modes_are_rejected_without_any_native_work(invalid):
 
 
 def test_program_has_no_clock_SDK_driver_or_predictor_state_dependency():
-    path=Path(__file__).resolve().parents[3]/'bpuverify/bpu/model/source_eligibility.py'
+    path=Path(__file__).resolve().parents[3]/'bpu/model/source_eligibility.py'
     tree=ast.parse(path.read_text())
     assert {n.module for n in ast.walk(tree) if isinstance(n,ast.ImportFrom)}=={'dataclasses'}
     assert not any(isinstance(n,ast.Import) for n in ast.walk(tree))

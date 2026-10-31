@@ -1,4 +1,4 @@
-from bpuverify.bpu.model.early_opposition import FALLBACK
+from suites.frontend.bpu.bpu.model.early_opposition import FALLBACK
 """Semantic strength ledger and synthetic actual comparisons; no DUT credit."""
 import ast
 from dataclasses import replace
@@ -8,15 +8,15 @@ import asyncio
 
 import pytest
 
-from bpuverify.bpu.checker.early_direction import live_values, fast_values
-from bpuverify.bpu.checker.early_protection import EarlyProtectionChecks
-from bpuverify.bpu.coverage.early_protection import EarlyProtectionCoverage
-from bpuverify.bpu.model.early_protection import Identity, ProtectionLedger, EDGES, guidance, rules, next_edge, ProtectionEvent
-from bpuverify.bpu.model.early_opposition import provider, resident, ahead_owner, main_counter, steady_history
-from bpuverify.bpu.model.early_aging import require_recovery_window
-from bpuverify.bpu.model.pipeline import Redirect
-from bpuverify.bpu.driver.recovery import RecoveryDriver
-from bpuverify.utage.model.semantic import Context, Feedback, Source, tag
+from suites.frontend.bpu.bpu.checker.early_direction import live_values, fast_values
+from suites.frontend.bpu.bpu.checker.early_protection import EarlyProtectionChecks
+from suites.frontend.bpu.bpu.coverage.early_protection import EarlyProtectionCoverage
+from suites.frontend.bpu.bpu.model.early_protection import Identity, ProtectionLedger, EDGES, guidance, rules, next_edge, ProtectionEvent
+from suites.frontend.bpu.bpu.model.early_opposition import provider, resident, ahead_owner, main_counter, steady_history
+from suites.frontend.bpu.bpu.model.early_aging import require_recovery_window
+from suites.frontend.bpu.bpu.model.pipeline import Redirect
+from suites.frontend.bpu.bpu.driver.recovery import RecoveryDriver
+from suites.frontend.bpu.utage.model.semantic import Context, Feedback, Source, tag
 from tests.bpu.scoreboard.test_early_opposition import Program as SourceProgram
 from tests.bpu.scoreboard.test_early_direction_checking import actual_live, actual_fast
 from tests.bpu.scoreboard.test_early_positive import checked_ticks
@@ -217,9 +217,9 @@ def test_missing_actual_confirmation_or_fresh_consumer_cannot_close():
 
 
 def test_protection_ledger_imports_no_actual_driver_or_signal_implementation():
-    tree = ast.parse(Path('bpuverify/bpu/model/early_protection.py').read_text())
+    tree = ast.parse(Path('bpu/model/early_protection.py').read_text())
     assert {n.module for n in ast.walk(tree) if isinstance(n, ast.ImportFrom)}=={
-        'dataclasses', 'bpuverify.utage.model.semantic'}
+        'dataclasses', 'suites.frontend.bpu.utage.model.semantic'}
     assert not any(isinstance(n, ast.Import) for n in ast.walk(tree))
 
 
@@ -280,7 +280,7 @@ def test_replacing_original_metadata_prevents_boundary_closure():
 
 
 def test_case_uses_owned_program_actions_not_edges_or_framework_task_orchestration():
-    text = Path('bpuverify/bpu/case/early_protection.py').read_text()
+    text = Path('bpu/case/early_protection.py').read_text()
     assert not any(word in text for word in ('ClockCycles', 'RisingEdge', 'FallingEdge', 'asyncio', '.Set('))
 
 

@@ -4,14 +4,14 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.checker.history_maintenance import HistoryMaintenanceChecks
-from bpuverify.bpu.coverage.history_working_set import HistoryWorkingSetCoverage
-from bpuverify.bpu.env.history_working_set import HistoryWorkingSetEnv
-from bpuverify.bpu.model.early_aging import Allocation, aged
-from bpuverify.bpu.model.history_working_set import (
+from suites.frontend.bpu.bpu.checker.history_maintenance import HistoryMaintenanceChecks
+from suites.frontend.bpu.bpu.coverage.history_working_set import HistoryWorkingSetCoverage
+from suites.frontend.bpu.bpu.env.history_working_set import HistoryWorkingSetEnv
+from suites.frontend.bpu.bpu.model.early_aging import Allocation, aged
+from suites.frontend.bpu.bpu.model.history_working_set import (
     MAINTENANCE_RULES, HistoryLearningLedger, HistoryWorkingSetProgram,
 )
-from bpuverify.utage.model.usefulness_events import ProtectionState
+from suites.frontend.bpu.utage.model.usefulness_events import ProtectionState
 
 
 @pytest.mark.parametrize('before,predicted,base,actual',((1,1,0,1),(2,1,1,0)))
@@ -35,7 +35,7 @@ def test_capacity_maintenance_preserves_every_learned_direction_not_just_current
     ledger.states = {path.ordinal:ProtectionState(path.ordinal%8,path.ordinal%4) for path in program.positives}
     previous = deepcopy(ledger.states)
     ledger.maintain(previous)
-    assert len(ledger.states) == 510
+    assert len(ledger.states) == len(program.positives) == 496
     assert ledger.states == {ordinal:ProtectionState(state.counter,state.useful//2)
         for ordinal,state in previous.items()}
     assert {ordinal:state.taken for ordinal,state in ledger.states.items()} == {

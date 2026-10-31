@@ -1,11 +1,11 @@
 """An old writeback never acknowledges a newer learning version."""
 import json
 import pytest
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.bpu.model.tage.service_relearning import PROGRAMS
-from bpuverify.bpu.coverage.service_relearning import Coverage
-from bpuverify.bpu.case.service_relearning import run
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.bpu.model.tage.service_relearning import PROGRAMS
+from suites.frontend.bpu.bpu.coverage.service_relearning import Coverage
+from suites.frontend.bpu.bpu.case.service_relearning import run
 
 
 @pytest.mark.feature('BPU-INT-087')

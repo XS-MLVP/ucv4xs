@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.bpu.case.definitions import COLD_STREAM_LENGTH
-from bpuverify.bpu.case.definitions import PC
+from suites.frontend.bpu.bpu.case.definitions import COLD_STREAM_LENGTH
+from suites.frontend.bpu.bpu.case.definitions import PC
 
 
 @pytest.mark.feature("BPU-INT-001")

@@ -7,11 +7,11 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.checker.micro_capacity import MicroCapacityChecks,ROLES
-from bpuverify.bpu.coverage.micro_capacity import MicroCapacityCoverage,capacity_coverage
-from bpuverify.bpu.model.selection import Kind,StackAction,fallthrough
-from bpuverify.ubtb.model.semantic import UbtbEvents,UbtbReference
-from bpuverify.ubtb.transaction.types import BranchTraining,PredictRequest
+from suites.frontend.bpu.bpu.checker.micro_capacity import MicroCapacityChecks,ROLES
+from suites.frontend.bpu.bpu.coverage.micro_capacity import MicroCapacityCoverage,capacity_coverage
+from suites.frontend.bpu.bpu.model.selection import Kind,StackAction,fallthrough
+from suites.frontend.bpu.ubtb.model.semantic import UbtbEvents,UbtbReference
+from suites.frontend.bpu.ubtb.transaction.types import BranchTraining,PredictRequest
 
 
 PC = 0x40000800
@@ -162,7 +162,7 @@ def test_unaccepted_or_wrong_role_consumer_fails_closed(role,pc_kind):
 
 
 def test_case_contains_no_edge_get_set_or_gather_and_checker_is_not_in_testcase():
-    tree = ast.parse(Path('bpuverify/bpu/case/micro_capacity.py').read_text())
+    tree = ast.parse(Path('bpu/case/micro_capacity.py').read_text())
     for node in ast.walk(tree):
         assert not isinstance(node,ast.ClassDef)
         if isinstance(node,ast.Call):

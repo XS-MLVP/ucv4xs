@@ -137,7 +137,7 @@ def rebuild_indexes(guard):
         status = pytest_status(run)
         assert status["failures"] == status["errors"] == status["skipped"] == 0 and status["pytest_exitstatus"] == 0
         failure["directed_supplement_runs"].append(status)
-    for name in ("lsqverify/normal_replay_metadata.py", *FILES.values(), "tests/normal_replay_probe/test_probe.py"):
+    for name in ('lsqverify/normal_replay_metadata.py', *FILES.values(), "tests/normal_replay_probe/test_probe.py"):
         path = ROOT / name
         text = path.read_text()
         checked = dict(SHA256=sha256_file(path), contains_skip="skip" in text.lower(), contains_xfail="xfail" in text.lower())

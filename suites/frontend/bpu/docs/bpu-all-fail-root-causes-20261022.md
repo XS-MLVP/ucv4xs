@@ -1,5 +1,8 @@
 # 全部 123 个 FAIL 的逐簇根因定位（2026-10-22，只读）
 
+> 路径迁移说明（2026-10-31）：本报告仍属于原日期、基线和执行源码；实现文件已迁到工程根。可点击源码链接更新到当前位置，不据此重标历史 PASS/FAIL 或覆盖结论。参见[本轮命名空间迁移](../../../../docs/lessons/suite-namespace-refactor-20261031.md)。
+
+
 > 依据：`results/full-regression-20261022-v1`（29907 用例、29777 PASS / 123 FAIL / 7 XFAIL）。
 > **本轮未修改任何 RTL、未运行 RTL 生成、未运行任何回归。**
 > 每条给出：断言在比什么、失败签名、Scala（或参考模型）根因、置信度。
@@ -40,7 +43,7 @@
 
 **比什么**：MainBTB 方向计数写请求 `counterWriteBuffer.io_enq_{valid,bits}` 的
 `{setIdx, wayMask, counters}` 与独立方向计划逐位比较
-（`bpuverify/bpu/bundle/main_service.py:37`）。
+（`suites/frontend/bpu/bpu/bundle/main_service.py:37`）。
 
 **根因**（Scala）：
 
@@ -76,11 +79,11 @@ t1_meta.zipWithIndex.foreach { case (meta, i) =>
 
 ---
 
-### B. `bpuverify/tage/model/semantic.py:528`（10 个，参考模型）
+### B. `suites/frontend/bpu/tage/model/semantic.py:528`（10 个，参考模型）
 
 **比什么**：TAGE 缓存中"每个逻辑身份的最新版本"与 DUT 实际写提案/服务
-（`bpuverify/bpu/checker/mixed_visibility.py:210`、
-`bpuverify/bpu/checker/direction_turnaround.py`）。
+（`suites/frontend/bpu/bpu/checker/mixed_visibility.py:210`、
+`suites/frontend/bpu/bpu/checker/direction_turnaround.py`）。
 
 **失败签名**：`value: expected 5, actual 4`（模型 5、DUT 4），以及
 `[0]: expected None, actual {...counter 6}` 这类提案资格差异。
@@ -88,7 +91,7 @@ t1_meta.zipWithIndex.foreach { case (meta, i) =>
 **根因**（Python）：
 
 ```python
-# bpuverify/tage/model/semantic.py:526-528
+# suites/frontend/bpu/tage/model/semantic.py:526-528
 current  = counter if latest is None else latest.write.entry.counter   # 已考虑同 way 待写版本
 ...
 proposal = clamp(counter + (1 if branch.taken else -1), 7)             # 却用预测时旧计数
@@ -112,7 +115,7 @@ DUT 与两条独立推导一致，只有模型缓存不一致 → **参考模型
 ### C. MicroTAGE 训练资格缺少"解析分支是条件分支"检查（16 个）
 
 **比什么**：预测时读到的 `abtbResult[i].takenCtr_value`
-（`bpuverify/utage/checker/dual_source.py:31-33`）。
+（`suites/frontend/bpu/utage/checker/dual_source.py:31-33`）。
 
 **失败签名**：`2.counter: expected 6, actual 7`、`1.counter: expected 6, actual 7`
 ——**只出现在 `later-direct` / `later-indirect`**（16 个参数），其余 1344 个参数全 PASS。
@@ -138,7 +141,7 @@ direct/indirect（kind=2/3，位置相同）。MicroTage 仍认为有资格，�
 `actualTaken = (finalPosition === abtbPosition) && finalTaken = 1` 去 **+1**，
 把该表项从 6 推到 7（饱和）。
 
-参考模型的要求写在 `bpuverify/utage/model/dual_source.py:91-96`：
+参考模型的要求写在 `suites/frontend/bpu/utage/model/dual_source.py:91-96`：
 
 ```python
 active = tuple(table for table, value in enumerate(before)
@@ -156,7 +159,7 @@ active = tuple(table for table, value in enumerate(before)
 ### D. UTAGE 影子写缓冲 dirty 记账丢失最新写（19 个，有计数见证）
 
 **比什么**：原生 SRAM 内容与"最新已接受学习版本"逐字比较
-（`bpuverify/utage/checker/learning_persistence.py:17-23`）。
+（`suites/frontend/bpu/utage/checker/learning_persistence.py:17-23`）。
 
 **失败签名**：DUT 的 counter 恒比模型**少一步**——
 `expected 7 actual 6`、`expected 5 actual 4`、`expected 2 actual 3`、`expected 0 actual 1`
@@ -216,7 +219,7 @@ when(t1_hasWrite && t1_hasHit) {
 ### E. MicroRAS 完全不使用 `io.enable`（4 个，死开关）
 
 **比什么**：`uras.io_specOut_isCanUse` / `retTarget`
-（`bpuverify/uras/checker/*`、集成侧 `pipeline_binding`）。
+（`suites/frontend/bpu/uras/checker/*`、集成侧 `pipeline_binding`）。
 
 **失败签名**：`usable: expected 0, actual 1; target: expected MISSING, actual 0x4000_...`
 —— **禁用 MicroRAS 后它仍然给出可用返回目标**。
@@ -239,7 +242,7 @@ when(t1_hasWrite && t1_hasHit) {
 ### F. MicroBTB fallthrough 复活已死亡条目（2 个）
 
 **比什么**：训练后条目 `{valid, taken, target, position}`
-（`bpuverify/ubtb/checker/*`）。
+（`suites/frontend/bpu/ubtb/checker/*`）。
 
 **失败签名**：`valid: expected 0, actual 1; taken: expected MISSING, actual 1;
 target: expected MISSING, actual 0x...`
@@ -267,7 +270,7 @@ target: expected MISSING, actual 0x...`
 ### G. MainBTB 多命中清理把命中集全部清零（4 个）
 
 **比什么**：清理服务后的完整条目（`row/position/kind/target`）与"幸存者 + 独立邻居"
-（`bpuverify/bpu/checker/*duplicate*`）。
+（`suites/frontend/bpu/bpu/checker/*duplicate*`）。
 
 **失败签名**：`row: expected 3, actual 1; position: expected 3, actual 0;
 kind: expected 3, actual 0`（DUT 侧是被清零的条目 = tag0/position0/kind0），
@@ -298,7 +301,7 @@ ABTB 侧就有 `multiHitWayIdx` 概念，MainBTB 侧没有）。
 ### H. ITTAGE 对未发布的原始分配 provider（4 个）
 
 **比什么**：`hit` / `provider.valid` / `provider_target`
-（`bpuverify/ittage/checker/*`、集成 `ittage_metadata.provider.valid`）。
+（`suites/frontend/bpu/ittage/checker/*`、集成 `ittage_metadata.provider.valid`）。
 
 **失败签名**：`hit: expected 0, actual 1; provider_valid: expected 0, actual 1`；
 `provider_target: expected 0x41000200, actual 0x400016..`
@@ -323,7 +326,7 @@ private val updateValid = hasTrainBranch && RegNext(t0_fire, init = false.B)
 ### I. RAS 投机 push/pop 不受 `io.enable` 门控（5 个，死开关）
 
 **比什么**：`topRetAddr` / `redirectMeta.{ssp,sctr,tosr,tosw}` / 保留提交栈
-（`bpuverify/ras/checker/semantic.py:10-22`）。
+（`suites/frontend/bpu/ras/checker/semantic.py:10-22`）。
 
 **失败签名**：
 - `group: expected 0, actual 1; calls: expected 0, actual 1`（`enabled=False` 仍 push）
@@ -381,7 +384,7 @@ when(io.spec.popValid)  { specPop(ssp, sctr, tosr, tosw, topNos) }
 
 **比什么**：TAGE 表项写缓冲的保留槽
 `retained[owner][rank]` 与按 `rank` 排序的模型记录
-（`bpuverify/bpu/checker/retouch_replacement.py:74`）。
+（`suites/frontend/bpu/bpu/checker/retouch_replacement.py:74`）。
 
 **失败签名**：`row: expected 72, actual 122; tag: expected 3264, actual 1986;
 counter: expected 0, actual 1`（`test_owner_recency`、`test_retouch_replacement` 各 4）。
@@ -403,7 +406,7 @@ counter 恰好比模型多 1。模型按 `program.owner_records(snapshot, owner)
 
 这些用例比较的是**完整流水线**的 `choiceN{taken,target,position,kind}`、
 `flushes`、`repair2/3`、`metadata.history.{ghr,bw}`、`lookup_folds`，
-由 `bpuverify/bpu/checker/pipeline.py:compared_values` 生成期望。
+由 `suites/frontend/bpu/bpu/checker/pipeline.py:compared_values` 生成期望。
 
 | 簇 | FAIL | 首个差异 | 归属判断 |
 |---|---:|---|---|
@@ -473,7 +476,7 @@ counter 恰好比模型多 1。模型按 `program.owner_records(snapshot, owner)
 | `ittage/Ittage.scala:167` | `updateValid` 无发布限定 | 增加原始预测曾被发布的限定 |
 | `ras/Ras.scala:71-72` | push/popValid 无 `io.enable` | 加 `&& io.enable` |
 | `abtb/AheadBtb.scala:284-286` | 纠正匹配无 tag | 增加 tag 限定 |
-| `bpuverify/tage/model/semantic.py:528` | `proposal` 用旧计数 | 用 `current`（参考模型） |
+| `suites/frontend/bpu/tage/model/semantic.py:528` | `proposal` 用旧计数 | 用 `current`（参考模型） |
 
 **约束**：本轮**未修改任何 RTL**、**未运行 RTL 生成**、**未运行回归**；
 123 FAIL 与 7 XFAIL 全部原样保留。

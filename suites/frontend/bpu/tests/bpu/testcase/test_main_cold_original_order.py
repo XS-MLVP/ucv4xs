@@ -1,9 +1,9 @@
 """A still-valid cold original cannot initialize an unexecuted sibling."""
 import json
 import pytest
-from bpuverify.bpu.model.main_cold_original_order import Program,ORDERS,PHASES,COUNTERS
-from bpuverify.bpu.coverage.main_cold_original_order import Coverage
-from bpuverify.bpu.case.main_cold_original_order import run
+from suites.frontend.bpu.bpu.model.main_cold_original_order import Program,ORDERS,PHASES,COUNTERS
+from suites.frontend.bpu.bpu.coverage.main_cold_original_order import Coverage
+from suites.frontend.bpu.bpu.case.main_cold_original_order import run
 
 
 @pytest.mark.feature('BPU-INT-093')

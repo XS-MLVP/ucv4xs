@@ -9,7 +9,7 @@ ucv4xs/
 ├── dependencies/               # Python/原生工具锁与带哈希的工具补丁
 ├── src/ucv/                    # 公共编排、路径、运行记录与报告
 ├── suites/
-│   ├── frontend/{bpu,icache}/
+│   ├── frontend/{bpu,icache,ftq,ifu}/
 │   ├── memblock/{lsq,dcache,mmu,sbuffer,lsu}/
 │   └── vector/vagq/
 ├── skills/                     # 项目工作流、跨模块防复发手册与速查卡
@@ -52,3 +52,43 @@ python3 scripts/audit-assets.py
 ```
 
 该检查不需要安装原生工具，验证源码边界、旧框架导入、工程入口和历史索引哈希。历史索引按工程拆为 JSONL，主索引保存数量和哈希；内容文件仍通过 `history://` 外部定位。简短的历史审计与缺陷文档可以留在 Git 中，大结果、覆盖率原始数据和内部 RTL 保持外部接入。
+
+## 验证包与 pin 边界
+
+当前 fixture 结构检查由 `scripts/audit-suite-layout.py` 和
+`tests/test_suite_layout.py` 实现；它不是完整事务层架构认证：
+
+- 每个工程只有 pytest 根的一个 `conftest.py` 注册 fixture；不存在
+  `tests/<dut>/conftest.py` 或 `*/env/pytest.py` 转发层；
+- fixture 负责原生资源生命周期，测试应通过 agent/env 的事务 API；静态 fixture
+  条目数不等于 DUT owner 数，参数化工厂也可覆盖多个 DUT；
+- 物理名属于 DUT 的 ports/bundle 适配层；跨 DUT 机制以明确职责命名，不建 common。
+  `P.p_*` / `P.io(...)` 是兼容字符串别名，仍属引脚级耦合，不是事务 API；
+- `pytest.ini` 注册 `selftest`，共享插件 `ucv.pytest_selftest` 按目录自动标记；自检不计
+  硬件功能 credit；
+- 原生时钟、复位、组合刷新和结构性 bit sweep 通过工程 execution/runtime 或 env/agent
+  方法完成。
+
+```sh
+.venv/bin/python scripts/audit-suite-layout.py --strict
+.venv/bin/python scripts/audit-suite-layout.py --require-transaction-boundary
+```
+
+`--strict` 只验结构接线。更严格的事务边界命令对 IFU/LSQ/LSU/MMU/DCache/VAGQ
+仍报告真实待适配项；引脚 keyword、物理字符串和别名都被统计。零静态命中也不证明
+采样、引脚所有权或独立 checker 已经合格。
+
+## 工程目录和 Python 命名空间
+
+工程根直接作为包：例如磁盘 suites/memblock/lsq 对应 Python suites.memblock.lsq。
+十个旧 *verify 外壳均已去掉，common 按职责拆到 ports、drivers、monitors、runtime、
+pytest_plugins 或 native.py/harness.py 等。没有新建另一个框架或逐工程发行项目。
+
+ucv4xs 的安装包只包含 ucv 与 suites 的 Python 实现；测试、tools、docs、manifest、
+结果、RTL 和原生二进制不纳入 wheel。正常运行仍依赖当前检出的配置/本地工具和生成
+资源，不宣称单独 wheel 是可脱离检出运行的 DUT 产品。
+
+runner 提供仓库根和选中工程目录，前者用于全限定实现 import，后者仅兼容工程内
+tests/tools/dut 的既有入口。ROOT 由工程包解析；改布局不改 RTL/native 构建收据。
+对比历史运行时保留旧源码键，当前路径用显式映射，不制造 sys.modules 旧名别名。
+迁移清单、资源锚点与验证见[命名空间重构](lessons/suite-namespace-refactor-20261031.md)。

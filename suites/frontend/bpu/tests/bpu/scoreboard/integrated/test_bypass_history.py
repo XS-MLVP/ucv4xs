@@ -1,12 +1,12 @@
 """Check genuine recurrence, all full-tag widths, and actual physical-bank recipes."""
 import pytest
-from bpuverify.bpu.model.phr.model import folds
-from bpuverify.bpu.model.phr.model import MASK
-from bpuverify.bpu.model.phr.model import path_hash
-from bpuverify.bpu.case.bypass.history_plan import recipe
-from bpuverify.bpu.case.bypass.history_plan import recurring_history
-from bpuverify.bpu.case.bypass.history_plan import read_indices
-from bpuverify.bpu.case.bypass.history_plan import full_tags
+from suites.frontend.bpu.bpu.model.phr.model import folds
+from suites.frontend.bpu.bpu.model.phr.model import MASK
+from suites.frontend.bpu.bpu.model.phr.model import path_hash
+from suites.frontend.bpu.bpu.case.bypass.history_plan import recipe
+from suites.frontend.bpu.bpu.case.bypass.history_plan import recurring_history
+from suites.frontend.bpu.bpu.case.bypass.history_plan import read_indices
+from suites.frontend.bpu.bpu.case.bypass.history_plan import full_tags
 
 
 @pytest.mark.parametrize('bank',(2,3))

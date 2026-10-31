@@ -1,10 +1,10 @@
 """Bitmap standalone tests."""
 from __future__ import annotations
 
-from mmuverify.common.runtime import execution
+from suites.memblock.mmu.execution import execution
 import pytest
 
-from mmuverify.l2.bitmap import BmReq
+from suites.memblock.mmu.l2.bitmap import BmReq
 
 BMA = 0x90000000 >> 6
 BASE = 0x90000000
@@ -25,7 +25,7 @@ async def _prepare(env) -> None:
 # BMP-01: cache hit returns cf and the full cfs byte.
 async def test_cache_hit_pass_and_fail(bitmap_env):
     env = bitmap_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.cache_hit = True
         env.cache_cfs = 0x00
@@ -42,7 +42,7 @@ async def test_cache_hit_pass_and_fail(bitmap_env):
 # BMP-02: cf selects bit ppn[2:0] of the cached byte.
 async def test_cache_hit_selects_bit(bitmap_env):
     env = bitmap_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.cache_hit = True
         for bit in range(8):
@@ -57,7 +57,7 @@ async def test_cache_hit_selects_bit(bitmap_env):
 # BMP-03: cache miss reads the 64-bit bitmap word and refills the cache with it.
 async def test_cache_miss_reads_and_refills(bitmap_env):
     env = bitmap_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.cache_hit = False
         ppn = 0x80000 | 0b001001
@@ -76,7 +76,7 @@ async def test_cache_miss_reads_and_refills(bitmap_env):
 # BMP-04: PMP denial fails the check without cache/memory traffic.
 async def test_pmp_denied(bitmap_env):
     env = bitmap_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.pmp_deny = True
         await env.issue(BmReq(bmppn=0x80000, id=4))
@@ -89,7 +89,7 @@ async def test_pmp_denied(bitmap_env):
 # BMP-05: page level merges VPN bits into the effective bitmap PPN.
 async def test_level_merge(bitmap_env):
     env = bitmap_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.cache_hit = True
         env.cache_cfs = 0
@@ -110,7 +110,7 @@ async def test_level_merge(bitmap_env):
 # BMP-06: NAPOT level-0 merges VPN[3:0] into the effective PPN.
 async def test_napot_merge(bitmap_env):
     env = bitmap_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.cache_hit = True
         env.cache_cfs = 0
@@ -123,7 +123,7 @@ async def test_napot_merge(bitmap_env):
 # BMP-07: multiple outstanding requests return their own ids and results.
 async def test_multiple_outstanding(bitmap_env):
     env = bitmap_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.cache_hit = True
         env.cache_cfs = 0xFF
@@ -145,7 +145,7 @@ async def test_multiple_outstanding(bitmap_env):
 # results. Deduplication is best-effort and not asserted here.
 async def test_duplicate_requests(bitmap_env):
     env = bitmap_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.cache_hit = True
         env.cache_cfs = 0x01
@@ -162,7 +162,7 @@ async def test_duplicate_requests(bitmap_env):
 # BMP-09: flush clears pending work and the block accepts new requests.
 async def test_flush(bitmap_env):
     env = bitmap_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.cache_hit = False
         for index in range(3):
@@ -183,7 +183,7 @@ async def test_flush(bitmap_env):
 # BMP-10: a level-0 non-NAPOT passing check raises wakeup for the L0 fill.
 async def test_wakeup(bitmap_env):
     env = bitmap_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.cache_hit = True
         env.cache_cfs = 0
@@ -216,7 +216,7 @@ async def test_wakeup(bitmap_env):
 # BMP-11: wakeup backpressure blocks the response until wakeup is consumed.
 async def test_wakeup_backpressure(bitmap_env):
     env = bitmap_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.wakeup["ready"].Set(0)
         env.cache_hit = True
@@ -239,7 +239,7 @@ async def test_wakeup_backpressure(bitmap_env):
 # BMP-12: all-ones and all-zero bitmap words drive both cf polarities.
 async def test_memory_extremes(bitmap_env):
     env = bitmap_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.cache_hit = False
         for endpoint in (1, 0):
@@ -258,7 +258,7 @@ async def test_memory_extremes(bitmap_env):
 # Historical attribution superseded by verification-soundness-20261025.md.
 async def test_back_to_back_requests(bitmap_env):
     env = bitmap_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.cache_hit = True
         env.cache_cfs = 0
@@ -276,7 +276,7 @@ async def test_back_to_back_requests(bitmap_env):
 # entry array can be filled to capacity.
 async def test_all_words_and_capacity(bitmap_env):
     env = bitmap_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.cache_hit = False
         env.mem_value = 0
@@ -304,7 +304,7 @@ async def test_all_words_and_capacity(bitmap_env):
 # BMP-15: multiple wakeups cover every pteidx and s2xlate value.
 async def test_wakeup_variants(bitmap_env):
     env = bitmap_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.cache_hit = True
         env.cache_cfs = 0
@@ -323,7 +323,7 @@ async def test_wakeup_variants(bitmap_env):
 # BMP-16: NAPOT bit/byte merge across all low-4 VPN values.
 async def test_napot_variants(bitmap_env):
     env = bitmap_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.cache_hit = True
         env.cache_cfs = 0
@@ -340,7 +340,7 @@ async def test_napot_variants(bitmap_env):
 # BMP-17: level 1/2/3 merge with several VPN values, all levels sampled.
 async def test_level_variants(bitmap_env):
     env = bitmap_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.cache_hit = True
         env.cache_cfs = 0x01
@@ -362,7 +362,7 @@ async def test_level_variants(bitmap_env):
 # back-to-back PMP alias recorded as BITMAP-PMP-BACKTOBACK-LOST.
 async def test_multi_miss(bitmap_env):
     env = bitmap_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.cache_hit = False
         env.mem_value = (1 << 64) - 1
@@ -385,7 +385,7 @@ async def test_multi_miss(bitmap_env):
 
 async def test_distinct_bitmap_misses_are_not_coalesced(bitmap_env):
     env = bitmap_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.cache_hit = False
         env.mem_value = 0

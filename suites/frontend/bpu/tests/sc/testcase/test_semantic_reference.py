@@ -1,7 +1,7 @@
 """SC learning is conditioned on history, not caller-supplied table indices."""
 import pytest
 
-from bpuverify.sc.transaction.types import ScHistory, ScTraining
+from suites.frontend.bpu.sc.transaction.types import ScHistory, ScTraining
 
 
 @pytest.mark.feature('BPU-SC-023')

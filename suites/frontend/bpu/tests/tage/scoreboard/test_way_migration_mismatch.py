@@ -1,8 +1,8 @@
 """Only the known useful-only mismatch may be re-labelled; others propagate."""
 from types import SimpleNamespace
 
-from bpuverify.tage.case.way_migration_scenario import MisassociatedProviderUseful
-from bpuverify.tage.case.way_migration_scenario import as_misassociated_useful
+from suites.frontend.bpu.tage.case.way_migration_scenario import MisassociatedProviderUseful
+from suites.frontend.bpu.tage.case.way_migration_scenario import as_misassociated_useful
 
 
 def error(*paths):

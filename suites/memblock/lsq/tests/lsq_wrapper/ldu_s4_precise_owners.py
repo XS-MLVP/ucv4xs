@@ -3,10 +3,10 @@ from dataclasses import replace
 import json
 from pathlib import Path
 
-from lsqverify.lsq_wrapper.types import Address, Data
-from lsqverify.psq.types import Attributes
-from lsqverify.replay.types import Refill
-from lsqverify.vlq.types import Redirect
+from suites.memblock.lsq.lsq_wrapper.types import Address, Data
+from suites.memblock.lsq.psq.types import Attributes
+from suites.memblock.lsq.replay.types import Refill
+from suites.memblock.lsq.vlq.types import Redirect
 from .ldu_s4_plain_owners import HIT, PF, MISS, PATTERNS as OLD_PATTERNS, OrdinaryS4Program
 from .memory_owners import cached_load
 from .mixed_owners import rob_pointer

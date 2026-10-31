@@ -1,10 +1,10 @@
 """Same-region provider target and allocation reuse one region update pointer."""
 import pytest
 
-from bpuverify.ittage.case.definitions import PC
-from bpuverify.ittage.case.definitions import POSITION
-from bpuverify.ittage.case.definitions import TARGET_A
-from bpuverify.ittage.transaction.types import IttageTraining
+from suites.frontend.bpu.ittage.case.definitions import PC
+from suites.frontend.bpu.ittage.case.definitions import POSITION
+from suites.frontend.bpu.ittage.case.definitions import TARGET_A
+from suites.frontend.bpu.ittage.transaction.types import IttageTraining
 
 REGION = 0x410 << 20
 T0, T1, T2 = REGION | 0x1200, REGION | 0x1400, REGION | 0x1600

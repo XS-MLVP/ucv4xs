@@ -3,9 +3,8 @@ from copy import deepcopy
 from types import SimpleNamespace
 import pytest
 
-from bpuverify.utage.model.persistence import PersistenceLedger, Version
-from bpuverify.utage.monitor.learning_persistence import Monitor
-
+from suites.frontend.bpu.utage.model.persistence import PersistenceLedger, Version
+from suites.frontend.bpu.utage.monitor.learning_persistence import Monitor
 
 
 def observed_service():

@@ -1,15 +1,15 @@
 """Five independent models, one base pipeline, three separate snapshot domains."""
-from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT
+from suites.frontend.bpu.models.configuration import TAGE_ALLOCATION_WAIT
 from copy import deepcopy
 from dataclasses import replace
 import pytest
-from bpuverify.bpu.model.early_late_sources import EarlyLateSources
-from bpuverify.bpu.model.direction_sources import DirectionSources
-from bpuverify.bpu.model.pipeline import Outcome,Resolution,Redirect
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.bpu.model.early_aging import require_recovery_window
-from bpuverify.bpu.model.path_history import WIDTH,LAYOUT,SHIFT,path_contribution
-from bpuverify.tage.model.semantic import TABLES,HISTORIES
+from suites.frontend.bpu.bpu.model.early_late_sources import EarlyLateSources
+from suites.frontend.bpu.bpu.model.direction_sources import DirectionSources
+from suites.frontend.bpu.bpu.model.pipeline import Outcome,Resolution,Redirect
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.early_aging import require_recovery_window
+from suites.frontend.bpu.bpu.model.path_history import WIDTH,LAYOUT,SHIFT,path_contribution
+from suites.frontend.bpu.tage.model.semantic import TABLES,HISTORIES
 from tests.bpu.scoreboard.test_semantic_pipeline import boot
 
 ENABLED=(False,True,True,True,False,False,False)
@@ -137,7 +137,7 @@ def test_equal_or_dead_origins_cannot_borrow_any_component_snapshot(domain,fault
 
 
 def test_tage_metadata_projection_never_calls_the_ahead_namespace(monkeypatch):
-    from bpuverify.bpu.checker.pipeline import tage_metadata_values
+    from suites.frontend.bpu.bpu.checker.pipeline import tage_metadata_values
     p=Program(); token,_=p.prepare(); bank=p.model.sources; expected=bank.defined_tage_metadata(token)
     actual=[{} for _ in range(10)]
     for key,value in expected.items():

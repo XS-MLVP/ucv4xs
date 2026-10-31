@@ -1,7 +1,7 @@
 """Full-domain kind stream, sticky CBO intent, actual NoSpec/BlockBack boundary."""
-from lsqverify.lsq_wrapper.types import Dispatch
-from lsqverify.raw.types import SqPtr
-from lsqverify.vlq.types import QueuePtr
+from suites.memblock.lsq.lsq_wrapper.types import Dispatch
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.vlq.types import QueuePtr
 from .mixed_owners import rob_pointer
 from .normal_mixed_owners import NormalMixedOwners
 

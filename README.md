@@ -2,17 +2,17 @@
 
 基于 UnityChip 的香山单元测试（UT）仓库，统一组织验证工程、RTL 基线、工具链和回归入口。仓库与 Python 发行包名为 `ucv4xs`，命令及 Python 导入名为 `ucv`，验证框架为锁定版本的 toffee。
 
-当前版本是**结构整合版**：八个工程、122 个 DUT 已接入统一构建与运行链路。BPU 对完整 DefaultConfig RTL 的模型和用例适配、完整生产回归及空缓存全链路验收仍在推进。实际 FAIL、XFAIL、SKIP 和证据边界见 [阶段状态](docs/status.md)；结构标签不代表硬件验收通过。
+当前版本是**结构整合版**：十个工程、132 个 DUT 已接入统一构建与运行链路。BPU 对完整 DefaultConfig RTL 的模型和用例适配、完整生产回归及空缓存全链路验收仍在推进。实际 FAIL、XFAIL、SKIP 和证据边界见 [阶段状态](docs/status.md)；结构标签不代表硬件验收通过。
 
 ## 工程与基线
 
 | 分组 | 工程 | DUT 数 | 初始有效基线 |
 |---|---|---:|---|
-| frontend | BPU / ICache | 10 / 11 | public-893e1580b |
+| frontend | BPU / ICache / FTQ / IFU | 10 / 11 / 3 / 7 | public-893e1580b |
 | memblock | LSQ / DCache / MMU / Sbuffer / LSU | 38 / 13 / 17 / 2 / 19 | public-893e1580b |
 | vector | VAGQ | 12 | internal-d4566d58a，外部源码接入 |
 
-`public` 集合包含七个公开工程；`full` 另外包含 VAGQ。公开根基线固定为 `893e1580b705d81f113c30c7a05734e09a08050e`，VAGQ 工程显式覆盖为 internal `d4566d58a5ace1f6a5df4409b37a84b971f48e43`。
+`public` 集合包含九个公开工程；`full` 另外包含 VAGQ。公开根基线固定为 `893e1580b705d81f113c30c7a05734e09a08050e`，VAGQ 工程显式覆盖为 internal `d4566d58a5ace1f6a5df4409b37a84b971f48e43`。
 
 所有工程使用 **DefaultConfig**。基线按“根 → 硬件分组 → 工程”继承，最近的显式完整命名基线优先；一个工程的所有 DUT 共用基线。源码 commit、递归子模块、生成参数、工具版本和设计补丁均进入版本清单。
 
@@ -87,7 +87,7 @@ ucv4xs/
 ├── dependencies/              # 依赖版本与工具补丁
 ├── src/ucv/                   # 公共编排工具
 ├── suites/
-│   ├── frontend/{bpu,icache}/
+│   ├── frontend/{bpu,icache,ftq,ifu}/
 │   ├── memblock/{lsq,dcache,mmu,sbuffer,lsu}/
 │   └── vector/vagq/
 ├── skills/                    # 项目工作流与验证经验
@@ -97,7 +97,11 @@ ucv4xs/
 └── AGENTS.md                  # 仓库内协作约定
 ```
 
-各工程保留自己的验证包、pytest 根目录、模型和检查器。详细职责见 [结构说明](docs/architecture.md)。
+各工程根直接作为 Python 包，例如 `suites.memblock.lsq`，不再嵌套 lsqverify 等外壳，
+也不使用无前缀的 import common。DUT 实现、测试、配置与文档同属工程根；共享机制
+按职责命名，根包 ROOT 统一定位资源。编辑安装后可从其他 cwd 导入实现，但运行仍需
+当前检出的配置、工具链和生成 DUT。详细职责见 [结构说明](docs/architecture.md) 及
+[本次迁移](docs/lessons/suite-namespace-refactor-20261031.md)。
 
 `.cache/` 保存源码检出、生成 RTL/FIRRTL 和 DUT 构建；`results/` 保存运行结果；`.history/` 保存本地迁移备份；`.venv/`、`.tools/`、`.ucv/` 保存本地环境与状态。这些目录均被 Git 忽略。Git 中的 `docs/history/` 保存迁移记录和证据哈希，历史证据内容通过外部 `history://` 来源访问。internal 实现、生成文件和含内部源码的证据保持外部接入。
 
@@ -115,6 +119,11 @@ skills 可按文件路径读取；仓库中存在 skill 文件不表示已向客
 ```sh
 python3.12 scripts/audit-assets.py
 .venv/bin/python -m pytest -q tests
+.venv/bin/python scripts/audit-suite-layout.py --strict
+.venv/bin/python scripts/audit-skills.py --strict --check-framework
 ```
+
+布局 --strict 只验 fixture 接线。`--require-transaction-boundary` 另查物理字段和
+P.p_*/P.io 别名，当前六工程仍需适配；不把结构全绿当成事务迁移或硬件验收。
 
 自有代码和文档采用 [MPL-2.0](LICENSE)，导入文件原有许可声明保留，详见 [NOTICE](NOTICE.md)。

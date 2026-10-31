@@ -3,7 +3,7 @@ from copy import deepcopy
 
 import pytest
 
-from bpuverify.bpu.checker.ras.retirement import CommitChecker
+from suites.frontend.bpu.bpu.checker.ras.retirement import CommitChecker
 
 
 def row(checker,*,reset=0,commit=None,pending=None):

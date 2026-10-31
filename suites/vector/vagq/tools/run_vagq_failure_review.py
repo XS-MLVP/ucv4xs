@@ -17,7 +17,7 @@ from tools.run_vagq_exhaustive import atomic_json, digest
 REVIEW = ROOT / 'results/vagq-exhaustive-review-20261020-v1'
 SOURCES = (
     'tools/run_vagq_failure_review.py', 'tools/analyze_vagq_failures.py',
-    'vagqverify/vagq/failure_review.py', 'tests/vagq/test_failure_review.py',
+    'vagq/failure_review.py', 'tests/vagq/test_failure_review.py',
 )
 
 

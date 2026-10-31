@@ -4,21 +4,21 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.abtb.coverage.catalog import abtb_boundary_replacement_coverage_model
-from bpuverify.abtb.coverage.catalog import abtb_replacement_coverage_model
-from bpuverify.abtb.coverage.catalog import write_abtb_boundary_replacement_coverage
-from bpuverify.abtb.coverage.catalog import write_abtb_replacement_coverage
-from bpuverify.abtb.checker.assertions import assert_miss
-from bpuverify.abtb.checker.assertions import assert_vector_hit
-from bpuverify.abtb.checker.assertions import matching_entry
-from bpuverify.abtb.checker.assertions import train_conditional_direction
-from bpuverify.abtb.checker.assertions import train_taken
-from bpuverify.abtb.case.definitions import BranchVector
-from bpuverify.abtb.case.definitions import NUM_WAYS
-from bpuverify.abtb.case.definitions import SAME_SET_BANK_STRIDE
-from bpuverify.abtb.case.definitions import conflict_vectors
-from bpuverify.abtb.case.definitions import highest_set_vectors
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.abtb.coverage.catalog import abtb_boundary_replacement_coverage_model
+from suites.frontend.bpu.abtb.coverage.catalog import abtb_replacement_coverage_model
+from suites.frontend.bpu.abtb.coverage.catalog import write_abtb_boundary_replacement_coverage
+from suites.frontend.bpu.abtb.coverage.catalog import write_abtb_replacement_coverage
+from suites.frontend.bpu.abtb.checker.assertions import assert_miss
+from suites.frontend.bpu.abtb.checker.assertions import assert_vector_hit
+from suites.frontend.bpu.abtb.checker.assertions import matching_entry
+from suites.frontend.bpu.abtb.checker.assertions import train_conditional_direction
+from suites.frontend.bpu.abtb.checker.assertions import train_taken
+from suites.frontend.bpu.abtb.case.definitions import BranchVector
+from suites.frontend.bpu.abtb.case.definitions import NUM_WAYS
+from suites.frontend.bpu.abtb.case.definitions import SAME_SET_BANK_STRIDE
+from suites.frontend.bpu.abtb.case.definitions import conflict_vectors
+from suites.frontend.bpu.abtb.case.definitions import highest_set_vectors
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature("BPU-ABTB-005")

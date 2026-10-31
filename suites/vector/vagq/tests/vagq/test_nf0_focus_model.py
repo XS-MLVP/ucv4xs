@@ -4,13 +4,13 @@ from copy import deepcopy
 
 import pytest
 
-from vagqverify.vagq.exhaustive import build_shape_sequence
-from vagqverify.vagq.isa_reference import architectural_accesses
-from vagqverify.vagq.nf0_focus import (
+from suites.vector.vagq.vagq.exhaustive import build_shape_sequence
+from suites.vector.vagq.vagq.isa_reference import architectural_accesses
+from suites.vector.vagq.vagq.nf0_focus import (
     PROFILES, assess_events, byte_mask_row, compatible_shapes, fired_response, make_variant, ready_values, shape_scope,
 )
-from vagqverify.vagq.scenario_matrix import legal_public_feature_cases
-from vagqverify.vagq.types import Beat
+from suites.vector.vagq.vagq.scenario_matrix import legal_public_feature_cases
+from suites.vector.vagq.vagq.types import Beat
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)
 

@@ -1,7 +1,7 @@
 """A cancelled neutral prediction cannot borrow an equal-encoding lifetime."""
 from dataclasses import replace
 import pytest
-from bpuverify.ras.model.semantic import RasReference,Events,Recovery,Retirement
+from suites.frontend.bpu.ras.model.semantic import RasReference,Events,Recovery,Retirement
 
 
 @pytest.mark.parametrize('operation',('retire','recover'))

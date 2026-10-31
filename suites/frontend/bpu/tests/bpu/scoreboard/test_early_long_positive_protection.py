@@ -1,4 +1,4 @@
-from bpuverify.bpu.model.early_opposition import FALLBACK
+from suites.frontend.bpu.bpu.model.early_opposition import FALLBACK
 """Longest-provider boundary and failure accounting with synthetic actuals only."""
 import ast
 from dataclasses import replace
@@ -6,14 +6,14 @@ from pathlib import Path
 
 import pytest
 
-from bpuverify.bpu.checker.early_long_positive_protection import EarlyLongPositiveProtectionChecks
-from bpuverify.bpu.coverage.early_long_positive_protection import EarlyLongPositiveProtectionCoverage
-from bpuverify.bpu.model.early_long_positive_protection import (EDGES, REVISIT_PREFIX, SHORT_REVISIT_PREFIX,
+from suites.frontend.bpu.bpu.checker.early_long_positive_protection import EarlyLongPositiveProtectionChecks
+from suites.frontend.bpu.bpu.coverage.early_long_positive_protection import EarlyLongPositiveProtectionCoverage
+from suites.frontend.bpu.bpu.model.early_long_positive_protection import (EDGES, REVISIT_PREFIX, SHORT_REVISIT_PREFIX,
                                                              rules, intended_identity)
-from bpuverify.bpu.model.early_opposition import provider
-from bpuverify.bpu.model.early_protection import guidance, ProtectionLedger
-from bpuverify.bpu.model.path_history import path_contribution, SHIFT
-from bpuverify.utage.model.semantic import Context, Feedback, Source, indices, tag
+from suites.frontend.bpu.bpu.model.early_opposition import provider
+from suites.frontend.bpu.bpu.model.early_protection import guidance, ProtectionLedger
+from suites.frontend.bpu.bpu.model.path_history import path_contribution, SHIFT
+from suites.frontend.bpu.utage.model.semantic import Context, Feedback, Source, indices, tag
 from tests.bpu.scoreboard.test_early_positive_protection import Program as TakenProgram
 
 
@@ -233,14 +233,14 @@ def test_read_and_match_ancestors_are_not_interchangeable_or_seeded_from_actual_
     identity = intended_identity(pc)
     assert identity.index == indices(pc, read)[1] != indices(pc, match)[1]
     assert identity.tag == tag(pc, match, 1) != tag(pc, read, 1)
-    tree = ast.parse(Path('bpuverify/bpu/model/early_long_positive_protection.py').read_text())
+    tree = ast.parse(Path('bpu/model/early_long_positive_protection.py').read_text())
     assert not any(isinstance(n, ast.ImportFrom) and n.module and
                    any(part in n.module.split('.') for part in ('driver','bundle','monitor','toffee'))
                    for n in ast.walk(tree))
 
 
 def test_long_record_case_exposes_no_edges_raw_io_or_async_task_join():
-    tree = ast.parse(Path('bpuverify/bpu/case/early_long_positive_protection.py').read_text())
+    tree = ast.parse(Path('bpu/case/early_long_positive_protection.py').read_text())
     forbidden = {'ClockCycles','RisingEdge','FallingEdge','gather','create_task','set_','get_'}
     assert not {n.id for n in ast.walk(tree) if isinstance(n, ast.Name)} & forbidden
     assert not {n.attr for n in ast.walk(tree) if isinstance(n, ast.Attribute)} & forbidden

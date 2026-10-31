@@ -6,9 +6,9 @@ from pathlib import Path
 import pytest
 
 from tools.run_vagq_exhaustive import atomic_json, digest
-from vagqverify.native import open_dut
-from vagqverify.vagq.exhaustive import ShapeSession, assess_shape_boundaries, build_shape_sequence, run_shape_sequence
-from vagqverify.vagq.scenario_matrix import legal_public_feature_cases
+from suites.vector.vagq.native import open_dut
+from suites.vector.vagq.vagq.exhaustive import ShapeSession, assess_shape_boundaries, build_shape_sequence, run_shape_sequence
+from suites.vector.vagq.vagq.scenario_matrix import legal_public_feature_cases
 
 
 ROOT = Path(__file__).resolve().parents[2]

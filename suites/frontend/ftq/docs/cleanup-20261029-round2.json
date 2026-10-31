@@ -1,0 +1,63 @@
+{
+  "date": "2026-10-29",
+  "reason": "第二轮 skill 完善过程中的中间结果与临时覆盖率数据库",
+  "kept": [
+    "results/ftq-final-20261029",
+    "results/ucv-ftq-full-20261029"
+  ],
+  "removed": [
+    {
+      "path": "results/dev-boundary",
+      "bytes": 38291741
+    },
+    {
+      "path": "results/dev-cq2",
+      "bytes": 4801478
+    },
+    {
+      "path": "results/dev-extra",
+      "bytes": 791552579
+    },
+    {
+      "path": "results/dev-full7",
+      "bytes": 1895420781
+    },
+    {
+      "path": "results/dev-integ3",
+      "bytes": 188480154
+    },
+    {
+      "path": "results/dev-inv",
+      "bytes": 1394653975
+    },
+    {
+      "path": "results/dev-model",
+      "bytes": 5952936
+    },
+    {
+      "path": "results/dev-overflow",
+      "bytes": 11902681
+    },
+    {
+      "path": "results/dev-pair",
+      "bytes": 263846291
+    },
+    {
+      "path": "results/dev-self",
+      "bytes": 38291741
+    },
+    {
+      "path": "VCommitQueueDut_coverage.dat",
+      "bytes": 600049
+    },
+    {
+      "path": "VFtqDut_coverage.dat",
+      "bytes": 37692327
+    },
+    {
+      "path": "VResolveQueueDut_coverage.dat",
+      "bytes": 5950867
+    }
+  ],
+  "removed_bytes": 4677437600
+}

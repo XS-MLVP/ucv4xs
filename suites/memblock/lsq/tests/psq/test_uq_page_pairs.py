@@ -1,5 +1,5 @@
-from lsqverify.psq.actor import PsqActor
-from lsqverify.uq_page_pairs import parent_pairs
+from suites.memblock.lsq.psq.actor import PsqActor
+from suites.memblock.lsq.uq_page_pairs import parent_pairs
 
 
 async def test_actual_paired_second_pages_full_PA_bits_and_normal_reuse(psq_full, tmp_path):

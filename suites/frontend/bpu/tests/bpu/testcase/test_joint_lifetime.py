@@ -1,10 +1,10 @@
 """Joint native-source qualification before assigning functional credit."""
 import json
 import pytest
-from bpuverify.bpu.case.joint_lifetime import check_joint_cold
-from bpuverify.bpu.model.joint_lifetime import Program, MODES
-from bpuverify.bpu.coverage.joint_lifetime import Coverage
-from bpuverify.bpu.case.joint_lifetime import run
+from suites.frontend.bpu.bpu.case.joint_lifetime import check_joint_cold
+from suites.frontend.bpu.bpu.model.joint_lifetime import Program, MODES
+from suites.frontend.bpu.bpu.coverage.joint_lifetime import Coverage
+from suites.frontend.bpu.bpu.case.joint_lifetime import run
 
 @pytest.mark.feature('BPU-INT-004')
 async def test_joint_cold_sources_compare_both_read_stages_and_full_metadata(bpu_agent, request):

@@ -39,8 +39,8 @@
     "symptom": "FileNotFoundError on the per-case isolated output directory turned strict XFAIL into FAIL",
     "cause": "output_path().write_text() assumed the parent existed; the defect scenario writes evidence before raising",
     "fix": [
-      "bpuverify/common/pytest/managed.py and evidence.py create the per-case directory before the test",
-      "bpuverify/common/env/artifacts.write_output() creates only the routed parent",
+      "pytest_plugins/managed.py and evidence.py create the per-case directory before the test",
+      "runtime/artifacts.write_output() creates only the routed parent",
       "5 direct write_text sites converted"
     ],
     "evidence": "tests/framework/test_artifact_paths.py: 20 PASS; targeted 3-case run yields 3 XFAIL"
@@ -60,7 +60,7 @@
       "file": "rtl/utage/BypassShadowBuffer.sv",
       "second_table": "rtl/utage/BypassShadowBuffer_1.sv fully covered",
       "templates": {"reward-increase": 367, "penalty-decrease": 366, "increase-head": 366},
-      "audit": "bpuverify/utage/coverage/useful_cell_audit.py: 1099/1099 matched, 0 unclassified, denominator unchanged, no functional credit",
+      "audit": "utage/coverage/useful_cell_audit.py: 1099/1099 matched, 0 unclassified, denominator unchanged, no functional credit",
       "meaning": "per-cell copies of one allocation/reward/penalty template for cells updated in only one direction"
     },
     "uncovered_branches": {

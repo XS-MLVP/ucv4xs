@@ -5,9 +5,9 @@ from types import SimpleNamespace
 import pytest
 from toffee import Bundle
 
-from bpuverify.common.bundle.bindings import PortBinding
-from bpuverify.common.bundle.bindings import bind_bundle
-from bpuverify.common.bundle.bindings import bind_pulse
+from suites.frontend.bpu.ports.bindings import PortBinding
+from suites.frontend.bpu.ports.bindings import bind_bundle
+from suites.frontend.bpu.ports.bindings import bind_pulse
 from tests.framework.fakes import Signal
 
 

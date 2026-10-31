@@ -6,10 +6,10 @@ import ast
 import json
 import pytest
 from toffee import Scoreboard,ScoreboardMismatch,CheckContext,ScoreboardMode
-from bpuverify.bpu.model.joint_stream import Program,PROFILES,RULES,NEW_RULES
-from bpuverify.bpu.model.joint_originals import RULES as ORIGINAL_RULES
-from bpuverify.bpu.coverage.joint_stream import Coverage
-from bpuverify.bpu.checker.joint_stream import Checks
+from suites.frontend.bpu.bpu.model.joint_stream import Program,PROFILES,RULES,NEW_RULES
+from suites.frontend.bpu.bpu.model.joint_originals import RULES as ORIGINAL_RULES
+from suites.frontend.bpu.bpu.coverage.joint_stream import Coverage
+from suites.frontend.bpu.bpu.checker.joint_stream import Checks
 
 pytestmark=pytest.mark.toffee_functional_coverage(False)
 
@@ -96,10 +96,10 @@ def test_contract_defines_behavior_and_reuses_the_existing_static_native_bundle(
     contract=json.loads((root/'docs/bpu-joint-stream-contract.json').read_text())
     assert tuple(contract['new_rules'])==NEW_RULES and contract['features']==['BPU-INT-107']
     assert len(PROFILES)==8 and len(RULES)==22
-    case=ast.parse((root/'bpuverify/bpu/case/joint_stream.py').read_text())
+    case=ast.parse((root/'bpu/case/joint_stream.py').read_text())
     names={n.id for n in ast.walk(case) if isinstance(n,ast.Name)}|{n.attr for n in ast.walk(case) if isinstance(n,ast.Attribute)}
     assert not names&{'FallingEdge','RisingEdge','ClockCycles','gather','create_task','sleep','set_','get'}
-    env=(root/'bpuverify/bpu/env/joint_stream.py').read_text()
+    env=(root/'bpu/env/joint_stream.py').read_text()
     assert 'lambda _:bool(c.waiting)' in env and 'admit_when' not in env
 
 

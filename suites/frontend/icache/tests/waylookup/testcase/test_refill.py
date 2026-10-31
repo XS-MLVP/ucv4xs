@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import pytest
 
-from icacheverify.waylookup.case.definitions import entry_for_block
+from suites.frontend.icache.waylookup.case.definitions import entry_for_block
 
 
 def blk(paddr: int) -> int:

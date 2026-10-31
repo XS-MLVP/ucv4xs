@@ -1,7 +1,7 @@
 """Behavioral minimal control for integrated fast/resolve confidence loss."""
 import pytest
 
-from bpuverify.ubtb.env.target_errors import check_adjacent_wrong_targets
+from suites.frontend.bpu.ubtb.env.target_errors import check_adjacent_wrong_targets
 
 
 @pytest.mark.feature('BPU-UBTB-011')

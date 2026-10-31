@@ -3,9 +3,9 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.bpu.model.path_history import PathHistoryReference, path_contribution
-from bpuverify.bpu.model.selection import Branch, Choice, Kind, StackAction, early, middle, final, middle_repair, final_repair, fallthrough
-from bpuverify.common.model.folded_history import folded_history_values, PHR_FOLD_LAYOUT
+from suites.frontend.bpu.bpu.model.path_history import PathHistoryReference, path_contribution
+from suites.frontend.bpu.bpu.model.selection import Branch, Choice, Kind, StackAction, early, middle, final, middle_repair, final_repair, fallthrough
+from suites.frontend.bpu.models.folded_history import folded_history_values, PHR_FOLD_LAYOUT
 
 
 PC = 0x40000800

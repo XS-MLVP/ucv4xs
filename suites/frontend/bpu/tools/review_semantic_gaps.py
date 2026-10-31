@@ -14,11 +14,11 @@ import json
 from pathlib import Path
 import re
 
-from bpuverify.common.coverage.local_guards import Source, claim, match_native, native_points
-from bpuverify.sc.coverage.guard_audit import source_claims as sc_claims
-from bpuverify.tage.coverage.coverage_audit import source_claims as tage_claims
-from bpuverify.bpu.coverage.history_gaps import assignment, local_claims, constrained_claims
-from bpuverify.bpu.coverage.main_gaps import associate
+from suites.frontend.bpu.coverage.local_guards import Source, claim, match_native, native_points
+from suites.frontend.bpu.sc.coverage.guard_audit import source_claims as sc_claims
+from suites.frontend.bpu.tage.coverage.coverage_audit import source_claims as tage_claims
+from suites.frontend.bpu.bpu.coverage.history_gaps import assignment, local_claims, constrained_claims
+from suites.frontend.bpu.bpu.coverage.main_gaps import associate
 from tools.coverage_delta import lcov_rows
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -117,9 +117,9 @@ def review(baseline):
         native[dut] = native_points(path)
 
     sc, _ = sc_claims(); tage, _ = tage_claims(report)
-    proofs = {'sc': sc, 'tage': tage, 'bpu': transfer(tage,'rtl/tage/WriteBuffer.sv','rtl/bpu/WriteBuffer_8.sv')}
-    for source, dest in (('rtl/sc/WriteBuffer.sv','rtl/bpu/WriteBuffer_30.sv'),
-                         ('rtl/sc/WriteBuffer_8.sv','rtl/bpu/WriteBuffer_38.sv')):
+    proofs = {'sc': sc, 'tage': tage, 'bpu': transfer(tage,'rtl/tage/WriteBuffer_12.sv','rtl/bpu/WriteBuffer_12.sv')}
+    for source, dest in (('rtl/sc/WriteBuffer_54.sv','rtl/bpu/WriteBuffer_54.sv'),
+                         ('rtl/sc/WriteBuffer_68.sv','rtl/bpu/WriteBuffer_68.sv')):
         proofs['bpu'] += transfer([c for c in sc if c['file']==source],source,dest)
     phr = Source('rtl/bpu/Phr.sv')
     raw = {(r['file'],r['line']) for r in report['dut']['bpu']['uncovered_rtl_source_lines']}

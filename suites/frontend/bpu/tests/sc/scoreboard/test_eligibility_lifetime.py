@@ -12,11 +12,11 @@ import pytest
 # This isolated runner deliberately does not load the project test-area hook.
 pytestmark=pytest.mark.toffee_functional_coverage(False)
 
-from bpuverify.sc.transaction.types import ScPrediction
-from bpuverify.sc.model.eligibility import EligibilityProgram,GATES,RULES,FAMILIES
-from bpuverify.sc.checker.eligibility import EligibilityChecks
-from bpuverify.sc.coverage.eligibility import EligibilityCoverage
-from bpuverify.sc.monitor.eligibility import InputWitnessLedger
+from suites.frontend.bpu.sc.transaction.types import ScPrediction
+from suites.frontend.bpu.sc.model.eligibility import EligibilityProgram,GATES,RULES,FAMILIES
+from suites.frontend.bpu.sc.checker.eligibility import EligibilityChecks
+from suites.frontend.bpu.sc.coverage.eligibility import EligibilityCoverage
+from suites.frontend.bpu.sc.monitor.eligibility import InputWitnessLedger
 
 
 def actual(expected):

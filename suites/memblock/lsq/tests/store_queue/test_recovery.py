@@ -1,6 +1,8 @@
+
 import pytest
 
-from lsqverify.store_queue.actor import StoreActor
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.store_queue.actor import StoreActor
 
 
 @pytest.mark.parametrize("phase", ("queue", "cache", "uncache", "wb"))
@@ -9,17 +11,17 @@ async def test_active_reset_real_both_queues_same_slot_new_uid_completes(sq, pha
     old = actor.add(cbo=1 if phase in ("cache", "wb") else None, memory=2 if phase == "uncache" else 0)
     for _ in range(35):
         await actor.step(fair=True, sbuffer_ready=(False, False), cache_response=False, uncache_response=False, writeback_ready=False)
-        if phase == "queue" and sq.observed["io_writeToSbuffer_req_0_valid"]:
+        if phase == "queue" and sq.observed[P.p_writeToSbuffer_req_0_valid]:
             break
         if phase in ("cache", "wb", "uncache") and actor.pending:
             break
     if phase == "queue":
-        assert sq.observed["io_writeToSbuffer_req_0_valid"]
+        assert sq.observed[P.p_writeToSbuffer_req_0_valid]
     else:
         assert actor.pending is not None
         if phase == "wb":
             await actor.step(fair=True, writeback_ready=False)
-            assert sq.observed["io_writeBack_valid"]
+            assert sq.observed[P.p_writeBack_valid]
     assert await actor.reset() == list(old.flows)
     new = actor.add(size=2)
     await actor.drain()
@@ -36,7 +38,7 @@ async def test_exception_and_optional_uq_cancel_all_new_uid_finishes(sq, with_pa
         await actor.step(fair=True, advance_rob=False, sbuffer_ready=(False, False))
         if all(actor.all[uid].s2_done for uop in (old, young) if uop for uid in uop.flows):
             break
-    assert not actor.completed and not sq.observed["io_writeToSbuffer_req_0_valid"]
+    assert not actor.completed and not sq.observed[P.p_writeToSbuffer_req_0_valid]
     cancelled = await actor.cancel(old, flush_self=True)
     assert cancelled == [*old.flows, *(young.flows if young else ())]
     new = actor.add(size=3, page=with_page)

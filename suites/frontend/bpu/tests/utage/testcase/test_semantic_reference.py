@@ -1,10 +1,10 @@
 """Maximum-width index learning, and resolved instruction-type eligibility."""
 import pytest
 
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.utage.case.semantic import boundary_lifecycle, nonconditional_feedback
-from bpuverify.utage.coverage.semantic import SemanticCoverage
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.utage.case.semantic import boundary_lifecycle, nonconditional_feedback
+from suites.frontend.bpu.utage.coverage.semantic import SemanticCoverage
 
 
 @pytest.mark.feature('BPU-UTAGE-024')

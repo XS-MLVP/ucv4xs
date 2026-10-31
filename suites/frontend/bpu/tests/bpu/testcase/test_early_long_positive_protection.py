@@ -1,9 +1,9 @@
 """Longest T provider protection is not covered by the short-table program."""
 import pytest
 
-from bpuverify.bpu.case.early_long_positive_protection import check_early_long_positive_protection
-from bpuverify.bpu.coverage.early_long_positive_protection import EarlyLongPositiveProtectionCoverage
-from bpuverify.bpu.model.early_long_positive_protection import EDGES
+from suites.frontend.bpu.bpu.case.early_long_positive_protection import check_early_long_positive_protection
+from suites.frontend.bpu.bpu.coverage.early_long_positive_protection import EarlyLongPositiveProtectionCoverage
+from suites.frontend.bpu.bpu.model.early_long_positive_protection import EDGES
 
 
 @pytest.mark.feature('BPU-INT-066')

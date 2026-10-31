@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.abtb.coverage.catalog import abtb_flanked_replacement_coverage_model
-from bpuverify.abtb.coverage.catalog import write_abtb_flanked_replacement_coverage
-from bpuverify.abtb.case.flanked_scenario import AgedFlankedSet
-from bpuverify.abtb.case.flanked_scenario import BANKS
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.abtb.coverage.catalog import abtb_flanked_replacement_coverage_model
+from suites.frontend.bpu.abtb.coverage.catalog import write_abtb_flanked_replacement_coverage
+from suites.frontend.bpu.abtb.case.flanked_scenario import AgedFlankedSet
+from suites.frontend.bpu.abtb.case.flanked_scenario import BANKS
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature("BPU-ABTB-044")

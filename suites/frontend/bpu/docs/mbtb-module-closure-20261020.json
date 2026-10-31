@@ -69,7 +69,7 @@
         "structurally_unreachable": 8
       },
       "structural_proof": {
-        "tool": "python3 -m bpuverify.mbtb.coverage.branch_audit",
+        "tool": "python3 -m suites.frontend.bpu.mbtb.coverage.branch_audit",
         "artifact": "results/mbtb-module-qualification-20261020-v1/branch-unreachable-proof.json",
         "arms": [
           "MainBtbInternalBank.sv:151,153,155,157,159,161,163 cond_else",

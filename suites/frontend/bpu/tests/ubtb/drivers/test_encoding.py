@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from bpuverify.ubtb.transaction.types import PredictRequest
-from bpuverify.ubtb.driver.encoding import _encode_lookup
+from suites.frontend.bpu.ubtb.transaction.types import PredictRequest
+from suites.frontend.bpu.ubtb.driver.encoding import _encode_lookup
 
 
 def test_lookup_encoder_maps_request():

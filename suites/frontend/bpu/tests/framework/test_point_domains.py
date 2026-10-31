@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from bpuverify.common.pytest.points import domain, make_report, summarize, summary_for, validate_plan, validate_report
+from suites.frontend.bpu.pytest_plugins.points import domain, make_report, summarize, summary_for, validate_plan, validate_report
 from tools.refresh_coverage import validate_functional_points
 
 

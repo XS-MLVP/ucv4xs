@@ -1,11 +1,11 @@
 from dataclasses import replace
 
-from lsqverify.load_queue.actor import LoadActor
-from lsqverify.load_queue.types import Inputs
-from lsqverify.rar.types import Query as RarQuery
-from lsqverify.raw.types import Query as RawQuery, SqPtr
-from lsqverify.replay.types import Cause
-from lsqverify.vlq.types import QueuePtr
+from suites.memblock.lsq.load_queue.actor import LoadActor
+from suites.memblock.lsq.load_queue.types import Inputs
+from suites.memblock.lsq.rar.types import Query as RarQuery
+from suites.memblock.lsq.raw.types import Query as RawQuery, SqPtr
+from suites.memblock.lsq.replay.types import Cause
+from suites.memblock.lsq.vlq.types import QueuePtr
 
 
 async def test_full_virtual_queue_four_generations_and_reverse_completions(lq):

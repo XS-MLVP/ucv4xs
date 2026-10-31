@@ -20,7 +20,7 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from duts import DUTS, dut_dir, export_name, rtl_dir  # noqa: E402
+from suites.memblock.lsu.inventory import DUTS, dut_dir, export_name, rtl_dir  # noqa: E402
 
 LOCK = __import__("ucv.runtime", fromlist=["toolchain"]).toolchain()
 PICKER = LOCK["picker"]["executable"]

@@ -1,8 +1,8 @@
 import pytest
-from bpuverify.abtb.model.state.replacer import route
-from bpuverify.abtb.model.state.replacer import touch
-from bpuverify.abtb.model.state.replacer import update
-from bpuverify.abtb.model.state.replacer import victim
+from suites.frontend.bpu.abtb.model.state.replacer import route
+from suites.frontend.bpu.abtb.model.state.replacer import touch
+from suites.frontend.bpu.abtb.model.state.replacer import update
+from suites.frontend.bpu.abtb.model.state.replacer import victim
 
 
 @pytest.mark.parametrize('way,expected', [(0, 5), (1, 4), (2, 2), (3, 0)])

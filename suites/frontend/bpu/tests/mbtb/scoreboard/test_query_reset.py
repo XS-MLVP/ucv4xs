@@ -3,13 +3,13 @@ from copy import deepcopy
 from dataclasses import replace
 import pytest
 from toffee import ScoreboardMismatch
-from bpuverify.mbtb.model.semantic import Events, MbtbReference
-from bpuverify.mbtb.transaction.types import MbtbEntry, MbtbPrediction
-from bpuverify.common.model.query_reset_program import Program, MODES, RULES
+from suites.frontend.bpu.mbtb.model.semantic import Events, MbtbReference
+from suites.frontend.bpu.mbtb.transaction.types import MbtbEntry, MbtbPrediction
+from suites.frontend.bpu.models.query_reset_program import Program, MODES, RULES
 DUTS = ('mbtb',)
-from bpuverify.common.model.query_lifetime import QueryLease
-from bpuverify.mbtb.coverage.query_reset import Coverage
-from bpuverify.mbtb.checker.query_reset import Checks
+from suites.frontend.bpu.models.query_lifetime import QueryLease
+from suites.frontend.bpu.mbtb.coverage.query_reset import Coverage
+from suites.frontend.bpu.mbtb.checker.query_reset import Checks
 
 @pytest.mark.parametrize('dut', DUTS)
 @pytest.mark.parametrize('mode', MODES)

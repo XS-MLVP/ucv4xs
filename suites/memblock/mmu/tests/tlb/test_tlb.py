@@ -1,8 +1,8 @@
 """TLB (ITLB) parent integration tests."""
 from __future__ import annotations
 
-from mmuverify.common.runtime import execution
-from mmuverify.tlbfa.model import ALL_STAGE, NO_S2, ONLY_S2
+from suites.memblock.mmu.execution import execution
+from suites.memblock.mmu.tlbfa.model import ALL_STAGE, NO_S2, ONLY_S2
 
 from ..tlbfa.common import make_refill
 
@@ -33,7 +33,7 @@ def pte_for(vaddr: int, **overrides) -> object:
 # TLB-BARE-01
 async def test_bare_mode_passes_address_without_ptw(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(satp_mode=0, imode=0)
         await env.settle(3)
@@ -45,7 +45,7 @@ async def test_bare_mode_passes_address_without_ptw(tlb_env):
 # TLB-BARE-02
 async def test_m_mode_disables_translation_even_with_satp(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(satp_mode=8, imode=3, satp_asid=1)
         await env.settle(3)
@@ -57,7 +57,7 @@ async def test_m_mode_disables_translation_even_with_satp(tlb_env):
 # TLB-MISS-01, TLB-PTW-01
 async def test_sv39_miss_requests_ptw_with_vpn(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(satp_mode=8, imode=0)
         await env.settle(3)
@@ -73,7 +73,7 @@ async def test_sv39_miss_requests_ptw_with_vpn(tlb_env):
 # hits and returns the PPN composed by the real TLBFA child.
 async def test_ptw_refill_then_hit(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(satp_mode=8, imode=0)
         await env.settle(3)
@@ -94,7 +94,7 @@ async def test_ptw_refill_then_hit(tlb_env):
 # TLB-REFILL-02
 async def test_ptw_response_for_a_different_tag_does_not_satisfy_miss(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(satp_mode=8, imode=0)
         await env.settle(3)
@@ -111,7 +111,7 @@ async def test_ptw_response_for_a_different_tag_does_not_satisfy_miss(tlb_env):
 # TLB-FENCE-01
 async def test_sfence_all_invalidates_refilled_stage1(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(satp_mode=8, imode=0, satp_asid=0)
         await env.settle(3)
@@ -127,7 +127,7 @@ async def test_sfence_all_invalidates_refilled_stage1(tlb_env):
 # TLB-CTX-01: a stage-2 context miss reports the all-stage class to the PTW.
 async def test_virtualized_stage2_miss_requests_all_stage(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(
             satp_mode=0, imode=0, virt=1,
@@ -151,7 +151,7 @@ async def _miss_refill_hit(env, vaddr: int, asid: int = 0, vmid: int = 0, **pte_
 # TLB-EXCP-01
 async def test_instruction_page_fault_on_missing_x_permission(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(satp_mode=8, imode=0)
         await env.settle(3)
@@ -163,7 +163,7 @@ async def test_instruction_page_fault_on_missing_x_permission(tlb_env):
 # TLB-EXCP-02
 async def test_instruction_page_fault_on_user_bit_mismatch(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(satp_mode=8, imode=0)
         await env.settle(3)
@@ -175,7 +175,7 @@ async def test_instruction_page_fault_on_user_bit_mismatch(tlb_env):
 # TLB-EXCP-03
 async def test_instruction_page_fault_when_accessed_bit_is_clear(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(satp_mode=8, imode=0)
         await env.settle(3)
@@ -187,7 +187,7 @@ async def test_instruction_page_fault_when_accessed_bit_is_clear(tlb_env):
 # TLB-EXCP-04
 async def test_access_fault_has_priority_over_page_fault(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(satp_mode=8, imode=0)
         await env.settle(3)
@@ -199,7 +199,7 @@ async def test_access_fault_has_priority_over_page_fault(tlb_env):
 # TLB-EXCP-05
 async def test_fake_pte_is_reported_as_nonleaf_like(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(satp_mode=8, imode=0)
         await env.settle(3)
@@ -212,7 +212,7 @@ async def test_fake_pte_is_reported_as_nonleaf_like(tlb_env):
 # TLB-EXCP-06
 async def test_nonleaf_pte_does_not_raise_a_leaf_page_fault(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(satp_mode=8, imode=0)
         await env.settle(3)
@@ -226,7 +226,7 @@ async def test_nonleaf_pte_does_not_raise_a_leaf_page_fault(tlb_env):
 # TLB-EXCP-07, TLB-BARE-03
 async def test_clean_hit_and_sv48_mode(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(satp_mode=9, imode=0)
         await env.settle(3)
@@ -240,7 +240,7 @@ async def test_clean_hit_and_sv48_mode(tlb_env):
 # a later virtualized request hits with the merged PPN.
 async def test_two_stage_refill_and_hit(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(
             satp_mode=0, imode=0, virt=1, vsatp_mode=8, hgatp_mode=8,
@@ -265,7 +265,7 @@ async def test_two_stage_refill_and_hit(tlb_env):
 # TLB-FENCE-02, TLB-FENCE-03
 async def test_sfence_all_asid_and_address_forms(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(satp_mode=8, imode=0, satp_asid=1)
         await env.settle(3)
@@ -299,7 +299,7 @@ async def test_sfence_all_asid_and_address_forms(tlb_env):
 # TLB-FENCE-04
 async def test_hfence_forms_do_not_clear_no_s2_entries(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(satp_mode=8, imode=0)
         await env.settle(3)
@@ -318,7 +318,7 @@ async def test_hfence_forms_do_not_clear_no_s2_entries(tlb_env):
 # stage-class effect on a no-S2 entry.
 async def test_sfence_and_hfence_forms(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(satp_mode=8, imode=0)
         await env.settle(3)
@@ -356,7 +356,7 @@ async def test_sfence_and_hfence_forms(tlb_env):
 # select all 48 TLBFA ways, then hit each selected way.
 async def test_many_ptw_refills_cover_all_storage_ways(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(satp_mode=8, imode=0)
         await env.settle(3)
@@ -380,7 +380,7 @@ async def test_many_ptw_refills_cover_all_storage_ways(tlb_env):
 # through the real parent write port.
 async def test_parent_storage_toggle_through_ptw(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(satp_mode=8, imode=0)
         await env.settle(3)
@@ -416,7 +416,7 @@ async def test_parent_storage_toggle_through_ptw(tlb_env):
 # the PTW with their distinct encodings.
 async def test_only_stage1_and_only_stage2_ptw_classes(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(satp_mode=0, imode=0, virt=1,
                         vsatp_mode=8, hgatp_mode=0, satp_asid=1, hgatp_vmid=2)
@@ -435,7 +435,7 @@ async def test_only_stage1_and_only_stage2_ptw_classes(tlb_env):
 # translation; a later request hits and returns the G-stage PPN.
 async def test_only_stage2_refill_and_hit(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(satp_mode=0, imode=0, virt=1,
                         vsatp_mode=0, hgatp_mode=8, satp_asid=1, hgatp_vmid=2)
@@ -458,7 +458,7 @@ async def test_only_stage2_refill_and_hit(tlb_env):
 # cycle through the just-back path.
 async def test_ptw_response_completes_outstanding_request(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(satp_mode=8, imode=0)
         await env.settle(3)
@@ -480,7 +480,7 @@ async def test_ptw_response_completes_outstanding_request(tlb_env):
 
 async def test_two_stage_ptw_response_completes_outstanding_request(tlb_env):
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(satp_mode=0, imode=0, virt=1,
                         vsatp_mode=8, hgatp_mode=8, satp_asid=1, hgatp_vmid=3)
@@ -508,10 +508,10 @@ async def test_two_stage_ptw_response_completes_outstanding_request(tlb_env):
 # TLB-GPA-REPLAY-01: an allStage entry whose G stage faults requests the GPA
 # with getGpa=1, then reports gpf with the S1 GPA after the GPA response.
 async def test_gpa_replay_for_all_stage_gpf(tlb_env):
-    from mmuverify.tlbfa.model import ALL_STAGE
+    from suites.memblock.mmu.tlbfa.model import ALL_STAGE
 
     env = tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(satp_mode=8, virt=1, vsatp_mode=8, hgatp_mode=8,
                         imode=0)

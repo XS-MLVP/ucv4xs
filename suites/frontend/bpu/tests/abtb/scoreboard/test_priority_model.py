@@ -1,7 +1,7 @@
 import pytest
-from bpuverify.abtb.model.state.counter import CounterReference
-from bpuverify.abtb.model.state.counter import index
-from bpuverify.abtb.model.state.counter import touch
+from suites.frontend.bpu.abtb.model.state.counter import CounterReference
+from suites.frontend.bpu.abtb.model.state.counter import index
+from suites.frontend.bpu.abtb.model.state.counter import touch
 from tests.abtb.scoreboard.test_counter_model import training
 
 

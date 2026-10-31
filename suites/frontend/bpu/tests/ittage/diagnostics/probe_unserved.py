@@ -1,7 +1,7 @@
 """Explicit-only probe: ITTAGE learning from an unserved original query snapshot."""
 import json
 
-from bpuverify.ittage.transaction.types import IttageTraining
+from suites.frontend.bpu.ittage.transaction.types import IttageTraining
 
 PC = 0x40001800
 POSITION = 4

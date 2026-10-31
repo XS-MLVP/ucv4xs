@@ -20,13 +20,13 @@ import json
 
 import pytest
 
-from bpuverify.bpu.case.early_direction import discover_negative_path
-from bpuverify.bpu.checker.early_direction_learning import EarlyDirectionChecks
-from bpuverify.bpu.checker.pipeline import PipelineChecker
-from bpuverify.bpu.coverage.early_direction import EarlyDirectionCoverage
-from bpuverify.bpu.env.early_direction import early_direction_program
-from bpuverify.common.env.artifacts import write_output
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.bpu.case.early_direction import discover_negative_path
+from suites.frontend.bpu.bpu.checker.early_direction_learning import EarlyDirectionChecks
+from suites.frontend.bpu.bpu.checker.pipeline import PipelineChecker
+from suites.frontend.bpu.bpu.coverage.early_direction import EarlyDirectionCoverage
+from suites.frontend.bpu.bpu.env.early_direction import early_direction_program
+from suites.frontend.bpu.runtime.artifacts import write_output
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 PC = 0x40000000
 

@@ -3,17 +3,16 @@ from dataclasses import replace
 import pytest
 from toffee import ScoreboardMismatch
 
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.bpu.model.pipeline import Redirect
-from bpuverify.bpu.model.direction_sources import context_for as direction_context
-from bpuverify.bpu.model.indirect_sources import context_for as target_context
-from bpuverify.bpu.model.joint_lifetime import (
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.pipeline import Redirect
+from suites.frontend.bpu.bpu.model.direction_sources import context_for as direction_context
+from suites.frontend.bpu.bpu.model.indirect_sources import context_for as target_context
+from suites.frontend.bpu.bpu.model.joint_lifetime import (
     Program,MODES,RULES,PC,VIA,CONDITION,INDIRECT,CONDITION_TARGET,INDIRECT_TARGET,MAIN_WRONG)
-from bpuverify.bpu.checker.joint_lifetime import JointFact,expect_fact
-from bpuverify.bpu.coverage.joint_lifetime import Coverage
+from suites.frontend.bpu.bpu.checker.joint_lifetime import JointFact,expect_fact
+from suites.frontend.bpu.bpu.coverage.joint_lifetime import Coverage
 from tests.bpu.scoreboard.test_joint_sources import (
     prepared,query,resolve,outcome,joint_learned,quiet,revisit)
-
 
 
 def example(blocked):

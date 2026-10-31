@@ -1,47 +1,20 @@
-# 消除误报与漏检：防复发速查卡
+# 历史踩坑编号到现行方法的速查
 
-完整背景、来源与边界见 [SKILL.md](SKILL.md)。这是既往踩坑的迁移清单，不是新一轮签核结论。
+这里只做导航。操作正文按 [阶段/问题](../README.md) 读取；历史问题、错误决策和原修正建议见 [十二类案例](../../docs/lessons/rtl-verification-soundness-20261026.md)。
 
-## 先防这个循环
+| 历史编号 | 现行方法 |
+|---|---|
+| P01 生产者合法性 | [需求/边界](../design/requirements-boundary.md)、[合法激励](../execution/legal-stimulus.md) |
+| P02 并发漏采 | [checker 与运行时](../execution/checker-and-runtime.md) |
+| P03 过严比较与过宽放行 | [checker 与运行时](../execution/checker-and-runtime.md) |
+| P04 同源 oracle | [独立 oracle](../execution/independent-oracle.md) |
+| P05 身份、粒度、抽象层级 | [独立 oracle](../execution/independent-oracle.md)、[DUT 边界](../design/requirements-boundary.md) |
+| P06 非区分性组合 | [行为等价类](../design/behavior-equivalence.md) |
+| P07 取消副作用遗漏 | [checker 与运行时](../execution/checker-and-runtime.md) |
+| P08 空跑和假完成 | [checker 与运行时](../execution/checker-and-runtime.md) |
+| P09 collection、字段未受检 | [实现与追溯](../design/traceability-and-implementation.md)、[checker](../execution/checker-and-runtime.md) |
+| P10 生成产物缺观察点 | [DUT 边界](../design/requirements-boundary.md)、[checker](../execution/checker-and-runtime.md) |
+| P11 失败消失不等于根因明确 | [归因与证据](../review/triage-and-evidence.md) |
+| P12 覆盖/归档齐备不等于语义完成 | [退出与残余](../design/closure-and-residuals.md)、[证据审计](../review/triage-and-evidence.md) |
 
-**误报太多 → 放宽整段检查 → 真错误也被放过 → 全绿 → 独立复核再发现漏检。**
-
-一次修复要同时证明：合法场景不再误报，受保证的错误行为仍能检出。
-
-## 换模块时逐条迁移
-
-| 历史踩坑 | 现在应该做什么 | 最少留下什么对照 |
-|---|---|---|
-| P01：端口可驱动被当生产者可达 | 核实编码、对齐、互斥、许可及协议约束 | 合法 fixture 通过；非法 fixture 拒绝 |
-| P02：环境漏采同拍事件，被误诊为 RTL 丢请求 | 同沿快照全部通道，再更新账本 | 请求/响应同拍 + 多入口同拍 |
-| P03：过严比较后改成窗口静音 | 只豁免未定义字段或明确允许的事件 | 合法例外过；邻近未授权事件失败 |
-| P04：模型复制 RTL 错误 | 关键结果建立独立来源与固定答案 | 修前错误算法被独立检查拒绝 |
-| P05：槽位/范围/协议布局代替真实语义 | 显式绑定身份、字节、地址域与粒度 | 非零起点/回绕/布局变化对照 |
-| P06：状态共存却没真正竞争 | 让正确与错误实现必须给不同答案 | 反转优先级等错误答案失败 |
-| P07：主 valid 消失就当取消干净 | 核对全部副作用和后续残留 | 当拍禁止项 + 新事务续接 |
-| P08：没接受/没排空或重复计数也 PASS | 独立目标、按 fire 的 UID 账本及 watchdog | 拒绝全部/阻断完成时失败；保持多拍不重复计数 |
-| P09：有测试/字段但没实际检查 | 对账 collection、驱动、观测和比较器 | 拼错键/缺字段/翻转受检值能报错 |
-| P10：源码断言被当 DUT 检查点 | 检查生成产物，区分静态与动态证据 | 实际断言或公开输出检查位置 |
-| P11：失败消失就当根因已明 | 保存修前证据并做独立成对对照 | 误报修复后仍能抓相邻错误 |
-| P12：覆盖和归档齐全就当语义完成 | 结论绑定当轮源码、结果和实际反例 | 旧 run/缺日志/漏选反例时审计拒绝 |
-
-## 每次修复的三个交付物
-
-1. **经验条目**：原假设错在哪里、证据是什么、证明边界是什么。
-2. **成对回归**：合法通过对照 + 针对性错误/反例对照，明确注入层。
-3. **持续检查入口**：落在 fixture、checker、runner、collection 或报告审计中，不靠人记住。
-
-## 不要再混淆
-
-- 合法 DUT 反例、检查器读数注错、错误参考实验是不同证据。
-- 局部 helper 反例不自动证明正式用例可达。
-- 状态共存不等于竞争，先后执行不等于同拍，bin 命中不等于结果受检。
-- 调延迟后通过不等于根因已证；未命中不等于不可达。
-- 模型与 RTL 一致不等于语义正确；缺证据不等于已排除。
-- 历史模块的 XFAIL 不是当前 LSU 的策略；真实失败按当前要求保持普通 FAIL。
-- 方法可以迁移，其他模块的 PASS 和覆盖数据不能借用。
-
-## 开工与收尾各问一次
-
-> 我们以前在哪种错误假设上吃过亏？这个模块靠哪条具体检查阻止它再次发生？
-> 如果这次修复方向错了，哪个对照会立刻让它失败？
+这张表不是已执行检查清单，更不是新一轮硬件验收。

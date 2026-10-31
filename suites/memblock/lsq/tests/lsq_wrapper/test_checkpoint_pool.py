@@ -1,10 +1,12 @@
 """Full real Wrapper checkpoint lifecycles; no synthetic child feedback."""
+
 from dataclasses import replace
 import hashlib
 import json
 
-from lsqverify.replay.types import Cause
-from lsqverify.vlq.types import QueuePtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.replay.types import Cause
+from suites.memblock.lsq.vlq.types import QueuePtr
 from .memory_owners import MemoryOwners, cached_load
 from .test_replay_population import drain_replays
 
@@ -21,7 +23,7 @@ class CheckpointMemoryOwners(MemoryOwners):
         ready = fields.get("replay_ready", self.base.replay_ready)
         before = self.env.pre_observed
         for bank in range(3):
-            p = f"io_replay_{bank}_"
+            p = P.io(f"replay_{bank}_")
             if not before[p + "valid"] or not ready[bank]:
                 continue
             slot = before[p + "bits_replayQueueIdx"]
@@ -56,8 +58,8 @@ async def test_real_wrapper_checkpoint_high_low_pool_reuse(lsq, tmp_path):
         slots = trace.public_slots[generation]
         assert set(slots) == set(range(120)) and set(slots.values()) == uids
         assert all(state["completed"] for state in trace.loads if state["uid"] in uids)
-        assert lsq.observed["io_lqEmpty"] and lsq.observed["io_sqEmpty"]
-        assert not lsq.observed["io_replayAllocate"]
+        assert lsq.observed[P.p_lqEmpty] and lsq.observed[P.p_sqEmpty]
+        assert not lsq.observed[P.p_replayAllocate]
         lsq.prove("LSQ-REPLAY.capacity", "LSQ-ALLOC.lq_capacity")
         lifetimes.append(dict(generation=generation, checkpoint=checkpoint, public_slots=sorted(slots),
                               replay_handshakes=120, feedback_and_ordered_completions=120,

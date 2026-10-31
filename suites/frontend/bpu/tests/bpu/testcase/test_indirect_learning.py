@@ -1,7 +1,7 @@
 """062: autonomous full-history indirect learning, final repair and retarget."""
 import pytest
-from bpuverify.bpu.case.indirect_learning import check_indirect_learning
-from bpuverify.bpu.coverage.indirect_learning import IndirectLearningCoverage
+from suites.frontend.bpu.bpu.case.indirect_learning import check_indirect_learning
+from suites.frontend.bpu.bpu.coverage.indirect_learning import IndirectLearningCoverage
 
 
 @pytest.mark.feature('BPU-INT-062')

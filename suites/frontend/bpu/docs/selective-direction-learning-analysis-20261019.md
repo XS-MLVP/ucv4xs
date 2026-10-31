@@ -1,5 +1,8 @@
 # 另一分支免写，不吞掉本分支的迟到学习
 
+> 路径迁移说明（2026-10-31）：本报告仍属于原日期、基线和执行源码；实现文件已迁到工程根。可点击源码链接更新到当前位置，不据此重标历史 PASS/FAIL 或覆盖结论。参见[本轮命名空间迁移](../../../../docs/lessons/suite-namespace-refactor-20261031.md)。
+
+
 本轮补强已有 INT-086，没有新增功能编号。先写入[语义契约](selective-direction-learning-contract.json)，再实现程序；不是把 11 个新命中行定义为 11 个功能点。
 
 ## 忽略的组合
@@ -34,4 +37,4 @@
 - 累计 BPU 38,119 → 38,130 / 46,541，81.9041% → 81.9278%；全模块未命中 10,786 → 10,775，分母不变。先前无独立通过见证的 1391/1415 现在已有真正集成命中；其他未命中不因此获得信用。
 - INT-086 整体仍为 FAIL；旧饱和策略及历史存活问题的五个普通失败保留。没有运行新全量，没有修改原全量 24,867 项统计，也没有宣称完整 FTQ 执行/退休资格已证明。后继缺席仅是训练切点部分反馈，不代表后继已执行或已取消。
 
-模型、case、检查器、环境和覆盖率分别放置于 `bpuverify/bpu/{model/tage,case,checker,env,coverage}/selective_learning.py`。真实测试见 `tests/bpu/testcase/test_selective_learning.py`；资格核验见 `results/selective-learning-native-20261019-v1/qualification-analysis.json`。
+模型、case、检查器、环境和覆盖率分别放置于 `suites/frontend/bpu/bpu/{model/tage,case,checker,env,coverage}/selective_learning.py`。真实测试见 `tests/bpu/testcase/test_selective_learning.py`；资格核验见 `results/selective-learning-native-20261019-v1/qualification-analysis.json`。

@@ -4,9 +4,9 @@ from itertools import product
 
 import pytest
 
-from bpuverify.bpu.model.micro_sources import MicroOnlySources
-from bpuverify.bpu.model.pipeline import ENABLES, Events, Outcome, PipelineReference, Redirect, Resolution
-from bpuverify.bpu.model.selection import Branch, Choice, Kind, StackAction, fallthrough
+from suites.frontend.bpu.bpu.model.micro_sources import MicroOnlySources
+from suites.frontend.bpu.bpu.model.pipeline import ENABLES, Events, Outcome, PipelineReference, Redirect, Resolution
+from suites.frontend.bpu.bpu.model.selection import Branch, Choice, Kind, StackAction, fallthrough
 
 
 PC = 0x40000800

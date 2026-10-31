@@ -31,7 +31,8 @@ output.mkdir(parents=True, exist_ok=False)
 # Never overwrite an earlier source snapshot when iterating on a test/model.
 snapshot = output / "verification-source"
 files = [ROOT / "pytest.ini", ROOT / "README.md"]
-for folder in ("lsqverify", "tests", "tools", "docs/contracts", "manifest"):
+files.extend(ucv_paths.suite_python_sources(ROOT))
+for folder in ("docs/contracts", "manifest"):
     files.extend(p for p in (ROOT / folder).rglob("*")
                  if p.is_file() and "__pycache__" not in p.parts and p.suffix != ".pyc")
 source_hashes = {}

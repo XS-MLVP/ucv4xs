@@ -1,12 +1,14 @@
 """Exact full virtual SQ exclusive boundary, not a129th Store allocation."""
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.forward.types import Query
-from lsqverify.raw.types import SqPtr
-from lsqverify.replay.types import Cause
-from lsqverify.vlq.types import RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.forward.types import Query
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.replay.types import Cause
+from suites.memblock.lsq.vlq.types import RobPtr
 from .memory_owners import MemoryOwners, StoreOwner, cached_load
 
 
@@ -26,7 +28,7 @@ async def test_full_virtual_sq_exclusive_endpoint_current_window_original_effect
     await trace.write_all(range(64))
     query=Query(True,load.execution.vaddr,load.execution.uop.sq,3,strict=strict)
     await trace.forward(load,lane,query=query)
-    p=f"io_forward_{lane}_s2Resp_"
+    p=P.io(f"forward_{lane}_s2Resp_")
     lsq.expect({p+"valid":1,p+"bits_forwardInvalid":0,p+"bits_matchInvalid":0,
                 p+"bits_dataInvalid_valid":0,p+"bits_addrInvalid_valid":int(strict)},
                "full exclusive SQ endpoint uses real current physical window, strict still waits")

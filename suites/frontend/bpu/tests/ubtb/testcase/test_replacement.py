@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.ubtb.checker.assertions import expected_prediction
-from bpuverify.ubtb.checker.assertions import train_taken
-from bpuverify.ubtb.case.definitions import NUM_ENTRIES
-from bpuverify.ubtb.case.definitions import capacity_vectors
+from suites.frontend.bpu.ubtb.checker.assertions import expected_prediction
+from suites.frontend.bpu.ubtb.checker.assertions import train_taken
+from suites.frontend.bpu.ubtb.case.definitions import NUM_ENTRIES
+from suites.frontend.bpu.ubtb.case.definitions import capacity_vectors
 
 
 @pytest.mark.feature("BPU-UBTB-006")

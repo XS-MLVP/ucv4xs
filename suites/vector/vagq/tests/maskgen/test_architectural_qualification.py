@@ -5,15 +5,15 @@ from pathlib import Path
 
 import pytest
 
-from vagqverify.qualification.rvv_destination import Instruction
-from vagqverify.maskgen.reference import MaskRequest, evaluate_protocol
+from suites.vector.vagq.qualification.rvv_destination import Instruction
+from suites.vector.vagq.maskgen.reference import MaskRequest, evaluate_protocol
 
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)
 
 
 def test_oracle_imports_only_standard_library_and_has_no_external_reads():
-    path = Path(__file__).resolve().parents[2] / 'vagqverify/qualification/rvv_destination.py'
+    path = Path(__file__).resolve().parents[2] / 'qualification/rvv_destination.py'
     tree = ast.parse(path.read_text())
     assert {node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)} == {'dataclasses', 'fractions'}
     assert not any(isinstance(node, ast.Import) for node in ast.walk(tree))

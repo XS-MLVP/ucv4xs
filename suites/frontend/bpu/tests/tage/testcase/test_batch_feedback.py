@@ -4,14 +4,14 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.tage.transaction.types import TageBatchTraining
-from bpuverify.tage.transaction.types import TageBranchFeedback
-from bpuverify.tage.transaction.types import TageTraining
-from bpuverify.tage.coverage.catalog import tage_batch_feedback_coverage_model
-from bpuverify.tage.coverage.catalog import write_tage_batch_feedback_coverage
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.tage.case.definitions import PC
-from bpuverify.tage.case.definitions import POSITION
+from suites.frontend.bpu.tage.transaction.types import TageBatchTraining
+from suites.frontend.bpu.tage.transaction.types import TageBranchFeedback
+from suites.frontend.bpu.tage.transaction.types import TageTraining
+from suites.frontend.bpu.tage.coverage.catalog import tage_batch_feedback_coverage_model
+from suites.frontend.bpu.tage.coverage.catalog import write_tage_batch_feedback_coverage
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.tage.case.definitions import PC
+from suites.frontend.bpu.tage.case.definitions import POSITION
 
 
 @pytest.mark.feature("BPU-TAGE-017")

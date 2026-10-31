@@ -4,11 +4,11 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.bpu.agent.main import BpuAgent
-from bpuverify.bpu.transaction.types import BpuRedirect
-from bpuverify.bpu.checker.phr.checking import BpuPhrChecker
-from bpuverify.bpu.env.phr.observation import BpuPhrObservation
-from bpuverify.bpu.checker.phr.association import BpuPhrAssociation
+from suites.frontend.bpu.bpu.agent.main import BpuAgent
+from suites.frontend.bpu.bpu.transaction.types import BpuRedirect
+from suites.frontend.bpu.bpu.checker.phr.checking import BpuPhrChecker
+from suites.frontend.bpu.bpu.env.phr.observation import BpuPhrObservation
+from suites.frontend.bpu.bpu.checker.phr.association import BpuPhrAssociation
 
 
 def test_legacy_redirect_and_metadata_are_preserved_without_aliasing():
@@ -134,7 +134,7 @@ async def test_observation_drain_checks_latched_failures_before_and_after():
 
 @pytest.fixture
 def coherent_monitor(monkeypatch):
-    monkeypatch.setattr('bpuverify.bpu.env.phr.observation.BpuPhrMonitor', CoherentMonitor)
+    monkeypatch.setattr('suites.frontend.bpu.bpu.env.phr.observation.BpuPhrMonitor', CoherentMonitor)
 
 
 async def test_ownership_closes_old_streams_and_starts_fresh_streams(coherent_monitor):
@@ -190,7 +190,7 @@ async def test_binding_failure_does_not_close_existing_streams(monkeypatch):
     original = agent.prediction_monitor, agent.meta_monitor
     def unavailable(agent):
         raise RuntimeError('memory-direct leaf unavailable')
-    monkeypatch.setattr('bpuverify.bpu.env.phr.observation.BpuPhrMonitor', unavailable)
+    monkeypatch.setattr('suites.frontend.bpu.bpu.env.phr.observation.BpuPhrMonitor', unavailable)
     with pytest.raises(RuntimeError, match='memory-direct leaf unavailable'):
         async with agent.observe_phr(BpuPhrChecker(scope='binding')):
             pytest.fail('binding should fail before ownership changes')
@@ -203,7 +203,7 @@ async def test_subscription_start_failure_restores_streams(monkeypatch):
     class CannotStart(CoherentMonitor):
         def start(self, *args, **kwargs):
             raise RuntimeError('subscription failed')
-    monkeypatch.setattr('bpuverify.bpu.env.phr.observation.BpuPhrMonitor', CannotStart)
+    monkeypatch.setattr('suites.frontend.bpu.bpu.env.phr.observation.BpuPhrMonitor', CannotStart)
     with pytest.raises(RuntimeError, match='subscription failed'):
         async with agent.observe_phr(BpuPhrChecker(scope='subscription')):
             pytest.fail('subscription cannot start')

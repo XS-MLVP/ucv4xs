@@ -2,6 +2,9 @@
 
 # LSQ 独立验证工程根目录
 
+> 路径迁移说明（2026-10-31）：本文记录中的 *verify/common 为当时源码路径；当前实现已迁入 suites.<group>.<suite> 工程根。历史判定、命令与哈希不据此重标；当前映射见仓库 docs/lessons/suite-namespace-refactor-20261031.md。
+
+
 **本目录 `memblock-hash/lsq/` 是 LSQ 验证工程根目录。** 后续构建、pytest/xreactor 入口、DUT 包、测试、版本锁和运行结果均相对此目录定位，不以父级 MemBlock 目录或源码仓库为工程根。
 
 目标：像 BPU 的分层方式一样，**内部子模块独立 UT → 分支组合 UT → 整体 LsqWrapper UT**。已开始实际验证，不直接上整块 smoke 代替子模块验证。

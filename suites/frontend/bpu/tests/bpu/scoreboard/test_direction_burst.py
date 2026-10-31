@@ -7,10 +7,10 @@ import ast
 import pytest
 from toffee import Scoreboard
 
-from bpuverify.bpu.checker.direction_burst import DirectionBurstChecks
-from bpuverify.bpu.coverage.direction_burst import DirectionBurstCoverage
-from bpuverify.bpu.model.tage.migration import PC,POSITION,TARGET,PATHS
-from bpuverify.bpu.model.tage.stale_burst import SOURCE_COUNT,COMMIT_COUNTERS
+from suites.frontend.bpu.bpu.checker.direction_burst import DirectionBurstChecks
+from suites.frontend.bpu.bpu.coverage.direction_burst import DirectionBurstCoverage
+from suites.frontend.bpu.bpu.model.tage.migration import PC,POSITION,TARGET,PATHS
+from suites.frontend.bpu.bpu.model.tage.stale_burst import SOURCE_COUNT,COMMIT_COUNTERS
 from tests.bpu.scoreboard.test_direction_migration import migration_program,request,values
 from tests.bpu.scoreboard.test_direction_sources import quiet
 from tests.bpu.scoreboard.test_direction_service import via
@@ -251,7 +251,7 @@ def test_final_consumption_requires_every_effect_neighbour_and_immutable_origina
 
 
 def test_burst_case_keeps_timing_concurrency_and_golden_logic_in_support_layers():
-    for file in ('bpuverify/bpu/case/direction_burst.py','tests/bpu/testcase/test_direction_burst.py'):
+    for file in ('bpu/case/direction_burst.py','tests/bpu/testcase/test_direction_burst.py'):
         for node in ast.walk(ast.parse(Path(file).read_text())):
             assert not isinstance(node,(ast.Assert,ast.ClassDef))
             if isinstance(node,ast.Call):

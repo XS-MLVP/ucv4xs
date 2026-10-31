@@ -12,36 +12,37 @@ DUTS = (
     'waylookup', 'replacer', 'mshr', 'databank', 'metabank', 'metaarray',
     'dataarray', 'missunit', 'mainpipe', 'prefetchpipe', 'icache',
 )
-ROLES = ('agent', 'bundle', 'transaction', 'env', 'case')
+ROLES = ('agent', 'bundle', 'transaction', 'case')
 
-# DUTs that already own a real agent/model/checker. The rest are skeletons
-# with only role directories; this list must grow as each DUT is implemented.
+# DUTs with real agent/model/checker implementations; empty env role directories
+# are deliberately not required.
 IMPLEMENTED = ('waylookup', 'replacer', 'mshr', 'missunit', 'mainpipe',
                'prefetchpipe', 'databank', 'metabank', 'metaarray',
                'dataarray', 'icache')
 
 
 def test_verification_root_only_contains_package_initializer():
-    assert {path.name for path in (ROOT / 'icacheverify').glob('*.py')} == {'__init__.py'}
-    tree = ast.parse((ROOT / 'icacheverify/__init__.py').read_text())
+    assert {path.name for path in ROOT.glob('*.py')} == {'__init__.py', 'bist.py'}
+    tree = ast.parse((ROOT / '__init__.py').read_text())
     # ``from __future__ import annotations`` is a compiler directive, not a
     # re-export table.
     imports = [
         node for node in tree.body
         if isinstance(node, (ast.Import, ast.ImportFrom))
-        and not (isinstance(node, ast.ImportFrom) and node.module == '__future__')
+        and not (isinstance(node, ast.ImportFrom) and node.module in {'__future__', 'pathlib'})
     ]
     assert not imports, "verification root must not re-export DUT symbols"
+    assert not (ROOT / 'icacheverify').exists()
 
 
 def test_each_dut_owns_a_package_directory():
     for dut in DUTS:
-        assert (ROOT / 'icacheverify' / dut).is_dir(), dut
+        assert (ROOT / dut).is_dir(), dut
 
 
 def test_each_dut_has_the_role_directories():
     for dut in DUTS:
-        package = ROOT / 'icacheverify' / dut
+        package = ROOT / dut
         for role in ROLES:
             assert (package / role).is_dir(), (dut, role)
         assert (package / '__init__.py').is_file(), dut
@@ -49,7 +50,7 @@ def test_each_dut_has_the_role_directories():
 
 def test_implemented_duts_declare_bundle_transaction_and_environment():
     for dut in IMPLEMENTED:
-        package = ROOT / 'icacheverify' / dut
+        package = ROOT / dut
         for role, leaf, expected in (
             ('bundle', 'ports.py', ast.ClassDef),
             ('agent', 'main.py', ast.ClassDef),
@@ -58,7 +59,6 @@ def test_implemented_duts_declare_bundle_transaction_and_environment():
             assert path.is_file(), (dut, role)
             tree = ast.parse(path.read_text())
             assert any(isinstance(node, expected) for node in tree.body), (dut, role)
-        assert (package / 'env/pytest.py').is_file(), dut
         assert (package / 'transaction/types.py').is_file(), dut
         assert (package / 'case').is_dir(), dut
 
@@ -75,16 +75,32 @@ def test_testcase_directories_do_not_hold_reusable_support_modules():
         assert not helpers, (dut, helpers)
 
 
-def test_conftest_files_only_register_fixtures_and_plugins():
-    paths = [ROOT / 'tests/conftest.py']
-    paths += [ROOT / 'tests' / dut / 'conftest.py' for dut in DUTS
-              if (ROOT / 'tests' / dut / 'conftest.py').is_file()]
-    for path in paths:
-        tree = ast.parse(path.read_text())
-        assert not any(
-            isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
-            for node in tree.body
-        ), path
+def test_each_dut_fixture_is_declared_once_at_the_pytest_root():
+    tree = ast.parse((ROOT / 'tests/conftest.py').read_text())
+    fixtures = {
+        target.id
+        for node in tree.body
+        if isinstance(node, ast.Assign)
+        for target in node.targets
+        if isinstance(target, ast.Name) and target.id.endswith('_agent')
+    }
+    assert fixtures == {f'{dut}_agent' for dut in DUTS}
+    assert not list((ROOT).glob('*/env/pytest.py'))
+    assert not list((ROOT / 'tests').glob('*/conftest.py'))
+    assert not any(
+        isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
+        for node in tree.body
+    )
+
+
+def test_functional_testcases_only_use_agent_transaction_apis():
+    offenders = []
+    for path in (ROOT / 'tests').glob('*/testcase/*.py'):
+        text = path.read_text()
+        for token in ('.dut.', '.pins.'):
+            if token in text:
+                offenders.append(f'{path.relative_to(ROOT)} contains {token}')
+    assert not offenders, offenders
 
 
 def test_each_dut_has_a_minimal_rtl_closure():
@@ -102,8 +118,8 @@ def test_each_dut_has_a_minimal_rtl_closure():
 
 def test_whole_icache_is_a_peer_of_its_subblocks():
     """The integration DUT is not allowed to own subblock test components."""
-    assert (ROOT / 'icacheverify/icache').is_dir()
+    assert (ROOT / 'icache').is_dir()
     for dut in DUTS:
         if dut == 'icache':
             continue
-        assert not (ROOT / 'icacheverify/icache' / dut).exists(), dut
+        assert not (ROOT / 'icache' / dut).exists(), dut

@@ -1,20 +1,20 @@
 """Distinguish fresh provider feedback from stale physical-way association."""
 
-from bpuverify.common.env.artifacts import output_path
-from bpuverify.common.env.artifacts import write_output
+from suites.frontend.bpu.runtime.artifacts import output_path
+from suites.frontend.bpu.runtime.artifacts import write_output
 
 import json
 
 import pytest
 from toffee import ScoreboardMismatch
 
-from bpuverify.tage.coverage.catalog import tage_way_migration_coverage_model
-from bpuverify.tage.coverage.catalog import write_tage_way_migration_coverage
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.tage.case.definitions import SAME_BANK_PCS
-from bpuverify.tage.case.way_migration_scenario import MisassociatedProviderUseful
-from bpuverify.tage.case.way_migration_scenario import as_misassociated_useful
-from bpuverify.tage.case.way_migration_scenario import check_way_migration
+from suites.frontend.bpu.tage.coverage.catalog import tage_way_migration_coverage_model
+from suites.frontend.bpu.tage.coverage.catalog import write_tage_way_migration_coverage
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.tage.case.definitions import SAME_BANK_PCS
+from suites.frontend.bpu.tage.case.way_migration_scenario import MisassociatedProviderUseful
+from suites.frontend.bpu.tage.case.way_migration_scenario import as_misassociated_useful
+from suites.frontend.bpu.tage.case.way_migration_scenario import check_way_migration
 
 
 async def run_matrix(agent, coverage, mode):

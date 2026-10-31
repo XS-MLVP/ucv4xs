@@ -5,9 +5,9 @@ import random
 
 import pytest
 
-from dcacheverify.miss_track.coverage import MissTrackCoverage
-from dcacheverify.miss_track.env import MissTrackEnv
-from dcacheverify.miss_track.model import (
+from suites.memblock.dcache.miss_track.coverage import MissTrackCoverage
+from suites.memblock.dcache.miss_track.env import MissTrackEnv
+from suites.memblock.dcache.miss_track.model import (
     Alloc,
     Install,
     Invalidate,

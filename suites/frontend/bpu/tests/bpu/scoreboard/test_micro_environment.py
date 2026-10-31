@@ -3,7 +3,7 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.env.micro import MicroProgram
+from suites.frontend.bpu.bpu.env.micro import MicroProgram
 
 
 @pytest.mark.parametrize('learning,actual,expected',((None,(3,),True),(object(),(3,),False),(None,(2,),False),(None,None,False)))

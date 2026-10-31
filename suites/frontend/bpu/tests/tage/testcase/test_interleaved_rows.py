@@ -4,17 +4,17 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.tage.transaction.types import TageBatchTraining
-from bpuverify.tage.transaction.types import TageBranchFeedback
-from bpuverify.tage.transaction.types import TageTraining
-from bpuverify.tage.coverage.catalog import tage_interleaved_rows_coverage_model
-from bpuverify.tage.coverage.catalog import write_tage_interleaved_rows_coverage
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.tage.checker.assertions import prepare_highest_provider
-from bpuverify.tage.checker.assertions import provider_counter
-from bpuverify.tage.case.definitions import HIGHEST_TABLE
-from bpuverify.tage.case.definitions import POSITION
-from bpuverify.tage.case.definitions import SAME_BANK_PCS
+from suites.frontend.bpu.tage.transaction.types import TageBatchTraining
+from suites.frontend.bpu.tage.transaction.types import TageBranchFeedback
+from suites.frontend.bpu.tage.transaction.types import TageTraining
+from suites.frontend.bpu.tage.coverage.catalog import tage_interleaved_rows_coverage_model
+from suites.frontend.bpu.tage.coverage.catalog import write_tage_interleaved_rows_coverage
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.tage.checker.assertions import prepare_highest_provider
+from suites.frontend.bpu.tage.checker.assertions import provider_counter
+from suites.frontend.bpu.tage.case.definitions import HIGHEST_TABLE
+from suites.frontend.bpu.tage.case.definitions import POSITION
+from suites.frontend.bpu.tage.case.definitions import SAME_BANK_PCS
 
 
 OUTCOMES = (0, 1, 0, 1)

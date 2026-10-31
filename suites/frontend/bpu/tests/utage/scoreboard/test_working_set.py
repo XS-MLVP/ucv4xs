@@ -12,13 +12,13 @@ from types import SimpleNamespace as NS
 import pytest
 from toffee import TransferState
 
-from bpuverify.utage.checker.working_set import WorkingSetChecks
-from bpuverify.utage.coverage.working_set import WorkingSetCoverage
-from bpuverify.utage.model.semantic import Context, tag
-from bpuverify.utage.model.usefulness_events import ProtectionState
-from bpuverify.utage.model.working_set import (MODES, PHASES, PC, POSITION, SIZES,
+from suites.frontend.bpu.utage.checker.working_set import WorkingSetChecks
+from suites.frontend.bpu.utage.coverage.working_set import WorkingSetCoverage
+from suites.frontend.bpu.utage.model.semantic import Context, tag
+from suites.frontend.bpu.utage.model.usefulness_events import ProtectionState
+from suites.frontend.bpu.utage.model.working_set import (MODES, PHASES, PC, POSITION, SIZES,
     WorkingSetProgram, WorkingSetReference, address, expected)
-from bpuverify.utage.transaction.types import UtageLookup, UtagePrediction
+from suites.frontend.bpu.utage.transaction.types import UtageLookup, UtagePrediction
 
 
 def prediction(history, base, state):
@@ -189,11 +189,11 @@ def test_end_of_test_cannot_hide_incomplete_or_mutated_originals(fault):
 
 
 def test_case_has_no_timing_io_or_async_join_and_model_has_no_observation_dependencies():
-    case = ast.parse(Path('bpuverify/utage/case/working_set.py').read_text())
+    case = ast.parse(Path('utage/case/working_set.py').read_text())
     forbidden = {'ClockCycles', 'RisingEdge', 'FallingEdge', 'gather', 'create_task', 'get_', 'set_'}
     assert not {node.id for node in ast.walk(case) if isinstance(node, ast.Name)} & forbidden
     assert not {node.attr for node in ast.walk(case) if isinstance(node, ast.Attribute)} & forbidden
-    model = ast.parse(Path('bpuverify/utage/model/working_set.py').read_text())
+    model = ast.parse(Path('utage/model/working_set.py').read_text())
     assert not any(isinstance(node, ast.ImportFrom) and node.module and any(
         part in node.module.split('.') for part in ('monitor', 'driver', 'bundle', 'toffee'))
         for node in ast.walk(model))
@@ -201,7 +201,7 @@ def test_case_has_no_timing_io_or_async_join_and_model_has_no_observation_depend
 
 @pytest.mark.parametrize('capacity', (2, 4, 64))
 async def test_environment_streams_beyond_framework_capacity_without_enlarging_queue_or_whole_batch_timeout(capacity):
-    from bpuverify.utage.env.working_set import WorkingSetEnv
+    from suites.frontend.bpu.utage.env.working_set import WorkingSetEnv
 
     class Transfer:
         def __init__(self, agent, history): self.agent, self.history = agent, history

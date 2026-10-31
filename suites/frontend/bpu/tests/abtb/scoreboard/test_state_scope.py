@@ -2,15 +2,15 @@
 from pathlib import Path
 import pytest
 
-from bpuverify.abtb.env.state.counter import CounterScenario
-from bpuverify.abtb.env.state.replacer import ReplacerScenario
-from bpuverify.abtb.env.state.priority import ResetPriorityScenario
-from bpuverify.abtb.env.state.writebuffer import WriteBufferScenario
-from bpuverify.abtb.coverage.state.supplemental import capacity_coverage
-from bpuverify.abtb.coverage.state.supplemental import gate_coverage
-from bpuverify.abtb.coverage.state.supplemental import priority_coverage
-from bpuverify.abtb.coverage.state.supplemental import replacer_coverage
-from bpuverify.abtb.coverage.state.supplemental import transition_coverage
+from suites.frontend.bpu.abtb.env.state.counter import CounterScenario
+from suites.frontend.bpu.abtb.env.state.replacer import ReplacerScenario
+from suites.frontend.bpu.abtb.env.state.priority import ResetPriorityScenario
+from suites.frontend.bpu.abtb.env.state.writebuffer import WriteBufferScenario
+from suites.frontend.bpu.abtb.coverage.state.supplemental import capacity_coverage
+from suites.frontend.bpu.abtb.coverage.state.supplemental import gate_coverage
+from suites.frontend.bpu.abtb.coverage.state.supplemental import priority_coverage
+from suites.frontend.bpu.abtb.coverage.state.supplemental import replacer_coverage
+from suites.frontend.bpu.abtb.coverage.state.supplemental import transition_coverage
 
 
 @pytest.mark.parametrize('bank', (-1, 4, 1.0, True, '0'))

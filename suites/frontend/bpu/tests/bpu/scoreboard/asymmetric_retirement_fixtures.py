@@ -3,12 +3,12 @@ from copy import deepcopy
 from dataclasses import replace
 from types import SimpleNamespace as NS
 
-from bpuverify.bpu.checker.asymmetric_retirement import AsymmetricRetirementChecks
-from bpuverify.bpu.coverage.asymmetric_retirement import AsymmetricRetirementCoverage
-from bpuverify.bpu.model.pipeline import Redirect
-from bpuverify.bpu.model.tage.asymmetric_retirement import OUTCOMES, PRE_DIRTY_COUNTS
-from bpuverify.bpu.model.tage.neighbor_migration import PC, HISTORY_PATHS
-from bpuverify.bpu.model.tage.service import STREAM_PC, learning_inflight
+from suites.frontend.bpu.bpu.checker.asymmetric_retirement import AsymmetricRetirementChecks
+from suites.frontend.bpu.bpu.coverage.asymmetric_retirement import AsymmetricRetirementCoverage
+from suites.frontend.bpu.bpu.model.pipeline import Redirect
+from suites.frontend.bpu.bpu.model.tage.asymmetric_retirement import OUTCOMES, PRE_DIRTY_COUNTS
+from suites.frontend.bpu.bpu.model.tage.neighbor_migration import PC, HISTORY_PATHS
+from suites.frontend.bpu.bpu.model.tage.service import STREAM_PC, learning_inflight
 from tests.bpu.scoreboard.test_neighbor_migration import fixture
 from tests.bpu.scoreboard.test_dual_migration import source
 from tests.bpu.scoreboard.test_direction_sources import quiet

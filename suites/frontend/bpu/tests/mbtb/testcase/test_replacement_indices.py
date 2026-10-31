@@ -1,12 +1,12 @@
 """One behavioral feature, not one functional ID per copied LRU cell."""
 import pytest
 
-from bpuverify.mbtb.coverage.catalog import mbtb_replacement_coverage_model
-from bpuverify.mbtb.coverage.catalog import write_mbtb_replacement_coverage
-from bpuverify.mbtb.case.replacement_scenario import TOUCH_MODES
-from bpuverify.mbtb.case.replacement_scenario import check_case
-from bpuverify.mbtb.coverage.semantic import SemanticCoverage, RULES
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.mbtb.coverage.catalog import mbtb_replacement_coverage_model
+from suites.frontend.bpu.mbtb.coverage.catalog import write_mbtb_replacement_coverage
+from suites.frontend.bpu.mbtb.case.replacement_scenario import TOUCH_MODES
+from suites.frontend.bpu.mbtb.case.replacement_scenario import check_case
+from suites.frontend.bpu.mbtb.coverage.semantic import SemanticCoverage, RULES
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature('BPU-MBTB-024')

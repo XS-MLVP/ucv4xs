@@ -6,12 +6,12 @@ import ast
 
 import pytest
 from toffee import Scoreboard
-from bpuverify.sc.model.semantic import Context, Events, ScReference
-from bpuverify.sc.model.threshold import ScThresholdModel
-from bpuverify.sc.checker.boundary import ScBoundaryChecks
-from bpuverify.sc.transaction.types import ScLookup
+from suites.frontend.bpu.sc.model.semantic import Context, Events, ScReference
+from suites.frontend.bpu.sc.model.threshold import ScThresholdModel
+from suites.frontend.bpu.sc.checker.boundary import ScBoundaryChecks
+from suites.frontend.bpu.sc.transaction.types import ScLookup
 
-from bpuverify.sc.model import neutral_boundary as programs
+from suites.frontend.bpu.sc.model import neutral_boundary as programs
 
 MODULE = Path(programs.__file__)
 Program, PROFILES = programs.NeutralBoundaryProgram, programs.PROFILES
@@ -54,7 +54,7 @@ def compare(model, program, prediction, weight, thresholds):
 def test_closed_form_has_only_semantic_transaction_dependencies():
     tree = ast.parse(MODULE.read_text())
     assert [n.module for n in ast.walk(tree) if isinstance(n, ast.ImportFrom)] == [
-        'bpuverify.common.model.configuration', 'dataclasses', 'bpuverify.sc.transaction.types']
+        'suites.frontend.bpu.models.configuration', 'dataclasses', 'suites.frontend.bpu.sc.transaction.types']
     assert not any(isinstance(n, ast.Import) for n in ast.walk(tree))
 
 

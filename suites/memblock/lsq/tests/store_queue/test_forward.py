@@ -1,15 +1,17 @@
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.forward.types import Query, Translation
-from lsqverify.psq.directed import scalar_word
-from lsqverify.psq.types import Address, Attributes, Data
-from lsqverify.raw.types import SqPtr
-from lsqverify.store_queue.actor import StoreActor
-from lsqverify.store_queue.directed import consume
-from lsqverify.vlq.types import RobPtr
-from lsqverify.vsq.types import Dispatch
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.forward.types import Query, Translation
+from suites.memblock.lsq.psq.directed import scalar_word
+from suites.memblock.lsq.psq.types import Address, Attributes, Data
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.store_queue.actor import StoreActor
+from suites.memblock.lsq.store_queue.directed import consume
+from suites.memblock.lsq.vlq.types import RobPtr
+from suites.memblock.lsq.vsq.types import Dispatch
 from .helpers import requests
 
 
@@ -69,7 +71,7 @@ async def test_nonzero_head_low_age_group_all_lanes_then_real_drain(sq):
     owner = actor.all[active[-1].flows[0]]
     await actor.step(issue=False, dispatch=False, advance_rob=False, sbuffer_ready=(False, False), queries=(Query(True, owner.address.vaddr, SqPtr.encode(124), 3),) * 3)
     await actor.step(issue=False, dispatch=False, advance_rob=False, sbuffer_ready=(False, False), queries=(Query(),) * 3, translations=(Translation(owner.address.paddr),) * 3)
-    sq.expect({f"io_forward_{lane}_s2Resp_valid": 1 for lane in range(3)}, "actual SQ123/slot59 low-domain candidate reaches every real forward lane")
+    sq.expect({P.io(f"forward_{lane}_s2Resp_valid"): 1 for lane in range(3)}, "actual SQ123/slot59 low-domain candidate reaches every real forward lane")
     await actor.drain()
     actor.checked(("SQ-FORWARD.data", "SQ-READY.upper"), [uid for item in active for uid in item.flows])
 

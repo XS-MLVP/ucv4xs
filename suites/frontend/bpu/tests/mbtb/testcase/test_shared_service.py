@@ -1,9 +1,9 @@
 """An available service slot cannot be allocated to two independent obligations."""
 import json
 import pytest
-from bpuverify.mbtb.model.shared_service import PROGRAMS
-from bpuverify.mbtb.coverage.shared_service import Coverage
-from bpuverify.mbtb.case.shared_service import check_shared_service
+from suites.frontend.bpu.mbtb.model.shared_service import PROGRAMS
+from suites.frontend.bpu.mbtb.coverage.shared_service import Coverage
+from suites.frontend.bpu.mbtb.case.shared_service import check_shared_service
 
 
 @pytest.mark.feature('BPU-MBTB-026')

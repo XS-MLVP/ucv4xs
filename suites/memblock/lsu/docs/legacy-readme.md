@@ -2,6 +2,9 @@
 
 # LSU 执行流水线独立 UT
 
+> 路径迁移说明（2026-10-31）：本文记录中的 *verify/common 为当时源码路径；当前实现已迁入 suites.<group>.<suite> 工程根。历史判定、命令与哈希不据此重标；当前映射见仓库 docs/lessons/suite-namespace-refactor-20261031.md。
+
+
 XiangShan `kunminghu-v3` 访存执行流水线（LSU）的独立单元测试工程。
 本工程只验证 `NewStoreUnit`、`NewLoadUnit`、`StdExeUnit` 三个模块族，**不做跨模块
 联合 harness，不做 LSU 整体、MemBlock 顶层或整核集成**。

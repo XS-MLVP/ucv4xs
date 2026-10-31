@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.utage.transaction.types import UtageTraining
-from bpuverify.utage.checker.assertions import counter
-from bpuverify.utage.case.definitions import PASSING_PC
-from bpuverify.utage.case.definitions import POSITION
-from bpuverify.utage.case.definitions import SATURATION_ATTEMPTS
+from suites.frontend.bpu.utage.transaction.types import UtageTraining
+from suites.frontend.bpu.utage.checker.assertions import counter
+from suites.frontend.bpu.utage.case.definitions import PASSING_PC
+from suites.frontend.bpu.utage.case.definitions import POSITION
+from suites.frontend.bpu.utage.case.definitions import SATURATION_ATTEMPTS
 
 
 @pytest.mark.feature("BPU-UTAGE-010")

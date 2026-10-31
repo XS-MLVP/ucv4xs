@@ -190,7 +190,7 @@ def audit_full():
             low_vectors_hit=756, low_vectors_total=756,
             stored_or_public_vaddr_low=address_target,
             original_source_line_coverage=dict(before_hit=len(old_lines[1]), after_hit=len(new_lines[1]), total=len(new_lines[0]), newly_missing=0)))
-    original_actors = [ROOT / "lsqverify" / name / "actor.py" for name in ("psq", "store_queue")]
+    original_actors = [ROOT / name / "actor.py" for name in ("psq", "store_queue")]
     old_streams, new_streams = journal_streams(PREVIOUS), journal_streams(FULL)
     assert len(old_streams) == 2196 and len(new_streams) == 2205
     assert old_streams.keys() <= new_streams.keys()

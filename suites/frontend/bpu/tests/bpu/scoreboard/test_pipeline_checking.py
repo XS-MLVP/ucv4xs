@@ -6,9 +6,9 @@ from types import SimpleNamespace
 import pytest
 from toffee import ScoreboardMismatch
 
-from bpuverify.bpu.checker.pipeline import PipelineChecker, compared_values, environment
-from bpuverify.bpu.coverage.pipeline import PipelineCoverage, RULES
-from bpuverify.bpu.model.pipeline import Events
+from suites.frontend.bpu.bpu.checker.pipeline import PipelineChecker, compared_values, environment
+from suites.frontend.bpu.bpu.coverage.pipeline import PipelineCoverage, RULES
+from suites.frontend.bpu.bpu.model.pipeline import Events
 from tests.bpu.scoreboard.test_semantic_pipeline import OFF, PC, boot, published
 
 

@@ -8,8 +8,8 @@ from toffee import XEvent
 from toffee import XEventKind
 from toffee import XPhase
 
-from bpuverify.common.bundle.bindings import PortBinding
-from bpuverify.common.bundle.bindings import PulseBinding
+from suites.frontend.bpu.ports.bindings import PortBinding
+from suites.frontend.bpu.ports.bindings import PulseBinding
 
 
 def native_name_dut(tmp_path, names=()):

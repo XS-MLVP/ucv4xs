@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.ittage.transaction.types import IttageTraining
-from bpuverify.ittage.case.definitions import PC
-from bpuverify.ittage.case.definitions import POSITION
+from suites.frontend.bpu.ittage.transaction.types import IttageTraining
+from suites.frontend.bpu.ittage.case.definitions import PC
+from suites.frontend.bpu.ittage.case.definitions import POSITION
 
 
 @pytest.mark.feature("BPU-ITTAGE-010")

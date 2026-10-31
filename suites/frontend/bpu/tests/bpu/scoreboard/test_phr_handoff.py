@@ -2,8 +2,8 @@
 
 import pytest
 
-from bpuverify.bpu.checker.phr.checking import BpuPhrChecker
-from bpuverify.bpu.case.definitions import PC
+from suites.frontend.bpu.bpu.checker.phr.checking import BpuPhrChecker
+from suites.frontend.bpu.bpu.case.definitions import PC
 
 
 @pytest.mark.parametrize('body_failure', (False, True))

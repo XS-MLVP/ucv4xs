@@ -4,14 +4,14 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.bpu.checker.neighbor_migration import NeighborMigrationChecks
-from bpuverify.bpu.model.pipeline import Redirect
-from bpuverify.bpu.model.tage.asymmetric_retirement import (
+from suites.frontend.bpu.bpu.checker.neighbor_migration import NeighborMigrationChecks
+from suites.frontend.bpu.bpu.model.pipeline import Redirect
+from suites.frontend.bpu.bpu.model.tage.asymmetric_retirement import (
     SOURCE_COUNT, INPUT_NAMES, OUTCOMES, SERVICE_IDENTITIES, PRELUDE_PLAN, FINAL_PLAN, expected_profile)
-from bpuverify.bpu.model.tage.neighbor_migration import PC, HISTORY_PATHS
-from bpuverify.bpu.model.tage.dual_migration import POSITIONS
-from bpuverify.bpu.model.tage.service import STREAM_PC, learning_inflight, pending_plan
-from bpuverify.tage.model.semantic import coordinate
+from suites.frontend.bpu.bpu.model.tage.neighbor_migration import PC, HISTORY_PATHS
+from suites.frontend.bpu.bpu.model.tage.dual_migration import POSITIONS
+from suites.frontend.bpu.bpu.model.tage.service import STREAM_PC, learning_inflight, pending_plan
+from suites.frontend.bpu.tage.model.semantic import coordinate
 from tests.bpu.scoreboard.test_neighbor_migration import fixture
 from tests.bpu.scoreboard.test_dual_migration import source
 from tests.bpu.scoreboard.test_direction_service import via, streaming_query

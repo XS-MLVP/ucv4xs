@@ -1,13 +1,13 @@
 """Captured-cold requests must not move a retained key to another shadow way."""
 import pytest
 
-from bpuverify.mbtb.coverage.catalog import mbtb_shadow_coverage_model
-from bpuverify.mbtb.coverage.catalog import write_mbtb_shadow_coverage
-from bpuverify.mbtb.model.entry import CARRY_PATTERNS
-from bpuverify.mbtb.model.shadow import SHADOW_PHASES
-from bpuverify.mbtb.case.resident_scenario import INDEX_CONTEXTS
-from bpuverify.mbtb.case.shadow_scenario import check_case
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.mbtb.coverage.catalog import mbtb_shadow_coverage_model
+from suites.frontend.bpu.mbtb.coverage.catalog import write_mbtb_shadow_coverage
+from suites.frontend.bpu.mbtb.model.entry import CARRY_PATTERNS
+from suites.frontend.bpu.mbtb.model.shadow import SHADOW_PHASES
+from suites.frontend.bpu.mbtb.case.resident_scenario import INDEX_CONTEXTS
+from suites.frontend.bpu.mbtb.case.shadow_scenario import check_case
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature("BPU-MBTB-023")

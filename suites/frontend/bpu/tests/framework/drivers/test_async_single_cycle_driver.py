@@ -8,8 +8,8 @@ from toffee import Execution
 from toffee import MemoryBackend
 from toffee import TransferState
 
-from bpuverify.common.driver.signal import AsyncSingleCycleDriver
-from bpuverify.common.bundle.bindings import PortBinding
+from suites.frontend.bpu.drivers.signal import AsyncSingleCycleDriver
+from suites.frontend.bpu.ports.bindings import PortBinding
 from tests.framework.fakes import Signal
 from tests.framework.fakes import bundle_binding
 

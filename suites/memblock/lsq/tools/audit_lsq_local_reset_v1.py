@@ -24,7 +24,7 @@ def audit(name):
     manifest,source,nodes=verify_common(run)
     assert len(nodes)==12
     base=json.loads((ROOT/"results/lsq-progress-regression-12/source-evidence.json").read_text())["files"]
-    shared=[k for k in base if k.startswith("lsqverify/")]
+    shared=[k for k in base if k.startswith('lsqverify/')]
     assert all(source[k]==base[k] for k in shared)
     frozen=run/"verification-source/tests/local_reset"
     reference=ast.parse((frozen/"reference.py").read_text())

@@ -1,9 +1,9 @@
 """Late instruction qualification must not freeze an independent companion."""
 import json
 import pytest
-from bpuverify.utage.model.displaced_branch import PROGRAMS
-from bpuverify.utage.coverage.displaced_branch import Coverage
-from bpuverify.utage.case.displaced_branch import check_displaced_branch
+from suites.frontend.bpu.utage.model.displaced_branch import PROGRAMS
+from suites.frontend.bpu.utage.coverage.displaced_branch import Coverage
+from suites.frontend.bpu.utage.case.displaced_branch import check_displaced_branch
 
 
 @pytest.mark.feature('BPU-UTAGE-014')

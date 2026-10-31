@@ -12,9 +12,9 @@ import random
 
 import pytest
 
-from icacheverify.dataarray.model.array import DataEntry
-from icacheverify.dataarray.model.array import LineSelect
-from icacheverify.dataarray.model.array import ReadRequest
+from suites.frontend.icache.dataarray.model.array import DataEntry
+from suites.frontend.icache.dataarray.model.array import LineSelect
+from suites.frontend.icache.dataarray.model.array import ReadRequest
 
 
 @pytest.mark.feature("ICACHE-DATAARRAY-001")

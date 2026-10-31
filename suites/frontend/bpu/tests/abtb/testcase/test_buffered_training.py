@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.abtb.transaction.types import AbtbTraining
-from bpuverify.abtb.coverage.catalog import abtb_buffered_training_coverage_model
-from bpuverify.abtb.coverage.catalog import write_abtb_buffered_training_coverage
-from bpuverify.abtb.checker.assertions import assert_miss
-from bpuverify.abtb.checker.assertions import assert_vector_hit
-from bpuverify.abtb.case.definitions import hash_set_vectors
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.abtb.transaction.types import AbtbTraining
+from suites.frontend.bpu.abtb.coverage.catalog import abtb_buffered_training_coverage_model
+from suites.frontend.bpu.abtb.coverage.catalog import write_abtb_buffered_training_coverage
+from suites.frontend.bpu.abtb.checker.assertions import assert_miss
+from suites.frontend.bpu.abtb.checker.assertions import assert_vector_hit
+from suites.frontend.bpu.abtb.case.definitions import hash_set_vectors
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature("BPU-ABTB-029")

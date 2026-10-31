@@ -1,6 +1,6 @@
 # Kunminghu-v3 BPU 验证策略
 
-2026-10-10 目录已调整为 `bpuverify/<dut>/<role>/`，详见
+2026-10-10 目录已调整为 `suites/frontend/bpu/<dut>/<role>/`，详见
 [目录与职责](repository-layout.md)。旧源码的全量回归已按用户要求中止，
 不作为通过结果；新目录的生产验收进展见[并行迁移记录](pytest-parallel-migration-20261009.md)。
 下方 2026-10-08 的完整回归数字是历史基线，不是新目录的验收结果。
@@ -491,7 +491,7 @@ TAGE 仍为 5336/5653，不能用功能缺陷冒充覆盖率增量。最新 310 
 该 5.026 阶段的 317 行中 **88 行已局部分类、229 行仍需审查**，原始分母保持不变；
 当前 5.052 新场景后并追加 key-copy 证明的对应数字为 243／112／131，
 证明摘要已按当前报告复核；追加的 24 个 key 赋值详见前文独立审计。
-可重复审计为 `python3 bpuverify/tage_coverage_audit.py`，证据见
+可重复审计为 `python3 suites/frontend/bpu/tage_coverage_audit.py`，证据见
 `results/coverage-tage-priority-unreachable.json`；不据此宣称全 RTL 形式不可达。
 随后 `BPU-SC-018` 把四索引 pending 与四 branch way／四 bias selector 组合：
 counter 0/7/3/4 与 position 4/5/6/7 都由真实预测 metadata 核对。逐 way 连续
@@ -1021,7 +1021,7 @@ DUT／Execution／Agent 的 fixture 和观察作用域生命周期。测试不�
 实现按 DUT 再按职责组织，pytest 测试仍按最小 UT 和职责组织：
 
 ~~~text
-bpuverify/
+suites/frontend/bpu/
 ├── common/{bundle,driver,monitor,env,checker,model,transaction,coverage,pytest}/
 └── <dut>/{agent,bundle,driver,monitor,env,case,model,checker,transaction,coverage}/
 tests/
@@ -1037,7 +1037,7 @@ tests/
 - 无内容的层次不创建占位文件；
 - conftest.py 只注册 env 中的 fixture，不保存环境实现、向量或断言；
 - 可复用场景／向量属于对应 DUT 的 case，领域检查器属于 checker，参考模型属于 model；
-- 集成 BPU 内部 ABTB／SC／bypass 等位于 `bpuverify/bpu/<role>/<component>/`；
+- 集成 BPU 内部 ABTB／SC／bypass 等位于 `suites/frontend/bpu/bpu/<role>/<component>/`；
 - test 文件不定义可复用组件。
 
 ## 6. 功能点设计规则

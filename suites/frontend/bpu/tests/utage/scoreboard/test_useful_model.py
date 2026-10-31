@@ -2,10 +2,10 @@
 from copy import deepcopy
 
 import pytest
-from bpuverify.utage.transaction.types import UtageTraining
-from bpuverify.utage.checker.checking import UtageUsefulChecker
-from bpuverify.utage.model.model import UtageUsefulReference
-from bpuverify.utage.coverage.supplemental import utage_useful_update_coverage_model
+from suites.frontend.bpu.utage.transaction.types import UtageTraining
+from suites.frontend.bpu.utage.checker.checking import UtageUsefulChecker
+from suites.frontend.bpu.utage.model.model import UtageUsefulReference
+from suites.frontend.bpu.utage.coverage.supplemental import utage_useful_update_coverage_model
 
 
 def payload(*, table=1, index=0, increase=True, hit=1, base=None):

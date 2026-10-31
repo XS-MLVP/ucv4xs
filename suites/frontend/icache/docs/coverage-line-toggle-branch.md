@@ -371,15 +371,15 @@ DataBank/DataArray 的读回用例和整块 ICache 的回填用例判定。
 这里要区分三个层面，避免混为一谈：
 
 * **xreactor / picker 框架**：未修改（xreactor `2461d0f`，`git status` 为空）；
-* **项目验证代码**：`icacheverify/` 下的 agent / monitor / model；
+* **项目验证代码**：`suites/frontend/icache/` 下的 agent / monitor / model；
 * **用例激励**：`tests/` 下的测试数据生成器。
 
 本轮三处缺陷的归属如下：
 
 | # | 缺陷 | 归属 | 位置 | 危害 |
 |---|---|---|---|---|
-| 1 | miss 反压竞态：看到 `missReq.valid` 后才拉低 `ready`，与接受沿竞争 | 项目验证代码（agent 握手时序） | `icacheverify/mainpipe/agent/main.py` | **假失败**（DUT 正确、测试报错） |
-| 2 | 重复 miss 采样：持续 2 拍的同一请求被记成 2 条 miss | 项目验证代码（agent 观察逻辑） | `icacheverify/prefetchpipe/agent/main.py::wait_result` | **假通过**：双 miss 用例是绿的，但端口 1 从未发出 |
+| 1 | miss 反压竞态：看到 `missReq.valid` 后才拉低 `ready`，与接受沿竞争 | 项目验证代码（agent 握手时序） | `suites/frontend/icache/mainpipe/agent/main.py` | **假失败**（DUT 正确、测试报错） |
+| 2 | 重复 miss 采样：持续 2 拍的同一请求被记成 2 条 miss | 项目验证代码（agent 观察逻辑） | `suites/frontend/icache/prefetchpipe/agent/main.py::wait_result` | **假通过**：双 miss 用例是绿的，但端口 1 从未发出 |
 | 3 | 随机跨行生成器：`start` 只取 `0..30`，跨行区间 `0x20..0x3E` 永不出现 | 用例激励数据 | `tests/*/test_random*.py::random_block` | 覆盖率假象 |
 
 修正方式：

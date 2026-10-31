@@ -53,7 +53,7 @@ def audit():
     assert not policy["per_cycle_JSON"] and not policy["waveforms"]
     prior=ROOT/"results/lsq-ldu-s4-plain-01"
     old_source=json.loads((prior/"source-evidence.json").read_text())["files"]
-    shared={k:v for k,v in old_source.items() if k.startswith("lsqverify/") and k!="lsqverify/native.py"}
+    shared={k:v for k,v in old_source.items() if k.startswith('lsqverify/') and k!='lsqverify/native.py'}
     assert all(source[k]==v for k,v in shared.items()),"logging policy must not change models/comparators/UID drivers"
     old=catalog(prior)
     failure_prior=ROOT/"results/lsq-progress-regression-11"

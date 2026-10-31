@@ -2,9 +2,9 @@
 import pytest
 from toffee import Scoreboard, ScoreboardMismatch
 
-from bpuverify.bpu.case.bypass.public_readback import public_readback_pair, training_tag_fold_pair
-from bpuverify.bpu.model.bypass.sparse import recipe
-from bpuverify.bpu.model.phr.model import folds
+from suites.frontend.bpu.bpu.case.bypass.public_readback import public_readback_pair, training_tag_fold_pair
+from suites.frontend.bpu.bpu.model.bypass.sparse import recipe
+from suites.frontend.bpu.bpu.model.phr.model import folds
 
 
 def fixture():

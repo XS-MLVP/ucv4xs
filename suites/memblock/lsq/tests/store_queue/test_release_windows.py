@@ -1,7 +1,7 @@
 import pytest
 
-from lsqverify.store_queue.actor import StoreActor
-from lsqverify.vsq_recovery import store_windows
+from suites.memblock.lsq.store_queue.actor import StoreActor
+from suites.memblock.lsq.vsq_recovery import store_windows
 
 
 @pytest.mark.parametrize("delay", range(3))

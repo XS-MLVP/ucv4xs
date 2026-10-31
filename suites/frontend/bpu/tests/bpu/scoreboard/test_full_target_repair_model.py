@@ -3,7 +3,7 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.bpu.model.selection import Branch, Choice, Kind, final_repair, middle_repair
+from suites.frontend.bpu.bpu.model.selection import Branch, Choice, Kind, final_repair, middle_repair
 from tests.bpu.scoreboard.test_semantic_pipeline import ScriptedSources, boot
 
 

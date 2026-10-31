@@ -2,6 +2,9 @@
 
 # MMU/TLB 分层 UT 验证工程
 
+> 路径迁移说明（2026-10-31）：本文记录中的 *verify/common 为当时源码路径；当前实现已迁入 suites.<group>.<suite> 工程根。历史判定、命令与哈希不据此重标；当前映射见仓库 docs/lessons/suite-namespace-refactor-20261031.md。
+
+
 > **当前入口：验证可信度复核** — 见 `docs/reports/verification-soundness-20261025.md`。
 > 原 376 PASS + 5 XFAIL 是历史基线；5 个 XFAIL 均发现验证侧问题，旧 RTL 根因结论
 > 已撤回。当前最终重跑与残余义务以该复核报告及 soundness evidence 为准。

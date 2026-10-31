@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import pytest
 
-from icacheverify.icache.case.definitions import make_fetch
+from suites.frontend.icache.icache.case.definitions import make_fetch
 
 
 @pytest.mark.feature("ICACHE-ICACHE-022")

@@ -1,8 +1,8 @@
 """Missing native rows and missing original-lifetime proof are not synonyms."""
 import json
 from pathlib import Path
-from bpuverify.bpu.model.competing_correction import PROFILES,PROGRAMS,RULES
-from bpuverify.bpu.coverage.competing_correction import lifetime_coverage
+from suites.frontend.bpu.bpu.model.competing_correction import PROFILES,PROGRAMS,RULES
+from suites.frontend.bpu.bpu.coverage.competing_correction import lifetime_coverage
 
 
 def test_contract_keeps_guard_residues_separate_from_missing_arbitration_proof():

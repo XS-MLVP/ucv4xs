@@ -17,15 +17,18 @@ def imported_names(path):
 
 
 def test_verification_does_not_depend_on_the_bpu_project():
-    for directory in ('vagqverify', 'tests'):
+    for directory in ('ordered', 'merge', 'qualification', 'entrytable', 'storedata',
+                      'manager', 'split', 'maskgen', 'addrgen', 'pipeline', 'arbiter',
+                      'vagq', 'tests'):
         for path in (ROOT / directory).rglob('*.py'):
-            assert not any(name == 'bpuverify' or name.startswith('bpuverify.')
+            assert not any(name == 'suites.frontend.bpu' or name.startswith('suites.frontend.bpu.')
                            for name in imported_names(path)), path
     assert '/home/xyl/bpu-verify' not in (ROOT / 'pytest.ini').read_text()
 
 
 def test_pure_references_do_not_import_simulator_or_protocol_components():
     for relative in ('manager/model.py', 'addrgen/reference.py'):
-        names = tuple(imported_names(ROOT / 'vagqverify' / relative))
-        assert not any(name.split('.')[0] in ('dut', 'toffee', 'xspcomm', 'bpuverify')
+        names = tuple(imported_names(ROOT / relative))
+        assert not any(name.startswith('suites.frontend.bpu')
+                       or name.split('.')[0] in ('dut', 'toffee', 'xspcomm')
                        or name.endswith(('ports', 'driver', 'monitor', 'encoding')) for name in names)

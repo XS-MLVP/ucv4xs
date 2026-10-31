@@ -5,8 +5,8 @@ from types import SimpleNamespace as NS
 import pytest
 from toffee import Bundle,ClockCycles,Execution,MemoryBackend,ReadyValid,Role
 
-from bpuverify.common.bundle.bindings import PortBinding
-from bpuverify.bpu.monitor.tage import service as module
+from suites.frontend.bpu.ports.bindings import PortBinding
+from suites.frontend.bpu.bpu.monitor.tage import service as module
 
 
 class Signal:

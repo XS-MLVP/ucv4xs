@@ -1,7 +1,7 @@
 """Real StoreUnit QB CBO at all slots/flags, preserving legacy interface tests."""
 import pytest
 
-from lsqverify.vlq.types import RobPtr
+from suites.memblock.lsq.vlq.types import RobPtr
 from .normal_owners import NormalCboStore
 from .special_owners import SpecialOwners
 

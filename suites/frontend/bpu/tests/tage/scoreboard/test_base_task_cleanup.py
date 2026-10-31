@@ -3,7 +3,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.tage.agent.main import TageAgent
+from suites.frontend.bpu.tage.agent.main import TageAgent
 
 
 def owner(tasks, first_failure=None):

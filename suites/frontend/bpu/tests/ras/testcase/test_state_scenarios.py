@@ -1,16 +1,16 @@
 """Logical RAS scenarios; agent/model/monitor own details and comparisons."""
-from bpuverify.common.model.configuration import *
+from suites.frontend.bpu.models.configuration import *
 import pytest
 
-from bpuverify.ras.coverage.supplemental import ras_committed_cells_coverage_model
-from bpuverify.ras.coverage.supplemental import ras_adjacent_coverage_model
-from bpuverify.ras.coverage.supplemental import ras_redirect_redo_coverage_model
-from bpuverify.ras.coverage.supplemental import write_ras_scenario_coverage
-from bpuverify.ras.case.adjacent_cases import cases
-from bpuverify.ras.case.committed_cells_scenario import check_case
-from bpuverify.ras.case.adjacent_scenario import check_burst
-from bpuverify.ras.case.redirect_redo_scenario import check_redirect
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.ras.coverage.supplemental import ras_committed_cells_coverage_model
+from suites.frontend.bpu.ras.coverage.supplemental import ras_adjacent_coverage_model
+from suites.frontend.bpu.ras.coverage.supplemental import ras_redirect_redo_coverage_model
+from suites.frontend.bpu.ras.coverage.supplemental import write_ras_scenario_coverage
+from suites.frontend.bpu.ras.case.adjacent_cases import cases
+from suites.frontend.bpu.ras.case.committed_cells_scenario import check_case
+from suites.frontend.bpu.ras.case.adjacent_scenario import check_burst
+from suites.frontend.bpu.ras.case.redirect_redo_scenario import check_redirect
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature('BPU-RAS-013')

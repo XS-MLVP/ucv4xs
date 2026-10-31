@@ -1,9 +1,9 @@
 """Duplicate clear and independent learning require destination ownership."""
 import json
 import pytest
-from bpuverify.bpu.model.main_duplicate_cleanup import Program,IDENTITIES,OVERLAPS,PREPARATIONS
-from bpuverify.bpu.coverage.main_duplicate_cleanup import Coverage
-from bpuverify.bpu.case.main_duplicate_cleanup import check_duplicate_cleanup
+from suites.frontend.bpu.bpu.model.main_duplicate_cleanup import Program,IDENTITIES,OVERLAPS,PREPARATIONS
+from suites.frontend.bpu.bpu.coverage.main_duplicate_cleanup import Coverage
+from suites.frontend.bpu.bpu.case.main_duplicate_cleanup import check_duplicate_cleanup
 
 
 @pytest.mark.feature('BPU-MBTB-029')

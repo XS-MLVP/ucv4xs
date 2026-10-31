@@ -3,21 +3,21 @@
 from __future__ import annotations
 import ucv.runtime as ucv_paths
 
-from bpuverify.common.env.artifacts import output_path
-from bpuverify.common.env.artifacts import write_output
+from suites.frontend.bpu.runtime.artifacts import output_path
+from suites.frontend.bpu.runtime.artifacts import write_output
 
 import json
 
 import pytest
 
-from bpuverify.utage.coverage.catalog import utage_shadow_ring_coverage_model
-from bpuverify.utage.coverage.catalog import write_utage_shadow_ring_coverage
-from bpuverify.utage.coverage.catalog import utage_shadow_persistence_coverage_model
-from bpuverify.utage.coverage.catalog import write_utage_shadow_persistence_coverage
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.utage.case.shadow_ring_scenario import LostShadowWriteback
-from bpuverify.utage.case.shadow_ring_scenario import check_shadow_eviction
-from bpuverify.utage.case.shadow_ring_scenario import check_shadow_ring_mode
+from suites.frontend.bpu.utage.coverage.catalog import utage_shadow_ring_coverage_model
+from suites.frontend.bpu.utage.coverage.catalog import write_utage_shadow_ring_coverage
+from suites.frontend.bpu.utage.coverage.catalog import utage_shadow_persistence_coverage_model
+from suites.frontend.bpu.utage.coverage.catalog import write_utage_shadow_persistence_coverage
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.utage.case.shadow_ring_scenario import LostShadowWriteback
+from suites.frontend.bpu.utage.case.shadow_ring_scenario import check_shadow_eviction
+from suites.frontend.bpu.utage.case.shadow_ring_scenario import check_shadow_ring_mode
 
 
 @pytest.mark.feature("BPU-UTAGE-015")

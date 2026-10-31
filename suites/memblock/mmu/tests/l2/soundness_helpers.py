@@ -1,10 +1,10 @@
 """Report-driven regression helpers with independent explicit expectations."""
-from mmuverify.common.runtime import execution
-from mmuverify.common.checks import check_l2_success
+from suites.memblock.mmu.execution import execution
+from suites.memblock.mmu.checks import check_l2_success
 
 
 async def check_misaligned_1g_leaf(env, prepare):
-    async with execution(env.dut):
+    async with execution(env):
         await prepare(env)
         env.walk_script = None
         env.memory.build_sv39(0x80000, 0x70000, 0x3000, level=2)
@@ -16,7 +16,7 @@ async def check_misaligned_1g_leaf(env, prepare):
 
 
 async def check_address_fence_and_neighbor(env, prepare, build):
-    async with execution(env.dut):
+    async with execution(env):
         await prepare(env)
         env.walk_script = None
         cases = [(0x84000, 0x4000, 0x6000, 0x80300),

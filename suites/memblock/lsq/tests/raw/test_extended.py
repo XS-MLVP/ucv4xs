@@ -4,7 +4,7 @@ import random
 
 import pytest
 
-from lsqverify.raw.types import FtqPtr, Query, Redirect, RobPtr, SqPtr, Store
+from suites.memblock.lsq.raw.types import FtqPtr, Query, Redirect, RobPtr, SqPtr, Store
 
 
 def address(rank):

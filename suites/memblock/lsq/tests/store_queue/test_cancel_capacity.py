@@ -1,5 +1,5 @@
-from lsqverify.store_queue.actor import StoreActor
-from lsqverify.vsq_cancel_capacity import store_trace
+from suites.memblock.lsq.store_queue.actor import StoreActor
+from suites.memblock.lsq.vsq_cancel_capacity import store_trace
 
 
 async def test_real_cancel_capacity_old_bytes_and_every_new_UID_normal_consumption(sq, tmp_path):

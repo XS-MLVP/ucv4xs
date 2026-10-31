@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.mbtb.checker.assertions import assert_filtered_raw_hit
-from bpuverify.mbtb.checker.assertions import assert_miss
-from bpuverify.mbtb.checker.assertions import assert_vector_hit
-from bpuverify.mbtb.checker.assertions import train
-from bpuverify.mbtb.case.definitions import NEXT_PAGE_BRANCH
-from bpuverify.mbtb.case.definitions import PAGE_END_PC
-from bpuverify.mbtb.case.definitions import VISIBLE_NEXT_PAGE_BRANCH
+from suites.frontend.bpu.mbtb.checker.assertions import assert_filtered_raw_hit
+from suites.frontend.bpu.mbtb.checker.assertions import assert_miss
+from suites.frontend.bpu.mbtb.checker.assertions import assert_vector_hit
+from suites.frontend.bpu.mbtb.checker.assertions import train
+from suites.frontend.bpu.mbtb.case.definitions import NEXT_PAGE_BRANCH
+from suites.frontend.bpu.mbtb.case.definitions import PAGE_END_PC
+from suites.frontend.bpu.mbtb.case.definitions import VISIBLE_NEXT_PAGE_BRANCH
 
 
 @pytest.mark.feature("BPU-MBTB-008")

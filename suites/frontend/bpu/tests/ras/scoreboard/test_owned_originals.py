@@ -4,7 +4,7 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.ras.model.semantic import Events, Original, RasReference, Recovery, Retirement
+from suites.frontend.bpu.ras.model.semantic import Events, Original, RasReference, Recovery, Retirement
 
 
 def observe(model, action=0, address=None):

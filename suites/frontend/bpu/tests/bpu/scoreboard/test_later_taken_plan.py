@@ -1,7 +1,7 @@
-from bpuverify.common.model.configuration import PHR_STORAGE_BITS
+from suites.frontend.bpu.models.configuration import PHR_STORAGE_BITS
 from itertools import product
 import pytest
-from bpuverify.bpu.case.abtb.later_taken_plan import plan, joint_proof, programs
+from suites.frontend.bpu.bpu.case.abtb.later_taken_plan import plan, joint_proof, programs
 
 
 @pytest.mark.parametrize('bank,entry_set', tuple(product(range(4), range(64))))

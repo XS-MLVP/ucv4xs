@@ -1,8 +1,8 @@
 """Diagnostic only: observe contiguous MicroBTB shaping, no functional credit."""
 import json
 
-from bpuverify.ubtb.case.definitions import DIRECT
-from bpuverify.ubtb.transaction.types import BranchTraining
+from suites.frontend.bpu.ubtb.case.definitions import DIRECT
+from suites.frontend.bpu.ubtb.transaction.types import BranchTraining
 
 
 def sequence(*directions, target=DIRECT.target):

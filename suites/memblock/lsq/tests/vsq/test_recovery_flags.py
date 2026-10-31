@@ -1,7 +1,9 @@
+
 import pytest
 
-from lsqverify.raw.types import SqPtr
-from lsqverify.vlq.types import Redirect, RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.vlq.types import Redirect, RobPtr
 
 
 async def consume(env, start, end):
@@ -38,7 +40,7 @@ async def test_cross_ring_recovery_reuses_every_canceled_virtual_slot(vsq, physi
     recoveries = [change["recovery"] for change in changes if change["recovery"]]
     assert len(recoveries) == 1 and recoveries[0]["end"] == physical_base + 3
     ptr = SqPtr.encode(physical_base + 3)
-    prefix = "io_toPhysicalQueue_physicalQueueEnqPtr_"
+    prefix = P.p_toPhysicalQueue_physicalQueueEnqPtr_
     assert [env.observed[prefix + key] for key in ("first_flag", "second_flag", "value")] == [int(ptr.first), int(ptr.second), ptr.value]
     change = await env.cycle(env.requests({lane: (rob + 8 + lane, 1 + lane % 2) for lane in range(5)}))
     new = change["accepted"]

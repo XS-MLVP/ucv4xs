@@ -10,11 +10,11 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from lsqverify.psq.decode import decode
-from lsqverify.psq.types import Address, Attributes, Data, Inputs, SecondPage, encode
-from lsqverify.forward.types import Query, Translation
-from lsqverify.raw.types import SqPtr
-from lsqverify.vlq.types import RobPtr
+from suites.memblock.lsq.psq.decode import decode
+from suites.memblock.lsq.psq.types import Address, Attributes, Data, Inputs, SecondPage, encode
+from suites.memblock.lsq.forward.types import Query, Translation
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.vlq.types import RobPtr
 
 
 def sha(path):
@@ -52,7 +52,7 @@ def main():
     out = ROOT / "results/psq-codec-static-01"
     out.mkdir(exist_ok=False)
     hashes = {}
-    for path in (Path(__file__), ROOT / "lsqverify/psq/types.py", ROOT / "lsqverify/psq/decode.py", ROOT / "lsqverify/psq/ports.py"):
+    for path in (Path(__file__), ROOT / "psq/types.py", ROOT / "psq/decode.py", ROOT / "psq/ports.py"):
         dest = out / "source" / path.relative_to(ROOT)
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(path, dest)

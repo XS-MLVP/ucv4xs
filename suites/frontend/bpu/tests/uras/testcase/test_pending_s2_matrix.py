@@ -4,14 +4,14 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.uras.transaction.types import UrasCycle
-from bpuverify.uras.transaction.types import UrasResult
-from bpuverify.uras.coverage.catalog import uras_pending_s2_coverage_model
-from bpuverify.uras.coverage.catalog import write_uras_pending_s2_coverage
-from bpuverify.uras.checker.assertions import pushed
-from bpuverify.uras.case.definitions import CALL_A
-from bpuverify.uras.case.definitions import MAIN_TOP
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.uras.transaction.types import UrasCycle
+from suites.frontend.bpu.uras.transaction.types import UrasResult
+from suites.frontend.bpu.uras.coverage.catalog import uras_pending_s2_coverage_model
+from suites.frontend.bpu.uras.coverage.catalog import write_uras_pending_s2_coverage
+from suites.frontend.bpu.uras.checker.assertions import pushed
+from suites.frontend.bpu.uras.case.definitions import CALL_A
+from suites.frontend.bpu.uras.case.definitions import MAIN_TOP
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature("BPU-URAS-014")

@@ -1,10 +1,9 @@
 """Human stack meaning and actual receipt ownership discriminators."""
 from copy import deepcopy
 import pytest
-from bpuverify.ras.model.commit_action import Program,A,B,C,RULES
-from bpuverify.ras.monitor.commit_action import receipts
-from bpuverify.ras.coverage.commit_action import Coverage
-
+from suites.frontend.bpu.ras.model.commit_action import Program,A,B,C,RULES
+from suites.frontend.bpu.ras.monitor.commit_action import receipts
+from suites.frontend.bpu.ras.coverage.commit_action import Coverage
 
 
 @pytest.mark.parametrize('action,expected',((1,(A,)),(2,(A,B,C)),(3,(A,C))))
@@ -60,7 +59,6 @@ def test_complete_case_only_checks_its_own_semantic_mode(action):
     with pytest.raises(AssertionError):coverage.finish()
 
 
-
 def complete_rows():
     source,registered=source_rows()
     result=[]
@@ -71,7 +69,7 @@ def complete_rows():
 
 
 def test_default_commit_summary_keeps_actual_event_ticks_and_state_without_cycle_rows():
-    from bpuverify.ras.monitor.commit_action import commit_facts
+    from suites.frontend.bpu.ras.monitor.commit_action import commit_facts
     rows=complete_rows();before=deepcopy(rows);facts=commit_facts(rows)
     assert set(facts)=={'actual_input','actual_registered','input_tick','registered_tick','retained'}
     assert facts['input_tick']==10 and facts['registered_tick']==11
@@ -83,14 +81,14 @@ def test_default_commit_summary_keeps_actual_event_ticks_and_state_without_cycle
 
 
 def test_compact_summary_still_rejects_missing_real_registered_receipt():
-    from bpuverify.ras.monitor.commit_action import commit_facts
+    from suites.frontend.bpu.ras.monitor.commit_action import commit_facts
     rows=complete_rows();rows[1]['pending_commit']['valid']=0
     with pytest.raises(AssertionError):commit_facts(rows)
 
 
 def test_default_trace_export_does_no_serialization_or_filesystem_work(tmp_path):
-    from bpuverify.ras.env.commit_action import export_commit_trace
-    from bpuverify.common.env.trace import trace_exports
+    from suites.frontend.bpu.ras.env.commit_action import export_commit_trace
+    from suites.frontend.bpu.runtime.trace import trace_exports
     class NotSerializable:
         def __iter__(self):raise AssertionError('disabled diagnostics touched raw rows')
     target=tmp_path/'not-created'/'cycles.json'
@@ -101,8 +99,8 @@ def test_default_trace_export_does_no_serialization_or_filesystem_work(tmp_path)
 def test_explicit_trace_keeps_the_exact_original_rows_in_compressed_output(tmp_path):
     import gzip
     import json
-    from bpuverify.ras.env.commit_action import export_commit_trace
-    from bpuverify.common.env.trace import trace_exports
+    from suites.frontend.bpu.ras.env.commit_action import export_commit_trace
+    from suites.frontend.bpu.runtime.trace import trace_exports
     rows=complete_rows();before=deepcopy(rows)
     with trace_exports(True):target=export_commit_trace(rows,tmp_path/'cycles.json')
     assert target.suffix=='.gz'
@@ -111,8 +109,8 @@ def test_explicit_trace_keeps_the_exact_original_rows_in_compressed_output(tmp_p
 
 
 def test_optional_trace_error_cannot_replace_original_semantic_mismatch(monkeypatch,tmp_path):
-    import bpuverify.ras.env.commit_action as env
-    from bpuverify.ras.checker.commit_action import CommitActionChecks
+    import suites.frontend.bpu.ras.env.commit_action as env
+    from suites.frontend.bpu.ras.checker.commit_action import CommitActionChecks
     from toffee import ScoreboardMismatch
     checker=CommitActionChecks(Program(3))
     with pytest.raises(ScoreboardMismatch) as raised:checker.check(C,B,'retained original caller')
@@ -126,7 +124,7 @@ def test_optional_trace_error_cannot_replace_original_semantic_mismatch(monkeypa
 
 
 def test_requested_trace_error_is_not_silently_lost_without_a_primary_failure(monkeypatch,tmp_path):
-    import bpuverify.ras.env.commit_action as env
+    import suites.frontend.bpu.ras.env.commit_action as env
     def broken(*args,**kwargs):raise OSError('diagnostic storage unavailable')
     monkeypatch.setattr(env,'dump_trace',broken)
     with pytest.raises(OSError,match='storage unavailable'):

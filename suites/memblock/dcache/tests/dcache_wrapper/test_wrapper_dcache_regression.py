@@ -13,8 +13,8 @@ import sys
 
 import pytest
 
-from dcacheverify.dcache.coverage import DCacheCoverage
-from dcacheverify.dcache_wrapper.env import DcacheWrapperEnv
+from suites.memblock.dcache.dcache.coverage import DCacheCoverage
+from suites.memblock.dcache.dcache_wrapper.env import DcacheWrapperEnv
 
 _SCENARIO_FILE = Path(__file__).resolve().parents[1] / "dcache" / "test_dcache.py"
 _spec = importlib.util.spec_from_file_location("dcache_scenarios", _SCENARIO_FILE)

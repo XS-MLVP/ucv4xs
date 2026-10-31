@@ -2,7 +2,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.tage.monitor.state import TagePredictionStateMonitor
+from suites.frontend.bpu.tage.monitor.state import TagePredictionStateMonitor
 from tests.framework.fakes import native_name_dut
 
 

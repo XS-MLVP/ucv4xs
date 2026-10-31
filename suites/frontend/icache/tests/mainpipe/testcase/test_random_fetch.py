@@ -14,9 +14,9 @@ import random
 
 import pytest
 
-from icacheverify.mainpipe.case.definitions import make_fetch
-from icacheverify.mainpipe.case.definitions import make_way
-from icacheverify.mainpipe.model import mainpipe as model
+from suites.frontend.icache.mainpipe.case.definitions import make_fetch
+from suites.frontend.icache.mainpipe.case.definitions import make_way
+from suites.frontend.icache.mainpipe.model import mainpipe as model
 
 
 PTAG = 0x23456

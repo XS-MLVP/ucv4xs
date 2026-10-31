@@ -1,9 +1,9 @@
 import pytest
 
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.tage.case.semantic import history_ownership
-from bpuverify.tage.coverage.semantic import SemanticCoverage
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.tage.case.semantic import history_ownership
+from suites.frontend.bpu.tage.coverage.semantic import SemanticCoverage
 
 
 @pytest.mark.feature('BPU-TAGE-036')

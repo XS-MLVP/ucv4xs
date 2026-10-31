@@ -1,11 +1,11 @@
 """Every resolve slot must retain its branch/prediction-state association."""
 import pytest
 
-from bpuverify.tage.coverage.catalog import tage_resolve_slot_coverage_model
-from bpuverify.tage.coverage.catalog import write_tage_resolve_slot_coverage
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.tage.case.resolve_slot_scenario import check_provider_matrix
-from bpuverify.tage.case.resolve_slot_scenario import check_qualification_matrix
+from suites.frontend.bpu.tage.coverage.catalog import tage_resolve_slot_coverage_model
+from suites.frontend.bpu.tage.coverage.catalog import write_tage_resolve_slot_coverage
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.tage.case.resolve_slot_scenario import check_provider_matrix
+from suites.frontend.bpu.tage.case.resolve_slot_scenario import check_qualification_matrix
 
 
 @pytest.mark.feature('BPU-TAGE-027')

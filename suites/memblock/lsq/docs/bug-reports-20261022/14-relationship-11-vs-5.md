@@ -242,7 +242,7 @@ io_query_{0,1,2}_s2Resp_bits_addrInvalid_valid
 
 **第二步：性质必须来自不可变的生产者账本。**
 
-新增`lsqverify/independent_properties.py`，已实现两个oracle：
+新增`suites/memblock/lsq/independent_properties.py`，已实现两个oracle：
 
 - `forward_byte_violations()`：对Load需要的每个字节，按程序顺序找**真正写过该PA字节**的最年轻Store（用原始`paddr/size/mask/data`，不读RTL跨度）；若该字节既没被前递、响应也没阻塞，就是违约。
 - `exception_candidate_violation()`：只有真实总线错误的entry才能成为候选；多候选时必须按`(robIdx,uopIdx)`程序年龄选最老，而不是物理槽号。
@@ -284,7 +284,7 @@ io_query_{0,1,2}_s2Resp_bits_addrInvalid_valid
 代码与证据：
 
 ```text
-lsqverify/independent_properties.py
+suites/memblock/lsq/independent_properties.py
 tests/fail_review/test_independent_forward_property.py
 results/independent-property-oracle-03/pytest.xml
 ```

@@ -1,9 +1,9 @@
 import pytest
 
-from bpuverify.bpu.case.ras.redo_unwind import check_redo_unwind
-from bpuverify.bpu.coverage.ras_redo import RedoCoverage
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.bpu.case.ras.redo_unwind import check_redo_unwind
+from suites.frontend.bpu.bpu.coverage.ras_redo import RedoCoverage
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature('BPU-INT-080')

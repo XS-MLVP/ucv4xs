@@ -1,10 +1,10 @@
 """Depth and logical owner with a real negative conditional neighbor."""
 import pytest
 
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.mbtb.case.depth_owner import check_depth_owner
-from bpuverify.mbtb.coverage.depth import DepthOwnerCoverage
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.mbtb.case.depth_owner import check_depth_owner
+from suites.frontend.bpu.mbtb.coverage.depth import DepthOwnerCoverage
 
 
 @pytest.mark.feature('BPU-MBTB-025')

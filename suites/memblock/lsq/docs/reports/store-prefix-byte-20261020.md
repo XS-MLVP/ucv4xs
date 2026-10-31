@@ -1,5 +1,8 @@
 # 独占 SQ 前缀与字节低位：Forward→PSQ→SQ→真实 Wrapper 闭环
 
+> 路径迁移说明（2026-10-31）：本文记录中的 *verify/common 为当时源码路径；当前实现已迁入 suites.<group>.<suite> 工程根。历史判定、命令与哈希不据此重标；当前映射见仓库 docs/lessons/suite-namespace-refactor-20261031.md。
+
+
 **结果：四层正式定向补例通过，完整贡献范围真实重跑为 1072 节点、903 PASS /
 169 FAIL、0 ERROR/SKIP。原 1066 个节点结果与失败全文保持，新增 6 个节点
 全部通过；四 build 三类分母/点全集不变、旧命中无丢失。整体仍为

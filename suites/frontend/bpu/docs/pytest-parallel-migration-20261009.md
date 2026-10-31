@@ -1,5 +1,8 @@
 # pytest 多进程并行迁移
 
+> 路径迁移说明（2026-10-31）：本报告仍属于原日期、基线和执行源码；实现文件已迁到工程根。可点击源码链接更新到当前位置，不据此重标历史 PASS/FAIL 或覆盖结论。参见[本轮命名空间迁移](../../../../docs/lessons/suite-namespace-refactor-20261031.md)。
+
+
 ## 2026-10-16：生产入口切换 xreactor managed runner
 
 默认入口已切换，不是独立试点：通用 worker 生命周期、功能/原生覆盖合并、
@@ -126,7 +129,7 @@ first-provenance均逐项核对单调性，不修改身份或放宽xreactor重�
 [中止记录](../results/full-native-parallel32-production-20261010-v2/cancelled.json)
 明确标记未完成、未发布，不能作为完整通过。
 
-正式源码现按 `bpuverify/<dut>/<role>/` 组织，公共设施放在 `common/`。
+正式源码现按 `suites/frontend/bpu/<dut>/<role>/` 组织，公共设施放在 `common/`。
 Agent、静态 Bundle、事务类型、Driver 适配、Monitor、Env、Case、Model、
 Checker、Coverage 已拆分；集成 BPU 的内部组件留在 BPU 对应角色内。
 `conftest.py` 只注册环境 fixture；测试支持模块不再混入 `testcase/`。
@@ -395,7 +398,7 @@ pytest PID 3071435。本段启动记录不代表终态；以该目录 `exit.json
 ## 2026-10-09 历史试点
 
 四进程试验已通过，但正式全量回归尚未启用并行。原 full、metrics、dynamic
-仍绑定同一源码/运行库纪元运行，本次没有修改生产 `tests/`、`bpuverify/`、
+仍绑定同一源码/运行库纪元运行，本次没有修改生产 `tests/`、`suites/frontend/bpu/`、
 系统 pytest、DUT 或四份正式报告，也没有重启原全量回归。
 
 ## 实际结果

@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.bpu.transaction.types import BpuRedirect
-from bpuverify.bpu.transaction.types import BpuTraining
-from bpuverify.bpu.coverage.catalog import bpu_target_boundary_coverage_model
-from bpuverify.bpu.coverage.catalog import write_bpu_target_boundary_coverage
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.bpu.case.target_repair import check_micro_target_boundary
-from bpuverify.bpu.checker.target_repair import MissingMicroFullTargetRepair
+from suites.frontend.bpu.bpu.transaction.types import BpuRedirect
+from suites.frontend.bpu.bpu.transaction.types import BpuTraining
+from suites.frontend.bpu.bpu.coverage.catalog import bpu_target_boundary_coverage_model
+from suites.frontend.bpu.bpu.coverage.catalog import write_bpu_target_boundary_coverage
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.bpu.case.target_repair import check_micro_target_boundary
+from suites.frontend.bpu.bpu.checker.target_repair import MissingMicroFullTargetRepair
 
 
 PC = 0x407F_FFE0

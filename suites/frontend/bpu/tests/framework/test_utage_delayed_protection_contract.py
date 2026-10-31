@@ -1,8 +1,8 @@
 """Original correctness is a readable semantic qualification requirement."""
 import json
 from pathlib import Path
-from bpuverify.utage.model.delayed_protection import PROGRAMS, RULES
-from bpuverify.utage.coverage.delayed_protection import lifetime_coverage
+from suites.frontend.bpu.utage.model.delayed_protection import PROGRAMS, RULES
+from suites.frontend.bpu.utage.coverage.delayed_protection import lifetime_coverage
 
 
 def test_requirement_is_original_correctness_not_current_wire_direction():
@@ -23,7 +23,7 @@ def test_existing_feature_and_old_protection_obligations_remain_registered():
     for status in ('reached', 'checked'):
         for family in ('selective-protection-alias', 'long-provider-protection', 'delayed-protection'):
             assert 'kunminghu_v3.utage.'+family+'.'+status in feature['evidence']['coverage'][status]
-    assert 'bpuverify/utage/checker/delayed_protection.py' in feature['evidence']['checks']
+    assert 'utage/checker/delayed_protection.py' in feature['evidence']['checks']
 
 
 def test_new_denominator_is_declared_original_lifetimes_not_storage_coordinates():

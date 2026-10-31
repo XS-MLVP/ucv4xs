@@ -1,6 +1,6 @@
 """Real PSQ strict address holes and exact-target controls before completion."""
-from lsqverify.psq.actor import PsqActor
-from lsqverify.store_strict import parent_lifetimes
+from suites.memblock.lsq.psq.actor import PsqActor
+from suites.memblock.lsq.store_strict import parent_lifetimes
 
 
 async def test_strict_hole_precise_control_and_real_STA_four_lifetimes(psq_full, tmp_path):

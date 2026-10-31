@@ -1,12 +1,14 @@
 """Remaining public timing, recovery, valid-only and long-residence boundaries."""
+
 from dataclasses import replace
 import random
 
 import pytest
 
-from lsqverify.raw.types import SqPtr
-from lsqverify.vlq.types import QueuePtr, Redirect, RobPtr
-from lsqverify.replay.types import Cause, Enqueue, L2Hint, LqWakeup, Refill, StoreWakeup, TlbHint
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.vlq.types import QueuePtr, Redirect, RobPtr
+from suites.memblock.lsq.replay.types import Cause, Enqueue, L2Hint, LqWakeup, Refill, StoreWakeup, TlbHint
 
 
 @pytest.mark.parametrize("unaligned", (False, True))
@@ -21,9 +23,9 @@ async def test_slow_tlb_history_is_only_extended_for_s4_head(replay, unaligned, 
     assert (env.last_tick - hint_tick) // 2 == distance
     uid = env.uid(req)
     await env.idle(4)
-    assert bool(env.observed["io_replay_0_valid"]) == (distance == 1 or unaligned and distance == 2)
+    assert bool(env.observed[P.p_replay_0_valid]) == (distance == 1 or unaligned and distance == 2)
     env.arm("LRQ-TLB.history", [uid])
-    if not env.observed["io_replay_0_valid"]:
+    if not env.observed[P.p_replay_0_valid]:
         env.arm("LRQ-TLB.mismatch", [uid])
         await env.cycle(fast_tlb=TlbHint(True, req.tlb_id))
     await env.complete()
@@ -43,9 +45,9 @@ async def test_refill_history_windows_and_expired_negative(replay, unaligned, di
     assert (env.last_tick - hint_tick) // 2 == distance
     uid = env.uid(req)
     await env.idle(4)
-    assert bool(env.observed["io_replay_0_valid"]) == (distance <= (3 if unaligned else 2))
+    assert bool(env.observed[P.p_replay_0_valid]) == (distance <= (3 if unaligned else 2))
     env.arm(("LRQ-REFILL.history", "LRQ-REFILL.channels"), [uid])
-    if not env.observed["io_replay_0_valid"]:
+    if not env.observed[P.p_replay_0_valid]:
         env.arm("LRQ-REFILL.mismatch", [uid])
         await env.cycle(refills=pulse)
     await env.complete()
@@ -59,7 +61,7 @@ async def test_wrong_mshr_and_delayed_matching_refill(replay, channel):
     uid = env.uid(req)
     await env.cycle(refills=(Refill(True, 7), Refill(True, 8)), l2_hints=(L2Hint(True, 3, False), L2Hint(True, 4, True)))
     await env.idle(5)
-    assert not env.observed["io_replay_0_valid"]
+    assert not env.observed[P.p_replay_0_valid]
     await env.cycle(refills=tuple(Refill(True, 15) if i == channel else Refill() for i in range(2)))
     env.arm(("LRQ-REFILL.delayed", "LRQ-REFILL.mismatch", "LRQ-REFILL.channels"), [uid])
     await env.complete()
@@ -74,7 +76,7 @@ async def test_uncache_wakeup_flag_value_and_original_type(replay, nc):
     await env.cycle(nc=LqWakeup(True, QueuePtr(not req.uop.lq.flag, req.uop.lq.value)))
     await env.cycle(mmio=LqWakeup(True, QueuePtr(req.uop.lq.flag, req.uop.lq.value + 1)))
     await env.idle(5)
-    assert not env.observed["io_replay_0_valid"]
+    assert not env.observed[P.p_replay_0_valid]
     await env.cycle(**{"nc" if nc else "mmio": LqWakeup(True, req.uop.lq)})
     env.arm(("LRQ-UNCACHE.mismatch", "LRQ-UNCACHE.nc" if nc else "LRQ-UNCACHE.mmio"), [uid])
     await env.complete()
@@ -96,10 +98,10 @@ async def test_program_head_window_beats_insertion_age(replay, bank, mode):
         await env.cycle({i: req for i, req in enumerate(reqs[offset:offset + 3])}, writeback=QueuePtr.encode(base))
     uids = [env.uid(req) for req in reqs]
     await env.idle(2)
-    assert env.observed[f"io_replay_{bank}_bits_replayQueueIdx"] == bank
+    assert env.observed[P.io(f"replay_{bank}_bits_replayQueueIdx")] == bank
     await env.cycle(ready=tuple(i == bank for i in range(3)))
-    assert env.observed[f"io_replay_{bank}_valid"]
-    assert env.observed[f"io_replay_{bank}_bits_replayQueueIdx"] == target_slot
+    assert env.observed[P.io(f"replay_{bank}_valid")]
+    assert env.observed[P.io(f"replay_{bank}_bits_replayQueueIdx")] == target_slot
     env.arm("LRQ-ORDER." + mode, uids)
     env.arm("LRQ-HOLD.replace", uids)
     await env.issue_all()
@@ -114,7 +116,7 @@ async def test_high_cause_group_overrides_older_low_group(replay):
         await env.cycle(dict(enumerate(reqs[offset:offset + 3])))
     await env.cycle(data_bits=1 << 7)
     await env.cycle(ready=(True, False, False))
-    assert env.observed["io_replay_0_bits_replayQueueIdx"] == 6
+    assert env.observed[P.p_replay_0_bits_replayQueueIdx] == 6
     env.arm("LRQ-ORDER.priority", [env.uid(reqs[3]), env.uid(reqs[6])])
     await env.issue_all()
     await env.release_all()
@@ -129,7 +131,7 @@ async def test_rereplay_does_not_rejuvenate_original_insertion_age(replay):
     updated = replace(reqs[0], vaddr=reqs[0].vaddr + 16)
     await env.feedback(slot, lane=2, again=updated)
     await env.cycle(ready=(False,) * 3, fast_tlb=TlbHint(True, reqs[3].tlb_id))
-    assert env.observed["io_replay_0_valid"] and env.observed["io_replay_0_bits_replayQueueIdx"] == 0
+    assert env.observed[P.p_replay_0_valid] and env.observed[P.p_replay_0_bits_replayQueueIdx] == 0
     env.arm("LRQ-ORDER.age", [uid, env.uid(reqs[3])])
     await env.issue_all()
     await env.release_all()
@@ -153,7 +155,7 @@ async def test_cooldown_drains_already_fired_selection_and_can_recover(replay, c
         env.arm("LRQ-COOLDOWN.cancel", uids, reuse=True)
         await env.cycle(redirect=Redirect(True, RobPtr.encode(10), False))
         await env.idle(12, ready=(False,) * 3)
-        assert not env.observed["io_replayAllocate"]
+        assert not env.observed[P.p_replayAllocate]
         req = env.request(rob=20, lq=20)
         await env.cycle({2: req})
         await env.complete()
@@ -188,7 +190,7 @@ async def test_redirect_each_owner_phase_then_complete_new_uid(replay, phase):
     env.arm("LRQ-FLUSH." + phase, [uid], reuse=True)
     await env.cycle(redirect=Redirect(True, req.uop.rob, True))
     await env.idle(8)
-    assert not env.observed["io_replayAllocate"]
+    assert not env.observed[P.p_replayAllocate]
     await env.cycle({2: env.request(rob=11, lq=21)})
     await env.complete()
 
@@ -224,12 +226,12 @@ async def test_redirect_slot_age_former_latter_and_rob_wrap(replay, case):
     uid = env.uid(req)
     await env.cycle(redirect=Redirect(True, cutoff, self_flush))
     if canceled:
-        assert not env.observed["io_replayAllocate"]
+        assert not env.observed[P.p_replayAllocate]
         env.arm("LRQ-FLUSH.age", [uid], reuse=True)
         await env.idle(6)
         await env.cycle({0: env.request()})
     else:
-        assert env.observed["io_replayAllocate"]
+        assert env.observed[P.p_replayAllocate]
         env.arm("LRQ-FLUSH.age", [uid])
         await env.cycle(fast_tlb=TlbHint(True, req.tlb_id))
     await env.complete()
@@ -242,7 +244,7 @@ async def test_normal_feedback_and_redirect_same_slot_do_not_double_return(repla
     slot, uid = await env.issue()
     done = replace(req, replay_feedback=True, slot=slot, need_replay=False)
     await env.cycle({2: done}, redirect=Redirect(True, req.uop.rob, True))
-    assert not env.observed["io_replayAllocate"]
+    assert not env.observed[P.p_replayAllocate]
     env.arm("LRQ-FLUSH.overlap", [uid])
     await env.idle(8)
     await env.cycle({1: env.request(rob=11, lq=21)})
@@ -258,7 +260,7 @@ async def test_no_need_or_already_redirected_input_does_not_allocate(replay, can
     else:
         await env.cycle({1: replace(req, need_replay=False, causes=0x1FFF)})
     await env.idle(5)
-    assert not env.observed["io_replayAllocate"]
+    assert not env.observed[P.p_replayAllocate]
     new = env.request(rob=11, lq=21)
     await env.cycle({2: new})
     env.arm("LRQ-ADMIT.redirect" if cancel else "LRQ-ADMIT.no_need", [env.uid(new)])
@@ -274,7 +276,7 @@ async def test_disabled_feedback_payload_does_not_update_non_strict_owner(replay
     await env.idle(6)
     await env.cycle({2: dirty}, refills=(Refill(True, 15), Refill(True, 14)))
     await env.idle(4)
-    assert not env.observed["io_replay_0_valid"]
+    assert not env.observed[P.p_replay_0_valid]
     env.arm("LRQ-IDLE.disabled", [uid])
     await env.cycle(fast_tlb=TlbHint(True, req.tlb_id))
     await env.complete()
@@ -288,13 +290,13 @@ async def test_disabled_feedback_cannot_clear_strict_dependency(replay, lane):
     await env.cycle({0: req}, address_bits=1 << 7, upper=SqPtr.encode(64))
     uid = env.uid(req)
     await env.idle(4)
-    assert not env.observed["io_replay_0_valid"]
+    assert not env.observed[P.p_replay_0_valid]
     dirty = replace(req, valid=False, replay_feedback=True, slot=0, need_replay=False, causes=0,
                     uop=replace(req.uop, strict=False))
     env.arm("LRQ-STORE.strict_valid_only", [uid])
     await env.cycle({lane: dirty})
     await env.idle(5)
-    assert not env.observed["io_replay_0_valid"]
+    assert not env.observed[P.p_replay_0_valid]
     await env.cycle(address_ready=SqPtr.encode(8))
     await env.complete()
 
@@ -307,15 +309,15 @@ async def test_special_threshold_normal_young_wait_and_marked_request(replay, fo
     await env.cycle({0: req})
     uid = env.uid(req)
     await env.idle(2046)
-    assert not env.observed["io_specialMode"]
+    assert not env.observed[P.p_specialMode]
     await env.cycle()
-    assert not env.observed["io_specialMode"]
+    assert not env.observed[P.p_specialMode]
     await env.cycle()
-    assert env.observed["io_specialMode"]
+    assert env.observed[P.p_specialMode]
     normal = env.request(Cause.TLB_MISS, rob=12, lq=22)
     await env.cycle({1: normal})
     await env.idle(4)
-    assert not env.observed["io_replay_1_valid"]
+    assert not env.observed[P.p_replay_1_valid]
     marked = env.request(Cause.TLB_MISS, rob=11, lq=21, special_request=True)
     await env.cycle({2: marked})
     marked_uid = env.uid(marked)
@@ -323,7 +325,7 @@ async def test_special_threshold_normal_young_wait_and_marked_request(replay, fo
     await env.complete(2)
     new_head = replace(req.uop.rob, former=not req.uop.rob.former) if former_change else RobPtr.encode(11)
     await env.cycle(head=new_head)
-    assert not env.observed["io_specialMode"]
+    assert not env.observed[P.p_specialMode]
     env.arm(("LRQ-SPECIAL.threshold", "LRQ-SPECIAL.head_moves"), [uid, env.uid(normal)])
     await env.cycle(slow_tlb=TlbHint(True, 0, True))
     await env.issue_all()
@@ -337,7 +339,7 @@ async def test_noneligible_or_canceled_input_does_not_start_special_window(repla
     await env.cycle(head=req.uop.rob)
     await env.cycle({0: req}, redirect=Redirect(True, req.uop.rob, True) if cancel else Redirect())
     await env.idle(2050)
-    assert not env.observed["io_specialMode"]
+    assert not env.observed[P.p_specialMode]
     if not cancel:
         await env.cycle(fast_tlb=TlbHint(True, req.tlb_id))
         uid = env.uid(req)
@@ -361,9 +363,9 @@ async def test_cause_feedback_does_not_restart_existing_special_window(replay):
     await env.feedback(slot, again=again)
     elapsed = (env.last_tick - trigger_tick) // 2
     await env.idle(2047 - elapsed)
-    assert not env.observed["io_specialMode"]
+    assert not env.observed[P.p_specialMode]
     await env.cycle()
-    assert env.observed["io_specialMode"]
+    assert env.observed[P.p_specialMode]
     env.arm("LRQ-SPECIAL.rereplay", [uid])
     await env.cycle(fast_tlb=TlbHint(True, again.tlb_id))
     await env.complete(slot)

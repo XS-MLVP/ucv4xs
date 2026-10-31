@@ -1,6 +1,6 @@
 """Qualified tick/priority/clear/consumer lifecycle, no pin or cycle waits."""
 import pytest
-from bpuverify.bpu.case.ittage_aging import check_aging
+from suites.frontend.bpu.bpu.case.ittage_aging import check_aging
 
 
 @pytest.mark.feature('BPU-INT-074')

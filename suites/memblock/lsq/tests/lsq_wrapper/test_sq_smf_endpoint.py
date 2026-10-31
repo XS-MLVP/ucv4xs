@@ -1,10 +1,12 @@
 """Actual multi-match query -> Replay waits for full original SQ boundary."""
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.replay.types import Cause
-from lsqverify.vlq.types import RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.replay.types import Cause
+from suites.memblock.lsq.vlq.types import RobPtr
 from .memory_owners import MemoryOwners, StoreOwner, cached_load
 
 
@@ -20,7 +22,7 @@ async def test_smf_full_exclusive_sq_waits_until_all_original_store_effects(lsq,
     await trace.dispatch(stores,[load])
     await trace.write_all(range(64))
     await trace.forward(load,lane)
-    p=f"io_forward_{lane}_s2Resp_"
+    p=P.io(f"forward_{lane}_s2Resp_")
     lsq.expect({p+"valid":1,p+"bits_forwardInvalid":1,p+"bits_addrInvalid_valid":0,p+"bits_dataInvalid_valid":0},
                "two real partial Store sources require SMF replay, not successful Load data")
     replay=replace(load,execution=replace(load.execution,need_replay=True,causes=1<<Cause.STORE_MULTI_MATCH))
@@ -29,7 +31,7 @@ async def test_smf_full_exclusive_sq_waits_until_all_original_store_effects(lsq,
     async def blocked_edge():
         await trace.cycle()
         if trace.sq_head<count:
-            lsq.expect({f"io_replay_{bank}_valid":0 for bank in range(3)},
+            lsq.expect({P.io(f"replay_{bank}_valid"):0 for bank in range(3)},
                        "SMF original exclusive boundary still has unconsumed older Stores")
 
     for _ in range(4):await blocked_edge()

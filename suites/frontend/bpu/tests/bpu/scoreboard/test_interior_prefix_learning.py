@@ -3,11 +3,11 @@ from copy import deepcopy
 from dataclasses import replace
 from types import SimpleNamespace as NS
 import pytest
-from bpuverify.bpu.model.tage.interior_prefix_learning import PROGRAMS,NEGATIVE,program,pending_states
-from bpuverify.bpu.model.tage.neighbor_migration import PC
-from bpuverify.bpu.model.tage.service import learning_inflight,pending_plan
-from bpuverify.bpu.checker.interior_prefix_learning import Checks
-from bpuverify.bpu.coverage.interior_prefix_learning import Coverage,RULES
+from suites.frontend.bpu.bpu.model.tage.interior_prefix_learning import PROGRAMS,NEGATIVE,program,pending_states
+from suites.frontend.bpu.bpu.model.tage.neighbor_migration import PC
+from suites.frontend.bpu.bpu.model.tage.service import learning_inflight,pending_plan
+from suites.frontend.bpu.bpu.checker.interior_prefix_learning import Checks
+from suites.frontend.bpu.bpu.coverage.interior_prefix_learning import Coverage,RULES
 from tests.bpu.scoreboard.direction_turnaround_fixtures import mixed,consumers
 from tests.bpu.scoreboard.mixed_visibility_fixtures import packet
 from tests.bpu.scoreboard.test_direction_forwarding import resolution

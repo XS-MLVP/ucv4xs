@@ -6,6 +6,7 @@ closure over the split-verilog tree once per DUT, copies the exact files, writes
 `filelist.f`, and records hashes in `manifest/rtl-sha256.json`.
 """
 from __future__ import annotations
+import ucv.runtime as ucv_paths
 
 import argparse
 import hashlib
@@ -18,7 +19,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from dep_closure import load_index, scan  # noqa: E402
-from duts import DUTS, SOC_RTL, rtl_dir  # noqa: E402
+from suites.memblock.dcache.inventory import DUTS, rtl_dir  # noqa: E402
+SOC_RTL = ucv_paths.soc_rtl_for(ROOT).resolve()
 
 EXTRA_FILES = ("ClockGate.sv",)
 

@@ -1,9 +1,9 @@
 from dataclasses import asdict
 import pytest
-from bpuverify.bpu.driver.encoding import _encode_training
-from bpuverify.bpu.model.sc.model import encoded_payload, canonical
-from bpuverify.bpu.model.alignment import ALL_CASES
-from bpuverify.bpu.transaction.types import BpuBatchTraining, BpuBranchFeedback
+from suites.frontend.bpu.bpu.driver.encoding import _encode_training
+from suites.frontend.bpu.bpu.model.sc.model import encoded_payload, canonical
+from suites.frontend.bpu.bpu.model.alignment import ALL_CASES
+from suites.frontend.bpu.bpu.transaction.types import BpuBatchTraining, BpuBranchFeedback
 
 
 class RecordingBits:

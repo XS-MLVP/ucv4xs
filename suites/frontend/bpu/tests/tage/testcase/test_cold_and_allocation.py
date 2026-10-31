@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.tage.checker.assertions import allocate
-from bpuverify.tage.case.definitions import PC
-from bpuverify.tage.case.definitions import POSITION
+from suites.frontend.bpu.tage.checker.assertions import allocate
+from suites.frontend.bpu.tage.case.definitions import PC
+from suites.frontend.bpu.tage.case.definitions import POSITION
 
 
 @pytest.mark.feature("BPU-TAGE-001")

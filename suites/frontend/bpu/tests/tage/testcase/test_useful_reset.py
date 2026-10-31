@@ -4,18 +4,18 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.tage.transaction.types import TageTraining
-from bpuverify.tage.coverage.catalog import tage_useful_reset_coverage_model
-from bpuverify.tage.coverage.catalog import write_tage_useful_reset_coverage
-from bpuverify.tage.checker.assertions import fill_useful_set
-from bpuverify.tage.checker.assertions import require_miss
-from bpuverify.tage.checker.assertions import require_provider
-from bpuverify.tage.checker.assertions import train_until_useful_reset_reopens_set
-from bpuverify.tage.case.definitions import PC
-from bpuverify.tage.case.definitions import PRESSURE_POSITION
-from bpuverify.tage.case.definitions import USEFUL_RESET_COUNTER_MAX
-from bpuverify.tage.case.definitions import USEFUL_SET_POSITIONS
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.tage.transaction.types import TageTraining
+from suites.frontend.bpu.tage.coverage.catalog import tage_useful_reset_coverage_model
+from suites.frontend.bpu.tage.coverage.catalog import write_tage_useful_reset_coverage
+from suites.frontend.bpu.tage.checker.assertions import fill_useful_set
+from suites.frontend.bpu.tage.checker.assertions import require_miss
+from suites.frontend.bpu.tage.checker.assertions import require_provider
+from suites.frontend.bpu.tage.checker.assertions import train_until_useful_reset_reopens_set
+from suites.frontend.bpu.tage.case.definitions import PC
+from suites.frontend.bpu.tage.case.definitions import PRESSURE_POSITION
+from suites.frontend.bpu.tage.case.definitions import USEFUL_RESET_COUNTER_MAX
+from suites.frontend.bpu.tage.case.definitions import USEFUL_SET_POSITIONS
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature("BPU-TAGE-009")

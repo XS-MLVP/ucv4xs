@@ -3,14 +3,14 @@ from copy import deepcopy
 
 import pytest
 from toffee import ScoreboardMismatch
-from bpuverify.abtb.model.state.counter import CounterReference
-from bpuverify.abtb.model.state.counter import index
-from bpuverify.abtb.model.state.counter import victim
-from bpuverify.bpu.coverage.abtb.supplemental import CounterCoverage
-from bpuverify.bpu.coverage.abtb.supplemental import PATHS
-from bpuverify.bpu.case.abtb.provenance import MetadataPipeline
-from bpuverify.bpu.case.abtb.provenance import eligible
-from bpuverify.bpu.case.abtb.provenance import expected_fast_train
+from suites.frontend.bpu.abtb.model.state.counter import CounterReference
+from suites.frontend.bpu.abtb.model.state.counter import index
+from suites.frontend.bpu.abtb.model.state.counter import victim
+from suites.frontend.bpu.bpu.coverage.abtb.supplemental import CounterCoverage
+from suites.frontend.bpu.bpu.coverage.abtb.supplemental import PATHS
+from suites.frontend.bpu.bpu.case.abtb.provenance import MetadataPipeline
+from suites.frontend.bpu.bpu.case.abtb.provenance import eligible
+from suites.frontend.bpu.bpu.case.abtb.provenance import expected_fast_train
 
 
 def metadata(bank=2, set_index=31, way=1, *, valid=1):

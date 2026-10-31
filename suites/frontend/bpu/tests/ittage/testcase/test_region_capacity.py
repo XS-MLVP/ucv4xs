@@ -4,14 +4,14 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.ittage.transaction.types import IttageTraining
-from bpuverify.ittage.coverage.catalog import ittage_region_capacity_coverage_model
-from bpuverify.ittage.coverage.catalog import write_ittage_region_capacity_coverage
-from bpuverify.ittage.case.definitions import PC
-from bpuverify.ittage.case.definitions import POSITION
-from bpuverify.ittage.case.definitions import REGION_COUNT
-from bpuverify.ittage.case.definitions import REGION_WIDTH
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.ittage.transaction.types import IttageTraining
+from suites.frontend.bpu.ittage.coverage.catalog import ittage_region_capacity_coverage_model
+from suites.frontend.bpu.ittage.coverage.catalog import write_ittage_region_capacity_coverage
+from suites.frontend.bpu.ittage.case.definitions import PC
+from suites.frontend.bpu.ittage.case.definitions import POSITION
+from suites.frontend.bpu.ittage.case.definitions import REGION_COUNT
+from suites.frontend.bpu.ittage.case.definitions import REGION_WIDTH
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 CONTEXTS = tuple(

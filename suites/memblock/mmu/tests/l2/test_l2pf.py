@@ -1,14 +1,14 @@
 """L2TlbPrefetch leaf UT."""
 from __future__ import annotations
 
-from mmuverify.common.runtime import execution
-from mmuverify.l2.l2pf import next_line
+from suites.memblock.mmu.execution import execution
+from suites.memblock.mmu.l2.l2pf import next_line
 
 
 # L2PF-01, L2PF-02
 async def test_prefetch_next_line_and_history_suppression(l2pf_env):
     env = l2pf_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context(virt=0, vsatp_mode=0, hgatp_mode=0)
         vpn = 0x8000
@@ -31,7 +31,7 @@ async def test_prefetch_next_line_and_history_suppression(l2pf_env):
 # L2PF-03
 async def test_prefetch_flush_and_s2xlate_classes(l2pf_env):
     env = l2pf_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         for virt, vs, hg, expect in (
             (0, 8, 8, 0), (1, 8, 0, 1), (1, 0, 8, 2), (1, 8, 8, 3)
@@ -46,7 +46,7 @@ async def test_prefetch_flush_and_s2xlate_classes(l2pf_env):
 # L2PF-04: next-line addition wraps at the VPN high bit.
 async def test_prefetch_next_line_wrap(l2pf_env):
     env = l2pf_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context()
         vpn = ((1 << 35) - 1) << 3
@@ -61,7 +61,7 @@ async def test_prefetch_next_line_wrap(l2pf_env):
 # exercised.
 async def test_prefetch_history_all_slots_and_index_wrap(l2pf_env):
     env = l2pf_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context()
         for index in range(4):
@@ -79,7 +79,7 @@ async def test_prefetch_history_all_slots_and_index_wrap(l2pf_env):
 # L2PF-06: CSR mode/change and input VPN bits are exercised in both directions.
 async def test_prefetch_input_and_csr_bits_toggle(l2pf_env):
     env = l2pf_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         # Toggle the changed bits with an empty history; they are an
         # independent flush source and do not affect a pending entry here.
@@ -103,7 +103,7 @@ async def test_prefetch_input_and_csr_bits_toggle(l2pf_env):
 # L2PF-07: high output/history VPN bits toggle through varied next lines.
 async def test_prefetch_output_and_history_high_bits(l2pf_env):
     env = l2pf_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_context()
         patterns = [

@@ -4,20 +4,20 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.bpu.transaction.types import BpuBatchTraining
-from bpuverify.bpu.transaction.types import BpuBranchFeedback
-from bpuverify.bpu.coverage.catalog import bpu_tage_batch_feedback_coverage_model
-from bpuverify.bpu.coverage.catalog import write_bpu_tage_batch_feedback_coverage
-from bpuverify.bpu.checker.assertions import mbtb_counter_for_position
-from bpuverify.bpu.checker.assertions import revisit_from_redirect
-from bpuverify.bpu.checker.assertions import tage_meta_for_position
-from bpuverify.bpu.case.definitions import EARLIER_TARGET
-from bpuverify.bpu.case.definitions import LATER_POSITION
-from bpuverify.bpu.case.definitions import LATER_TARGET
-from bpuverify.bpu.case.definitions import PC
-from bpuverify.bpu.case.definitions import POSITION
-from bpuverify.bpu.case.scenarios import prepare_two_tage_providers
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.bpu.transaction.types import BpuBatchTraining
+from suites.frontend.bpu.bpu.transaction.types import BpuBranchFeedback
+from suites.frontend.bpu.bpu.coverage.catalog import bpu_tage_batch_feedback_coverage_model
+from suites.frontend.bpu.bpu.coverage.catalog import write_bpu_tage_batch_feedback_coverage
+from suites.frontend.bpu.bpu.checker.assertions import mbtb_counter_for_position
+from suites.frontend.bpu.bpu.checker.assertions import revisit_from_redirect
+from suites.frontend.bpu.bpu.checker.assertions import tage_meta_for_position
+from suites.frontend.bpu.bpu.case.definitions import EARLIER_TARGET
+from suites.frontend.bpu.bpu.case.definitions import LATER_POSITION
+from suites.frontend.bpu.bpu.case.definitions import LATER_TARGET
+from suites.frontend.bpu.bpu.case.definitions import PC
+from suites.frontend.bpu.bpu.case.definitions import POSITION
+from suites.frontend.bpu.bpu.case.scenarios import prepare_two_tage_providers
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 def provider_cell(meta):

@@ -1,12 +1,14 @@
 """Coverage-gap expansion: actual 22-file parent with continuous checking."""
+
 from dataclasses import asdict, replace
 from itertools import permutations
 import random
 
 import pytest
 
-from lsqverify.uncache_entry.types import QueuePtr, RobPtr, SOURCE_EXCEPTION_BITS
-from lsqverify.load_uncache.sequences import allocate_batch, fill, red
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.uncache_entry.types import QueuePtr, RobPtr, SOURCE_EXCEPTION_BITS
+from suites.memblock.lsq.load_uncache.sequences import allocate_batch, fill, red
 
 
 @pytest.mark.parametrize("nc", (False, True))
@@ -66,7 +68,7 @@ async def test_filter_each_exception_replay_and_type_then_prove_full_capacity(lo
     await allocate_batch(env, {2: replace(req, entry=replace(req.entry, nc=False, mmio=False))})
     assert not env.model.owners
     await env.idle(5)
-    assert env.model.pipe is None and not env.observed["io_uncache_req_valid"]
+    assert env.model.pipe is None and not env.observed[P.p_uncache_req_valid]
     loads, uids = await fill(env)
     assert len(uids) == 16 and len(env.model.owners) == 16
     # Capacity proof for every rejected-by-filter input: all 16 owners still fit.
@@ -86,8 +88,8 @@ async def test_partial_capacity_oldest_nack_and_recovery(load_uncache, remaining
     await allocate_batch(env, {0: extra[2], 1: extra[0], 2: extra[1]})
     assert len(env.last_change["allocated"]) == remaining
     assert len(env.last_change["rejected"]) == 3 - remaining
-    assert env.observed["io_rollback_valid"]
-    assert env.observed["io_rollback_bits_robIdx_value"] == extra[remaining].entry.rob.value
+    assert env.observed[P.p_rollback_valid]
+    assert env.observed[P.p_rollback_bits_robIdx_value] == extra[remaining].entry.rob.value
     before = set(env.model.owners)
     env.reach("LQU-CAPACITY.reject")
     env.reach("LQU-ROLLBACK.oldest")
@@ -116,7 +118,7 @@ async def test_three_bypass_lanes_same_owner_and_three_distinct_consumers(load_u
     await env.idle(3)
     await env.bypass({0: loads[1], 2: loads[2]})
     env.arm("LQU-EXCEPTION.priority", uids[1:])
-    assert env.observed["io_exceptionInfo_bits_robIdx_value"] == loads[1].entry.rob.value
+    assert env.observed[P.p_exceptionInfo_bits_robIdx_value] == loads[1].entry.rob.value
     await env.idle(5)
     # All three have real data in the following batch.
     uids = await allocate_batch(env, {i: env.request(rob=40 + i, lq=40 + i) for i in range(3)})
@@ -136,24 +138,24 @@ async def test_nonmatching_bypass_at_empty_response_and_wrong_identity(load_unca
     env = load_uncache
     req = env.request(lq=125)
     await env.bypass({0: req})
-    assert not env.observed["io_bypass_0_s1Resp_valid"]
+    assert not env.observed[P.p_bypass_0_s1Resp_valid]
     await allocate_batch(env, {2: req})
     await env.accept_all()
     uid = env.uid(req)
     await env.bind(0, 5)
     await env.bypass({0: req})  # not returned yet
-    assert not env.observed["io_bypass_0_s1Resp_valid"]
+    assert not env.observed[P.p_bypass_0_s1Resp_valid]
     await env.respond(5, 0x123)
     await env.wait_wakeup(req)
     for wrong in (replace(req, entry=replace(req.entry, nc=False, mmio=True)),
                   replace(req, entry=replace(req.entry, lq=QueuePtr(not req.entry.lq.flag, req.entry.lq.value))),
                   replace(req, entry=replace(req.entry, lq=QueuePtr(req.entry.lq.flag, req.entry.lq.value + 1)))):
         await env.bypass({1: wrong})
-        assert not env.observed["io_bypass_1_s1Resp_valid"]
+        assert not env.observed[P.p_bypass_1_s1Resp_valid]
     env.arm("LQU-BYPASS.miss", [uid])
     await env.consume(req, 0x123)
     await env.bypass({2: req})  # already consumed cannot be hit again
-    assert not env.observed["io_bypass_2_s1Resp_valid"]
+    assert not env.observed[P.p_bypass_2_s1Resp_valid]
     await env.idle(3)
 
 
@@ -163,8 +165,8 @@ async def test_nc_groups_elastic_hold_replace_and_fair_progress(load_uncache):
     env.arm("LQU-PIPE.hold", uids)
     env.arm("LQU-PIPE.replace", uids)
     env.arm("LQU-ARB.nc_groups", uids)
-    assert env.observed["io_uncache_req_valid"]
-    held = {key: value for key, value in env.observed.items() if key.startswith("io_uncache_req_")}
+    assert env.observed[P.p_uncache_req_valid]
+    held = {key: value for key, value in env.observed.items() if key.startswith(P.p_uncache_req_)}
     for _ in range(8):
         await env.cycle()
         assert {key: value for key, value in env.observed.items() if key in held} == held
@@ -182,13 +184,13 @@ async def test_mmio_pending_and_priority_does_not_rewrite_buffered_nc(load_uncac
     mmio = env.request(nc=False, lq=31, rob=11)
     await allocate_batch(env, {0: nc}, pending=nc.entry.rob)
     await env.idle(3)
-    assert env.observed["io_uncache_req_valid"] and env.observed["io_uncache_req_bits_nc"]
+    assert env.observed[P.p_uncache_req_valid] and env.observed[P.p_uncache_req_bits_nc]
     await allocate_batch(env, {2: mmio}, pending=nc.entry.rob)
     await env.idle(4)
-    assert not env.observed["io_rob_mmioBusy"]
+    assert not env.observed[P.p_rob_mmioBusy]
     await env.cycle(pending=mmio.entry.rob)
     await env.idle(2)
-    assert env.observed["io_rob_mmioBusy"]
+    assert env.observed[P.p_rob_mmioBusy]
     await env.take_bus(nc, 0)
     await env.take_bus(mmio, 1)
     uids = [env.uid(nc), env.uid(mmio)]
@@ -198,8 +200,8 @@ async def test_mmio_pending_and_priority_does_not_rewrite_buffered_nc(load_uncac
     later_nc = env.request(nc=True, rob=12, lq=32)
     await allocate_batch(env, {0: later_nc}, pending=mmio.entry.rob)
     for _ in range(5):
-        await env.cycle({"io_uncache_req_ready": 1})
-        assert not env.observed["io_uncache_req_valid"]
+        await env.cycle({P.p_uncache_req_ready: 1})
+        assert not env.observed[P.p_uncache_req_valid]
     await env.respond(3, 0x76543210)
     await env.wait_wakeup(mmio)
     await env.consume(mmio, 0x76543210)

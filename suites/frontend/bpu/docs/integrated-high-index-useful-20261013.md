@@ -1,5 +1,8 @@
 # 集成 MicroTAGE 高 index useful：从行缺口到真实学习场景
 
+> 路径迁移说明（2026-10-31）：本报告仍属于原日期、基线和执行源码；实现文件已迁到工程根。可点击源码链接更新到当前位置，不据此重标历史 PASS/FAIL 或覆盖结论。参见[本轮命名空间迁移](../../../../docs/lessons/suite-namespace-refactor-20261031.md)。
+
+
 `BPU-UTAGE-023` 已证明模块接口可以分离 index PC 和 tag PC，但这不自动证明
 集成 BPU 能通过正常预测、公开 metadata 和真实反馈完成同一操作。
 `BPU-INT-066` 补这一层需求，不扫描剩余383个 high index，不把独立 DUT 的结果
@@ -47,18 +50,18 @@ folds、ABTB bankMask/setIdx 和真实 conditional source。纯模型别名推�
 ## 分层和检查边界
 
 [`testcase`](../tests/bpu/testcase/test_high_index_useful.py) 只声明功能点并调用场景。
-[`输入模型`](../bpuverify/bpu/model/bypass/high_index.py) 推导程序、容量和别名；
-[`environment`](../bpuverify/bpu/env/bypass/sparse.py) 处理 genuine capture、retarget、
+[`输入模型`](../bpu/model/bypass/high_index.py) 推导程序、容量和别名；
+[`environment`](../bpu/env/bypass/sparse.py) 处理 genuine capture、retarget、
 redirect 和 drain。warm capture 是 opt-in，原 INT-064/065 的 cold 行为保持默认。
 从 C checkpoint 恢复到 D，而不是直接到 A，保留较早的正常 index 请求关系。
 
-[`case`](../bpuverify/bpu/case/bypass/high_index.py) 组织语义阶段，复用既有完整检查器：
+[`case`](../bpu/case/bypass/high_index.py) 组织语义阶段，复用既有完整检查器：
 PHR、1024 ABTB counter、256 PLRU、两表全部 shadow/status/useful/pointer、独立上游
 allocation/update/useful 策略和 SRAM 端口/读回。两个正常 lower 返回比较完整公开
 ways/metadata、训练 folds、position10 fallback 和 target B。
 这不是完整 ABTB SRAM 写产生参考或整个 BPU 的独立预测参考，也不宣称完整 FTQ 合法性。
 
-[`coverage collector`](../bpuverify/bpu/coverage/bypass/high_index.py) 从真实 reset 重放
+[`coverage collector`](../bpu/coverage/bypass/high_index.py) 从真实 reset 重放
 两表全部状态。useful 操作属于**已寄存 T1 index**，不能归到当前 T0 read index；
 只有下一 rising 观测完整比较通过后才记录角色。最终没有观测到 effect 的 write 不计。
 allocation、实际 increase、实际 decrease、agreement-hold 均为必需断言；别名上下文、

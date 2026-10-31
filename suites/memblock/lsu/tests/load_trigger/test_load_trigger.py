@@ -5,13 +5,13 @@ import random
 
 import pytest
 
-from lsuverify.load_trigger.coverage import CASES, LoadTriggerCoverage
-from lsuverify.load_trigger.env import (
+from suites.memblock.lsu.load_trigger.coverage import CASES, LoadTriggerCoverage
+from suites.memblock.lsu.load_trigger.env import (
     LoadTriggerEnv,
     independent_configs,
     reference_action,
 )
-from lsuverify.store_trigger.env import (
+from suites.memblock.lsu.store_trigger.env import (
     ACTION_BREAKPOINT,
     ACTION_CODE_BREAKPOINT,
     ACTION_CODE_DEBUG,

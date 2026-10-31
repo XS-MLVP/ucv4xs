@@ -4,14 +4,14 @@ from dataclasses import replace
 from types import SimpleNamespace as NS
 import pytest
 from toffee import Scoreboard
-from bpuverify.bpu.checker.main_rewrite import MainRewriteChecks
-from bpuverify.bpu.coverage.main_rewrite import MainRewriteCoverage
-from bpuverify.bpu.model.main_rewrite import PC,POSITION,TARGETS,effect,direction
-from bpuverify.bpu.model.main_service import PCS,STREAM_PC,entry_plan,counter_payload,entry_payload
-from bpuverify.bpu.model.main_sources import source_entries
-from bpuverify.bpu.model.pipeline import Redirect,Outcome
-from bpuverify.bpu.model.selection import Kind,middle_repair,final_repair
-from bpuverify.mbtb.model.semantic import Entry,Target
+from suites.frontend.bpu.bpu.checker.main_rewrite import MainRewriteChecks
+from suites.frontend.bpu.bpu.coverage.main_rewrite import MainRewriteCoverage
+from suites.frontend.bpu.bpu.model.main_rewrite import PC,POSITION,TARGETS,effect,direction
+from suites.frontend.bpu.bpu.model.main_service import PCS,STREAM_PC,entry_plan,counter_payload,entry_payload
+from suites.frontend.bpu.bpu.model.main_sources import source_entries
+from suites.frontend.bpu.bpu.model.pipeline import Redirect,Outcome
+from suites.frontend.bpu.bpu.model.selection import Kind,middle_repair,final_repair
+from suites.frontend.bpu.mbtb.model.semantic import Entry,Target
 from tests.bpu.scoreboard.test_main_service import establish,feedback,quiet,revisit,streaming_query,raw_counter
 
 

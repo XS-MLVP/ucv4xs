@@ -22,11 +22,11 @@ def main():
     collected={line.strip() for line in p.stdout.splitlines() if line.startswith("tests/") and "::" in line}
     assert collected==set(expected)
     ast_count=0
-    for folder in("lsqverify","tests","tools"):
-        for file in(ROOT/folder).rglob("*.py"):
-            ast.parse(file.read_text(),filename=str(file));ast_count+=1
+    from ucv.runtime import suite_python_sources
+    for file in suite_python_sources(ROOT):
+        ast.parse(file.read_text(),filename=str(file));ast_count+=1
     source=json.loads((ROOT/"results/lsq-progress-regression-11/source-evidence.json").read_text())["files"]
-    unchanged={k:v for k,v in source.items() if k.startswith("lsqverify/") and k!="lsqverify/native.py"}
+    unchanged={k:v for k,v in source.items() if k.startswith('lsqverify/') and k!='lsqverify/native.py'}
     assert all(sha256((ROOT/k).read_bytes()).hexdigest()==h for k,h in unchanged.items())
     result=dict(status="READ_ONLY_PREFLIGHT_NOT_NATIVE_EXECUTION",exact_nodes=2203,baselines=list(BASELINES),
                 expected_results_not_actual=dict(PASS=1982,FAIL=221),Python_AST_files=ast_count,

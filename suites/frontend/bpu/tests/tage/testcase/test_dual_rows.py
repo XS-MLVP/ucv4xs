@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.tage.coverage.catalog import tage_dual_rows_coverage_model
-from bpuverify.tage.coverage.catalog import write_tage_dual_rows_coverage
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.tage.case.dual_rows_scenario import check_dual_feedback_mode
+from suites.frontend.bpu.tage.coverage.catalog import tage_dual_rows_coverage_model
+from suites.frontend.bpu.tage.coverage.catalog import write_tage_dual_rows_coverage
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.tage.case.dual_rows_scenario import check_dual_feedback_mode
 
 
 @pytest.mark.feature("BPU-TAGE-024")

@@ -1,5 +1,5 @@
 """Independent learning visibility under uninterrupted same-bank read service."""
-from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT
+from suites.frontend.bpu.models.configuration import TAGE_ALLOCATION_WAIT
 from dataclasses import replace
 from copy import deepcopy
 from pathlib import Path
@@ -9,13 +9,13 @@ import ast
 import pytest
 from toffee import Scoreboard
 
-from bpuverify.bpu.checker.direction_service import DirectionServiceChecks
-from bpuverify.bpu.coverage.direction_service import DirectionServiceCoverage
-from bpuverify.bpu.model.direction_sources import context_for
-from bpuverify.bpu.model.pipeline import Outcome,Resolution,Redirect
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.bpu.model.tage.forwarding import PC,POSITIONS,resolved_path
-from bpuverify.bpu.model.tage.service import STREAM_PC,STREAM_POSITION,VIA_PC,learning_inflight,pending_fronts,pending_plan,secondary_program
+from suites.frontend.bpu.bpu.checker.direction_service import DirectionServiceChecks
+from suites.frontend.bpu.bpu.coverage.direction_service import DirectionServiceCoverage
+from suites.frontend.bpu.bpu.model.direction_sources import context_for
+from suites.frontend.bpu.bpu.model.pipeline import Outcome,Resolution,Redirect
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.tage.forwarding import PC,POSITIONS,resolved_path
+from suites.frontend.bpu.bpu.model.tage.service import STREAM_PC,STREAM_POSITION,VIA_PC,learning_inflight,pending_fronts,pending_plan,secondary_program
 from tests.bpu.scoreboard.test_direction_forwarding import establish,resolution,values
 from tests.bpu.scoreboard.test_direction_sources import quiet,revisit
 
@@ -373,7 +373,7 @@ def test_postrelease_credit_requires_all_four_writes_and_both_new_history_consum
 
 
 def test_service_case_keeps_sampling_tasks_edges_and_comparisons_in_support_layers():
-    tree=ast.parse(Path('bpuverify/bpu/case/direction_service.py').read_text())
+    tree=ast.parse(Path('bpu/case/direction_service.py').read_text())
     for node in ast.walk(tree):
         assert not isinstance(node,(ast.Assert,ast.ClassDef))
         if isinstance(node,ast.Call):

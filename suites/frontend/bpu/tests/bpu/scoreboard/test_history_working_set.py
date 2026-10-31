@@ -7,29 +7,29 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.checker.history_working_set import HistoryWorkingSetChecks
-from bpuverify.bpu.coverage.history_working_set import HistoryWorkingSetCoverage
-from bpuverify.bpu.env.history_working_set import HistoryWorkingSetEnv
-from bpuverify.bpu.model.early_direction_sources import EarlyDirectionSources
-from bpuverify.bpu.model.history_working_set import (ANCHOR,FEATURES,POSITION,PROFILES,
+from suites.frontend.bpu.bpu.checker.history_working_set import HistoryWorkingSetChecks
+from suites.frontend.bpu.bpu.coverage.history_working_set import HistoryWorkingSetCoverage
+from suites.frontend.bpu.bpu.env.history_working_set import HistoryWorkingSetEnv
+from suites.frontend.bpu.bpu.model.early_direction_sources import EarlyDirectionSources
+from suites.frontend.bpu.bpu.model.history_working_set import (ANCHOR,FEATURES,POSITION,PROFILES,
     HistoryLearningLedger,HistoryWorkingSetProgram,history_path,main_capacity)
-from bpuverify.bpu.model.pipeline import PipelineReference,Events
-from bpuverify.mbtb.model.semantic import Entry as MainEntry,Target,coordinate,tag
-from bpuverify.utage.model.semantic import Entry,UtageReference
-from bpuverify.utage.model.usefulness_events import ProtectionState
-from bpuverify.bpu.model.history_working_set import ShortWorkingSetProgram,SHORT_PROFILES,SHORT_RULES,short_history_path
-from bpuverify.bpu.coverage.history_working_set import ShortPathRetentionCoverage
-from bpuverify.bpu.checker.history_working_set import ShortPathRetentionChecks
-from bpuverify.bpu.model.early_protection import ProtectionLedger
-from bpuverify.bpu.model.history_working_set import (ShortMixedWorkingSetProgram,SHORT_MIXED_PROFILES,
+from suites.frontend.bpu.bpu.model.pipeline import PipelineReference,Events
+from suites.frontend.bpu.mbtb.model.semantic import Entry as MainEntry,Target,coordinate,tag
+from suites.frontend.bpu.utage.model.semantic import Entry,UtageReference
+from suites.frontend.bpu.utage.model.usefulness_events import ProtectionState
+from suites.frontend.bpu.bpu.model.history_working_set import ShortWorkingSetProgram,SHORT_PROFILES,SHORT_RULES,short_history_path
+from suites.frontend.bpu.bpu.coverage.history_working_set import ShortPathRetentionCoverage
+from suites.frontend.bpu.bpu.checker.history_working_set import ShortPathRetentionChecks
+from suites.frontend.bpu.bpu.model.early_protection import ProtectionLedger
+from suites.frontend.bpu.bpu.model.history_working_set import (ShortMixedWorkingSetProgram,SHORT_MIXED_PROFILES,
     SHORT_MIXED_RULES,SHORT_TURNAROUND_PATHS,SHORT_RESTORATION_PATHS,short_learning_path)
-from bpuverify.bpu.checker.history_working_set import ShortMixedPathChecks
-from bpuverify.bpu.coverage.history_working_set import ShortMixedPathCoverage
+from suites.frontend.bpu.bpu.checker.history_working_set import ShortMixedPathChecks
+from suites.frontend.bpu.bpu.coverage.history_working_set import ShortMixedPathCoverage
 
 
 @pytest.mark.parametrize('taken,protection',((False,1),(False,2),(True,0),(True,2)))
 async def test_stable_mixed_direction_does_not_require_unearned_protection(taken,protection):
-    from bpuverify.bpu.case.history_working_set import _mixed_boundary
+    from suites.frontend.bpu.bpu.case.history_working_set import _mixed_boundary
     path=short_history_path(1)
     consumed=[]
     source=object()
@@ -56,7 +56,7 @@ def test_shared_base_learning_makes_later_correct_feedback_neutral_without_stopp
 
 @pytest.mark.parametrize('taken,counter',((True,3),(False,4)))
 async def test_upper_protection_cannot_excuse_an_unlearned_mixed_direction(taken,counter):
-    from bpuverify.bpu.case.history_working_set import _mixed_boundary
+    from suites.frontend.bpu.bpu.case.history_working_set import _mixed_boundary
     path=short_history_path(1)
     async def visit(original):return object()
     async def settle():pass
@@ -322,11 +322,11 @@ def test_incomplete_lifetime_cannot_claim_checked_obligations():
 
 
 def test_scenario_expresses_history_lifetimes_without_raw_signals_or_scheduler_choreography():
-    tree = ast.parse(Path('bpuverify/bpu/case/history_working_set.py').read_text())
+    tree = ast.parse(Path('bpu/case/history_working_set.py').read_text())
     names = {node.id for node in ast.walk(tree) if isinstance(node,ast.Name)}
     names |= {node.attr for node in ast.walk(tree) if isinstance(node,ast.Attribute)}
     assert not names & {'RisingEdge','FallingEdge','ClockCycles','gather','create_task','get_','set_'}
-    text = Path('bpuverify/bpu/model/history_working_set.py').read_text()
+    text = Path('bpu/model/history_working_set.py').read_text()
     assert not any(word in text for word in ('lcov','memory_signal','native_rows','toffee'))
 
 

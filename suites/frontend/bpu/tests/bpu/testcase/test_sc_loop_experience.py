@@ -1,8 +1,8 @@
 """Late original loop learning, observed through fresh numerical consumers."""
 import pytest
-from bpuverify.bpu.model.sc_loop_experience import PROFILES
-from bpuverify.bpu.coverage.sc_loop_experience import Coverage
-from bpuverify.bpu.case.sc_loop_experience import check_loop_experience
+from suites.frontend.bpu.bpu.model.sc_loop_experience import PROFILES
+from suites.frontend.bpu.bpu.coverage.sc_loop_experience import Coverage
+from suites.frontend.bpu.bpu.case.sc_loop_experience import check_loop_experience
 
 
 @pytest.mark.feature('BPU-INT-105')

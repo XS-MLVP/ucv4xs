@@ -86,8 +86,8 @@ def frozen_checker(run,source):
     cycle=next(n for n in ast.walk(controller) if isinstance(n,ast.AsyncFunctionDef) and n.name=="cycle")
     assert len(cycle.body)==3 and isinstance(cycle.body[1].value,ast.Await) and cycle.body[2].value.func.attr=="observe"
     shared=json.loads((ROOT/"results/lsq-progress-regression-12/source-evidence.json").read_text())["files"]
-    assert all(source[k]==v for k,v in shared.items() if k.startswith("lsqverify/"))
-    return len([k for k in shared if k.startswith("lsqverify/")])
+    assert all(source[k]==v for k,v in shared.items() if k.startswith('lsqverify/'))
+    return len([k for k in shared if k.startswith('lsqverify/')])
 
 
 def audit(name):

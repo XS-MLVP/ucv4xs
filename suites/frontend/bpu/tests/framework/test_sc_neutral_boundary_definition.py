@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from bpuverify.common.pytest.points import validate_plan
+from suites.frontend.bpu.pytest_plugins.points import validate_plan
 from tests.framework.test_parallel_matrices import EXTRA_MATRICES
 
 
@@ -20,7 +20,7 @@ def test_neutral_boundary_binds_independent_model_and_complete_source_consumers(
     assert requirement['SC_guard_rows_not_explained_by_this_requirement'] == 336
     for status in ('reached', 'checked'):
         assert 'kunminghu_v3.sc.neutral-boundary.' + status in point['evidence']['coverage'][status]
-    assert 'bpuverify/sc/model/neutral_boundary.py' in point['evidence']['model']
+    assert 'sc/model/neutral_boundary.py' in point['evidence']['model']
     assert 'tests/sc/testcase/test_neutral_boundary.py' in point['evidence']['checks']
 
 

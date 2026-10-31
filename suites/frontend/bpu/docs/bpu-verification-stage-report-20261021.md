@@ -1,5 +1,8 @@
 # BPU UT 验证阶段汇总（2026-10-21）
 
+> 路径迁移说明（2026-10-31）：本报告仍属于原日期、基线和执行源码；实现文件已迁到工程根。可点击源码链接更新到当前位置，不据此重标历史 PASS/FAIL 或覆盖结论。参见[本轮命名空间迁移](../../../../docs/lessons/suite-namespace-refactor-20261031.md)。
+
+
 > 本文件是**进行中的汇总**，不是最终验收。未闭合项、分母与约束在文末完整保留。
 > 完整回归边界始终为 **24776 PASS / 88 FAIL / 3 XFAIL**；任何选测都不替代它。
 >
@@ -120,7 +123,7 @@ tick 528 呈现该读，DUT 实际 `row=1`、`bankMask=1` 与原件坐标一致�
 | 31 | 32 | 16 → 31 | `upper-saturation` before 31 / after 31 / `increments=1` |
 
 三条原理由逐条被否定：不需要 32 个独立分支（同一 PC 不同上下文即可）；
-集成模型 `bpuverify/tage/model/semantic.py` 早已按 `(table, altConf)` 八项索引
+集成模型 `suites/frontend/bpu/tage/model/semantic.py` 早已按 `(table, altConf)` 八项索引
 （原文误用 `pair.py`）；也没有模型反推（`index/inc/dec` 由模型先给出再与 DUT T3 逐槽比较）。
 
 本轮补上的是此前缺失的断言：原来只检查阶段末值 `== 0/31`，现在要求存在**真实的越界
@@ -150,7 +153,7 @@ branch 1513 → **1533**、toggle 10711 → **10751**，`useAltOnNa` 未覆盖 a
 
 原登记认为必须先读 `rtl/sc`/`dut/sc` 才能判断四槽全脏是否可达。改用**已授权**的
 观测路径：集成 `BpuDut` 通过 memory-direct 暴露每个 SC 写缓冲的 `shadowValid/dirty`
-与 `io_read_0_ready`（`bpuverify/bpu/monitor/sc/observer.py` 本就绑定）。
+与 `io_read_0_ready`（`suites/frontend/bpu/bpu/monitor/sc/observer.py` 本就绑定）。
 
 新增只读见证 `tests/bpu/testcase/test_sc_full_dirty_reachability.py`，在 2 bank ×
 4 way 共 8 个物理排列上统计全部 **10 个** buffer（5 张表 × 2 bank）：

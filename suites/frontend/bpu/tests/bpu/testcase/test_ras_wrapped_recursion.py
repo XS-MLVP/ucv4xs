@@ -2,9 +2,9 @@
 import json
 import pytest
 
-from bpuverify.bpu.model.ras.wrapped_recursion import PROFILES
-from bpuverify.bpu.coverage.ras_wrapped_recursion import Coverage
-from bpuverify.bpu.case.ras.wrapped_recursion import check_wrapped_recursion
+from suites.frontend.bpu.bpu.model.ras.wrapped_recursion import PROFILES
+from suites.frontend.bpu.bpu.coverage.ras_wrapped_recursion import Coverage
+from suites.frontend.bpu.bpu.case.ras.wrapped_recursion import check_wrapped_recursion
 
 
 @pytest.mark.feature('BPU-INT-053')

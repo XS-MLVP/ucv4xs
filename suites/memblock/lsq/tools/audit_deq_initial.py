@@ -2,7 +2,7 @@
 """Independent first-round public writeout checks and missing-line mapping.
 
 This audits the limited 16-case directed round, NOT full Deq acceptance or a
-complete PSQ/lifecycle model. No lsqverify/model/internal-register imports.
+complete PSQ/lifecycle model. No model/internal-register imports.
 """
 import argparse
 import copy

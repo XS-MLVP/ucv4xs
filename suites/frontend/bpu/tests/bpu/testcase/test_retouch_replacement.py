@@ -1,8 +1,8 @@
 """A real retained hit changes the access contract of the following full miss."""
 import pytest
-from bpuverify.bpu.case.retouch_replacement import check_retouch_replacement
-from bpuverify.bpu.coverage.retouch_replacement import RetouchReplacementCoverage
-from bpuverify.bpu.model.tage.retouch_replacement import PROGRAMS
+from suites.frontend.bpu.bpu.case.retouch_replacement import check_retouch_replacement
+from suites.frontend.bpu.bpu.coverage.retouch_replacement import RetouchReplacementCoverage
+from suites.frontend.bpu.bpu.model.tage.retouch_replacement import PROGRAMS
 
 
 @pytest.mark.feature('BPU-INT-088')

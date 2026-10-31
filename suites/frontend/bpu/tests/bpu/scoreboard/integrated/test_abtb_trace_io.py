@@ -1,8 +1,8 @@
 import gzip
 import json
 import pytest
-from bpuverify.bpu.case.abtb.trace_io import read_trace
-from bpuverify.bpu.case.abtb.trace_io import write_trace
+from suites.frontend.bpu.bpu.case.abtb.trace_io import read_trace
+from suites.frontend.bpu.bpu.case.abtb.trace_io import write_trace
 
 
 @pytest.mark.parametrize('value',[None,{},[],dict(frames=[dict(tick=1,phase='preedge',value=[0]*1024)],

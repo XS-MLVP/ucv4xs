@@ -8,7 +8,7 @@
   "source_legality": "正常学习的条件循环取得两份不同真实公开原件。独立计数分别为16/17，后接纳的恢复引用更老原件，它不在第一次年轻恢复取消的后缀中。完整metadata不改写，不伪造检查点。",
   "programs": ["older-not-taken", "older-forward-taken", "older-backward-taken", "older-direct-after-prefix"],
   "reference": {
-    "closed_expectation": "bpuverify/bpu/model/superseding_recovery.py",
+    "closed_expectation": "bpu/model/superseding_recovery.py",
     "existing_independent_algorithms": ["CommonQueryReference", "LoopIterationReference", "PathHistoryReference", "MicroBTB/MainBTB references"],
     "expected_outputs": "中间前缀、最终GHR/BW与原迭代由原件及实际分支种类/方向推导；更老的后向条件只从原16到17，其余终止循环。之后无条件保持路径的fresh消费者保留赢者GHR/BW、循环计数为0。",
     "actual_DUT_state_never_seeds_gold": true

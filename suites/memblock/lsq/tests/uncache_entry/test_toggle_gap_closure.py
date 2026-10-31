@@ -2,7 +2,7 @@
 
 from dataclasses import replace
 
-from lsqverify.uncache_entry.types import SOURCE_EXCEPTION_MASK
+from suites.memblock.lsq.uncache_entry.types import SOURCE_EXCEPTION_MASK
 
 
 async def test_high_address_and_fault_payload_bits_are_checked(entry):

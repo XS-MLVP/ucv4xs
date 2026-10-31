@@ -1,11 +1,11 @@
 """Consumed resolve arbitrates its own teacher, never a younger original."""
 import pytest
-from bpuverify.bpu.model.micro_sources import MicroSources
-from bpuverify.bpu.model.path_history import Checkpoint
-from bpuverify.bpu.model.pipeline import Cycle,Events,Outcome,Resolution,Token
-from bpuverify.bpu.model.selection import Branch,Choice,Kind
-from bpuverify.ubtb.model.semantic import UbtbEvents,UbtbReference
-from bpuverify.ubtb.transaction.types import BranchTraining,UbtbBatchTraining,UbtbBranchFeedback
+from suites.frontend.bpu.bpu.model.micro_sources import MicroSources
+from suites.frontend.bpu.bpu.model.path_history import Checkpoint
+from suites.frontend.bpu.bpu.model.pipeline import Cycle,Events,Outcome,Resolution,Token
+from suites.frontend.bpu.bpu.model.selection import Branch,Choice,Kind
+from suites.frontend.bpu.ubtb.model.semantic import UbtbEvents,UbtbReference
+from suites.frontend.bpu.ubtb.transaction.types import BranchTraining,UbtbBatchTraining,UbtbBranchFeedback
 
 pytestmark=pytest.mark.toffee_functional_coverage(False)
 PC=0x4000

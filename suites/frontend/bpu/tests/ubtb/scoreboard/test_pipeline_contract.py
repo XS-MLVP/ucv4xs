@@ -5,9 +5,9 @@ from __future__ import annotations
 import pytest
 
 from toffee import TransferState
-from bpuverify.ubtb.checker.assertions import expected_prediction
-from bpuverify.ubtb.checker.assertions import train_taken
-from bpuverify.ubtb.case.definitions import DIRECT
+from suites.frontend.bpu.ubtb.checker.assertions import expected_prediction
+from suites.frontend.bpu.ubtb.checker.assertions import train_taken
+from suites.frontend.bpu.ubtb.case.definitions import DIRECT
 
 
 @pytest.mark.feature("BPU-UBTB-007")

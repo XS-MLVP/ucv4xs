@@ -1,8 +1,9 @@
 """Both lifetimes and source ancestry are required, not just Main correctness."""
 import json
 from pathlib import Path
-from bpuverify.bpu.model.short_revisit import PROFILES,PROGRAMS,rules
-from bpuverify.bpu.coverage.short_revisit import lifetime_coverage
+from suites.frontend.bpu.bpu.model.short_revisit import PROFILES,PROGRAMS,rules
+from suites.frontend.bpu.bpu.model.early_opposition import FALLBACK
+from suites.frontend.bpu.bpu.coverage.short_revisit import lifetime_coverage
 
 
 def test_requirement_declares_both_actual_consumers_and_no_fake_replay():
@@ -10,7 +11,7 @@ def test_requirement_declares_both_actual_consumers_and_no_fake_replay():
     assert value['existing_feature']=='BPU-INT-066' and value['new_feature_IDs']==0
     assert value['profiles']==list(PROFILES) and value['gap_basis']['remaining_integrated_low_zero_rows']==500
     assert value['no_bank_set_way_sweep'] and not value['hardware_or_functional_credit_before_DUT_execution']
-    assert {p.positions for p in PROGRAMS}=={(2,4,4,4),(4,4,4,4)}
+    assert {p.positions for p in PROGRAMS}=={ (2,FALLBACK,FALLBACK,FALLBACK),(FALLBACK,)*4 }
     for ref in value['source_chain']:
         name,line=ref.rsplit(':',1); assert 0<int(line)<=len(Path(name).read_text().splitlines())
 

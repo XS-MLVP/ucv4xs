@@ -1,9 +1,9 @@
 import pytest
 
-from bpuverify.bpu.case.tage.fast_routing import check_fast_routing
-from bpuverify.bpu.coverage.tage.fast_routing import RoutingCoverage,DISCOVERIES
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.bpu.case.tage.fast_routing import check_fast_routing
+from suites.frontend.bpu.bpu.coverage.tage.fast_routing import RoutingCoverage,DISCOVERIES
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature('BPU-INT-078')

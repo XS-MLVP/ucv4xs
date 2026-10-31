@@ -4,9 +4,9 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.mbtb.checker.depth import defined_depth_check, defined_depth_profile
-from bpuverify.mbtb.case.resident_scenario import frozen_check
-from bpuverify.mbtb.transaction.types import MbtbPrediction
+from suites.frontend.bpu.mbtb.checker.depth import defined_depth_check, defined_depth_profile
+from suites.frontend.bpu.mbtb.case.resident_scenario import frozen_check
+from suites.frontend.bpu.mbtb.transaction.types import MbtbPrediction
 from tests.mbtb.scoreboard.test_depth_model import prepared
 from tests.mbtb.scoreboard.test_depth_owner import with_peer
 

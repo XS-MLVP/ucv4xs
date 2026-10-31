@@ -8,7 +8,7 @@ import pytest
 from tools.review_semantic_gaps import (
     ROOT, shadow_role, validate_catalog, held_repair_witnesses, micro_ras_parent_claims,
 )
-from bpuverify.common.pytest.points import validate_plan
+from suites.frontend.bpu.pytest_plugins.points import validate_plan
 
 
 @pytest.mark.parametrize('text,previous,role,events', [
@@ -130,7 +130,6 @@ def test_new_lifetime_definitions_require_their_own_paired_proof_not_old_PASS(id
     assert all((ROOT/path).is_file() for role in ('model','checks') for path in point['evidence'][role])
 
 
-
 def test_old_cleanup_single_group_is_preserved_as_mandatory_without_fabricating_reached():
     from tests.framework.test_parallel_matrices import EXTRA_MATRICES
     plan=json.loads((ROOT/'verification_plan.json').read_text())
@@ -141,7 +140,6 @@ def test_old_cleanup_single_group_is_preserved_as_mandatory_without_fabricating_
         original_four_bins_preserved=True,fabricated_reached=False)
     assert denominator==len(axes['phase'])==4 and cross is None
     assert factory().instance not in point['evidence']['coverage']['reached']
-
 
 
 @pytest.mark.parametrize('identity',('BPU-UTAGE-006','BPU-UTAGE-015','BPU-UTAGE-022'))

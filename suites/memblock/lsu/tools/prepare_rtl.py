@@ -5,6 +5,7 @@ Every source byte is checked against the pinned ``manifest/lsu-rtl.sha256``
 before copying. Existing copies are never overwritten with different bytes.
 """
 from __future__ import annotations
+import ucv.runtime as ucv_paths
 
 import argparse
 import hashlib
@@ -17,7 +18,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from dep_closure import load_index  # noqa: E402
-from duts import DUTS, SOC_RTL, rtl_dir  # noqa: E402
+from suites.memblock.lsu.inventory import DUTS, rtl_dir  # noqa: E402
+SOC_RTL = ucv_paths.soc_rtl_for(ROOT).resolve()
 
 
 def sha256(path: Path) -> str:

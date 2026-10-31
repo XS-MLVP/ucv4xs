@@ -1,5 +1,8 @@
 # 同一原Load九次Replay：原因迁移与实际最终完成
 
+> 路径迁移说明（2026-10-31）：本文记录中的 *verify/common 为当时源码路径；当前实现已迁入 suites.<group>.<suite> 工程根。历史判定、命令与哈希不据此重标；当前映射见仓库 docs/lessons/suite-namespace-refactor-20261031.md。
+
+
 当前状态：**01/02实际运行保留为LSQ接口证据；继续核对发现64B块误作refill拍宽，
 固定源实为256bit总线→32B拍→PA[5]。已撤回02及此前PA[6]producer的固定上游
 lastBeat声明，formal03三层定向已通过、完整03仍运行。整体ACTIVE_NOT_ACCEPTED。**

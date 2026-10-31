@@ -5,9 +5,9 @@ from types import SimpleNamespace
 import pytest
 from toffee import ScoreboardMismatch
 
-from bpuverify.bpu.checker.ittage_semantic import IttageSemanticComponentChecker, read_context
-from bpuverify.bpu.monitor.ittage_semantic import component_events
-from bpuverify.ittage.model.semantic import Context, Entry, Events, Metadata, Outcome, Target, coordinates
+from suites.frontend.bpu.bpu.checker.ittage_semantic import IttageSemanticComponentChecker, read_context
+from suites.frontend.bpu.bpu.monitor.ittage_semantic import component_events
+from suites.frontend.bpu.ittage.model.semantic import Context, Entry, Events, Metadata, Outcome, Target, coordinates
 from tests.ittage.scoreboard.test_semantic_reference import actual_value
 
 

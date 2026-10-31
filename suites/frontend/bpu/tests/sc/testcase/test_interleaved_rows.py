@@ -4,14 +4,14 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.sc.coverage.catalog import sc_interleaved_rows_coverage_model
-from bpuverify.sc.coverage.catalog import write_sc_interleaved_rows_coverage
-from bpuverify.sc.checker.assertions import learn_interleaved_rows
-from bpuverify.sc.checker.assertions import sc_row_indices
-from bpuverify.sc.case.definitions import NOT_TAKEN_ATTEMPTS
-from bpuverify.sc.case.definitions import POSITION
-from bpuverify.sc.case.definitions import SAME_BANK_PCS
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.sc.coverage.catalog import sc_interleaved_rows_coverage_model
+from suites.frontend.bpu.sc.coverage.catalog import write_sc_interleaved_rows_coverage
+from suites.frontend.bpu.sc.checker.assertions import learn_interleaved_rows
+from suites.frontend.bpu.sc.checker.assertions import sc_row_indices
+from suites.frontend.bpu.sc.case.definitions import NOT_TAKEN_ATTEMPTS
+from suites.frontend.bpu.sc.case.definitions import POSITION
+from suites.frontend.bpu.sc.case.definitions import SAME_BANK_PCS
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 OUTCOMES = (0, 1, 0, 1)

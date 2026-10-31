@@ -7,12 +7,12 @@ from types import SimpleNamespace as NS
 
 import pytest
 from toffee import TransferState
-from bpuverify.utage.checker.long_history_learning import LongHistoryLearningChecks
-from bpuverify.utage.coverage.long_history_learning import LongHistoryLearningCoverage
-from bpuverify.utage.model.long_history_learning import (LongHistoryLearning, PC, POSITION, HISTORIES,
+from suites.frontend.bpu.utage.checker.long_history_learning import LongHistoryLearningChecks
+from suites.frontend.bpu.utage.coverage.long_history_learning import LongHistoryLearningCoverage
+from suites.frontend.bpu.utage.model.long_history_learning import (LongHistoryLearning, PC, POSITION, HISTORIES,
     MODES, PHASES, address, expected)
-from bpuverify.utage.model.usefulness_events import ProtectionState
-from bpuverify.utage.transaction.types import UtageLookup, UtagePrediction
+from suites.frontend.bpu.utage.model.usefulness_events import ProtectionState
+from suites.frontend.bpu.utage.transaction.types import UtageLookup, UtagePrediction
 
 
 def prediction(path, counter, *, base=None, table=1):
@@ -147,11 +147,11 @@ def test_all_semantic_obligations_and_original_snapshots_are_required_before_clo
 
 
 def test_case_and_reference_have_no_clock_edges_raw_io_or_async_join_details():
-    case = ast.parse(Path('bpuverify/utage/case/long_history_learning.py').read_text())
+    case = ast.parse(Path('utage/case/long_history_learning.py').read_text())
     forbidden = {'ClockCycles','RisingEdge','FallingEdge','gather','create_task','set_','get_'}
     assert not {n.id for n in ast.walk(case) if isinstance(n,ast.Name)}&forbidden
     assert not {n.attr for n in ast.walk(case) if isinstance(n,ast.Attribute)}&forbidden
-    model = ast.parse(Path('bpuverify/utage/model/long_history_learning.py').read_text())
+    model = ast.parse(Path('utage/model/long_history_learning.py').read_text())
     assert not any(isinstance(n,ast.ImportFrom) and n.module and any(
         p in n.module.split('.') for p in ('driver','monitor','bundle','toffee')) for n in ast.walk(model))
 

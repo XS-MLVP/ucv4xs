@@ -3,12 +3,12 @@ from dataclasses import replace
 from types import SimpleNamespace as NS
 import pytest
 
-from bpuverify.bpu.checker.early_direction import live_values,fast_values
-from bpuverify.bpu.checker.early_opposition import EarlyOppositionChecks
-from bpuverify.bpu.coverage.early_opposition import EarlyOppositionCoverage,RULES,EXTRA_RULES
-from bpuverify.bpu.model.early_opposition import provider,ahead_owner,main_counter,is_opposed,stable_negative,steady_history,loop_history,FALLBACK
-from bpuverify.bpu.model.pipeline import Redirect
-from bpuverify.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.checker.early_direction import live_values,fast_values
+from suites.frontend.bpu.bpu.checker.early_opposition import EarlyOppositionChecks
+from suites.frontend.bpu.bpu.coverage.early_opposition import EarlyOppositionCoverage,RULES,EXTRA_RULES
+from suites.frontend.bpu.bpu.model.early_opposition import provider,ahead_owner,main_counter,is_opposed,stable_negative,steady_history,loop_history,FALLBACK
+from suites.frontend.bpu.bpu.model.pipeline import Redirect
+from suites.frontend.bpu.bpu.model.selection import Kind
 from tests.bpu.scoreboard.test_early_direction_checking import Program as LearningProgram,actual_live,actual_fast
 
 
@@ -218,8 +218,8 @@ def test_active_owned_ahead_beat_checks_even_raw_lanes_without_a_conditional_sou
 
 @pytest.mark.parametrize('position,expected',((2,0xA0),(FALLBACK,0x10)))
 def test_steady_loop_history_is_the_semantic_edge_fixed_point_not_a_wait_count(position,expected):
-    from bpuverify.bpu.model.path_history import path_contribution
-    from bpuverify.bpu.model.early_opposition import PC
+    from suites.frontend.bpu.bpu.model.path_history import path_contribution
+    from suites.frontend.bpu.bpu.model.early_opposition import PC
     word=loop_history(PC,position)
     assert word==expected
     assert ((word<<2)^path_contribution(PC+position,PC))%512==word
@@ -238,7 +238,7 @@ def test_sparse_state_encoding_rejects_incomplete_static_vector_shapes(fault):
 
 @pytest.mark.parametrize('field,value',(('valid',False),('tag',17),('position',7),('counter',1)))
 def test_a_zero_counter_snapshot_does_not_prove_a_live_steady_owner(monkeypatch,field,value):
-    import bpuverify.bpu.model.early_opposition as semantic
+    import suites.frontend.bpu.bpu.model.early_opposition as semantic
     program=Program();source=program.strong();sources=program.model.sources
     assert stable_negative(sources,source.token)
     original=semantic.resident(sources,program.checks.protected)

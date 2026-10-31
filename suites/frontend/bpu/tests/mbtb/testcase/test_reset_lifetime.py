@@ -1,9 +1,9 @@
 """Warm and registered-feedback reset lifetimes through normal MainBTB agent."""
 import json
 import pytest
-from bpuverify.mbtb.model.reset_lifetime import Program, PROFILES
-from bpuverify.mbtb.coverage.reset_lifetime import Coverage
-from bpuverify.mbtb.case.reset_lifetime import check_reset_lifetime
+from suites.frontend.bpu.mbtb.model.reset_lifetime import Program, PROFILES
+from suites.frontend.bpu.mbtb.coverage.reset_lifetime import Coverage
+from suites.frontend.bpu.mbtb.case.reset_lifetime import check_reset_lifetime
 
 
 @pytest.mark.feature('BPU-MBTB-001')

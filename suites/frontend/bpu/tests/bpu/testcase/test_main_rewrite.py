@@ -1,7 +1,7 @@
 """No edge, tasks, gather, observed golden seed or physical-coordinate sweep."""
 import pytest
-from bpuverify.bpu.case.main_rewrite import check_main_rewrite
-from bpuverify.bpu.coverage.main_rewrite import MainRewriteCoverage
+from suites.frontend.bpu.bpu.case.main_rewrite import check_main_rewrite
+from suites.frontend.bpu.bpu.coverage.main_rewrite import MainRewriteCoverage
 
 
 @pytest.mark.feature('BPU-INT-095')

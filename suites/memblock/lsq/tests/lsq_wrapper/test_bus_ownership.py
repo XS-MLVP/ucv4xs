@@ -1,7 +1,10 @@
 """Full legal three-owner overlap and response-freed SID reuse, strict oracles."""
+
 import pytest
 
 from .bus_owners import BusOwners
+
+from suites.memblock.lsq.legacy_pins import P
 
 
 @pytest.mark.parametrize("lane", (0, 2))
@@ -24,19 +27,19 @@ async def test_old_nc_load_response_cannot_unlock_later_serial_store(lsq, lane, 
     await trace.ack("store", 2)
     for _ in range(delay):
         await trace.step(trace.bus(ready=False))
-        lsq.expect({"io_uncache_req_valid": int(nc_store)}, "NC overlap or strict IO serial exclusion before unrelated response")
+        lsq.expect({P.p_uncache_req_valid: int(nc_store)}, "NC overlap or strict IO serial exclusion before unrelated response")
     lsq.reach("LSQ-BUS.serial", "LSQ-BUS.resp_route")
     await trace.respond("load0")
     # This is an ORIGINAL previously accepted NC Load's response, not the
     # currently serial Store's. The latter still owes its own response.
-    lsq.expect({"io_uncache_req_valid": int(nc_store)}, "unrelated old NC Load response must not clear later serial Store")
+    lsq.expect({P.p_uncache_req_valid: int(nc_store)}, "unrelated old NC Load response must not clear later serial Store")
     if nc_store:
         await trace.accept("load1")
         await trace.ack("load1", 3)
     else:
         for _ in range(3):
             await trace.step(trace.bus(ready=True))
-            lsq.expect({"io_uncache_req_valid": 0}, "serial Store exclusion survives unrelated response", before=True)
+            lsq.expect({P.p_uncache_req_valid: 0}, "serial Store exclusion survives unrelated response", before=True)
     await trace.respond("store")
     if not nc_store:
         await trace.accept("load1")

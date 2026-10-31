@@ -1,9 +1,9 @@
 """Explicit-only probe: what does ITTAGE do with late feedback for an unserved original?"""
 import json
 
-from bpuverify.bpu.checker.assertions import revisit_from_redirect
-from bpuverify.bpu.transaction.types import BpuBatchTraining
-from bpuverify.bpu.transaction.types import BpuBranchFeedback
+from suites.frontend.bpu.bpu.checker.assertions import revisit_from_redirect
+from suites.frontend.bpu.bpu.transaction.types import BpuBatchTraining
+from suites.frontend.bpu.bpu.transaction.types import BpuBranchFeedback
 
 PC = 0x40001800
 POSITION = 4

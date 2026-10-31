@@ -1,8 +1,8 @@
 """Real-DUT source qualification belongs to ENV, not Main hardware coverage."""
 import json
 import pytest
-from bpuverify.bpu.model.source_eligibility import Program,MODES
-from bpuverify.bpu.case.source_eligibility import run
+from suites.frontend.bpu.bpu.model.source_eligibility import Program,MODES
+from suites.frontend.bpu.bpu.case.source_eligibility import run
 
 
 @pytest.mark.feature('ENV-DRV-004')

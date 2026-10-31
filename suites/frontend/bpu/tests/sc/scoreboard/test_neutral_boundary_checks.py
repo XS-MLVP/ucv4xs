@@ -5,21 +5,21 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.common.model.folded_history import PHR_FOLD_LAYOUT
-from bpuverify.sc.agent.main import ScAgent
-from bpuverify.sc.model.semantic import Events, ScReference
-from bpuverify.sc.transaction.types import ScLookup, ScPrediction
+from suites.frontend.bpu.models.folded_history import PHR_FOLD_LAYOUT
+from suites.frontend.bpu.sc.agent.main import ScAgent
+from suites.frontend.bpu.sc.model.semantic import Events, ScReference
+from suites.frontend.bpu.sc.transaction.types import ScLookup, ScPrediction
 
 PROFILES = tuple((a, b) for a in ('lower', 'upper') for b in ('original-slots', 'exchanged-slots'))
 
 
 @pytest.fixture
 def candidate():
-    from bpuverify.sc.model import neutral_boundary as model
-    from bpuverify.sc.checker import neutral_boundary as checker
-    from bpuverify.sc.coverage import neutral_boundary as coverage
-    from bpuverify.sc.env import neutral_boundary as env
-    from bpuverify.sc.case import neutral_boundary as case
+    from suites.frontend.bpu.sc.model import neutral_boundary as model
+    from suites.frontend.bpu.sc.checker import neutral_boundary as checker
+    from suites.frontend.bpu.sc.coverage import neutral_boundary as coverage
+    from suites.frontend.bpu.sc.env import neutral_boundary as env
+    from suites.frontend.bpu.sc.case import neutral_boundary as case
     return NS(model=model, checker=checker, coverage=coverage, env=env, case=case)
 
 

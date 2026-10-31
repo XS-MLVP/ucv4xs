@@ -1,9 +1,9 @@
 """Fresh evidence for phase-changing protection ownership, not row enumeration."""
 import json
 import pytest
-from bpuverify.utage.model.selective_protection import Program,MODES
-from bpuverify.utage.coverage.selective_protection import Coverage
-from bpuverify.utage.case.selective_protection import run
+from suites.frontend.bpu.utage.model.selective_protection import Program,MODES
+from suites.frontend.bpu.utage.coverage.selective_protection import Coverage
+from suites.frontend.bpu.utage.case.selective_protection import run
 
 
 @pytest.mark.feature('BPU-UTAGE-021')

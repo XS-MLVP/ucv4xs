@@ -1,19 +1,19 @@
-from bpuverify.common.model.configuration import PHR_STORAGE_BITS
+from suites.frontend.bpu.models.configuration import PHR_STORAGE_BITS
 from copy import deepcopy
 from pathlib import Path
 import pytest
-from bpuverify.abtb.model.state.counter import CounterReference
-from bpuverify.abtb.model.state.counter import index
-from bpuverify.bpu.model.phr.model import folds
-from bpuverify.bpu.model.abtb.final_not_taken import ALL_CASES
-from bpuverify.bpu.model.abtb.final_not_taken import PHASES
-from bpuverify.bpu.model.abtb.final_not_taken import capacity
-from bpuverify.bpu.model.abtb.final_not_taken import fall_through
-from bpuverify.bpu.model.abtb.final_not_taken import joint_reference
-from bpuverify.bpu.model.abtb.final_not_taken import nonzero_violations
-from bpuverify.bpu.model.abtb.final_not_taken import plan
-from bpuverify.bpu.model.abtb.final_not_taken import scalar_proof
-from bpuverify.bpu.model.abtb.alias import physical_index
+from suites.frontend.bpu.abtb.model.state.counter import CounterReference
+from suites.frontend.bpu.abtb.model.state.counter import index
+from suites.frontend.bpu.bpu.model.phr.model import folds
+from suites.frontend.bpu.bpu.model.abtb.final_not_taken import ALL_CASES
+from suites.frontend.bpu.bpu.model.abtb.final_not_taken import PHASES
+from suites.frontend.bpu.bpu.model.abtb.final_not_taken import capacity
+from suites.frontend.bpu.bpu.model.abtb.final_not_taken import fall_through
+from suites.frontend.bpu.bpu.model.abtb.final_not_taken import joint_reference
+from suites.frontend.bpu.bpu.model.abtb.final_not_taken import nonzero_violations
+from suites.frontend.bpu.bpu.model.abtb.final_not_taken import plan
+from suites.frontend.bpu.bpu.model.abtb.final_not_taken import scalar_proof
+from suites.frontend.bpu.bpu.model.abtb.alias import physical_index
 
 
 @pytest.mark.parametrize('bank,entry_set', ALL_CASES)
@@ -139,7 +139,7 @@ def test_later_taken_is_a_distinct_decrease_path_with_matching_taken_entry_touch
     model.advance(reset=0, accepted=None,
         writes=[dict(bank=0, set_index=0, way=way, reset_counter=True)])
     # Use all initial states to ensure the touched final entry is observable.
-    from bpuverify.abtb.model.state.counter import touch
+    from suites.frontend.bpu.abtb.model.state.counter import touch
     old = model.plru[0][0]
     transitions = step_and_drain(model, feedback(way, taken=1, final_position=7))
     assert transitions[0]['transition'] == 'dec2_1'
@@ -156,8 +156,8 @@ def test_all_eight_counter_transitions_and_no_fallback_resident_are_required():
 
 
 def test_three_node_current_request_cannot_be_used_as_current_A_metadata():
-    from bpuverify.bpu.model.abtb.index import IndexReference
-    from bpuverify.bpu.model.abtb.index import control
+    from suites.frontend.bpu.bpu.model.abtb.index import IndexReference
+    from suites.frontend.bpu.bpu.model.abtb.index import control
     model=IndexReference()
     model.advance(**control(reset=1,tick=0))
     targets=(0x110,0x220,0x330)

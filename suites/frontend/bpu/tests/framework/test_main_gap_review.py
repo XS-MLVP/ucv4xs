@@ -3,7 +3,7 @@ from copy import deepcopy
 from pathlib import Path
 import re
 import pytest
-from bpuverify.bpu.coverage.main_gaps import SOURCE,CROSS,ARBITRATION,OWN,copy_catalog,associate,producer_witnesses
+from suites.frontend.bpu.bpu.coverage.main_gaps import SOURCE,CROSS,ARBITRATION,OWN,copy_catalog,associate,producer_witnesses
 
 SOURCE_PATH='/synthetic/Main.sv'
 

@@ -12,7 +12,10 @@ Properties:
 3. when two real faults are consumed in the same cycle, both must be reported
    (one may be delayed, but none may be dropped).
 """
+
 import pytest
+
+from suites.memblock.lsq.legacy_pins import P
 
 
 @pytest.mark.parametrize("review_dut", ["load_queue_uncache"], indirect=True)
@@ -21,7 +24,7 @@ async def test_uncache_exception_owner_is_oldest_real_bus_error(review_dut, mode
     e = review_dut
     e.metadata = dict(issue="#6634", mode=mode,
                       domain="public LoadQueueUncache pins; no model prediction")
-    base = {"io_rob_pendingPtr_value": 10, "io_rob_pendingPtr_isFormer": 1}
+    base = {P.p_rob_pendingPtr_value: 10, P.p_rob_pendingPtr_isFormer: 1}
 
     async def cycle(fields=None):
         await e.step({**base, **(fields or {})})
@@ -35,7 +38,7 @@ async def test_uncache_exception_owner_is_oldest_real_bus_error(review_dut, mode
              fault=mode in ("normal_and_fault", "two_faults"))
 
     async def enqueue(owner, lane):
-        p = f"io_req_{lane}_"
+        p = P.io(f"req_{lane}_")
         await cycle({p + name: value for name, value in {
             "valid": 1, "bits_uop_robIdx_value": owner["rob"], "bits_uop_robIdx_isFormer": 1,
             "bits_uop_lqIdx_value": owner["lq"], "bits_uop_ftqOffset": 2 * owner["uid"] - 1,
@@ -45,17 +48,17 @@ async def test_uncache_exception_owner_is_oldest_real_bus_error(review_dut, mode
 
     async def serve(owner):
         for _ in range(60):
-            if e.post["io_uncache_req_valid"]:
+            if e.post[P.p_uncache_req_valid]:
                 break
             await cycle()
-        e.check("bus request offered", e.post["io_uncache_req_valid"], 1)
-        await cycle({"io_uncache_req_ready": 1})
-        mid = e.pre["io_uncache_req_bits_id"]
-        await cycle({"io_uncache_idResp_valid": 1, "io_uncache_idResp_bits_mid": mid,
-                     "io_uncache_idResp_bits_sid": owner["sid"]})
-        await cycle({"io_uncache_resp_valid": 1, "io_uncache_resp_bits_id": owner["sid"],
-                     "io_uncache_resp_bits_data": 0xA0 + owner["uid"],
-                     "io_uncache_resp_bits_nderr": int(owner["fault"])})
+        e.check("bus request offered", e.post[P.p_uncache_req_valid], 1)
+        await cycle({P.p_uncache_req_ready: 1})
+        mid = e.pre[P.p_uncache_req_bits_id]
+        await cycle({P.p_uncache_idResp_valid: 1, P.p_uncache_idResp_bits_mid: mid,
+                     P.p_uncache_idResp_bits_sid: owner["sid"]})
+        await cycle({P.p_uncache_resp_valid: 1, P.p_uncache_resp_bits_id: owner["sid"],
+                     P.p_uncache_resp_bits_data: 0xA0 + owner["uid"],
+                     P.p_uncache_resp_bits_nderr: int(owner["fault"])})
         for _ in range(40):
             if ("nc", 0, owner["lq"]) in e.wakes:
                 break
@@ -71,20 +74,20 @@ async def test_uncache_exception_owner_is_oldest_real_bus_error(review_dut, mode
     # Consume both owners on two bypass lanes in the SAME cycle.
     packet = {}
     for lane, owner in ((0, a), (1, b)):
-        p = f"io_bypass_{lane}_"
+        p = P.io(f"bypass_{lane}_")
         packet.update({p + "s0Req_valid": 1, p + "s0Req_bits_lqIdx_value": owner["lq"],
                        p + "s0Req_bits_isNCReplay": 1})
     await cycle(packet)
 
     reports, consumed = [], {0: [], 1: []}
     for _ in range(12):
-        if e.post["io_exceptionInfo_valid"]:
-            reports.append(dict(rob=e.post["io_exceptionInfo_bits_robIdx_value"],
-                                vaddr=e.post["io_exceptionInfo_bits_vaddr"],
-                                laf=e.post["io_exceptionInfo_bits_exceptionVec_5"],
-                                hwe=e.post["io_exceptionInfo_bits_exceptionVec_19"]))
+        if e.post[P.p_exceptionInfo_valid]:
+            reports.append(dict(rob=e.post[P.p_exceptionInfo_bits_robIdx_value],
+                                vaddr=e.post[P.p_exceptionInfo_bits_vaddr],
+                                laf=e.post[P.p_exceptionInfo_bits_exceptionVec_5],
+                                hwe=e.post[P.p_exceptionInfo_bits_exceptionVec_19]))
         for lane in (0, 1):
-            p = f"io_bypass_{lane}_"
+            p = P.io(f"bypass_{lane}_")
             if e.post[p + "s1Resp_valid"]:
                 consumed[lane].append(("s1", e.post[p + "s1Resp_bits_paddr"]))
             if e.post[p + "s2Resp_valid"]:

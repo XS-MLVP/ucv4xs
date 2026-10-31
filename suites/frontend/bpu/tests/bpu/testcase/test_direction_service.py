@@ -1,7 +1,7 @@
 """Autonomous service visibility, with SDK-confirmed SRAM write transfers."""
 import pytest
-from bpuverify.bpu.case.direction_service import check_direction_service
-from bpuverify.bpu.coverage.direction_service import DirectionServiceCoverage
+from suites.frontend.bpu.bpu.case.direction_service import check_direction_service
+from suites.frontend.bpu.bpu.coverage.direction_service import DirectionServiceCoverage
 
 
 @pytest.mark.feature('BPU-INT-086')

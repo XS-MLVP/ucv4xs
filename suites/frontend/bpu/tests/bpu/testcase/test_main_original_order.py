@@ -1,9 +1,9 @@
 """Two genuine original versions cannot relearn an unexecuted sibling."""
 import json
 import pytest
-from bpuverify.bpu.model.main_original_order import Program,ORDERS,PHASES,COUNTERS
-from bpuverify.bpu.coverage.main_original_order import Coverage
-from bpuverify.bpu.case.main_original_order import run
+from suites.frontend.bpu.bpu.model.main_original_order import Program,ORDERS,PHASES,COUNTERS
+from suites.frontend.bpu.bpu.coverage.main_original_order import Coverage
+from suites.frontend.bpu.bpu.case.main_original_order import run
 
 
 @pytest.mark.feature('BPU-INT-093')

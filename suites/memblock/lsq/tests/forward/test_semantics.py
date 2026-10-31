@@ -1,11 +1,13 @@
 """Remaining semantic cases; line coverage is already full, not a sign-off."""
+
 from dataclasses import replace
 import random
 
 import pytest
 
-from lsqverify.raw.types import SqPtr
-from lsqverify.forward.types import SecondPage, Translation, byte_count
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.forward.types import SecondPage, Translation, byte_count
 
 
 @pytest.mark.parametrize("lane", range(3))
@@ -152,7 +154,7 @@ async def test_s1_kill_has_no_response_and_next_uid_reuses_lane_safely(forward, 
     new_query = env.query(vaddr=0x10003, size=1)
     change = await env.cycle({lane: new_query}, {lane: Translation(source.paddr, True)})
     assert [job["uid"] for job in change["killed"]] == [old_uid]
-    assert not env.observed[f"io_query_{lane}_s2Resp_valid"]
+    assert not env.observed[P.io(f"query_{lane}_s2Resp_valid")]
     new_uid = change["accepted"][0]["uid"]
     env.coverage.arm_kill_reuse(("FWD-PIPE.kill", "FWD-PIPE.kill_reuse"), [old_uid], [new_uid], env.last_tick)
     change = await env.cycle(translations={lane: Translation(source.paddr + 3)})
@@ -185,10 +187,10 @@ async def test_s2_mdp_uses_current_address_ready_not_old_snapshot(forward, lane)
     change = await env.cycle({lane: env.query(sq=2, wait=True, wait_sq=SqPtr.encode(1))}, stores=env.bank({0: source, 1: target}))
     uid = change["accepted"][0]["uid"]
     await env.cycle(translations={lane: Translation(source.paddr)})
-    assert env.observed[f"io_query_{lane}_s2Resp_bits_addrInvalid_valid"]
+    assert env.observed[P.io(f"query_{lane}_s2Resp_bits_addrInvalid_valid")]
     env.arm("FWD-LIVE.mdp", [uid])
     await env.cycle(stores=env.bank({0: source, 1: replace(target, address_ready=True)}))
-    assert not env.pre_observed[f"io_query_{lane}_s2Resp_bits_addrInvalid_valid"]
+    assert not env.pre_observed[P.io(f"query_{lane}_s2Resp_bits_addrInvalid_valid")]
     await env.idle(2)
 
 
@@ -203,7 +205,7 @@ async def test_retirement_reuse_keeps_s1_data_but_s2_physical_cam_is_live(forwar
     await env.cycle(translations={lane: Translation(old.paddr)})
     env.arm(("FWD-LIVE.data_snapshot", "FWD-LIVE.physical_cam", "FWD-LIVE.boundaries"), [uid])
     await env.cycle(dequeue=SqPtr.encode(64), upper=SqPtr.encode(128), stores=env.bank({63: new}))
-    prefix = f"io_query_{lane}_s2Resp_"
+    prefix = P.io(f"query_{lane}_s2Resp_")
     assert env.pre_observed[prefix + "valid"] and env.pre_observed[prefix + "bits_matchInvalid"]
     assert sum(env.pre_observed[prefix + f"bits_forwardData_{i}"] << (8 * i) for i in range(8)) == old.data
     await env.request(env.query(sq=128, vaddr=new.vaddr), new.paddr, lane=lane, stores=env.bank({63: new}), scenes=("FWD-REUSE.identity",))
@@ -216,7 +218,7 @@ async def test_disabled_bank_and_query_payload_do_not_create_work(forward):
     await env.cycle(queries={0: replace(env.query(), valid=False)}, stores=env.bank({0: dirty, 7: dirty}),
                     second_pages=(SecondPage(False, 0xABC000, SqPtr.encode(0)), SecondPage(False, 0xABC000, SqPtr.encode(255))))
     await env.idle(4)
-    assert not any(env.observed[f"io_query_{lane}_s2Resp_valid"] for lane in range(3))
+    assert not any(env.observed[P.io(f"query_{lane}_s2Resp_valid")] for lane in range(3))
     await env.request(env.query(), source.paddr, stores=env.bank({0: source, 7: dirty}), scenes=("FWD-IDLE.disabled",))
 
 

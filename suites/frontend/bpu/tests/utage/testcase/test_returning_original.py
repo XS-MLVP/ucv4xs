@@ -1,9 +1,9 @@
 """An old contribution belongs to the original branch, not its replacement."""
 import json
 import pytest
-from bpuverify.utage.model.returning_original import PROGRAMS
-from bpuverify.utage.coverage.returning_original import Coverage
-from bpuverify.utage.case.read_lifetime import check_late_replacement
+from suites.frontend.bpu.utage.model.returning_original import PROGRAMS
+from suites.frontend.bpu.utage.coverage.returning_original import Coverage
+from suites.frontend.bpu.utage.case.read_lifetime import check_late_replacement
 
 
 @pytest.mark.feature('BPU-UTAGE-019')

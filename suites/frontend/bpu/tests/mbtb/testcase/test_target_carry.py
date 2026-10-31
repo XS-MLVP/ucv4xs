@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.mbtb.coverage.catalog import mbtb_target_carry_coverage_model
-from bpuverify.mbtb.coverage.catalog import write_mbtb_target_carry_coverage
-from bpuverify.mbtb.checker.assertions import assert_miss
-from bpuverify.mbtb.checker.assertions import assert_vector_hit
-from bpuverify.mbtb.checker.assertions import train
-from bpuverify.mbtb.case.definitions import BranchVector
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.mbtb.coverage.catalog import mbtb_target_carry_coverage_model
+from suites.frontend.bpu.mbtb.coverage.catalog import write_mbtb_target_carry_coverage
+from suites.frontend.bpu.mbtb.checker.assertions import assert_miss
+from suites.frontend.bpu.mbtb.checker.assertions import assert_vector_hit
+from suites.frontend.bpu.mbtb.checker.assertions import train
+from suites.frontend.bpu.mbtb.case.definitions import BranchVector
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 TARGET_REGION_SPAN = 1 << 20  # Encoded halfword addresses; 2 MiB in bytes.

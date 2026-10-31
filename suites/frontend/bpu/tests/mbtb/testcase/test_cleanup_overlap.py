@@ -1,8 +1,8 @@
 """Different-set training survives dirty and clean multi-hit clear overlaps."""
 import json
 import pytest
-from bpuverify.mbtb.coverage.cleanup_lifetime import Coverage
-from bpuverify.mbtb.case.cleanup_lifetime import check_cleanup_lifetime
+from suites.frontend.bpu.mbtb.coverage.cleanup_lifetime import Coverage
+from suites.frontend.bpu.mbtb.case.cleanup_lifetime import check_cleanup_lifetime
 
 
 @pytest.mark.feature('BPU-MBTB-026')

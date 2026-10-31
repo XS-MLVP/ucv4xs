@@ -1,13 +1,13 @@
 """Own MainBTB/TAGE state and checkpoint-derived lookup/feedback identity."""
-from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT
+from suites.frontend.bpu.models.configuration import TAGE_ALLOCATION_WAIT
 from copy import deepcopy
 from dataclasses import replace
 
 import pytest
 
-from bpuverify.bpu.model.direction_sources import DirectionSources,context_for
-from bpuverify.bpu.model.pipeline import Outcome,Resolution,Redirect
-from bpuverify.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.direction_sources import DirectionSources,context_for
+from suites.frontend.bpu.bpu.model.pipeline import Outcome,Resolution,Redirect
+from suites.frontend.bpu.bpu.model.selection import Kind
 from tests.bpu.scoreboard.test_semantic_pipeline import boot,PC
 
 

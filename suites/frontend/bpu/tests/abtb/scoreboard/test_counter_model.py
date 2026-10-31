@@ -1,9 +1,9 @@
 import pytest
-from bpuverify.abtb.model.state.counter import CounterReference
-from bpuverify.abtb.model.state.counter import index
-from bpuverify.abtb.model.state.counter import TRANSITIONS
-from bpuverify.abtb.model.state.counter import touch
-from bpuverify.abtb.model.state.counter import victim
+from suites.frontend.bpu.abtb.model.state.counter import CounterReference
+from suites.frontend.bpu.abtb.model.state.counter import index
+from suites.frontend.bpu.abtb.model.state.counter import TRANSITIONS
+from suites.frontend.bpu.abtb.model.state.counter import touch
+from suites.frontend.bpu.abtb.model.state.counter import victim
 
 
 def training(*,taken,position=3,entry_position=3,branch_type=1,hit=1,bank=0,set_index=5):

@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pytest
 
-from bpuverify.utage.coverage.useful_cell_audit import SOURCE, ROOT, TEMPLATES, classify, source_lines
+from suites.frontend.bpu.utage.coverage.useful_cell_audit import SOURCE, ROOT, TEMPLATES, classify, source_lines
 
 
 def fixture(*lines):

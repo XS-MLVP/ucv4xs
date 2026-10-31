@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.bpu.checker.assertions import train_direct_branch
-from bpuverify.bpu.case.definitions import TARGET
+from suites.frontend.bpu.bpu.checker.assertions import train_direct_branch
+from suites.frontend.bpu.bpu.case.definitions import TARGET
 
 
 @pytest.mark.feature("BPU-INT-004")

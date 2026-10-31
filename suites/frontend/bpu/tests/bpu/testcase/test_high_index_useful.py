@@ -1,7 +1,7 @@
 """Real high-index provider learning through distinct pipeline ancestors."""
 import pytest
 
-from bpuverify.bpu.case.bypass.high_index import check_high_index
+from suites.frontend.bpu.bpu.case.bypass.high_index import check_high_index
 
 
 @pytest.mark.feature('BPU-INT-066')

@@ -1,8 +1,8 @@
 """Strengthen the existing FTQ-learning requirement with an independent oracle."""
 import pytest
 
-from bpuverify.bpu.case.main_learning import check_owned_main_learning
-from bpuverify.bpu.coverage.main_learning import MainLearningCoverage
+from suites.frontend.bpu.bpu.case.main_learning import check_owned_main_learning
+from suites.frontend.bpu.bpu.coverage.main_learning import MainLearningCoverage
 
 
 @pytest.mark.feature('BPU-INT-004')

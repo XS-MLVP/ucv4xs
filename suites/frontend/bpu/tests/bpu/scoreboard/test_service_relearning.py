@@ -6,13 +6,13 @@ from functools import lru_cache
 from types import SimpleNamespace as NS
 import pytest
 from toffee import Scoreboard, Transfer, XEvent, XEventKind, XPhase
-from bpuverify.bpu.checker.service_relearning import Checks
-from bpuverify.bpu.coverage.service_relearning import Coverage, RULES
-from bpuverify.bpu.model.pipeline import Outcome, Resolution, Redirect
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.bpu.model.tage.forwarding import PC, resolved_path
-from bpuverify.bpu.model.tage.service import STREAM_PC, STREAM_POSITION, VIA_PC, pending_plan, learning_inflight
-from bpuverify.bpu.model.tage.service_relearning import PROGRAMS, Program
+from suites.frontend.bpu.bpu.checker.service_relearning import Checks
+from suites.frontend.bpu.bpu.coverage.service_relearning import Coverage, RULES
+from suites.frontend.bpu.bpu.model.pipeline import Outcome, Resolution, Redirect
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.tage.forwarding import PC, resolved_path
+from suites.frontend.bpu.bpu.model.tage.service import STREAM_PC, STREAM_POSITION, VIA_PC, pending_plan, learning_inflight
+from suites.frontend.bpu.bpu.model.tage.service_relearning import PROGRAMS, Program
 from tests.bpu.scoreboard.test_direction_forwarding import resolution
 from tests.bpu.scoreboard.test_direction_service import two_history_program, streaming_query, counters
 from tests.bpu.scoreboard.test_direction_sources import quiet, revisit

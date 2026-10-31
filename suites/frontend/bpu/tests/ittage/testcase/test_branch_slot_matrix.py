@@ -1,9 +1,9 @@
 """Every legal feedback slot must select its own qualifying indirect branch."""
 import pytest
 
-from bpuverify.ittage.case.definitions import PC
-from bpuverify.ittage.case.definitions import POSITION
-from bpuverify.ittage.transaction.types import IttageTraining
+from suites.frontend.bpu.ittage.case.definitions import PC
+from suites.frontend.bpu.ittage.case.definitions import POSITION
+from suites.frontend.bpu.ittage.transaction.types import IttageTraining
 
 
 @pytest.mark.feature('BPU-ITTAGE-010')

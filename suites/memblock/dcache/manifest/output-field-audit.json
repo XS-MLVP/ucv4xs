@@ -1,5 +1,5 @@
 {
-  "method": "runtime pin fetch trace (dcacheverify/common/pin_trace.py) vs RTL output ports",
+  "method": "runtime pin fetch trace (common/pin_trace.py) vs RTL output ports",
   "note": "a never-fetched output cannot be compared; it must be listed as unchecked with a reason, not counted as verified",
   "duts": {
     "duplicated_tag_array": {

@@ -1,7 +1,7 @@
 """Different index/tag ancestors are a semantic scenario, not a bank sweep."""
 import pytest
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.utage.case.split_context import check_split_context_useful
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.utage.case.split_context import check_split_context_useful
 
 
 @pytest.mark.feature('BPU-UTAGE-023')

@@ -3,8 +3,9 @@ from itertools import product
 from types import SimpleNamespace
 import pytest
 from toffee import CoverageDatabase,ScoreboardMismatch
-from bpuverify.bpu.coverage.tage.selector import SelectorRoutingCoverage
-from bpuverify.bpu.checker.tage.selector import TageSelectorChecker
+from suites.frontend.bpu.bpu.coverage.tage.selector import SelectorRoutingCoverage
+from suites.frontend.bpu.bpu.checker.tage.selector import TageSelectorChecker
+from suites.frontend.bpu.models.configuration import TAGE_TABLES
 from tests.bpu.scoreboard.test_tage_selector import metadata,transaction,sample
 
 
@@ -21,12 +22,12 @@ def pending_route(table,confidence):
     return checker,coverage,t3
 
 
-@pytest.mark.parametrize('table,confidence',tuple(product(range(4),(0,1))))
-def test_genuine_source_routes_one_vote_then_checks_complete_eight_register_commit(table,confidence):
+@pytest.mark.parametrize('table,confidence',tuple(product(range(TAGE_TABLES),(0,1))))
+def test_genuine_source_routes_one_vote_then_checks_complete_sixteen_register_commit(table,confidence):
     checker,coverage,t3=pending_route(table,confidence);checker.observe(t3,18)
     assert coverage.groups['reached'].samples==1 and coverage.groups['checked'].samples==0
     checker.observe(sample(checker),20)
-    expected=[16]*8;expected[2*table+confidence]=17
+    expected=[16]*(2*TAGE_TABLES);expected[2*table+confidence]=17
     assert list(checker.summary()['selectors'])==expected
     assert coverage.groups['checked'].samples==1
     report=coverage.groups['checked'].report()
@@ -54,12 +55,12 @@ def test_route_or_commit_failure_retains_reached_but_never_checked(fault):
 
 def test_all_partial_logical_routes_merge_without_bank_or_stage_axes():
     merged=CoverageDatabase()
-    for table,confidence in product(range(4),(0,1)):
+    for table,confidence in product(range(TAGE_TABLES),(0,1)):
         checker,coverage,t3=pending_route(table,confidence)
         checker.observe(t3,18);checker.observe(sample(checker),20)
         merged.merge(CoverageDatabase(list(coverage.groups.values())))
     for group in merged.groups.values():
         group.assert_coverage(100)
-        assert group.samples==8
+        assert group.samples==2*TAGE_TABLES
         assert tuple(point.name for point in group.definition.points)==('index',)
         assert not group.definition.crosses

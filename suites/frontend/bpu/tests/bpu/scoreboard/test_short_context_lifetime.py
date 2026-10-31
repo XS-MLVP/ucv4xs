@@ -6,18 +6,18 @@ from types import SimpleNamespace as NS
 import pytest
 from toffee import CoverageDatabase
 
-from bpuverify.bpu.checker.short_context_ownership import ShortContextChecks
-from bpuverify.bpu.case import short_context_ownership as CASE
-from bpuverify.bpu.coverage.short_context_ownership import ShortContextCoverage
-from bpuverify.bpu.env.history_working_set import HistoryWorkingSetEnv
-from bpuverify.bpu.env.short_context_ownership import ShortContextEnv
-from bpuverify.bpu.model.early_direction_sources import EarlyDirectionSources
-from bpuverify.bpu.model.early_protection import ProtectionLedger
-from bpuverify.bpu.model.history_working_set import FEATURES
-from bpuverify.bpu.model.pipeline import Events, PipelineReference
-from bpuverify.bpu.model.short_context_ownership import (
+from suites.frontend.bpu.bpu.checker.short_context_ownership import ShortContextChecks
+from suites.frontend.bpu.bpu.case import short_context_ownership as CASE
+from suites.frontend.bpu.bpu.coverage.short_context_ownership import ShortContextCoverage
+from suites.frontend.bpu.bpu.env.history_working_set import HistoryWorkingSetEnv
+from suites.frontend.bpu.bpu.env.short_context_ownership import ShortContextEnv
+from suites.frontend.bpu.bpu.model.early_direction_sources import EarlyDirectionSources
+from suites.frontend.bpu.bpu.model.early_protection import ProtectionLedger
+from suites.frontend.bpu.bpu.model.history_working_set import FEATURES
+from suites.frontend.bpu.bpu.model.pipeline import Events, PipelineReference
+from suites.frontend.bpu.bpu.model.short_context_ownership import (
     OWNERS, OLDER_PATHS, PROFILES, RULES, ShortContextProgram, path)
-from bpuverify.mbtb.model.semantic import Entry, Target, coordinate, tag
+from suites.frontend.bpu.mbtb.model.semantic import Entry, Target, coordinate, tag
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)
 
@@ -56,9 +56,9 @@ def test_autonomous_composed_model_reproduces_declared_real_path_ancestry(branch
         declared.match_context.folds[index] for index in FEATURES)
 
 
-from bpuverify.bpu.model.short_context_ownership import ShortDirectionProgram,DIRECTION_PROFILES,DIRECTION_RULES
-from bpuverify.bpu.coverage.short_context_ownership import ShortDirectionCoverage
-from bpuverify.bpu.checker.short_context_ownership import ShortDirectionChecks
+from suites.frontend.bpu.bpu.model.short_context_ownership import ShortDirectionProgram,DIRECTION_PROFILES,DIRECTION_RULES
+from suites.frontend.bpu.bpu.coverage.short_context_ownership import ShortDirectionCoverage
+from suites.frontend.bpu.bpu.checker.short_context_ownership import ShortDirectionChecks
 
 
 @pytest.mark.parametrize('profile',DIRECTION_PROFILES)
@@ -256,11 +256,11 @@ async def test_checked_credit_follows_complete_monitor_scope_exit(monkeypatch,fa
         assert coverage.evidence['status']=='PASS' and coverage.groups['checked'].coverage==50
 
 
-from bpuverify.bpu.model.short_context_ownership import (
+from suites.frontend.bpu.bpu.model.short_context_ownership import (
     ShortCrossBranchProgram,WORKING_SET_PROFILES,WORKING_SET_RULES,working_set_path)
-from bpuverify.bpu.checker.short_context_ownership import ShortCrossBranchChecks
-from bpuverify.bpu.coverage.short_context_ownership import ShortCrossBranchCoverage
-from bpuverify.utage.model.semantic import Base as UtageBase,Events as UtageEvents,Source as UtageSource,Feedback as UtageFeedback,UtageReference
+from suites.frontend.bpu.bpu.checker.short_context_ownership import ShortCrossBranchChecks
+from suites.frontend.bpu.bpu.coverage.short_context_ownership import ShortCrossBranchCoverage
+from suites.frontend.bpu.utage.model.semantic import Base as UtageBase,Events as UtageEvents,Source as UtageSource,Feedback as UtageFeedback,UtageReference
 
 
 @pytest.mark.parametrize('profile',WORKING_SET_PROFILES)

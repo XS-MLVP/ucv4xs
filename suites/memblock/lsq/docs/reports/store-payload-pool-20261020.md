@@ -1,5 +1,8 @@
 # Store 全宽载荷补例、真实目录重跑与统计边界复核
 
+> 路径迁移说明（2026-10-31）：本文记录中的 *verify/common 为当时源码路径；当前实现已迁入 suites.<group>.<suite> 工程根。历史判定、命令与哈希不据此重标；当前映射见仓库 docs/lessons/suite-namespace-refactor-20261031.md。
+
+
 **结果：ForwardModule → PhysicalStoreQueue → StoreQueue 的新补例及三类覆盖
 审计已通过；三个目录完整重跑为 268 PASS / 64 FAIL，原失败完整保留。
 整体 LSQ 仍为 `ACTIVE_NOT_ACCEPTED`，目标不关闭。**

@@ -1,10 +1,10 @@
 """Actual eligible weight endpoints; not a repeated stable-output loop."""
 import pytest
 
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.sc.case.boundary import check_weight_boundary
-from bpuverify.sc.coverage.boundary import ScBoundaryCoverage
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.sc.case.boundary import check_weight_boundary
+from suites.frontend.bpu.sc.coverage.boundary import ScBoundaryCoverage
 
 
 @pytest.mark.feature('BPU-SC-005')

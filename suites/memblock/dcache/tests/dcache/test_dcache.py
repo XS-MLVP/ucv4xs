@@ -3,8 +3,10 @@ from __future__ import annotations
 
 import pytest
 
-from dcacheverify.dcache.coverage import DCacheCoverage
-from dcacheverify.dcache.env import DcacheEnv
+from suites.memblock.dcache.execution import step, refresh
+
+from suites.memblock.dcache.dcache.coverage import DCacheCoverage
+from suites.memblock.dcache.dcache.env import DcacheEnv
 
 
 @pytest.fixture
@@ -49,7 +51,7 @@ def test_cold_miss_refill_then_hit(dc):
     accepted = dc.service_miss(base, data_beats=beats, context="cold refill")
     assert accepted["channel"] in (0, 1)
     for _ in range(6):
-        dc.dut.Step(1)
+        step(dc)
     response = dc.load_once(0, base, base, context="lane0 hit")
     assert response["miss"] == 0, response
     expected = beats[0] & ((1 << 128) - 1)
@@ -64,7 +66,7 @@ def test_all_three_load_lanes(dc):
         dc.load_once(lane, base, base, context=f"lane{lane} cold")
         dc.service_miss(base, data_beats=beats, context=f"lane{lane} refill")
         for _ in range(6):
-            dc.dut.Step(1)
+            step(dc)
         for check_lane in range(3):
             response = dc.load_once(check_lane, base, base,
                                     context=f"lane{check_lane} hit")
@@ -85,9 +87,9 @@ def test_dual_channel_selection(dc):
         accepted = dc.service_miss(base, data_beats=beats, context=f"channel {base:#x}")
         seen.setdefault(accepted["channel"], base)
         for _ in range(6):
-            dc.dut.Step(1)
+            step(dc)
         for _ in range(4):
-            dc.dut.Step(1)
+            step(dc)
         response = dc.load_once(0, base, base, context="lane0 hit")
         assert response["miss"] == 0
         if len(seen) == 2:
@@ -103,7 +105,7 @@ def test_refill_denied_reports_error(dc):
                     context="denied refill")
     seen_error = False
     for _ in range(12):
-        dc.dut.Step(1)
+        step(dc)
         dc.refresh()
         if dc._val(dc.error["valid"]):
             seen_error = True
@@ -135,14 +137,14 @@ def test_store_then_load_observes_data(dc):
     dc.load_once(0, base, base, context="lane0 cold")
     dc.service_miss(base, data_beats=beats, context="store prime")
     for _ in range(6):
-        dc.dut.Step(1)
+        step(dc)
     store_data = 0xDEADBEEFCAFEBABE << 64 | 0x0123456789ABCDEF
     dc.drive_store(base, base, store_data, mask=0x00000000000000FF, store_id=7)
     accepted = False
     for _ in range(4):
         if dc._val(dc.store["req_ready"]):
             accepted = True
-        dc.dut.Step(1)
+        step(dc)
         dc.refresh()
         if accepted:
             break
@@ -166,7 +168,7 @@ def test_store_masks_and_readback(dc):
     dc.load_once(0, base, base, context="lane0 cold")
     dc.service_miss(base, data_beats=beats, context="mask prime")
     for _ in range(6):
-        dc.dut.Step(1)
+        step(dc)
     cases = [
         (0x00000000000000FF, 0x11),
         (0x000000000000FF00, 0x22),
@@ -180,7 +182,7 @@ def test_store_masks_and_readback(dc):
         accepted = False
         for _ in range(4):
             accepted = accepted or bool(dc._val(dc.store["req_ready"]))
-            dc.dut.Step(1)
+            step(dc)
             dc.refresh()
             if accepted:
                 break
@@ -211,7 +213,7 @@ def test_store_miss_with_refill(dc):
     accepted = False
     for _ in range(6):
         accepted = accepted or bool(dc._val(dc.store["req_ready"]))
-        dc.dut.Step(1)
+        step(dc)
         dc.refresh()
         if accepted:
             break
@@ -228,7 +230,7 @@ def test_store_miss_with_refill(dc):
     # The write miss must reach L2, and the refill merges the store byte.
     accepted = dc.service_miss(base, data_beats=beats, context="store miss refill")
     for _ in range(8):
-        dc.dut.Step(1)
+        step(dc)
     response = dc.load_once(0, base, base, context="lane0 after store miss")
     assert response["miss"] == 0, response
     # A store miss installs the L2 line with the masked store bytes merged in;
@@ -246,7 +248,7 @@ def test_three_lanes_same_line(dc):
     dc.load_once(0, base, base, context="lane0 cold")
     dc.service_miss(base, data_beats=beats, context="parallel prime")
     for _ in range(6):
-        dc.dut.Step(1)
+        step(dc)
     # Leave a *different* value in every lane's response register first, so a lane
     # that silently fails to fire cannot be mistaken for a successful one (the
     # response registers hold the previous transaction).  The marker line is
@@ -259,7 +261,7 @@ def test_three_lanes_same_line(dc):
             dc.service_miss(other, data_beats=line_words(other),
                             context=f"stale marker refill {lane}")
         for _ in range(6):
-            dc.dut.Step(1)
+            step(dc)
     for lane in range(3):
         held = dc.load_response(lane)
         assert (held["data"] & ((1 << 128) - 1)) == (line_words(other)[0] & ((1 << 128) - 1)), (
@@ -272,12 +274,12 @@ def test_three_lanes_same_line(dc):
         for lane in range(3):
             if not spawned[lane] and dc._val(dc.loads[lane]["req_ready"]):
                 spawned[lane] = True
-        dc.dut.Step(1)
+        step(dc)
         dc.refresh()
     for lane in range(3):
         dc.stop_load(lane)
     for _ in range(2):
-        dc.dut.Step(1)
+        step(dc)
     assert spawned == [True, True, True], spawned
     expected = line_bytes(base, base)
     stale = line_bytes(other, other)
@@ -297,7 +299,7 @@ def test_lq_nonempty_miss(dc):
     dc.load_once(0, base, base, context="lane0 cold")
     dc.service_miss(base, data_beats=beats, context="lq nonempty refill")
     for _ in range(6):
-        dc.dut.Step(1)
+        step(dc)
     response = dc.load_once(0, base, base, context="lane0 hit")
     assert response["miss"] == 0
     if dc.coverage is not None:
@@ -313,12 +315,12 @@ def test_load_mask_shapes(dc):
     dc.load_once(0, base, base, context="lane0 cold")
     dc.service_miss(base, data_beats=beats, context="mask prime")
     for _ in range(6):
-        dc.dut.Step(1)
+        step(dc)
     marker = 0x14040
     dc.load_once(0, marker, marker, context="mask stale marker")
     dc.service_miss(marker, data_beats=line_words(marker), context="mask marker refill")
     for _ in range(6):
-        dc.dut.Step(1)
+        step(dc)
     for mask in (0x1, 0xF, 0x0F0F, 0xF0F0, 0xFFFF):
         for lane in (0, 1, 2):
             # Re-latch the marker window so uncovered bytes are detectably stale.
@@ -347,7 +349,7 @@ def test_corrupt_refill(dc):
     dc.load_once(0, base, base, context="lane0 cold")
     dc.service_miss(base, data_beats=beats, corrupt=True, context="corrupt refill")
     for _ in range(8):
-        dc.dut.Step(1)
+        step(dc)
     response = dc.load_once(0, base, base, context="lane0 after corrupt")
     if dc.coverage is not None:
         dc.coverage.miss.sample({"acquire_channel": 0, "refill_result": "corrupt",
@@ -362,7 +364,7 @@ def test_corrupt_refill(dc):
     dc.service_miss(base1, data_beats=line_words(base1), corrupt=True,
                     context="corrupt refill ch1")
     for _ in range(8):
-        dc.dut.Step(1)
+        step(dc)
     response = dc.load_once(0, base1, base1, context="lane0 after corrupt ch1")
     if dc.coverage is not None:
         dc.coverage.miss.sample({"acquire_channel": 1, "refill_result": "corrupt",
@@ -393,12 +395,12 @@ def test_mshr_full_yields_unhandled_miss(dc):
             if not spawned[lane] and dc._val(dc.loads[lane]["req_ready"]):
                 spawned[lane] = True
             nack_seen[lane] |= dc._val(dc.loads[lane]["s2_mq_nack"])
-        dc.dut.Step(1)
+        step(dc)
         dc.refresh()
     for lane in range(3):
         dc.stop_load(lane)
     for _ in range(2):
-        dc.dut.Step(1)
+        step(dc)
     for lane in range(3):
         response = dc.load_response(lane)
         # The pool is still saturated, so every lane must report an unhandled
@@ -415,7 +417,7 @@ def test_mshr_full_yields_unhandled_miss(dc):
     # (MainPipe has no free MSHR to forward the write), not the hit path.
     dc.drive_store(0x31000, 0x31000, 0, mask=0xFF, store_id=11)
     for _ in range(8):
-        dc.dut.Step(1)
+        step(dc)
         dc.refresh()
     dc.stop_store()
     store_result = dc.wait_store_hit(8)
@@ -433,12 +435,12 @@ def test_store_mask_classes(dc):
     dc.load_once(0, base, base, context="lane0 cold")
     dc.service_miss(base, data_beats=beats, context="store mask prime")
     for _ in range(6):
-        dc.dut.Step(1)
+        step(dc)
     for mask in (1, 0xF0F0, 0x00FF00FF, 0xFFFFFFFFFFFFFFFF):
         data = int.from_bytes(bytes([0x77] * 64), "little")
         dc.drive_store(base, base, data, mask=mask, store_id=9)
         for _ in range(4):
-            dc.dut.Step(1)
+            step(dc)
             dc.refresh()
         dc.stop_store()
         result = dc.wait_store_hit(10)
@@ -455,7 +457,7 @@ def test_partial_load_masks(dc):
     dc.load_once(0, base, base, context="lane0 cold")
     dc.service_miss(base, data_beats=beats, context="partial mask prime")
     for _ in range(6):
-        dc.dut.Step(1)
+        step(dc)
     expected = beats[0] & ((1 << 128) - 1)
     for mask in (0x00FF00FF, 0x0FF0, 0x8001):
         response = dc.load_once(0, base, base, mask=mask,
@@ -465,7 +467,7 @@ def test_partial_load_masks(dc):
 
 # DC-FP-007
 def _same_set_addresses(start: int, count: int) -> list[int]:
-    from dcacheverify.load_pipe.model import dcache_index
+    from suites.memblock.dcache.load_pipe.model import dcache_index
     want = dcache_index(start)
     found = [start]
     addr = start + 0x40
@@ -503,7 +505,7 @@ def _service_miss_capture_c(dc, expected_addr: int, beats: list[int],
                 }
         if accepted is not None:
             break
-        dc.dut.Step(1)
+        step(dc)
         dc.refresh()
     assert accepted is not None, f"{context}: no Acquire observed"
     assert accepted["address"] == expected_addr, (context, accepted)
@@ -526,7 +528,7 @@ def _service_miss_capture_c(dc, expected_addr: int, beats: list[int],
                              int(other["c_data"].value))
                     if entry[:4] not in [item[:4] for item in entries]:
                         entries.append(entry)
-            dc.dut.Step(1)
+            step(dc)
             dc.refresh()
     channel["d_valid"].Set(0)
     for _ in range(10):
@@ -538,7 +540,7 @@ def _service_miss_capture_c(dc, expected_addr: int, beats: list[int],
                          int(other["c_data"].value))
                 if entry[:4] not in [item[:4] for item in entries]:
                     entries.append(entry)
-        dc.dut.Step(1)
+        step(dc)
         dc.refresh()
     return {"accepted": accepted, "c": entries}
 
@@ -558,7 +560,7 @@ def test_dirty_eviction_releases_line(dc):
         assert response["hit"] == 1, (index, response)
         assert response["hit_id"] == index + 1, (index, response)
         for _ in range(4):
-            dc.dut.Step(1)
+            step(dc)
             dc.refresh()
         hit = dc.load_once(0, addr, addr, context=f"dirty hit {index}")
         assert hit["miss"] == 0, (index, hit)
@@ -595,7 +597,7 @@ def test_clean_eviction_releases_without_data(dc):
         dc.service_miss(addr, data_beats=line_words(addr),
                         context=f"clean fill {index}")
         for _ in range(4):
-            dc.dut.Step(1)
+            step(dc)
             dc.refresh()
 
     victim_addr = addrs[4]
@@ -620,7 +622,7 @@ def test_atomic_swap_and_add_hit(dc):
     dc.load_once(0, base, base, context="atomic prime")
     dc.service_miss(base, data_beats=beats, context="atomic prime")
     for _ in range(8):
-        dc.dut.Step(1)
+        step(dc)
         dc.refresh()
     assert dc.load_once(0, base, base, context="atomic prime hit")["miss"] == 0
 
@@ -725,7 +727,7 @@ def test_two_partial_stores_same_missing_line_merge_data(dc):
         dc.refresh()
         for _ in range(4):
             ready = bool(dc._val(dc.store["req_ready"]))
-            dc.dut.Step(1)
+            step(dc)
             dc.refresh()
             if ready:
                 break
@@ -737,7 +739,7 @@ def test_two_partial_stores_same_missing_line_merge_data(dc):
     accepted = dc.service_miss(base, data_beats=beats, context="two-store merge")
     assert accepted is not None
     for _ in range(8):
-        dc.dut.Step(1)
+        step(dc)
     response = dc.load_once(0, base, base, context="after two-store merge")
     assert response["miss"] == 0, response
     assert response["data"] & 0xFFFF == 0xBBAA, hex(response["data"] & 0xFFFF)
@@ -759,7 +761,7 @@ def test_denied_refill_error_paddr_is_vaddr_low_bits(dc):
                         context=f"denied refill {base:#x}")
         observed = None
         for _ in range(12):
-            dc.dut.Step(1)
+            step(dc)
             dc.refresh()
             if dc._val(dc.error["valid"]):
                 observed = {"paddr": dc._val(dc.error["paddr"]),
@@ -802,7 +804,7 @@ def test_pending_release_blocks_remiss_until_drained(dc):
         dc.load_once(0, addr, addr, context=f"fill {index}")
         dc.service_miss(addr, data_beats=line_words(addr), context=f"fill refill {index}")
         for _ in range(8):
-            dc.dut.Step(1)
+            step(dc)
 
     # Evict with the C channel held closed, so the release stays pending.
     for channel in dc.channels:
@@ -811,7 +813,7 @@ def test_pending_release_blocks_remiss_until_drained(dc):
     dc.load_once(0, addrs[4], addrs[4], context="evicting load")
     dc.service_miss(addrs[4], data_beats=line_words(addrs[4]), context="evicting refill")
     for _ in range(6):
-        dc.dut.Step(1)
+        step(dc)
     blocked = dc.load_once(0, victim, victim, context="blocked re-miss")
     assert blocked["miss"] == 1 and blocked["handled"] == 0, blocked
 
@@ -824,7 +826,7 @@ def test_pending_release_blocks_remiss_until_drained(dc):
             if dc._val(channel["c_valid"]):
                 release = (channel_index, dc._val(channel["c_source"]),
                            dc._val(channel["c_opcode"]))
-        dc.dut.Step(1)
+        step(dc)
         dc.refresh()
         if release is not None:
             break
@@ -842,13 +844,13 @@ def test_pending_release_blocks_remiss_until_drained(dc):
     channel["d_data"].Set(0)
     for _ in range(8):
         ready = bool(dc._val(channel["d_ready"]))
-        dc.dut.Step(1)
+        step(dc)
         dc.refresh()
         if ready:
             break
     channel["d_valid"].Set(0)
     for _ in range(6):
-        dc.dut.Step(1)
+        step(dc)
         dc.refresh()
 
     retry = None
@@ -857,7 +859,7 @@ def test_pending_release_blocks_remiss_until_drained(dc):
         if retry["miss"] and retry["handled"]:
             break
         for _ in range(4):
-            dc.dut.Step(1)
+            step(dc)
     assert retry is not None and retry["miss"] == 1 and retry["handled"] == 1, retry
 
 
@@ -877,7 +879,7 @@ def test_all_sets_all_ways_update_replacement_state(dc):
     so the four arms are reached by using a single different port each pass:
     lane 0, lane 1, lane 2, and a store hit.
     """
-    from dcacheverify.load_pipe.model import dcache_index
+    from suites.memblock.dcache.load_pipe.model import dcache_index
 
     per_set: dict[int, list[int]] = {}
     addr = 0x40000
@@ -903,7 +905,7 @@ def test_all_sets_all_ways_update_replacement_state(dc):
             dc.service_miss(base, data_beats=line_words(base),
                             context=f"set {set_index} way {way} refill")
             for _ in range(4):
-                dc.dut.Step(1)
+                step(dc)
             hit = dc.load_once(0, base, base,
                                context=f"set {set_index} way {way} hit")
             assert hit["miss"] == 0, (set_index, way, hit)
@@ -923,7 +925,7 @@ def test_all_sets_all_ways_update_replacement_state(dc):
         accepted = False
         for _ in range(4):
             accepted = accepted or bool(dc._val(dc.store["req_ready"]))
-            dc.dut.Step(1)
+            step(dc)
             dc.refresh()
             if accepted:
                 break
@@ -949,7 +951,7 @@ def test_prefetch_install_then_demand_hit_clears_flag(dc):
     array's clear arm.  Sweeping all 256 sets x 4 ways covers every unrolled
     (set, way) clear arm.
     """
-    from dcacheverify.load_pipe.model import dcache_index
+    from suites.memblock.dcache.load_pipe.model import dcache_index
 
     per_set: dict[int, list[int]] = {}
     addr = 0x40000
@@ -971,7 +973,7 @@ def test_prefetch_install_then_demand_hit_clears_flag(dc):
             dc.service_miss(base, data_beats=line_words(base),
                             context=f"prefetch refill set {set_index} way {way}")
             for _ in range(4):
-                dc.dut.Step(1)
+                step(dc)
             hit = dc.load_once(0, base, base,
                                context=f"prefetch clear set {set_index} way {way}")
             assert hit["miss"] == 0, (set_index, way, hit)
@@ -988,7 +990,7 @@ def test_prefetch_install_then_demand_hit_clears_flag(dc):
             # `isDemand(v) = v <= 1`, so 1 is the documented "was a prefetch,
             # already cleared by demand".
             for _ in range(8):
-                dc.dut.Step(1)
+                step(dc)
             again = dc.load_once(0, base, base,
                                  context=f"after clear set {set_index} way {way}")
             assert again["miss"] == 0, (set_index, way, again)

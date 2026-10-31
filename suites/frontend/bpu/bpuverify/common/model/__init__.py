@@ -1,1 +1,0 @@
-"""bpuverify.common.model support."""

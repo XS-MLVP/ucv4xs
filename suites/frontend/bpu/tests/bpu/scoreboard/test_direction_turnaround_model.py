@@ -4,12 +4,12 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.bpu.model.pipeline import Redirect
-from bpuverify.bpu.model.tage.asymmetric_retirement import OUTCOMES, PRELUDE_PLAN
-from bpuverify.bpu.model.tage.direction_turnaround import PROGRAMS,preparation,CAPTURES
-from bpuverify.bpu.model.tage.mixed_visibility import PARTIAL_PLAN
-from bpuverify.bpu.model.tage.neighbor_migration import PC, HISTORY_PATHS
-from bpuverify.bpu.model.tage.service import STREAM_PC, learning_inflight, pending_plan
+from suites.frontend.bpu.bpu.model.pipeline import Redirect
+from suites.frontend.bpu.bpu.model.tage.asymmetric_retirement import OUTCOMES, PRELUDE_PLAN
+from suites.frontend.bpu.bpu.model.tage.direction_turnaround import PROGRAMS,preparation,CAPTURES
+from suites.frontend.bpu.bpu.model.tage.mixed_visibility import PARTIAL_PLAN
+from suites.frontend.bpu.bpu.model.tage.neighbor_migration import PC, HISTORY_PATHS
+from suites.frontend.bpu.bpu.model.tage.service import STREAM_PC, learning_inflight, pending_plan
 from tests.bpu.scoreboard.test_asymmetric_retirement_model import ThreeOriginalSources,concrete_plan
 from tests.bpu.scoreboard.test_neighbor_migration import fixture
 from tests.bpu.scoreboard.test_direction_forwarding import resolution

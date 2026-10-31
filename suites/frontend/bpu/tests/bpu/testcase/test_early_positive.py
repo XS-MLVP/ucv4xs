@@ -1,7 +1,7 @@
 """066: T provider wins over NT base and its original source learns useful."""
 import pytest
-from bpuverify.bpu.case.early_positive import check_early_positive
-from bpuverify.bpu.coverage.early_positive import EarlyPositiveCoverage
+from suites.frontend.bpu.bpu.case.early_positive import check_early_positive
+from suites.frontend.bpu.bpu.coverage.early_positive import EarlyPositiveCoverage
 
 
 @pytest.mark.feature('BPU-INT-066')

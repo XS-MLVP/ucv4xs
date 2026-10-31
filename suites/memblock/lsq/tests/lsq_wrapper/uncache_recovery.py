@@ -1,8 +1,8 @@
 """Cancelled Load != cancelled external request; public UID ledger only."""
 from dataclasses import replace
 
-from lsqverify.lsq_wrapper.types import Bus
-from lsqverify.vlq.types import Redirect
+from suites.memblock.lsq.lsq_wrapper.types import Bus
+from suites.memblock.lsq.vlq.types import Redirect
 from .uncache_owners import UncacheOwners
 
 

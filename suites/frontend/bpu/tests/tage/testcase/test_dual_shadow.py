@@ -1,11 +1,11 @@
 """Independent scenarios are pytest items, not a serial inner-loop matrix."""
 import pytest
 
-from bpuverify.tage.coverage.dual import DUAL_MODES
-from bpuverify.tage.coverage.dual import tage_dual_shadow_coverage_model
-from bpuverify.tage.coverage.dual import write_tage_dual_shadow_coverage
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.tage.case.dual_shadow_scenario import check_case
+from suites.frontend.bpu.tage.coverage.dual import DUAL_MODES
+from suites.frontend.bpu.tage.coverage.dual import tage_dual_shadow_coverage_model
+from suites.frontend.bpu.tage.coverage.dual import write_tage_dual_shadow_coverage
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.tage.case.dual_shadow_scenario import check_case
 
 
 @pytest.mark.feature('BPU-TAGE-035')

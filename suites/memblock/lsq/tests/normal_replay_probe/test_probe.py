@@ -1,9 +1,7 @@
 """Small calibration only; never a substitute for the full public-slot loops."""
 import pytest
 
-from lsqverify.normal_replay_metadata import PATHS, trace
-from tests.lsq_wrapper.conftest import lsq
-from tests.load_queue.conftest import lq
+from suites.memblock.lsq.normal_replay_metadata import PATHS, trace
 
 
 @pytest.mark.parametrize("path", PATHS)

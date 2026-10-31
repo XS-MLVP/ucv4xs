@@ -31,7 +31,7 @@ def test_thin_case_has_no_edges_or_scheduler_and_does_not_claim_working_set_cred
 
 @pytest.mark.parametrize('role',('model','checker','monitor','bundle','env','case','coverage'))
 def test_production_support_has_no_experimental_or_test_code_import(role):
-    files=[path for path in (ROOT/'bpuverify/bpu'/role).glob('*.py')
+    files=[path for path in (ROOT/'bpu'/role).glob('*.py')
            if path.stem in ('window_lifetime','feedback_gate','bounded_sources','admission_window','miss_authority')]
     assert files
     for path in files:

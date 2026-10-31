@@ -8,13 +8,13 @@ from types import SimpleNamespace
 import pytest
 from toffee import ScoreboardMismatch
 
-from bpuverify.bpu.case.definitions import PC
-from bpuverify.bpu.case.tage.alternate import POSITIONS, TARGETS
-from bpuverify.bpu.checker.tage.alternate import TageAlternateChecker, observed_alternate
-from bpuverify.bpu.coverage.tage.alternate import AlternateCoverage
-from bpuverify.bpu.model.selection import fallthrough
-from bpuverify.bpu.transaction.types import BpuPrediction
-from bpuverify.tage.model.semantic import Base, Branch, Context, Events, Feedback, Hint, decide
+from suites.frontend.bpu.bpu.case.definitions import PC
+from suites.frontend.bpu.bpu.case.tage.alternate import POSITIONS, TARGETS
+from suites.frontend.bpu.bpu.checker.tage.alternate import TageAlternateChecker, observed_alternate
+from suites.frontend.bpu.bpu.coverage.tage.alternate import AlternateCoverage
+from suites.frontend.bpu.bpu.model.selection import fallthrough
+from suites.frontend.bpu.bpu.transaction.types import BpuPrediction
+from suites.frontend.bpu.tage.model.semantic import Base, Branch, Context, Events, Feedback, Hint, decide
 from tests.tage.scoreboard.test_semantic_model import actual_prediction, learn, lookup
 
 

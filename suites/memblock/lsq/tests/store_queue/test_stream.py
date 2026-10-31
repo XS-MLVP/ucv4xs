@@ -1,6 +1,8 @@
+
 import pytest
 
-from lsqverify.store_queue.actor import StoreActor
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.store_queue.actor import StoreActor
 
 
 async def test_all_physical_and_virtual_slots_four_generations_actual_completion(sq):
@@ -19,8 +21,8 @@ async def test_real_vector_128_flows_capacity_and_force_write(sq):
     uids = [uid for _ in range(8) for uid in actor.add(flows=16, size=4).flows]
     for _ in range(6):
         await actor.step(fair=True, issue=False)
-    sq.expect({"io_sbufferCtrl_req_forceWrite": 1, "io_sqFull": 0, "io_physicalUpperSqIdx_value": 0,
-               "io_physicalUpperSqIdx_second_flag": 1, "io_sqDeqPtr_value": 0}, "real VSQ physical tail is 128 but only 64 physical entries can issue")
+    sq.expect({P.p_sbufferCtrl_req_forceWrite: 1, P.p_sqFull: 0, P.p_physicalUpperSqIdx_value: 0,
+               P.p_physicalUpperSqIdx_second_flag: 1, P.p_sqDeqPtr_value: 0}, "real VSQ physical tail is 128 but only 64 physical entries can issue")
     await actor.drain()
     actor.checked(("SQ-CAPACITY.virtual", "SQ-CAPACITY.force", "SQ-DISPATCH.multi", "SQ-CREDIT.last_flow", "SQ-READY.upper"), uids)
 

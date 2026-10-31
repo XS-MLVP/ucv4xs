@@ -4,15 +4,15 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.sc.transaction.types import ScTraining
-from bpuverify.sc.coverage.catalog import sc_training_qualification_coverage_model
-from bpuverify.sc.coverage.catalog import write_sc_training_qualification_coverage
-from bpuverify.sc.checker.assertions import learn
-from bpuverify.sc.case.definitions import PC
-from bpuverify.sc.case.definitions import POSITION
-from bpuverify.sc.case.definitions import TAGE_COUNTER
-from bpuverify.sc.case.definitions import TAKEN_ATTEMPTS
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.sc.transaction.types import ScTraining
+from suites.frontend.bpu.sc.coverage.catalog import sc_training_qualification_coverage_model
+from suites.frontend.bpu.sc.coverage.catalog import write_sc_training_qualification_coverage
+from suites.frontend.bpu.sc.checker.assertions import learn
+from suites.frontend.bpu.sc.case.definitions import PC
+from suites.frontend.bpu.sc.case.definitions import POSITION
+from suites.frontend.bpu.sc.case.definitions import TAGE_COUNTER
+from suites.frontend.bpu.sc.case.definitions import TAKEN_ATTEMPTS
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature("BPU-SC-011")

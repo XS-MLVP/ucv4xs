@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.sc.checker.assertions import learn
-from bpuverify.sc.case.definitions import PC
-from bpuverify.sc.case.definitions import POSITION
-from bpuverify.sc.case.definitions import TAGE_COUNTER
+from suites.frontend.bpu.sc.checker.assertions import learn
+from suites.frontend.bpu.sc.case.definitions import PC
+from suites.frontend.bpu.sc.case.definitions import POSITION
+from suites.frontend.bpu.sc.case.definitions import TAGE_COUNTER
 
 
 @pytest.mark.feature("BPU-SC-007")

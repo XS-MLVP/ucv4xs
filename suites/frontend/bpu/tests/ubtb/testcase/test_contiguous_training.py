@@ -4,15 +4,15 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.ubtb.transaction.types import BranchTraining
-from bpuverify.ubtb.coverage.catalog import ubtb_bypass_recovery_coverage_model
-from bpuverify.ubtb.coverage.catalog import write_ubtb_bypass_recovery_coverage
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.ubtb.checker.assertions import assert_hit
-from bpuverify.ubtb.checker.assertions import assert_miss
-from bpuverify.ubtb.case.definitions import BranchVector
-from bpuverify.ubtb.case.definitions import CONDITIONAL
-from bpuverify.ubtb.case.definitions import DIRECT
+from suites.frontend.bpu.ubtb.transaction.types import BranchTraining
+from suites.frontend.bpu.ubtb.coverage.catalog import ubtb_bypass_recovery_coverage_model
+from suites.frontend.bpu.ubtb.coverage.catalog import write_ubtb_bypass_recovery_coverage
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.ubtb.checker.assertions import assert_hit
+from suites.frontend.bpu.ubtb.checker.assertions import assert_miss
+from suites.frontend.bpu.ubtb.case.definitions import BranchVector
+from suites.frontend.bpu.ubtb.case.definitions import CONDITIONAL
+from suites.frontend.bpu.ubtb.case.definitions import DIRECT
 
 
 @pytest.mark.feature("BPU-UBTB-011")

@@ -1,9 +1,9 @@
 """One semantic action matrix, not one test per stack storage location."""
 import json
 import pytest
-from bpuverify.ras.model.commit_action import Program
-from bpuverify.ras.coverage.commit_action import Coverage
-from bpuverify.ras.case.commit_action import run
+from suites.frontend.bpu.ras.model.commit_action import Program
+from suites.frontend.bpu.ras.coverage.commit_action import Coverage
+from suites.frontend.bpu.ras.case.commit_action import run
 
 
 @pytest.mark.feature('BPU-RAS-017')

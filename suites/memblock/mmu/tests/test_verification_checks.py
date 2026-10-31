@@ -1,8 +1,8 @@
 """Negative self-tests of verification helpers, not replacement RTL DUTs."""
 import pytest
 
-from mmuverify.common.checks import check_l2_success
-from mmuverify.l2.l2pf import PFModel
+from suites.memblock.mmu.checks import check_l2_success
+from suites.memblock.mmu.l2.l2pf import PFModel
 
 
 def clean():
@@ -48,7 +48,7 @@ def test_prefetch_model_can_consume_after_flush():
 
 
 def test_page_memory_root_leaf_is_at_root():
-    from mmuverify.l2.l2tlb import PageMemory, pte
+    from suites.memblock.mmu.l2.l2tlb import PageMemory, pte
     mem = PageMemory()
     mem.build_sv39(0x80000, 0x12345, 0x40000, level=2)
     word = mem.read(0x80000000)

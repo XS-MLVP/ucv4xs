@@ -5,13 +5,14 @@ import random
 
 import pytest
 
-from lsuverify.new_load_unit.coverage import CASES, NewLoadUnitCoverage
-from lsuverify.new_load_unit.env import (
+from suites.memblock.lsu.legacy_pins import P
+from suites.memblock.lsu.new_load_unit.coverage import CASES, NewLoadUnitCoverage
+from suites.memblock.lsu.new_load_unit.env import (
     LoadParentEnv,
     blank_inputs,
     random_inputs,
 )
-from lsuverify.store_trigger.env import (
+from suites.memblock.lsu.store_trigger.env import (
     MATCH_EQ,
     TriggerConfig,
 )
@@ -84,7 +85,7 @@ def observe_until(unit, pred, limit=12, context="wait"):
         if pred(got):
             return got, seen
     raise AssertionError(f"{context}: condition not reached in {limit} cycles; "
-                         f"last={ {k: v for k, v in seen[-1].items() if k.startswith('io_l')} }")
+                         f"last={ {k: v for k, v in seen[-1].items() if k.startswith(P.p_l)} }")
 
 
 def merged_head_tail(head: int, tail: int, offset: int) -> int:
@@ -99,15 +100,15 @@ def test_scalar_load_reaches_ldout_and_lqwrite(unit):
     got = run(unit, seq, "scalar")[-1]
     # One S1 beat later the load writes back: ldin (t0) -> S1 (t1) -> S2 (t2)
     # and S3's combinational ldout is visible in t2.
-    assert got["io_ldout_toRob_valid"] == 1
-    assert got["io_lqWrite_valid"] == 1
-    assert got["io_ldout_toRob_bits_robIdx_value"] == 0x21
-    assert got["io_lqWrite_bits_paddr"] == 0x2018
-    assert got["io_lqWrite_bits_vaddr"] == 0x8000_0018
-    assert got["io_lqWrite_bits_rep_info_need_rep"] == 0
-    assert got["io_ldout_toIntRf_valid"] == 1
-    assert got["io_ldout_toIntRf_bits_pdest"] == 0x35
-    assert got["io_ldin_ready"] == 1
+    assert got[P.p_ldout_toRob_valid] == 1
+    assert got[P.p_lqWrite_valid] == 1
+    assert got[P.p_ldout_toRob_bits_robIdx_value] == 0x21
+    assert got[P.p_lqWrite_bits_paddr] == 0x2018
+    assert got[P.p_lqWrite_bits_vaddr] == 0x8000_0018
+    assert got[P.p_lqWrite_bits_rep_info_need_rep] == 0
+    assert got[P.p_ldout_toIntRf_valid] == 1
+    assert got[P.p_ldout_toIntRf_bits_pdest] == 0x35
+    assert got[P.p_ldin_ready] == 1
     unit.coverage.sample_case("xstage.scalar_load_end_to_end")
     unit.coverage.sample_case("xstage.wakeup_and_rf_write")
 
@@ -123,8 +124,8 @@ def test_dcache_data_reaches_the_integer_register_file(unit):
         "miss": 0, "mshr_id": 0, "meta_prefetch": 0, "handled": 0,
     }
     got = unit.cycle(data_inp, "data t2")
-    assert got["io_ldout_toIntRf_valid"] == 1
-    assert got["io_ldout_toIntRf_bits_data"] == 0x89AB_CDEF_0011_2233
+    assert got[P.p_ldout_toIntRf_valid] == 1
+    assert got[P.p_ldout_toIntRf_bits_data] == 0x89AB_CDEF_0011_2233
     unit.coverage.sample_case("xstage.aligned_dcache_data")
 
 
@@ -145,13 +146,13 @@ def test_cross_16b_load_loops_its_tail_and_merges_the_data(unit):
            data_input(LDATA, tlb_off=0x20), data_input(TDATA), idle(), idle()]
     seen = run(unit, seq, "cross16b")
     merged = merged_head_tail(LDATA, TDATA, 0x1C & 0xF)
-    writebacks = [obs for obs in seen if obs["io_ldout_toRob_valid"] == 1]
+    writebacks = [obs for obs in seen if obs[P.p_ldout_toRob_valid] == 1]
     assert len(writebacks) == 1, "the head/tail pair produces exactly one writeback"
     wb = writebacks[0]
-    assert wb["io_lqWrite_valid"] == 1
-    assert wb["io_lqWrite_bits_vaddr"] == 0x8000_001C
-    assert wb["io_lqWrite_bits_mask"] == 0xF000
-    assert wb["io_ldout_toIntRf_bits_data"] == merged & ((1 << 64) - 1)
+    assert wb[P.p_lqWrite_valid] == 1
+    assert wb[P.p_lqWrite_bits_vaddr] == 0x8000_001C
+    assert wb[P.p_lqWrite_bits_mask] == 0xF000
+    assert wb[P.p_ldout_toIntRf_bits_data] == merged & ((1 << 64) - 1)
     unit.coverage.sample_case("xstage.cross_16b_head_tail_loopback")
     unit.coverage.sample_case("xstage.tail_data_merge")
 
@@ -161,9 +162,9 @@ def test_dcache_backpressure_blocks_s0(unit):
     got = unit.cycle({**stall, "ldin": {"valid": 1,
                                       "bits": {**ldin(off=0x8)["ldin"]["bits"]}}},
                      "backpressure")
-    assert got["io_ldin_ready"] == 0
-    assert got["io_dcache_req_valid"] == 1
-    assert got["io_tlb_req_valid"] == 0, "the S0 request is not consumed"
+    assert got[P.p_ldin_ready] == 0
+    assert got[P.p_dcache_req_valid] == 1
+    assert got[P.p_tlb_req_valid] == 0, "the S0 request is not consumed"
     unit.coverage.sample_case("xstage.dcache_backpressure")
 
 
@@ -178,9 +179,9 @@ def test_high_priority_replay_lane_wins_over_the_new_load(unit):
     })
     replay["ldin"] = ldin(off=0x40, lq=9)["ldin"]
     got = unit.cycle(replay, "replay hi")
-    assert got["io_replay_ready"] == 1
-    assert got["io_ldin_ready"] == 0, "the replay owns the port this cycle"
-    assert got["io_sqForward_s0Req_bits_vaddr"] == 0x8000_0100
+    assert got[P.p_replay_ready] == 1
+    assert got[P.p_ldin_ready] == 0, "the replay owns the port this cycle"
+    assert got[P.p_sqForward_s0Req_bits_vaddr] == 0x8000_0100
     unit.coverage.sample_case("xstage.replay_lane_priority")
 
 
@@ -193,9 +194,9 @@ def test_younger_replay_is_dropped_for_that_cycle(unit):
     })
     replay["ldin"] = ldin(off=0x80, lq=3)["ldin"]
     got = unit.cycle(replay, "young replay")
-    assert got["io_replay_ready"] == 0
-    assert got["io_ldin_ready"] == 1, "the new load issues instead"
-    assert got["io_sqForward_s0Req_bits_vaddr"] == 0x8000_0080
+    assert got[P.p_replay_ready] == 0
+    assert got[P.p_ldin_ready] == 1, "the new load issues instead"
+    assert got[P.p_sqForward_s0Req_bits_vaddr] == 0x8000_0080
     unit.coverage.sample_case("xstage.replay_younger_dropped")
 
 
@@ -205,10 +206,10 @@ def test_tlb_miss_turns_the_load_into_a_replay(unit):
     miss["tlbResp"]["bits"]["miss"] = 1
     unit.cycle(miss, "miss t1")
     got = unit.cycle(idle(), "miss t2")
-    assert got["io_lqWrite_valid"] == 1
-    assert got["io_lqWrite_bits_rep_info_cause_3"] == 1
-    assert got["io_lqWrite_bits_rep_info_need_rep"] == 1
-    assert got["io_ldout_toRob_valid"] == 0, "a miss does not write back"
+    assert got[P.p_lqWrite_valid] == 1
+    assert got[P.p_lqWrite_bits_rep_info_cause_3] == 1
+    assert got[P.p_lqWrite_bits_rep_info_need_rep] == 1
+    assert got[P.p_ldout_toRob_valid] == 0, "a miss does not write back"
     unit.coverage.sample_case("xstage.tlb_miss_replay")
     unit.coverage.sample_case("xstage.lq_write_cause_encoding")
 
@@ -219,9 +220,9 @@ def test_dcache_miss_requests_a_replay_with_cause_6(unit):
     miss = idle()
     miss["dcache"]["resp"]["bits"]["miss"] = 1
     got = unit.cycle(miss, "dmiss t2")
-    assert got["io_lqWrite_valid"] == 1
-    assert got["io_lqWrite_bits_rep_info_cause_6"] == 1
-    assert got["io_ldout_toRob_valid"] == 0
+    assert got[P.p_lqWrite_valid] == 1
+    assert got[P.p_lqWrite_bits_rep_info_cause_6] == 1
+    assert got[P.p_ldout_toRob_valid] == 0
     unit.coverage.sample_case("xstage.lq_write_cause_encoding")
 
 
@@ -233,10 +234,10 @@ def test_fast_replay_reenters_the_pipeline_instead_of_writing_back(unit):
     nack = idle()
     nack["dcache"]["mq_nack"] = 1
     first = unit.cycle(nack, "fr t2")
-    assert first["io_lqWrite_valid"] == 0, "the replayed beat is not committed"
-    got, _ = observe_until(unit, lambda obs: obs["io_lqWrite_valid"] == 1,
+    assert first[P.p_lqWrite_valid] == 0, "the replayed beat is not committed"
+    got, _ = observe_until(unit, lambda obs: obs[P.p_lqWrite_valid] == 1,
                            limit=8, context="fast replay")
-    assert got["io_lqWrite_bits_vaddr"] == 0x8000_0000
+    assert got[P.p_lqWrite_bits_vaddr] == 0x8000_0000
     unit.coverage.sample_case("xstage.fast_replay_reenters_pipeline")
 
 
@@ -249,8 +250,8 @@ def test_redirect_kills_the_beat_before_it_writes_back(unit):
                               "robIdx_value": 0x10, "robIdx_isFormer": 0}
     unit.cycle(red, "kill t1")
     got = unit.cycle(idle(), "kill t2")
-    assert got["io_ldout_toRob_valid"] == 0
-    assert got["io_lqWrite_valid"] == 0
+    assert got[P.p_ldout_toRob_valid] == 0
+    assert got[P.p_lqWrite_valid] == 0
     unit.coverage.sample_case("xstage.redirect_kills_pipeline")
     unit.coverage.sample_case("xstage.no_write_on_redirect")
 
@@ -262,18 +263,17 @@ def test_tlb_page_fault_is_reported_and_blocks_writeback(unit):
     fault["tlbResp"]["bits"]["excp_0_pf_ld"] = 1
     unit.cycle(fault, "pf t1")
     got = unit.cycle(idle(), "pf t2")
-    assert got["io_ldout_toRob_valid"] == 1
-    assert got["io_ldout_toRob_bits_exceptionVec_13"] == 1
-    assert got["io_exceptionInfo_valid"] == 1
-    assert got["io_exceptionInfo_bits_exceptionVec_13"] == 1
-    assert got["io_exceptionInfo_bits_vaddr"] == 0x8000_0000
-    assert got["io_lqWrite_valid"] == 1
+    assert got[P.p_ldout_toRob_valid] == 1
+    assert got[P.p_ldout_toRob_bits_exceptionVec_13] == 1
+    assert got[P.p_exceptionInfo_valid] == 1
+    assert got[P.p_exceptionInfo_bits_exceptionVec_13] == 1
+    assert got[P.p_exceptionInfo_bits_vaddr] == 0x8000_0000
+    assert got[P.p_lqWrite_valid] == 1
     unit.coverage.sample_case("xstage.tlb_fault_exception")
     unit.coverage.sample_case("xstage.exception_info_record")
 
 
 def test_trigger_breakpoint_travels_with_the_load(unit):
-    trig = unit.dut  # only to keep the fixture explicit
     inp0 = ldin(off=0x10)
     inp0["trigger"]["configs"] = [
         TriggerConfig(match_type=MATCH_EQ, select=0, timing=0,
@@ -285,9 +285,9 @@ def test_trigger_breakpoint_travels_with_the_load(unit):
     tlb["trigger"] = inp0["trigger"]
     unit.cycle(tlb, "bp t1")
     got = unit.cycle(idle(), "bp t2")
-    assert got["io_ldout_toRob_valid"] == 1
-    assert got["io_ldout_toRob_bits_exceptionVec_3"] == 1
-    assert got["io_ldout_toRob_bits_trigger"] == 0
+    assert got[P.p_ldout_toRob_valid] == 1
+    assert got[P.p_ldout_toRob_bits_exceptionVec_3] == 1
+    assert got[P.p_ldout_toRob_bits_trigger] == 0
     unit.coverage.sample_case("xstage.trigger_breakpoint_propagates")
 
 
@@ -302,21 +302,21 @@ def test_uncache_replay_uses_the_bypass_data_and_skips_the_dcache(unit):
         "uop_fuOpType": LD,
     })
     got0 = unit.cycle(replay, "uncache t0")
-    assert got0["io_dcache_req_valid"] == 0, "the uncache replay bypasses DCache"
-    assert got0["io_tlb_req_bits_kill"] == 1, "noQuery kills the TLB lookup"
-    assert got0["io_uncacheBypass_s0Req_bits_isMMIOReplay"] == 1
+    assert got0[P.p_dcache_req_valid] == 0, "the uncache replay bypasses DCache"
+    assert got0[P.p_tlb_req_bits_kill] == 1, "noQuery kills the TLB lookup"
+    assert got0[P.p_uncacheBypass_s0Req_bits_isMMIOReplay] == 1
     # The S1 bypass response supplies the physical address for the no-translate
     # path of the *next* stage; the data comes from the S2 bypass word.
     s1_resp = idle()
     s1_resp["bypass1"] = {"valid": 1, "bits": {"paddr": 0xCAFE_0000}}
     got1 = unit.cycle(s1_resp, "uncache t1")
-    assert got1["io_tlb_req_bits_pmp_addr"] == 0xCAFE_0000
+    assert got1[P.p_tlb_req_bits_pmp_addr] == 0xCAFE_0000
     data = idle()
     data["bypass2"] = {"valid": 1,
                        "bits": {"data": 0x0123_4567_89AB_CDEF_FEDC_BA98_7654_3210,
                                 "nderr": 0, "derr": 0}}
     got2 = unit.cycle(data, "uncache t2")
-    assert got2["io_ldout_toIntRf_bits_data"] == 0xFEDC_BA98_7654_3210
+    assert got2[P.p_ldout_toIntRf_bits_data] == 0xFEDC_BA98_7654_3210
     unit.coverage.sample_case("xstage.uncache_bypass_read")
 
 
@@ -329,10 +329,10 @@ def test_vector_load_writes_the_vector_register_file(unit):
     data = idle()
     data["dcache"]["resp"]["bits"]["data"] = 0x1122_3344_5566_7788_99AA_BBCC_DDEE_FF00
     got = unit.cycle(data, "vec t2")
-    assert got["io_vldout_toVecRf_valid"] == 1
-    assert got["io_vldout_toVecRf_bits"] == 0x1122_3344_5566_7788_99AA_BBCC_DDEE_FF00
-    assert got["io_vldout_toRob_valid"] == 1
-    assert got["io_ldout_toIntRf_valid"] == 0
+    assert got[P.p_vldout_toVecRf_valid] == 1
+    assert got[P.p_vldout_toVecRf_bits] == 0x1122_3344_5566_7788_99AA_BBCC_DDEE_FF00
+    assert got[P.p_vldout_toRob_valid] == 1
+    assert got[P.p_ldout_toIntRf_valid] == 0
     unit.coverage.sample_case("xstage.vector_load_writes_vector_rf")
 
 
@@ -341,15 +341,15 @@ def test_nuke_query_follows_the_load_in_s2(unit):
     unit.cycle(ldin(off=0x30, rob=0x44, lq=5, sq=6), "nuke t0")
     got = unit.cycle(tlb_hit(off=0x30), "nuke t1")
     # The query is issued while the beat sits in S2 (t1..t2 combinational).
-    assert got["io_rawNukeQuery_req_valid"] == 1
-    assert got["io_rawNukeQuery_req_bits_paddr"] == 0x2030
-    assert got["io_rawNukeQuery_req_bits_robIdx_value"] == 0x44
+    assert got[P.p_rawNukeQuery_req_valid] == 1
+    assert got[P.p_rawNukeQuery_req_bits_paddr] == 0x2030
+    assert got[P.p_rawNukeQuery_req_bits_robIdx_value] == 0x44
     # RAW identifies the older store dependency with SQ, not an LQ field.
-    assert got["io_rawNukeQuery_req_bits_sqIdx_value"] == 6
-    assert got["io_rawNukeQuery_req_bits_sqIdx_first_flag"] == 0
-    assert got["io_rawNukeQuery_req_bits_sqIdx_second_flag"] == 0
-    assert got["io_rarNukeQuery_req_valid"] == 1
-    assert got["io_rarNukeQuery_req_bits_lqIdx_value"] == 5
+    assert got[P.p_rawNukeQuery_req_bits_sqIdx_value] == 6
+    assert got[P.p_rawNukeQuery_req_bits_sqIdx_first_flag] == 0
+    assert got[P.p_rawNukeQuery_req_bits_sqIdx_second_flag] == 0
+    assert got[P.p_rarNukeQuery_req_valid] == 1
+    assert got[P.p_rarNukeQuery_req_bits_lqIdx_value] == 5
     unit.coverage.sample_case("xstage.nuke_query_fields")
 
 
@@ -358,9 +358,9 @@ def test_prefetch_train_pulses_one_cycle_after_s2(unit):
     unit.cycle(ldin(off=0, rob=0x77), "train t0")
     unit.cycle(tlb_hit(off=0), "train t1")
     got = unit.cycle(idle(), "train t2")
-    assert got["io_prefetchTrain_valid"] == 1
-    assert got["io_prefetchTrain_bits_robIdx_value"] == 0x77
-    assert got["io_prefetchTrain_bits_isHwPrefetch"] == 0
+    assert got[P.p_prefetchTrain_valid] == 1
+    assert got[P.p_prefetchTrain_bits_robIdx_value] == 0x77
+    assert got[P.p_prefetchTrain_bits_isHwPrefetch] == 0
     unit.coverage.sample_case("xstage.prefetch_train_pulse")
 
 
@@ -368,15 +368,15 @@ def test_software_prefetch_is_flagged_and_trains_nothing(unit):
     pref = ldin(fu=0x01, off=0)
     got0 = unit.cycle(pref, "swpf t0")
     # S1's combinational output already shows the beat pushed out of S0.
-    assert got0["io_swInstrPrefetch_valid"] == 1
-    assert got0["io_swInstrPrefetch_bits_vaddr"] == 0x8000_0000
-    assert got0["io_prefetchTrainHintS1"] == 0
+    assert got0[P.p_swInstrPrefetch_valid] == 1
+    assert got0[P.p_swInstrPrefetch_bits_vaddr] == 0x8000_0000
+    assert got0[P.p_prefetchTrainHintS1] == 0
     unit.coverage.sample_case("xstage.sw_prefetch_path")
 
 
 def test_prefetch_hint_is_reported_for_issue_entrances(unit):
     got = unit.cycle(ldin(off=0), "hint")
-    assert got["io_prefetchTrainHintS1"] == 1
+    assert got[P.p_prefetchTrainHintS1] == 1
     unit.coverage.sample_case("xstage.prefetch_hint")
 
 
@@ -385,7 +385,7 @@ def test_issue_counter_counts_ldin_beats_with_a_four_cycle_delay(unit):
     for index in range(4):
         unit.cycle(ldin(off=0x40 * index), f"perf t{index}")
     got = unit.cycle(idle(), "perf check")
-    assert got["io_perf_0_value"] == 1
+    assert got[P.p_perf_0_value] == 1
     unit.coverage.sample_case("xstage.perf_counter_delay")
 
 
@@ -398,9 +398,9 @@ def test_rar_violation_rolls_back_the_frontend(unit):
     resp["rarResp"] = {"valid": 1, "nuke": 1}
     resp["ldld"] = 1
     got = unit.cycle(resp, "rar t2")
-    assert got["io_rollback_valid"] == 1
-    assert got["io_rollback_bits_robIdx_value"] == 0x12
-    assert got["io_rollback_bits_level"] == 0
+    assert got[P.p_rollback_valid] == 1
+    assert got[P.p_rollback_bits_robIdx_value] == 0x12
+    assert got[P.p_rollback_bits_level] == 0
     unit.coverage.sample_case("xstage.rar_violation_rolls_back")
 
 
@@ -408,9 +408,9 @@ def test_rar_violation_rolls_back_the_frontend(unit):
 def test_idle_cycles_hold_the_registered_boundary(unit):
     got0 = unit.cycle(idle(), "idle 1")
     got1 = unit.cycle(idle(), "idle 2")
-    assert got1["io_prefetchTrain_valid"] == 0
-    assert got1["io_perf_0_value"] == 0
-    assert got0["io_ldin_ready"] == 1
+    assert got1[P.p_prefetchTrain_valid] == 0
+    assert got1[P.p_perf_0_value] == 0
+    assert got0[P.p_ldin_ready] == 1
     unit.coverage.sample_case("xstage.idle_holds_outputs")
 
 
@@ -445,9 +445,9 @@ def test_prefetch_train_carries_every_address_bit(unit):
         unit.cycle(tlb, f"train bit {bit} t1")
         for extra in range(2):
             got = unit.cycle(idle(), f"train bit {bit} t{2 + extra}")
-            if got["io_prefetchTrain_valid"]:
-                seen_vaddr |= got["io_prefetchTrain_bits_vaddr"]
-                seen_paddr |= got["io_prefetchTrain_bits_paddr"]
+            if got[P.p_prefetchTrain_valid]:
+                seen_vaddr |= got[P.p_prefetchTrain_bits_vaddr]
+                seen_paddr |= got[P.p_prefetchTrain_bits_paddr]
         # Also vary the DCache meta source field of the training record.
         meta = idle()
         meta["dcache"]["resp"]["bits"]["meta_prefetch"] = bit & 0x7
@@ -474,7 +474,7 @@ def test_fast_replay_feedback_carries_every_paddr_bit(unit):
         nack["dcache"]["mq_nack"] = 1
         got = unit.cycle(nack, f"fr bit {bit} t2")
         # The fast replay is offered to S0 in the cycle the beat leaves S3.
-        seen |= got["io_sqForward_s0Req_valid"] and 1 or 0
+        seen |= got[P.p_sqForward_s0Req_valid] and 1 or 0
         for extra in range(3):
             unit.cycle(idle(), f"fr bit {bit} t{3 + extra}")
     unit.coverage.sample_case("xstage.fast_replay_reenters_pipeline")
@@ -492,27 +492,27 @@ def test_replay_cause_matrix_reaches_every_lq_cause_bit(unit):
     sq["sq"] = {"valid": 1, "bits": {"dataInvalid_valid": 1,
                                      "dataInvalid_bits_first_flag": 1}}
     got = beat_then(sq, "cause4")
-    assert got["io_lqWrite_bits_rep_info_cause_4"] == 1
+    assert got[P.p_lqWrite_bits_rep_info_cause_4] == 1
 
     bank = idle()
     bank["dcache"]["bank"] = 1
     got = beat_then(bank, "cause8")
-    assert got["io_lqWrite_bits_rep_info_cause_8"] == 1
+    assert got[P.p_lqWrite_bits_rep_info_cause_8] == 1
 
     rar = idle()
     rar["rarReady"] = 0
     got = beat_then(rar, "cause9")
-    assert got["io_lqWrite_bits_rep_info_cause_9"] == 1
+    assert got[P.p_lqWrite_bits_rep_info_cause_9] == 1
 
     raw = idle()
     raw["rawReady"] = 0
     got = beat_then(raw, "cause10")
-    assert got["io_lqWrite_bits_rep_info_cause_10"] == 1
+    assert got[P.p_lqWrite_bits_rep_info_cause_10] == 1
     # A following clean beat drops the one-hot back to zero.
     unit.cycle(ldin(off=0x40, rob=0x51), "cause10 clear t0")
     unit.cycle(tlb_hit(off=0x40), "cause10 clear t1")
     got = unit.cycle(idle(), "cause10 clear t2")
-    assert got["io_lqWrite_bits_rep_info_cause_10"] == 0
+    assert got[P.p_lqWrite_bits_rep_info_cause_10] == 0
     unit.coverage.sample_case("xstage.lq_write_cause_encoding")
 
 
@@ -528,12 +528,12 @@ def test_tail_merge_takes_the_mshr_id_from_the_head_beat(unit):
     unit.cycle(head, "mshr t2")
     seen = [unit.cycle(idle(), f"mshr t{index + 3}") for index in range(4)]
     merged = [obs for obs in seen
-              if obs["io_lqWrite_valid"]
-              and obs["io_lqWrite_bits_rep_info_cause_6"]]
+              if obs[P.p_lqWrite_valid]
+              and obs[P.p_lqWrite_bits_rep_info_cause_6]]
     assert merged, "the head carries cause_6 into the merged LQ entry"
     got = merged[0]
-    assert got["io_lqWrite_bits_rep_info_mshr_id"] == 0xA
-    assert got["io_lqWrite_bits_handledByMSHR"] == 1
+    assert got[P.p_lqWrite_bits_rep_info_mshr_id] == 0xA
+    assert got[P.p_lqWrite_bits_handledByMSHR] == 1
     unit.coverage.sample_case("xstage.tail_data_merge")
 
 
@@ -562,8 +562,8 @@ def test_unaligned_heads_exercise_every_tail_address_bit(unit):
         unit.cycle(tail_tlb, f"tail bit {bit} t2")
         for extra in range(4):
             got = unit.cycle(idle(), f"tail bit {bit} t{3 + extra}")
-            seen_vaddr |= got["io_lqWrite_bits_vaddr"] if got["io_lqWrite_valid"] else 0
-            seen_fullva |= got["io_lqWrite_bits_fullva"] if got["io_lqWrite_valid"] else 0
+            seen_vaddr |= got[P.p_lqWrite_bits_vaddr] if got[P.p_lqWrite_valid] else 0
+            seen_fullva |= got[P.p_lqWrite_bits_fullva] if got[P.p_lqWrite_valid] else 0
     assert seen_vaddr & 0x3FFF_FFFF_FFF0, hex(seen_vaddr)
     assert seen_fullva, hex(seen_fullva)
     unit.coverage.sample_case("xstage.cross_16b_head_tail_loopback")
@@ -590,8 +590,8 @@ def test_prefetch_train_carries_every_meta_source(unit):
             idle_inp = idle()
             idle_inp["dcache"]["resp"]["bits"]["meta_prefetch"] = meta
             got = unit.cycle(idle_inp, f"meta {meta} t{2 + extra}")
-            if got["io_prefetchTrain_valid"]:
-                assert got["io_prefetchTrain_bits_metaSource"] == meta
+            if got[P.p_prefetchTrain_valid]:
+                assert got[P.p_prefetchTrain_bits_metaSource] == meta
     # One last training beat with metaSource 0 clears the high bit again.
     unit.cycle(ldin(off=0x80, rob=0x50), "meta clear t0")
     tlb = tlb_hit(off=0x80)
@@ -612,12 +612,12 @@ def test_nuke_cause_sets_and_clears_the_highest_one_hot_bit(unit):
     nuke["nuke"][0]["bits"].update({
         "robIdx_value": 4, "paddr": 0x2000, "mask": 0xFFFF, "matchType": 2})
     got = unit.cycle(nuke, "nuke t2")
-    assert got["io_lqWrite_bits_rep_info_cause_11"] == 1
+    assert got[P.p_lqWrite_bits_rep_info_cause_11] == 1
     # A following clean beat replaces the S3 input and clears the one-hot.
     unit.cycle(ldin(off=0x40, rob=0x22), "nuke t3")
     unit.cycle(tlb_hit(off=0x40), "nuke t4")
     got = unit.cycle(idle(), "nuke t5")
-    assert got["io_lqWrite_bits_rep_info_cause_11"] == 0
+    assert got[P.p_lqWrite_bits_rep_info_cause_11] == 0
     unit.coverage.sample_case("xstage.nuke_query_fields")
 
 
@@ -629,14 +629,14 @@ def test_misaligned_uncache_load_sets_address_misaligned(unit):
     tlb["tlbResp"]["bits"]["pbmt_0"] = 1
     unit.cycle(tlb, "am t1")
     got = unit.cycle(idle(), "am t2")
-    assert got["io_ldout_toRob_bits_exceptionVec_4"] == 1
-    assert got["io_exceptionInfo_bits_exceptionVec_4"] == 1
-    assert got["io_lqWrite_bits_uop_exceptionVec_4"] == 1
+    assert got[P.p_ldout_toRob_bits_exceptionVec_4] == 1
+    assert got[P.p_exceptionInfo_bits_exceptionVec_4] == 1
+    assert got[P.p_lqWrite_bits_uop_exceptionVec_4] == 1
     # A following clean load clears the bit again.
     unit.cycle(ldin(off=0x40), "am t3")
     unit.cycle(tlb_hit(off=0x40), "am t4")
     got = unit.cycle(idle(), "am t5")
-    assert got["io_ldout_toRob_bits_exceptionVec_4"] == 0
+    assert got[P.p_ldout_toRob_bits_exceptionVec_4] == 0
 
 
 def test_fp_and_vector_v0_register_writes(unit):
@@ -646,8 +646,8 @@ def test_fp_and_vector_v0_register_writes(unit):
     unit.cycle(fp, "fp t0")
     unit.cycle(tlb_hit(off=0), "fp t1")
     got = unit.cycle(idle(), "fp t2")
-    assert got["io_ldout_toFpRf_valid"] == 1
-    assert got["io_ldout_toIntRf_valid"] == 0
+    assert got[P.p_ldout_toFpRf_valid] == 1
+    assert got[P.p_ldout_toIntRf_valid] == 0
 
     vec = ldin(off=0x80)
     vec["ldin"]["bits"]["vecWen"] = 1
@@ -656,15 +656,15 @@ def test_fp_and_vector_v0_register_writes(unit):
     unit.cycle(vec, "vec t0")
     unit.cycle(tlb_hit(off=0x80), "vec t1")
     got = unit.cycle(idle(), "vec t2")
-    assert got["io_vldout_toVecRf_valid"] == 1
-    assert got["io_vldout_toV0Rf_valid"] == 1
-    assert got["io_vldS3WakeUp_wen"] == 1
+    assert got[P.p_vldout_toVecRf_valid] == 1
+    assert got[P.p_vldout_toV0Rf_valid] == 1
+    assert got[P.p_vldS3WakeUp_wen] == 1
     # A following scalar load clears the vector wakeup.
     unit.cycle(ldin(off=0xC0), "vec t3")
     unit.cycle(tlb_hit(off=0xC0), "vec t4")
     got = unit.cycle(idle(), "vec t5")
-    assert got["io_vldout_toVecRf_valid"] == 0
-    assert got["io_vldout_toV0Rf_valid"] == 0
+    assert got[P.p_vldout_toVecRf_valid] == 0
+    assert got[P.p_vldout_toV0Rf_valid] == 0
 
 
 def test_rr_bank_conflict_fast_replay_is_accepted_and_reenters(unit):
@@ -682,8 +682,8 @@ def test_rr_bank_conflict_fast_replay_is_accepted_and_reenters(unit):
     committed = []
     for index in range(10):
         got = unit.cycle(idle(), f"rr t{3 + index}")
-        if got["io_lqWrite_valid"] and got["io_ldout_toRob_valid"]:
-            committed.append(got["io_lqWrite_bits_vaddr"])
+        if got[P.p_lqWrite_valid] and got[P.p_ldout_toRob_valid]:
+            committed.append(got[P.p_lqWrite_bits_vaddr])
     assert committed, "the replayed beat must eventually commit"
     assert all(vaddr == 0x8000_0000 for vaddr in committed)
     unit.coverage.sample_case("xstage.fast_replay_reenters_pipeline")
@@ -700,15 +700,15 @@ def test_clean_head_with_a_replaying_tail_revokes_last_last_cycle(unit):
     tail = idle()
     tail["dcache"]["resp"]["bits"]["miss"] = 1
     got = unit.cycle(tail, "rll t3")
-    assert got["io_rarNukeQuery_revokeLastLastCycle"] == 1
-    assert got["io_rawNukeQuery_revokeLastLastCycle"] == 1
+    assert got[P.p_rarNukeQuery_revokeLastLastCycle] == 1
+    assert got[P.p_rawNukeQuery_revokeLastLastCycle] == 1
     # Push two more clean beats so the revoke pulse falls again.
     for index in range(2):
         unit.cycle(ldin(off=0x40 * index, rob=0x32 + index), f"rll t{4 + index}")
         unit.cycle(tlb_hit(off=0x40 * index), f"rll t{6 + index}")
         unit.cycle(idle(), f"rll t{8 + index}")
     got = unit.cycle(idle(), "rll t10")
-    assert got["io_rarNukeQuery_revokeLastLastCycle"] == 0
+    assert got[P.p_rarNukeQuery_revokeLastLastCycle] == 0
     unit.coverage.sample_case("xstage.cross_16b_head_tail_loopback")
 
 
@@ -723,15 +723,15 @@ def test_prefetch_train_rob_index_and_software_prefetch_class(unit):
     # There is no hardware-prefetch injection port at this parent. Replay
     # does not expose pftType; an invented entrance=0x20 cannot prove it.
     unit.cycle(ldin(fu=0x01, off=0x300), "software prefetch t0")
-    assert unit.observe_pins()["io_swInstrPrefetch_valid"] == 1
+    assert unit.observe_pins()[P.p_swInstrPrefetch_valid] == 1
     unit.cycle(tlb_hit(off=0x300), "software prefetch t1")
     unit.cycle(idle(), "software prefetch t2")
     raw = unit.observe_pins()
     # FU=1 sets noQuery in S0. S1 records tlbAccessResult=1, whereas S2
     # training requires bit[1] (a real TLB hit), so there is no train beat.
-    assert raw["io_prefetchTrain_valid"] == 0
-    assert raw["io_prefetchTrain_bits_isHwPrefetch"] == 0
-    assert raw["io_prefetchTrain_bits_isFirstIssue"] == 1
+    assert raw[P.p_prefetchTrain_valid] == 0
+    assert raw[P.p_prefetchTrain_bits_isHwPrefetch] == 0
+    assert raw[P.p_prefetchTrain_bits_isFirstIssue] == 1
     unit.coverage.sample_case("xstage.prefetch_train_pulse")
 
 
@@ -748,13 +748,13 @@ def test_trigger_slot_three_fires_and_clears(unit):
     tlb["trigger"] = trig
     unit.cycle(tlb, "slot3 t1")
     got = unit.cycle(idle(), "slot3 t2")
-    assert got["io_ldout_toRob_bits_trigger"] == 1, "debug action code"
-    assert got["io_ldout_toRob_bits_exceptionVec_3"] == 0
+    assert got[P.p_ldout_toRob_bits_trigger] == 1, "debug action code"
+    assert got[P.p_ldout_toRob_bits_exceptionVec_3] == 0
     # A following clean load reports the no-action code (0xF) again.
     unit.cycle(ldin(off=0x540), "slot3 t3")
     unit.cycle(tlb_hit(off=0x540), "slot3 t4")
     got = unit.cycle(idle(), "slot3 t5")
-    assert got["io_ldout_toRob_bits_trigger"] == 0xF
+    assert got[P.p_ldout_toRob_bits_trigger] == 0xF
     unit.coverage.sample_case("xstage.trigger_breakpoint_propagates")
 
 
@@ -766,9 +766,9 @@ def test_uncache_first_access_reports_cause_zero(unit):
     tlb["tlbResp"]["bits"]["pbmt_0"] = 1
     unit.cycle(tlb, "nc t1")
     got = unit.cycle(idle(), "nc t2")
-    assert got["io_lqWrite_bits_rep_info_cause_0"] == 1
-    assert got["io_ldout_toRob_valid"] == 0
-    assert got["io_dcache_s2_kill"] == 1
+    assert got[P.p_lqWrite_bits_rep_info_cause_0] == 1
+    assert got[P.p_ldout_toRob_valid] == 0
+    assert got[P.p_dcache_s2_kill] == 1
     unit.coverage.sample_case("xstage.uncache_bypass_read")
     unit.coverage.sample_case("xstage.lq_write_cause_encoding")
 
@@ -786,7 +786,7 @@ def test_breakpoint_bit_sets_and_clears_across_stages(unit):
     tlb["trigger"] = trig
     unit.cycle(tlb, "bp2 t1")
     got = unit.cycle(idle(), "bp2 t2")
-    assert got["io_ldout_toRob_bits_exceptionVec_3"] == 1
+    assert got[P.p_ldout_toRob_bits_exceptionVec_3] == 1
     # A following clean load clears exceptionVec_3 in every stage register.
     for index in range(2):
         unit.cycle(ldin(off=0x640 + 0x40 * index, rob=0x25 + index),
@@ -794,8 +794,8 @@ def test_breakpoint_bit_sets_and_clears_across_stages(unit):
         unit.cycle(tlb_hit(off=0x640 + 0x40 * index),
                    f"bp2 t{4 + index * 3}")
         got = unit.cycle(idle(), f"bp2 t{5 + index * 3}")
-    assert got["io_ldout_toRob_bits_exceptionVec_3"] == 0
-    assert got["io_lqWrite_bits_uop_exceptionVec_3"] == 0
+    assert got[P.p_ldout_toRob_bits_exceptionVec_3] == 0
+    assert got[P.p_lqWrite_bits_uop_exceptionVec_3] == 0
 
 
 def test_fast_replay_nuke_first_uses_the_waiting_sq_index(unit):
@@ -814,5 +814,5 @@ def test_fast_replay_nuke_first_uses_the_waiting_sq_index(unit):
                                     "matchType": 2})
     unit.cycle(tlb, "nukefirst t1")
     got = unit.cycle(idle(), "nukefirst t2")
-    assert got["io_lqWrite_bits_rep_info_cause_11"] == 1
+    assert got[P.p_lqWrite_bits_rep_info_cause_11] == 1
     unit.coverage.sample_case("xstage.nuke_query_fields")

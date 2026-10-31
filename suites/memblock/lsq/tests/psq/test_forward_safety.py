@@ -2,10 +2,10 @@ from dataclasses import replace
 
 import pytest
 
-from lsqverify.forward.types import Query, Translation
-from lsqverify.psq.types import Address, Attributes, Data
-from lsqverify.psq.directed import consume_writes
-from lsqverify.raw.types import SqPtr
+from suites.memblock.lsq.forward.types import Query, Translation
+from suites.memblock.lsq.psq.types import Address, Attributes, Data
+from suites.memblock.lsq.psq.directed import consume_writes
+from suites.memblock.lsq.raw.types import SqPtr
 
 
 async def cross_store(env, *, alias):

@@ -1,10 +1,10 @@
 """Only protocol intent; drivers and monitors own launch, association and drain."""
 import pytest
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.utage.case.source_ownership import check_request_ownership, check_saved_source
-from bpuverify.utage.coverage.source_ownership import SourceOwnershipCoverage
-from bpuverify.utage.model.source_ownership import ASSOCIATION_MODES, AssociationProgram, RecoveryProgram
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.utage.case.source_ownership import check_request_ownership, check_saved_source
+from suites.frontend.bpu.utage.coverage.source_ownership import SourceOwnershipCoverage
+from suites.frontend.bpu.utage.model.source_ownership import ASSOCIATION_MODES, AssociationProgram, RecoveryProgram
 
 
 @pytest.mark.feature('BPU-UTAGE-006')

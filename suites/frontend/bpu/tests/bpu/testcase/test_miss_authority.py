@@ -1,9 +1,9 @@
 """Literal miss payload cannot grant learning authority to the old identity."""
 import json
 import pytest
-from bpuverify.bpu.model.miss_authority import Program
-from bpuverify.bpu.coverage.miss_authority import Coverage
-from bpuverify.bpu.case.miss_authority import run
+from suites.frontend.bpu.bpu.model.miss_authority import Program
+from suites.frontend.bpu.bpu.coverage.miss_authority import Coverage
+from suites.frontend.bpu.bpu.case.miss_authority import run
 
 
 @pytest.mark.feature('BPU-MBTB-027')

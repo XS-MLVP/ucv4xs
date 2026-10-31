@@ -1,5 +1,5 @@
 """First pass for genuine request/response, event and free-pool timing."""
-from lsqverify.rar.types import RobPtr
+from suites.memblock.lsq.rar.types import RobPtr
 
 
 async def test_empty_idle_and_event_outputs(rar):

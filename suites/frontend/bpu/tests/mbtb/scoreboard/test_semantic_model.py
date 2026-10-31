@@ -8,10 +8,10 @@ from types import SimpleNamespace
 import pytest
 from toffee import CheckContext, ScoreboardMode
 
-from bpuverify.mbtb.checker.semantic import MbtbSemanticChecker, prediction_values
-from bpuverify.mbtb.coverage.semantic import SemanticCoverage
-from bpuverify.mbtb.model.semantic import Branch, CounterPatch, DirectionWrites, Entry, Events, Feedback, MbtbReference, RetainedEntries, Source, Target, Write, coordinate, tag, window
-from bpuverify.mbtb.transaction.types import MbtbEntry, MbtbLookup, MbtbPrediction
+from suites.frontend.bpu.mbtb.checker.semantic import MbtbSemanticChecker, prediction_values
+from suites.frontend.bpu.mbtb.coverage.semantic import SemanticCoverage
+from suites.frontend.bpu.mbtb.model.semantic import Branch, CounterPatch, DirectionWrites, Entry, Events, Feedback, MbtbReference, RetainedEntries, Source, Target, Write, coordinate, tag, window
+from suites.frontend.bpu.mbtb.transaction.types import MbtbEntry, MbtbLookup, MbtbPrediction
 
 PC = 0x40000000
 
@@ -38,9 +38,9 @@ def learn(model, request):
 
 
 def test_algorithm_has_no_native_or_old_prepared_snapshot_dependency():
-    tree = ast.parse(Path('bpuverify/mbtb/model/semantic.py').read_text())
+    tree = ast.parse(Path('mbtb/model/semantic.py').read_text())
     assert {node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)} == {
-        'dataclasses','bpuverify.common.model.configuration','bpuverify.mbtb.model.victim'}
+        'dataclasses','suites.frontend.bpu.models.configuration','suites.frontend.bpu.mbtb.model.victim'}
     assert not any(isinstance(node, ast.Import) for node in ast.walk(tree))
 
 

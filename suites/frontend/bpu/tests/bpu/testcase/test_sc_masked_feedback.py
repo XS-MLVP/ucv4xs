@@ -1,9 +1,9 @@
 """Intent-only checks for accepted adjacent masks and dirty/clean lifecycles."""
 import pytest
 
-from bpuverify.bpu.case.sc.scenarios import cases
-from bpuverify.bpu.case.sc.supplemental import check_masked_feedback
-from bpuverify.bpu.coverage.sc.supplemental import matrix_coverage
+from suites.frontend.bpu.bpu.case.sc.scenarios import cases
+from suites.frontend.bpu.bpu.case.sc.supplemental import check_masked_feedback
+from suites.frontend.bpu.bpu.coverage.sc.supplemental import matrix_coverage
 
 # Measured on the 2026-10-21 full BPU program run; scheduling hint only.
 pytestmark = pytest.mark.estimated_runtime(20)

@@ -4,12 +4,11 @@ from dataclasses import replace
 import pytest
 from toffee import ScoreboardMismatch
 
-from bpuverify.mbtb.model.semantic import Branch as Outcome,Events,Feedback,MbtbReference,Source,tag,coordinate
-from bpuverify.mbtb.transaction.types import MbtbEntry,MbtbPrediction
-from bpuverify.mbtb.model.cleanup_reset import Program,PROFILES,RULES
-from bpuverify.mbtb.coverage.cleanup_reset import Coverage
-from bpuverify.mbtb.checker.cleanup_reset import Checks
-
+from suites.frontend.bpu.mbtb.model.semantic import Branch as Outcome,Events,Feedback,MbtbReference,Source,tag,coordinate
+from suites.frontend.bpu.mbtb.transaction.types import MbtbEntry,MbtbPrediction
+from suites.frontend.bpu.mbtb.model.cleanup_reset import Program,PROFILES,RULES
+from suites.frontend.bpu.mbtb.coverage.cleanup_reset import Coverage
+from suites.frontend.bpu.mbtb.checker.cleanup_reset import Checks
 
 
 def query(model,pc):

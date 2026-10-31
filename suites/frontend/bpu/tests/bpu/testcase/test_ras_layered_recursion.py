@@ -1,9 +1,9 @@
 """Multiple recursive owners survive inner split, target correction and unwind."""
 import json
 import pytest
-from bpuverify.bpu.model.ras.layered_recursion import Program, PROFILES
-from bpuverify.bpu.coverage.ras_layered_recursion import Coverage
-from bpuverify.bpu.case.ras.layered_recursion import check_layered_recursion
+from suites.frontend.bpu.bpu.model.ras.layered_recursion import Program, PROFILES
+from suites.frontend.bpu.bpu.coverage.ras_layered_recursion import Coverage
+from suites.frontend.bpu.bpu.case.ras.layered_recursion import check_layered_recursion
 
 
 @pytest.mark.feature('BPU-INT-033')

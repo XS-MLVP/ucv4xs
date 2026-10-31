@@ -4,8 +4,7 @@ from dataclasses import replace
 import pytest
 
 from tests.bpu.scoreboard.test_ahead_working_set import state_fixture
-from bpuverify.bpu.checker.working_set_replacement import Checks
-
+from suites.frontend.bpu.bpu.checker.working_set_replacement import Checks
 
 
 def pending_replacement():

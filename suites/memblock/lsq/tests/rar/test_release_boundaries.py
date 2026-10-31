@@ -1,7 +1,7 @@
 """Strict contract probes: known RTL mismatches remain ordinary failures."""
 import pytest
 
-from lsqverify.rar.types import Query, QueuePtr, Release, RobPtr
+from suites.memblock.lsq.rar.types import Query, QueuePtr, Release, RobPtr
 
 
 @pytest.mark.parametrize("lane", range(3))

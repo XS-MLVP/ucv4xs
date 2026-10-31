@@ -2,12 +2,12 @@
 from copy import deepcopy
 from types import SimpleNamespace as NS
 import pytest
-from bpuverify.ras.model.semantic import RasReference,Events,Recovery,Retirement
-from bpuverify.bpu.checker.ras.neutral_gap import RasNeutralGapChecks
-from bpuverify.bpu.checker.ras.retirement import CommitChecker
-from bpuverify.bpu.coverage.ras_neutral_gap import RasNeutralGapCoverage,RULES
-from bpuverify.bpu.model.ras.capacity import CAPACITY,OLD_CALL,NEW_CALL,NEW_RETURN,call_address
-from bpuverify.bpu.model.ras.neutral_gap import NEUTRAL
+from suites.frontend.bpu.ras.model.semantic import RasReference,Events,Recovery,Retirement
+from suites.frontend.bpu.bpu.checker.ras.neutral_gap import RasNeutralGapChecks
+from suites.frontend.bpu.bpu.checker.ras.retirement import CommitChecker
+from suites.frontend.bpu.bpu.coverage.ras_neutral_gap import RasNeutralGapCoverage,RULES
+from suites.frontend.bpu.bpu.model.ras.capacity import CAPACITY,OLD_CALL,NEW_CALL,NEW_RETURN,call_address
+from suites.frontend.bpu.bpu.model.ras.neutral_gap import NEUTRAL
 from tests.bpu.scoreboard.test_retirement_completion import row
 
 

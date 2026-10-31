@@ -12,11 +12,11 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from lsqverify.lsq_wrapper.codec import encode, ports
-from lsqverify.lsq_wrapper.ports import decode
-from lsqverify.lsq_wrapper.types import Address, Bus, Data, Dispatch, Inputs
-from lsqverify.raw.types import SqPtr
-from lsqverify.vlq.types import QueuePtr, RobPtr
+from suites.memblock.lsq.lsq_wrapper.codec import encode, ports
+from suites.memblock.lsq.lsq_wrapper.ports import decode
+from suites.memblock.lsq.lsq_wrapper.types import Address, Bus, Data, Dispatch, Inputs
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.vlq.types import QueuePtr, RobPtr
 
 
 def sha(path):
@@ -93,7 +93,7 @@ def audit():
     assert all(sha(ROOT / "rtl/lsq_wrapper" / path) == digest for path, digest in source_record["files"].items())
     files = [Path(__file__), contract, ROOT / "manifest/duts.json", ROOT / "rtl/lsq_wrapper/source.json"]
     for family in ("lsq_wrapper", "load_queue", "store_queue", "psq", "replay"):
-        files.extend(path for path in (ROOT / "lsqverify" / family).glob("*.py") if path.name in ("types.py", "codec.py", "ports.py"))
+        files.extend(path for path in (ROOT / family).glob("*.py") if path.name in ("types.py", "codec.py", "ports.py"))
     dest = ROOT / "results/static/lsq-wrapper-codec-v1"
     report = dict(status="static_adapter_roundtrip_only_not_native_functional_acceptance", seed=20261018,
                   public_inputs=603, public_outputs=458, random_packets=256, varied_inputs=len(seen),

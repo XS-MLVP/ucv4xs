@@ -1,15 +1,15 @@
 """Pure expected-value checks; no DUT, timing, or observed prestate."""
-from bpuverify.common.model.configuration import *
+from suites.frontend.bpu.models.configuration import *
 from itertools import product
 import pytest
-from bpuverify.bpu.model.sc.model import NAMES
-from bpuverify.bpu.model.sc.model import TABLES
-from bpuverify.bpu.model.sc.model import ScReference
-from bpuverify.bpu.model.sc.model import sc_requests
-from bpuverify.bpu.model.sc.model import width
-from bpuverify.bpu.model.sc.history import HistoryScReference
-from bpuverify.bpu.model.sc.history import history_indices
-from bpuverify.bpu.model.sc.history import history_requests
+from suites.frontend.bpu.bpu.model.sc.model import NAMES
+from suites.frontend.bpu.bpu.model.sc.model import TABLES
+from suites.frontend.bpu.bpu.model.sc.model import ScReference
+from suites.frontend.bpu.bpu.model.sc.model import sc_requests
+from suites.frontend.bpu.bpu.model.sc.model import width
+from suites.frontend.bpu.bpu.model.sc.history import HistoryScReference
+from suites.frontend.bpu.bpu.model.sc.history import history_indices
+from suites.frontend.bpu.bpu.model.sc.history import history_requests
 
 
 def transaction(bank=0, valid=1, ghr=0, bw=0, taken=0):

@@ -140,6 +140,16 @@ class Project:
         env = dict(os.environ)
         prefix = self.root/'.tools'
         env.update(UCV_ROOT=str(self.root), PYTHONNOUSERSITE='1',
-                   PATH=f'{self.root}/.venv/bin:{prefix}/bin:{prefix}/verilator/bin:'+env.get('PATH',''),
+                   PATH=f'{self.runtime_python().parent}:{prefix}/bin:{prefix}/verilator/bin:'+env.get('PATH',''),
                    VERILATOR_ROOT=str(prefix/'verilator/share/verilator'))
+        # Suite implementations are imported as suites.<group>.<suite>; the
+        # checkout root is a package search root, never a global common alias.
+        env['PYTHONPATH']=os.pathsep.join(dict.fromkeys(
+            [str(self.root/'src'),str(self.root),
+             *filter(None,env.get('PYTHONPATH','').split(os.pathsep))]))
         return env
+
+    def runtime_python(self):
+        """Select an explicit local runtime without moving/replacing a venv."""
+        environment = self.local.get('runtime_environment', '.venv')
+        return (self.root / Path(environment).expanduser() / 'bin/python').absolute()

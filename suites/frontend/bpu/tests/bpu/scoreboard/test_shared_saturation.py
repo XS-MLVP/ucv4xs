@@ -8,13 +8,13 @@ from types import SimpleNamespace as NS
 import pytest
 from toffee import Scoreboard
 
-from bpuverify.bpu.model.pipeline import Outcome,Resolution,Redirect
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.bpu.model.tage.forwarding import PC,resolved_path
-from bpuverify.bpu.model.tage.service import STREAM_PC,STREAM_POSITION,learning_inflight,pending_plan
-from bpuverify.bpu.model.tage.shared_saturation import PROGRAMS,Program
-from bpuverify.bpu.checker.shared_saturation import Checks
-from bpuverify.bpu.coverage.shared_saturation import Coverage,RULES,lifetime_coverage
+from suites.frontend.bpu.bpu.model.pipeline import Outcome,Resolution,Redirect
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.tage.forwarding import PC,resolved_path
+from suites.frontend.bpu.bpu.model.tage.service import STREAM_PC,STREAM_POSITION,learning_inflight,pending_plan
+from suites.frontend.bpu.bpu.model.tage.shared_saturation import PROGRAMS,Program
+from suites.frontend.bpu.bpu.checker.shared_saturation import Checks
+from suites.frontend.bpu.bpu.coverage.shared_saturation import Coverage,RULES,lifetime_coverage
 from tests.bpu.scoreboard.test_direction_capacity import capacity_program
 from tests.bpu.scoreboard.test_direction_forwarding import resolution
 from tests.bpu.scoreboard.test_direction_service import via,counters,streaming_query
@@ -210,7 +210,7 @@ def test_program_and_coverage_are_semantic_not_physical_variants():
 
 
 def test_source_is_pure_and_native_case_hides_clock_and_raw_io():
-    tree=ast.parse(Path('bpuverify/bpu/model/tage/shared_saturation.py').read_text())
-    assert {node.module for node in ast.walk(tree) if isinstance(node,ast.ImportFrom)}=={'dataclasses','bpuverify.bpu.model.tage.service'}
+    tree=ast.parse(Path('bpu/model/tage/shared_saturation.py').read_text())
+    assert {node.module for node in ast.walk(tree) if isinstance(node,ast.ImportFrom)}=={'dataclasses','suites.frontend.bpu.bpu.model.tage.service'}
     text=Path('tests/bpu/testcase/test_shared_saturation.py').read_text()
     assert not any(s in text for s in ('FallingEdge','RisingEdge','ClockCycles','asyncio.gather','get_','set_','.Set('))

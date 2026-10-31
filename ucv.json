@@ -3,7 +3,9 @@
   "baseline": "public-893e1580b",
   "suites": {
     "bpu": "suites/frontend/bpu",
+    "ftq": "suites/frontend/ftq",
     "icache": "suites/frontend/icache",
+    "ifu": "suites/frontend/ifu",
     "lsq": "suites/memblock/lsq",
     "dcache": "suites/memblock/dcache",
     "mmu": "suites/memblock/mmu",
@@ -14,7 +16,9 @@
   "profiles": {
     "public": [
       "bpu",
+      "ftq",
       "icache",
+      "ifu",
       "lsq",
       "dcache",
       "mmu",
@@ -23,7 +27,9 @@
     ],
     "full": [
       "bpu",
+      "ftq",
       "icache",
+      "ifu",
       "lsq",
       "dcache",
       "mmu",

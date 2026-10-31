@@ -4,9 +4,9 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.bpu.model.pipeline import Commit, Outcome, Redirect
-from bpuverify.bpu.model.return_stack_sources import ReturnStackSources
-from bpuverify.bpu.model.selection import Kind, StackAction
+from suites.frontend.bpu.bpu.model.pipeline import Commit, Outcome, Redirect
+from suites.frontend.bpu.bpu.model.return_stack_sources import ReturnStackSources
+from suites.frontend.bpu.bpu.model.selection import Kind, StackAction
 from tests.bpu.scoreboard._statistical_joint_program import Program
 
 
@@ -150,8 +150,8 @@ def test_ittage_publication_valid_is_current_service_not_the_old_query_enable(se
     assert p.bank.defined_ittage_metadata(token)==before
 
 
-from bpuverify.bpu.coverage.owned_return_stack import OwnedReturnCoverage
-from bpuverify.bpu.model.owned_return_stack import PROGRAMS
+from suites.frontend.bpu.bpu.coverage.owned_return_stack import OwnedReturnCoverage
+from suites.frontend.bpu.bpu.model.owned_return_stack import PROGRAMS
 
 
 @pytest.mark.parametrize('program,missing',[(p,r) for p in PROGRAMS for r in p.rules],

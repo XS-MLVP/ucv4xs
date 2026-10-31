@@ -4,9 +4,9 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.ubtb.agent.main import UbtbAgent
-from bpuverify.ubtb.driver.encoding import _encode_lookup, _encode_training, _encode_resolve
-from bpuverify.ubtb.transaction.types import PredictRequest, BranchTraining, UbtbBatchTraining, UbtbBranchFeedback
+from suites.frontend.bpu.ubtb.agent.main import UbtbAgent
+from suites.frontend.bpu.ubtb.driver.encoding import _encode_lookup, _encode_training, _encode_resolve
+from suites.frontend.bpu.ubtb.transaction.types import PredictRequest, BranchTraining, UbtbBatchTraining, UbtbBranchFeedback
 
 
 GOOD = BranchTraining(0x80001002, 0x80402342, 1, 3, 2)

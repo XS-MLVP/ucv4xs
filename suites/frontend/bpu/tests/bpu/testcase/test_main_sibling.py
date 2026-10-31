@@ -3,9 +3,9 @@ import json
 
 import pytest
 
-from bpuverify.bpu.case.main_sibling import check_main_sibling
-from bpuverify.bpu.model.main_sibling import Program, PHASES, ORIGINS
-from bpuverify.bpu.coverage.main_sibling import Coverage
+from suites.frontend.bpu.bpu.case.main_sibling import check_main_sibling
+from suites.frontend.bpu.bpu.model.main_sibling import Program, PHASES, ORIGINS
+from suites.frontend.bpu.bpu.coverage.main_sibling import Coverage
 
 
 @pytest.mark.feature('BPU-MBTB-028')

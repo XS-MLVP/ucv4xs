@@ -1,8 +1,8 @@
 """Entry meanings are semantic variants of044, not a physical coordinate grid."""
 import json
 from pathlib import Path
-from bpuverify.bpu.model.block_entry_learning import PROGRAMS, PROFILES, RULES
-from bpuverify.bpu.coverage.block_entry_learning import lifetime_coverage
+from suites.frontend.bpu.bpu.model.block_entry_learning import PROGRAMS, PROFILES, RULES
+from suites.frontend.bpu.bpu.coverage.block_entry_learning import lifetime_coverage
 
 
 def test_contract_defines_real_instruction_entries_before_native_credit():

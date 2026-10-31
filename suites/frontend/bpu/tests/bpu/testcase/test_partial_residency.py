@@ -1,9 +1,9 @@
 """A key that no longer resides must not learn from its former position's owner."""
 import pytest
 
-from bpuverify.bpu.case.partial_residency import check_partial_residency
-from bpuverify.bpu.coverage.partial_residency import PartialResidencyCoverage
-from bpuverify.bpu.model.tage.partial_residency import PROGRAMS
+from suites.frontend.bpu.bpu.case.partial_residency import check_partial_residency
+from suites.frontend.bpu.bpu.coverage.partial_residency import PartialResidencyCoverage
+from suites.frontend.bpu.bpu.model.tage.partial_residency import PROGRAMS
 
 
 @pytest.mark.parametrize('program', tuple(pytest.param(p, id=p.name, marks=pytest.mark.feature(p.feature))

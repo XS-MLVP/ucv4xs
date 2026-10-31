@@ -1,9 +1,9 @@
 """Exceptions show real point/state; service and storage remain orthogonal."""
 import pytest
 from toffee import ScoreboardMismatch
-from bpuverify.utage.checker.learning_persistence import PersistenceChecks
-from bpuverify.utage.model.learning_persistence import Program
-from bpuverify.utage.model.persistence import PersistenceLedger, Version
+from suites.frontend.bpu.utage.checker.learning_persistence import PersistenceChecks
+from suites.frontend.bpu.utage.model.learning_persistence import Program
+from suites.frontend.bpu.utage.model.persistence import PersistenceLedger, Version
 
 
 def prepared(*, serviced=True):

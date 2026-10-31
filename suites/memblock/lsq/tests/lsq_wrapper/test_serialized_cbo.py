@@ -1,11 +1,13 @@
 """NoSpec/BlockBack-normal CBO: clean lifecycle and retained real fault domains."""
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.lsq_wrapper.types import Dispatch
-from lsqverify.raw.types import SqPtr
-from lsqverify.vlq.types import RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.lsq_wrapper.types import Dispatch
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.vlq.types import RobPtr
 from .normal_owners import NormalCboStore
 from .serialized_cbo_owners import SerializedCboOwners
 from .special_owners import SpecialOwners, SpecialStore
@@ -44,7 +46,7 @@ async def test_serialized_cbo_actual_fault_WB_preserves_original_response_withou
                    normal_empty_ROB_CBO_dispatch=True,younger_Load_dispatches=0,full_cycle_reference_compared=False)
     assert (wb["denied"],wb["corrupt"])==(int(denied),int(corrupt)),("serialized CBO lost original fault at actual WB.fire",report)
     await trace.idle(8)
-    assert trace.head==1 and lsq_probe.observed["io_lqEmpty"]
+    assert trace.head==1 and lsq_probe.observed[P.p_lqEmpty]
     # The CBO has an exception. No younger dispatch/architectural retirement
     # is fabricated, and protocol probes NEVER earn a full-output checked bin.
 
@@ -59,7 +61,7 @@ async def zero_with_retired_old(env,old_queued):
         await trace.write(0)
         trace.activate(pos)
         await trace.idle(8)
-        await trace.wait("io_sbuffer_req_0_valid")
+        await trace.wait(P.p_sbuffer_req_0_valid)
         assert not trace.fires
     # Earlier ordinary Store is ROB-retired but its physical Sbuffer fragment
     # remains. This is a real normal empty-ROB CBO dispatch, not read==head.
@@ -67,7 +69,7 @@ async def zero_with_retired_old(env,old_queued):
     await trace.write(pos,lane=1)
     await trace.idle(10)
     trace.base=replace(trace.base,sbuffer_ready=(True,True),writeback_ready=True)
-    await trace.wait("io_mmioStout_valid")
+    await trace.wait(P.p_mmioStout_valid)
     await trace.cycle()
     assert any(w["position"]==pos for w in trace.wbs)
     await trace.idle(8)

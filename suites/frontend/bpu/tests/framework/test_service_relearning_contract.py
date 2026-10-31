@@ -2,8 +2,8 @@
 import ast
 import json
 from pathlib import Path
-from bpuverify.bpu.coverage.service_relearning import RULES, lifetime_coverage
-from bpuverify.bpu.model.tage.service_relearning import PROGRAMS
+from suites.frontend.bpu.bpu.coverage.service_relearning import RULES, lifetime_coverage
+from suites.frontend.bpu.bpu.model.tage.service_relearning import PROGRAMS
 
 
 def test_requirement_is_old_completion_versus_new_learning_not_bank_coordinates():
@@ -23,7 +23,7 @@ def test_existing_capacity_and_learning_contracts_remain_registered():
     for status in ('reached', 'checked'):
         for family in ('owned-direction-capacity', 'shared-saturation', 'service-relearning'):
             assert 'kunminghu_v3.bpu.'+family+'.'+status in feature['evidence']['coverage'][status]
-    assert 'bpuverify/bpu/checker/service_relearning.py' in feature['evidence']['checks']
+    assert 'bpu/checker/service_relearning.py' in feature['evidence']['checks']
 
 
 def test_coverage_denominator_is_semantic_relations_times_obligations():
@@ -35,8 +35,8 @@ def test_coverage_denominator_is_semantic_relations_times_obligations():
 
 
 def test_native_case_has_no_clock_io_or_concurrency_plumbing():
-    for name in ('tests/bpu/testcase/test_service_relearning.py', 'bpuverify/bpu/case/service_relearning.py'):
+    for name in ('tests/bpu/testcase/test_service_relearning.py', 'bpu/case/service_relearning.py'):
         text = Path(name).read_text()
         assert not any(s in text for s in ('FallingEdge', 'RisingEdge', 'ClockCycles', 'asyncio', 'get_', 'set_', '.Set('))
-    tree = ast.parse(Path('bpuverify/bpu/model/tage/service_relearning.py').read_text())
+    tree = ast.parse(Path('bpu/model/tage/service_relearning.py').read_text())
     assert not any(isinstance(n, ast.Import) for n in ast.walk(tree))

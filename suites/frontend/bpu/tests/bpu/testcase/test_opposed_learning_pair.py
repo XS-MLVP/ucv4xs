@@ -1,9 +1,9 @@
 """Neither opposite learning effect may disappear behind the other version."""
 import json
 import pytest
-from bpuverify.bpu.model.tage.opposed_learning_pair import PROGRAMS
-from bpuverify.bpu.coverage.opposed_learning_pair import Coverage
-from bpuverify.bpu.case.opposed_learning_pair import check_opposed_learning_pair
+from suites.frontend.bpu.bpu.model.tage.opposed_learning_pair import PROGRAMS
+from suites.frontend.bpu.bpu.coverage.opposed_learning_pair import Coverage
+from suites.frontend.bpu.bpu.case.opposed_learning_pair import check_opposed_learning_pair
 
 
 @pytest.mark.feature('BPU-INT-086')

@@ -9,7 +9,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.abtb.model.semantic import coordinate
+from suites.frontend.bpu.abtb.model.semantic import coordinate
 from tests.bpu.testcase.test_composition_redirect_training import discriminating_target
 
 READ_PC = 0x40000002

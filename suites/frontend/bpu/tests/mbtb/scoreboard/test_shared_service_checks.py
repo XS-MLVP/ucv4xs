@@ -3,13 +3,14 @@ from copy import deepcopy
 from dataclasses import replace
 from types import SimpleNamespace
 import pytest
-from bpuverify.mbtb.model.shared_service import PROGRAMS,RULES
-from bpuverify.mbtb.coverage.shared_service import Coverage
-from bpuverify.mbtb.checker.shared_service import Checks
-from bpuverify.mbtb.case.definitions import BranchVector
-from bpuverify.mbtb.case.cleanup_overlap_scenario import feedback
-from bpuverify.mbtb.model.cleanup import mbtb_entry_slot
-from bpuverify.mbtb.monitor.entry import ENTRY_FIELDS
+from suites.frontend.bpu.mbtb.model.shared_service import PROGRAMS,RULES
+from suites.frontend.bpu.mbtb.coverage.shared_service import Coverage
+from suites.frontend.bpu.mbtb.checker.shared_service import Checks
+from suites.frontend.bpu.mbtb.case.definitions import BranchVector
+from suites.frontend.bpu.mbtb.case.cleanup_overlap_scenario import feedback
+from suites.frontend.bpu.mbtb.model.cleanup import mbtb_entry_slot
+from suites.frontend.bpu.mbtb.monitor.entry import ENTRY_FIELDS
+from suites.frontend.bpu.models.configuration import ALIGN_HALFWORDS
 
 
 def fixture(program):
@@ -22,7 +23,7 @@ def fixture(program):
     transaction=feedback(updated,metadata)
     branches=[dict(valid=1,target=updated.target,taken=1,position=updated.position,branch_type=3,ras_action=0,mispredict=1)]
     branches.extend(dict(valid=0,target=0,taken=0,position=0,branch_type=0,ras_action=0,mispredict=0) for _ in range(7))
-    accepted=dict(ready=1,bits=dict(start_pc0=neighbor.pc,start_pc1=(neighbor.pc//8+1)*8,
+    accepted=dict(ready=1,bits=dict(start_pc0=neighbor.pc,start_pc1=(neighbor.pc//ALIGN_HALFWORDS+1)*ALIGN_HALFWORDS,
         meta_entries=metadata,branches=branches))
     prepared=dict(first=first,neighbor=neighbor,updated=updated,transaction=transaction,
         retained_before=dict(owner=1 if program.shared else 0,rank=0,record_exists=program.shared,pending=False),capacity_before=2)

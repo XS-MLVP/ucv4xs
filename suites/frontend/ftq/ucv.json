@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "suite": "ftq",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "resolve_queue": {
+      "top": "ResolveQueue",
+      "export_name": "ResolveQueueDut"
+    },
+    "commit_queue": {
+      "top": "CommitQueue",
+      "export_name": "CommitQueueDut"
+    },
+    "ftq": {
+      "top": "Ftq",
+      "export_name": "FtqDut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "tests"
+  ],
+  "process_isolation": "dut"
+}

@@ -1,7 +1,7 @@
 """One semantic lifetime; no speculative-slot or address matrix."""
 import pytest
-from bpuverify.bpu.case.ras.capacity import check_ras_reuse
-from bpuverify.bpu.coverage.ras_reuse import RasReuseCoverage
+from suites.frontend.bpu.bpu.case.ras.capacity import check_ras_reuse
+from suites.frontend.bpu.bpu.coverage.ras_reuse import RasReuseCoverage
 
 
 @pytest.mark.feature('BPU-INT-096')

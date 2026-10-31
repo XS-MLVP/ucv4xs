@@ -4,8 +4,8 @@ from types import SimpleNamespace
 import pytest
 from toffee import CoverageDatabase
 
-from bpuverify.mbtb.case.replacement_scenario import TOUCH_MODES, PHASES
-from bpuverify.mbtb.coverage.catalog import mbtb_replacement_coverage_model
+from suites.frontend.bpu.mbtb.case.replacement_scenario import TOUCH_MODES, PHASES
+from suites.frontend.bpu.mbtb.coverage.catalog import mbtb_replacement_coverage_model
 from tests.mbtb.testcase import test_replacement_indices as CASE
 
 

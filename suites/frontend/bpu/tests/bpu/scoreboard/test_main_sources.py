@@ -3,9 +3,9 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.bpu.model.main_sources import BranchTargetSources,source_entries
-from bpuverify.bpu.model.pipeline import Events,Outcome,Redirect,Resolution
-from bpuverify.bpu.model.selection import Kind,StackAction
+from suites.frontend.bpu.bpu.model.main_sources import BranchTargetSources,source_entries
+from suites.frontend.bpu.bpu.model.pipeline import Events,Outcome,Redirect,Resolution
+from suites.frontend.bpu.bpu.model.selection import Kind,StackAction
 from tests.bpu.scoreboard.test_semantic_pipeline import PC,boot,published
 
 

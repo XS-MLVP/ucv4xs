@@ -6,12 +6,12 @@ from pathlib import Path
 
 import pytest
 
-from vagqverify.maskgen.architectural import (
+from suites.vector.vagq.maskgen.architectural import (
     BoundDestination, DestinationBinding, DestinationInstruction, expected_destination,
 )
-from vagqverify.maskgen.reference import MaskRequest, evaluate, evaluate_protocol
-from vagqverify.maskgen.flow_fixture import active_sites, flow_metadata, wide_flow
-from vagqverify.qualification.rvv_destination import Instruction as IndependentOracle
+from suites.vector.vagq.maskgen.reference import MaskRequest, evaluate, evaluate_protocol
+from suites.vector.vagq.maskgen.flow_fixture import active_sites, flow_metadata, wide_flow
+from suites.vector.vagq.qualification.rvv_destination import Instruction as IndependentOracle
 
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)
@@ -99,7 +99,7 @@ def test_both_legal_agnostic_choices_pass_the_independent_oracle(choice):
 
 
 def test_architectural_model_does_not_import_the_adapter_or_qualification_oracle():
-    path = Path(__file__).resolve().parents[2] / 'vagqverify/maskgen/architectural.py'
+    path = Path(__file__).resolve().parents[2] / 'maskgen/architectural.py'
     tree = ast.parse(path.read_text())
     assert {node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)} == {'dataclasses', 'fractions'}
     assert not any(isinstance(node, ast.Import) for node in ast.walk(tree))

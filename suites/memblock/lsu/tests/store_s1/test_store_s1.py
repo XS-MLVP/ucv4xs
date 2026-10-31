@@ -5,9 +5,9 @@ import random
 
 import pytest
 
-from lsuverify.common.robptr import LEVEL_FLUSH, LEVEL_FLUSH_AFTER
-from lsuverify.store_s1.coverage import S1_CASES, StoreS1Coverage
-from lsuverify.store_s1.env import (
+from suites.memblock.lsu.pointers import LEVEL_FLUSH, LEVEL_FLUSH_AFTER
+from suites.memblock.lsu.store_s1.coverage import S1_CASES, StoreS1Coverage
+from suites.memblock.lsu.store_s1.env import (
     PIPE_IN_FIELDS,
     TLB_RESP_FIELDS,
     StoreS1Env,
@@ -18,7 +18,7 @@ from lsuverify.store_s1.env import (
     random_tlb,
     tail_mask,
 )
-from lsuverify.store_trigger.env import (
+from suites.memblock.lsu.store_trigger.env import (
     ACTION_BREAKPOINT,
     ACTION_CODE_BREAKPOINT,
     ACTION_CODE_DEBUG,

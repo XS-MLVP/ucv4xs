@@ -1,5 +1,5 @@
 """Semantic path collisions and delayed-source counter ownership, without RTL."""
-from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT
+from suites.frontend.bpu.models.configuration import TAGE_ALLOCATION_WAIT
 from dataclasses import replace
 from copy import deepcopy
 from pathlib import Path
@@ -7,12 +7,12 @@ import ast
 import pytest
 from types import SimpleNamespace as NS
 from toffee import Scoreboard
-from bpuverify.bpu.checker.direction_migration import DirectionMigrationChecks
-from bpuverify.bpu.coverage.direction_migration import DirectionMigrationCoverage
-from bpuverify.bpu.model.pipeline import Outcome,Resolution
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.bpu.model.main_sources import source_entries
-from bpuverify.bpu.model.tage.migration import PC,POSITION,TARGET,PATHS,preparation
+from suites.frontend.bpu.bpu.checker.direction_migration import DirectionMigrationChecks
+from suites.frontend.bpu.bpu.coverage.direction_migration import DirectionMigrationCoverage
+from suites.frontend.bpu.bpu.model.pipeline import Outcome,Resolution
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.main_sources import source_entries
+from suites.frontend.bpu.bpu.model.tage.migration import PC,POSITION,TARGET,PATHS,preparation
 from tests.bpu.scoreboard.test_direction_sources import prepared,quiet
 from tests.bpu.scoreboard.test_direction_service import via
 
@@ -53,7 +53,7 @@ def migration_program(original_way=1,*,retained_sources=None):
         if step.label=='original':
             original=after
             if retained_sources is not None:
-                from bpuverify.bpu.model.tage.stale_burst import SOURCE_COUNT
+                from suites.frontend.bpu.bpu.model.tage.stale_burst import SOURCE_COUNT
                 retained_sources.append(after)
                 for _ in range(SOURCE_COUNT-1):retained_sources.append(via(model,event,anchor,PATHS['original']))
     return model,event,anchor,original
@@ -256,7 +256,7 @@ def test_every_consumer_and_immutable_original_metadata_are_required_before_cred
 
 
 def test_case_keeps_signal_timing_and_task_scheduling_out_of_scenario_code():
-    for file in ('bpuverify/bpu/case/direction_migration.py','tests/bpu/testcase/test_direction_migration.py'):
+    for file in ('bpu/case/direction_migration.py','tests/bpu/testcase/test_direction_migration.py'):
         for node in ast.walk(ast.parse(Path(file).read_text())):
             assert not isinstance(node,(ast.Assert,ast.ClassDef))
             if isinstance(node,ast.Call):

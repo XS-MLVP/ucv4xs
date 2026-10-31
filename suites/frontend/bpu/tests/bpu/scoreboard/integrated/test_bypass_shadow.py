@@ -1,8 +1,8 @@
 """Pure input-driven oracle checks, including the known dirty-copy hazard."""
 from copy import deepcopy
 import pytest
-from bpuverify.bpu.model.bypass.model import BypassReference
-from bpuverify.bpu.model.bypass.model import saturate
+from suites.frontend.bpu.bpu.model.bypass.model import BypassReference
+from suites.frontend.bpu.bpu.model.bypass.model import saturate
 
 
 def boundary(**changes):

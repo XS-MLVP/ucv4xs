@@ -2,11 +2,11 @@
 import json
 import pytest
 
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.common.coverage.exports import write_functional_coverage
-from bpuverify.bpu.model.recovery_arbitration import RecoveryProgram
-from bpuverify.bpu.env.recovery_arbitration import exercise_recovery
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.coverage.exports import write_functional_coverage
+from suites.frontend.bpu.bpu.model.recovery_arbitration import RecoveryProgram
+from suites.frontend.bpu.bpu.env.recovery_arbitration import exercise_recovery
 
 
 @pytest.mark.feature('BPU-INT-034')

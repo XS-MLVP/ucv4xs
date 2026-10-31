@@ -4,9 +4,9 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.bpu.coverage.owner_recency import OwnerRecencyCoverage
-from bpuverify.bpu.model.tage.owner_recency import PROGRAMS
-from bpuverify.bpu.model.tage.retouch_replacement import OwnerLearning
+from suites.frontend.bpu.bpu.coverage.owner_recency import OwnerRecencyCoverage
+from suites.frontend.bpu.bpu.model.tage.owner_recency import PROGRAMS
+from suites.frontend.bpu.bpu.model.tage.retouch_replacement import OwnerLearning
 from tests.bpu.scoreboard.retouch_replacement_fixtures import learned,completed,packet
 from tests.bpu.scoreboard.test_partial_reuse import transfer
 

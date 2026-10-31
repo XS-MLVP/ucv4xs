@@ -2,6 +2,9 @@
 
 # Kunminghu-v3 BPU 验证
 
+> 路径迁移说明（2026-10-31）：本文记录中的 *verify/common 为当时源码路径；当前实现已迁入 suites.<group>.<suite> 工程根。历史判定、命令与哈希不据此重标；当前映射见仓库 docs/lessons/suite-namespace-refactor-20261031.md。
+
+
 使用 picker memory-direct DUT、xreactor 组件和 pytest；完整回归默认多进程并行。
 
 生产入口按“纯控制＋10种DUT”分域调用 xreactor 托管 runner：收集阶段不加载

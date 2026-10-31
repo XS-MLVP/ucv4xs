@@ -1,14 +1,16 @@
 """Common system reset closes external jobs explicitly, not by fake responses."""
+
 from dataclasses import asdict, replace
 
 import pytest
 
-from lsqverify.load_queue.types import Bypass, Load
-from lsqverify.lsq_wrapper.types import Address, Bus, Data, Dispatch, Inputs
-from lsqverify.psq.types import Attributes
-from lsqverify.raw.types import SqPtr
-from lsqverify.replay.types import Cause
-from lsqverify.vlq.types import QueuePtr, RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.load_queue.types import Bypass, Load
+from suites.memblock.lsq.lsq_wrapper.types import Address, Bus, Data, Dispatch, Inputs
+from suites.memblock.lsq.psq.types import Attributes
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.replay.types import Cause
+from suites.memblock.lsq.vlq.types import QueuePtr, RobPtr
 from .memory_owners import cached_load
 from .special_owners import SpecialStore
 from .uncache_recovery import UncacheRecoveryOwners
@@ -40,14 +42,14 @@ async def test_common_system_reset_shared_pending_owner_then_same_load_store_slo
     jobs=[]
     for sid in range(16 if phase=="load_full_nc" else 1):
         for _ in range(100):
-            if lsq.observed["io_uncache_req_valid"]:
+            if lsq.observed[P.p_uncache_req_valid]:
                 break
             await lsq.cycle(base)
-        assert lsq.observed["io_uncache_req_valid"]
+        assert lsq.observed[P.p_uncache_req_valid]
         if phase=="load_buffered_nc":
             break
-        assert lsq.observed["io_uncache_req_bits_cmd"]==int(store_side)
-        mid=lsq.observed["io_uncache_req_bits_id"]
+        assert lsq.observed[P.p_uncache_req_bits_cmd]==int(store_side)
+        mid=lsq.observed[P.p_uncache_req_bits_id]
         await lsq.cycle(replace(base,bus=replace(base.bus,ready=True)))
         jobs.append(dict(direction="store" if store_side else "load",mid=mid,sid=None,accepted_tick=lsq.last_tick,
                          externally_accepted_write=store_side))
@@ -60,17 +62,17 @@ async def test_common_system_reset_shared_pending_owner_then_same_load_store_slo
         await lsq.cycle(replace(base,bus=replace(base.bus,response=True,response_id=jobs[0]["sid"],data=0xFEDCBA9876543210,error=True,nderr=True)))
         jobs[0]["responded"]=True
         for _ in range(100):
-            bank=next((bank for bank in range(3) if lsq.observed[f"io_replay_{bank}_valid"]),None)
+            bank=next((bank for bank in range(3) if lsq.observed[P.io(f"replay_{bank}_valid")]),None)
             if bank is not None:
                 break
             await lsq.cycle(base)
         assert bank is not None
         await lsq.cycle(replace(base,replay_ready=tuple(source==bank for source in range(3))))
         await lsq.cycle(replace(base,bypass=(Bypass(True,loads[0].execution.uop.lq,True),Bypass(),Bypass())))
-        lsq.expect({"io_bypass_0_s1Resp_valid":1,"io_bypass_0_s1Resp_bits_paddr":loads[0].paddr,
-                    "io_ldExceptionInfo_valid":1,"io_ldExceptionInfo_bits_exceptionVec_19":1,"io_ldExceptionInfo_bits_exceptionVec_5":1},
+        lsq.expect({P.p_bypass_0_s1Resp_valid:1,P.p_bypass_0_s1Resp_bits_paddr:loads[0].paddr,
+                    P.p_ldExceptionInfo_valid:1,P.p_ldExceptionInfo_bits_exceptionVec_19:1,P.p_ldExceptionInfo_bits_exceptionVec_5:1},
                    "old real bus response captured before reset; resetless data/exception history is still defined")
-    assert not any(lsq.observed[f"io_bypass_{lane}_s2Resp_valid"] for lane in range(3))
+    assert not any(lsq.observed[P.io(f"bypass_{lane}_s2Resp_valid")] for lane in range(3))
     lsq.reach("LSQ-RESET.pending_store" if store_side else "LSQ-RESET.pending_load")
     lsq.emit("common_system_reset_external_jobs_aborted_not_returned", jobs=[job for job in jobs if not job.get("responded",False)],old_store=asdict(store),old_loads=[asdict(load) for load in loads],
              old_externally_accepted_writes_are_not_retracted=sum(job["externally_accepted_write"] for job in jobs),
@@ -78,13 +80,13 @@ async def test_common_system_reset_shared_pending_owner_then_same_load_store_slo
     for edge in range(6):
         await lsq.cycle(replace(base,reset=True))
         if phase=="load_bypass_s1" and edge==0:
-            lsq.expect({"io_bypass_0_s2Resp_valid":1,"io_bypass_0_s2Resp_bits_data":0xFEDCBA9876543210*((1<<64)+1),
-                        "io_bypass_0_s2Resp_bits_derr":1,"io_bypass_0_s2Resp_bits_nderr":1,"io_ldExceptionInfo_valid":0},
+            lsq.expect({P.p_bypass_0_s2Resp_valid:1,P.p_bypass_0_s2Resp_bits_data:0xFEDCBA9876543210*((1<<64)+1),
+                        P.p_bypass_0_s2Resp_bits_derr:1,P.p_bypass_0_s2Resp_bits_nderr:1,P.p_ldExceptionInfo_valid:0},
                        "common reset does not erase the defined previous s1 data/error history")
     for _ in range(8):
         await lsq.cycle(base)
-        assert not lsq.observed["io_uncache_req_valid"] and not lsq.observed["io_replayAllocate"]
-        assert not lsq.observed["io_sbuffer_req_0_valid"] and not lsq.observed["io_mmioStout_valid"]
+        assert not lsq.observed[P.p_uncache_req_valid] and not lsq.observed[P.p_replayAllocate]
+        assert not lsq.observed[P.p_sbuffer_req_0_valid] and not lsq.observed[P.p_mmioStout_valid]
     trace=UncacheRecoveryOwners(lsq)
     trace.store=replace(trace.store,vaddr=0x30000,paddr=0xB030000,value=0x1122334455667788)
     new=[trace.make_load(pos) for pos in range(old_count)]

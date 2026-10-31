@@ -8,13 +8,13 @@ import ast
 import pytest
 from toffee import Scoreboard
 
-from bpuverify.bpu.checker.direction_useful import DirectionUsefulChecks
-from bpuverify.bpu.coverage.direction_useful import DirectionUsefulCoverage
-from bpuverify.bpu.model.pipeline import Resolution,Outcome,Redirect
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.bpu.model.tage.forwarding import PC,POSITIONS,resolved_path
-from bpuverify.bpu.model.tage.service import STREAM_PC,STREAM_POSITION,learning_inflight
-from bpuverify.bpu.model.tage.useful_service import PROGRAM,main_preparation,pending_useful,occupancy
+from suites.frontend.bpu.bpu.checker.direction_useful import DirectionUsefulChecks
+from suites.frontend.bpu.bpu.coverage.direction_useful import DirectionUsefulCoverage
+from suites.frontend.bpu.bpu.model.pipeline import Resolution,Outcome,Redirect
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.tage.forwarding import PC,POSITIONS,resolved_path
+from suites.frontend.bpu.bpu.model.tage.service import STREAM_PC,STREAM_POSITION,learning_inflight
+from suites.frontend.bpu.bpu.model.tage.useful_service import PROGRAM,main_preparation,pending_useful,occupancy
 from tests.bpu.scoreboard.test_direction_forwarding import resolution,values
 from tests.bpu.scoreboard.test_direction_sources import quiet,revisit
 from tests.bpu.scoreboard.test_direction_service import two_history_program,via,streaming_query
@@ -302,7 +302,7 @@ def test_invalid_pointer_observation_is_rejected(bad):
 
 
 def test_case_contains_no_sampling_tasks_edges_delays_or_comparison_engine():
-    tree=ast.parse(Path('bpuverify/bpu/case/direction_useful.py').read_text())
+    tree=ast.parse(Path('bpu/case/direction_useful.py').read_text())
     for node in ast.walk(tree):
         assert not isinstance(node,(ast.Assert,ast.ClassDef))
         if isinstance(node,ast.Call):

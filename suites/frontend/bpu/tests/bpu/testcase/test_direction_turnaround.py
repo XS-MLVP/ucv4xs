@@ -1,9 +1,9 @@
 """Distinct correct old directions oppose current confidence after migration."""
 import pytest
 
-from bpuverify.bpu.case.direction_turnaround import check_direction_turnaround
-from bpuverify.bpu.coverage.direction_turnaround import DirectionTurnaroundCoverage
-from bpuverify.bpu.model.tage.direction_turnaround import PROGRAMS
+from suites.frontend.bpu.bpu.case.direction_turnaround import check_direction_turnaround
+from suites.frontend.bpu.bpu.coverage.direction_turnaround import DirectionTurnaroundCoverage
+from suites.frontend.bpu.bpu.model.tage.direction_turnaround import PROGRAMS
 
 
 @pytest.mark.feature('BPU-INT-086')

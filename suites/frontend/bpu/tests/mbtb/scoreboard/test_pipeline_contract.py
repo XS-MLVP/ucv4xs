@@ -5,10 +5,10 @@ from __future__ import annotations
 import pytest
 
 from toffee import TransferState
-from bpuverify.mbtb.checker.assertions import assert_vector_hit
-from bpuverify.mbtb.checker.assertions import train
-from bpuverify.mbtb.case.definitions import DIRECT
-from bpuverify.mbtb.case.definitions import PIPELINE_REQUESTS
+from suites.frontend.bpu.mbtb.checker.assertions import assert_vector_hit
+from suites.frontend.bpu.mbtb.checker.assertions import train
+from suites.frontend.bpu.mbtb.case.definitions import DIRECT
+from suites.frontend.bpu.mbtb.case.definitions import PIPELINE_REQUESTS
 
 
 @pytest.mark.feature("BPU-MBTB-007")

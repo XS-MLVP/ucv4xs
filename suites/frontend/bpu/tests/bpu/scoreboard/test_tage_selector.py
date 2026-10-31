@@ -5,12 +5,12 @@ from itertools import product
 from types import SimpleNamespace
 import pytest
 from toffee import ScoreboardMismatch
-from bpuverify.bpu.model.tage.selector import feedback_votes,update_selectors,read_projection,exercise_program
-from bpuverify.bpu.checker.tage.selector import TageSelectorChecker
-from bpuverify.bpu.coverage.tage.selector import SelectorCoverage
-from bpuverify.bpu.model.sc.model import encoded_payload,canonical
-from bpuverify.bpu.transaction.types import BpuBatchTraining,BpuBranchFeedback
-from bpuverify.tage.model.pair import TagePairModel
+from suites.frontend.bpu.bpu.model.tage.selector import feedback_votes,update_selectors,read_projection,exercise_program
+from suites.frontend.bpu.bpu.checker.tage.selector import TageSelectorChecker
+from suites.frontend.bpu.bpu.coverage.tage.selector import SelectorCoverage
+from suites.frontend.bpu.bpu.model.sc.model import encoded_payload,canonical
+from suites.frontend.bpu.bpu.transaction.types import BpuBatchTraining,BpuBranchFeedback
+from suites.frontend.bpu.tage.model.pair import TagePairModel
 
 
 def metadata(counter=4,alt=0,table=7,conf=1,**options):
@@ -82,7 +82,7 @@ def sample(checker,tx=None,*,fire=(0,0,0,0),votes=None):
     empty=transaction(valid=0)
     return dict(reset=0,selectors=list(checker.values),enable=1,fire=fire,use_meta=1,
         raw_tags=[32]*8,reads=[[dict(valid=0,tag=0,counter=0,useful=0)]*2 for _ in range(8)],
-        votes=votes or [dict(valid=0,index=0,inc=0,dec=0) for _ in range(16)],
+        votes=votes or [dict(valid=0,index=0,inc=0,dec=0) for _ in range(8)],
         training=dict(valid=int(tx is not None),ready=1,bits=bits(tx or empty)))
 
 

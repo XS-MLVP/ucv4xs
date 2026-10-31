@@ -4,8 +4,8 @@ from types import SimpleNamespace
 
 import pytest
 from toffee import ScoreboardMismatch
-from bpuverify.utage.checker.partial_wrap import UtagePartialWrapChecker
-from bpuverify.utage.model.partial_wrap import UtagePartialWrapReference
+from suites.frontend.bpu.utage.checker.partial_wrap import UtagePartialWrapChecker
+from suites.frontend.bpu.utage.model.partial_wrap import UtagePartialWrapReference
 from tests.utage.scoreboard.test_useful_model import payload
 
 

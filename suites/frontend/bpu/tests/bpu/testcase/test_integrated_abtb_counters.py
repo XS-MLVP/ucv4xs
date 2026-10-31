@@ -1,6 +1,6 @@
 """Only scenario intent; drivers/monitors/models own pins, timing and checking."""
 import pytest
-from bpuverify.bpu.case.abtb.cases import check_counter_case
+from suites.frontend.bpu.bpu.case.abtb.cases import check_counter_case
 
 pytestmark = pytest.mark.abtb_counter_matrix
 

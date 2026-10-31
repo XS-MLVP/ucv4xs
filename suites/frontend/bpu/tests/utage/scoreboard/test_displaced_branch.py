@@ -3,10 +3,10 @@ from copy import deepcopy
 from types import SimpleNamespace
 import pytest
 from toffee import ScoreboardMismatch
-from bpuverify.utage.model.displaced_branch import PROGRAMS, RULES, OWNERS, PC
-from bpuverify.utage.model.semantic import UtageReference, Events, Base, Context
-from bpuverify.utage.checker.displaced_branch import Checks
-from bpuverify.utage.coverage.displaced_branch import Coverage
+from suites.frontend.bpu.utage.model.displaced_branch import PROGRAMS, RULES, OWNERS, PC
+from suites.frontend.bpu.utage.model.semantic import UtageReference, Events, Base, Context
+from suites.frontend.bpu.utage.checker.displaced_branch import Checks
+from suites.frontend.bpu.utage.coverage.displaced_branch import Coverage
 from tests.utage.scoreboard.test_dual_source import feedback
 
 

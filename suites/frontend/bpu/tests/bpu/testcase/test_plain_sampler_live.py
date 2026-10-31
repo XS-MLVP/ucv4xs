@@ -9,9 +9,9 @@ from __future__ import annotations
 import pytest
 from toffee.data import compile_sampler
 
-from bpuverify.bpu.bundle.pipeline import pipeline_binding
-from bpuverify.bpu.bundle.values import _plain
-from bpuverify.common.env.plain_sampler import compile_plain
+from suites.frontend.bpu.bpu.bundle.pipeline import pipeline_binding
+from suites.frontend.bpu.bpu.bundle.values import _plain
+from suites.frontend.bpu.runtime.plain_sampler import compile_plain
 
 
 @pytest.mark.parametrize('scope', ['main', 'with_sc', 'with_tage', 'with_ahead',

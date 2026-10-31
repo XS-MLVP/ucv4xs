@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from bpuverify.uras.transaction.types import UrasCycle
-from bpuverify.uras.transaction.types import UrasResult
-from bpuverify.uras.case.definitions import MAIN_TOP
+from suites.frontend.bpu.uras.transaction.types import UrasCycle
+from suites.frontend.bpu.uras.transaction.types import UrasResult
+from suites.frontend.bpu.uras.case.definitions import MAIN_TOP
 
 
 async def test_result_monitor_decodes_usable_and_target(uras_agent):

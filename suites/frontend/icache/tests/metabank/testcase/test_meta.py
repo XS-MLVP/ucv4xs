@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from icacheverify.metabank.model.bank import MetaEntry
-from icacheverify.metabank.model.bank import MetaWay
+from suites.frontend.icache.metabank.model.bank import MetaEntry
+from suites.frontend.icache.metabank.model.bank import MetaWay
 
 
 @pytest.mark.feature("ICACHE-METABANK-001")

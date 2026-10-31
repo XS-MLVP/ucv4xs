@@ -3,8 +3,8 @@ from itertools import product
 
 from toffee import Bin, CheckContext, CoverGroupDef, CoverPointDef, Scoreboard, ScoreboardMode
 
-from vagqverify.addrgen.probe import bind_addrgen
-from vagqverify.addrgen.reference import AddressContext, IndexedAddress, StridedAddress, address
+from suites.vector.vagq.addrgen.probe import bind_addrgen
+from suites.vector.vagq.addrgen.reference import AddressContext, IndexedAddress, StridedAddress, address
 
 
 def checked_observer(dut):

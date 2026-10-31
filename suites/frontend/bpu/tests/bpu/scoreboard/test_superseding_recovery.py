@@ -7,8 +7,8 @@ from pathlib import Path
 import pytest
 from toffee import Scoreboard
 
-from bpuverify.bpu.model.common_history import Value
-from bpuverify.bpu.model.superseding_recovery import SupersedingRecoveryProgram, PROFILES
+from suites.frontend.bpu.bpu.model.common_history import Value
+from suites.frontend.bpu.bpu.model.superseding_recovery import SupersedingRecoveryProgram, PROFILES
 from tests.bpu.scoreboard.test_common_query import Harness
 
 

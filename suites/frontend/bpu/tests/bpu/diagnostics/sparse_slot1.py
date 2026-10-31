@@ -1,5 +1,5 @@
 """Explicit candidate only, not default collection or functional PASS credit."""
-from bpuverify.bpu.case.bypass.sparse_wrap import check_sparse_wrap
+from suites.frontend.bpu.bpu.case.bypass.sparse_wrap import check_sparse_wrap
 
 
 async def test_sparse_slot1_candidate(bpu_agent, bpu_sc_output):

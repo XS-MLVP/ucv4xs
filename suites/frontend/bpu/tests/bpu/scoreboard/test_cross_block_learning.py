@@ -5,16 +5,16 @@ from pathlib import Path
 from types import SimpleNamespace as NS
 import pytest
 from toffee import Scoreboard
-from bpuverify.bpu.model.cross_block_learning import PROFILES,RULES,program
-from bpuverify.bpu.model.early_direction_sources import EarlyDirectionSources
-from bpuverify.bpu.model.pipeline import Redirect,Resolution,Outcome
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.bpu.model.early_opposition import provider
-from bpuverify.bpu.model.early_aging import require_recovery_window
-from bpuverify.bpu.model.path_history import WIDTH,LAYOUT,SHIFT
-from bpuverify.bpu.checker.cross_block_learning import Checks
-from bpuverify.bpu.checker.early_direction import live_values,fast_values
-from bpuverify.bpu.coverage.cross_block_learning import Coverage
+from suites.frontend.bpu.bpu.model.cross_block_learning import PROFILES,RULES,program
+from suites.frontend.bpu.bpu.model.early_direction_sources import EarlyDirectionSources
+from suites.frontend.bpu.bpu.model.pipeline import Redirect,Resolution,Outcome
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.early_opposition import provider
+from suites.frontend.bpu.bpu.model.early_aging import require_recovery_window
+from suites.frontend.bpu.bpu.model.path_history import WIDTH,LAYOUT,SHIFT
+from suites.frontend.bpu.bpu.checker.cross_block_learning import Checks
+from suites.frontend.bpu.bpu.checker.early_direction import live_values,fast_values
+from suites.frontend.bpu.bpu.coverage.cross_block_learning import Coverage
 from tests.bpu.scoreboard.test_semantic_pipeline import boot
 from tests.bpu.scoreboard.test_ahead_sources import ENABLED
 from tests.bpu.scoreboard.test_early_direction_checking import actual_live,actual_fast
@@ -161,7 +161,7 @@ def test_old_cold_original_outside_physical_history_window_is_rejected_before_dr
 
 
 def test_cases_hide_clocks_raw_IO_and_task_scheduling():
-    for name in ('bpuverify/bpu/case/cross_block_learning.py','tests/bpu/testcase/test_cross_block_learning.py'):
+    for name in ('bpu/case/cross_block_learning.py','tests/bpu/testcase/test_cross_block_learning.py'):
         tree=ast.parse(Path(name).read_text()); forbidden={'RisingEdge','FallingEdge','ClockCycles','get_','set_','gather','create_task'}
         assert not {n.id for n in ast.walk(tree) if isinstance(n,ast.Name)} & forbidden
         assert not {n.attr for n in ast.walk(tree) if isinstance(n,ast.Attribute)} & forbidden

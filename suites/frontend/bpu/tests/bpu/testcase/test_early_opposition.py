@@ -1,7 +1,7 @@
 """066: independent original source beats the opposite base before any repair."""
 import pytest
-from bpuverify.bpu.case.early_opposition import check_early_opposition
-from bpuverify.bpu.coverage.early_opposition import EarlyOppositionCoverage
+from suites.frontend.bpu.bpu.case.early_opposition import check_early_opposition
+from suites.frontend.bpu.bpu.coverage.early_opposition import EarlyOppositionCoverage
 
 
 @pytest.mark.feature('BPU-INT-066')

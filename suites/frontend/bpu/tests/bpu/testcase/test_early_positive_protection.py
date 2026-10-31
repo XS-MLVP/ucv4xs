@@ -1,9 +1,9 @@
 """T provider protection needs its own actual-boundary and consumer proof."""
 import pytest
 
-from bpuverify.bpu.case.early_positive_protection import check_early_positive_protection
-from bpuverify.bpu.coverage.early_positive_protection import EarlyPositiveProtectionCoverage
-from bpuverify.bpu.model.early_positive_protection import EDGES
+from suites.frontend.bpu.bpu.case.early_positive_protection import check_early_positive_protection
+from suites.frontend.bpu.bpu.coverage.early_positive_protection import EarlyPositiveProtectionCoverage
+from suites.frontend.bpu.bpu.model.early_positive_protection import EDGES
 
 
 @pytest.mark.feature('BPU-INT-066')

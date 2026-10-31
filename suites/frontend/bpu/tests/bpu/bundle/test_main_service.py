@@ -1,7 +1,7 @@
 """Static geometry binds complete entry and masked counter channels separately."""
 from types import SimpleNamespace as NS
-from bpuverify.bpu.bundle import main_service as module
-from bpuverify.bpu.bundle.values import _plain
+from suites.frontend.bpu.bpu.bundle import main_service as module
+from suites.frontend.bpu.bpu.bundle.values import _plain
 
 
 class Signal:
@@ -28,7 +28,7 @@ def test_main_geometry_is_not_disguised_as_a_history_table_and_all_payloads_are_
 
 
 def test_SC_training_read_observation_has_independent_valid_index_and_bank():
-    from bpuverify.bpu.bundle.statistical import statistical_bundle,TABLES
+    from suites.frontend.bpu.bpu.bundle.statistical import statistical_bundle,TABLES
     signals={}
     def signal(name):return signals.setdefault(name,Signal())
     sampler=statistical_bundle(signal).compile_sampler()
@@ -44,7 +44,7 @@ def test_SC_training_read_observation_has_independent_valid_index_and_bank():
 
 
 def test_SC_full_numeric_reads_and_consumed_evidence_have_separate_immutable_snapshots():
-    from bpuverify.bpu.bundle.statistical import statistical_bundle
+    from suites.frontend.bpu.bpu.bundle.statistical import statistical_bundle
     signals={}
     def signal(name):return signals.setdefault(name,Signal())
     sample=statistical_bundle(signal).compile_sampler()
@@ -70,7 +70,7 @@ def test_SC_full_numeric_reads_and_consumed_evidence_have_separate_immutable_sna
 def test_main_learning_receipts_preserve_independent_expected_and_actual_values():
     from copy import deepcopy
     import pickle
-    from bpuverify.bpu.monitor.service import MainLearningReceipts
+    from suites.frontend.bpu.bpu.monitor.service import MainLearningReceipts
     from tests.bpu.scoreboard.test_ahead_direction_proposals import main_model
     main=main_model(hit=True,counter=0,taken=False,correction=False)
     receipts=MainLearningReceipts(NS(model=NS(sources=NS(main=main)),raise_failure=lambda:None))
@@ -88,8 +88,8 @@ def test_main_learning_receipts_preserve_independent_expected_and_actual_values(
 
 
 def test_main_learning_receipts_bound_events_and_disclose_truncation():
-    from bpuverify.bpu.monitor.service import MainLearningReceipts
-    from bpuverify.mbtb.model.semantic import MbtbReference
+    from suites.frontend.bpu.bpu.monitor.service import MainLearningReceipts
+    from suites.frontend.bpu.mbtb.model.semantic import MbtbReference
     receipts=MainLearningReceipts(NS(model=NS(sources=NS(main=MbtbReference())),raise_failure=lambda:None),capacity=2)
     for tick in range(3):
         receipts.capture_state(NS(tick=tick),dict(direction=dict(valid=1),incoming=(dict(valid=0),dict(valid=0))))

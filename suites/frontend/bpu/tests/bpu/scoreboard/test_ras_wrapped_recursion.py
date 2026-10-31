@@ -1,12 +1,11 @@
 """Bounded semantic oracles and closure controls; no DUT coverage credit."""
 import pytest
 
-from bpuverify.ras.model.model import advance
-from bpuverify.bpu.model.ras.wrapped_recursion import (
+from suites.frontend.bpu.ras.model.model import advance
+from suites.frontend.bpu.bpu.model.ras.wrapped_recursion import (
     PREFIX, INNER_RETURN, PARENT_RETURN, SURVIVING_TOP, PROFILES, RULES,
     committed, return_targets, validate)
-from bpuverify.bpu.coverage.ras_wrapped_recursion import Coverage
-
+from suites.frontend.bpu.bpu.coverage.ras_wrapped_recursion import Coverage
 
 
 @pytest.mark.parametrize('calls', PROFILES)

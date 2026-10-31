@@ -1,7 +1,7 @@
 """Wrong-path operations lose their owners even when public keys alias."""
 import pytest
 
-from bpuverify.ras.model.semantic import Events,RasReference,Recovery,Retirement
+from suites.frontend.bpu.ras.model.semantic import Events,RasReference,Recovery,Retirement
 
 
 ADDRESS = 0x80030020
@@ -91,7 +91,7 @@ def test_reset_clears_semantic_frontiers_and_live_operation_owners():
 def test_checkpoint_eviction_expires_its_frontier_in_lockstep():
     model = RasReference()
     # Exercise the bounded ownership index directly; no fake DUT coverage.
-    from bpuverify.ras.model.semantic import Frame,Program
+    from suites.frontend.bpu.ras.model.semantic import Frame,Program
     for index in range(140):
         model._remember(Program((Frame(group=index//32,repeat=0),),index%32))
     assert model.checkpoints.keys()==model.checkpoint_sequences.keys()

@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.tage.transaction.types import TageTraining
-from bpuverify.tage.checker.assertions import reach_highest_provider
-from bpuverify.tage.case.definitions import HIGHEST_TABLE
-from bpuverify.tage.case.definitions import PC
-from bpuverify.tage.case.definitions import POSITION
+from suites.frontend.bpu.tage.transaction.types import TageTraining
+from suites.frontend.bpu.tage.checker.assertions import reach_highest_provider
+from suites.frontend.bpu.tage.case.definitions import HIGHEST_TABLE
+from suites.frontend.bpu.tage.case.definitions import PC
+from suites.frontend.bpu.tage.case.definitions import POSITION
 
 
 @pytest.mark.feature("BPU-TAGE-008")

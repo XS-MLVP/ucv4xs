@@ -1,5 +1,5 @@
-from lsqverify.psq.actor import PsqActor
-from lsqverify.store_prefix import parent_windows
+from suites.memblock.lsq.psq.actor import PsqActor
+from suites.memblock.lsq.store_prefix import parent_windows
 
 
 async def test_nonfull_wrapped_exclusive_prefix_and_byte_offsets(psq_full, tmp_path):

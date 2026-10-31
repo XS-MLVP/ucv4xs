@@ -31,7 +31,7 @@
       "MicroBtb.scala:145-147：t0_hitEntry 在 t0_hitT1Update 时直接取 t1_updatedEntry（可能 usefulCnt=0）。",
       "MicroBtb.scala:171-176：t1_hit && (!same || !actualTaken) 时调用 initEntryIfNotUseful(t1_hitNotUseful)；t1_hitNotUseful 为真时执行 tag/usefulCnt=3/slot1 整体重初始化，即使 actualTaken=0。",
       "RTL 生成代码 dut/ubtb/UbtbDut.v:1787-1789 与 764-771 显示同一路径。",
-      "参考模型 bpuverify/ubtb/model/semantic.py 的 _learn 明确：旧记录无 confidence 时，not-taken 不能复活，源码注释也指出不能把 forwarding hit 限定符复制进学习规则。"
+      "参考模型 ubtb/model/semantic.py 的 _learn 明确：旧记录无 confidence 时，not-taken 不能复活，源码注释也指出不能把 forwarding hit 限定符复制进学习规则。"
     ],
     "unreachable_arms": {
       "UbtbDut.v:1785 else": "该块位于 if (t0_hitT1Update) 内；t0_hitT1Update 的生成式（UbtbDut.v:747-748）含 t1_fire_REG 合取项，因此块内 t1_fire_REG 恒真，else 不可达。",

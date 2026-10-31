@@ -4,15 +4,15 @@ from copy import deepcopy
 from types import SimpleNamespace
 import pytest
 from toffee import ScoreboardMismatch
-from bpuverify.bpu.model.sc.bounds import bounds_plan
-from bpuverify.bpu.model.sc.used import INITIAL,MINIMUM,MAXIMUM,threshold_update
-from bpuverify.bpu.model.sc.model import NAMES,zero_slots,width
-from bpuverify.bpu.checker.sc.full import FullScChecker
-from bpuverify.bpu.checker.phr.checking import BpuPhrChecker
-from bpuverify.bpu.checker.sc.common_state import CommonStateChecker
-from bpuverify.bpu.checker.sc.common_routes import RouteChecker
-from bpuverify.bpu.env.phr.observation import BpuPhrObservation
-from bpuverify.bpu.model.phr.model import BpuPhrReference
+from suites.frontend.bpu.bpu.model.sc.bounds import bounds_plan
+from suites.frontend.bpu.bpu.model.sc.used import INITIAL,MINIMUM,MAXIMUM,threshold_update
+from suites.frontend.bpu.bpu.model.sc.model import NAMES,zero_slots,width
+from suites.frontend.bpu.bpu.checker.sc.full import FullScChecker
+from suites.frontend.bpu.bpu.checker.phr.checking import BpuPhrChecker
+from suites.frontend.bpu.bpu.checker.sc.common_state import CommonStateChecker
+from suites.frontend.bpu.bpu.checker.sc.common_routes import RouteChecker
+from suites.frontend.bpu.bpu.env.phr.observation import BpuPhrObservation
+from suites.frontend.bpu.bpu.model.phr.model import BpuPhrReference
 from tests.bpu.scoreboard.test_phr_reference import boundary
 
 
@@ -150,14 +150,14 @@ async def test_redirect_association_uses_tick_not_evicted_list_index():
 
 @pytest.mark.parametrize('targets',((-1,0),(0,1<<49),(True,0),(0,1.5),(0,),()))
 async def test_explicit_provider_pair_targets_validate_before_driving(targets):
-    from bpuverify.bpu.case.sc.role_scenarios import prepare_pair
+    from suites.frontend.bpu.bpu.case.sc.role_scenarios import prepare_pair
     with pytest.raises(ValueError):await prepare_pair(None,None,0,None,(1,4),(5,4),targets=targets)
 
 
 @pytest.mark.parametrize('way',range(8))
 @pytest.mark.parametrize('outcomes',((0,0),(0,1),(1,)))
 def test_distinct_feedback_branches_keep_metadata_and_report_only_first_mispredict(way,outcomes):
-    from bpuverify.bpu.case.sc.bounds import bounds_feedback
+    from suites.frontend.bpu.bpu.case.sc.bounds import bounds_feedback
     plan=bounds_plan(way,'upper');a,b=plan['positions']
     meta=dict(mbtb_entries=[[dict(rawHit=1,position=a),dict(rawHit=1,position=b)],
         [dict(rawHit=0,position=0),dict(rawHit=0,position=0)]],
@@ -173,16 +173,16 @@ def test_distinct_feedback_branches_keep_metadata_and_report_only_first_mispredi
 @pytest.mark.parametrize('count,taken',((0,0),(3,0),(True,0),(1,2),(1,True),
     (2,(1,0)),(2,(1,1)),(2,(0,)),(2,(0,True))))
 def test_bad_feedback_shape_fails_before_metadata_or_driver_access(count,taken):
-    from bpuverify.bpu.case.sc.bounds import bounds_feedback
+    from suites.frontend.bpu.bpu.case.sc.bounds import bounds_feedback
     with pytest.raises(ValueError):bounds_feedback(bounds_plan(0,'lower'),None,count=count,taken=taken)
 
 
 @pytest.mark.parametrize('way',range(8))
 @pytest.mark.parametrize('encoded,expected',((0,(1,0,0)),(63,(0,0,0)),(32,(0,1,1))))
 def test_fresh_public_SC_oracle_uses_full_signed_reference_not_observed_decision(way,encoded,expected):
-    from bpuverify.bpu.model.sc.bounds import public_decisions
-    from bpuverify.bpu.model.sc.full import FullScReference
-    from bpuverify.bpu.model.sc.training_path import training_indices
+    from suites.frontend.bpu.bpu.model.sc.bounds import public_decisions
+    from suites.frontend.bpu.bpu.model.sc.full import FullScReference
+    from suites.frontend.bpu.bpu.model.sc.training_path import training_indices
     plan=bounds_plan(way,'lower');ref=FullScReference();pc=plan['pc'];common=dict(valid=1,ghr=0,bw=0,imli=0)
     for table,index in training_indices(pc,0,common).items():
         count=32 if table=='biasTable' else 8

@@ -3,7 +3,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.bpu.agent.main import BpuAgent
+from suites.frontend.bpu.bpu.agent.main import BpuAgent
 
 
 def agent_with_pending_writes():

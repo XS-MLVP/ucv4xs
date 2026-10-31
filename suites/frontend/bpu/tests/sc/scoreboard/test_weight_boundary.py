@@ -6,11 +6,11 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.sc.checker.boundary import ScBoundaryChecks
-from bpuverify.sc.model.boundary import FAMILY_FIELDS, ScBoundaryProgram, expected_feedback, observed_feedback
-from bpuverify.sc.model.semantic import Events, ScReference
-from bpuverify.sc.model.threshold import ScThresholdModel
-from bpuverify.sc.transaction.types import ScLookup
+from suites.frontend.bpu.sc.checker.boundary import ScBoundaryChecks
+from suites.frontend.bpu.sc.model.boundary import FAMILY_FIELDS, ScBoundaryProgram, expected_feedback, observed_feedback
+from suites.frontend.bpu.sc.model.semantic import Events, ScReference
+from suites.frontend.bpu.sc.model.threshold import ScThresholdModel
+from suites.frontend.bpu.sc.transaction.types import ScLookup
 from tests.sc.scoreboard.test_semantic_model import lookup, feedback, settle, actual_metadata
 
 
@@ -26,9 +26,9 @@ def source(program, number=1):
 
 
 def test_closed_form_program_does_not_import_the_cycle_reference_or_signal_access():
-    module = ast.parse(Path('bpuverify/sc/model/boundary.py').read_text())
+    module = ast.parse(Path('sc/model/boundary.py').read_text())
     imports = [node.module for node in ast.walk(module) if isinstance(node, ast.ImportFrom)]
-    assert imports == ['bpuverify.common.model.configuration', 'dataclasses', 'bpuverify.sc.transaction.types']
+    assert imports == ['suites.frontend.bpu.models.configuration', 'dataclasses', 'suites.frontend.bpu.sc.transaction.types']
     assert not any(isinstance(node, ast.Import) for node in ast.walk(module))
 
 

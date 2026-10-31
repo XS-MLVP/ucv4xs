@@ -5,15 +5,15 @@ from types import SimpleNamespace as NS
 import pytest
 from toffee import Scoreboard
 
-from bpuverify.bpu.model.main_sources import BranchTargetSources,source_entries
-from bpuverify.bpu.model.pipeline import Outcome,Resolution,Redirect
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.bpu.model.main_service import PCS,POSITION,PEER_POSITION,STREAM_PC,old_target,new_target,peer_target,entry_plan,target_effect
+from suites.frontend.bpu.bpu.model.main_sources import BranchTargetSources,source_entries
+from suites.frontend.bpu.bpu.model.pipeline import Outcome,Resolution,Redirect
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.main_service import PCS,POSITION,PEER_POSITION,STREAM_PC,old_target,new_target,peer_target,entry_plan,target_effect
 from tests.bpu.scoreboard.test_semantic_pipeline import boot
 from tests.bpu.scoreboard.test_direction_sources import quiet,revisit
-from bpuverify.bpu.checker.main_service import MainServiceChecks
-from bpuverify.bpu.coverage.main_service import MainServiceCoverage
-from bpuverify.bpu.model.main_service import observed_counter,counter_payload
+from suites.frontend.bpu.bpu.checker.main_service import MainServiceChecks
+from suites.frontend.bpu.bpu.coverage.main_service import MainServiceCoverage
+from suites.frontend.bpu.bpu.model.main_service import observed_counter,counter_payload
 
 ENABLED=(True,False,True,False,False,False,False)
 
@@ -119,7 +119,7 @@ def fixture(*,stale=False,reclassify=False):
         source_token=lambda r:r.token,retire_source=retired.append,last_resolution_controls=(200+(len(tokens)-1)*2,ENABLED),
         corrections_for_source=lambda r:((r.prediction_tick+4,3),) if r.prediction_tick>=350 else ())
     if reclassify:
-        from bpuverify.bpu.model.selection import middle_repair,final_repair
+        from suites.frontend.bpu.bpu.model.selection import middle_repair,final_repair
         def repairs(r):
             t=r.token;r2=middle_repair(t.early,t.middle)
             r3=final_repair(t.early,t.middle,t.middle,corrected_middle=r2)

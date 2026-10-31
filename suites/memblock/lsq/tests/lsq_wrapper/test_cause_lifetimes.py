@@ -1,4 +1,4 @@
-from lsqverify.replay_cause_lifetimes import trace
+from suites.memblock.lsq.replay_cause_lifetimes import trace
 
 
 async def test_same_original_UID_nine_Forward_S3_replays_then_real_release(lsq, tmp_path):

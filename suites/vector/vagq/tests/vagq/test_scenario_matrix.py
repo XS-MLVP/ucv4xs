@@ -1,7 +1,7 @@
 """Pure audit of the complete independent public feature-space generator."""
 import pytest
 
-from vagqverify.vagq.scenario_matrix import (
+from suites.vector.vagq.vagq.scenario_matrix import (
     PUBLIC_OPERATIONS,
     fault_positions,
     pairwise_tokens,

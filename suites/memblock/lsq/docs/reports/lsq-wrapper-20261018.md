@@ -1,5 +1,8 @@
 # 真实LsqWrapper整体UT：共享路由、Forward/RAW/RAR与覆盖闭环
 
+> 路径迁移说明（2026-10-31）：本文记录中的 *verify/common 为当时源码路径；当前实现已迁入 suites.<group>.<suite> 工程根。历史判定、命令与哈希不据此重标；当前映射见仓库 docs/lessons/suite-namespace-refactor-20261031.md。
+
+
 > 本文保留截至132例的历史证据。最新253例216 PASS/37 FAIL、76/82 checked、
 > 58471/59602真实闭包及全池/特殊副作用/NC RAR/共享恢复与共同reset审计见
 > [20261019续报](lsq-wrapper-20261019.md)，整体仍未验收。

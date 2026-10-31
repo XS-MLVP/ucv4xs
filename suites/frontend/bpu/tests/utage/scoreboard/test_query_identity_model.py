@@ -3,7 +3,7 @@ from copy import deepcopy
 from dataclasses import replace
 import pytest
 
-from bpuverify.utage.model.semantic import Context,Events,UtageReference,indices,tag
+from suites.frontend.bpu.utage.model.semantic import Context,Events,UtageReference,indices,tag
 from tests.utage.scoreboard.test_semantic_model import lookup,feedback,learn,POSITIONS
 from tests.utage.scoreboard.test_read_lifetime_model import bases,values
 

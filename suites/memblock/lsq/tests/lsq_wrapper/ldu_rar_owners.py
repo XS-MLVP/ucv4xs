@@ -5,11 +5,11 @@ No DUT/model private state, expected/change dictionaries or known-issue reads.
 """
 from dataclasses import replace
 
-from lsqverify.forward.types import Query, Translation
-from lsqverify.load_queue.types import Load
-from lsqverify.rar.types import Query as RarQuery, Release
-from lsqverify.raw.types import Query as RawQuery
-from lsqverify.replay.types import Cause
+from suites.memblock.lsq.forward.types import Query, Translation
+from suites.memblock.lsq.load_queue.types import Load
+from suites.memblock.lsq.rar.types import Query as RarQuery, Release
+from suites.memblock.lsq.raw.types import Query as RawQuery
+from suites.memblock.lsq.replay.types import Cause
 from .memory_owners import rob_number
 from .recovery_owners import RecoveryOwners
 

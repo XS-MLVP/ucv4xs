@@ -1,12 +1,14 @@
 """True both-branch cancellation, retired prefix walk, cross-page UQ and reset."""
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.rar.types import Query as RarQuery
-from lsqverify.raw.types import Query as RawQuery
-from lsqverify.replay.types import Cause, TlbHint
-from lsqverify.vlq.types import QueuePtr, RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.rar.types import Query as RarQuery
+from suites.memblock.lsq.raw.types import Query as RawQuery
+from suites.memblock.lsq.replay.types import Cause, TlbHint
+from suites.memblock.lsq.vlq.types import QueuePtr, RobPtr
 from .memory_owners import StoreOwner, cached_load
 from .recovery_owners import RecoveryOwners
 
@@ -49,7 +51,7 @@ async def test_both_real_branches_full_query_replay_pools_all_cancel_and_same_sl
     await pool_queries(trace, old_l)
     await trace.execute(old_l)
     await trace.idle(5)
-    assert not any(lsq.observed[f"io_replay_{bank}_valid"] for bank in range(3))
+    assert not any(lsq.observed[P.io(f"replay_{bank}_valid")] for bank in range(3))
     assert await trace.cancel(old_s[0].rob) == (QueuePtr.encode(lq_start), sq_start)
     new_s = stores(8, start=sq_start, tag=64)
     new_l = [replace(load, execution=replace(load.execution, causes=1<<Cause.BANK_CONFLICT),
@@ -65,8 +67,8 @@ async def test_both_real_branches_full_query_replay_pools_all_cancel_and_same_sl
         visible = None
         for _ in range(100):
             for bank in range(3):
-                if lsq.observed[f"io_replay_{bank}_valid"]:
-                    key = QueuePtr(bool(lsq.observed[f"io_replay_{bank}_bits_uop_lqIdx_flag"]), lsq.observed[f"io_replay_{bank}_bits_uop_lqIdx_value"])
+                if lsq.observed[P.io(f"replay_{bank}_valid")]:
+                    key = QueuePtr(bool(lsq.observed[P.io(f"replay_{bank}_bits_uop_lqIdx_flag")]), lsq.observed[P.io(f"replay_{bank}_bits_uop_lqIdx_value")])
                     visible = trace.active_loads[key]["load"]
                     break
             if visible is not None:
@@ -140,14 +142,14 @@ async def test_active_shared_reset_both_branches_original_uids_abort_and_same_sl
         await trace.cycle(replay_ready=(True,True,True))
         assert any("grant" in state for state in trace.loads)
     if phase == "replay_selected":
-        assert any(lsq.observed[f"io_replay_{bank}_valid"] for bank in range(3))
+        assert any(lsq.observed[P.io(f"replay_{bank}_valid")] for bank in range(3))
     if phase == "sbuffer":
         trace.base = replace(trace.base,pending=old_l[0].execution.uop.rob,pending_next=old_l[0].execution.uop.rob)
         for _ in range(40):
             await trace.cycle()
-            if lsq.observed["io_sbuffer_req_0_valid"]:
+            if lsq.observed[P.p_sbuffer_req_0_valid]:
                 break
-        assert lsq.observed["io_sbuffer_req_0_valid"] and not trace.fragments_fired
+        assert lsq.observed[P.p_sbuffer_req_0_valid] and not trace.fragments_fired
     lsq.reach("LSQ-RESET.active_load", "LSQ-RESET.active_store")
     await trace.reset()
     trace.base = replace(trace.base,pending=RobPtr.encode(9),pending_next=RobPtr.encode(9))

@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.utage.checker.assertions import allocate
-from bpuverify.utage.case.definitions import PASSING_PC
-from bpuverify.utage.case.definitions import POSITION
+from suites.frontend.bpu.utage.checker.assertions import allocate
+from suites.frontend.bpu.utage.case.definitions import PASSING_PC
+from suites.frontend.bpu.utage.case.definitions import POSITION
 
 
 async def _check_override(utage_agent, stage: str) -> None:

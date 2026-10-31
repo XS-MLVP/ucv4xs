@@ -4,12 +4,12 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.abtb.transaction.types import AbtbTraining
-from bpuverify.abtb.checker.assertions import assert_miss
-from bpuverify.abtb.checker.assertions import assert_vector_hit
-from bpuverify.abtb.checker.assertions import train_taken
-from bpuverify.abtb.case.definitions import NOT_TAKEN
-from bpuverify.abtb.case.definitions import TRAINING_VECTORS
+from suites.frontend.bpu.abtb.transaction.types import AbtbTraining
+from suites.frontend.bpu.abtb.checker.assertions import assert_miss
+from suites.frontend.bpu.abtb.checker.assertions import assert_vector_hit
+from suites.frontend.bpu.abtb.checker.assertions import train_taken
+from suites.frontend.bpu.abtb.case.definitions import NOT_TAKEN
+from suites.frontend.bpu.abtb.case.definitions import TRAINING_VECTORS
 
 
 @pytest.mark.feature("BPU-ABTB-002")

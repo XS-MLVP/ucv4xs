@@ -3,12 +3,12 @@ import json
 
 import pytest
 
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.ittage.case.definitions import PC
-from bpuverify.ittage.case.definitions import POSITION
-from bpuverify.ittage.case.definitions import TARGET_A
-from bpuverify.ittage.coverage.late_source import LateSourceCoverage
-from bpuverify.ittage.transaction.types import IttageTraining
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.ittage.case.definitions import PC
+from suites.frontend.bpu.ittage.case.definitions import POSITION
+from suites.frontend.bpu.ittage.case.definitions import TARGET_A
+from suites.frontend.bpu.ittage.coverage.late_source import LateSourceCoverage
+from suites.frontend.bpu.ittage.transaction.types import IttageTraining
 
 UNSERVED_PC, CONTROL_PC = PC, PC + 0x20
 

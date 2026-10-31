@@ -1,5 +1,8 @@
 # Sbuffer 验证结果与测试用例独立复核
 
+> 路径迁移说明（2026-10-31）：本文记录中的 *verify/common 为当时源码路径；当前实现已迁入 suites.<group>.<suite> 工程根。历史判定、命令与哈希不据此重标；当前映射见仓库 docs/lessons/suite-namespace-refactor-20261031.md。
+
+
 ## 审核结论
 
 **暂不通过测试充分性与验证结论的签核。** 已复现检查器漏检，不能用现有 PASS 或功能覆盖率

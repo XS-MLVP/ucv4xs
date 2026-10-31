@@ -2,11 +2,11 @@
 import json
 import pytest
 
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.sc.model.eligibility import EligibilityProgram
-from bpuverify.sc.coverage.original_enable import EnableCoverage
-from bpuverify.sc.case.original_enable import check_enable_lifetime
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.sc.model.eligibility import EligibilityProgram
+from suites.frontend.bpu.sc.coverage.original_enable import EnableCoverage
+from suites.frontend.bpu.sc.case.original_enable import check_enable_lifetime
 
 
 @pytest.mark.feature('BPU-SC-010')

@@ -9,7 +9,7 @@ import subprocess
 
 import pytest
 
-from bpuverify.common.coverage import rtl as rtl_coverage
+from suites.frontend.bpu.coverage import rtl as rtl_coverage
 
 
 def test_relocated_generated_source_uses_installed_dut(tmp_path, monkeypatch):

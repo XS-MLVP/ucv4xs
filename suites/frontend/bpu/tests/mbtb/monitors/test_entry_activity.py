@@ -3,9 +3,9 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.mbtb.agent.main import MbtbAgent
-from bpuverify.mbtb.monitor.entry import ENTRY_FIELDS
-from bpuverify.mbtb.monitor.entry import MbtbEntryActivityMonitor
+from suites.frontend.bpu.mbtb.agent.main import MbtbAgent
+from suites.frontend.bpu.mbtb.monitor.entry import ENTRY_FIELDS
+from suites.frontend.bpu.mbtb.monitor.entry import MbtbEntryActivityMonitor
 from tests.mbtb.monitors.test_counter_activity import FakeMonitor
 from tests.framework.fakes import native_name_dut
 

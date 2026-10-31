@@ -1,6 +1,6 @@
 """Custom bounds of four global threshold registers, no bank/set matrix."""
 import pytest
-from bpuverify.bpu.case.sc.bounds import check_bounds
+from suites.frontend.bpu.bpu.case.sc.bounds import check_bounds
 
 
 @pytest.mark.feature('BPU-INT-070')

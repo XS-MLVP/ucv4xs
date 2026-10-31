@@ -1,6 +1,6 @@
 """Real sources, not forced predictor state or a bank/set sweep."""
 import pytest
-from bpuverify.bpu.case.tage.aging import check_aging
+from suites.frontend.bpu.bpu.case.tage.aging import check_aging
 
 
 @pytest.mark.feature('BPU-INT-073')

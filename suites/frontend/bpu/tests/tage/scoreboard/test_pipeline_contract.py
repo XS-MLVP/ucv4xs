@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from toffee import TransferState
-from bpuverify.tage.checker.assertions import allocate
-from bpuverify.tage.checker.assertions import require_provider
-from bpuverify.tage.case.definitions import PC
-from bpuverify.tage.case.definitions import POSITION
+from suites.frontend.bpu.tage.checker.assertions import allocate
+from suites.frontend.bpu.tage.checker.assertions import require_provider
+from suites.frontend.bpu.tage.case.definitions import PC
+from suites.frontend.bpu.tage.case.definitions import POSITION
 
 
 async def test_back_to_back_lookups_complete_two_cycles_after_acceptance(tage_agent):

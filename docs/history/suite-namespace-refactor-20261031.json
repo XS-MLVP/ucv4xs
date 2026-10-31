@@ -1,0 +1,940 @@
+{
+  "schema": 1,
+  "date": "2026-10-31",
+  "scope": "suite-root namespace and resource/import refactor, not completed transaction migration",
+  "source_map": {
+    "path": "docs/history/suite-namespace-moves-20261031.jsonl",
+    "entries": 2017,
+    "sha256": "26ffbe3b2ed94c948550c3ffc220aa7a01a2d63bc6e70a84f1ac69bbadcb6f04"
+  },
+  "old_package_source_files": 2022,
+  "moved_package_files": 2014,
+  "redundant_common_initializers": [
+    {
+      "path": "suites/frontend/bpu/bpuverify/common/__init__.py",
+      "content": "\"\"\"bpuverify.common support.\"\"\"\n"
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/common/__init__.py",
+      "content": "\"\"\"Shared verification infrastructure: pins, drivers, monitors, fixtures.\n\nThe generated Picker package exposes flat pin handles (``io_toBpu_train_valid``\netc.) rather than a toffee Bundle tree, so bindings are explicit pin groups.\nTests own *transactions*; drivers own pins; monitors own observations.\n\"\"\"\n\nfrom .env.fixtures import agent_fixture\nfrom .env.fixtures import coverage_path\n\n__all__ = [\"agent_fixture\", \"coverage_path\"]\n"
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/common/env/__init__.py",
+      "content": "\"\"\"Environment package: native DUT ownership and pytest fixtures.\"\"\"\n\nfrom .fixtures import agent_fixture\nfrom .fixtures import coverage_path\nfrom .fixtures import result_dir\n\n__all__ = [\"agent_fixture\", \"coverage_path\", \"result_dir\"]\n"
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/common/__init__.py",
+      "content": "\"\"\"icacheverify.common support.\"\"\"\n"
+    },
+    {
+      "path": "suites/frontend/ifu/ifuverify/common/__init__.py",
+      "content": ""
+    },
+    {
+      "path": "suites/memblock/lsu/lsuverify/common/__init__.py",
+      "content": ""
+    },
+    {
+      "path": "suites/memblock/mmu/mmuverify/common/__init__.py",
+      "content": ""
+    },
+    {
+      "path": "suites/memblock/sbuffer/sbufferverify/common/__init__.py",
+      "content": ""
+    }
+  ],
+  "resource_anchors": 36,
+  "collections": [
+    {
+      "suite": "bpu",
+      "exit": 0,
+      "before": 41031,
+      "after": 41031,
+      "same_ordered_nodeids": true,
+      "before_sha256": "329e6581d7b6370db251d361767fe0a2138e3049ff66613aac99c528e6d7374b",
+      "after_sha256": "329e6581d7b6370db251d361767fe0a2138e3049ff66613aac99c528e6d7374b",
+      "log_sha256": "b65b4c98031a2d4774d28a0a4b20926153546d55205dafc86e12912505623889"
+    },
+    {
+      "suite": "ftq",
+      "exit": 0,
+      "before": 111,
+      "after": 111,
+      "same_ordered_nodeids": true,
+      "before_sha256": "481154c0c025719f7a4fc355ad0717515a06b995f6f971bb9f21b9708b202318",
+      "after_sha256": "481154c0c025719f7a4fc355ad0717515a06b995f6f971bb9f21b9708b202318",
+      "log_sha256": "ddbf10e27a7eee7520e35c00409a61dc1b2f01bf9cc28c13e2cc17dcf433cacb"
+    },
+    {
+      "suite": "icache",
+      "exit": 0,
+      "before": 294,
+      "after": 294,
+      "same_ordered_nodeids": true,
+      "before_sha256": "d965430d5dc1a18d47e7dd642bc28496675f5396b09c3f31d13153d8970ccf9e",
+      "after_sha256": "d965430d5dc1a18d47e7dd642bc28496675f5396b09c3f31d13153d8970ccf9e",
+      "log_sha256": "ab85ccd5f669c22140b3dd3c01c94361e84d3498ff2e4d8c0fb664cfebc0ed23"
+    },
+    {
+      "suite": "ifu",
+      "exit": 0,
+      "before": 147,
+      "after": 147,
+      "same_ordered_nodeids": true,
+      "before_sha256": "6bdf4491d8074c9c56c55c948ec5836defb59507a6c9d9afb4f10ad3cc65ce05",
+      "after_sha256": "6bdf4491d8074c9c56c55c948ec5836defb59507a6c9d9afb4f10ad3cc65ce05",
+      "log_sha256": "9bb40bde92446b9e3729690c8fd37f2c7e64e1325c9b3d488adc1474d531a48b"
+    },
+    {
+      "suite": "dcache",
+      "exit": 0,
+      "before": 213,
+      "after": 213,
+      "same_ordered_nodeids": true,
+      "before_sha256": "a43218046d36f400461a75bc72bd2143031820c6523974e6ab9de6c2410afc25",
+      "after_sha256": "a43218046d36f400461a75bc72bd2143031820c6523974e6ab9de6c2410afc25",
+      "log_sha256": "29110907f4a8d8096522c92827587870562016b23e3fb241ecaa97b7985d62e6"
+    },
+    {
+      "suite": "lsq",
+      "exit": 0,
+      "before": 2575,
+      "after": 2575,
+      "same_ordered_nodeids": true,
+      "before_sha256": "3cbeb45c5191682bb2429d2b1b167d2d1a6c8fe5e3392e26e2589d0399a7fbb1",
+      "after_sha256": "3cbeb45c5191682bb2429d2b1b167d2d1a6c8fe5e3392e26e2589d0399a7fbb1",
+      "log_sha256": "0bf6b9b46025c43500b1808eec041e1ee0c164c27a46c4d9422954a517a0aded"
+    },
+    {
+      "suite": "lsu",
+      "exit": 0,
+      "before": 529,
+      "after": 529,
+      "same_ordered_nodeids": true,
+      "before_sha256": "1c82b9cc8a88f5ab839f7320c138817a84264c24966006f2aaad38d7fa16283e",
+      "after_sha256": "1c82b9cc8a88f5ab839f7320c138817a84264c24966006f2aaad38d7fa16283e",
+      "log_sha256": "3da4ac87847abf7794fc6c41c908be0fa8d2aa9891a39228e702ddbcae9937cc"
+    },
+    {
+      "suite": "mmu",
+      "exit": 0,
+      "before": 408,
+      "after": 408,
+      "same_ordered_nodeids": true,
+      "before_sha256": "8b1d013511ab2f89ce751ff192a3e447f694ee08c338cd912fe3abcf2bdb70b2",
+      "after_sha256": "8b1d013511ab2f89ce751ff192a3e447f694ee08c338cd912fe3abcf2bdb70b2",
+      "log_sha256": "1b68e3d119d0beda34da3f1a646de8aa402320adbfab353f205dbce532f5cd9c"
+    },
+    {
+      "suite": "sbuffer",
+      "exit": 0,
+      "before": 31,
+      "after": 31,
+      "same_ordered_nodeids": true,
+      "before_sha256": "50d0f5f3d4df2e0a48b094e61a567e42fc4e68d3730d39de234c81ff8a3bf959",
+      "after_sha256": "50d0f5f3d4df2e0a48b094e61a567e42fc4e68d3730d39de234c81ff8a3bf959",
+      "log_sha256": "d97379a88c3acb9ed99801e90ef5e905e1f61526dabd7f4fc690c88f679a35c6"
+    },
+    {
+      "suite": "vagq",
+      "exit": 0,
+      "before": 467,
+      "after": 467,
+      "same_ordered_nodeids": true,
+      "before_sha256": "55b768e0b97a8cca6bf2854bc616ec9bba981cd6b9ee35790cab309c92118fd5",
+      "after_sha256": "55b768e0b97a8cca6bf2854bc616ec9bba981cd6b9ee35790cab309c92118fd5",
+      "log_sha256": "1b047865f9e871dbe912c413b07422b6e138cfb094d56cb7fb60661b65ae675e"
+    }
+  ],
+  "wheel": {
+    "wheel": "ucv4xs-0.1.0-py3-none-any.whl",
+    "python_files": 1995,
+    "files": 2000,
+    "bytes": 2944478,
+    "sha256": "d643a20f06868df675c87995ef18dd3545d66657904f01961a8389acabfb6c4d",
+    "missing": [],
+    "unexpected": [],
+    "forbidden_assets": [],
+    "runtime_exit": 0,
+    "runtime_modules": [
+      "suites.frontend.bpu.ports.bindings",
+      "suites.frontend.bpu.tage.case.retained_owner",
+      "suites.frontend.ftq.ports",
+      "suites.frontend.icache.runtime.dut",
+      "suites.frontend.ifu.harness",
+      "suites.memblock.dcache.native",
+      "suites.memblock.lsq.local_reset.reference",
+      "suites.memblock.lsu.native",
+      "suites.memblock.mmu.native",
+      "suites.memblock.sbuffer.native",
+      "suites.vector.vagq.runtime"
+    ],
+    "runtime_stdout": "wheel imports 11\n",
+    "runtime_stderr": ""
+  },
+  "limits": [
+    "No new RTL generation or native DUT rebuild claimed.",
+    "Stable ordered nodeids prove collection identity, not whole-suite behavioral equivalence.",
+    "Historical full-run verdicts stay attached to original source hashes.",
+    "Six suites still have transaction-boundary findings.",
+    "BPU full production native and exhaustive VAGQ regressions remain unproved.",
+    "Two prepare_rtl tool import-only fixes follow native regressions; their standalone module imports and root tests were rechecked, not a fresh hardware rebuild."
+  ],
+  "checks": [
+    {
+      "check": "root-tests-verified",
+      "exit": 0,
+      "log_sha256": "170aed4c29e54d65e8f3bbe17a533e83a3c6b26519bf1322e2315ed67055ca59",
+      "tail": [
+        "........................................................................ [ 75%]",
+        "........................                                                 [100%]",
+        "96 passed in 57.52s"
+      ]
+    },
+    {
+      "check": "layout-verified",
+      "exit": 0,
+      "log_sha256": "c6fe61fc689a9b947ad9977632cd8a9f65584bf651c1ed41f35b0d33b0fb923e",
+      "tail": [
+        "| mmu | 22 | 52 | 0 | 0 | 0 | 29 | yes | needs-adapter | ok |",
+        "| sbuffer | 2 | 7 | 0 | 0 | 0 | 0 | yes | no-static-leak-found | ok |",
+        "| vagq | 54 | 14 | 0 | 0 | 0 | 179 | yes | needs-adapter | ok |"
+      ]
+    },
+    {
+      "check": "transaction-verified",
+      "exit": 1,
+      "log_sha256": "87def01f4c748dc24254176396427994222850fb5427107b9ae3586510f269ed",
+      "tail": [
+        "| mmu | 22 | 52 | 0 | 0 | 0 | 29 | yes | needs-adapter | 29 pin-level expressions require transaction adapters |",
+        "| sbuffer | 2 | 7 | 0 | 0 | 0 | 0 | yes | no-static-leak-found | ok |",
+        "| vagq | 54 | 14 | 0 | 0 | 0 | 179 | yes | needs-adapter | 179 pin-level expressions require transaction adapters |"
+      ]
+    },
+    {
+      "check": "skills-verified",
+      "exit": 0,
+      "log_sha256": "e2ca572f1c1ac985d863422272810240f7825dd1da13a6cf826c0e8d2d828fd4",
+      "tail": [
+        "    \"Link fragments and methodological correctness need review.\"",
+        "  ]",
+        "}"
+      ]
+    },
+    {
+      "check": "assets-verified",
+      "exit": 0,
+      "log_sha256": "64349f02735e2254b2bb0f2ea5345ac17febf77b74472fdcbc7a9387696679c0",
+      "tail": [
+        "  \"historical_evidence_entries\": 134685,",
+        "  \"errors\": []",
+        "}"
+      ]
+    },
+    {
+      "check": "pip-check-verified",
+      "exit": 0,
+      "log_sha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09",
+      "tail": [
+        "No broken requirements found."
+      ]
+    },
+    {
+      "check": "diff-check-verified",
+      "exit": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tail": []
+    }
+  ],
+  "layout": [
+    {
+      "suite": "bpu",
+      "namespace": "suites.frontend.bpu",
+      "namespace_issues": [],
+      "conftest_count": 1,
+      "nested_conftests": [],
+      "env_pytest_count": 0,
+      "selftest_marker": true,
+      "pin_fields": 0,
+      "transaction_boundary": "no-static-leak-found"
+    },
+    {
+      "suite": "ftq",
+      "namespace": "suites.frontend.ftq",
+      "namespace_issues": [],
+      "conftest_count": 1,
+      "nested_conftests": [],
+      "env_pytest_count": 0,
+      "selftest_marker": true,
+      "pin_fields": 0,
+      "transaction_boundary": "no-static-leak-found"
+    },
+    {
+      "suite": "icache",
+      "namespace": "suites.frontend.icache",
+      "namespace_issues": [],
+      "conftest_count": 1,
+      "nested_conftests": [],
+      "env_pytest_count": 0,
+      "selftest_marker": true,
+      "pin_fields": 0,
+      "transaction_boundary": "no-static-leak-found"
+    },
+    {
+      "suite": "ifu",
+      "namespace": "suites.frontend.ifu",
+      "namespace_issues": [],
+      "conftest_count": 1,
+      "nested_conftests": [],
+      "env_pytest_count": 0,
+      "selftest_marker": true,
+      "pin_fields": 313,
+      "transaction_boundary": "needs-adapter"
+    },
+    {
+      "suite": "dcache",
+      "namespace": "suites.memblock.dcache",
+      "namespace_issues": [],
+      "conftest_count": 1,
+      "nested_conftests": [],
+      "env_pytest_count": 0,
+      "selftest_marker": true,
+      "pin_fields": 2,
+      "transaction_boundary": "needs-adapter"
+    },
+    {
+      "suite": "lsq",
+      "namespace": "suites.memblock.lsq",
+      "namespace_issues": [],
+      "conftest_count": 1,
+      "nested_conftests": [],
+      "env_pytest_count": 0,
+      "selftest_marker": true,
+      "pin_fields": 1057,
+      "transaction_boundary": "needs-adapter"
+    },
+    {
+      "suite": "lsu",
+      "namespace": "suites.memblock.lsu",
+      "namespace_issues": [],
+      "conftest_count": 1,
+      "nested_conftests": [],
+      "env_pytest_count": 0,
+      "selftest_marker": true,
+      "pin_fields": 140,
+      "transaction_boundary": "needs-adapter"
+    },
+    {
+      "suite": "mmu",
+      "namespace": "suites.memblock.mmu",
+      "namespace_issues": [],
+      "conftest_count": 1,
+      "nested_conftests": [],
+      "env_pytest_count": 0,
+      "selftest_marker": true,
+      "pin_fields": 29,
+      "transaction_boundary": "needs-adapter"
+    },
+    {
+      "suite": "sbuffer",
+      "namespace": "suites.memblock.sbuffer",
+      "namespace_issues": [],
+      "conftest_count": 1,
+      "nested_conftests": [],
+      "env_pytest_count": 0,
+      "selftest_marker": true,
+      "pin_fields": 0,
+      "transaction_boundary": "no-static-leak-found"
+    },
+    {
+      "suite": "vagq",
+      "namespace": "suites.vector.vagq",
+      "namespace_issues": [],
+      "conftest_count": 1,
+      "nested_conftests": [],
+      "env_pytest_count": 0,
+      "selftest_marker": true,
+      "pin_fields": 179,
+      "transaction_boundary": "needs-adapter"
+    }
+  ],
+  "first_managed_regressions": [
+    {
+      "suite": "bpu",
+      "status": "PASS",
+      "counts": {
+        "PASS": 563
+      },
+      "hardware_verdict": "PASS",
+      "gaps": [],
+      "source_unchanged": true,
+      "source_sha256": "6cec532d3592d148411691fe2e09ffc6cd39a6e86ff279b02122e9f163c9fc6c",
+      "run_sha256": "602216b787a3c0326dc63d09045ab232dd4dba2e107e5547f52703b5362f1f79",
+      "summary_sha256": "933450d6e5a226fa94f3758426bb5e93da35025517da60a682288f33985fb953",
+      "tasks": [
+        {
+          "scope": "pure",
+          "status": "PASS",
+          "counts": {
+            "PASS": 561
+          },
+          "collected": 561,
+          "exit_code": 0
+        },
+        {
+          "scope": "tage",
+          "status": "PASS",
+          "counts": {
+            "PASS": 2
+          },
+          "collected": 2,
+          "exit_code": 0
+        }
+      ],
+      "manifests": [
+        {
+          "path": "results/ucv-namespace-final-20261031/bpu/bpu-pure/manifest.json",
+          "state": "committed",
+          "coverage_complete": true,
+          "sha256": "a8f20cf880b86fa7a52c5d6e6a34a89123dbf09d37b4a46e9fd6f9b752b2e2aa"
+        },
+        {
+          "path": "results/ucv-namespace-final-20261031/bpu/bpu-tage/manifest.json",
+          "state": "committed",
+          "coverage_complete": true,
+          "sha256": "06c889689c328ca1dfa8530b7de898db5837e546f4690669317238390c8b6ef8"
+        }
+      ],
+      "seed": 1,
+      "workers": 1,
+      "selection": [
+        "tests/framework/test_repository_layout.py",
+        "tests/framework/test_trace_export.py",
+        "tests/tage/scoreboard/test_retained_context.py",
+        "tests/tage/scoreboard/test_dual_shadow_model.py",
+        "tests/tage/testcase/test_enable.py",
+        "tests/tage/testcase/test_retained_owner.py::test_captured_way_feedback_updates_retained_owner_at_every_depth[pending-depth0-origin0-bank0]"
+      ],
+      "output": "results/ucv-namespace-final-20261031/bpu"
+    },
+    {
+      "suite": "dcache",
+      "status": "PASS",
+      "counts": {
+        "PASS": 24
+      },
+      "hardware_verdict": "PASS",
+      "gaps": [],
+      "source_unchanged": true,
+      "source_sha256": "f647ddd103285059bf7306fac0abf1da6d464c9db6f49a34642c77c44b2f988c",
+      "run_sha256": "853a8651336476b80c6d826b928e33c09c303cf078b9cd78a948a58660698009",
+      "summary_sha256": "9b19d3d0b7fea71212d3aceab533a67b7bff08100e560bedab0241eb994f3dc5",
+      "tasks": [
+        {
+          "scope": "suite",
+          "status": "PASS",
+          "counts": {
+            "PASS": 24
+          },
+          "collected": 24,
+          "exit_code": 0
+        }
+      ],
+      "manifests": [
+        {
+          "path": "results/ucv-namespace-final-20261031/dcache/dcache/manifest.json",
+          "state": "committed",
+          "coverage_complete": true,
+          "sha256": "97cc48e4d05bad5c89beab83f9ccb74ad7905a1bd34cdbdbacc44e24a1a40d02"
+        }
+      ],
+      "seed": 1,
+      "workers": 1,
+      "selection": [
+        "tests/probe_queue",
+        "tests/writeback_queue",
+        "tests/ctrl_unit"
+      ],
+      "output": "results/ucv-namespace-final-20261031/dcache"
+    },
+    {
+      "suite": "ftq",
+      "status": "PASS",
+      "counts": {
+        "PASS": 109,
+        "XFAIL": 2
+      },
+      "hardware_verdict": "PASS",
+      "gaps": [],
+      "source_unchanged": true,
+      "source_sha256": "a008d96850e482d72bc6979ac6db643dd0fb85faaef5e9ca57ed8b1b446112e3",
+      "run_sha256": "4fe82da0c0b5bcd1dfd5484586f954a9aa119b57b25e3c8598fb5e835e8dfb26",
+      "summary_sha256": "9af66c29ab52090289e0589faa37014de4c3dd04397d3c77ea425a17fa39559f",
+      "tasks": [
+        {
+          "scope": "suite",
+          "status": "PASS",
+          "counts": {
+            "PASS": 109,
+            "XFAIL": 2
+          },
+          "collected": 111,
+          "exit_code": 0
+        }
+      ],
+      "manifests": [
+        {
+          "path": "results/ucv-namespace-final-20261031/ftq/ftq/manifest.json",
+          "state": "committed",
+          "coverage_complete": true,
+          "sha256": "5313a492b95672c281dff0cf520c5fd4ccde77a361414d41fc8369251993fd23"
+        }
+      ],
+      "seed": 1,
+      "workers": 1,
+      "selection": [
+        "tests"
+      ],
+      "output": "results/ucv-namespace-final-20261031/ftq"
+    },
+    {
+      "suite": "icache",
+      "status": "PASS",
+      "counts": {
+        "PASS": 291,
+        "XFAIL": 3
+      },
+      "hardware_verdict": "PASS",
+      "gaps": [],
+      "source_unchanged": true,
+      "source_sha256": "13aa7d7b790dcf56ea268ac9fca64fba555cc0a34b65a39bcc423b153c8d60f5",
+      "run_sha256": "f88a7045f7fff9f97410e8b08f52f44a644a9c9b33a319c8f6c4460c43935848",
+      "summary_sha256": "f05e8484b56ade87807ab1a012e13b492cdbfedc933d3489e755fc1e3571ed69",
+      "tasks": [
+        {
+          "scope": "suite",
+          "status": "PASS",
+          "counts": {
+            "PASS": 291,
+            "XFAIL": 3
+          },
+          "collected": 294,
+          "exit_code": 0
+        }
+      ],
+      "manifests": [
+        {
+          "path": "results/ucv-namespace-final-20261031/icache/icache/manifest.json",
+          "state": "committed",
+          "coverage_complete": true,
+          "sha256": "fe6eede28085d4530a2646b607779fdc7ccf9334ad0b4100b6edd644c6849b12"
+        }
+      ],
+      "seed": 1,
+      "workers": 1,
+      "selection": [
+        "tests"
+      ],
+      "output": "results/ucv-namespace-final-20261031/icache"
+    },
+    {
+      "suite": "ifu",
+      "status": "FAIL",
+      "counts": {
+        "PASS": 144,
+        "FAIL": 2,
+        "UNCERTAIN": 1
+      },
+      "hardware_verdict": "FAIL",
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS"
+      ],
+      "source_unchanged": true,
+      "source_sha256": "d21d25c2e0ce0a512cfa3430dd623e4f92490b2c40f445ea6d254ad1b842f07d",
+      "run_sha256": "64f37b0dbdc45e2fdd87747e6ba199a634fd587677322c163308168b22b2d2fa",
+      "summary_sha256": "85a92828b97dfe357a6365876fd3778669d25c41e352ed3ee2bc5124ff3508ee",
+      "tasks": [
+        {
+          "scope": "suite",
+          "status": "FAIL",
+          "counts": {
+            "PASS": 144,
+            "FAIL": 2,
+            "UNCERTAIN": 1
+          },
+          "collected": 147,
+          "exit_code": 1
+        }
+      ],
+      "manifests": [
+        {
+          "path": "results/ucv-namespace-final-20261031/ifu/ifu/manifest.json",
+          "state": "committed",
+          "coverage_complete": true,
+          "sha256": "9c2b2b031f09207b8955c5d4d9238ad867664b9233f49126c96b0d9ea508e794"
+        }
+      ],
+      "seed": 1,
+      "workers": 1,
+      "selection": [
+        "tests"
+      ],
+      "output": "results/ucv-namespace-final-20261031/ifu"
+    },
+    {
+      "suite": "lsq",
+      "status": "PASS",
+      "counts": {
+        "PASS": 73
+      },
+      "hardware_verdict": "PASS",
+      "gaps": [],
+      "source_unchanged": true,
+      "source_sha256": "a76f2ee542dcbeadad5bc12f0f92346b10fcfd9a154a389c8ca7f4137f831c2e",
+      "run_sha256": "a6b56c7150b84b8fed40d415992d03049dc4f7a717d2ac670292a4896994fd70",
+      "summary_sha256": "6eeaa15ea6366fd48e1af11e85e553fdca189d4e5fe71adfabaac1318d94c578",
+      "tasks": [
+        {
+          "scope": "suite",
+          "status": "PASS",
+          "counts": {
+            "PASS": 73
+          },
+          "collected": 73,
+          "exit_code": 0
+        }
+      ],
+      "manifests": [
+        {
+          "path": "results/ucv-namespace-final-20261031/lsq/lsq/manifest.json",
+          "state": "committed",
+          "coverage_complete": true,
+          "sha256": "b774d3a584bd45b1398e41a7021de20c5a7cedc0790586fbe711695963143773"
+        }
+      ],
+      "seed": 1,
+      "workers": 1,
+      "selection": [
+        "tests/freelist",
+        "tests/local_reset",
+        "tests/runtime"
+      ],
+      "output": "results/ucv-namespace-final-20261031/lsq"
+    },
+    {
+      "suite": "lsu",
+      "status": "FAIL",
+      "counts": {
+        "PASS": 47,
+        "FAIL": 1
+      },
+      "hardware_verdict": "FAIL",
+      "gaps": [],
+      "source_unchanged": true,
+      "source_sha256": "985095459bd2a70a259e66c4fe83458843adc6cf807204712a9011ebe89e1eee",
+      "run_sha256": "43925a88fc9d15684de2923cff90db63ee6faf7425031fbd083917ebb666234e",
+      "summary_sha256": "b29215a1cdea9e48a8739116b56f6e5faeef90c3614443509cf70e2c5485f8e2",
+      "tasks": [
+        {
+          "scope": "suite",
+          "status": "FAIL",
+          "counts": {
+            "PASS": 47,
+            "FAIL": 1
+          },
+          "collected": 48,
+          "exit_code": 1
+        }
+      ],
+      "manifests": [
+        {
+          "path": "results/ucv-namespace-final-20261031/lsu/lsu/manifest.json",
+          "state": "committed",
+          "coverage_complete": true,
+          "sha256": "facdec2576ed15090497792fe6d734c4e25098f89bda6aeb348a8cad16d6410a"
+        }
+      ],
+      "seed": 1,
+      "workers": 1,
+      "selection": [
+        "tests/load_s2"
+      ],
+      "output": "results/ucv-namespace-final-20261031/lsu"
+    },
+    {
+      "suite": "mmu",
+      "status": "PASS",
+      "counts": {
+        "PASS": 33
+      },
+      "hardware_verdict": "PASS",
+      "gaps": [],
+      "source_unchanged": true,
+      "source_sha256": "03bf9542a95b2fc2f3ddba2b35beb6f2ac61b0c986c67611f55b8d60848c4339",
+      "run_sha256": "90f62c042eab02b7440437bb08ee1d421a38e0f1682c41894e2111ea68e8b26c",
+      "summary_sha256": "5b68d015610cb2ac66391949d1c94137624b8a34deb66243452699232bb22151",
+      "tasks": [
+        {
+          "scope": "suite",
+          "status": "PASS",
+          "counts": {
+            "PASS": 33
+          },
+          "collected": 33,
+          "exit_code": 0
+        }
+      ],
+      "manifests": [
+        {
+          "path": "results/ucv-namespace-final-20261031/mmu/mmu/manifest.json",
+          "state": "committed",
+          "coverage_complete": true,
+          "sha256": "88463e9e366cd7669bf1fc962406d78f546bf895bac93f8386b4aafcd41967a6"
+        }
+      ],
+      "seed": 1,
+      "workers": 1,
+      "selection": [
+        "tests/wrapper",
+        "tests/tlb"
+      ],
+      "output": "results/ucv-namespace-final-20261031/mmu"
+    },
+    {
+      "suite": "sbuffer",
+      "status": "PASS",
+      "counts": {
+        "PASS": 31
+      },
+      "hardware_verdict": "PASS",
+      "gaps": [],
+      "source_unchanged": true,
+      "source_sha256": "0c01fb4f3cecced340b62e6abaa239aa46d5a69089d29284b66d81d95e499d76",
+      "run_sha256": "2c20ddf47cee753baf357d80a578e759f95338753f585fa56c4da8c9026c43cf",
+      "summary_sha256": "03299beb41c0855bdb63aeeeab84f61953d2182908ee078099d0f4fd91c7a924",
+      "tasks": [
+        {
+          "scope": "suite",
+          "status": "PASS",
+          "counts": {
+            "PASS": 31
+          },
+          "collected": 31,
+          "exit_code": 0
+        }
+      ],
+      "manifests": [
+        {
+          "path": "results/ucv-namespace-final-20261031/sbuffer/sbuffer/manifest.json",
+          "state": "committed",
+          "coverage_complete": true,
+          "sha256": "8c63e6d03a797bb9ef7923c52d4194932341aeafabb82876032d4a4cc7de27c8"
+        }
+      ],
+      "seed": 1,
+      "workers": 1,
+      "selection": [
+        "tests"
+      ],
+      "output": "results/ucv-namespace-final-20261031/sbuffer"
+    },
+    {
+      "suite": "vagq",
+      "status": "PASS",
+      "counts": {
+        "PASS": 13
+      },
+      "hardware_verdict": "PASS",
+      "gaps": [],
+      "source_unchanged": true,
+      "source_sha256": "79ac31878fe7c71d1defb739292b6d7f8e45438b3e1154e6026cfa27ca75fd15",
+      "run_sha256": "be0c4cef38cacf088d8300667263ce0200a69ef497ec657b069b8f4ced928b5e",
+      "summary_sha256": "71b857fce36a6d15c710b9483d14131bb00925c5e5f50e996aa60c2a2f01ed40",
+      "tasks": [
+        {
+          "scope": "suite",
+          "status": "PASS",
+          "counts": {
+            "PASS": 13
+          },
+          "collected": 13,
+          "exit_code": 0
+        }
+      ],
+      "manifests": [
+        {
+          "path": "results/ucv-namespace-final-20261031/vagq/vagq/manifest.json",
+          "state": "committed",
+          "coverage_complete": true,
+          "sha256": "7cbc1f92a141e17e9fa939eda6ae95e83f167dcb40634add1e6ad28844b0d603"
+        }
+      ],
+      "seed": 1,
+      "workers": 1,
+      "selection": [
+        "tests/test_organization.py",
+        "tests/framework/test_manager_binding.py",
+        "tests/manager/test_lifecycle.py",
+        "tests/manager/testcase/test_protocol.py"
+      ],
+      "output": "results/ucv-namespace-final-20261031/vagq"
+    }
+  ],
+  "artifact_isolation_regressions": [
+    {
+      "suite": "bpu",
+      "output": "results/ucv-namespace-clean-final-20261031/bpu",
+      "status": "PASS",
+      "counts": {
+        "PASS": 563
+      },
+      "gaps": [],
+      "source_sha256": "89d4a9d9af8c06b9efb7d08ff15d3d538c483a006eb38aeeaa1a03def4dbb11c",
+      "source_unchanged": true,
+      "selection": [
+        "tests/framework/test_repository_layout.py",
+        "tests/framework/test_trace_export.py",
+        "tests/tage/scoreboard/test_retained_context.py",
+        "tests/tage/scoreboard/test_dual_shadow_model.py",
+        "tests/tage/testcase/test_enable.py",
+        "tests/tage/testcase/test_retained_owner.py::test_captured_way_feedback_updates_retained_owner_at_every_depth[pending-depth0-origin0-bank0]"
+      ],
+      "seed": 1,
+      "workers": 1,
+      "manifests": [
+        {
+          "path": "results/ucv-namespace-clean-final-20261031/bpu/bpu-pure/manifest.json",
+          "state": "committed",
+          "coverage_complete": true,
+          "sha256": "badb375f13da7a3835c9310f423f74f9c8e5184cbf1bf1f1334ee9c2cf39dadb"
+        },
+        {
+          "path": "results/ucv-namespace-clean-final-20261031/bpu/bpu-tage/manifest.json",
+          "state": "committed",
+          "coverage_complete": true,
+          "sha256": "10fb61f8c3ddd915507084862385a8c8823a8b8297b13c9d1153c8eabe4b47ab"
+        }
+      ],
+      "run_sha256": "adc6ab0e2c55d28212284da3f9d34f9e563cf57b83b1410092668b4846fa9165",
+      "summary_sha256": "a36f5a46cfe100f6ddd2adeee500e16d8be9a04767ba0007411ac646a979bea7"
+    },
+    {
+      "suite": "ftq",
+      "output": "results/ucv-namespace-clean-final-20261031/ftq",
+      "status": "PASS",
+      "counts": {
+        "PASS": 109,
+        "XFAIL": 2
+      },
+      "gaps": [],
+      "source_sha256": "b3fa3c73850188f1c700ceed1e6f4d1c7ffc4c6c7df6ad248712ae2e9603a84a",
+      "source_unchanged": true,
+      "selection": [
+        "tests"
+      ],
+      "seed": 1,
+      "workers": 1,
+      "manifests": [
+        {
+          "path": "results/ucv-namespace-clean-final-20261031/ftq/ftq/manifest.json",
+          "state": "committed",
+          "coverage_complete": true,
+          "sha256": "60be887d194e87e3edd59d2f628787e08b30f36aa5015c223190beda58cb4e9f"
+        }
+      ],
+      "run_sha256": "93aea4f375c031a4ec5c857a8a085a84cde6e2ad0e01f3d1b96f963fcc7079b7",
+      "summary_sha256": "76da4a99467f0e50fe88f2f7b5f1d01726bd1b5064cf75379b5110fe80e2a4c8"
+    },
+    {
+      "suite": "icache",
+      "output": "results/ucv-namespace-clean-final-20261031/icache",
+      "status": "PASS",
+      "counts": {
+        "PASS": 291,
+        "XFAIL": 3
+      },
+      "gaps": [],
+      "source_sha256": "e4ea5565b67d33ccc30bc55be44f286667077b77b81f8c40807daac48c986713",
+      "source_unchanged": true,
+      "selection": [
+        "tests"
+      ],
+      "seed": 1,
+      "workers": 1,
+      "manifests": [
+        {
+          "path": "results/ucv-namespace-clean-final-20261031/icache/icache/manifest.json",
+          "state": "committed",
+          "coverage_complete": true,
+          "sha256": "d24ceba5f674adb2e33aed133681ba1d154e90524eadf10674ee9778da43ff64"
+        }
+      ],
+      "run_sha256": "acc6755eae6b6de87816c61b0788965eeb41dbaeabff83bfc9eaa424b97da11d",
+      "summary_sha256": "6b119da0d5e2f8f4e97493dba8db4c639cae66a9c8bb41b1b336be20b3cf1c42"
+    },
+    {
+      "suite": "lsq",
+      "output": "results/ucv-namespace-clean-final-20261031/lsq",
+      "status": "PASS",
+      "counts": {
+        "PASS": 73
+      },
+      "gaps": [],
+      "source_sha256": "aa99617058ee4cc329c9827c2ba9b28f2bc7d1214803519214c6731b908aecbd",
+      "source_unchanged": true,
+      "selection": [
+        "tests/freelist",
+        "tests/local_reset",
+        "tests/runtime"
+      ],
+      "seed": 1,
+      "workers": 1,
+      "manifests": [
+        {
+          "path": "results/ucv-namespace-clean-final-20261031/lsq/lsq/manifest.json",
+          "state": "committed",
+          "coverage_complete": true,
+          "sha256": "896c1fa81d4611eee2cb262cffd6b674a4811b15790e5918106058b5c90097ef"
+        }
+      ],
+      "run_sha256": "ad1762bceb8fd77af010bf8b568882e11743f0f0621d9513cbafb4b019c7cc10",
+      "summary_sha256": "e6f6fbc66d19f85bfbab99baa7fdcaf21770eef2dc901780c22c77f96fc51356"
+    }
+  ],
+  "isolation_artifact_check": {
+    "source_artifacts_touched": [],
+    "method": "Compare exact hash, size and mtime_ns of four prior loose waveforms before/after full selected reruns"
+  },
+  "cleanup": {
+    "path": "docs/history/suite-namespace-cleanup-20261031.json",
+    "sha256": "3b6987103deb72a426c259fa82fd1c608dbb556d4542be4cde10033fa1eae562",
+    "deleted_files": 7,
+    "deleted_bytes": 7765554
+  },
+  "final_tool_import_checks": {
+    "cwd": "outside checkout",
+    "run_name": "ucv_tool_import_check",
+    "modules": [
+      "suites/memblock/dcache/tools/prepare_rtl.py",
+      "suites/memblock/lsu/tools/prepare_rtl.py",
+      "suites/memblock/lsu/tools/gen_manifest.py"
+    ],
+    "result": "PASS, import only, no builds"
+  },
+  "final_audit": {
+    "source_mappings_verified": 2017,
+    "loose_native_outputs": [],
+    "source_cache_directories": [],
+    "primary_document_links_broken": [],
+    "pip_check": "No broken requirements found.",
+    "git_diff_check": "PASS",
+    "assets": {
+      "status": "PASS",
+      "source_files": 6607,
+      "suites": 10,
+      "duts": 132,
+      "historical_evidence_entries": 134685,
+      "errors": []
+    }
+  }
+}

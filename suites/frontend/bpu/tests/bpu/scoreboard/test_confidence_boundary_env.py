@@ -4,12 +4,12 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.env.direction_service import DirectionService
-from bpuverify.bpu.env.mixed_visibility import MixedVisibilityService
-from bpuverify.bpu.env.confidence_boundary import ConfidenceBoundaryService
-from bpuverify.bpu.bundle.confidence_boundary import confidence_boundary_binding
-from bpuverify.bpu.bundle.partial_residency import partial_residency_binding
-from bpuverify.bpu.model.tage.confidence_boundary import PROGRAMS
+from suites.frontend.bpu.bpu.env.direction_service import DirectionService
+from suites.frontend.bpu.bpu.env.mixed_visibility import MixedVisibilityService
+from suites.frontend.bpu.bpu.env.confidence_boundary import ConfidenceBoundaryService
+from suites.frontend.bpu.bpu.bundle.confidence_boundary import confidence_boundary_binding
+from suites.frontend.bpu.bpu.bundle.partial_residency import partial_residency_binding
+from suites.frontend.bpu.bpu.model.tage.confidence_boundary import PROGRAMS
 
 
 @pytest.mark.parametrize('custom',(False,True),ids=('old-default','new-complete-observation'))

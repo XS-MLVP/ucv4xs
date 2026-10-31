@@ -4,12 +4,12 @@ from dataclasses import replace
 from types import SimpleNamespace as NS
 import pytest
 
-from bpuverify.bpu.model.short_competition import Program,PROFILES,RULES,incoming
-from bpuverify.bpu.checker.short_competition import Checks
-from bpuverify.bpu.coverage.short_competition import Coverage
-from bpuverify.bpu.model.early_protection import ProtectionLedger
-from bpuverify.bpu.model.early_aging import allocation
-from bpuverify.utage.model.semantic import Base,Context,TAG_FOLDS,Events,Source,Feedback,UtageReference
+from suites.frontend.bpu.bpu.model.short_competition import Program,PROFILES,RULES,incoming
+from suites.frontend.bpu.bpu.checker.short_competition import Checks
+from suites.frontend.bpu.bpu.coverage.short_competition import Coverage
+from suites.frontend.bpu.bpu.model.early_protection import ProtectionLedger
+from suites.frontend.bpu.bpu.model.early_aging import allocation
+from suites.frontend.bpu.utage.model.semantic import Base,Context,TAG_FOLDS,Events,Source,Feedback,UtageReference
 
 pytestmark=pytest.mark.toffee_functional_coverage(False)
 
@@ -217,7 +217,7 @@ def test_unknown_or_coordinate_only_competition_programs_are_rejected(profile):
 
 @pytest.mark.parametrize('fault',(None,'valid','data_valid','index','tag','position','counter','useful','wrong-boundary'))
 def test_every_long_allocation_or_update_needs_the_actual_complete_retained_write(monkeypatch,fault):
-    from bpuverify.bpu.checker.short_context_ownership import ShortContextChecks
+    from suites.frontend.bpu.bpu.checker.short_context_ownership import ShortContextChecks
     monkeypatch.setattr(ShortContextChecks,'candidates',lambda *args:())
     p=Program(PROFILES[0]);c=Checks(p,Coverage(p));path=p.original(p.new)
     key=(p.new,path.read_indices[1],path.tags[1])

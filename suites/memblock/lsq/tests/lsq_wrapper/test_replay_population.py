@@ -1,13 +1,15 @@
 """Full real Replay populations; SQ dependencies are produced by REAL stores."""
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.load_queue.types import Load
-from lsqverify.lsq_wrapper.types import Address
-from lsqverify.replay.types import Cause, Refill, StoreWakeup, TlbHint
-from lsqverify.raw.types import SqPtr
-from lsqverify.vlq.types import RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.load_queue.types import Load
+from suites.memblock.lsq.lsq_wrapper.types import Address
+from suites.memblock.lsq.replay.types import Cause, Refill, StoreWakeup, TlbHint
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.vlq.types import RobPtr
 from .memory_owners import MemoryOwners, StoreOwner, cached_load
 
 
@@ -51,7 +53,7 @@ async def test_full_120_replay_slots_from_each_s3_input_keep_dependency_and_uid(
     lsq.reach("LSQ-REPLAY.capacity")
     for _ in range(5):
         await trace.cycle()
-        assert not any(lsq.observed[f"io_replay_{bank}_valid"] for bank in range(3))
+        assert not any(lsq.observed[P.io(f"replay_{bank}_valid")] for bank in range(3))
     if stores:
         # Real Store writes/registered ready vectors/pointer release SQ7.
         # No external address_ready/data_ready/full/empty feedback exists.
@@ -76,7 +78,7 @@ async def test_real_vlq_head_is_last_into_replay_but_wins_head_near_candidates(l
         await trace.execute([load])
     await trace.idle(3)
     await trace.cycle(replay_ready=(True, True, True))
-    lsq.expect({f"io_replay_{bank}_bits_replayQueueIdx": 117 + bank for bank in range(3)},
+    lsq.expect({P.io(f"replay_{bank}_bits_replayQueueIdx"): 117 + bank for bank in range(3)},
                "actual VLQ head/head-near owners beat older Replay allocation age")
     await drain_replays(trace, {state["uid"] for state in trace.loads})
     lsq.prove("LSQ-REPLAY.head", "LSQ-REPLAY.capacity")
@@ -98,7 +100,7 @@ async def test_each_dispatch_source_owns_real_120_multi_flow_loads_across_lq_wra
             position += count
             rob += 1
         await trace.idle(2)
-        assert not lsq.observed["io_lqEmpty"]
+        assert not lsq.observed[P.p_lqEmpty]
         await trace.finish()
         assert all(state["completed"] for state in trace.loads)
     assert len(trace.loads) == position == 960
@@ -121,11 +123,11 @@ async def test_actual_sq_bitmap_cannot_clear_strict_from_disabled_feedback(lsq, 
     # not only a true physical bitmap. There is no external SQ feedback pin.
     await trace.write(1)
     await trace.idle(3)
-    lsq.expect({"io_issuePtrExt_value": 0}, "real earlier STA hole prevents the ready pointer from passing strict dependency")
+    lsq.expect({P.p_issuePtrExt_value: 0}, "real earlier STA hole prevents the ready pointer from passing strict dependency")
     await trace.execute([load])
     for _ in range(5):
         await trace.cycle()
-        assert not any(lsq.observed[f"io_replay_{bank}_valid"] for bank in range(3))
+        assert not any(lsq.observed[P.io(f"replay_{bank}_valid")] for bank in range(3))
     lsq.reach("LSQ-REPLAY.strict")
     if dirty:
         disabled = replace(load, execution=replace(load.execution, valid=False, replay_feedback=True, slot=0,
@@ -136,7 +138,7 @@ async def test_actual_sq_bitmap_cannot_clear_strict_from_disabled_feedback(lsq, 
         await trace.cycle(loads=tuple(packet))
         for _ in range(5):
             await trace.cycle()
-            assert not any(lsq.observed[f"io_replay_{bank}_valid"] for bank in range(3))
+            assert not any(lsq.observed[P.io(f"replay_{bank}_valid")] for bank in range(3))
     # A real matching Store execution wake, with a same-owner STA update,
     # then actual old-hole completion permits ordinary final Store writeout.
     await trace.cycle(address_wakeups=(StoreWakeup(True, SqPtr.encode(1)), StoreWakeup()),
@@ -164,9 +166,9 @@ async def test_special_mode_2048_cycles_and_legal_next_head_after_original_feedb
     trigger = lsq.last_tick
     for _ in range(2047):
         await trace.cycle()
-        assert not lsq.observed["io_specialMode"]
+        assert not lsq.observed[P.p_specialMode]
     await trace.cycle()
-    assert (lsq.last_tick - trigger) // 2 == 2048 and bool(lsq.observed["io_specialMode"]) == eligible
+    assert (lsq.last_tick - trigger) // 2 == 2048 and bool(lsq.observed[P.p_specialMode]) == eligible
     await trace.cycle(fast_tlb=TlbHint(True, 15))
     await trace.replay_complete(load)
     # Only after original Load execution really completes may ROB's next
@@ -174,6 +176,6 @@ async def test_special_mode_2048_cycles_and_legal_next_head_after_original_feedb
     next_head = replace(load.execution.uop.rob, former=False) if former_change else RobPtr.encode(11)
     trace.base = replace(trace.base, pending_next=next_head)
     await trace.cycle()
-    lsq.expect({"io_specialMode": 0}, "special mode clears for the actual next head after normal original feedback")
+    lsq.expect({P.p_specialMode: 0}, "special mode clears for the actual next head after normal original feedback")
     await trace.finish()
     lsq.prove("LSQ-REPLAY.special")

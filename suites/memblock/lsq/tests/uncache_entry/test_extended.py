@@ -4,7 +4,7 @@ import random
 
 import pytest
 
-from lsqverify.uncache_entry.types import IdResponse, Redirect, Request, Response, RobPtr, SOURCE_EXCEPTION_BITS
+from suites.memblock.lsq.uncache_entry.types import IdResponse, Redirect, Request, Response, RobPtr, SOURCE_EXCEPTION_BITS
 
 
 async def prepare_phase(env, request, phase, *, sid=5):

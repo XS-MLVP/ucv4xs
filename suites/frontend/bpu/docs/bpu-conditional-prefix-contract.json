@@ -39,7 +39,7 @@
   },
   "new_feature_IDs": 0,
   "independent_components": 6,
-  "source_adapter": "bpuverify/bpu/model/early_joint_sources.py",
+  "source_adapter": "bpu/model/early_joint_sources.py",
   "no_new_prediction_algorithm": true,
   "no_bank_set_way_sweep": true,
   "no_RTL_DUT_SDK_changes": true,

@@ -3,9 +3,9 @@ from __future__ import annotations
 
 import pytest
 
-from mmuverify.common.runtime import execution
-from mmuverify.l2.llptw import LlpReq
-from mmuverify.l2.l2tlb import pte
+from suites.memblock.mmu.execution import execution, refresh
+from suites.memblock.mmu.l2.llptw import LlpReq
+from suites.memblock.mmu.l2.l2tlb import pte
 
 
 def _leaves(env, base_ppn: int, vpn_low: int, final_ppns=None, **perms) -> None:
@@ -26,7 +26,7 @@ async def _prepare(env) -> None:
 # access fault and issues the page-cache update request.
 async def test_normal_walk(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         _leaves(env, 0x80002, 0)
         await env.issue(LlpReq(vpn=0x30000, ppn=0x80002, source=1))
@@ -44,7 +44,7 @@ async def test_normal_walk(llptw_env):
 # LLPTW-02: a non-zero vpn_low read starts at the corresponding PTE offset.
 async def test_vpn_low_offset(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         _leaves(env, 0x80002, 5)
         await env.issue(LlpReq(vpn=0x30005, ppn=0x80002))
@@ -56,7 +56,7 @@ async def test_vpn_low_offset(llptw_env):
 # LLPTW-04: PMP denial reports af without issuing a memory request.
 async def test_pmp_fault(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         _leaves(env, 0x80002, 0)
         for entry in env.pmp:
@@ -73,7 +73,7 @@ async def test_pmp_fault(llptw_env):
 # and produces its own output.
 async def test_sequential_requests(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         _leaves(env, 0x80002, 0)
         _leaves(env, 0x80003, 0)
@@ -88,7 +88,7 @@ async def test_sequential_requests(llptw_env):
 # LLPTW-06: duplicate VPN requests share the in-flight memory read.
 async def test_duplicate_request(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         _leaves(env, 0x80002, 0)
         await env.issue(LlpReq(vpn=0x30000, ppn=0x80002, source=1))
@@ -104,7 +104,7 @@ async def test_duplicate_request(llptw_env):
 # LLPTW-07: the output is held stable while ready is low.
 async def test_out_backpressure(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         _leaves(env, 0x80002, 0)
         await env.issue(LlpReq(vpn=0x30000, ppn=0x80002))
@@ -124,7 +124,7 @@ async def test_out_backpressure(llptw_env):
 # LLPTW-08: sfence in the middle of the walk drops the request.
 async def test_flush_mid_walk(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         _leaves(env, 0x80002, 0)
         await env.issue(LlpReq(vpn=0x30000, ppn=0x80002))
@@ -144,7 +144,7 @@ async def test_flush_mid_walk(llptw_env):
 # LLPTW-09: mem.req.mask blocks the entry until it is cleared.
 async def test_mem_req_mask(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         _leaves(env, 0x80002, 0)
         env.masks[0].Set(1)
@@ -166,11 +166,11 @@ async def test_mem_req_mask(llptw_env):
 # results, without a page-table memory read.
 async def test_bitmap_jump(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.csr["bme"].Set(1)
         env.csr["cmode"].Set(0)
-        env.dut.RefreshComb()
+        refresh(env)
         env.bitmap_cf = 1
         env.bitmap_cfs_value = 0b00010000
         ptes = [pte(0x2000 + index, r=1, w=1, x=1, u=1, a=1, d=1) for index in range(8)]
@@ -187,12 +187,10 @@ async def test_bitmap_jump(llptw_env):
             env.coverage.sample("bitmap", 4, "fail")
 
 
-
-
 # LLPTW-11: all six entry slots can hold active walks at once.
 async def test_capacity(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         for index in range(6):
             _leaves(env, 0x80010 + index, 0)
@@ -213,7 +211,7 @@ async def test_capacity(llptw_env):
 # LLPTW-15: every vpn_low offset (lane) and 64-byte block is exercised.
 async def test_lane_offsets(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         for low in range(8):
             _leaves(env, 0x80020 + low, low)
@@ -230,11 +228,11 @@ async def test_lane_offsets(llptw_env):
 # observable, and the output carries the final stage-2 entry.
 async def test_stage2_identity_translation(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.hptw_enabled = True
         env.hptw["ready"].Set(1)
-        env.dut.RefreshComb()
+        refresh(env)
         _leaves(env, 0x80002, 0, final_ppns=[0x1000 + index for index in range(8)])
         await env.issue(LlpReq(vpn=0x30000, ppn=0x80002, s2xlate=3, source=1))
         snap = await env.wait_out(note="stage2 identity")
@@ -257,12 +255,12 @@ async def test_stage2_identity_translation(llptw_env):
 # read and marks first_s2xlate_fault.
 async def test_stage2_first_fault_gpf(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.hptw_enabled = True
         env.hptw["ready"].Set(1)
         env.hptw_gpf = 1
-        env.dut.RefreshComb()
+        refresh(env)
         _leaves(env, 0x80002, 0, final_ppns=[0x1000] * 8)
         await env.issue(LlpReq(vpn=0x30000, ppn=0x80002, s2xlate=3, source=1))
         snap = await env.wait_out(note="stage2 first gpf")
@@ -278,12 +276,12 @@ async def test_stage2_first_fault_gpf(llptw_env):
 # GPF but reports gaf.
 async def test_stage2_first_fault_gaf(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.hptw_enabled = True
         env.hptw["ready"].Set(1)
         env.hptw_gaf = 1
-        env.dut.RefreshComb()
+        refresh(env)
         _leaves(env, 0x80002, 0, final_ppns=[0x1000] * 8)
         await env.issue(LlpReq(vpn=0x30000, ppn=0x80002, s2xlate=3, source=1))
         snap = await env.wait_out(note="stage2 first gaf")
@@ -300,12 +298,12 @@ async def test_stage2_first_fault_gaf(llptw_env):
 # without setting first_s2xlate_fault.
 async def test_stage2_last_fault_gpf(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.hptw_enabled = True
         env.hptw["ready"].Set(1)
         env.hptw_gpf_last = 1
-        env.dut.RefreshComb()
+        refresh(env)
         _leaves(env, 0x80002, 0, final_ppns=[0x1000] * 8)
         await env.issue(LlpReq(vpn=0x30000, ppn=0x80002, s2xlate=3, source=1))
         snap = await env.wait_out(note="stage2 last gpf")
@@ -321,12 +319,12 @@ async def test_stage2_last_fault_gpf(llptw_env):
 # LLPTW-STAGE2-05: final stage-2 access fault after a successful PTE read.
 async def test_stage2_last_fault_gaf(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.hptw_enabled = True
         env.hptw["ready"].Set(1)
         env.hptw_gaf_last = 1
-        env.dut.RefreshComb()
+        refresh(env)
         _leaves(env, 0x80002, 0, final_ppns=[0x1000] * 8)
         await env.issue(LlpReq(vpn=0x30000, ppn=0x80002, s2xlate=3, source=1))
         snap = await env.wait_out(note="stage2 last gaf")
@@ -342,7 +340,7 @@ async def test_stage2_last_fault_gaf(llptw_env):
 # issue HPTW requests; the stage-2 fault fields stay clear.
 async def test_only_stage2_walk(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         _leaves(env, 0x80002, 0, final_ppns=[0x1000] * 8)
         await env.issue(LlpReq(vpn=0x30000, ppn=0x80002, s2xlate=2, source=1))
@@ -361,7 +359,7 @@ async def test_only_stage2_walk(llptw_env):
 # original VPN/s2xlate/source, then retires without a second output.
 async def test_cache_retry_on_duplicate(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         _leaves(env, 0x80002, 0, final_ppns=[0x1000] * 8)
         await env.issue(LlpReq(vpn=0x30000, ppn=0x80002, source=0))
@@ -418,12 +416,12 @@ async def _drain_outputs(env, count: int):
 # first/last HPTW response fields, not just entry 0.
 async def test_stage2_in_every_entry_slot(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         for count in range(1, 6):
             await _prepare(env)
             env.hptw_enabled = True
             env.hptw["ready"].Set(1)
-            env.dut.RefreshComb()
+            refresh(env)
             env.out["ready"].Set(0)
             held = await _hold_normal_walks(env, count)
             base = 0x80010
@@ -450,7 +448,7 @@ async def test_stage2_in_every_entry_slot(llptw_env):
 # both select the new slot; ptes/cfs are returned unchanged.
 async def test_bitmap_in_every_entry_slot(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         for count in range(1, 6):
             await _prepare(env)
             env.out["ready"].Set(0)
@@ -459,7 +457,7 @@ async def test_bitmap_in_every_entry_slot(llptw_env):
             env.csr["cmode"].Set(0)
             env.bitmap_cf = 1
             env.bitmap_cfs_value = (1 << 8) - 1
-            env.dut.RefreshComb()
+            refresh(env)
             ptes = [pte(0x3000 + index, r=1, w=1, x=1, u=1, a=1, d=1)
                     for index in range(8)]
             vpn = 0x60000 + count * 0x2000
@@ -484,7 +482,7 @@ async def test_bitmap_in_every_entry_slot(llptw_env):
 # update and retires without a second output or memory read.
 async def test_cache_retry_in_every_entry_slot(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         for count in range(1, 6):
             await _prepare(env)
             env.out["ready"].Set(0)
@@ -513,13 +511,13 @@ async def test_cache_retry_in_every_entry_slot(llptw_env):
 # stage-2 fault with no PTE memory read.
 async def test_stage2_first_perm_fault(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.hptw_enabled = True
         env.hptw["ready"].Set(1)
         env.hptw_perm["r"] = 0
         env.hptw_perm["x"] = 0
-        env.dut.RefreshComb()
+        refresh(env)
         _leaves(env, 0x80002, 0, final_ppns=[0x1000] * 8)
         await env.issue(LlpReq(vpn=0x30000, ppn=0x80002, s2xlate=3, source=1))
         snap = await env.wait_out(note="stage2 perm fault")
@@ -535,14 +533,14 @@ async def test_stage2_first_perm_fault(llptw_env):
 # usable as a page table (execute-only table); the walk completes normally.
 async def test_stage2_first_perm_mxr_pass(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.csr["mxr"].Set(1)
         env.hptw_enabled = True
         env.hptw["ready"].Set(1)
         env.hptw_perm["r"] = 0
         env.hptw_perm["x"] = 1
-        env.dut.RefreshComb()
+        refresh(env)
         _leaves(env, 0x80002, 0, final_ppns=[0x1000] * 8)
         await env.issue(LlpReq(vpn=0x30000, ppn=0x80002, s2xlate=3, source=1))
         snap = await env.wait_out(note="stage2 mxr pass")
@@ -560,12 +558,12 @@ async def test_stage2_first_perm_mxr_pass(llptw_env):
 @pytest.mark.parametrize("hptw_latency", [0, 1, 3])
 async def test_two_concurrent_all_stage(llptw_env, hptw_latency):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.hptw_enabled = True
         env.hptw_resp_latency = hptw_latency
         env.hptw["ready"].Set(1)
-        env.dut.RefreshComb()
+        refresh(env)
         env.out["ready"].Set(0)
         for index in range(2):
             vpn = 0x30000 + index * 0x2000
@@ -588,7 +586,7 @@ async def test_two_concurrent_all_stage(llptw_env, hptw_latency):
 
 async def test_consecutive_normal_requests_no_pmp_alias(llptw_env):
     env = llptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         for index in range(2):
             _leaves(env, 0x80020 + index, 0, final_ppns=[0x2000 + index] * 8)

@@ -2,8 +2,8 @@
 from copy import deepcopy
 from dataclasses import replace
 import pytest
-from bpuverify.mbtb.transaction.types import MbtbEntry
-from bpuverify.mbtb.model.depth import expected_mbtb_depth_one_states
+from suites.frontend.bpu.mbtb.transaction.types import MbtbEntry
+from suites.frontend.bpu.mbtb.model.depth import expected_mbtb_depth_one_states
 
 def prepared(align, owner, empty_counter):
     entries = tuple(MbtbEntry(0, 0, 0x40000000, (way // 5) * 16, 0, 0) for way in range(10))

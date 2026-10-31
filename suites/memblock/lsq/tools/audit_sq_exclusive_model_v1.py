@@ -11,11 +11,11 @@ import shutil
 import typing
 
 from audit_sq_initial import ROOT, sha, verify_common
-from lsqverify.raw.model import LoadQueueRawModel
-from lsqverify.raw.types import Inputs as RawInputs, SqPtr
-from lsqverify.replay.model import ReplayModel, sq_after
-from lsqverify.replay.types import Inputs as ReplayInputs
-from lsqverify.sq_endpoint.model import ExclusiveRawModel, ExclusiveReplayModel
+from suites.memblock.lsq.raw.model import LoadQueueRawModel
+from suites.memblock.lsq.raw.types import Inputs as RawInputs, SqPtr
+from suites.memblock.lsq.replay.model import ReplayModel, sq_after
+from suites.memblock.lsq.replay.types import Inputs as ReplayInputs
+from suites.memblock.lsq.sq_endpoint.model import ExclusiveRawModel, ExclusiveReplayModel
 
 
 def typed(kind, value):
@@ -31,10 +31,10 @@ def typed(kind, value):
 def audit(name):
     run=ROOT/"results"/name
     manifest,source,nodes=verify_common(run)
-    assert set(source)>={"lsqverify/sq_endpoint/model.py","tests/sq_endpoint/conftest.py"}
+    assert set(source)>={'lsqverify/sq_endpoint/model.py',"tests/sq_endpoint/conftest.py"}
     frozen=run/"verification-source"
-    old=ast.parse((frozen/"lsqverify/raw/model.py").read_text())
-    new=ast.parse((frozen/"lsqverify/sq_endpoint/model.py").read_text())
+    old=ast.parse((frozen/'lsqverify/raw/model.py').read_text())
+    new=ast.parse((frozen/'lsqverify/sq_endpoint/model.py').read_text())
     context=next(n for n in ast.walk(old) if isinstance(n,ast.FunctionDef) and n.name=="context")
     replacement=next(n for n in ast.walk(new) if isinstance(n,ast.FunctionDef) and n.name=="context")
     loop=next(n for n in context.body if isinstance(n,ast.For))
@@ -62,7 +62,7 @@ def audit(name):
     previous,old_source,_=verify_common(prior)
     assert previous["tests"]=={"PASS":1691,"FAIL":191}
     for key,digest in old_source.items():
-        if key.startswith("lsqverify/"):
+        if key.startswith('lsqverify/'):
             assert source[key]==digest,("changed shared reference during isolated domain work",key)
     specs=json.loads((frozen/"manifest/duts.json").read_text())["duts"]
     counts={}

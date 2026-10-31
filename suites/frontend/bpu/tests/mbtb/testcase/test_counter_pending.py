@@ -1,12 +1,12 @@
 """Read-priority retention versus bank-disjoint flow, across physical geometry."""
-from bpuverify.common.model.configuration import *
+from suites.frontend.bpu.models.configuration import *
 import pytest
 
-from bpuverify.mbtb.coverage.catalog import mbtb_counter_pending_coverage_model
-from bpuverify.mbtb.coverage.catalog import write_mbtb_counter_pending_coverage
-from bpuverify.mbtb.case.resident_scenario import INDEX_CONTEXTS
-from bpuverify.mbtb.case.counter_pending_scenario import check_case
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.mbtb.coverage.catalog import mbtb_counter_pending_coverage_model
+from suites.frontend.bpu.mbtb.coverage.catalog import write_mbtb_counter_pending_coverage
+from suites.frontend.bpu.mbtb.case.resident_scenario import INDEX_CONTEXTS
+from suites.frontend.bpu.mbtb.case.counter_pending_scenario import check_case
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature("BPU-MBTB-020")

@@ -3,13 +3,11 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.bpu.env.main_service import branch
-from bpuverify.bpu.model.selection import Branch, Kind
-from bpuverify.bpu.model.main_dynamic_target import (
+from suites.frontend.bpu.bpu.env.main_service import branch
+from suites.frontend.bpu.bpu.model.selection import Branch, Kind
+from suites.frontend.bpu.bpu.model.main_dynamic_target import (
     Program, PHASES, ORIGINS, PC, EARLIER, LATER, FALLBACK,
     LATER_TARGET, STREAM_PC, VERSIONS, qualified_feedback)
-
-
 
 
 @pytest.mark.parametrize('phase', PHASES)

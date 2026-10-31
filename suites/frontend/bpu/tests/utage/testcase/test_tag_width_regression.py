@@ -1,9 +1,9 @@
 """DefaultConfig eight-bit prediction tags must survive training and readback."""
 import pytest
 
-from bpuverify.utage.case.errors import UtageTagWidthMismatch
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.utage.case.tag_width_scenario import check_guarded_pc_tag_width
+from suites.frontend.bpu.utage.case.errors import UtageTagWidthMismatch
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.utage.case.tag_width_scenario import check_guarded_pc_tag_width
 
 
 @pytest.mark.feature('BPU-UTAGE-007')

@@ -2,9 +2,9 @@
 import json
 import pytest
 
-from bpuverify.utage.model.enable_lifetime import Program, TABLES, PHASES
-from bpuverify.utage.coverage.enable_lifetime import Coverage
-from bpuverify.utage.case.enable_lifetime import check_enable_lifetime
+from suites.frontend.bpu.utage.model.enable_lifetime import Program, TABLES, PHASES
+from suites.frontend.bpu.utage.coverage.enable_lifetime import Coverage
+from suites.frontend.bpu.utage.case.enable_lifetime import check_enable_lifetime
 
 
 @pytest.mark.feature('BPU-UTAGE-012')

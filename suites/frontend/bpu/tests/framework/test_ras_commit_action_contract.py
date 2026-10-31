@@ -19,10 +19,10 @@ def test_combined_retirement_has_existing_point_and_paired_native_evidence():
 
 
 def test_semantic_model_does_not_decode_native_receipts_or_read_hardware():
-    tree=ast.parse((ROOT/'bpuverify/ras/model/commit_action.py').read_text())
+    tree=ast.parse((ROOT/'ras/model/commit_action.py').read_text())
     assert {n.module for n in ast.walk(tree) if isinstance(n,ast.ImportFrom)}=={'dataclasses'}
     assert not any(isinstance(n,ast.Import) for n in ast.walk(tree))
-    assert 'def receipts(' not in (ROOT/'bpuverify/ras/model/commit_action.py').read_text()
+    assert 'def receipts(' not in (ROOT/'ras/model/commit_action.py').read_text()
 
 
 def test_case_has_no_edges_or_scheduler_operations():
@@ -36,5 +36,5 @@ def test_case_has_no_edges_or_scheduler_operations():
 
 def test_normal_support_never_imports_experimental_or_test_helpers():
     for role in ('model','monitor','checker','coverage','env','case'):
-        source=(ROOT/f'bpuverify/ras/{role}/commit_action.py').read_text()
+        source=(ROOT/f'ras/{role}/commit_action.py').read_text()
         assert 'from results.' not in source and 'from tests.' not in source

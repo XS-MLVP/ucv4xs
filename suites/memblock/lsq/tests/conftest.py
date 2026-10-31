@@ -4,61 +4,74 @@ import json
 import pytest
 from toffee import DriveStable, Execution, RisingEdge, SamplingMonitor, XCommClockBackend
 
-from lsqverify.native import DutFactory, ROOT
-from lsqverify.freelist.coverage import FunctionalCoverage
-from lsqverify.freelist.driver import FreeListDriver
-from lsqverify.freelist.env import FreeListEnv
-from lsqverify.freelist.model import FreeListModel
-from lsqverify.freelist.ports import Ports
-from lsqverify.cam.coverage import FunctionalCoverage as CamCoverage
-from lsqverify.cam.driver import CamDriver
-from lsqverify.cam.env import CamEnv
-from lsqverify.cam.model import CamModel
-from lsqverify.cam.ports import Ports as CamPorts
-from lsqverify.age.coverage import FunctionalCoverage as AgeCoverage
-from lsqverify.age.driver import AgeDriver
-from lsqverify.age.env import AgeEnv
-from lsqverify.age.model import AgeModel
-from lsqverify.age.ports import Ports as AgePorts
-from lsqverify.vlq.coverage import FunctionalCoverage as VlqCoverage
-from lsqverify.vlq.driver import VirtualLoadQueueDriver
-from lsqverify.vlq.env import VirtualLoadQueueEnv
-from lsqverify.vlq.model import VirtualLoadQueueModel
-from lsqverify.vlq.ports import Ports as VlqPorts
-from lsqverify.rar.coverage import FunctionalCoverage as RarCoverage
-from lsqverify.rar.driver import RarDriver
-from lsqverify.rar.env import RarEnv
-from lsqverify.rar.model import LoadQueueRarModel
-from lsqverify.rar.ports import Ports as RarPorts
-from lsqverify.raw.coverage import FunctionalCoverage as RawCoverage
-from lsqverify.raw.driver import RawDriver
-from lsqverify.raw.env import RawEnv
-from lsqverify.raw.model import LoadQueueRawModel
-from lsqverify.raw.ports import Ports as RawPorts
-from lsqverify.uncache_entry.coverage import FunctionalCoverage as EntryCoverage
-from lsqverify.uncache_entry.driver import EntryDriver
-from lsqverify.uncache_entry.env import EntryEnv
-from lsqverify.uncache_entry.model import UncacheEntryModel
-from lsqverify.uncache_entry.ports import Ports as EntryPorts
-from lsqverify.load_uncache.probe import ProbeEnv as LoadUncacheProbeEnv, PublicDriver, PublicPorts
-from lsqverify.load_uncache.env import LoadUncacheEnv
-from lsqverify.replay.coverage import FunctionalCoverage as ReplayCoverage
-from lsqverify.replay.driver import ReplayDriver
-from lsqverify.replay.env import ReplayEnv
-from lsqverify.replay.model import ReplayModel
-from lsqverify.replay.ports import Ports as ReplayPorts
-from lsqverify.enter_sbuffer.coverage import FunctionalCoverage as EnterSbufferCoverage
-from lsqverify.enter_sbuffer.driver import EnterSbufferDriver
-from lsqverify.enter_sbuffer.env import EnterSbufferEnv
-from lsqverify.enter_sbuffer.model import EnterSbufferModel
-from lsqverify.enter_sbuffer.ports import Ports as EnterSbufferPorts
-from lsqverify.unalign.coverage import FunctionalCoverage as UnalignCoverage
-from lsqverify.unalign.driver import UnalignDriver
-from lsqverify.unalign.env import UnalignEnv
-from lsqverify.unalign.model import UnalignModel
-from lsqverify.unalign.ports import Ports as UnalignPorts
+from suites.memblock.lsq.native import DutFactory, ROOT
+from suites.memblock.lsq.freelist.coverage import FunctionalCoverage
+from suites.memblock.lsq.freelist.driver import FreeListDriver
+from suites.memblock.lsq.freelist.env import FreeListEnv
+from suites.memblock.lsq.freelist.model import FreeListModel
+from suites.memblock.lsq.freelist.ports import Ports
+from suites.memblock.lsq.cam.coverage import FunctionalCoverage as CamCoverage
+from suites.memblock.lsq.cam.driver import CamDriver
+from suites.memblock.lsq.cam.env import CamEnv
+from suites.memblock.lsq.cam.model import CamModel
+from suites.memblock.lsq.cam.ports import Ports as CamPorts
+from suites.memblock.lsq.age.coverage import FunctionalCoverage as AgeCoverage
+from suites.memblock.lsq.age.driver import AgeDriver
+from suites.memblock.lsq.age.env import AgeEnv
+from suites.memblock.lsq.age.model import AgeModel
+from suites.memblock.lsq.age.ports import Ports as AgePorts
+from suites.memblock.lsq.vlq.coverage import FunctionalCoverage as VlqCoverage
+from suites.memblock.lsq.vlq.driver import VirtualLoadQueueDriver
+from suites.memblock.lsq.vlq.env import VirtualLoadQueueEnv
+from suites.memblock.lsq.vlq.model import VirtualLoadQueueModel
+from suites.memblock.lsq.vlq.ports import Ports as VlqPorts
+from suites.memblock.lsq.rar.coverage import FunctionalCoverage as RarCoverage
+from suites.memblock.lsq.rar.driver import RarDriver
+from suites.memblock.lsq.rar.env import RarEnv
+from suites.memblock.lsq.rar.model import LoadQueueRarModel
+from suites.memblock.lsq.rar.ports import Ports as RarPorts
+from suites.memblock.lsq.raw.coverage import FunctionalCoverage as RawCoverage
+from suites.memblock.lsq.raw.driver import RawDriver
+from suites.memblock.lsq.raw.env import RawEnv
+from suites.memblock.lsq.raw.model import LoadQueueRawModel
+from suites.memblock.lsq.raw.ports import Ports as RawPorts
+from suites.memblock.lsq.uncache_entry.coverage import FunctionalCoverage as EntryCoverage
+from suites.memblock.lsq.uncache_entry.driver import EntryDriver
+from suites.memblock.lsq.uncache_entry.env import EntryEnv
+from suites.memblock.lsq.uncache_entry.model import UncacheEntryModel
+from suites.memblock.lsq.uncache_entry.ports import Ports as EntryPorts
+from suites.memblock.lsq.load_uncache.probe import ProbeEnv as LoadUncacheProbeEnv, PublicDriver, PublicPorts
+from suites.memblock.lsq.load_uncache.env import LoadUncacheEnv
+from suites.memblock.lsq.replay.coverage import FunctionalCoverage as ReplayCoverage
+from suites.memblock.lsq.replay.driver import ReplayDriver
+from suites.memblock.lsq.replay.env import ReplayEnv
+from suites.memblock.lsq.replay.model import ReplayModel
+from suites.memblock.lsq.replay.ports import Ports as ReplayPorts
+from suites.memblock.lsq.enter_sbuffer.coverage import FunctionalCoverage as EnterSbufferCoverage
+from suites.memblock.lsq.enter_sbuffer.driver import EnterSbufferDriver
+from suites.memblock.lsq.enter_sbuffer.env import EnterSbufferEnv
+from suites.memblock.lsq.enter_sbuffer.model import EnterSbufferModel
+from suites.memblock.lsq.enter_sbuffer.ports import Ports as EnterSbufferPorts
+from suites.memblock.lsq.unalign.coverage import FunctionalCoverage as UnalignCoverage
+from suites.memblock.lsq.unalign.driver import UnalignDriver
+from suites.memblock.lsq.unalign.env import UnalignEnv
+from suites.memblock.lsq.unalign.model import UnalignModel
+from suites.memblock.lsq.unalign.ports import Ports as UnalignPorts
+
+pytest_plugins = ("ucv.pytest_selftest",)
 
 SPECS = json.loads((ROOT / "manifest/duts.json").read_text())["duts"]
+
+from suites.memblock.lsq.deq.fixtures import deq, deq_full
+from suites.memblock.lsq.fail_review.fixtures import review_dut
+from suites.memblock.lsq.forward.fixtures import forward
+from suites.memblock.lsq.load_queue.fixtures import lq
+from suites.memblock.lsq.local_reset.fixtures import local_reset_lsq
+from suites.memblock.lsq.lsq_wrapper.fixtures import lsq_probe, wrapper_lsq
+from suites.memblock.lsq.psq.fixtures import psq, psq_full
+from suites.memblock.lsq.sq_endpoint.fixtures import sq_lsq, sq_raw, sq_replay
+from suites.memblock.lsq.store_queue.fixtures import sq
+from suites.memblock.lsq.vsq.fixtures import vsq
 
 
 def pytest_addoption(parser):
@@ -69,9 +82,10 @@ def pytest_addoption(parser):
 
 
 @pytest.fixture
-def dut_factory(request, tmp_path):
+def dut_factory(request, tmp_path, monkeypatch):
     if not request.config.getoption("toffee_output", default=None):
         raise pytest.UsageError("native LSQ tests must run via python -m toffee run")
+    monkeypatch.chdir(tmp_path)
     limit=request.config.getoption("lsq_trace_max_mb")
     if limit<1:raise pytest.UsageError("--lsq-trace-max-mb must be positive")
     factory = DutFactory(request.getfixturevalue("toffee_register_dut"), tmp_path,nodeid=request.node.nodeid,
@@ -196,7 +210,7 @@ async def rar(request, dut_factory):
 
 
 @pytest.fixture
-async def raw(request, dut_factory):
+async def root_raw(request, dut_factory):
     key = "load_queue_raw"
     spec = SPECS[key]
     dut = dut_factory.create(key)
@@ -282,7 +296,7 @@ async def load_uncache(request, dut_factory):
 
 
 @pytest.fixture
-async def replay(request, dut_factory):
+async def root_replay(request, dut_factory):
     dut = dut_factory.create("load_queue_replay")
     ports = ReplayPorts(dut)
     driver = ReplayDriver(ports)
@@ -342,3 +356,33 @@ async def unalign(request, dut_factory):
                     yield env
     finally:
         backend.close()
+
+def _test_path(request):
+    return request.node.path.as_posix()
+
+
+@pytest.fixture
+def raw(request):
+    """Route the public RAW fixture to the directory-specific implementation."""
+    if "/sq_endpoint/" in _test_path(request):
+        return request.getfixturevalue("sq_raw")
+    return request.getfixturevalue("root_raw")
+
+
+@pytest.fixture
+def replay(request):
+    """Route the public replay fixture to the directory-specific implementation."""
+    if "/sq_endpoint/" in _test_path(request):
+        return request.getfixturevalue("sq_replay")
+    return request.getfixturevalue("root_replay")
+
+
+@pytest.fixture
+def lsq(request):
+    """Route the whole-LSQ fixture used by wrapper/probe directories."""
+    path = _test_path(request)
+    if "/local_reset/" in path:
+        return request.getfixturevalue("local_reset_lsq")
+    if "/sq_endpoint/" in path:
+        return request.getfixturevalue("sq_lsq")
+    return request.getfixturevalue("wrapper_lsq")

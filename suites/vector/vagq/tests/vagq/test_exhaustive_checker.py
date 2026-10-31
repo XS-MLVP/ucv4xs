@@ -4,10 +4,10 @@ from copy import deepcopy
 
 import pytest
 
-from vagqverify.vagq.exhaustive import (
+from suites.vector.vagq.vagq.exhaustive import (
     assess_shape_boundaries, build_shape_sequence, compare_shape, index_value, observed_bytes,
 )
-from vagqverify.vagq.scenario_matrix import FeatureCase, legal_public_feature_cases
+from suites.vector.vagq.vagq.scenario_matrix import FeatureCase, legal_public_feature_cases
 
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)

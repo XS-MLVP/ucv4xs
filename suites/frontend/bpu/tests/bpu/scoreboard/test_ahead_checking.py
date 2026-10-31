@@ -7,12 +7,12 @@ import ast
 import pytest
 from toffee import Scoreboard
 
-from bpuverify.bpu.checker.ahead import live_values,fast_values
-from bpuverify.bpu.checker.ahead_learning import AheadLearningChecks
-from bpuverify.bpu.coverage.ahead_learning import AheadLearningCoverage,RULES
-from bpuverify.bpu.model.ahead_learning import PC,OTHER,NEW_TARGET,EDGES
-from bpuverify.bpu.model.pipeline import Redirect,Resolution,Outcome
-from bpuverify.bpu.model.selection import Kind,StackAction
+from suites.frontend.bpu.bpu.checker.ahead import live_values,fast_values
+from suites.frontend.bpu.bpu.checker.ahead_learning import AheadLearningChecks
+from suites.frontend.bpu.bpu.coverage.ahead_learning import AheadLearningCoverage,RULES
+from suites.frontend.bpu.bpu.model.ahead_learning import PC,OTHER,NEW_TARGET,EDGES
+from suites.frontend.bpu.bpu.model.pipeline import Redirect,Resolution,Outcome
+from suites.frontend.bpu.bpu.model.selection import Kind,StackAction
 from tests.bpu.scoreboard.test_ahead_sources import prepared,quiet
 
 
@@ -135,7 +135,7 @@ def test_complete_program_compares_original_fasttrain_and_all_targets_before_cre
 
 
 def test_ahead_snapshot_is_not_an_ordinary_lookup_at_the_current_pc_history():
-    from bpuverify.abtb.model.semantic import coordinate
+    from suites.frontend.bpu.abtb.model.semantic import coordinate
     program=Program();source=program.loop()
     frame=program.model.sources.snapshot(source.token).frame
     assert (frame.read.bank,frame.read.row)!=coordinate(source.token.pc,source.token.history.history%16)
@@ -261,7 +261,7 @@ def test_disabled_fallback_requires_a_fresh_owner_and_exact_main_repair(fault):
 
 
 def test_case_and_reference_do_not_import_signal_access_or_schedule_framework_tasks():
-    for file in ('bpuverify/bpu/case/ahead_learning.py','tests/bpu/testcase/test_ahead_learning.py','bpuverify/bpu/model/ahead_sources.py'):
+    for file in ('bpu/case/ahead_learning.py','tests/bpu/testcase/test_ahead_learning.py','bpu/model/ahead_sources.py'):
         for node in ast.walk(ast.parse(Path(file).read_text())):
             if isinstance(node,ast.Call):
                 name=node.func.id if isinstance(node.func,ast.Name) else getattr(node.func,'attr',None)

@@ -1,10 +1,12 @@
+
 from dataclasses import replace
 import hashlib
 
-from lsqverify.sq_scalar_reservation import DOMAIN,save
-from lsqverify.store_payload import add_digest
-from lsqverify.vlq.types import QueuePtr,RobPtr
-from lsqverify.vsq_recovery import PublicWindow
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.sq_scalar_reservation import DOMAIN,save
+from suites.memblock.lsq.store_payload import add_digest
+from suites.memblock.lsq.vlq.types import QueuePtr,RobPtr
+from suites.memblock.lsq.vsq_recovery import PublicWindow
 from .memory_owners import StoreOwner,cached_load
 from .recovery_owners import RecoveryOwners
 
@@ -43,7 +45,7 @@ async def test_interface_128_scalar_pool_shared_recovery_exact_new_Stores_and_or
         await trace.dispatch(loads=[old_load]);await trace.idle(5)
         old_states=[trace.stores[item.position] for item in old]
         old_uids=[state["uid"] for state in old_states]
-        assert lsq.observed["io_sqFull"]==0 and trace.sq_head==base
+        assert lsq.observed[P.p_sqFull]==0 and trace.sq_head==base
         assert all(state["s2_done"] and state["data_sent"] for state in old_states[:64])
         assert all(not state["address_parts"] and not state["data_sent"] for state in old_states[64:])
         assert all(not state["consumed"] and not state["completed"] for state in old_states)
@@ -51,7 +53,7 @@ async def test_interface_128_scalar_pool_shared_recovery_exact_new_Stores_and_or
         trace.observation=PublicWindow("lsq_wrapper")
         assert await trace.cancel(branch,flush_self=False)==(QueuePtr.encode(phase),base%256)
         recovery=trace.observation.finish(base,phase);trace.observation=None
-        assert lsq.observed["io_sqFull"]==0
+        assert lsq.observed[P.p_sqFull]==0
         new=[owner(base+index,program+index,phase+8) for index in range(128)]
         for first in range(0,128,2):
             await trace.dispatch(stores=new[first:first+2])
@@ -72,7 +74,7 @@ async def test_interface_128_scalar_pool_shared_recovery_exact_new_Stores_and_or
         await trace.write_all(item.position for item in new[64:])
         assert all(not trace.stores[item.position]["consumed"] for item in new[64:])
         pins=await trace.forward(new_load,phase)
-        prefix=f"io_forward_{phase}_s2Resp_"
+        prefix=P.io(f"forward_{phase}_s2Resp_")
         expected={prefix+"valid":1,**{prefix+"bits_"+name:0 for name in
                   ("forwardInvalid","matchInvalid","addrInvalid_valid","dataInvalid_valid")}}
         for byte in range(16):

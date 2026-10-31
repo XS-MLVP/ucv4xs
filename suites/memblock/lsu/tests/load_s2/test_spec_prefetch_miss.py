@@ -6,7 +6,7 @@ from the implementation into this expected result.
 """
 import pytest
 
-from lsuverify.load_s2.env import LoadS2Env
+from suites.memblock.lsu.load_s2.env import LoadS2Env
 from .test_load_s2 import make, pipe
 
 
@@ -21,5 +21,5 @@ def test_hw_pf_miss_event_counts_a_real_cache_miss(dut_factory, miss):
                              accessType_pftType=0, mask=0),
                    dcache={"miss": miss}), "hardware prefetch response")
     env.cycle(make(load=pipe()), "two-register performance observation")
-    assert int(dut.io_perf_2_value.value) == 1, "prefetch really reached S2"
-    assert int(dut.io_perf_3_value.value) == miss, "hw-prefetch miss event"
+    assert env.perf_value(2) == 1, "prefetch really reached S2"
+    assert env.perf_value(3) == miss, "hw-prefetch miss event"

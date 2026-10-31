@@ -1,15 +1,18 @@
 """Initial public-pin chains, explicitly not the complete parent UT/reference."""
+
 from dataclasses import replace
 
 import pytest
+
+from suites.memblock.lsq.legacy_pins import P
 
 
 async def test_empty_parent_is_quiet(load_uncache):
     env = load_uncache
     await env.idle(5)
     env.reach("LQU-IDLE.empty")
-    names = ("io_uncache_req_valid", "io_ncWakeup_valid", "io_mmioWakeup_valid", "io_rollback_valid", "io_exceptionInfo_valid",
-             *(f"io_bypass_{lane}_s{stage}Resp_valid" for lane in range(3) for stage in (1, 2)))
+    names = (P.p_uncache_req_valid, P.p_ncWakeup_valid, P.p_mmioWakeup_valid, P.p_rollback_valid, P.p_exceptionInfo_valid,
+             *(P.io(f"bypass_{lane}_s{stage}Resp_valid") for lane in range(3) for stage in (1, 2)))
     env.expect("empty.no-public-transaction", {name: env.observed[name] for name in names}, dict.fromkeys(names, 0))
     env.prove("LQU-IDLE.empty")
 

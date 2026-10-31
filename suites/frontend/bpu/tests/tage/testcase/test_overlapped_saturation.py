@@ -1,11 +1,11 @@
 """Mixed writes must forward resident counters, including saturated holds."""
 import pytest
 
-from bpuverify.tage.coverage.catalog import tage_overlap_coverage_model
-from bpuverify.tage.coverage.catalog import write_tage_overlap_coverage
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.tage.case.definitions import SAME_BANK_PCS
-from bpuverify.tage.case.overlapped_saturation_scenario import check_case
+from suites.frontend.bpu.tage.coverage.catalog import tage_overlap_coverage_model
+from suites.frontend.bpu.tage.coverage.catalog import write_tage_overlap_coverage
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.tage.case.definitions import SAME_BANK_PCS
+from suites.frontend.bpu.tage.case.overlapped_saturation_scenario import check_case
 
 
 @pytest.mark.feature('BPU-TAGE-033')

@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.bpu.transaction.types import BpuRedirect
-from bpuverify.bpu.transaction.types import BpuTraining
-from bpuverify.bpu.coverage.catalog import bpu_nested_ras_coverage_model
-from bpuverify.bpu.coverage.catalog import write_bpu_nested_ras_coverage
-from bpuverify.bpu.checker.assertions import mbtb_meta_for_position
-from bpuverify.bpu.checker.assertions import revisit_from_redirect
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.bpu.transaction.types import BpuRedirect
+from suites.frontend.bpu.bpu.transaction.types import BpuTraining
+from suites.frontend.bpu.bpu.coverage.catalog import bpu_nested_ras_coverage_model
+from suites.frontend.bpu.bpu.coverage.catalog import write_bpu_nested_ras_coverage
+from suites.frontend.bpu.bpu.checker.assertions import mbtb_meta_for_position
+from suites.frontend.bpu.bpu.checker.assertions import revisit_from_redirect
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 OUTER_CALL = 0x4000_0800

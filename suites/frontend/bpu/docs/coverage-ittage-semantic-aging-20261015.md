@@ -1,5 +1,8 @@
 # ITTAGE周期语义与074合格覆盖增量
 
+> 路径迁移说明（2026-10-31）：本报告仍属于原日期、基线和执行源码；实现文件已迁到工程根。可点击源码链接更新到当前位置，不据此重标历史 PASS/FAIL 或覆盖结论。参见[本轮命名空间迁移](../../../../docs/lessons/suite-namespace-refactor-20261031.md)。
+
+
 2026-10-15，`BPU-INT-074`已通过；相对最后已发布
 `production-ittage-directory-events-20261015-v1`，严格归因**31个原生新行点**。
 这是单场景资格验证，不是新全量发布。总体覆盖率、其他模块缺口和剩余模型工作仍需
@@ -12,12 +15,12 @@
 此前候选把已发送反馈立即写入`IttageContextModel.entries`，使得读取压力下合法的
 旧目标被误判为错误。该失败不能归因于RTL。
 
-本轮使用独立[IttageReference](../bpuverify/ittage/model/semantic.py)，由集成组件的
+本轮使用独立[IttageReference](../ittage/model/semantic.py)，由集成组件的
 PC、折叠上下文、阶段推进和训练输入驱动。输入只是组件接口事件，模型自有全部表、
 计数器、目录、在途更新和读取快照；不从DUT SRAM/计数器读取golden。
 集成层没有重复实现学习算法。
 
-[memory-direct绑定](../bpuverify/bpu/bundle/ittage_semantic.py)覆盖所需端口，包括
+[memory-direct绑定](../bpu/bundle/ittage_semantic.py)覆盖所需端口，包括
 Verilator优化后的合法派生视图；没有VPI、没有内部写入或伪造端口。组件输入是已经
 求值的RTL输入，所以monitor不套用顶层pending RiseWrite的额外launch转换。
 用例没有新增边沿等待或等待固定周期来掩盖时序。

@@ -4,10 +4,10 @@ from hashlib import sha256
 import json
 from pathlib import Path
 
-from bpuverify.common.coverage.local_guards import ROOT, match_native, native_points
-from bpuverify.sc.coverage.guard_audit import source_claims as sc_claims
-from bpuverify.tage.coverage.coverage_audit import source_claims as tage_claims
-from bpuverify.bpu.coverage.guard_audit import source_claims as bpu_claims
+from suites.frontend.bpu.coverage.local_guards import ROOT, match_native, native_points
+from suites.frontend.bpu.sc.coverage.guard_audit import source_claims as sc_claims
+from suites.frontend.bpu.tage.coverage.coverage_audit import source_claims as tage_claims
+from suites.frontend.bpu.bpu.coverage.guard_audit import source_claims as bpu_claims
 
 
 def review(baseline,*,duts=('sc','tage'),native_report=None):

@@ -5,15 +5,17 @@ probe varies the still-uncompleted head's public query address: that is an
 explicit UNIT-INTERFACE CAM stress, not a claim about one immutable software
 instruction accessing many physical addresses or an architectural outcome.
 """
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.load_queue.actor import LoadActor
-from lsqverify.load_queue.types import Inputs
-from lsqverify.rar.types import Query as RarQuery, Release
-from lsqverify.raw.types import Query as RawQuery, SqPtr, Store
-from lsqverify.vlq.types import QueuePtr, RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.load_queue.actor import LoadActor
+from suites.memblock.lsq.load_queue.types import Inputs
+from suites.memblock.lsq.rar.types import Query as RarQuery, Release
+from suites.memblock.lsq.raw.types import Query as RawQuery, SqPtr, Store
+from suites.memblock.lsq.vlq.types import QueuePtr, RobPtr
 
 
 async def allocate(actor, count):
@@ -43,7 +45,7 @@ async def test_rar_all_96_slots_unique_address_cam_unit_interface(lq, lane):
         queries = [RarQuery()] * 3
         queries[lane] = rar_query(actor.owner(uid), nc=True)
         await actor.step(Inputs(rar_queries=tuple(queries)))
-        assert lq.pre_observed[f"io_ldu_rarNukeQuery_{lane}_req_ready"]
+        assert lq.pre_observed[P.io(f"ldu_rarNukeQuery_{lane}_req_ready")]
     lq.reach("LQ-RAR.all_slots")
     for uid in uids[1:]:
         address = actor.owner(uid).load.paddr
@@ -51,7 +53,7 @@ async def test_rar_all_96_slots_unique_address_cam_unit_interface(lq, lane):
         queries = [RarQuery()] * 3
         queries[(lane + 1) % 3] = query
         await actor.step(Inputs(rar_queries=tuple(queries)))
-        assert lq.observed[f"io_ldu_rarNukeQuery_{(lane + 1) % 3}_resp_bits_nuke"]
+        assert lq.observed[P.io(f"ldu_rarNukeQuery_{(lane + 1) % 3}_resp_bits_nuke")]
     await actor.drain()
     actor.checked(("LQ-RAR.all_slots",), uids)
 
@@ -73,7 +75,7 @@ async def test_shared_rar_revoke_then_same_lq_query_has_no_ghost(lq, lane, age):
     probe = [RarQuery()] * 3
     probe[(lane + 1) % 3] = rar_query(old, address=young.load.paddr)
     await actor.step(Inputs(rar_queries=tuple(probe)))
-    assert not lq.observed[f"io_ldu_rarNukeQuery_{(lane + 1) % 3}_resp_bits_nuke"]
+    assert not lq.observed[P.io(f"ldu_rarNukeQuery_{(lane + 1) % 3}_resp_bits_nuke")]
     await actor.drain()
     actor.checked(("LQ-RAR.revoke",), uids)
 
@@ -94,7 +96,7 @@ async def test_release_window_through_real_parent_keeps_precise_line(lq, previou
     probe = [RarQuery()] * 3
     probe[(lane + 1) % 3] = rar_query(old, address=young.load.paddr)
     await actor.step(Inputs(rar_queries=tuple(probe)))
-    assert lq.observed[f"io_ldu_rarNukeQuery_{(lane + 1) % 3}_resp_bits_nuke"]
+    assert lq.observed[P.io(f"ldu_rarNukeQuery_{(lane + 1) % 3}_resp_bits_nuke")]
     await actor.drain()
     actor.checked(("LQ-RAR.previous_release" if previous else "LQ-RAR.release",), uids)
 
@@ -108,7 +110,7 @@ async def test_raw_all_56_slots_actual_unique_store_rollback(lq, lane):
         query = [RawQuery()] * 3
         query[lane] = raw_query(actor.owner(uid))
         await actor.step(Inputs(raw_queries=tuple(query)))
-        assert lq.pre_observed[f"io_ldu_rawNukeQuery_{lane}_req_ready"]
+        assert lq.pre_observed[P.io(f"ldu_rawNukeQuery_{lane}_req_ready")]
     await actor.step()
     lq.reach("LQ-RAW.all_slots")
     for uid in uids:
@@ -116,8 +118,8 @@ async def test_raw_all_56_slots_actual_unique_store_rollback(lq, lane):
         await actor.step(Inputs(stores=(Store(True, RobPtr.encode(0), owner.load.paddr, 255, ftq_value=31, ftq_offset=7), Store())))
         await actor.step()
         await actor.step()
-        assert lq.observed["io_nuke_rollback_0_valid"] and lq.observed["io_nuke_rollback_0_bits_robIdx_value"] == owner.rob.value
-        assert lq.observed["io_nuke_rollback_0_bits_debug_runahead_checkpoint_id"] == owner.load.execution.uop.checkpoint
+        assert lq.observed[P.p_nuke_rollback_0_valid] and lq.observed[P.p_nuke_rollback_0_bits_robIdx_value] == owner.rob.value
+        assert lq.observed[P.p_nuke_rollback_0_bits_debug_runahead_checkpoint_id] == owner.load.execution.uop.checkpoint
     await actor.drain(controls=Inputs(address_ready=SqPtr.encode(11)))
     actor.checked(("LQ-RAW.all_slots",), uids)
 
@@ -149,7 +151,7 @@ async def test_raw_dual_ports_negative_and_revoke(lq, variant):
     await actor.step()
     await actor.step()
     expected = variant == "dual"
-    assert [bool(lq.observed[f"io_nuke_rollback_{i}_valid"]) for i in range(2)] == [expected, expected]
+    assert [bool(lq.observed[P.io(f"nuke_rollback_{i}_valid")]) for i in range(2)] == [expected, expected]
     name = "LQ-RAW.dual_store" if expected else "LQ-RAW.revoke" if variant.startswith("revoke") else "LQ-RAW.negative"
     lq.reach(name)
     await actor.drain(controls=Inputs(address_ready=SqPtr.encode(11)))

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Audit LQU evidence and independently reconstruct public transaction lifetimes.
 
-No import from lsqverify. Checks stored cycle comparisons, plus a separate
+No import from suites.memblock.lsq. Checks stored cycle comparisons, plus a separate
 input/FIFO, bus/SID, wakeup/bypass/exception history. This is not a second DUT
 execution or an independent reimplementation of the two-level arbiter.
 """

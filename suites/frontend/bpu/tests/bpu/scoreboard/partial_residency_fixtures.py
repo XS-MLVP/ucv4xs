@@ -5,11 +5,11 @@ from types import SimpleNamespace as NS
 
 from toffee import Scoreboard
 
-from bpuverify.bpu.checker.partial_residency import PartialResidencyChecks
-from bpuverify.bpu.coverage.partial_residency import PartialResidencyCoverage
-from bpuverify.bpu.model.pipeline import Redirect
-from bpuverify.bpu.model.tage.partial_residency import PC, PATHS
-from bpuverify.bpu.model.tage.service import STREAM_PC, learning_inflight
+from suites.frontend.bpu.bpu.checker.partial_residency import PartialResidencyChecks
+from suites.frontend.bpu.bpu.coverage.partial_residency import PartialResidencyCoverage
+from suites.frontend.bpu.bpu.model.pipeline import Redirect
+from suites.frontend.bpu.bpu.model.tage.partial_residency import PC, PATHS
+from suites.frontend.bpu.bpu.model.tage.service import STREAM_PC, learning_inflight
 from tests.bpu.scoreboard.test_direction_forwarding import resolution
 from tests.bpu.scoreboard.test_direction_service import streaming_query, via
 from tests.bpu.scoreboard.test_direction_sources import quiet

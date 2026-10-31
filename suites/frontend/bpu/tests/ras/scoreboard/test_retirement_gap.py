@@ -6,11 +6,11 @@ from types import SimpleNamespace
 
 import pytest
 from toffee import Scoreboard, ScoreboardMismatch
-from bpuverify.ras.case.retirement_gap import check_gap
-from bpuverify.ras.coverage.supplemental import RETIREMENT_GAP_CONTRACTS, ras_retirement_gap_coverage_model
-from bpuverify.ras.model.model import Cell
-from bpuverify.ras.model.retirement import DistinctSpeculation, QueueCell, Retirement, pointer
-from bpuverify.ras.scoreboard.retirement import check_observation
+from suites.frontend.bpu.ras.case.retirement_gap import check_gap
+from suites.frontend.bpu.ras.coverage.supplemental import RETIREMENT_GAP_CONTRACTS, ras_retirement_gap_coverage_model
+from suites.frontend.bpu.ras.model.model import Cell
+from suites.frontend.bpu.ras.model.retirement import DistinctSpeculation, QueueCell, Retirement, pointer
+from suites.frontend.bpu.ras.scoreboard.retirement import check_observation
 
 
 @pytest.mark.parametrize('bos,tosw,expected', (

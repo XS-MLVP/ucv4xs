@@ -1,6 +1,6 @@
 """Real TAGE selector training, saturation, isolation and public consumption."""
 import pytest
-from bpuverify.bpu.case.tage.selector import check_selector
+from suites.frontend.bpu.bpu.case.tage.selector import check_selector
 
 
 @pytest.mark.feature('BPU-INT-072')

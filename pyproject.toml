@@ -16,9 +16,21 @@ Repository = "https://github.com/XS-MLVP/ucv4xs"
 [project.scripts]
 ucv = "ucv.cli:main"
 
+[tool.setuptools]
+include-package-data = false
+package-dir = {"" = ".", "ucv" = "src/ucv"}
+
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["src", "."]
+include = ["ucv", "ucv.*", "suites", "suites.*"]
+exclude = [
+    "suites.*.*.dut*", "suites.*.*.rtl*", "suites.*.*.results*",
+    "suites.*.*.XiangShan*", "suites.*.*.tests*", "suites.*.*.tools*",
+    "suites.*.*.docs*", "suites.*.*.manifest*", "suites.*.*.dependencies*",
+    "suites.*.*.__pycache__*",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
+asyncio_default_fixture_loop_scope = "function"

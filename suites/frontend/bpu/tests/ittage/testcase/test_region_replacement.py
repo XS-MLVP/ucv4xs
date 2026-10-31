@@ -4,17 +4,17 @@ from functools import partial
 
 import pytest
 
-from bpuverify.ittage.model.region import IttageRegionModel
-from bpuverify.ittage.transaction.types import IttageTraining
-from bpuverify.ittage.coverage.catalog import ittage_region_replacement_coverage_model
-from bpuverify.ittage.coverage.catalog import write_ittage_region_replacement_coverage
-from bpuverify.ittage.checker.assertions import require_snapshot
-from bpuverify.ittage.case.definitions import PC
-from bpuverify.ittage.case.definitions import POSITION
-from bpuverify.ittage.case.definitions import REGION_WIDTH
+from suites.frontend.bpu.ittage.model.region import IttageRegionModel
+from suites.frontend.bpu.ittage.transaction.types import IttageTraining
+from suites.frontend.bpu.ittage.coverage.catalog import ittage_region_replacement_coverage_model
+from suites.frontend.bpu.ittage.coverage.catalog import write_ittage_region_replacement_coverage
+from suites.frontend.bpu.ittage.checker.assertions import require_snapshot
+from suites.frontend.bpu.ittage.case.definitions import PC
+from suites.frontend.bpu.ittage.case.definitions import POSITION
+from suites.frontend.bpu.ittage.case.definitions import REGION_WIDTH
 from tests.ittage.testcase.test_region_capacity import CONTEXTS
 from tests.ittage.testcase.test_region_capacity import require_target
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 async def allocate_region(agent, model, pc, target):

@@ -3,13 +3,13 @@ from copy import deepcopy
 
 import pytest
 
-from bpuverify.mbtb.model.entry import mbtb_retarget_targets
-from bpuverify.mbtb.model.replacement import MbtbFourWayLru
-from bpuverify.mbtb.model.shadow import expected_mbtb_shadow_activity
-from bpuverify.mbtb.model.shadow import expected_mbtb_shadow_request_ways
-from bpuverify.mbtb.model.shadow import require_mbtb_shadow_cold_metadata
-from bpuverify.mbtb.case.resident_scenario import resident_vectors
-from bpuverify.mbtb.case.shadow_scenario import prepare
+from suites.frontend.bpu.mbtb.model.entry import mbtb_retarget_targets
+from suites.frontend.bpu.mbtb.model.replacement import MbtbFourWayLru
+from suites.frontend.bpu.mbtb.model.shadow import expected_mbtb_shadow_activity
+from suites.frontend.bpu.mbtb.model.shadow import expected_mbtb_shadow_request_ways
+from suites.frontend.bpu.mbtb.model.shadow import require_mbtb_shadow_cold_metadata
+from suites.frontend.bpu.mbtb.case.resident_scenario import resident_vectors
+from suites.frontend.bpu.mbtb.case.shadow_scenario import prepare
 
 
 SPAN = 1 << 20

@@ -1,11 +1,11 @@
 """Real semantic learning program for pure qualification, never a DUT oracle seed."""
-from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT
+from suites.frontend.bpu.models.configuration import TAGE_ALLOCATION_WAIT
 from dataclasses import replace
 
-from bpuverify.bpu.model.pipeline import Outcome, Redirect, Resolution
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.bpu.model.statistical_joint_sources import StatisticalJointSources
-from bpuverify.tage.model.semantic import TABLES
+from suites.frontend.bpu.bpu.model.pipeline import Outcome, Redirect, Resolution
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.statistical_joint_sources import StatisticalJointSources
+from suites.frontend.bpu.tage.model.semantic import TABLES
 from tests.bpu.scoreboard.test_semantic_pipeline import boot
 
 
@@ -142,7 +142,7 @@ class Program:
 class ContextProgram(Program):
     """Same genuine prefix and feedback plan as the DUT context program."""
     def __init__(self,profile,*,layout_type=None):
-        from bpuverify.bpu.model.statistical_prefix import ContextLayout
+        from suites.frontend.bpu.bpu.model.statistical_prefix import ContextLayout
         self.layout=(layout_type or ContextLayout)(profile)
         super().__init__(positive=True,pc=self.layout.b,anchor_pc=self.layout.a,
             recovery_position=self.layout.a%16+self.layout.recovery_offset)
@@ -159,7 +159,7 @@ class ContextProgram(Program):
         return self.feedback(source,self.layout.outcome(source,late,taken),maximum=maximum)
 
     def probe_invalid_history(self,source):
-        from bpuverify.bpu.model.selection import fallthrough
+        from suites.frontend.bpu.bpu.model.selection import fallthrough
         stride=fallthrough(self.layout.jump).branch.target-self.layout.jump
         entry=self.layout.jump-stride*(len(self.model.stages)+1)
         before=self.bank.statistical_snapshot(source).read
@@ -208,7 +208,7 @@ class ContextProgram(Program):
 
 class ContextBurstProgram(ContextProgram):
     def __init__(self,profile):
-        from bpuverify.bpu.model.sc_admission import ContextBurstLayout
+        from suites.frontend.bpu.bpu.model.sc_admission import ContextBurstLayout
         super().__init__(profile,layout_type=ContextBurstLayout)
 
     def query(self,pc):
@@ -221,7 +221,7 @@ class ContextBurstProgram(ContextProgram):
         self.anchor=Program.query(self,self.a)
         start=len(self.records)
         first=Program.query(self,self.layout.prefix_for(context))
-        from bpuverify.bpu.model.common_history import GHR_WIDTH
+        from suites.frontend.bpu.bpu.model.common_history import GHR_WIDTH
         source=None
         for _ in range(GHR_WIDTH+len(self.model.stages)+1):
             # Include sources published while quiet() drained younger work.
@@ -294,8 +294,8 @@ class ContextBurstProgram(ContextProgram):
         return tuple(originals[i] for i in p.arrival_order),controls
 
     def return_from_stream(self):
-        from bpuverify.bpu.model.early_aging import require_recovery_window
-        from bpuverify.bpu.model.path_history import WIDTH,LAYOUT,SHIFT
+        from suites.frontend.bpu.bpu.model.early_aging import require_recovery_window
+        from suites.frontend.bpu.bpu.model.path_history import WIDTH,LAYOUT,SHIFT
         self.quiet()
         recent=max((t for t in self.model.published.values() if t.pc==self.layout.loop),key=lambda t:t.sequence)
         width=max(length for length,_ in LAYOUT)

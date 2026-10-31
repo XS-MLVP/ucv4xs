@@ -5,8 +5,8 @@ from toffee import Execution
 from toffee import MemoryBackend
 from toffee import XPhase
 
-from bpuverify.common.bundle.bindings import PulseBinding
-from bpuverify.common.driver.signal import PulseDriver
+from suites.frontend.bpu.ports.bindings import PulseBinding
+from suites.frontend.bpu.drivers.signal import PulseDriver
 from tests.framework.fakes import Signal
 from tests.framework.fakes import pulse_binding
 

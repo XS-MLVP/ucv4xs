@@ -18,12 +18,12 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.utage.case.definitions import PASSING_PC
-from bpuverify.utage.case.definitions import POSITION
-from bpuverify.utage.checker.assertions import counter
-from bpuverify.utage.model.addressing import hash_indices
-from bpuverify.utage.model.addressing import prediction_tag
-from bpuverify.utage.transaction.types import UtageTraining
+from suites.frontend.bpu.utage.case.definitions import PASSING_PC
+from suites.frontend.bpu.utage.case.definitions import POSITION
+from suites.frontend.bpu.utage.checker.assertions import counter
+from suites.frontend.bpu.utage.model.addressing import hash_indices
+from suites.frontend.bpu.utage.model.addressing import prediction_tag
+from suites.frontend.bpu.utage.transaction.types import UtageTraining
 
 HISTORIES = (0, 4, 8, 12, 16, 20, 24, 28)
 PRESSURE_DEPTH = 6

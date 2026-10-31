@@ -5,12 +5,12 @@ from types import SimpleNamespace as NS
 import pytest
 from toffee import CoverageDatabase, TransferState
 
-from bpuverify.utage.checker.learning_retention import (
+from suites.frontend.bpu.utage.checker.learning_retention import (
     LearningRetentionChecks, RECENT_VERSION_CAPACITY, cohorts)
-from bpuverify.utage.coverage.learning_retention import LearningRetentionCoverage, RULES
-from bpuverify.utage.model.semantic import Context, indices
-from bpuverify.utage.model.usefulness_events import ProtectionState
-from bpuverify.utage.model.working_set import PC, POSITION, PHASES, WorkingSetProgram, WorkingSetReference
+from suites.frontend.bpu.utage.coverage.learning_retention import LearningRetentionCoverage, RULES
+from suites.frontend.bpu.utage.model.semantic import Context, indices
+from suites.frontend.bpu.utage.model.usefulness_events import ProtectionState
+from suites.frontend.bpu.utage.model.working_set import PC, POSITION, PHASES, WorkingSetProgram, WorkingSetReference
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)
 

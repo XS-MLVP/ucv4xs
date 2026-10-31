@@ -1,6 +1,6 @@
 """Physical used-feedback matrix under genuine forward/backward CommonHR."""
 import pytest
-from bpuverify.bpu.case.sc.used_nonzero_checks import run_used_case
+from suites.frontend.bpu.bpu.case.sc.used_nonzero_checks import run_used_case
 
 # Measured on the 2026-10-21 full BPU program run; scheduling hint only.
 pytestmark = pytest.mark.estimated_runtime(76)

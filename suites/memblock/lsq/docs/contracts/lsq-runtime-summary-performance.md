@@ -46,7 +46,7 @@ Load/Replay/Wrapper encode累计占用明显。profile不代表未插桩时间�
 不缓存参考输出、DUT引脚、反馈、model.connected或任何可变业务状态。
 
 - 显式插件选项开关；每例安装、每例还原，不改变未启用默认运行。
-- 仅深度不可变的固定`lsqverify` frozen dataclass、tuple、int/bool/str/None输入
+- 仅深度不可变的固定`suites.memblock.lsq` frozen dataclass、tuple、int/bool/str/None输入
   可缓存；其他输入始终走原函数。key为完整输入值，容量64且逐例清空，不读取
   DUT/model，不按valid掩盖字段。原函数在miss完整执行所有形状/宽度/冲突验证。
 - 返回独立dict副本，不让调用者修改污染缓存；无异常缓存。字典key插入顺序、

@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.ubtb.transaction.types import UbtbPrediction
-from bpuverify.ubtb.checker.assertions import assert_hit
-from bpuverify.ubtb.checker.assertions import train_taken
-from bpuverify.ubtb.case.definitions import DIRECT
-from bpuverify.ubtb.case.definitions import PARTIAL_TAG_SPAN
-from bpuverify.ubtb.case.definitions import PARTIAL_TARGET_SPAN
-from bpuverify.ubtb.case.definitions import boundary_vectors
+from suites.frontend.bpu.ubtb.transaction.types import UbtbPrediction
+from suites.frontend.bpu.ubtb.checker.assertions import assert_hit
+from suites.frontend.bpu.ubtb.checker.assertions import train_taken
+from suites.frontend.bpu.ubtb.case.definitions import DIRECT
+from suites.frontend.bpu.ubtb.case.definitions import PARTIAL_TAG_SPAN
+from suites.frontend.bpu.ubtb.case.definitions import PARTIAL_TARGET_SPAN
+from suites.frontend.bpu.ubtb.case.definitions import boundary_vectors
 
 
 @pytest.mark.feature("BPU-UBTB-008")

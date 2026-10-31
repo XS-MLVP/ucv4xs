@@ -9,8 +9,8 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.utage.transaction.types import UtageBaseBranch, UtageTraining
-from bpuverify.utage.case.definitions import PASSING_PC
+from suites.frontend.bpu.utage.transaction.types import UtageBaseBranch, UtageTraining
+from suites.frontend.bpu.utage.case.definitions import PASSING_PC
 
 POSITIONS = (5, 7)
 UPPER = PASSING_PC + 0x400
@@ -122,5 +122,5 @@ async def test_override_replays_a_saved_upper_table_provider(utage_agent, stage,
     # miss is not a defined provider payload, but the raw direction still comes
     # from the saved snapshot; only the hit verdict may change.
     retagged = await utage_agent.recover_prediction(
-        UPPER, position, 0, stage=stage, override_pc=UPPER + 0x20)
+        UPPER, position, 0, stage=stage, override_pc=UPPER ^ 0x4)
     assert (retagged.hit, retagged.taken) == (0, 1)

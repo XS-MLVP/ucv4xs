@@ -3,9 +3,9 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.bpu.model.micro_sources import MicroSources
-from bpuverify.ubtb.model.semantic import UbtbEvents
-from bpuverify.ubtb.transaction.types import BranchTraining, PredictRequest
+from suites.frontend.bpu.bpu.model.micro_sources import MicroSources
+from suites.frontend.bpu.ubtb.model.semantic import UbtbEvents
+from suites.frontend.bpu.ubtb.transaction.types import BranchTraining, PredictRequest
 
 
 @pytest.mark.parametrize('pc,target,expected', (

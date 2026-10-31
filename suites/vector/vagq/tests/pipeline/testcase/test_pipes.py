@@ -1,5 +1,5 @@
 """The two pipe roots run the same protocol scenarios with separate payload contracts."""
-from vagqverify.pipeline.types import Beat, Pipe3Payload, PipePayload
+from suites.vector.vagq.pipeline.types import Beat, Pipe3Payload, PipePayload
 
 
 def pipe1_payload(tag):

@@ -23,15 +23,15 @@ from tools.build_vagq_reference_fix_report import (
     analyze_policy, audit_wave, historical_artifacts, junit, sparse_variants,
 )
 from tools.run_vagq_exhaustive import atomic_json, digest
-from vagqverify.maskgen.flow_fixture import active_sites, flow_metadata, wide_flow
-from vagqverify.maskgen.architectural import BoundDestination, DestinationBinding, DestinationInstruction
-from vagqverify.maskgen.reference import MaskRequest, evaluate
-from vagqverify.qualification.rvv_destination import Instruction as IndependentRegisterOracle
-from vagqverify.split.model import idx_offset
-from vagqverify.split.types import Entry
-from vagqverify.vagq.model import _data_size, _slot_element
-from vagqverify.vagq.types import AddrPacket
-from vagqverify.waveform import read_public_samples
+from suites.vector.vagq.maskgen.flow_fixture import active_sites, flow_metadata, wide_flow
+from suites.vector.vagq.maskgen.architectural import BoundDestination, DestinationBinding, DestinationInstruction
+from suites.vector.vagq.maskgen.reference import MaskRequest, evaluate
+from suites.vector.vagq.qualification.rvv_destination import Instruction as IndependentRegisterOracle
+from suites.vector.vagq.split.model import idx_offset
+from suites.vector.vagq.split.types import Entry
+from suites.vector.vagq.vagq.model import _data_size, _slot_element
+from suites.vector.vagq.vagq.types import AddrPacket
+from suites.vector.vagq.waveform import read_public_samples
 
 
 CONTRACTS = {
@@ -116,7 +116,7 @@ def audit_qualification(out):
     return dict(**result,
         tested_domain='401 segment operand configurations (2..8 fields), sampled vl/vstart/masks/policies; not all bit patterns or nonsegment certification',
         overall_implementation_reference='NOT_CERTIFIED',
-        immutable_oracle='vagqverify/qualification/rvv_destination.py',
+        immutable_oracle='qualification/rvv_destination.py',
         spec_provenance_sha256=digest(directory / 'spec/provenance.json'))
 
 
@@ -175,12 +175,12 @@ def load_snapshot(name, path):
 
 def audit_reference_defect_witnesses(out):
     """Run the ACTUAL frozen old functions, not merely invented bad variants."""
-    old_mask = load_snapshot('vagqverify.maskgen._before_bound_repair',
-        out / 'before/vagqverify/maskgen/reference.py')
-    old_split = load_snapshot('vagqverify.split._before_bound_repair',
-        out / 'before/vagqverify/split/model.py')
-    old_top = load_snapshot('vagqverify.vagq._before_bound_repair',
-        out / 'before/vagqverify/vagq/model.py')
+    old_mask = load_snapshot('suites.vector.vagq.maskgen._before_bound_repair',
+        out / 'before/maskgen/reference.py')
+    old_split = load_snapshot('suites.vector.vagq.split._before_bound_repair',
+        out / 'before/split/model.py')
+    old_top = load_snapshot('suites.vector.vagq.vagq._before_bound_repair',
+        out / 'before/vagq/model.py')
     fragment = wide_flow(4, 5, 2)[1]
     entry = Entry(nf=4, deew=2, ieew=3, elem_base=2, start_byte=fragment.site)
     addr = AddrPacket(nf=4, deew=2, ieew=3)

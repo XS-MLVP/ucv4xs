@@ -1,37 +1,37 @@
-from bpuverify.bpu.coverage.common_query import lifetime_coverage as common_query_lifetime, OBLIGATIONS as COMMON_QUERY_OBLIGATIONS
-from bpuverify.bpu.coverage.statistical_prefix import lifetime_coverage as statistical_prefix_lifetime
-from bpuverify.bpu.coverage.statistical_prefix import context_lifetime_coverage as sc_context_lifetime
-from bpuverify.bpu.coverage.statistical_prefix import concurrent_context_lifetime_coverage as sc_concurrent_context_lifetime
-from bpuverify.bpu.coverage.ahead_working_set import prefix_lifetime_coverage as ahead_prefix_working_set_lifetime
-from bpuverify.bpu.model.ahead_working_set import PREFIX_PROFILES as AHEAD_PREFIX_PROFILES,PREFIX_RULES as AHEAD_PREFIX_RULES
-from bpuverify.bpu.model.statistical_prefix import CONCURRENT_CONTEXT_PROFILES as SC_CONCURRENT_CONTEXT_PROFILES,CONCURRENT_CONTEXT_RULES as SC_CONCURRENT_CONTEXT_RULES
-from bpuverify.bpu.model.statistical_prefix import CONTEXT_PROFILES as SC_CONTEXT_PROFILES,CONTEXT_RULES as SC_CONTEXT_RULES
-from bpuverify.bpu.model.statistical_prefix import PROFILES as STATISTICAL_PREFIX_PROFILES, RULES as STATISTICAL_PREFIX_RULES
-from bpuverify.bpu.coverage.sc_early_learning import lifetime_coverage as sc_early_learning_lifetime
-from bpuverify.bpu.model.sc_early_learning import PROFILES as SC_EARLY_PROFILES, RULES as SC_EARLY_RULES
-from bpuverify.bpu.coverage.sc_admission import lifetime_coverage as sc_admission_lifetime
-from bpuverify.bpu.model.sc_admission import PROFILES as SC_ADMISSION_PROFILES, RULES as SC_ADMISSION_RULES
-from bpuverify.bpu.coverage.sc_admission import burst_lifetime_coverage as sc_feedback_burst_lifetime
-from bpuverify.bpu.model.sc_admission import BURST_PROFILES as SC_BURST_PROFILES, BURST_RULES as SC_BURST_RULES
-from bpuverify.bpu.coverage.sc_admission import read_only_lifetime_coverage as sc_read_no_write_lifetime
-from bpuverify.bpu.model.sc_admission import READ_ONLY_PROFILES as SC_READ_ONLY_PROFILES
-from bpuverify.bpu.coverage.history_working_set import short_path_retention_coverage as short_path_retention_lifetime
-from bpuverify.bpu.model.history_working_set import SHORT_PROFILES as SHORT_PATH_PROFILES,SHORT_RULES as SHORT_PATH_RULES
-from bpuverify.bpu.coverage.history_working_set import short_path_mixed_coverage as short_path_mixed_lifetime
-from bpuverify.bpu.model.history_working_set import SHORT_MIXED_PROFILES,SHORT_MIXED_RULES
-from bpuverify.utage.coverage.predecessor_retention import lifetime_coverage as predecessor_retention_lifetime
-from bpuverify.utage.model.predecessor_retention import Program as PredecessorProgram, PROFILES as PREDECESSOR_PROFILES, MODES as PREDECESSOR_MODES, RULES as PREDECESSOR_RULES
-from bpuverify.bpu.coverage.indirect_path_ownership import lifetime_coverage as indirect_path_lifetime
-from bpuverify.bpu.coverage.conditional_prefix import lifetime_coverage as conditional_prefix_lifetime
-from bpuverify.bpu.model.indirect_path_ownership import PROFILES as INDIRECT_PATH_PROFILES, RULES as INDIRECT_PATH_RULES
-from bpuverify.bpu.model.conditional_prefix import PROFILES as CONDITIONAL_PREFIX_PROFILES, RULES as CONDITIONAL_PREFIX_RULES
-from bpuverify.ras.model.commit_action import Program as CommitActionProgram, RULES as COMMIT_ACTION_RULES
-from bpuverify.bpu.coverage.main_cold_original_order import lifetime_coverage as main_cold_original_order_lifetime
-from bpuverify.bpu.coverage.main_original_order import lifetime_coverage as main_original_order_lifetime
-from bpuverify.bpu.model.main_original_order import Program as OriginalOrderProgram, ORDERS as ORIGINAL_ORDERS, PHASES as ORIGINAL_PHASES, COUNTERS as ORIGINAL_COUNTERS, RULES as ORIGINAL_ORDER_RULES
-from bpuverify.ras.coverage.commit_action import lifetime_coverage as ras_commit_action_lifetime
-from bpuverify.bpu.model.miss_authority import Program as MissAuthorityProgram, RULES as MISS_AUTHORITY_RULES
-from bpuverify.bpu.coverage.miss_authority import lifetime_coverage as miss_authority_lifetime
+from suites.frontend.bpu.bpu.coverage.common_query import lifetime_coverage as common_query_lifetime, OBLIGATIONS as COMMON_QUERY_OBLIGATIONS
+from suites.frontend.bpu.bpu.coverage.statistical_prefix import lifetime_coverage as statistical_prefix_lifetime
+from suites.frontend.bpu.bpu.coverage.statistical_prefix import context_lifetime_coverage as sc_context_lifetime
+from suites.frontend.bpu.bpu.coverage.statistical_prefix import concurrent_context_lifetime_coverage as sc_concurrent_context_lifetime
+from suites.frontend.bpu.bpu.coverage.ahead_working_set import prefix_lifetime_coverage as ahead_prefix_working_set_lifetime
+from suites.frontend.bpu.bpu.model.ahead_working_set import PREFIX_PROFILES as AHEAD_PREFIX_PROFILES,PREFIX_RULES as AHEAD_PREFIX_RULES
+from suites.frontend.bpu.bpu.model.statistical_prefix import CONCURRENT_CONTEXT_PROFILES as SC_CONCURRENT_CONTEXT_PROFILES,CONCURRENT_CONTEXT_RULES as SC_CONCURRENT_CONTEXT_RULES
+from suites.frontend.bpu.bpu.model.statistical_prefix import CONTEXT_PROFILES as SC_CONTEXT_PROFILES,CONTEXT_RULES as SC_CONTEXT_RULES
+from suites.frontend.bpu.bpu.model.statistical_prefix import PROFILES as STATISTICAL_PREFIX_PROFILES, RULES as STATISTICAL_PREFIX_RULES
+from suites.frontend.bpu.bpu.coverage.sc_early_learning import lifetime_coverage as sc_early_learning_lifetime
+from suites.frontend.bpu.bpu.model.sc_early_learning import PROFILES as SC_EARLY_PROFILES, RULES as SC_EARLY_RULES
+from suites.frontend.bpu.bpu.coverage.sc_admission import lifetime_coverage as sc_admission_lifetime
+from suites.frontend.bpu.bpu.model.sc_admission import PROFILES as SC_ADMISSION_PROFILES, RULES as SC_ADMISSION_RULES
+from suites.frontend.bpu.bpu.coverage.sc_admission import burst_lifetime_coverage as sc_feedback_burst_lifetime
+from suites.frontend.bpu.bpu.model.sc_admission import BURST_PROFILES as SC_BURST_PROFILES, BURST_RULES as SC_BURST_RULES
+from suites.frontend.bpu.bpu.coverage.sc_admission import read_only_lifetime_coverage as sc_read_no_write_lifetime
+from suites.frontend.bpu.bpu.model.sc_admission import READ_ONLY_PROFILES as SC_READ_ONLY_PROFILES
+from suites.frontend.bpu.bpu.coverage.history_working_set import short_path_retention_coverage as short_path_retention_lifetime
+from suites.frontend.bpu.bpu.model.history_working_set import SHORT_PROFILES as SHORT_PATH_PROFILES,SHORT_RULES as SHORT_PATH_RULES
+from suites.frontend.bpu.bpu.coverage.history_working_set import short_path_mixed_coverage as short_path_mixed_lifetime
+from suites.frontend.bpu.bpu.model.history_working_set import SHORT_MIXED_PROFILES,SHORT_MIXED_RULES
+from suites.frontend.bpu.utage.coverage.predecessor_retention import lifetime_coverage as predecessor_retention_lifetime
+from suites.frontend.bpu.utage.model.predecessor_retention import Program as PredecessorProgram, PROFILES as PREDECESSOR_PROFILES, MODES as PREDECESSOR_MODES, RULES as PREDECESSOR_RULES
+from suites.frontend.bpu.bpu.coverage.indirect_path_ownership import lifetime_coverage as indirect_path_lifetime
+from suites.frontend.bpu.bpu.coverage.conditional_prefix import lifetime_coverage as conditional_prefix_lifetime
+from suites.frontend.bpu.bpu.model.indirect_path_ownership import PROFILES as INDIRECT_PATH_PROFILES, RULES as INDIRECT_PATH_RULES
+from suites.frontend.bpu.bpu.model.conditional_prefix import PROFILES as CONDITIONAL_PREFIX_PROFILES, RULES as CONDITIONAL_PREFIX_RULES
+from suites.frontend.bpu.ras.model.commit_action import Program as CommitActionProgram, RULES as COMMIT_ACTION_RULES
+from suites.frontend.bpu.bpu.coverage.main_cold_original_order import lifetime_coverage as main_cold_original_order_lifetime
+from suites.frontend.bpu.bpu.coverage.main_original_order import lifetime_coverage as main_original_order_lifetime
+from suites.frontend.bpu.bpu.model.main_original_order import Program as OriginalOrderProgram, ORDERS as ORIGINAL_ORDERS, PHASES as ORIGINAL_PHASES, COUNTERS as ORIGINAL_COUNTERS, RULES as ORIGINAL_ORDER_RULES
+from suites.frontend.bpu.ras.coverage.commit_action import lifetime_coverage as ras_commit_action_lifetime
+from suites.frontend.bpu.bpu.model.miss_authority import Program as MissAuthorityProgram, RULES as MISS_AUTHORITY_RULES
+from suites.frontend.bpu.bpu.coverage.miss_authority import lifetime_coverage as miss_authority_lifetime
 """No-DUT contracts for independent scheduling without coverage dilution."""
 from itertools import product
 from functools import lru_cache
@@ -40,193 +40,193 @@ from types import SimpleNamespace
 import pytest
 from toffee import CoverGroup, CoverageDatabase
 
-from bpuverify.tage.coverage.dual import DUAL_MODES
-from bpuverify.tage.coverage.dual import tage_dual_shadow_coverage_model
-from bpuverify.tage.coverage.retained import tage_retained_owner_coverage_model
-from bpuverify.bpu.coverage.abtb.supplemental import CounterCoverage, CELLS, PATHS, cell_label
-from bpuverify.bpu.coverage.alignment import coverage as alignment_coverage
-from bpuverify.bpu.coverage.sc.used import used_coverage, history_coverage, KINDS as USED_KINDS
-from bpuverify.bpu.coverage.sc.bounds import bounds_coverage, RULES as THRESHOLD_RULES
-from bpuverify.bpu.coverage.ras_micro import micro_coverage, RULES as MICRO_RAS_RULES
-from bpuverify.bpu.coverage.tage.selector import selector_coverage, routing_coverage, UPDATE_RULES
-from bpuverify.bpu.coverage.tage.aging import aging_coverage, RULES as AGING_RULES
-from bpuverify.bpu.coverage.ittage import directory_coverage, DIRECTORY_RULES
-from bpuverify.bpu.coverage.ittage_aging import aging_coverage as ittage_aging_coverage, RULES as ITTAGE_AGING_RULES
-from bpuverify.uras.coverage.semantic import semantic_coverage as uras_semantic_coverage, RULES as URAS_RULES
-from bpuverify.uras.coverage.semantic import held_call_coverage as uras_held_call_lifetime, HELD_PROFILES as URAS_HELD_PROFILES, HELD_RULES as URAS_HELD_RULES
-from bpuverify.bpu.coverage.sc_admission import context_burst_lifetime_coverage as sc_context_burst_lifetime
-from bpuverify.bpu.model.sc_admission import CONTEXT_BURST_PROFILES as SC_CONTEXT_BURST_PROFILES,CONTEXT_BURST_RULES as SC_CONTEXT_BURST_RULES
-from bpuverify.ittage.coverage.semantic import target_coverage as ittage_target_coverage, RULES as ITTAGE_TARGET_RULES
-from bpuverify.sc.coverage.semantic import semantic_coverage as sc_semantic_coverage, RULES as SC_SEMANTIC_RULES
-from bpuverify.sc.coverage.eligibility import EligibilityCoverage, PROFILES as SC_ELIGIBILITY_PROFILES, RULES as SC_ELIGIBILITY_RULES
-from bpuverify.sc.coverage.original_feedback import FeedbackCoverage, PROFILES as SC_FEEDBACK_PROFILES, RULES as SC_FEEDBACK_RULES
-from bpuverify.sc.coverage.original_enable import EnableCoverage, PROFILES as SC_ENABLE_PROFILES, RULES as SC_ENABLE_RULES
-from bpuverify.bpu.coverage.recovery_arbitration import RecoveryCoverage, PROFILES as RECOVERY_PROFILES, RULES as RECOVERY_RULES
-from bpuverify.utage.coverage.learning_retention import LearningRetentionCoverage, MODES as RETENTION_MODES, RULES as RETENTION_RULES
-from bpuverify.bpu.coverage.short_context_ownership import ShortContextCoverage,ShortDirectionCoverage
-from bpuverify.bpu.model.short_context_ownership import DIRECTION_PROFILES as SHORT_DIRECTION_PROFILES,DIRECTION_RULES as SHORT_DIRECTION_RULES
-from bpuverify.bpu.model.short_context_ownership import PROFILES as SHORT_CONTEXT_PROFILES, RULES as SHORT_CONTEXT_RULES
-from bpuverify.bpu.coverage.main_sibling import lifetime_coverage as main_sibling_lifetime, RULES as MAIN_SIBLING_RULES
-from bpuverify.bpu.model.main_sibling import PHASES as MAIN_SIBLING_PHASES, ORIGINS as MAIN_SIBLING_ORIGINS
-from bpuverify.bpu.coverage.ras_nested_recursion import lifetime_coverage as ras_nested_lifetime
-from bpuverify.bpu.model.ras.nested_recursion import PROFILES as RAS_NESTED_PROFILES, RULES as RAS_NESTED_RULES
-from bpuverify.utage.coverage.enable_lifetime import lifetime_coverage as utage_enable_lifetime
-from bpuverify.utage.model.enable_lifetime import TABLES as UTAGE_ENABLE_TABLES, PHASES as UTAGE_ENABLE_PHASES, RULES as UTAGE_ENABLE_RULES
-from bpuverify.bpu.coverage.ras_wrapped_recursion import lifetime_coverage as ras_wrapped_lifetime
-from bpuverify.bpu.model.ras.wrapped_recursion import PROFILES as RAS_WRAPPED_PROFILES, RULES as RAS_WRAPPED_RULES
-from bpuverify.bpu.coverage.ras_layered_recursion import lifetime_coverage as ras_layered_lifetime
-from bpuverify.bpu.model.ras.layered_recursion import PROFILES as RAS_LAYERED_PROFILES, RULES as RAS_LAYERED_RULES
-from bpuverify.bpu.coverage.ras_adjacent_recursion import lifetime_coverage as ras_adjacent_lifetime
-from bpuverify.bpu.coverage.opposed_learning_pair import lifetime_coverage as opposed_learning_pair_lifetime
-from bpuverify.bpu.coverage.interior_prefix_learning import lifetime_coverage as interior_prefix_learning_lifetime, RULES as INTERIOR_PREFIX_RULES
-from bpuverify.bpu.model.tage.interior_prefix_learning import PROGRAMS as INTERIOR_PREFIX_PROGRAMS
-from bpuverify.bpu.coverage.service_relearning import lifetime_coverage as service_relearning_lifetime, RULES as SERVICE_RELEARNING_RULES
-from bpuverify.bpu.model.tage.service_relearning import PROGRAMS as SERVICE_RELEARNING_PROGRAMS
-from bpuverify.bpu.coverage.shared_saturation import lifetime_coverage as shared_saturation_lifetime, RULES as SHARED_SATURATION_RULES
-from bpuverify.bpu.model.tage.shared_saturation import PROGRAMS as SHARED_SATURATION_PROGRAMS
-from bpuverify.bpu.coverage.main_accepted_recovery import lifetime_coverage as main_accepted_recovery_lifetime
-from bpuverify.bpu.coverage.main_coincident_recovery import lifetime_coverage as main_coincident_recovery_lifetime
-from bpuverify.bpu.model.main_coincident_recovery import PROGRAMS as COINCIDENT_RECOVERY_PROGRAMS,RULES as COINCIDENT_RECOVERY_RULES
-from bpuverify.mbtb.coverage.two_key_lifetime import lifetime_coverage as two_key_lifetime
-from bpuverify.mbtb.model.two_key_programs import SEMANTIC_PROGRAMS as TWO_KEY_PROGRAMS,RULES as TWO_KEY_RULES
-from bpuverify.mbtb.coverage.cleanup_lifetime import lifetime_coverage as cleanup_lifetime
-from bpuverify.mbtb.model.cleanup_programs import SEMANTIC_PROGRAMS as CLEANUP_PROGRAMS,RULES as CLEANUP_LIFETIME_RULES
-from bpuverify.mbtb.coverage.shared_service import lifetime_coverage as shared_service_lifetime
-from bpuverify.mbtb.model.shared_service import PROGRAMS as SHARED_SERVICE_PROGRAMS,RULES as SHARED_SERVICE_RULES
-from bpuverify.bpu.coverage.selective_learning import lifetime_coverage as selective_learning_lifetime
-from bpuverify.bpu.model.tage.selective_learning import ALL_PROGRAMS as SELECTIVE_LEARNING_PROGRAMS,RULES as SELECTIVE_LEARNING_RULES
-from bpuverify.utage.coverage.cross_branch_protection import lifetime_coverage as cross_branch_protection_lifetime
-from bpuverify.utage.model.cross_branch_protection import PROGRAMS as UTAGE_CROSS_BRANCH_PROGRAMS,RULES as UTAGE_CROSS_BRANCH_RULES
-from bpuverify.utage.coverage.returning_original import lifetime_coverage as returning_original_lifetime
-from bpuverify.utage.model.returning_original import PROGRAMS as RETURNING_ORIGINAL_PROGRAMS,RULES as RETURNING_ORIGINAL_RULES
-from bpuverify.utage.coverage.dual_source import lifetime_coverage as dual_source_lifetime
-from bpuverify.utage.model.dual_source import OBLIGATIONS as DUAL_SOURCE_OBLIGATIONS
-from bpuverify.utage.coverage.saved_vector import lifetime_coverage as saved_vector_lifetime
-from bpuverify.utage.model.saved_vector import OBLIGATIONS as SAVED_VECTOR_OBLIGATIONS
-from bpuverify.bpu.coverage.joint_stream import lifetime_coverage as joint_stream_lifetime
-from bpuverify.bpu.model.joint_stream import PROFILES as JOINT_STREAM_PROFILES,RULES as JOINT_STREAM_RULES
-from bpuverify.utage.coverage.displaced_branch import lifetime_coverage as displaced_branch_lifetime
-from bpuverify.utage.model.displaced_branch import OBLIGATIONS as DISPLACED_BRANCH_OBLIGATIONS
-from bpuverify.utage.coverage.instruction_confidence import lifetime_coverage as instruction_confidence_lifetime
-from bpuverify.utage.model.instruction_confidence import OBLIGATIONS as INSTRUCTION_CONFIDENCE_OBLIGATIONS
-from bpuverify.sc.coverage.neutral_boundary import lifetime_coverage as sc_neutral_boundary_lifetime
-from bpuverify.sc.model.neutral_boundary import PROFILES as SC_NEUTRAL_PROFILES, RULES as SC_NEUTRAL_RULES
-from bpuverify.bpu.coverage.superseding_recovery import lifetime_coverage as superseding_recovery_lifetime
-from bpuverify.bpu.model.superseding_recovery import PROFILES as SUPERSEDING_RECOVERY_PROFILES, RULES as SUPERSEDING_RECOVERY_RULES
-from bpuverify.bpu.coverage.owned_return_stack import lifetime_coverage as owned_return_stack_lifetime
-from bpuverify.bpu.model.owned_return_stack import OBLIGATIONS as OWNED_RETURN_STACK_OBLIGATIONS
-from bpuverify.sc.coverage.catalog import sc_same_way_feedback_coverage_model
-from bpuverify.mbtb.coverage.catalog import mbtb_cleanup_overlap_coverage_model
-from bpuverify.mbtb.coverage.catalog import mbtb_entry_keys_coverage_model
-from bpuverify.bpu.coverage.main_duplicate_cleanup import lifetime_coverage as main_duplicate_cleanup_lifetime
-from bpuverify.bpu.model.main_duplicate_cleanup import Program as DuplicateCleanupProgram, IDENTITIES as DUPLICATE_CLEANUP_IDENTITIES, OVERLAPS as DUPLICATE_CLEANUP_OVERLAPS, PREPARATIONS as DUPLICATE_CLEANUP_PREPARATIONS, RULES as DUPLICATE_CLEANUP_RULES
-from bpuverify.bpu.model.main_accepted_recovery import Program as AcceptedRecoveryProgram, FATES as ACCEPTED_RECOVERY_FATES, MOMENTS as ACCEPTED_RECOVERY_MOMENTS, RULES as ACCEPTED_RECOVERY_RULES
-from bpuverify.bpu.model.tage.opposed_learning_pair import PROGRAMS as OPPOSED_PAIR_PROGRAMS
-from bpuverify.bpu.coverage.direction_turnaround import RULES as OPPOSED_PAIR_RULES
-from bpuverify.bpu.model.ras.adjacent_recursion import Program as AdjacentRecursionProgram, DEPTHS as RAS_ADJACENT_DEPTHS, RELATIONS as RAS_ADJACENT_RELATIONS, RULES as RAS_ADJACENT_RULES
-from bpuverify.mbtb.coverage.reset_lifetime import lifetime_coverage as mbtb_reset_lifetime
-from bpuverify.mbtb.model.reset_lifetime import PROFILES as MBTB_RESET_PROFILES, RULES as MBTB_RESET_RULES
-from bpuverify.ubtb.coverage.reset_lifetime import lifetime_coverage as ubtb_reset_lifetime
-from bpuverify.mbtb.coverage.query_reset import lifetime_coverage as mbtb_query_lifetime
-from bpuverify.ubtb.coverage.query_reset import lifetime_coverage as ubtb_query_lifetime
-from bpuverify.bpu.coverage.joint_lifetime import lifetime_coverage as joint_lifetime
-from bpuverify.mbtb.coverage.cleanup_reset import lifetime_coverage as cleanup_reset_lifetime
-from bpuverify.utage.coverage.read_lifetime import lifetime_coverage as utage_read_lifetime
-from bpuverify.utage.coverage.read_lifetime import late_replacement_coverage as utage_late_replacement_lifetime
-from bpuverify.utage.model.read_lifetime import LateReplacementProgram,REBUILD_PROFILES,REBUILD_RULES,MODES as REBUILD_MODES
-from bpuverify.bpu.coverage.short_context_ownership import working_set_coverage as short_cross_branch_lifetime
-from bpuverify.bpu.model.short_context_ownership import WORKING_SET_PROFILES as CROSS_BRANCH_PROFILES,WORKING_SET_RULES as CROSS_BRANCH_RULES
-from bpuverify.bpu.coverage.short_competition import lifetime_coverage as short_competition_lifetime
-from bpuverify.bpu.model.short_competition import PROFILES as SHORT_COMPETITION_PROFILES,RULES as SHORT_COMPETITION_RULES
-from bpuverify.bpu.coverage.sc_loop_experience import lifetime_coverage as sc_loop_experience_lifetime
-from bpuverify.bpu.model.sc_loop_experience import PROFILES as SC_LOOP_EXPERIENCE_PROFILES,RULES as SC_LOOP_EXPERIENCE_RULES
-from bpuverify.bpu.coverage.joint_direction_learning import lifetime_coverage as joint_direction_learning_lifetime
-from bpuverify.bpu.model.joint_direction_learning import PROFILES as JOINT_DIRECTION_PROFILES,RULES as JOINT_DIRECTION_RULES
-from bpuverify.bpu.coverage.joint_originals import lifetime_coverage as joint_originals_lifetime
-from bpuverify.bpu.model.joint_originals import PROFILES as JOINT_ORIGINALS_PROFILES,RULES as JOINT_ORIGINALS_RULES
-from bpuverify.utage.coverage.ancestor_lifetime import lifetime_coverage as utage_ancestor_lifetime
-from bpuverify.utage.coverage.query_cohort import lifetime_coverage as query_cohort_lifetime
-from bpuverify.utage.coverage.query_identity import lifetime_coverage as query_identity_lifetime
-from bpuverify.utage.coverage.selective_protection import lifetime_coverage as selective_protection_lifetime
-from bpuverify.utage.coverage.delayed_agreement import lifetime_coverage as delayed_agreement_lifetime
-from bpuverify.bpu.coverage.neutral_recovery import lifetime_coverage as neutral_recovery_lifetime
-from bpuverify.bpu.model.neutral_recovery import PROFILES as NEUTRAL_RECOVERY_PROFILES, rules as neutral_recovery_rules
-from bpuverify.bpu.coverage.block_entry_learning import lifetime_coverage as block_entry_learning_lifetime
-from bpuverify.bpu.model.block_entry_learning import PROFILES as BLOCK_ENTRY_PROFILES, RULES as BLOCK_ENTRY_RULES
-from bpuverify.bpu.coverage.entry_protection import lifetime_coverage as entry_protection_lifetime
-from bpuverify.bpu.model.entry_protection import PROFILES as ENTRY_PROTECTION_PROFILES, rules as entry_protection_rules
-from bpuverify.bpu.coverage.short_revisit import lifetime_coverage as short_revisit_lifetime
-from bpuverify.bpu.model.short_revisit import PROFILES as SHORT_REVISIT_PROFILES, rules as short_revisit_rules
-from bpuverify.bpu.coverage.cross_block_learning import lifetime_coverage as cross_block_learning_lifetime
-from bpuverify.bpu.model.cross_block_learning import PROFILES as CROSS_BLOCK_PROFILES, RULES as CROSS_BLOCK_RULES
-from bpuverify.bpu.coverage.late_correction_learning import lifetime_coverage as late_correction_learning_lifetime
-from bpuverify.bpu.model.late_correction_learning import PROFILES as LATE_CORRECTION_PROFILES, RULES as LATE_CORRECTION_RULES
-from bpuverify.bpu.coverage.competing_correction import lifetime_coverage as competing_correction_lifetime
-from bpuverify.bpu.model.competing_correction import PROFILES as COMPETING_PROFILES, RULES as COMPETING_RULES
-from bpuverify.utage.model.delayed_agreement import PROGRAMS as DELAYED_AGREEMENT_PROGRAMS, RULES as DELAYED_AGREEMENT_RULES
-from bpuverify.utage.coverage.delayed_protection import lifetime_coverage as delayed_protection_lifetime
-from bpuverify.utage.model.delayed_protection import PROGRAMS as DELAYED_PROTECTION_PROGRAMS, RULES as DELAYED_PROTECTION_RULES
-from bpuverify.utage.coverage.long_protection import lifetime_coverage as long_protection_lifetime
-from bpuverify.utage.model.long_protection import Program as LongProtectionProgram, MODES as LONG_PROTECTION_MODES, LIFETIMES as LONG_PROTECTION_LIFETIMES, RULES as LONG_PROTECTION_RULES
-from bpuverify.bpu.coverage.working_set_replacement import lifetime_coverage as working_set_replacement_lifetime
-from bpuverify.utage.model.query_cohort import PROFILES as COHORT_PROFILES, ANCESTRIES as COHORT_ANCESTRIES, RULES as COHORT_RULES
-from bpuverify.utage.model.query_identity import Program as IdentityProgram, MODES as IDENTITY_MODES, RULES as IDENTITY_RULES
-from bpuverify.utage.model.selective_protection import Program as ProtectionProgram, MODES as PROTECTION_MODES, RULES as PROTECTION_RULES
-from bpuverify.bpu.model.working_set_replacement import Program as ReplacementProgram, KINDS as REPLACEMENT_KINDS
-from bpuverify.utage.coverage.learning_persistence import lifetime_coverage as learning_persistence_lifetime
-from bpuverify.utage.model.learning_persistence import Program as PersistenceProgram, PROFILES as PERSISTENCE_PROFILES, MODES as PERSISTENCE_MODES, RULES as PERSISTENCE_RULES
-from bpuverify.utage.coverage.catalog import utage_shadow_ring_coverage_model
-from bpuverify.utage.coverage.supplemental import utage_partial_wrap_coverage_model
-from bpuverify.utage.model.read_lifetime import PROFILES as READ_PROFILES,RELATIONS as READ_RELATIONS,RULES as READ_RULES
-from bpuverify.utage.model.ancestor_lifetime import RULES as ANCESTOR_RULES
-from bpuverify.mbtb.model.query_reset import MODES as QUERY_RESET_MODES,RULES as QUERY_RESET_RULES
-from bpuverify.bpu.model.joint_lifetime import MODES as JOINT_MODES,RULES as JOINT_RULES
-from bpuverify.mbtb.model.cleanup_reset import PROFILES as CLEANUP_RESET_PROFILES,RULES as CLEANUP_RESET_RULES
-from bpuverify.ubtb.model.reset_lifetime import PROFILES as UBTB_RESET_PROFILES, RULES as UBTB_RESET_RULES
-from bpuverify.common.coverage.pipeline_ownership import ownership_coverage, PROFILES as OWNERSHIP_PROFILES, RULES as OWNERSHIP_RULES
-from bpuverify.ras.coverage.semantic import semantic_coverage as ras_action_coverage, ROLES as RAS_ACTION_ROLES
-from bpuverify.utage.coverage.semantic import semantic_coverage as utage_semantic_coverage, BOUNDARY_RULES as UTAGE_BOUNDARY_RULES, TYPE_RULES as UTAGE_TYPE_RULES
-from bpuverify.abtb.coverage.semantic import semantic_coverage as abtb_semantic_coverage, RULES as ABTB_SEMANTIC_RULES
-from bpuverify.mbtb.coverage.semantic import semantic_coverage as mbtb_semantic_coverage, RULES as MBTB_SEMANTIC_RULES
-from bpuverify.tage.coverage.semantic import semantic_coverage as tage_semantic_coverage, RULES as TAGE_SEMANTIC_RULES
-from bpuverify.bpu.coverage.tage.learning import learning_coverage, RULES as TAGE_LEARNING_RULES
-from bpuverify.bpu.coverage.tage.fast_routing import routing_coverage as fast_routing_coverage, RULES as FAST_ROUTING_RULES
-from bpuverify.bpu.coverage.tage.alternate import alternate_coverage, RULES as ALTERNATE_RULES
-from bpuverify.bpu.coverage.tage.interleaved import interleaved_coverage, RULES as INTERLEAVED_RULES
-from bpuverify.bpu.coverage.pipeline import pipeline_coverage, RULES as PIPELINE_RULES
-from bpuverify.bpu.coverage.ras_redo import redo_coverage, RULES as RAS_REDO_RULES
-from bpuverify.bpu.coverage.ras_return_recovery import return_recovery_coverage, RULES as RAS_RETURN_RULES, STORAGES
-from bpuverify.bpu.coverage.micro_capacity import capacity_coverage, RULES as MICRO_CAPACITY_RULES
-from bpuverify.bpu.coverage.micro_forwarding import forwarding_coverage, RULES as MICRO_FORWARDING_RULES
-from bpuverify.bpu.coverage.main_learning import learning_coverage as main_learning_coverage, RULES as MAIN_LEARNING_RULES
-from bpuverify.bpu.coverage.direction_learning import direction_coverage, RULES as DIRECTION_RULES
-from bpuverify.bpu.coverage.direction_forwarding import forwarding_coverage as direction_forwarding_coverage, RULES as DIRECTION_FORWARDING_RULES
-from bpuverify.bpu.coverage.direction_service import service_coverage as direction_service_coverage, RULES as DIRECTION_SERVICE_RULES
-from bpuverify.bpu.coverage.direction_useful import useful_coverage as direction_useful_coverage, RULES as DIRECTION_USEFUL_RULES
-from bpuverify.bpu.coverage.indirect_learning import indirect_coverage, RULES as INDIRECT_RULES
-from bpuverify.bpu.coverage.indirect_service import service_coverage as indirect_service_coverage, RULES as INDIRECT_SERVICE_RULES, CLASSES as INDIRECT_CLASSES
-from bpuverify.bpu.coverage.main_service import main_service_coverage, main_service_rules, RULES as MAIN_SERVICE_RULES, MODES as MAIN_SERVICE_MODES
-from bpuverify.bpu.coverage.common_history import common_history_coverage, RULES as COMMON_HISTORY_RULES, FAMILIES as COMMON_HISTORY_FAMILIES
-from bpuverify.bpu.coverage.main_rewrite import main_rewrite_coverage, RULES as MAIN_REWRITE_RULES
-from bpuverify.bpu.coverage.ras_reuse import ras_reuse_coverage, RULES as RAS_REUSE_RULES
-from bpuverify.bpu.coverage.ras_neutral_gap import neutral_gap_coverage, RULES as RAS_NEUTRAL_GAP_RULES
-from bpuverify.bpu.coverage.direction_capacity import capacity_coverage as direction_capacity_coverage, RULES as DIRECTION_CAPACITY_RULES
-from bpuverify.bpu.coverage.direction_replacement import replacement_coverage as direction_replacement_coverage, RULES as DIRECTION_REPLACEMENT_RULES
-from bpuverify.bpu.coverage.direction_migration import migration_coverage as direction_migration_coverage, RULES as DIRECTION_MIGRATION_RULES
-from bpuverify.bpu.coverage.direction_burst import burst_coverage as direction_burst_coverage, RULES as DIRECTION_BURST_RULES
-from bpuverify.bpu.coverage.ahead_learning import ahead_learning_coverage, RULES as AHEAD_LEARNING_RULES
-from bpuverify.bpu.coverage.early_direction import direction_coverage as early_direction_coverage, RULES as EARLY_DIRECTION_RULES, CLASSES as EARLY_DIRECTION_CLASSES
-from bpuverify.bpu.coverage.early_opposition import opposition_coverage as early_opposition_coverage, RULES as EARLY_OPPOSITION_RULES
-from bpuverify.bpu.coverage.early_positive import positive_coverage as early_positive_coverage, RULES as EARLY_POSITIVE_RULES
-from bpuverify.mbtb.coverage.catalog import mbtb_replacement_coverage_model,mbtb_multi_hit_cleanup_coverage_model
-from bpuverify.mbtb.case.replacement_scenario import TOUCH_MODES, PHASES as MBTB_REPLACEMENT_PHASES
-from bpuverify.common.pytest.regression import MBTB_REPRESENTATIVE_INDICES
-from bpuverify.bpu.model.alignment import ALL_CASES, PHASES
+from suites.frontend.bpu.tage.coverage.dual import DUAL_MODES
+from suites.frontend.bpu.tage.coverage.dual import tage_dual_shadow_coverage_model
+from suites.frontend.bpu.tage.coverage.retained import tage_retained_owner_coverage_model
+from suites.frontend.bpu.bpu.coverage.abtb.supplemental import CounterCoverage, CELLS, PATHS, cell_label
+from suites.frontend.bpu.bpu.coverage.alignment import coverage as alignment_coverage
+from suites.frontend.bpu.bpu.coverage.sc.used import used_coverage, history_coverage, KINDS as USED_KINDS
+from suites.frontend.bpu.bpu.coverage.sc.bounds import bounds_coverage, RULES as THRESHOLD_RULES
+from suites.frontend.bpu.bpu.coverage.ras_micro import micro_coverage, RULES as MICRO_RAS_RULES
+from suites.frontend.bpu.bpu.coverage.tage.selector import selector_coverage, routing_coverage, UPDATE_RULES
+from suites.frontend.bpu.bpu.coverage.tage.aging import aging_coverage, RULES as AGING_RULES
+from suites.frontend.bpu.bpu.coverage.ittage import directory_coverage, DIRECTORY_RULES
+from suites.frontend.bpu.bpu.coverage.ittage_aging import aging_coverage as ittage_aging_coverage, RULES as ITTAGE_AGING_RULES
+from suites.frontend.bpu.uras.coverage.semantic import semantic_coverage as uras_semantic_coverage, RULES as URAS_RULES
+from suites.frontend.bpu.uras.coverage.semantic import held_call_coverage as uras_held_call_lifetime, HELD_PROFILES as URAS_HELD_PROFILES, HELD_RULES as URAS_HELD_RULES
+from suites.frontend.bpu.bpu.coverage.sc_admission import context_burst_lifetime_coverage as sc_context_burst_lifetime
+from suites.frontend.bpu.bpu.model.sc_admission import CONTEXT_BURST_PROFILES as SC_CONTEXT_BURST_PROFILES,CONTEXT_BURST_RULES as SC_CONTEXT_BURST_RULES
+from suites.frontend.bpu.ittage.coverage.semantic import target_coverage as ittage_target_coverage, RULES as ITTAGE_TARGET_RULES
+from suites.frontend.bpu.sc.coverage.semantic import semantic_coverage as sc_semantic_coverage, RULES as SC_SEMANTIC_RULES
+from suites.frontend.bpu.sc.coverage.eligibility import EligibilityCoverage, PROFILES as SC_ELIGIBILITY_PROFILES, RULES as SC_ELIGIBILITY_RULES
+from suites.frontend.bpu.sc.coverage.original_feedback import FeedbackCoverage, PROFILES as SC_FEEDBACK_PROFILES, RULES as SC_FEEDBACK_RULES
+from suites.frontend.bpu.sc.coverage.original_enable import EnableCoverage, PROFILES as SC_ENABLE_PROFILES, RULES as SC_ENABLE_RULES
+from suites.frontend.bpu.bpu.coverage.recovery_arbitration import RecoveryCoverage, PROFILES as RECOVERY_PROFILES, RULES as RECOVERY_RULES
+from suites.frontend.bpu.utage.coverage.learning_retention import LearningRetentionCoverage, MODES as RETENTION_MODES, RULES as RETENTION_RULES
+from suites.frontend.bpu.bpu.coverage.short_context_ownership import ShortContextCoverage,ShortDirectionCoverage
+from suites.frontend.bpu.bpu.model.short_context_ownership import DIRECTION_PROFILES as SHORT_DIRECTION_PROFILES,DIRECTION_RULES as SHORT_DIRECTION_RULES
+from suites.frontend.bpu.bpu.model.short_context_ownership import PROFILES as SHORT_CONTEXT_PROFILES, RULES as SHORT_CONTEXT_RULES
+from suites.frontend.bpu.bpu.coverage.main_sibling import lifetime_coverage as main_sibling_lifetime, RULES as MAIN_SIBLING_RULES
+from suites.frontend.bpu.bpu.model.main_sibling import PHASES as MAIN_SIBLING_PHASES, ORIGINS as MAIN_SIBLING_ORIGINS
+from suites.frontend.bpu.bpu.coverage.ras_nested_recursion import lifetime_coverage as ras_nested_lifetime
+from suites.frontend.bpu.bpu.model.ras.nested_recursion import PROFILES as RAS_NESTED_PROFILES, RULES as RAS_NESTED_RULES
+from suites.frontend.bpu.utage.coverage.enable_lifetime import lifetime_coverage as utage_enable_lifetime
+from suites.frontend.bpu.utage.model.enable_lifetime import TABLES as UTAGE_ENABLE_TABLES, PHASES as UTAGE_ENABLE_PHASES, RULES as UTAGE_ENABLE_RULES
+from suites.frontend.bpu.bpu.coverage.ras_wrapped_recursion import lifetime_coverage as ras_wrapped_lifetime
+from suites.frontend.bpu.bpu.model.ras.wrapped_recursion import PROFILES as RAS_WRAPPED_PROFILES, RULES as RAS_WRAPPED_RULES
+from suites.frontend.bpu.bpu.coverage.ras_layered_recursion import lifetime_coverage as ras_layered_lifetime
+from suites.frontend.bpu.bpu.model.ras.layered_recursion import PROFILES as RAS_LAYERED_PROFILES, RULES as RAS_LAYERED_RULES
+from suites.frontend.bpu.bpu.coverage.ras_adjacent_recursion import lifetime_coverage as ras_adjacent_lifetime
+from suites.frontend.bpu.bpu.coverage.opposed_learning_pair import lifetime_coverage as opposed_learning_pair_lifetime
+from suites.frontend.bpu.bpu.coverage.interior_prefix_learning import lifetime_coverage as interior_prefix_learning_lifetime, RULES as INTERIOR_PREFIX_RULES
+from suites.frontend.bpu.bpu.model.tage.interior_prefix_learning import PROGRAMS as INTERIOR_PREFIX_PROGRAMS
+from suites.frontend.bpu.bpu.coverage.service_relearning import lifetime_coverage as service_relearning_lifetime, RULES as SERVICE_RELEARNING_RULES
+from suites.frontend.bpu.bpu.model.tage.service_relearning import PROGRAMS as SERVICE_RELEARNING_PROGRAMS
+from suites.frontend.bpu.bpu.coverage.shared_saturation import lifetime_coverage as shared_saturation_lifetime, RULES as SHARED_SATURATION_RULES
+from suites.frontend.bpu.bpu.model.tage.shared_saturation import PROGRAMS as SHARED_SATURATION_PROGRAMS
+from suites.frontend.bpu.bpu.coverage.main_accepted_recovery import lifetime_coverage as main_accepted_recovery_lifetime
+from suites.frontend.bpu.bpu.coverage.main_coincident_recovery import lifetime_coverage as main_coincident_recovery_lifetime
+from suites.frontend.bpu.bpu.model.main_coincident_recovery import PROGRAMS as COINCIDENT_RECOVERY_PROGRAMS,RULES as COINCIDENT_RECOVERY_RULES
+from suites.frontend.bpu.mbtb.coverage.two_key_lifetime import lifetime_coverage as two_key_lifetime
+from suites.frontend.bpu.mbtb.model.two_key_programs import SEMANTIC_PROGRAMS as TWO_KEY_PROGRAMS,RULES as TWO_KEY_RULES
+from suites.frontend.bpu.mbtb.coverage.cleanup_lifetime import lifetime_coverage as cleanup_lifetime
+from suites.frontend.bpu.mbtb.model.cleanup_programs import SEMANTIC_PROGRAMS as CLEANUP_PROGRAMS,RULES as CLEANUP_LIFETIME_RULES
+from suites.frontend.bpu.mbtb.coverage.shared_service import lifetime_coverage as shared_service_lifetime
+from suites.frontend.bpu.mbtb.model.shared_service import PROGRAMS as SHARED_SERVICE_PROGRAMS,RULES as SHARED_SERVICE_RULES
+from suites.frontend.bpu.bpu.coverage.selective_learning import lifetime_coverage as selective_learning_lifetime
+from suites.frontend.bpu.bpu.model.tage.selective_learning import ALL_PROGRAMS as SELECTIVE_LEARNING_PROGRAMS,RULES as SELECTIVE_LEARNING_RULES
+from suites.frontend.bpu.utage.coverage.cross_branch_protection import lifetime_coverage as cross_branch_protection_lifetime
+from suites.frontend.bpu.utage.model.cross_branch_protection import PROGRAMS as UTAGE_CROSS_BRANCH_PROGRAMS,RULES as UTAGE_CROSS_BRANCH_RULES
+from suites.frontend.bpu.utage.coverage.returning_original import lifetime_coverage as returning_original_lifetime
+from suites.frontend.bpu.utage.model.returning_original import PROGRAMS as RETURNING_ORIGINAL_PROGRAMS,RULES as RETURNING_ORIGINAL_RULES
+from suites.frontend.bpu.utage.coverage.dual_source import lifetime_coverage as dual_source_lifetime
+from suites.frontend.bpu.utage.model.dual_source import OBLIGATIONS as DUAL_SOURCE_OBLIGATIONS
+from suites.frontend.bpu.utage.coverage.saved_vector import lifetime_coverage as saved_vector_lifetime
+from suites.frontend.bpu.utage.model.saved_vector import OBLIGATIONS as SAVED_VECTOR_OBLIGATIONS
+from suites.frontend.bpu.bpu.coverage.joint_stream import lifetime_coverage as joint_stream_lifetime
+from suites.frontend.bpu.bpu.model.joint_stream import PROFILES as JOINT_STREAM_PROFILES,RULES as JOINT_STREAM_RULES
+from suites.frontend.bpu.utage.coverage.displaced_branch import lifetime_coverage as displaced_branch_lifetime
+from suites.frontend.bpu.utage.model.displaced_branch import OBLIGATIONS as DISPLACED_BRANCH_OBLIGATIONS
+from suites.frontend.bpu.utage.coverage.instruction_confidence import lifetime_coverage as instruction_confidence_lifetime
+from suites.frontend.bpu.utage.model.instruction_confidence import OBLIGATIONS as INSTRUCTION_CONFIDENCE_OBLIGATIONS
+from suites.frontend.bpu.sc.coverage.neutral_boundary import lifetime_coverage as sc_neutral_boundary_lifetime
+from suites.frontend.bpu.sc.model.neutral_boundary import PROFILES as SC_NEUTRAL_PROFILES, RULES as SC_NEUTRAL_RULES
+from suites.frontend.bpu.bpu.coverage.superseding_recovery import lifetime_coverage as superseding_recovery_lifetime
+from suites.frontend.bpu.bpu.model.superseding_recovery import PROFILES as SUPERSEDING_RECOVERY_PROFILES, RULES as SUPERSEDING_RECOVERY_RULES
+from suites.frontend.bpu.bpu.coverage.owned_return_stack import lifetime_coverage as owned_return_stack_lifetime
+from suites.frontend.bpu.bpu.model.owned_return_stack import OBLIGATIONS as OWNED_RETURN_STACK_OBLIGATIONS
+from suites.frontend.bpu.sc.coverage.catalog import sc_same_way_feedback_coverage_model
+from suites.frontend.bpu.mbtb.coverage.catalog import mbtb_cleanup_overlap_coverage_model
+from suites.frontend.bpu.mbtb.coverage.catalog import mbtb_entry_keys_coverage_model
+from suites.frontend.bpu.bpu.coverage.main_duplicate_cleanup import lifetime_coverage as main_duplicate_cleanup_lifetime
+from suites.frontend.bpu.bpu.model.main_duplicate_cleanup import Program as DuplicateCleanupProgram, IDENTITIES as DUPLICATE_CLEANUP_IDENTITIES, OVERLAPS as DUPLICATE_CLEANUP_OVERLAPS, PREPARATIONS as DUPLICATE_CLEANUP_PREPARATIONS, RULES as DUPLICATE_CLEANUP_RULES
+from suites.frontend.bpu.bpu.model.main_accepted_recovery import Program as AcceptedRecoveryProgram, FATES as ACCEPTED_RECOVERY_FATES, MOMENTS as ACCEPTED_RECOVERY_MOMENTS, RULES as ACCEPTED_RECOVERY_RULES
+from suites.frontend.bpu.bpu.model.tage.opposed_learning_pair import PROGRAMS as OPPOSED_PAIR_PROGRAMS
+from suites.frontend.bpu.bpu.coverage.direction_turnaround import RULES as OPPOSED_PAIR_RULES
+from suites.frontend.bpu.bpu.model.ras.adjacent_recursion import Program as AdjacentRecursionProgram, DEPTHS as RAS_ADJACENT_DEPTHS, RELATIONS as RAS_ADJACENT_RELATIONS, RULES as RAS_ADJACENT_RULES
+from suites.frontend.bpu.mbtb.coverage.reset_lifetime import lifetime_coverage as mbtb_reset_lifetime
+from suites.frontend.bpu.mbtb.model.reset_lifetime import PROFILES as MBTB_RESET_PROFILES, RULES as MBTB_RESET_RULES
+from suites.frontend.bpu.ubtb.coverage.reset_lifetime import lifetime_coverage as ubtb_reset_lifetime
+from suites.frontend.bpu.mbtb.coverage.query_reset import lifetime_coverage as mbtb_query_lifetime
+from suites.frontend.bpu.ubtb.coverage.query_reset import lifetime_coverage as ubtb_query_lifetime
+from suites.frontend.bpu.bpu.coverage.joint_lifetime import lifetime_coverage as joint_lifetime
+from suites.frontend.bpu.mbtb.coverage.cleanup_reset import lifetime_coverage as cleanup_reset_lifetime
+from suites.frontend.bpu.utage.coverage.read_lifetime import lifetime_coverage as utage_read_lifetime
+from suites.frontend.bpu.utage.coverage.read_lifetime import late_replacement_coverage as utage_late_replacement_lifetime
+from suites.frontend.bpu.utage.model.read_lifetime import LateReplacementProgram,REBUILD_PROFILES,REBUILD_RULES,MODES as REBUILD_MODES
+from suites.frontend.bpu.bpu.coverage.short_context_ownership import working_set_coverage as short_cross_branch_lifetime
+from suites.frontend.bpu.bpu.model.short_context_ownership import WORKING_SET_PROFILES as CROSS_BRANCH_PROFILES,WORKING_SET_RULES as CROSS_BRANCH_RULES
+from suites.frontend.bpu.bpu.coverage.short_competition import lifetime_coverage as short_competition_lifetime
+from suites.frontend.bpu.bpu.model.short_competition import PROFILES as SHORT_COMPETITION_PROFILES,RULES as SHORT_COMPETITION_RULES
+from suites.frontend.bpu.bpu.coverage.sc_loop_experience import lifetime_coverage as sc_loop_experience_lifetime
+from suites.frontend.bpu.bpu.model.sc_loop_experience import PROFILES as SC_LOOP_EXPERIENCE_PROFILES,RULES as SC_LOOP_EXPERIENCE_RULES
+from suites.frontend.bpu.bpu.coverage.joint_direction_learning import lifetime_coverage as joint_direction_learning_lifetime
+from suites.frontend.bpu.bpu.model.joint_direction_learning import PROFILES as JOINT_DIRECTION_PROFILES,RULES as JOINT_DIRECTION_RULES
+from suites.frontend.bpu.bpu.coverage.joint_originals import lifetime_coverage as joint_originals_lifetime
+from suites.frontend.bpu.bpu.model.joint_originals import PROFILES as JOINT_ORIGINALS_PROFILES,RULES as JOINT_ORIGINALS_RULES
+from suites.frontend.bpu.utage.coverage.ancestor_lifetime import lifetime_coverage as utage_ancestor_lifetime
+from suites.frontend.bpu.utage.coverage.query_cohort import lifetime_coverage as query_cohort_lifetime
+from suites.frontend.bpu.utage.coverage.query_identity import lifetime_coverage as query_identity_lifetime
+from suites.frontend.bpu.utage.coverage.selective_protection import lifetime_coverage as selective_protection_lifetime
+from suites.frontend.bpu.utage.coverage.delayed_agreement import lifetime_coverage as delayed_agreement_lifetime
+from suites.frontend.bpu.bpu.coverage.neutral_recovery import lifetime_coverage as neutral_recovery_lifetime
+from suites.frontend.bpu.bpu.model.neutral_recovery import PROFILES as NEUTRAL_RECOVERY_PROFILES, rules as neutral_recovery_rules
+from suites.frontend.bpu.bpu.coverage.block_entry_learning import lifetime_coverage as block_entry_learning_lifetime
+from suites.frontend.bpu.bpu.model.block_entry_learning import PROFILES as BLOCK_ENTRY_PROFILES, RULES as BLOCK_ENTRY_RULES
+from suites.frontend.bpu.bpu.coverage.entry_protection import lifetime_coverage as entry_protection_lifetime
+from suites.frontend.bpu.bpu.model.entry_protection import PROFILES as ENTRY_PROTECTION_PROFILES, rules as entry_protection_rules
+from suites.frontend.bpu.bpu.coverage.short_revisit import lifetime_coverage as short_revisit_lifetime
+from suites.frontend.bpu.bpu.model.short_revisit import PROFILES as SHORT_REVISIT_PROFILES, rules as short_revisit_rules
+from suites.frontend.bpu.bpu.coverage.cross_block_learning import lifetime_coverage as cross_block_learning_lifetime
+from suites.frontend.bpu.bpu.model.cross_block_learning import PROFILES as CROSS_BLOCK_PROFILES, RULES as CROSS_BLOCK_RULES
+from suites.frontend.bpu.bpu.coverage.late_correction_learning import lifetime_coverage as late_correction_learning_lifetime
+from suites.frontend.bpu.bpu.model.late_correction_learning import PROFILES as LATE_CORRECTION_PROFILES, RULES as LATE_CORRECTION_RULES
+from suites.frontend.bpu.bpu.coverage.competing_correction import lifetime_coverage as competing_correction_lifetime
+from suites.frontend.bpu.bpu.model.competing_correction import PROFILES as COMPETING_PROFILES, RULES as COMPETING_RULES
+from suites.frontend.bpu.utage.model.delayed_agreement import PROGRAMS as DELAYED_AGREEMENT_PROGRAMS, RULES as DELAYED_AGREEMENT_RULES
+from suites.frontend.bpu.utage.coverage.delayed_protection import lifetime_coverage as delayed_protection_lifetime
+from suites.frontend.bpu.utage.model.delayed_protection import PROGRAMS as DELAYED_PROTECTION_PROGRAMS, RULES as DELAYED_PROTECTION_RULES
+from suites.frontend.bpu.utage.coverage.long_protection import lifetime_coverage as long_protection_lifetime
+from suites.frontend.bpu.utage.model.long_protection import Program as LongProtectionProgram, MODES as LONG_PROTECTION_MODES, LIFETIMES as LONG_PROTECTION_LIFETIMES, RULES as LONG_PROTECTION_RULES
+from suites.frontend.bpu.bpu.coverage.working_set_replacement import lifetime_coverage as working_set_replacement_lifetime
+from suites.frontend.bpu.utage.model.query_cohort import PROFILES as COHORT_PROFILES, ANCESTRIES as COHORT_ANCESTRIES, RULES as COHORT_RULES
+from suites.frontend.bpu.utage.model.query_identity import Program as IdentityProgram, MODES as IDENTITY_MODES, RULES as IDENTITY_RULES
+from suites.frontend.bpu.utage.model.selective_protection import Program as ProtectionProgram, MODES as PROTECTION_MODES, RULES as PROTECTION_RULES
+from suites.frontend.bpu.bpu.model.working_set_replacement import Program as ReplacementProgram, KINDS as REPLACEMENT_KINDS
+from suites.frontend.bpu.utage.coverage.learning_persistence import lifetime_coverage as learning_persistence_lifetime
+from suites.frontend.bpu.utage.model.learning_persistence import Program as PersistenceProgram, PROFILES as PERSISTENCE_PROFILES, MODES as PERSISTENCE_MODES, RULES as PERSISTENCE_RULES
+from suites.frontend.bpu.utage.coverage.catalog import utage_shadow_ring_coverage_model
+from suites.frontend.bpu.utage.coverage.supplemental import utage_partial_wrap_coverage_model
+from suites.frontend.bpu.utage.model.read_lifetime import PROFILES as READ_PROFILES,RELATIONS as READ_RELATIONS,RULES as READ_RULES
+from suites.frontend.bpu.utage.model.ancestor_lifetime import RULES as ANCESTOR_RULES
+from suites.frontend.bpu.mbtb.model.query_reset import MODES as QUERY_RESET_MODES,RULES as QUERY_RESET_RULES
+from suites.frontend.bpu.bpu.model.joint_lifetime import MODES as JOINT_MODES,RULES as JOINT_RULES
+from suites.frontend.bpu.mbtb.model.cleanup_reset import PROFILES as CLEANUP_RESET_PROFILES,RULES as CLEANUP_RESET_RULES
+from suites.frontend.bpu.ubtb.model.reset_lifetime import PROFILES as UBTB_RESET_PROFILES, RULES as UBTB_RESET_RULES
+from suites.frontend.bpu.coverage.pipeline_ownership import ownership_coverage, PROFILES as OWNERSHIP_PROFILES, RULES as OWNERSHIP_RULES
+from suites.frontend.bpu.ras.coverage.semantic import semantic_coverage as ras_action_coverage, ROLES as RAS_ACTION_ROLES
+from suites.frontend.bpu.utage.coverage.semantic import semantic_coverage as utage_semantic_coverage, BOUNDARY_RULES as UTAGE_BOUNDARY_RULES, TYPE_RULES as UTAGE_TYPE_RULES
+from suites.frontend.bpu.abtb.coverage.semantic import semantic_coverage as abtb_semantic_coverage, RULES as ABTB_SEMANTIC_RULES
+from suites.frontend.bpu.mbtb.coverage.semantic import semantic_coverage as mbtb_semantic_coverage, RULES as MBTB_SEMANTIC_RULES
+from suites.frontend.bpu.tage.coverage.semantic import semantic_coverage as tage_semantic_coverage, RULES as TAGE_SEMANTIC_RULES
+from suites.frontend.bpu.bpu.coverage.tage.learning import learning_coverage, RULES as TAGE_LEARNING_RULES
+from suites.frontend.bpu.bpu.coverage.tage.fast_routing import routing_coverage as fast_routing_coverage, RULES as FAST_ROUTING_RULES
+from suites.frontend.bpu.bpu.coverage.tage.alternate import alternate_coverage, RULES as ALTERNATE_RULES
+from suites.frontend.bpu.bpu.coverage.tage.interleaved import interleaved_coverage, RULES as INTERLEAVED_RULES
+from suites.frontend.bpu.bpu.coverage.pipeline import pipeline_coverage, RULES as PIPELINE_RULES
+from suites.frontend.bpu.bpu.coverage.ras_redo import redo_coverage, RULES as RAS_REDO_RULES
+from suites.frontend.bpu.bpu.coverage.ras_return_recovery import return_recovery_coverage, RULES as RAS_RETURN_RULES, STORAGES
+from suites.frontend.bpu.bpu.coverage.micro_capacity import capacity_coverage, RULES as MICRO_CAPACITY_RULES
+from suites.frontend.bpu.bpu.coverage.micro_forwarding import forwarding_coverage, RULES as MICRO_FORWARDING_RULES
+from suites.frontend.bpu.bpu.coverage.main_learning import learning_coverage as main_learning_coverage, RULES as MAIN_LEARNING_RULES
+from suites.frontend.bpu.bpu.coverage.direction_learning import direction_coverage, RULES as DIRECTION_RULES
+from suites.frontend.bpu.bpu.coverage.direction_forwarding import forwarding_coverage as direction_forwarding_coverage, RULES as DIRECTION_FORWARDING_RULES
+from suites.frontend.bpu.bpu.coverage.direction_service import service_coverage as direction_service_coverage, RULES as DIRECTION_SERVICE_RULES
+from suites.frontend.bpu.bpu.coverage.direction_useful import useful_coverage as direction_useful_coverage, RULES as DIRECTION_USEFUL_RULES
+from suites.frontend.bpu.bpu.coverage.indirect_learning import indirect_coverage, RULES as INDIRECT_RULES
+from suites.frontend.bpu.bpu.coverage.indirect_service import service_coverage as indirect_service_coverage, RULES as INDIRECT_SERVICE_RULES, CLASSES as INDIRECT_CLASSES
+from suites.frontend.bpu.bpu.coverage.main_service import main_service_coverage, main_service_rules, RULES as MAIN_SERVICE_RULES, MODES as MAIN_SERVICE_MODES
+from suites.frontend.bpu.bpu.coverage.common_history import common_history_coverage, RULES as COMMON_HISTORY_RULES, FAMILIES as COMMON_HISTORY_FAMILIES
+from suites.frontend.bpu.bpu.coverage.main_rewrite import main_rewrite_coverage, RULES as MAIN_REWRITE_RULES
+from suites.frontend.bpu.bpu.coverage.ras_reuse import ras_reuse_coverage, RULES as RAS_REUSE_RULES
+from suites.frontend.bpu.bpu.coverage.ras_neutral_gap import neutral_gap_coverage, RULES as RAS_NEUTRAL_GAP_RULES
+from suites.frontend.bpu.bpu.coverage.direction_capacity import capacity_coverage as direction_capacity_coverage, RULES as DIRECTION_CAPACITY_RULES
+from suites.frontend.bpu.bpu.coverage.direction_replacement import replacement_coverage as direction_replacement_coverage, RULES as DIRECTION_REPLACEMENT_RULES
+from suites.frontend.bpu.bpu.coverage.direction_migration import migration_coverage as direction_migration_coverage, RULES as DIRECTION_MIGRATION_RULES
+from suites.frontend.bpu.bpu.coverage.direction_burst import burst_coverage as direction_burst_coverage, RULES as DIRECTION_BURST_RULES
+from suites.frontend.bpu.bpu.coverage.ahead_learning import ahead_learning_coverage, RULES as AHEAD_LEARNING_RULES
+from suites.frontend.bpu.bpu.coverage.early_direction import direction_coverage as early_direction_coverage, RULES as EARLY_DIRECTION_RULES, CLASSES as EARLY_DIRECTION_CLASSES
+from suites.frontend.bpu.bpu.coverage.early_opposition import opposition_coverage as early_opposition_coverage, RULES as EARLY_OPPOSITION_RULES
+from suites.frontend.bpu.bpu.coverage.early_positive import positive_coverage as early_positive_coverage, RULES as EARLY_POSITIVE_RULES
+from suites.frontend.bpu.mbtb.coverage.catalog import mbtb_replacement_coverage_model,mbtb_multi_hit_cleanup_coverage_model
+from suites.frontend.bpu.mbtb.case.replacement_scenario import TOUCH_MODES, PHASES as MBTB_REPLACEMENT_PHASES
+from suites.frontend.bpu.pytest_plugins.regression import MBTB_REPRESENTATIVE_INDICES
+from suites.frontend.bpu.bpu.model.alignment import ALL_CASES, PHASES
 
 
 from tests.tage.testcase import test_dual_shadow as DUAL
 from tests.tage.testcase import test_retained_owner as RETAINED
-from bpuverify.common.coverage import parallel as GATE
+from suites.frontend.bpu.coverage import parallel as GATE
 
 
 DUAL_TEST = DUAL.test_dual_feedback_retains_independent_counters_across_companion_states
@@ -459,7 +459,7 @@ for family,rules in AGING_RULES.items():
             lambda family=family,status=status:aging_coverage(family,status),dict(rule=rules),None,len(rules))
 for status in ('reached','checked'):
     EXTRA_MATRICES[f'tage_selector_routing_{status}']=(
-        lambda status=status:routing_coverage(status),dict(index=tuple(range(8))),None,8)
+        lambda status=status:routing_coverage(status),dict(index=tuple(range(16))),None,16)
 for family,rules in DIRECTORY_RULES.items():
     for status in ('reached','checked'):
         EXTRA_MATRICES[f'ittage_directory_{family}_{status}']=(
@@ -670,12 +670,12 @@ def full_report(*, missing_kind=None, missing_phase=False, missing_abtb_path=Fal
             group.sample(coordinates)
         groups.append(group)
     replicas=mbtb_entry_keys_coverage_model()
-    from bpuverify.mbtb.model.two_key_programs import programs
+    from suites.frontend.bpu.mbtb.model.two_key_programs import programs
     for p in programs('production' if representative_only else 'physical'):
         for phase in ('prepared','updated','revisited'):replicas.sample(dict(p.sample(),phase=phase),details=False)
     groups.append(replicas)
     cleanup=mbtb_cleanup_overlap_coverage_model()
-    from bpuverify.mbtb.model.cleanup_programs import programs as cleanup_programs
+    from suites.frontend.bpu.mbtb.model.cleanup_programs import programs as cleanup_programs
     for p in cleanup_programs('production' if representative_only else 'physical'):
         for phase in ('prepared','overlapped','revisited'):cleanup.sample(dict(p.sample(),phase=phase),details=False)
     groups.append(cleanup)

@@ -2,7 +2,7 @@
 import ast
 import json
 from pathlib import Path
-from bpuverify.bpu.model.source_eligibility import MODES
+from suites.frontend.bpu.bpu.model.source_eligibility import MODES
 
 ROOT=Path(__file__).resolve().parents[2]
 
@@ -32,7 +32,7 @@ def test_native_case_credits_only_environment_and_excludes_hardware_functional_c
 
 
 def test_case_and_new_environment_have_no_edge_or_scheduler_or_raw_set_operations():
-    for name in ('tests/bpu/testcase/test_source_eligibility.py','bpuverify/bpu/env/source_eligibility.py'):
+    for name in ('tests/bpu/testcase/test_source_eligibility.py','bpu/env/source_eligibility.py'):
         tree=ast.parse((ROOT/name).read_text())
         names={n.id for n in ast.walk(tree) if isinstance(n,ast.Name)}
         names|={n.attr for n in ast.walk(tree) if isinstance(n,ast.Attribute)}

@@ -1,11 +1,11 @@
 """Check repeat boundaries independently before any real DUT execution."""
 import pytest
-from bpuverify.ras.model.model import CommittedStack
-from bpuverify.ras.model.model import advance
-from bpuverify.bpu.case.ras.retirement import return_address
-from bpuverify.bpu.case.ras.repeat import CALL_PC
-from bpuverify.bpu.case.ras.repeat import POSITION
-from bpuverify.bpu.case.ras.repeat import expected_repeat_state
+from suites.frontend.bpu.ras.model.model import CommittedStack
+from suites.frontend.bpu.ras.model.model import advance
+from suites.frontend.bpu.bpu.case.ras.retirement import return_address
+from suites.frontend.bpu.bpu.case.ras.repeat import CALL_PC
+from suites.frontend.bpu.bpu.case.ras.repeat import POSITION
+from suites.frontend.bpu.bpu.case.ras.repeat import expected_repeat_state
 
 
 @pytest.mark.parametrize('offset', range(8))

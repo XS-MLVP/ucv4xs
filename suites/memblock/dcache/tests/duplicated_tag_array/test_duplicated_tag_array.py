@@ -9,14 +9,14 @@ import random
 
 import pytest
 
-from dcacheverify.common.runtime import execution
-from dcacheverify.duplicated_tag_array.coverage import ALTERNATING, DuplicatedTagArrayCoverage
-from dcacheverify.duplicated_tag_array.env import (
+from suites.memblock.dcache.execution import execution
+from suites.memblock.dcache.duplicated_tag_array.coverage import ALTERNATING, DuplicatedTagArrayCoverage
+from suites.memblock.dcache.duplicated_tag_array.env import (
     DuplicatedTagArrayEnv,
     SWEEP_CYCLES,
     Write,
 )
-from dcacheverify.duplicated_tag_array.model import TAG_MASK, codeword, encode_ecc
+from suites.memblock.dcache.duplicated_tag_array.model import TAG_MASK, codeword, encode_ecc
 
 SETS = 256
 
@@ -29,7 +29,7 @@ def dta(dut_factory):
 
 # DTA-FP-001, DTA-FP-005
 async def test_reset_sweep_blocks_reads_then_clears_all_sets(dta):
-    async with execution(dta.dut):
+    async with execution(dta):
         observed = await dta.observe_sweep()
         assert all(value == 0 for value in observed["ready_during_sweep"]), observed
         assert observed["ready_after_sweep"] == 1, observed
@@ -45,7 +45,7 @@ async def test_reset_sweep_blocks_reads_then_clears_all_sets(dta):
 
 # DTA-FP-002, DTA-FP-006
 async def test_all_ports_see_the_same_four_way_tags(dta):
-    async with execution(dta.dut):
+    async with execution(dta):
         await dta.reset()
         tags = [0x012345678, 0x0ABCDEF01, 0x0FEDCBA98, 0x000000001]
         for way, tag in enumerate(tags):
@@ -64,7 +64,7 @@ async def test_all_ports_see_the_same_four_way_tags(dta):
 
 # DTA-FP-003, DTA-FP-004
 async def test_way_mask_and_set_class_matrix(dta):
-    async with execution(dta.dut):
+    async with execution(dta):
         await dta.reset()
         representatives = {0: "boundary_0", 10: "low", 100: "mid", 200: "high",
                            255: "boundary_255"}
@@ -89,7 +89,7 @@ async def test_way_mask_and_set_class_matrix(dta):
 
 # DTA-FP-003, DTA-FP-006
 async def test_set_independence_and_boundaries(dta):
-    async with execution(dta.dut):
+    async with execution(dta):
         await dta.reset()
         writes = {0: 0x0FEDCBA98, 1: 0x001234567, 127: 0x0ABCDEF01,
                   128: 0x0F0F0F0F0, 200: 0x012345678, 254: 0x0DEADBEEF,
@@ -107,7 +107,7 @@ async def test_set_independence_and_boundaries(dta):
 
 # DTA-FP-005
 async def test_single_port_read_write_conflict(dta):
-    async with execution(dta.dut):
+    async with execution(dta):
         await dta.reset()
         await dta.write(7, 0b1111, 0x011111111)
         # Same-set conflict: the read must be refused, and must not corrupt the row.
@@ -129,7 +129,7 @@ async def test_single_port_read_write_conflict(dta):
 
 # DTA-FP-002, DTA-FP-005
 async def test_back_to_back_reads_across_ports(dta):
-    async with execution(dta.dut):
+    async with execution(dta):
         await dta.reset()
         for index in (3, 4, 5):
             await dta.write(index, 0b1111, 0x1000 + index, target="new_set")
@@ -151,7 +151,7 @@ async def test_back_to_back_reads_across_ports(dta):
 
 # DTA-FP-007
 async def test_ecc_codeword_is_linear_and_single_bit_sensitive(dta):
-    async with execution(dta.dut):
+    async with execution(dta):
         await dta.reset()
         masks = []
         for bit in range(36):
@@ -181,7 +181,7 @@ async def test_ecc_codeword_is_linear_and_single_bit_sensitive(dta):
 
 # DTA-FP-001..007
 async def test_random_legal_traffic(dta):
-    async with execution(dta.dut):
+    async with execution(dta):
         await dta.reset()
         rng = random.Random(0xD7A_5EED)
         written = set()
@@ -206,7 +206,7 @@ async def test_random_legal_traffic(dta):
 
 # DTA-FP-008
 async def test_mbist_bypass_reaches_every_bank(dta):
-    async with execution(dta.dut):
+    async with execution(dta):
         await dta.reset()
         payloads = {
             0x20: 0,

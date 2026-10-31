@@ -6,8 +6,8 @@ import random
 
 import pytest
 
-from lsuverify.load_arbiter.coverage import CASES, LoadArbiterCoverage
-from lsuverify.load_arbiter.env import (
+from suites.memblock.lsu.load_arbiter.coverage import CASES, LoadArbiterCoverage
+from suites.memblock.lsu.load_arbiter.env import (
     FIELD_RULES,
     SOURCES,
     LoadArbiterEnv,

@@ -6,25 +6,24 @@ import asyncio
 
 import pytest
 
-from bpuverify.bpu.transaction.types import BpuBatchTraining
-from bpuverify.bpu.transaction.types import BpuBranchFeedback
-from bpuverify.bpu.transaction.types import BpuRedirect
-from bpuverify.bpu.transaction.types import BpuTraining
-from bpuverify.bpu.coverage.catalog import bpu_same_bank_burst_coverage_model
-from bpuverify.bpu.coverage.catalog import bpu_same_bank_training_coverage_model
-from bpuverify.bpu.coverage.catalog import write_bpu_same_bank_burst_coverage
-from bpuverify.bpu.coverage.catalog import write_bpu_same_bank_training_coverage
-from bpuverify.bpu.checker.assertions import mbtb_counter_for_position
-from bpuverify.bpu.checker.assertions import revisit_from_redirect
-from bpuverify.bpu.checker.assertions import tage_meta_for_position
-from bpuverify.bpu.case.definitions import EARLIER_TARGET
-from bpuverify.bpu.case.definitions import PC
-from bpuverify.bpu.case.definitions import POSITION
-from bpuverify.bpu.case.definitions import REDIRECT_PC
-from bpuverify.bpu.case.scenarios import prepare_history_tage_providers
-from bpuverify.bpu.case.scenarios import revisit_via_history_path
-from bpuverify.common.env.paths import REPO_ROOT
-from toffee import ClockCycles
+from suites.frontend.bpu.bpu.transaction.types import BpuBatchTraining
+from suites.frontend.bpu.bpu.transaction.types import BpuBranchFeedback
+from suites.frontend.bpu.bpu.transaction.types import BpuRedirect
+from suites.frontend.bpu.bpu.transaction.types import BpuTraining
+from suites.frontend.bpu.bpu.coverage.catalog import bpu_same_bank_burst_coverage_model
+from suites.frontend.bpu.bpu.coverage.catalog import bpu_same_bank_training_coverage_model
+from suites.frontend.bpu.bpu.coverage.catalog import write_bpu_same_bank_burst_coverage
+from suites.frontend.bpu.bpu.coverage.catalog import write_bpu_same_bank_training_coverage
+from suites.frontend.bpu.bpu.checker.assertions import mbtb_counter_for_position
+from suites.frontend.bpu.bpu.checker.assertions import revisit_from_redirect
+from suites.frontend.bpu.bpu.checker.assertions import tage_meta_for_position
+from suites.frontend.bpu.bpu.case.definitions import EARLIER_TARGET
+from suites.frontend.bpu.bpu.case.definitions import PC
+from suites.frontend.bpu.bpu.case.definitions import POSITION
+from suites.frontend.bpu.bpu.case.definitions import REDIRECT_PC
+from suites.frontend.bpu.bpu.case.scenarios import prepare_history_tage_providers
+from suites.frontend.bpu.bpu.case.scenarios import revisit_via_history_path
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 from toffee import TransferState
 
 
@@ -71,14 +70,14 @@ async def test_same_bank_prediction_read_holds_tage_feedback(bpu_agent):
     loop_pc = await _start_same_bank_prediction_loop(bpu_agent, contexts)
     coverage.sample({"phase": "provider_and_stream_prepared"})
 
-    start = (await ClockCycles(bpu_agent.dut.clock, 1)).tick
+    start = await bpu_agent.wait_cycles(1)
     pending = bpu_agent.training_driver.send(BpuBatchTraining(
         PC, contexts.first.meta.resolve,
         (BpuBranchFeedback(
             POSITION, EARLIER_TARGET, 1, taken=1, mispredict=1,
         ),),
     ))
-    held_until = (await ClockCycles(bpu_agent.dut.clock, 8)).tick
+    held_until = await bpu_agent.wait_cycles(8)
     predictions = await _predictions_through(bpu_agent, start, held_until)
     assert len(predictions) >= 6, predictions
     assert all(item.value.start_pc == loop_pc for item in predictions)
@@ -124,7 +123,7 @@ async def test_two_history_beats_survive_same_bank_prediction_stall(bpu_agent):
     coverage.sample({"phase": "two_history_cells"})
 
     loop_pc = await _start_same_bank_prediction_loop(bpu_agent, contexts)
-    start = (await ClockCycles(bpu_agent.dut.clock, 1)).tick
+    start = await bpu_agent.wait_cycles(1)
     first = bpu_agent.training_driver.send(BpuBatchTraining(
         PC, contexts.first.meta.resolve,
         (BpuBranchFeedback(
@@ -137,7 +136,7 @@ async def test_two_history_beats_survive_same_bank_prediction_stall(bpu_agent):
             POSITION, EARLIER_TARGET, 1, taken=1, mispredict=1,
         ),),
     ))
-    held_until = (await ClockCycles(bpu_agent.dut.clock, 8)).tick
+    held_until = await bpu_agent.wait_cycles(8)
     predictions = await _predictions_through(bpu_agent, start, held_until)
     assert len(predictions) >= 6, predictions
     assert all(item.value.start_pc == loop_pc for item in predictions)

@@ -1,8 +1,8 @@
 """TLBFA refill forms and all-way coverage."""
 from __future__ import annotations
 
-from mmuverify.common.runtime import execution
-from mmuverify.tlbfa.model import ALL_STAGE, NO_S2, ONLY_S1, ONLY_S2
+from suites.memblock.mmu.execution import execution
+from suites.memblock.mmu.tlbfa.model import ALL_STAGE, NO_S2, ONLY_S1, ONLY_S2
 
 from .common import lookup_vpn, make_refill
 
@@ -12,7 +12,7 @@ KINDS = (NO_S2, ONLY_S1, ONLY_S2, ALL_STAGE)
 # TLBFA-COMBO-01, TLBFA-REFILL-03
 async def test_all_48_ways_are_independently_addressable(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         tags = [0x1000 + way * 3 for way in range(48)]
         for way in range(48):
@@ -34,7 +34,7 @@ async def test_all_48_ways_are_independently_addressable(tlbfa_env):
 # TLBFA-REFILL-01, TLBFA-REFILL-04, TLBFA-PAGE-05
 async def test_every_stage_and_page_form_can_be_installed(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.program_context(satp_asid=4, vsatp_asid=4, hgatp_vmid=5)
         way = 0
@@ -73,7 +73,7 @@ async def test_every_stage_and_page_form_can_be_installed(tlbfa_env):
 # TLBFA-SFENCE-09
 async def test_invalidated_way_can_be_refilled_with_a_new_translation(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.program_context(satp_asid=1)
         old = make_refill(NO_S2, 0, 0x1800, 0x400000000, asid=1)

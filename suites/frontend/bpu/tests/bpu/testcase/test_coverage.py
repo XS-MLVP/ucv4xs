@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from bpuverify.bpu.transaction.types import BpuRedirect
-from bpuverify.bpu.coverage.catalog import bpu_coverage_model
-from bpuverify.bpu.coverage.catalog import write_bpu_coverage
-from bpuverify.bpu.checker.assertions import train_direct_branch
-from bpuverify.bpu.case.definitions import PC
-from bpuverify.bpu.case.definitions import PREDICTION_LIMIT
-from bpuverify.bpu.case.definitions import REDIRECT_PC
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.bpu.transaction.types import BpuRedirect
+from suites.frontend.bpu.bpu.coverage.catalog import bpu_coverage_model
+from suites.frontend.bpu.bpu.coverage.catalog import write_bpu_coverage
+from suites.frontend.bpu.bpu.checker.assertions import train_direct_branch
+from suites.frontend.bpu.bpu.case.definitions import PC
+from suites.frontend.bpu.bpu.case.definitions import PREDICTION_LIMIT
+from suites.frontend.bpu.bpu.case.definitions import REDIRECT_PC
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 async def test_bpu_functional_coverage_closes_defined_bins(bpu_agent):

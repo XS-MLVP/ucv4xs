@@ -7,7 +7,7 @@ they never contribute to public-DUT coverage.
 """
 import pytest
 
-from vagqverify.vagq.isa_coverage import BOUNDARY_COVERAGE
+from suites.vector.vagq.vagq.isa_coverage import BOUNDARY_COVERAGE
 
 
 pytestmark = pytest.mark.vagq_isa_audit

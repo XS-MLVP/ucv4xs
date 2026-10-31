@@ -3,11 +3,11 @@ from contextlib import contextmanager
 from types import SimpleNamespace as NS
 
 import pytest
-from bpuverify.bpu.env.direction_service import DirectionService
-from bpuverify.bpu.env.retouch_replacement import RetouchReplacementService
-from bpuverify.bpu.bundle.retouch_replacement import retouch_replacement_binding
-from bpuverify.bpu.model.tage.forwarding import resolved_path
-from bpuverify.tage.model.semantic import TageReference
+from suites.frontend.bpu.bpu.env.direction_service import DirectionService
+from suites.frontend.bpu.bpu.env.retouch_replacement import RetouchReplacementService
+from suites.frontend.bpu.bpu.bundle.retouch_replacement import retouch_replacement_binding
+from suites.frontend.bpu.bpu.model.tage.forwarding import resolved_path
+from suites.frontend.bpu.tage.model.semantic import TageReference
 
 
 def test_environment_installs_complete_static_retained_binding(monkeypatch):

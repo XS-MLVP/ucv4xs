@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.ittage.transaction.types import IttageTraining
-from bpuverify.ittage.coverage.catalog import ittage_region_context_coverage_model
-from bpuverify.ittage.coverage.catalog import write_ittage_region_context_coverage
-from bpuverify.ittage.case.definitions import POSITION
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.ittage.transaction.types import IttageTraining
+from suites.frontend.bpu.ittage.coverage.catalog import ittage_region_context_coverage_model
+from suites.frontend.bpu.ittage.coverage.catalog import write_ittage_region_context_coverage
+from suites.frontend.bpu.ittage.case.definitions import POSITION
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 PC = 0x400F_FF00

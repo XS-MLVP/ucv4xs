@@ -1,11 +1,13 @@
 """First gap expansion over all native input lanes and dependency families."""
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.raw.types import SqPtr
-from lsqverify.vlq.types import QueuePtr, Redirect, RobPtr
-from lsqverify.replay.types import Cause, Enqueue, L2Hint, LqWakeup, Refill, StoreWakeup, TlbHint
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.vlq.types import QueuePtr, Redirect, RobPtr
+from suites.memblock.lsq.replay.types import Cause, Enqueue, L2Hint, LqWakeup, Refill, StoreWakeup, TlbHint
 
 
 async def unblock(env, req):
@@ -37,7 +39,7 @@ async def test_each_supported_cause_waits_for_its_dependency(replay, cause):
     uid = env.uid(req)
     if cause not in (5, 7, 8, 11):
         await env.idle(6)
-        assert not any(env.observed[f"io_replay_{bank}_valid"] for bank in range(3))
+        assert not any(env.observed[P.io(f"replay_{bank}_valid")] for bank in range(3))
         await unblock(env, req)
     env.arm("LRQ-PERF.events", [uid])
     await env.complete(lane=(cause + 1) % 3)
@@ -53,7 +55,7 @@ async def test_three_lanes_sparse_banks_and_vector_payload(replay, lane):
     uids = [env.uid(req) for req in reqs]
     env.arm(("LRQ-HOLD.stable", "LRQ-PAYLOAD.exceptions", "LRQ-PERF.events"), uids)
     await env.idle(8)
-    assert all(env.observed[f"io_replay_{bank}_valid"] for bank in range(3))
+    assert all(env.observed[P.io(f"replay_{bank}_valid")] for bank in range(3))
     await env.issue_all()
     await env.release_all()
 
@@ -76,7 +78,7 @@ async def test_store_dependency_public_ready_paths(replay, method):
     await env.cycle({2: req}, upper=SqPtr.encode(64))
     uid = env.uid(req)
     await env.idle(5)
-    assert not env.observed["io_replay_0_valid"]
+    assert not env.observed[P.p_replay_0_valid]
     env.arm("LRQ-STORE." + method, [uid])
     if method == "address_pointer":
         await env.cycle(address_ready=SqPtr.encode(8))
@@ -108,12 +110,12 @@ async def test_strict_and_physical_store_wakeup_window(replay):
     await env.cycle({0: req}, upper=SqPtr.encode(64), address_bits=1 << 7)
     uid = env.uid(req)
     await env.idle(6)
-    assert not env.observed["io_replay_0_valid"]
+    assert not env.observed[P.p_replay_0_valid]
     # A matching SQ wakeup outside the current 64-item physical queue cannot
     # unblock this strict dependency. Reset the physical head, then real wake.
     await env.cycle(dequeue=SqPtr.encode(8), address_wakeups=(StoreWakeup(True, SqPtr.encode(7)), StoreWakeup()))
     await env.idle(4)
-    assert not env.observed["io_replay_0_valid"]
+    assert not env.observed[P.p_replay_0_valid]
     await env.cycle(dequeue=SqPtr.encode(0), address_wakeups=(StoreWakeup(True, SqPtr.encode(7)), StoreWakeup()))
     env.arm(("LRQ-STORE.strict", "LRQ-STORE.address_wakeup"), [uid])
     await env.complete()
@@ -126,7 +128,7 @@ async def test_sq_flag_rollover_controls_dependency(replay, base):
     await env.cycle({1: req}, data_ready=SqPtr.encode(base), dequeue=SqPtr.encode(base - 1))
     uid = env.uid(req)
     await env.idle(4)
-    assert not env.observed["io_replay_0_valid"]
+    assert not env.observed[P.p_replay_0_valid]
     await env.cycle(data_ready=SqPtr.encode(base + 1))
     env.arm("LRQ-STORE.wrap", [uid])
     await env.complete()
@@ -140,7 +142,7 @@ async def test_all_tlb_ids_and_broadcast_or_full_fast_paths(replay, fast):
         await env.cycle({identity % 3: req})
         uid = env.uid(req)
         await env.idle(3)
-        assert not any(env.observed[f"io_replay_{bank}_valid"] for bank in range(3))
+        assert not any(env.observed[P.io(f"replay_{bank}_valid")] for bank in range(3))
         if fast:
             await env.cycle(fast_tlb=TlbHint(True, identity))
         else:
@@ -177,7 +179,7 @@ async def test_replay_feedback_changes_cause_without_new_allocation(replay):
     await env.feedback(slot, lane=1, again=updated)
     assert len(env.model.owners) == 1 and env.model.sequence == 1
     await env.idle(5)
-    assert not env.observed["io_replay_0_valid"]
+    assert not env.observed[P.p_replay_0_valid]
     await env.cycle(fast_tlb=TlbHint(True, 15))
     await env.complete(slot, lane=0)
     assert uid in env.coverage.completed
@@ -197,7 +199,7 @@ async def test_every_slot_from_each_input_then_two_full_pool_rounds(replay, lane
             req = replace(req, uop=replace(req.uop, strict=bool(slot % 2), exceptions=(1 << 23) | (1 << 6)))
             await env.cycle({lane: req})
             assert env.model.owners[next(tx["slot"] for tx in env.last_change["allocated"])].input_lane == lane
-        assert env.observed["io_lqFull"] and len(env.model.owners) == 120
+        assert env.observed[P.p_lqFull] and len(env.model.owners) == 120
         uids = [owner.uid for owner in env.model.owners.values()]
         all_uids.extend(uids)
         env.arm(("LRQ-RECYCLE.full", "LRQ-RECYCLE.banks", "LRQ-PAYLOAD.metadata", "LRQ-PERF.events"), uids)
@@ -216,11 +218,11 @@ async def test_strict_full_pool_is_not_unblocked_by_only_ready_bits(replay):
         req = env.request(Cause.ADDRESS_DEPENDENCE, rob=20 + slot, lq=slot, tag=slot + 1)
         req = replace(req, uop=replace(req.uop, strict=True, load_wait=True, store_set_hit=True))
         await env.cycle({slot % 3: req}, upper=SqPtr.encode(64))
-    assert env.observed["io_lqFull"]
+    assert env.observed[P.p_lqFull]
     uids = [owner.uid for owner in env.model.owners.values()]
     env.arm(("LRQ-STORE.strict", "LRQ-STORE.strict_capacity"), uids)
     await env.idle(5, address_bits=(1 << 64) - 1)
-    assert not any(env.observed[f"io_replay_{bank}_valid"] for bank in range(3))
+    assert not any(env.observed[P.io(f"replay_{bank}_valid")] for bank in range(3))
     await env.cycle(address_ready=SqPtr.encode(8))
     await env.issue_all()
     await env.release_all()

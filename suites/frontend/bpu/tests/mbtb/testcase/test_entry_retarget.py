@@ -1,13 +1,13 @@
 """Latest pending target versus ordered write-through, with carry transitions."""
-from bpuverify.common.model.configuration import *
+from suites.frontend.bpu.models.configuration import *
 import pytest
 
-from bpuverify.mbtb.coverage.catalog import mbtb_entry_retarget_coverage_model
-from bpuverify.mbtb.coverage.catalog import write_mbtb_entry_retarget_coverage
-from bpuverify.mbtb.model.entry import CARRY_PATTERNS
-from bpuverify.mbtb.case.entry_retarget_scenario import check_case
-from bpuverify.mbtb.case.resident_scenario import INDEX_CONTEXTS
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.mbtb.coverage.catalog import mbtb_entry_retarget_coverage_model
+from suites.frontend.bpu.mbtb.coverage.catalog import write_mbtb_entry_retarget_coverage
+from suites.frontend.bpu.mbtb.model.entry import CARRY_PATTERNS
+from suites.frontend.bpu.mbtb.case.entry_retarget_scenario import check_case
+from suites.frontend.bpu.mbtb.case.resident_scenario import INDEX_CONTEXTS
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature("BPU-MBTB-021")

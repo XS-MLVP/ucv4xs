@@ -1,15 +1,15 @@
 """Separate original eligibility from the lifetime of accepted learning."""
-from bpuverify.common.model.configuration import *
+from suites.frontend.bpu.models.configuration import *
 from concurrent.futures import Future
 from copy import deepcopy
 from types import SimpleNamespace as NS
 import pytest
 from toffee import XEvent,XEventKind,XPhase,ScoreboardMismatch
-from bpuverify.bpu.model.main_accepted_recovery import Program,FATES,MOMENTS,RULES
-from bpuverify.bpu.coverage.main_accepted_recovery import Coverage
-from bpuverify.bpu.checker.main_accepted_recovery import Checks
-from bpuverify.bpu.model.window_lifetime import LifetimeError
-from bpuverify.bpu.model.feedback_gate import wire_payload
+from suites.frontend.bpu.bpu.model.main_accepted_recovery import Program,FATES,MOMENTS,RULES
+from suites.frontend.bpu.bpu.coverage.main_accepted_recovery import Coverage
+from suites.frontend.bpu.bpu.checker.main_accepted_recovery import Checks
+from suites.frontend.bpu.bpu.model.window_lifetime import LifetimeError
+from suites.frontend.bpu.bpu.model.feedback_gate import wire_payload
 from tests.bpu.scoreboard.test_feedback_gate import setup,source,prepare,accept,PROJECTION
 from tests.bpu.scoreboard.test_partial_reuse import transfer
 

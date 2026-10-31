@@ -1,5 +1,5 @@
 """MergeCtrl real-DUT scenarios for response, merge and writeback protocol."""
-from vagqverify.merge.types import Beat, Entry, Redirect, Response
+from suites.vector.vagq.merge.types import Beat, Entry, Redirect, Response
 
 
 def matrix():

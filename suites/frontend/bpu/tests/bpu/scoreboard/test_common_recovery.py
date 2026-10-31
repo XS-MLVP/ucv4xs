@@ -4,12 +4,12 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.checker.common_recovery import CommonRecoveryChecks
-from bpuverify.bpu.coverage.common_recovery import CommonRecoveryCoverage
-from bpuverify.bpu.model.common_history import Block, GHR_WIDTH, Value
-from bpuverify.bpu.model.common_recovery import PC, POSITIONS, PROFILES
-from bpuverify.bpu.model.selection import Branch, Kind
-from bpuverify.bpu.transaction.types import BpuRedirect
+from suites.frontend.bpu.bpu.checker.common_recovery import CommonRecoveryChecks
+from suites.frontend.bpu.bpu.coverage.common_recovery import CommonRecoveryCoverage
+from suites.frontend.bpu.bpu.model.common_history import Block, GHR_WIDTH, Value
+from suites.frontend.bpu.bpu.model.common_recovery import PC, POSITIONS, PROFILES
+from suites.frontend.bpu.bpu.model.selection import Branch, Kind
+from suites.frontend.bpu.bpu.transaction.types import BpuRedirect
 from tests.bpu.scoreboard.test_owned_common_history import fixture as base_fixture, sample
 
 

@@ -1,12 +1,14 @@
+
 from dataclasses import replace
 import random
 
 import pytest
 
-from lsqverify.deq.agent import PsqAgent
-from lsqverify.deq.types import Inputs, SecondPage, Store
-from lsqverify.raw.types import SqPtr
-from lsqverify.vlq.types import RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.deq.agent import PsqAgent
+from suites.memblock.lsq.deq.types import Inputs, SecondPage, Store
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.vlq.types import RobPtr
 
 
 def store(va=0x18000, size=8, *, tag=1, **kwargs):
@@ -97,20 +99,20 @@ async def test_full_split_line_page_and_sq_rob_identity(deq_full, base):
     uids = [agent.add(store(0x2803C, 8, tag=base + 1))]
     wrong = SecondPage(True, 0xCAFE000, SqPtr.encode(base ^ 64))
     await agent.step(sbuffer_ready=(False, False), second_page=wrong)
-    assert not deq_full.pre_observed["io_fromUnalignQueue_ready"]
+    assert not deq_full.pre_observed[P.p_fromUnalignQueue_ready]
     for _ in range(2):
         await agent.step(sbuffer_ready=(False, False))
     await agent.drain()
     uids.append(agent.add(store(0x38FFC, 8, tag=base + 2), second_page=0xABCD000))
     await agent.step(sbuffer_ready=(False, False))
-    assert deq_full.pre_observed["io_fromUnalignQueue_ready"]
+    assert deq_full.pre_observed[P.p_fromUnalignQueue_ready]
     await agent.step(sbuffer_ready=(True, False))
-    assert not deq_full.observed["io_sqDeqCnt"]
+    assert not deq_full.observed[P.p_sqDeqCnt]
     await agent.drain()
     # Exercise the other SQ flag independently at the same low slot.
     uids.append(agent.add(store(0x4800C, 8, tag=base + 3)))
     await agent.step(second_page=SecondPage(True, 0xBEEF000, SqPtr.encode(agent.read ^ 128)))
-    assert not deq_full.pre_observed["io_fromUnalignQueue_ready"]
+    assert not deq_full.pre_observed[P.p_fromUnalignQueue_ready]
     await agent.drain()
     for flag in (False, True):
         for former in (False, True):
@@ -160,7 +162,7 @@ async def test_full_reset_aborts_old_owner_and_same_slot_new_uid_completes(deq_f
     if phase == "queue":
         await agent.step(sbuffer_ready=(False, False))
         await agent.step(sbuffer_ready=(False, False))
-        assert deq_full.observed["io_writeToSbuffer_req_0_valid"]
+        assert deq_full.observed[P.p_writeToSbuffer_req_0_valid]
     elif phase == "uncache":
         await agent.step()
         await agent.step()
@@ -168,10 +170,10 @@ async def test_full_reset_aborts_old_owner_and_same_slot_new_uid_completes(deq_f
     else:
         for _ in range(3):
             await agent.step(cache_response=False)
-        assert agent.pending[0] == "cache" and deq_full.observed["io_toDCache_resp_ready"]
+        assert agent.pending[0] == "cache" and deq_full.observed[P.p_toDCache_resp_ready]
         if phase == "wb":
             await agent.step(writeback_ready=False)
-            assert deq_full.observed["io_writeBack_valid"]
+            assert deq_full.observed[P.p_writeBack_valid]
     assert await agent.reset() == [old]
     new = agent.add(store(0x68000, tag=71))
     await agent.drain()
@@ -266,8 +268,8 @@ async def test_full_virtual_occupancy_all_129_values_and_force_write(deq_full):
     for count in counts:
         force = count >= 60 or count >= 55 and force
         await deq_full.cycle(Inputs(valid_count=count))
-        assert deq_full.observed["io_sbufferCtrl_req_forceWrite"] == int(force)
-        assert not deq_full.observed["io_rdataPtrMoveCnt"] and not deq_full.observed["io_sqDeqCnt"]
+        assert deq_full.observed[P.p_sbufferCtrl_req_forceWrite] == int(force)
+        assert not deq_full.observed[P.p_rdataPtrMoveCnt] and not deq_full.observed[P.p_sqDeqCnt]
     names = ("DEQ-DRAIN.force_write", "DEQ-IDLE.disabled", "DEQ-RESET.initial")
     deq_full.coverage.sample(names, deq_full.last_tick)
     deq_full.coverage.sample(names, deq_full.last_tick, checked=True)
@@ -282,7 +284,7 @@ async def test_split_second_segment_must_not_inherit_neighbor_zero_wline(deq_ful
     try:
         await agent.step(sbuffer_ready=(False, False))
     finally:
-        if next_cbo == 3 and deq_full.observed["io_writeToSbuffer_req_1_valid"]:
+        if next_cbo == 3 and deq_full.observed[P.p_writeToSbuffer_req_1_valid]:
             deq_full.coverage.sample(("DEQ-SPLIT.zero_neighbor",), deq_full.last_tick)
     # Controls still have to drain both owners; not "passed at enqueue".
     if committed:

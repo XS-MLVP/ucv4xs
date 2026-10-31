@@ -63,8 +63,8 @@ collector。功能覆盖自动从对象捕获，worker 压缩 checkpoint 仅在�
 pytest tests/bpu/testcase/test_sc_common_history_training.py --dump-trace
 ```
 
-完整轨迹统一导出为 `.json.gz`。导出入口位于 `bpuverify/common/env/trace.py`，
-开关由 `bpuverify.common.pytest.artifacts` 管理，串行与 xdist worker 使用相同规则。
+完整轨迹统一导出为 `.json.gz`。导出入口位于 `suites/frontend/bpu/runtime/trace.py`，
+开关由 `suites.frontend.bpu.pytest_plugins.artifacts` 管理，串行与 xdist worker 使用相同规则。
 关闭时不序列化、不解析路径、不创建轨迹文件；开启时流式压缩，完整写入成功
 后才发布，不覆盖已有轨迹。普通失败仍由 pytest 报告，不会自动打开全量导出。
 
@@ -101,7 +101,7 @@ Verilator 写出的是整张覆盖表，不是逐周期轨迹。每次都包含�
 
 诊断时显式增加 `--rtl-retention=raw` 可保留每例原始文件；这与
 `--dump-trace` 是两个独立开关。`--rtl-batch-size=16` 可调整批次大小。
-此机制由生产 `bpuverify.common.pytest.features` 安装；禁用该插件的旧隔离诊断入口
+此机制由生产 `suites.frontend.bpu.pytest_plugins.features` 安装；禁用该插件的旧隔离诊断入口
 仍保持原来的 raw 语义，不自动冒充已完成的并行生产迁移。
 
 十模块各两项真实场景分别在 raw／merged 模式通过，全部 native 点表、

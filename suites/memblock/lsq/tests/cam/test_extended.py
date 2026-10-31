@@ -3,7 +3,7 @@ import random
 
 import pytest
 
-from lsqverify.cam.types import Query, Write
+from suites.memblock.lsq.cam.types import Query, Write
 
 
 async def test_complete_pool_through_each_write_lane(cam):

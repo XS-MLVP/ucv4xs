@@ -21,7 +21,7 @@ def test_case_never_exposes_edges_io_or_manual_tasks():
 
 
 def test_environment_keeps_cold_source_qualification_and_no_internal_s2_write():
-    text=(ROOT/'bpuverify/bpu/env/main_duplicate_cleanup.py').read_text()
+    text=(ROOT/'bpu/env/main_duplicate_cleanup.py').read_text()
     assert 'ledger.live' in text and 'prepare_feedback' in text and 'admit_when' in text
     assert 'accept_window' in text and 's2_fire.Set' not in text and 'ImmSet' not in text
     assert 'no_commit_inferred=True' in text and 'full_FTQ_reachability_proved=False' in text

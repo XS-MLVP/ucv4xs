@@ -2,12 +2,12 @@
 from dataclasses import replace
 import pytest
 
-from bpuverify.utage.model.predecessor_retention import Program,PROFILES,MODES,PHASES,RULES
-from bpuverify.utage.model.semantic import Context,indices,tag,UtageReference,Events,Base
-from bpuverify.utage.coverage.predecessor_retention import Coverage
-from bpuverify.utage.model.learning_persistence import Program as Original,PC
-from bpuverify.utage.model.usefulness_events import ProtectionState
-from bpuverify.utage.model.working_set import expected
+from suites.frontend.bpu.utage.model.predecessor_retention import Program,PROFILES,MODES,PHASES,RULES
+from suites.frontend.bpu.utage.model.semantic import Context,indices,tag,UtageReference,Events,Base
+from suites.frontend.bpu.utage.coverage.predecessor_retention import Coverage
+from suites.frontend.bpu.utage.model.learning_persistence import Program as Original,PC
+from suites.frontend.bpu.utage.model.usefulness_events import ProtectionState
+from suites.frontend.bpu.utage.model.working_set import expected
 from tests.utage.scoreboard.test_semantic_model import feedback,learn
 
 PROGRAMS = tuple(Program(p,m,t) for p in PROFILES for m in MODES for t in (False,True))

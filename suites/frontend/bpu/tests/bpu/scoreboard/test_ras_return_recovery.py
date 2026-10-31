@@ -6,9 +6,9 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.checker.ras.semantic import RasSemanticComponentChecker
-from bpuverify.bpu.coverage.ras_return_recovery import ReturnRecoveryCoverage,return_recovery_coverage
-from bpuverify.ras.model.semantic import Events,Recovery,Retirement
+from suites.frontend.bpu.bpu.checker.ras.semantic import RasSemanticComponentChecker
+from suites.frontend.bpu.bpu.coverage.ras_return_recovery import ReturnRecoveryCoverage,return_recovery_coverage
+from suites.frontend.bpu.ras.model.semantic import Events,Recovery,Retirement
 from tests.bpu.scoreboard.test_ras_semantic import ADDRESS,PC,actuals,step
 
 
@@ -147,7 +147,7 @@ def test_unknown_coverage_scope_fails_closed(arguments):
 
 def test_case_and_shared_program_contain_no_edge_get_set_or_task_gather():
     for filename in ('return_recovery','redo_unwind'):
-        tree = ast.parse(Path(f'bpuverify/bpu/case/ras/{filename}.py').read_text())
+        tree = ast.parse(Path(f'bpu/case/ras/{filename}.py').read_text())
         forbidden = {'ClockCycles','FallingEdge','RisingEdge','get_','set_','gather','GetInternalSignal'}
         for node in ast.walk(tree):
             if isinstance(node,ast.Call):

@@ -1,11 +1,11 @@
 """Qualified opposite instruction feedback is neutral at both signed edges."""
 import pytest
 
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.sc.case.neutral_boundary import check_neutral_boundary
-from bpuverify.sc.coverage.neutral_boundary import NeutralBoundaryCoverage
-from bpuverify.sc.model.neutral_boundary import NeutralBoundaryProgram, PROFILES
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.sc.case.neutral_boundary import check_neutral_boundary
+from suites.frontend.bpu.sc.coverage.neutral_boundary import NeutralBoundaryCoverage
+from suites.frontend.bpu.sc.model.neutral_boundary import NeutralBoundaryProgram, PROFILES
 
 
 @pytest.mark.feature('BPU-SC-005')

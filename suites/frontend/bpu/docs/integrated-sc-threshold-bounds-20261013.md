@@ -1,5 +1,8 @@
 # 集成SC阈值：整个更新的越界拒绝，不是普通保持
 
+> 路径迁移说明（2026-10-31）：本报告仍属于原日期、基线和执行源码；实现文件已迁到工程根。可点击源码链接更新到当前位置，不据此重标历史 PASS/FAIL 或覆盖结论。参见[本轮命名空间迁移](../../../../docs/lessons/suite-namespace-refactor-20261031.md)。
+
+
 本文的64格、255/1964来源和8阶段描述属于已发布的旧检查清单版本。
 当前工作树正在改为真实来源关联的事件覆盖，并新增内部/边界混合票抵消义务；
 两种分母不能直接比较。见 [硬件事件语义与迁移边界](hardware-event-functional-points-20261013.md)。
@@ -15,7 +18,7 @@ SC有四个独立全局阈值寄存器，不是四个待枚举的SRAM bank。每
 硬件bank和一个固定PC自循环，选择两条不同位置但映射到同一全局阈值的分支。
 不展开bank×set×地址矩阵。PC由零PHR路径哈希方程得到，三个其他阈值必须始终保持初值1130。
 
-[`输入模型`](../bpuverify/bpu/model/sc/bounds.py) 从范围/初值计算工作量，而不是
+[`输入模型`](../bpu/model/sc/bounds.py) 从范围/初值计算工作量，而不是
 写死settle周期：下界先用真实双NT反馈将SC准备为低置信度负向，目标阈值为1132；
 上界使用冷态正向SC、阈值1130。进入641/5039的过程，第一笔单票确定奇偶性，
 其余笔为两条不同分支的同拍投票。
@@ -41,7 +44,7 @@ SC有四个独立全局阈值寄存器，不是四个待枚举的SRAM bank。每
 
 ## 完整检查与有界记录
 
-[`case`](../bpuverify/bpu/case/sc/bounds.py) 复用既有AsyncDriver、FullScMonitor与
+[`case`](../bpu/case/sc/bounds.py) 复用既有AsyncDriver、FullScMonitor与
 FullScChecker，逐周期比较全部四阈值、十个SC SRAM/shadow/PLRU、T0/T1/T2资格和
 完整反馈payload。PHR52位/76个fold及真实metadata关联从reset持续比较，CommonHR
 GHR/BW状态和SC路由也由独立参考检查。TAGE真实provider身份/计数在反馈期保持。

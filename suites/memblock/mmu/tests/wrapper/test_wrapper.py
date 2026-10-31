@@ -1,8 +1,8 @@
 """TlbStorageWrapper composition and PLRU replacement tests."""
 from __future__ import annotations
 
-from mmuverify.common.runtime import execution
-from mmuverify.tlbfa.model import ALL_STAGE, NO_S2, ONLY_S1, ONLY_S2
+from suites.memblock.mmu.execution import execution
+from suites.memblock.mmu.tlbfa.model import ALL_STAGE, NO_S2, ONLY_S1, ONLY_S2
 
 from ..tlbfa.common import lookup_vpn, make_refill
 
@@ -25,7 +25,7 @@ async def assert_live(env, pairs, note: str):
 # WRAP-RESET-01, WRAP-REPLACE-01
 async def test_reset_and_initial_plru_victim_sequence(wrapper_env):
     env = wrapper_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         pairs = []
         victims = []
@@ -66,7 +66,7 @@ async def test_reset_and_initial_plru_victim_sequence(wrapper_env):
 # WRAP-REPLACE-02
 async def test_read_hit_changes_next_plru_victim(wrapper_env):
     env = wrapper_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         pairs = []
         for index in range(12):
@@ -92,7 +92,7 @@ async def test_read_hit_changes_next_plru_victim(wrapper_env):
 # WRAP-REFILL-01
 async def test_refill_is_visible_next_cycle_and_same_cycle_read_is_suppressed(wrapper_env):
     env = wrapper_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         tag = 0x52000
         data = make_refill(NO_S2, 0, tag, 0x400000000)
@@ -105,7 +105,7 @@ async def test_refill_is_visible_next_cycle_and_same_cycle_read_is_suppressed(wr
 # WRAP-REPLACE-03, WRAP-LOOKUP-01
 async def test_contexts_and_stage_forms_pass_through(wrapper_env):
     env = wrapper_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.program_context(satp_asid=1, vsatp_asid=2, hgatp_vmid=3)
         specs = [
@@ -129,7 +129,7 @@ async def test_contexts_and_stage_forms_pass_through(wrapper_env):
 # WRAP-FENCE-01, WRAP-RESET-01
 async def test_sfence_and_hfence_pass_through_without_resetting_plru(wrapper_env):
     env = wrapper_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.program_context(satp_asid=1, vsatp_asid=1, hgatp_vmid=3)
         s1 = make_refill(NO_S2, 0, 0x54000, 0x100000021, asid=1)
@@ -163,7 +163,7 @@ async def test_sfence_and_hfence_pass_through_without_resetting_plru(wrapper_env
 # WRAP-FENCE-01
 async def test_address_sfence_and_hfenceg_pass_through(wrapper_env):
     env = wrapper_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.program_context(satp_asid=1, vsatp_asid=1, hgatp_vmid=3)
         x, y = 0x55000, 0x55100
@@ -195,7 +195,7 @@ async def test_address_sfence_and_hfenceg_pass_through(wrapper_env):
 # directions through the wrapper's PLRU-selected write port.
 async def test_wrapper_storage_bits_toggle_in_every_selected_way(wrapper_env):
     env = wrapper_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         ones = make_refill(
             ALL_STAGE, 3, (1 << 35) - 1, (1 << 41) - 1, n=1,
@@ -225,7 +225,7 @@ async def test_wrapper_storage_bits_toggle_in_every_selected_way(wrapper_env):
 # legal stimuli; the anchor entry must survive non-matching address fences.
 async def test_wrapper_context_and_fence_input_bits_toggle(wrapper_env):
     env = wrapper_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await env.edge()
         env.program_context(satp_asid=0xFFFF, vsatp_asid=0xFFFF, hgatp_vmid=0x3FFF, virt=1, bme=1, cmode=1)

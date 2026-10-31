@@ -13,7 +13,7 @@ import random
 
 import pytest
 
-from vagqverify.native import open_dut
+from suites.vector.vagq.native import open_dut
 
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)
@@ -67,7 +67,7 @@ async def test_native_rtl_structural_sweep(
     module, clocked, cycles, seed, native_registration, tmp_path
 ):
     if module in {'VAGQ', 'VAGQEntryTable', 'OrderedPermitCtrl'}:
-        from vagqverify.legal_structural import sweep
+        from suites.vector.vagq.legal_structural import sweep
         await sweep(module, cycles, seed, tmp_path / module, native_registration)
         return
     inputs = _input_widths(module)

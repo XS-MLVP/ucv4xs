@@ -4,15 +4,15 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.sc.transaction.types import ScBaseBranch
-from bpuverify.sc.transaction.types import ScBatchTraining
-from bpuverify.sc.transaction.types import ScBranchFeedback
-from bpuverify.sc.coverage.catalog import sc_adjacent_feedback_coverage_model
-from bpuverify.sc.coverage.catalog import write_sc_adjacent_feedback_coverage
-from bpuverify.sc.case.definitions import NOT_TAKEN_ATTEMPTS
-from bpuverify.sc.case.definitions import PC
-from bpuverify.sc.case.definitions import TAGE_COUNTER
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.sc.transaction.types import ScBaseBranch
+from suites.frontend.bpu.sc.transaction.types import ScBatchTraining
+from suites.frontend.bpu.sc.transaction.types import ScBranchFeedback
+from suites.frontend.bpu.sc.coverage.catalog import sc_adjacent_feedback_coverage_model
+from suites.frontend.bpu.sc.coverage.catalog import write_sc_adjacent_feedback_coverage
+from suites.frontend.bpu.sc.case.definitions import NOT_TAKEN_ATTEMPTS
+from suites.frontend.bpu.sc.case.definitions import PC
+from suites.frontend.bpu.sc.case.definitions import TAGE_COUNTER
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 POSITIONS = (4, 5)

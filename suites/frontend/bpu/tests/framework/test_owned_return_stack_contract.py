@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pytest
 
-from bpuverify.bpu.coverage.owned_return_stack import lifetime_coverage
-from bpuverify.bpu.model.owned_return_stack import PROGRAMS,OBLIGATIONS
+from suites.frontend.bpu.bpu.coverage.owned_return_stack import lifetime_coverage
+from suites.frontend.bpu.bpu.model.owned_return_stack import PROGRAMS,OBLIGATIONS
 
 ROOT=Path(__file__).resolve().parents[2]
 
@@ -34,7 +34,7 @@ def test_only_semantic_lifetimes_are_crossed_no_bank_or_physical_depth_axis():
 
 @pytest.mark.parametrize('filename',('model/return_stack_sources.py','model/owned_return_stack.py'))
 def test_models_import_only_semantic_algorithms_and_value_types(filename):
-    source=(ROOT/'bpuverify/bpu'/filename).read_text()
+    source=(ROOT/'bpu'/filename).read_text()
     tree=ast.parse(source)
     for node in ast.walk(tree):
         if isinstance(node,(ast.ImportFrom,ast.Import)):

@@ -6,7 +6,7 @@ import subprocess
 import sys
 from types import SimpleNamespace
 
-from bpuverify.common.pytest import features as pytest_features
+from suites.frontend.bpu.pytest_plugins import features as pytest_features
 
 
 def test_collect_only_returns_before_accessing_execution_evidence(tmp_path):
@@ -46,7 +46,7 @@ def test_real_pytest_collection_preserves_normal_execution_reports(tmp_path):
     env = {**os.environ, "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1"}
     env["PYTHONPATH"] = os.pathsep.join((str(root), env.get("PYTHONPATH", "")))
     command = [sys.executable, "-m", "pytest", "-q", "-c", str(config),
-               "-p", 'bpuverify.common.pytest.features', str(test)]
+               "-p", 'suites.frontend.bpu.pytest_plugins.features', str(test)]
     published = (tmp_path/"results/feature-points.json", tmp_path/"results/rtl-coverage-manifest.json")
     published[0].parent.mkdir()
     for path in published:

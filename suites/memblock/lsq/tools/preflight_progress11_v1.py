@@ -27,10 +27,10 @@ def audit():
     nodes=[n for n in result.stdout.splitlines() if n.startswith("tests/") and "::" in n]
     assert len(nodes)==len(set(nodes))==2036 and set(nodes)==baseline_nodes.keys()
     assert Counter(n.split("/")[1] for n in nodes)==Counter(FAMILIES)
-    python_files=[p for root in ("lsqverify","tests","tools") for p in (ROOT/root).rglob("*.py")]
+    python_files=ucv_paths.suite_python_sources(ROOT)
     for p in python_files:ast.parse(p.read_text(),filename=str(p))
     base=json.loads((ROOT/"results/lsq-progress-regression-10/source-evidence.json").read_text())["files"]
-    shared={k:v for k,v in base.items() if k.startswith("lsqverify/")}
+    shared={k:v for k,v in base.items() if k.startswith('lsqverify/')}
     assert shared and all(sha(ROOT/k)==v for k,v in shared.items())
     repo=ucv_paths.source_path_for(ROOT)
     head=subprocess.check_output(["git","rev-parse","HEAD"],cwd=repo,text=True).strip()

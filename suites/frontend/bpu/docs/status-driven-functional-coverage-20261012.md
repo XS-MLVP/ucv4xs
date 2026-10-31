@@ -1,5 +1,8 @@
 # 状态等待、DUT 版本整理与功能覆盖增量
 
+> 路径迁移说明（2026-10-31）：本报告仍属于原日期、基线和执行源码；实现文件已迁到工程根。可点击源码链接更新到当前位置，不据此重标历史 PASS/FAIL 或覆盖结论。参见[本轮命名空间迁移](../../../../docs/lessons/suite-namespace-refactor-20261031.md)。
+
+
 2026-10-15 后续发布说明：状态等待与 DUT 整理已进入完整生产回归；最新
 `production-ittage-directory-events-20261015-v1` 为15,595 PASS、7 strict XFAIL、0 SKIP，
 307个功能点全部执行，BPU33257/46541，shadow选择cross29/30。
@@ -57,7 +60,7 @@ LCOV 的 `v_line + v_branch` statement-span 口径，不减少分母。以下是
 
 原来的 reset 256/512 次轮询，以及训练后的 5/6/9/11/15/24 周期等待，分别
 改为实际 resetDone、训练流水寄存器和 pending write 状态判断。共享实现位于
-`bpuverify/common/env/wait.py`、`common/monitor/activity.py`；每个 DUT 的精确
+`suites/frontend/bpu/runtime/wait.py`、`common/monitor/activity.py`；每个 DUT 的精确
 只读信号契约位于自己的 `bundle/activity.py`。绑定缺失直接报错，不退回固定等待。
 
 这里是薄封装：使用 xreactor 正式 `PythonPredicateTrigger`、`AnyOf`、`SimTimeout`

@@ -2,8 +2,8 @@
 from copy import deepcopy
 from types import SimpleNamespace
 import pytest
-from bpuverify.common.model.query_reset_program import Program, MODES
-from bpuverify.common.model.query_lifetime import QueryLease
+from suites.frontend.bpu.models.query_reset_program import Program, MODES
+from suites.frontend.bpu.models.query_lifetime import QueryLease
 
 def test_equal_pc_and_equal_payload_cannot_replace_original_snapshot_identity():
     source = SimpleNamespace(pc=1073743872, position=2, target=1073746484)

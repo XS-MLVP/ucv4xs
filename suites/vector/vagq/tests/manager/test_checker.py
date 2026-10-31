@@ -4,9 +4,9 @@ from dataclasses import replace
 import pytest
 from toffee import ScoreboardMismatch
 
-from vagqverify.manager.checker import ManagerChecker
-from vagqverify.manager.coverage import ManagerCoverage
-from vagqverify.manager.types import Allocation, Beat, Boundary, Cycle, Offer
+from suites.vector.vagq.manager.checker import ManagerChecker
+from suites.vector.vagq.manager.coverage import ManagerCoverage
+from suites.vector.vagq.manager.types import Allocation, Beat, Boundary, Cycle, Offer
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)
 IDLE = Boundary(False, Beat(), Allocation())

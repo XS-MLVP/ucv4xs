@@ -1,6 +1,6 @@
 import pytest
 
-from lsqverify.vsq_recovery import leaf_windows
+from suites.memblock.lsq.vsq_recovery import leaf_windows
 
 
 @pytest.mark.parametrize("delay", range(3))

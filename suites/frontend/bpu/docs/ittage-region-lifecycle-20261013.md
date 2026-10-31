@@ -1,5 +1,8 @@
 # ITTAGE region 行缺口：目录生命周期与零置信度重定向是两个需求
 
+> 路径迁移说明（2026-10-31）：本报告仍属于原日期、基线和执行源码；实现文件已迁到工程根。可点击源码链接更新到当前位置，不据此重标历史 PASS/FAIL 或覆盖结论。参见[本轮命名空间迁移](../../../../docs/lessons/suite-namespace-refactor-20261031.md)。
+
+
 本文前半记录067首次目录闭合时的历史证据；当前事件化实现见末尾
 [事件边界与未满复用](#2026-10-15事件化分配提交和预测消费分别测量)。旧10/10是
 阶段/检查清单的历史测量，不能与新事件分母直接比较来宣称覆盖增长。
@@ -20,14 +23,14 @@ bank/set笛卡尔积；仅使用一组非别名输入，三个预测表的分配
 `target >> 19`，offset为低19个halfword位；复用独立region模型时显式乘2转成byte，
 重建目标后再除2，不偷偷改变模块agent的地址约定。
 
-静态 [`bundle`](../bpuverify/bpu/bundle/ittage_region.py) 绑定 memory-direct/trace-derived
-只读信号；[`monitor`](../bpuverify/bpu/monitor/ittage_region.py) 用@on处理preedge/rising。
-[`checker`](../bpuverify/bpu/checker/ittage_region.py) 从reset维护独立16项目录及PLRU，
+静态 [`bundle`](../bpu/bundle/ittage_region.py) 绑定 memory-direct/trace-derived
+只读信号；[`monitor`](../bpu/monitor/ittage_region.py) 用@on处理preedge/rising。
+[`checker`](../bpu/checker/ittage_region.py) 从reset维护独立16项目录及PLRU，
 比较所有valid/region、每个读/更新端口、同拍write-bypass及free/reuse/victim pointer。
 期望写请求从真实接受的完整公开反馈及分配资格推导，不根据DUT write-valid生成。
 仅在下一rising完整状态比较成功后记录写效果。
 
-[`case`](../bpuverify/bpu/case/ittage_capacity.py) 使用真实cold checkpoint/反馈，保留
+[`case`](../bpu/case/ittage_capacity.py) 使用真实cold checkpoint/反馈，保留
 完整52位PHR比较，并要求每次回读均为计划中的零history context。每次插入或替换
 之后检查**所有resident**的完整provider metadata及精确关联的最终S3 target。
 旧entry按设计保留pointer，region被替换后必须按新region重建旧offset；survivor和

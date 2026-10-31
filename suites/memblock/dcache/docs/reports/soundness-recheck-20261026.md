@@ -1,5 +1,8 @@
 # DCache 用例可信度复核（按 KMH-v3 假阴性经验，2026-10-26）
 
+> 路径迁移说明（2026-10-31）：本文记录中的 *verify/common 为当时源码路径；当前实现已迁入 suites.<group>.<suite> 工程根。历史判定、命令与哈希不据此重标；当前映射见仓库 docs/lessons/suite-namespace-refactor-20261031.md。
+
+
 > 依据：[跨模块假阴性总结](../../../../../docs/lessons/false-negatives-20261026.md) 与
 > [防复发手册](../../../../../skills/rtl-verification-soundness/SKILL.md)（P01–P12）。
 >

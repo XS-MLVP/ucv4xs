@@ -10,8 +10,8 @@ from pathlib import Path
 
 import pytest
 
-from bpuverify.abtb.coverage.replacer_branch_audit import REPLACER, WRITEBUFFER, audit, replacer_claims
-from bpuverify.abtb.coverage.replacer_branch_audit import ROOT
+from suites.frontend.bpu.abtb.coverage.replacer_branch_audit import REPLACER, WRITEBUFFER, audit, replacer_claims
+from suites.frontend.bpu.abtb.coverage.replacer_branch_audit import ROOT
 
 
 def native_report():

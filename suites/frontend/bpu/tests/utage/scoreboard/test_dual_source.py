@@ -2,13 +2,13 @@
 from copy import deepcopy
 from dataclasses import replace
 import pytest
-from bpuverify.utage.model.semantic import Base, Context, Events, Feedback, Source, UtageReference
-from bpuverify.utage.model.dual_source import PROGRAMS, PC
+from suites.frontend.bpu.utage.model.semantic import Base, Context, Events, Feedback, Source, UtageReference
+from suites.frontend.bpu.utage.model.dual_source import PROGRAMS, PC
 from types import SimpleNamespace
 from toffee import ScoreboardMismatch, TransferState
-from bpuverify.utage.checker.dual_source import Checks
-from bpuverify.utage.coverage.dual_source import Coverage
-from bpuverify.utage.transaction.types import UtagePrediction
+from suites.frontend.bpu.utage.checker.dual_source import Checks
+from suites.frontend.bpu.utage.coverage.dual_source import Coverage
+from suites.frontend.bpu.utage.transaction.types import UtagePrediction
 
 
 def query(model, program, state, seed_position=None):

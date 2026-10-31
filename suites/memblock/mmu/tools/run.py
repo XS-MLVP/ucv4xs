@@ -32,8 +32,8 @@ VERILATOR_COVERAGE = LOCK["verilator"]["coverage_processor"]
 
 
 def verification_sources():
-    paths = [path for folder in ("tests", "mmuverify", "tools")
-             for path in (ROOT / folder).rglob("*.py")]
+    from ucv.runtime import suite_python_sources
+    paths = suite_python_sources(ROOT)
     paths += [ROOT / name for name in ("conftest.py", "pytest.ini",
               "manifest/toolchain.json", "manifest/pma-reset-reference.json")]
     return {str(path.relative_to(ROOT)): hashlib.sha256(path.read_bytes()).hexdigest()

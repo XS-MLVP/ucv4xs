@@ -2,10 +2,9 @@
 import json
 import pytest
 
-from bpuverify.utage.model.read_lifetime import Program,PROFILES,RELATIONS
-from bpuverify.utage.coverage.read_lifetime import Coverage
-from bpuverify.utage.case.read_lifetime import check_read_version
-
+from suites.frontend.bpu.utage.model.read_lifetime import Program,PROFILES,RELATIONS
+from suites.frontend.bpu.utage.coverage.read_lifetime import Coverage
+from suites.frontend.bpu.utage.case.read_lifetime import check_read_version
 
 
 @pytest.mark.feature('BPU-UTAGE-006')
@@ -25,9 +24,9 @@ async def test_old_query_keeps_original_branch_version_when_learning_changes_fut
         request.node.user_properties.append(('semantic_utage_read_version_lifetime',json.dumps(evidence,sort_keys=True)))
 
 
-from bpuverify.utage.model.read_lifetime import LateReplacementProgram,REBUILD_PROFILES,MODES
-from bpuverify.utage.coverage.read_lifetime import LateReplacementCoverage
-from bpuverify.utage.case.read_lifetime import check_late_replacement
+from suites.frontend.bpu.utage.model.read_lifetime import LateReplacementProgram,REBUILD_PROFILES,MODES
+from suites.frontend.bpu.utage.coverage.read_lifetime import LateReplacementCoverage
+from suites.frontend.bpu.utage.case.read_lifetime import check_late_replacement
 
 
 @pytest.mark.feature('BPU-UTAGE-019')

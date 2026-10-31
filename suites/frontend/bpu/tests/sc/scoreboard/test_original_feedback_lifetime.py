@@ -5,11 +5,11 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.sc.transaction.types import ScPrediction
-from bpuverify.sc.model.eligibility import FAMILIES,GATES
-from bpuverify.sc.model.original_feedback import FeedbackProgram,expected_offer
-from bpuverify.sc.checker.original_feedback import FeedbackChecks
-from bpuverify.sc.coverage.original_feedback import FeedbackCoverage,PROFILES
+from suites.frontend.bpu.sc.transaction.types import ScPrediction
+from suites.frontend.bpu.sc.model.eligibility import FAMILIES,GATES
+from suites.frontend.bpu.sc.model.original_feedback import FeedbackProgram,expected_offer
+from suites.frontend.bpu.sc.checker.original_feedback import FeedbackChecks
+from suites.frontend.bpu.sc.coverage.original_feedback import FeedbackCoverage,PROFILES
 
 pytestmark=pytest.mark.toffee_functional_coverage(False)
 
@@ -113,7 +113,9 @@ def test_independent_complete_feedback_offer_proves_which_source_qualification_i
         branch=offer['branches'][0]
         original=offer['mbtb_meta'][0][0]
         assert original['rawHit']==int(gate!='main-miss')
-        assert branch['branch_type']==original['attribute']['branchType']==(2 if gate=='nonconditional' else 1)
+        # Whole-chip DCE removed the attribute copy from training MainBTB
+        # metadata; branch kind is carried only by the resolve branch vector.
+        assert branch['branch_type']==(2 if gate=='nonconditional' else 1)
         assert offer['meta']['tagePredValid'][0]==int(gate!='provider-missing')
         assert branch['taken']==program.feedback_outcome(owner) and branch['position']==owner.first_position
         assert all(not item['valid'] for item in offer['branches'][1:])

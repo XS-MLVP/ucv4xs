@@ -1,9 +1,9 @@
 import pytest
 
-from bpuverify.bpu.case.tage.learning import check_sparse_learning
-from bpuverify.bpu.coverage.tage.learning import LearningCoverage
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.bpu.case.tage.learning import check_sparse_learning
+from suites.frontend.bpu.bpu.coverage.tage.learning import LearningCoverage
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature('BPU-INT-075')

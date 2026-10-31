@@ -1,10 +1,10 @@
 """A destination is a branch record, not merely a shared partial tag."""
 import pytest
 
-from bpuverify.abtb.case.semantic import pending_corrections, serial_corrections
-from bpuverify.abtb.coverage.semantic import SemanticCoverage
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.abtb.case.semantic import pending_corrections, serial_corrections
+from suites.frontend.bpu.abtb.coverage.semantic import SemanticCoverage
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature('BPU-ABTB-053')

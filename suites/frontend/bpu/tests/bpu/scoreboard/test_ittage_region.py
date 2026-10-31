@@ -4,15 +4,15 @@ from dataclasses import asdict
 from types import SimpleNamespace
 import pytest
 from toffee import CheckContext, Scoreboard, ScoreboardMismatch, ScoreboardMode, Transfer
-from bpuverify.bpu.coverage.ittage import DIRECTORY_RULES, directory_coverage
-from bpuverify.bpu.case.ittage_feedback import PC, check_target_feedback
-from bpuverify.bpu.checker.ittage import check_coherent_target
-from bpuverify.bpu.checker.ittage_region import RegionChecker
-from bpuverify.bpu.model.ittage import IttageContextModel
-from bpuverify.bpu.model.ittage_region import directory_program, feedback_targets, target_regions
-from bpuverify.bpu.model.sc.model import canonical, encoded_payload
-from bpuverify.bpu.transaction.types import BpuBatchTraining, BpuBranchFeedback
-from bpuverify.ittage.model.region import IttageRegionModel
+from suites.frontend.bpu.bpu.coverage.ittage import DIRECTORY_RULES, directory_coverage
+from suites.frontend.bpu.bpu.case.ittage_feedback import PC, check_target_feedback
+from suites.frontend.bpu.bpu.checker.ittage import check_coherent_target
+from suites.frontend.bpu.bpu.checker.ittage_region import RegionChecker
+from suites.frontend.bpu.bpu.model.ittage import IttageContextModel
+from suites.frontend.bpu.bpu.model.ittage_region import directory_program, feedback_targets, target_regions
+from suites.frontend.bpu.bpu.model.sc.model import canonical, encoded_payload
+from suites.frontend.bpu.bpu.transaction.types import BpuBatchTraining, BpuBranchFeedback
+from suites.frontend.bpu.ittage.model.region import IttageRegionModel
 from tests.bpu.scoreboard.integrated.test_high_index_useful import BootstrapHarness
 
 

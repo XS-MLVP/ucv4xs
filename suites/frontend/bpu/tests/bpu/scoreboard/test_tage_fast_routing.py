@@ -8,13 +8,13 @@ from types import SimpleNamespace
 import pytest
 from toffee import ScoreboardMismatch
 
-from bpuverify.bpu.agent.main import BpuAgent
-from bpuverify.bpu.case.definitions import PC, POSITION, LATER_POSITION, EARLIER_TARGET, LATER_TARGET
-from bpuverify.bpu.checker.tage.fast_routing import TageRoutingChecker, observed_phase
-from bpuverify.bpu.coverage.tage.fast_routing import RoutingCoverage,DISCOVERIES
-from bpuverify.bpu.model.selection import fallthrough
-from bpuverify.bpu.transaction.types import BpuPrediction
-from bpuverify.tage.model.semantic import Base, Branch, Context, Events, Feedback, Hint, decide
+from suites.frontend.bpu.bpu.agent.main import BpuAgent
+from suites.frontend.bpu.bpu.case.definitions import PC, POSITION, LATER_POSITION, EARLIER_TARGET, LATER_TARGET
+from suites.frontend.bpu.bpu.checker.tage.fast_routing import TageRoutingChecker, observed_phase
+from suites.frontend.bpu.bpu.coverage.tage.fast_routing import RoutingCoverage,DISCOVERIES
+from suites.frontend.bpu.bpu.model.selection import fallthrough
+from suites.frontend.bpu.bpu.transaction.types import BpuPrediction
+from suites.frontend.bpu.tage.model.semantic import Base, Branch, Context, Events, Feedback, Hint, decide
 from tests.tage.scoreboard.test_semantic_model import actual_prediction, learn, lookup
 from tests.bpu.scoreboard.test_phr_api import fake_agent
 
@@ -266,7 +266,7 @@ def test_earlier_preparation_is_checked_by_the_reference_with_context(fault):
 
 
 def test_case_leaves_comparison_and_cycle_timing_in_the_checker_and_environment():
-    tree = ast.parse(Path('bpuverify/bpu/case/tage/fast_routing.py').read_text())
+    tree = ast.parse(Path('bpu/case/tage/fast_routing.py').read_text())
     for node in ast.walk(tree):
         assert not isinstance(node,(ast.Assert,ast.ClassDef))
         if isinstance(node,ast.Call):

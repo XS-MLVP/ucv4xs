@@ -1,5 +1,8 @@
 # UTAGE 组合矩阵与检查器审计（2026-10-20）
 
+> 路径迁移说明（2026-10-31）：本报告仍属于原日期、基线和执行源码；实现文件已迁到工程根。可点击源码链接更新到当前位置，不据此重标历史 PASS/FAIL 或覆盖结论。参见[本轮命名空间迁移](../../../../docs/lessons/suite-namespace-refactor-20261031.md)。
+
+
 > 方法来自上层 ICache 验证经验：缺陷常住在两条路径的**同拍交叉处**，而功能点、
 > 模型和覆盖率都按路径组织。本文件按输入来源把 UTAGE 的交叉格逐项列出，给出
 > 已有用例/证据，或显式登记“未验证”及原因；同时复核检查器是否存在全局静音、
@@ -45,7 +48,7 @@
 - 模型明确表达重定向：`UtageReference.advance` 在 `events.redirect` 时设置
   `redirect_bubble`，把该槽的 `{slot}.valid` 压成 0，并把 frame 的条目清空。
 - RTL 在 A2 阶段用 `~io_redirect` 门控 `a2_abtbHitVec_*`（`UtageDut.v:1163-1190`）。
-- 但 `bpuverify/utage/bundle/ports.py` 原本**没有绑定 `io.redirect`**，
+- 但 `suites/frontend/bpu/utage/bundle/ports.py` 原本**没有绑定 `io.redirect`**，
   fast-lookup bundle 也不含该字段，driver 只发 `s0_fire/s2_fire/startPc/history/fromAheadBtb`。
 
 这是“模型支持、激励从未置起”的死开关。**本轮已修复**：

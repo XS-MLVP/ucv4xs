@@ -1,6 +1,6 @@
 from copy import deepcopy
 import pytest
-from bpuverify.bpu.case.abtb.readback import matching_sram_readbacks
+from suites.frontend.bpu.bpu.case.abtb.readback import matching_sram_readbacks
 
 ENTRY = dict(valid=1, tag=123, position=7, branch_type=1, ras_action=0, target_low=456)
 

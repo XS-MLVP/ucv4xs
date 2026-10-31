@@ -1,9 +1,11 @@
 # KMH-v3 验证假阴性跨模块总结
 
+> 路径迁移说明（2026-10-31）：本文记录中的 *verify/common 为当时源码路径；当前实现已迁入 suites.<group>.<suite> 工程根。历史判定、命令与哈希不据此重标；当前映射见仓库 docs/lessons/suite-namespace-refactor-20261031.md。
+
+
 > 历史快照：以下“当前”、计数、代码位置及改进计划均保留 2026-10-26 原文含义，不代表 ucv4xs 重建后的验证结论或已实施项。正文旧路径用于识别原证据；[经验索引](README.md) 提供当前工程入口与旧路径对照，[迁移记录](../history/experience-import.json) 保存原文件哈希。
 
-> **踩坑复盘与跨模块防复发手册见** [`skills/rtl-verification-soundness/SKILL.md`](../../skills/rtl-verification-soundness/SKILL.md)。
-> 本文件保留既有案例矩阵与状态快照；skill 按“实际问题—错误处理—原因—迁移措施—成对回归”重组，保留经验来源，不再以通用验证公理为主线。
+> 当前操作方法按 [`skills/<阶段>/<问题>.md`](../../skills/README.md) 读取；十二类具体踩坑见 [历史案例](rtl-verification-soundness-20261026.md)。本文保留原案例矩阵、状态快照、诊断树、检查表和改进计划；后几项也是历史原文，不代表本次已实施或另建一套现行流程。
 
 
 **日期：2026-10-26**

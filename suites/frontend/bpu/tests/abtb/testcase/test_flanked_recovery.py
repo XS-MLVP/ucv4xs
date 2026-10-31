@@ -4,15 +4,15 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.abtb.coverage.catalog import abtb_flanked_recovery_coverage_model
-from bpuverify.abtb.coverage.catalog import write_abtb_flanked_recovery_coverage
-from bpuverify.abtb.checker.assertions import age_conditional_to_not_taken
-from bpuverify.abtb.checker.assertions import assert_conditional_state
-from bpuverify.abtb.checker.assertions import train_conditional_direction
-from bpuverify.abtb.case.definitions import NUM_WAYS
-from bpuverify.abtb.case.flanked_scenario import AgedFlankedSet
-from bpuverify.abtb.case.flanked_scenario import BANKS
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.abtb.coverage.catalog import abtb_flanked_recovery_coverage_model
+from suites.frontend.bpu.abtb.coverage.catalog import write_abtb_flanked_recovery_coverage
+from suites.frontend.bpu.abtb.checker.assertions import age_conditional_to_not_taken
+from suites.frontend.bpu.abtb.checker.assertions import assert_conditional_state
+from suites.frontend.bpu.abtb.checker.assertions import train_conditional_direction
+from suites.frontend.bpu.abtb.case.definitions import NUM_WAYS
+from suites.frontend.bpu.abtb.case.flanked_scenario import AgedFlankedSet
+from suites.frontend.bpu.abtb.case.flanked_scenario import BANKS
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature("BPU-ABTB-045")

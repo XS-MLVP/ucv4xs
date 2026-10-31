@@ -1,9 +1,9 @@
 """Original full-index ownership under serial and adjacent real learning."""
 import json
 import pytest
-from bpuverify.utage.model.query_identity import Program,MODES
-from bpuverify.utage.coverage.query_identity import Coverage
-from bpuverify.utage.case.query_identity import run
+from suites.frontend.bpu.utage.model.query_identity import Program,MODES
+from suites.frontend.bpu.utage.coverage.query_identity import Coverage
+from suites.frontend.bpu.utage.case.query_identity import run
 
 
 @pytest.mark.feature('BPU-UTAGE-023')

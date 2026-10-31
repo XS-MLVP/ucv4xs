@@ -2,9 +2,9 @@
 from dataclasses import replace
 import pytest
 
-from bpuverify.bpu.model.ahead_sources import AheadSources,history_feature
-from bpuverify.bpu.model.pipeline import Events,Outcome,Redirect,Resolution
-from bpuverify.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.ahead_sources import AheadSources,history_feature
+from suites.frontend.bpu.bpu.model.pipeline import Events,Outcome,Redirect,Resolution
+from suites.frontend.bpu.bpu.model.selection import Kind
 from tests.bpu.scoreboard.test_semantic_pipeline import boot
 
 

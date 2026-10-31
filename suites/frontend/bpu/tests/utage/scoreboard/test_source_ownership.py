@@ -9,11 +9,11 @@ import json
 
 import pytest
 from toffee import ScoreboardMismatch, TransferState
-from bpuverify.utage.checker.source_ownership import SourceOwnershipChecks
-from bpuverify.utage.model.semantic import Context, Events, tag
-from bpuverify.utage.model.source_ownership import AssociationProgram, ASSOCIATION_MODES, Profile, RecoveryProgram
-from bpuverify.utage.monitor.source_ownership import SourceObservation, SourceOwnershipMonitor
-from bpuverify.utage.transaction.types import UtagePrediction
+from suites.frontend.bpu.utage.checker.source_ownership import SourceOwnershipChecks
+from suites.frontend.bpu.utage.model.semantic import Context, Events, tag
+from suites.frontend.bpu.utage.model.source_ownership import AssociationProgram, ASSOCIATION_MODES, Profile, RecoveryProgram
+from suites.frontend.bpu.utage.monitor.source_ownership import SourceObservation, SourceOwnershipMonitor
+from suites.frontend.bpu.utage.transaction.types import UtagePrediction
 
 
 class CoverageSpy:
@@ -132,8 +132,11 @@ def test_false_overlap_or_missing_completion_cannot_claim_pipeline_credit(damage
 def test_all_adopted_utage_contracts_preserve_recipes_and_do_not_claim_old_pass_as_new_proof():
     plan = json.loads(Path('verification_plan.json').read_text());features = plan['features']
     utage = [p for p in features if p['id'].startswith('BPU-UTAGE-')]
-    assert len(utage) == 27 and all('contract' in p for p in utage)
-    assert {p['id'] for p in utage} == {f'BPU-UTAGE-{n:03d}' for n in range(1, 28)}
+    # BPU-UTAGE-028 adds the whole-array useful-aging sweep as a genuinely
+    # new semantic point discovered by the RTL coverage gap, so the adopted
+    # set grows by exactly one while every older contract is preserved.
+    assert len(utage) == 28 and all('contract' in p for p in utage)
+    assert {p['id'] for p in utage} == {f'BPU-UTAGE-{n:03d}' for n in range(1, 29)}
     assert sum('contract' in p for p in features) >= 47
     adopted = [p for p in utage if p['metadata'].get('semantic_review',{}).get('adopted_event_review')]
     assert len(adopted) == 18
@@ -144,9 +147,9 @@ def test_all_adopted_utage_contracts_preserve_recipes_and_do_not_claim_old_pass_
 
 
 def test_logical_source_program_does_not_import_native_signals_drivers_or_checkers():
-    tree = ast.parse(Path('bpuverify/utage/model/source_ownership.py').read_text())
+    tree = ast.parse(Path('utage/model/source_ownership.py').read_text())
     imports = {n.module for n in ast.walk(tree) if isinstance(n, ast.ImportFrom)}
-    assert imports == {'dataclasses','bpuverify.utage.model.semantic'}
+    assert imports == {'dataclasses','suites.frontend.bpu.utage.model.semantic'}
 
 
 @pytest.mark.parametrize('damage', ('counter','history','index','base','position','valid'))

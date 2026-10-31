@@ -4,15 +4,15 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.mbtb.transaction.types import MbtbEntry
-from bpuverify.mbtb.model.replacement import MbtbReplacementGeometry
-from bpuverify.mbtb.model.replacement import MbtbReplacementState
-from bpuverify.mbtb.model.replacement import MbtbFourWayLru
-from bpuverify.mbtb.model.replacement import expected_mbtb_replacement_feedback
-from bpuverify.mbtb.model.replacement import expected_mbtb_replacement_state
-from bpuverify.mbtb.model.replacement import mbtb_replacement_geometry
-from bpuverify.mbtb.case.definitions import BranchVector
-from bpuverify.mbtb.case.replacement_scenario import replacement_vectors
+from suites.frontend.bpu.mbtb.transaction.types import MbtbEntry
+from suites.frontend.bpu.mbtb.model.replacement import MbtbReplacementGeometry
+from suites.frontend.bpu.mbtb.model.replacement import MbtbReplacementState
+from suites.frontend.bpu.mbtb.model.replacement import MbtbFourWayLru
+from suites.frontend.bpu.mbtb.model.replacement import expected_mbtb_replacement_feedback
+from suites.frontend.bpu.mbtb.model.replacement import expected_mbtb_replacement_state
+from suites.frontend.bpu.mbtb.model.replacement import mbtb_replacement_geometry
+from suites.frontend.bpu.mbtb.case.definitions import BranchVector
+from suites.frontend.bpu.mbtb.case.replacement_scenario import replacement_vectors
 
 
 @pytest.mark.parametrize('index', range(256))
@@ -116,7 +116,7 @@ def test_full_state_update_rejects_unsupported_scope(kwargs):
 
 
 def test_shadow_and_replacement_use_the_same_policy_class():
-    from bpuverify.mbtb.model.replacement import MbtbFourWayLru as shadow_lru
+    from suites.frontend.bpu.mbtb.model.replacement import MbtbFourWayLru as shadow_lru
     assert shadow_lru is MbtbFourWayLru
 
 

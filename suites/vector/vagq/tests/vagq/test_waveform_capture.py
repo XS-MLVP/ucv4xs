@@ -1,13 +1,15 @@
 """Regression for real FST capture, independent of functional coverage claims."""
+
 import json
 
 import pytest
 
-from vagqverify.native import open_dut
-from vagqverify.vagq.env import Env
-from vagqverify.vagq.external_env import PublicVAGQEnvironment, Scenario
-from vagqverify.vagq.types import AddrPacket, DataPacket
-from vagqverify.waveform import convert_fst, read_public_samples
+from suites.vector.vagq.legacy_pins import P
+from suites.vector.vagq.native import open_dut
+from suites.vector.vagq.vagq.env import Env
+from suites.vector.vagq.vagq.external_env import PublicVAGQEnvironment, Scenario
+from suites.vector.vagq.vagq.types import AddrPacket, DataPacket
+from suites.vector.vagq.waveform import convert_fst, read_public_samples
 
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)
@@ -31,10 +33,10 @@ def test_vagq_fst_contains_clock_reset_requests_and_writeback(native_registratio
     assert log.completed and not log.timed_out
     assert len(log.accepted_requests) == 2 and len(log.writebacks) == 1
 
-    names = ['clock', 'reset', 'io_addrUop_0_valid', 'io_addrUop_0_ready',
-             'io_robWriteback_valid', 'io_robWriteback_bits_entryIdx']
+    names = ['clock', 'reset', P.p_addrUop_0_valid, P.p_addrUop_0_ready,
+             P.p_robWriteback_valid, P.p_robWriteback_bits_entryIdx]
     for lane in range(3):
-        prefix = f'io_lduReq_{lane}_'
+        prefix = P.io(f'lduReq_{lane}_')
         names.extend(prefix + suffix for suffix in (
             'valid', 'ready', 'bits_meta_valid', 'bits_meta_entryIdx',
             'bits_req_data_src_0', 'bits_meta_dataMask',
@@ -67,13 +69,13 @@ def test_vagq_fst_contains_clock_reset_requests_and_writeback(native_registratio
         if not reset_asserted or values['reset'] != 0:
             continue
         for lane in range(3):
-            prefix = f'io_lduReq_{lane}_'
+            prefix = P.io(f'lduReq_{lane}_')
             if all(values[prefix + suffix] == 1 for suffix in ('valid', 'ready', 'bits_meta_valid')):
                 requests.add((values[prefix + 'bits_meta_entryIdx'],
                               values[prefix + 'bits_req_data_src_0'],
                               values[prefix + 'bits_meta_dataMask']))
-        if values['io_robWriteback_valid'] == 1:
-            writeback_entries.add(values['io_robWriteback_bits_entryIdx'])
+        if values[P.p_robWriteback_valid] == 1:
+            writeback_entries.add(values[P.p_robWriteback_bits_entryIdx])
     expected_requests = {(item['entry'], item['address'], item['mask']) for item in log.accepted_requests}
     assert requests == expected_requests
     assert writeback_entries == {item['entry'] for item in log.writebacks}

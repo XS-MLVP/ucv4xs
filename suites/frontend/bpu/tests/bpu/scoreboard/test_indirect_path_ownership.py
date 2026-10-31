@@ -6,11 +6,11 @@ import pytest
 from toffee import Scoreboard, XEvent, XEventKind, XPhase
 
 from tests.bpu.scoreboard._indirect_path_program import Program as ReferenceProgram
-from bpuverify.bpu.checker.indirect_path_ownership import Checks
-from bpuverify.bpu.model.indirect_path_ownership import PROFILES, RULES
-from bpuverify.bpu.model.indirect_path_ownership import PHASES
-from bpuverify.bpu.checker.early_direction import live_values, fast_values
-from bpuverify.tage.model.semantic import HISTORIES
+from suites.frontend.bpu.bpu.checker.indirect_path_ownership import Checks
+from suites.frontend.bpu.bpu.model.indirect_path_ownership import PROFILES, RULES
+from suites.frontend.bpu.bpu.model.indirect_path_ownership import PHASES
+from suites.frontend.bpu.bpu.checker.early_direction import live_values, fast_values
+from suites.frontend.bpu.tage.model.semantic import HISTORIES
 from tests.bpu.scoreboard.test_early_direction_checking import actual_live, actual_fast
 
 

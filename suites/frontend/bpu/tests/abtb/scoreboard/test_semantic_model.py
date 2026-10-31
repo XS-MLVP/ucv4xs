@@ -8,10 +8,10 @@ from types import SimpleNamespace
 import pytest
 from toffee import CheckContext, ScoreboardMode
 
-from bpuverify.abtb.checker.semantic import AbtbSemanticChecker, prediction_values
-from bpuverify.abtb.coverage.semantic import SemanticCoverage
-from bpuverify.abtb.model.semantic import AbtbReference, Entry, Events, Feedback, PendingWrites, Recency, Source, Write, coordinate
-from bpuverify.abtb.transaction.types import AbtbEntry, AbtbLookup, AbtbPrediction
+from suites.frontend.bpu.abtb.checker.semantic import AbtbSemanticChecker, prediction_values
+from suites.frontend.bpu.abtb.coverage.semantic import SemanticCoverage
+from suites.frontend.bpu.abtb.model.semantic import AbtbReference, Entry, Events, Feedback, PendingWrites, Recency, Source, Write, coordinate
+from suites.frontend.bpu.abtb.transaction.types import AbtbEntry, AbtbLookup, AbtbPrediction
 
 
 PC = 0x40000800
@@ -37,8 +37,8 @@ def learn(model, request):
 
 
 def test_algorithm_has_no_signal_or_old_implementation_audit_dependency():
-    tree = ast.parse(Path('bpuverify/abtb/model/semantic.py').read_text())
-    assert [node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)] == ['bpuverify.common.model.configuration', 'dataclasses']
+    tree = ast.parse(Path('abtb/model/semantic.py').read_text())
+    assert [node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)] == ['suites.frontend.bpu.models.configuration', 'dataclasses']
     assert not any(isinstance(node, ast.Import) for node in ast.walk(tree))
 
 
@@ -201,14 +201,16 @@ def actual_prediction(frame):
             values.get(f'{way}.target', 0), entry.position, entry.kind, entry.action))
         meta_entries.append(dict(hit=int(hit), attribute=dict(attribute), position=entry.position,
                                  targetLowerBits=entry.target))
-        micro.append(dict(valid=int(frame.valid and hit), bits=dict(taken=int(counter >= 2),
-            cfiPosition=entry.position, attribute=dict(attribute), isStrongBias=int(counter in (0, 3)))))
+        # Whole-chip DefaultConfig MicroTage sees only taken and the flattened
+        # branch-kind leaf; position/action/strength were folded away.
+        micro.append(dict(valid=int(frame.valid and hit),
+            bits=dict(taken=int(counter >= 2), attribute_branchType=entry.kind)))
     return AbtbPrediction(tuple(entries), dict(valid=int(frame.valid), setIdx=frame.read.row,
         bankMask=1 << frame.read.bank, entries=meta_entries), dict(result=micro, fastPositions=(0,) * 4))
 
 
 @pytest.mark.parametrize('field', ('taken', 'target', 'position', 'branch_type', 'ras_action',
-                                  'hit', 'row', 'banks', 'strong', 'micro_taken', 'meta_position'))
+                                  'hit', 'row', 'banks', 'micro_taken', 'meta_position'))
 def test_wrong_actual_field_raises_without_resynchronizing(field):
     checker = AbtbSemanticChecker()
     checker.initialized = True

@@ -1,8 +1,8 @@
 """Independent PC-unit and committed-storage boundary checks, without a DUT."""
 import pytest
-from bpuverify.ras.model.model import CommittedStack
-from bpuverify.ras.model.model import advance
-from bpuverify.bpu.case.ras.retirement import return_address
+from suites.frontend.bpu.ras.model.model import CommittedStack
+from suites.frontend.bpu.ras.model.model import advance
+from suites.frontend.bpu.bpu.case.ras.retirement import return_address
 
 
 @pytest.mark.parametrize('offset', range(8))

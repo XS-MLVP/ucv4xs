@@ -1,11 +1,11 @@
 """An original agreement preserves protection, not obsolete direction confidence."""
 import json
 import pytest
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.utage.model.delayed_agreement import PROGRAMS
-from bpuverify.utage.coverage.delayed_agreement import Coverage
-from bpuverify.utage.case.delayed_agreement import run
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.utage.model.delayed_agreement import PROGRAMS
+from suites.frontend.bpu.utage.coverage.delayed_agreement import Coverage
+from suites.frontend.bpu.utage.case.delayed_agreement import run
 
 
 @pytest.mark.feature('BPU-UTAGE-021')

@@ -1,18 +1,18 @@
 """SC S2 and registered metadata must follow each MainBTB slot."""
 
 from __future__ import annotations
-from bpuverify.common.model.configuration import *
+from suites.frontend.bpu.models.configuration import *
 
 import pytest
 
-from bpuverify.sc.transaction.types import ScBaseBranch
-from bpuverify.sc.coverage.catalog import sc_vector_coverage_model
-from bpuverify.sc.coverage.catalog import write_sc_vector_coverage
-from bpuverify.sc.checker.assertions import learn
-from bpuverify.sc.case.definitions import PC
-from bpuverify.sc.case.definitions import POSITION
-from bpuverify.sc.case.definitions import TAGE_COUNTER
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.sc.transaction.types import ScBaseBranch
+from suites.frontend.bpu.sc.coverage.catalog import sc_vector_coverage_model
+from suites.frontend.bpu.sc.coverage.catalog import write_sc_vector_coverage
+from suites.frontend.bpu.sc.checker.assertions import learn
+from suites.frontend.bpu.sc.case.definitions import PC
+from suites.frontend.bpu.sc.case.definitions import POSITION
+from suites.frontend.bpu.sc.case.definitions import TAGE_COUNTER
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 def branch_layout(slot: int, *, provider_valid: int = 1):

@@ -5,8 +5,8 @@ import random
 
 import pytest
 
-from lsuverify.load_s1.coverage import CASES, LoadS1Coverage
-from lsuverify.load_s1.env import (
+from suites.memblock.lsu.load_s1.coverage import CASES, LoadS1Coverage
+from suites.memblock.lsu.load_s1.env import (
     PIPEIN_FIELDS,
     REDIRECT_FIELDS,
     TLB_FIELDS,
@@ -17,7 +17,7 @@ from lsuverify.load_s1.env import (
     random_tlb_bits,
     tail_mask,
 )
-from lsuverify.store_trigger.env import (
+from suites.memblock.lsu.store_trigger.env import (
     ACTION_BREAKPOINT,
     ACTION_CODE_BREAKPOINT,
     ACTION_CODE_DEBUG,

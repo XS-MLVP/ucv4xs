@@ -18,7 +18,7 @@ if __name__=="__main__":
     name=p.parse_args().name
     audit(name)
     report=dict(status="PASS_UNCHANGED_V1_GATES_WITH_EXPLICIT_PROJECT_IMPORT_ROOT",run=name,
-                preserved_v1_failure="Direct tools/script execution had no repository root on sys.path and raised ModuleNotFoundError:lsqverify before any audit gate. v1 source and failure kept; v2 bootstraps root only.",
+                preserved_v1_failure='Direct tools/script execution had no repository root on sys.path and raised ModuleNotFoundError:lsqverify before any audit gate. v1 source and failure kept; v2 bootstraps root only.',
                 bootstrap_SHA256=sha(Path(__file__)),original_v1_SHA256=sha(ROOT/"tools/audit_sq_exclusive_model_v1.py"),
                 real_v1_report_SHA256=sha(ROOT/"results"/name/"exclusive-reference-impact-v1.json"))
     out=ROOT/"results"/name/"exclusive-reference-impact-bootstrap-v2.json"

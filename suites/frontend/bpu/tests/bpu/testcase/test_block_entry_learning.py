@@ -1,9 +1,9 @@
 """Interior entry learning is not only aligned-block loop learning."""
 import json
 import pytest
-from bpuverify.bpu.model.block_entry_learning import PROFILES
-from bpuverify.bpu.coverage.block_entry_learning import Coverage
-from bpuverify.bpu.case.block_entry_learning import run
+from suites.frontend.bpu.bpu.model.block_entry_learning import PROFILES
+from suites.frontend.bpu.bpu.coverage.block_entry_learning import Coverage
+from suites.frontend.bpu.bpu.case.block_entry_learning import run
 
 
 @pytest.mark.feature('BPU-INT-044')

@@ -1,13 +1,15 @@
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.load_queue.actor import LoadActor
-from lsqverify.load_queue.types import Inputs, Load
-from lsqverify.raw.types import Query as RawQuery, SqPtr, Store
-from lsqverify.rar.types import Query as RarQuery, Release
-from lsqverify.replay.types import Cause
-from lsqverify.vlq.types import QueuePtr, RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.load_queue.actor import LoadActor
+from suites.memblock.lsq.load_queue.types import Inputs, Load
+from suites.memblock.lsq.raw.types import Query as RawQuery, SqPtr, Store
+from suites.memblock.lsq.rar.types import Query as RarQuery, Release
+from suites.memblock.lsq.replay.types import Cause
+from suites.memblock.lsq.vlq.types import QueuePtr, RobPtr
 
 
 async def test_shared_s3_multiple_flows_and_sparse_dispatch_complete(lq):
@@ -31,7 +33,7 @@ async def test_younger_s3_completion_cannot_pass_unfinished_head(lq):
     await actor.execute(uids[1:])
     for _ in range(5):
         await actor.step()
-        assert not actor.completed and not lq.observed["io_lqEmpty"]
+        assert not actor.completed and not lq.observed[P.p_lqEmpty]
     await actor.drain()
     actor.checked(("LQ-COMPLETE.out_of_order", "LQ-COMPLETE.prefix"), uids)
 
@@ -45,7 +47,7 @@ async def test_replay_output_requires_shared_s3_feedback_before_lq_completion(lq
     for _ in range(8):
         await actor.step()
         assert not actor.completed
-    assert all(lq.observed[f"io_replay_{bank}_valid"] for bank in range(3))
+    assert all(lq.observed[P.io(f"replay_{bank}_valid")] for bank in range(3))
     for _ in range(3):
         await actor.step()
     await actor.step(Inputs(replay_ready=(True,) * 3))
@@ -78,12 +80,12 @@ async def test_real_vlq_head_reclaims_rar_without_external_head_drive(lq):
     await actor.step(Inputs(rar_queries=queries))
     probe = (RarQuery(True, old.rob, QueuePtr.encode(old.position), address), RarQuery(), RarQuery())
     await actor.step(Inputs(rar_queries=probe))
-    assert lq.observed["io_ldu_rarNukeQuery_0_resp_bits_nuke"]
+    assert lq.observed[P.p_ldu_rarNukeQuery_0_resp_bits_nuke]
     await actor.drain()
     # Querying the former head is not a new allocation; all young RAR owners
     # must have been reclaimed by the real internal VLQ pointer connection.
     await actor.step(Inputs(rar_queries=probe))
-    assert not lq.observed["io_ldu_rarNukeQuery_0_resp_bits_nuke"]
+    assert not lq.observed[P.p_ldu_rarNukeQuery_0_resp_bits_nuke]
     actor.checked(("LQ-HEAD.rar_release", "LQ-RAR.nc"), uids)
 
 
@@ -101,8 +103,8 @@ async def test_real_raw_store_collision_routes_original_load_and_mdp(lq):
     await actor.step(Inputs(stores=(store, Store())))
     await actor.step()
     await actor.step()
-    assert lq.observed["io_nuke_rollback_0_valid"] and lq.observed["io_mdpTrain_valid"]
-    assert lq.observed["io_nuke_rollback_0_bits_robIdx_value"] == owner.rob.value
+    assert lq.observed[P.p_nuke_rollback_0_valid] and lq.observed[P.p_mdpTrain_valid]
+    assert lq.observed[P.p_nuke_rollback_0_bits_robIdx_value] == owner.rob.value
     # Real SQ address progress releases RAW, independent of VLQ completion.
     await actor.step(Inputs(address_ready=SqPtr.encode(11)))
     # Keep this monotonic external SQ pointer while completing the loads.

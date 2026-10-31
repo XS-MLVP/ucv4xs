@@ -4,11 +4,11 @@ from dataclasses import replace
 from types import SimpleNamespace as NS
 from functools import partial
 
-from bpuverify.bpu.checker.confidence_boundary import ConfidenceBoundaryChecks
-from bpuverify.bpu.coverage.confidence_boundary import ConfidenceBoundaryCoverage
-from bpuverify.bpu.model.pipeline import Redirect
-from bpuverify.bpu.model.tage.neighbor_migration import HISTORY_PATHS
-from bpuverify.bpu.model.direction_sources import HISTORY_PORTS
+from suites.frontend.bpu.bpu.checker.confidence_boundary import ConfidenceBoundaryChecks
+from suites.frontend.bpu.bpu.coverage.confidence_boundary import ConfidenceBoundaryCoverage
+from suites.frontend.bpu.bpu.model.pipeline import Redirect
+from suites.frontend.bpu.bpu.model.tage.neighbor_migration import HISTORY_PATHS
+from suites.frontend.bpu.bpu.model.direction_sources import HISTORY_PORTS
 from tests.bpu.scoreboard.direction_turnaround_fixtures import mixed as old_mixed,consumers
 from tests.bpu.scoreboard.mixed_visibility_fixtures import packet as old_packet
 from tests.bpu.scoreboard.test_direction_sources import quiet

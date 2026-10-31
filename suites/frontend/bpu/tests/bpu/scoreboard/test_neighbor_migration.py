@@ -1,5 +1,5 @@
 """Normal semantic events and adversarial observations; no DUT coverage."""
-from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT
+from suites.frontend.bpu.models.configuration import TAGE_ALLOCATION_WAIT
 from copy import deepcopy
 from dataclasses import replace
 from pathlib import Path
@@ -7,11 +7,11 @@ from types import SimpleNamespace as NS
 import ast
 import pytest
 
-from bpuverify.bpu.checker.neighbor_migration import NeighborMigrationChecks
-from bpuverify.bpu.coverage.neighbor_migration import NeighborMigrationCoverage
-from bpuverify.bpu.model.tage.neighbor_migration import PC, HISTORY_PATHS, OUTCOMES, neighbor_preparation, expected_profile
-from bpuverify.bpu.model.tage.service import STREAM_PC, learning_inflight, pending_plan
-from bpuverify.bpu.model.pipeline import Redirect
+from suites.frontend.bpu.bpu.checker.neighbor_migration import NeighborMigrationChecks
+from suites.frontend.bpu.bpu.coverage.neighbor_migration import NeighborMigrationCoverage
+from suites.frontend.bpu.bpu.model.tage.neighbor_migration import PC, HISTORY_PATHS, OUTCOMES, neighbor_preparation, expected_profile
+from suites.frontend.bpu.bpu.model.tage.service import STREAM_PC, learning_inflight, pending_plan
+from suites.frontend.bpu.bpu.model.pipeline import Redirect
 from tests.bpu.scoreboard.test_dual_migration import fixture as migration_fixture, source
 from tests.bpu.scoreboard.test_direction_sources import quiet
 from tests.bpu.scoreboard.test_direction_service import via, streaming_query
@@ -260,7 +260,7 @@ def test_unknown_history_or_visibility_is_not_a_new_functional_bin(name, service
 
 
 def test_case_expresses_intent_without_raw_io_or_a_private_scheduler():
-    for path in ('bpuverify/bpu/case/neighbor_migration.py', 'tests/bpu/testcase/test_neighbor_migration.py'):
+    for path in ('bpu/case/neighbor_migration.py', 'tests/bpu/testcase/test_neighbor_migration.py'):
         for node in ast.walk(ast.parse(Path(path).read_text())):
             assert not isinstance(node, (ast.Assert, ast.ClassDef))
             if isinstance(node, ast.Call):

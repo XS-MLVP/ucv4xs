@@ -1,6 +1,4 @@
-from lsqverify.replay_cause_lifetimes import trace
-from tests.load_queue.conftest import lq
-from tests.lsq_wrapper.conftest import lsq
+from suites.memblock.lsq.replay_cause_lifetimes import trace
 
 
 async def test_original_cause_lifetime_leaf_probe(replay, tmp_path):

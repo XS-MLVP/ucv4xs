@@ -3,8 +3,8 @@ from __future__ import annotations
 
 import pytest
 
-from dcacheverify.miss_queue.coverage import MissQueueCoverage
-from dcacheverify.miss_queue.env import (
+from suites.memblock.dcache.miss_queue.coverage import MissQueueCoverage
+from suites.memblock.dcache.miss_queue.env import (
     M_XA_ADD,
     M_XA_SWAP,
     M_XRD,

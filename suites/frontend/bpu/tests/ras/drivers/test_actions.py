@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from bpuverify.ras.model.addresses import return_addr
-from bpuverify.ras.case.definitions import CALL_A
+from suites.frontend.bpu.ras.model.addresses import return_addr
+from suites.frontend.bpu.ras.case.definitions import CALL_A
 
 
 async def test_call_action_encodes_architectural_return_address(ras_agent):

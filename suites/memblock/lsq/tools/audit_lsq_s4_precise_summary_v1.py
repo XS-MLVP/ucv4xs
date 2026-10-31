@@ -35,7 +35,7 @@ def audit(name):
     assert len(cycle.body)==3 and isinstance(cycle.body[1],ast.Expr) and isinstance(cycle.body[1].value,ast.Await)
     assert isinstance(cycle.body[2],ast.Expr) and cycle.body[2].value.func.attr=="observe"
     shared=json.loads((ROOT/"results/lsq-progress-regression-12/source-evidence.json").read_text())["files"]
-    assert all(source[k]==v for k,v in shared.items() if k.startswith("lsqverify/"))
+    assert all(source[k]==v for k,v in shared.items() if k.startswith('lsqverify/'))
     assert not list((run/"cases").rglob("*.jsonl")) and not list((run/"cases").rglob("*.fst"))
     expected={(lane,page,pattern) for lane in range(3) for page,patterns in((False,WORD_PATTERNS),(True,PAGE_PATTERNS)) for pattern in patterns}
     totals=Counter();semantic=Counter();actual=set();seen=set();cases=[]
@@ -91,7 +91,7 @@ def audit(name):
     else:shutil.copy2(__file__,target)
     report=dict(status="ACTUAL_PRECISE_S4_ONLINE_CHECKS_NOT_WHOLE_GOAL_SIGNOFF" if not any(nodes.values()) else "PRECISE_S4_FAILURES_RETAINED_NO_SIGNOFF",
                 run=name,tests=manifest["tests"],snapshot_files=len(source),online_check_counts=dict(totals),terminal_UID_counts=dict(semantic),
-                preserved_reference_files=len([k for k in shared if k.startswith("lsqverify/")]),source_checker_SHA256=source["tests/lsq_wrapper/s4_precise_check.py"],
+                preserved_reference_files=len([k for k in shared if k.startswith('lsqverify/')]),source_checker_SHA256=source["tests/lsq_wrapper/s4_precise_check.py"],
                 uncompressed_per_cycle_traces=0,waveforms=0,case_summary_bytes=sum(c["case_summary_bytes"] for c in cases),
                 failures=failures(run),auditor_SHA256=sha(Path(__file__)),cases=cases,
                 limits="Independent checker runs online on actual public input/output. Compact terminal witnesses and full stream hashes are NOT an offline replay of unretained new raw. Chosen stable TLB/cache stimuli are boundary assumptions, not native upstream LDU/TLB/DCache/ROB proof. External cache refill ownership/profile still requires separate review. No existing random seed/FAIL/other128/local-only or final whole-goal scope is waived.")

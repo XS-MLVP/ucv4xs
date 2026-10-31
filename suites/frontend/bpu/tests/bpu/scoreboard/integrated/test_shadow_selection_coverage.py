@@ -4,9 +4,9 @@ from copy import deepcopy
 import pytest
 from toffee import ScoreboardMismatch
 
-from bpuverify.bpu.model.bypass.model import BypassReference
-from bpuverify.bpu.coverage.bypass.selection import ResponseSelectionCoverage
-from bpuverify.bpu.coverage.bypass.selection import response_selection_coverage_model
+from suites.frontend.bpu.bpu.model.bypass.model import BypassReference
+from suites.frontend.bpu.bpu.coverage.bypass.selection import ResponseSelectionCoverage
+from suites.frontend.bpu.bpu.coverage.bypass.selection import response_selection_coverage_model
 from tests.bpu.scoreboard.integrated.test_coverage_collection import inputs
 
 

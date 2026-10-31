@@ -4,10 +4,10 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.bpu.model.common_history import Value
-from bpuverify.bpu.model.common_query import CommonQueryReference
-from bpuverify.bpu.model.pipeline import Events, PipelineReference, Redirect
-from bpuverify.bpu.model.selection import Branch, Choice, Kind
+from suites.frontend.bpu.bpu.model.common_history import Value
+from suites.frontend.bpu.bpu.model.common_query import CommonQueryReference
+from suites.frontend.bpu.bpu.model.pipeline import Events, PipelineReference, Redirect
+from suites.frontend.bpu.bpu.model.selection import Branch, Choice, Kind
 
 PC = 0x40000800
 
@@ -189,8 +189,8 @@ def test_pending_backend_recovery_keeps_its_source_until_recomputed():
         h.query.snapshot(token)
 
 
-from bpuverify.bpu.model.common_query import PROFILES, RULES
-from bpuverify.bpu.coverage.common_query import CommonQueryCoverage, OBLIGATIONS
+from suites.frontend.bpu.bpu.model.common_query import PROFILES, RULES
+from suites.frontend.bpu.bpu.coverage.common_query import CommonQueryCoverage, OBLIGATIONS
 
 
 @pytest.mark.parametrize('profile,missing', tuple((profile, rule) for profile in PROFILES for rule in RULES[profile]))

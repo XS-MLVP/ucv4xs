@@ -1,9 +1,11 @@
+
 from dataclasses import asdict, replace
 import hashlib
 
-from lsqverify.store_payload import add_digest
-from lsqverify.vlq.types import RobPtr
-from lsqverify.vsq_retire_known import PROFILES, save
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.store_payload import add_digest
+from suites.memblock.lsq.vlq.types import RobPtr
+from suites.memblock.lsq.vsq_retire_known import PROFILES, save
 from .memory_owners import MemoryOwners, StoreOwner, cached_load
 
 
@@ -23,7 +25,7 @@ async def test_known_64_then_small_multi_flow_batches_with_original_Loads(lsq, t
         uids = [trace.stores[item.position]["uid"] for item in stores]
         assert trace.sq_head == base and all(not trace.stores[item.position]["consumed"] for item in stores)
         pins = await trace.forward(load, phase % 3)
-        prefix = f"io_forward_{phase % 3}_s2Resp_"
+        prefix = P.io(f"forward_{phase % 3}_s2Resp_")
         expected = {prefix + "valid": 1, **{prefix + "bits_" + name: 0 for name in
                     ("forwardInvalid", "matchInvalid", "addrInvalid_valid", "dataInvalid_valid")}}
         for byte in range(16):
@@ -37,7 +39,7 @@ async def test_known_64_then_small_multi_flow_batches_with_original_Loads(lsq, t
         ready_tick = lsq.last_tick
         trace.base = replace(trace.base, pending=boundary, pending_next=boundary)
         await trace.idle(10)
-        assert not lsq.observed["io_sqEmpty"] and trace.sq_head == base
+        assert not lsq.observed[P.p_sqEmpty] and trace.sq_head == base
         assert all(not trace.stores[item.position]["consumed"] for item in stores)
         await trace.finish(pending=boundary)
         assert all(trace.stores[item.position]["completed"] and trace.stores[item.position]["consumed"] == {0} for item in stores)

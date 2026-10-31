@@ -1,11 +1,11 @@
 """Real writes, not saturated holds, establish simultaneous hit/allocation."""
 import pytest
 
-from bpuverify.tage.coverage.catalog import tage_mixed_writes_coverage_model
-from bpuverify.tage.coverage.catalog import write_tage_mixed_writes_coverage
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.tage.case.definitions import SAME_BANK_PCS
-from bpuverify.tage.case.mixed_writes_scenario import check_case
+from suites.frontend.bpu.tage.coverage.catalog import tage_mixed_writes_coverage_model
+from suites.frontend.bpu.tage.coverage.catalog import write_tage_mixed_writes_coverage
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.tage.case.definitions import SAME_BANK_PCS
+from suites.frontend.bpu.tage.case.mixed_writes_scenario import check_case
 
 
 @pytest.mark.feature('BPU-TAGE-031')

@@ -1,5 +1,8 @@
 # 集成 MicroRAS：自然早级 call/return 流水线，而不是物理地址遍历
 
+> 路径迁移说明（2026-10-31）：本报告仍属于原日期、基线和执行源码；实现文件已迁到工程根。可点击源码链接更新到当前位置，不据此重标历史 PASS/FAIL 或覆盖结论。参见[本轮命名空间迁移](../../../../docs/lessons/suite-namespace-refactor-20261031.md)。
+
+
 后续INT-069已独立补全中性S2 correction/较老push/较年轻错误路径CALL的动态检查，
 完整生产集成MicroRAS至89/91，仅剩133/134的局部集成约束。本文83→87/91及剩余
 四行归因保留为该阶段过程；最新证据见 [后续修正场景](neutral-micro-ras-correction-20261013.md)。
@@ -26,15 +29,15 @@ taken、position及override标志逐项比较，S3 metadata由既有完整PHR as
 | 三call后立即return | S1 pop、S2 push、S3 push | 消去最年轻push，前递较老S3返回地址 |
 | 插入一条普通跳转后return | S1 pop、S2中性、S3 push | 消去S3 push，返回main RAS top输入 |
 
-[`共享纯参考`](../bpuverify/uras/model/pipeline.py) 按pending操作和优先级从reset
+[`共享纯参考`](../uras/model/pipeline.py) 按pending操作和优先级从reset
 重放全部9个MicroRAS寄存器及完整输出；地址采用BPU既有halfword表示，return PC
 由16-byte对齐组、CFI位置和一条halfword返回偏移独立计算。
-[`静态Bundle`](../bpuverify/bpu/bundle/ras_micro.py) 仅用memory-direct/trace-derived只读视图；
-[`@on Monitor`](../bpuverify/bpu/monitor/ras/micro.py) 采集完整周期输入/状态，
-[`Checker`](../bpuverify/bpu/checker/ras/micro.py) 比较后更新独立预期，后台失败锁存后由
+[`静态Bundle`](../bpu/bundle/ras_micro.py) 仅用memory-direct/trace-derived只读视图；
+[`@on Monitor`](../bpu/monitor/ras/micro.py) 采集完整周期输入/状态，
+[`Checker`](../bpu/checker/ras/micro.py) 比较后更新独立预期，后台失败锁存后由
 前台抛出。仅保留64帧内存窗口及最终6/7个语义见证，不导出逐周期JSON。
 
-[`场景`](../bpuverify/bpu/case/ras/early.py) 还用既有retirement driver连续提交6笔
+[`场景`](../bpu/case/ras/early.py) 还用既有retirement driver连续提交6笔
 真实call/return metadata，比较全部8个提交单元、head和每笔接受/应用，最终head回0。
 PHR从reset比较52个物理位、76个fold寄存器及完整公开来源。停止年轻请求后按实际
 流水线状态排空，再要求全部MicroRAS pending操作为0；不使用经验性settle周期。

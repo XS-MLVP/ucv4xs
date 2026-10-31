@@ -624,7 +624,7 @@
       "impact": "Reset checks are no longer self-referential. The table remains a configuration regression oracle, not an independent proof of all PMA architecture semantics.",
       "evidence": [
         "manifest/pma-reset-reference.json",
-        "mmuverify/l2/pmp.py",
+        "l2/pmp.py",
         "tests/l2/test_pmp.py::test_reset_defaults"
       ],
       "historical_before_finalization": {
@@ -633,7 +633,7 @@
         "impact": "Reset checks are no longer self-referential. The table remains a configuration regression oracle, not an independent proof of all PMA architecture semantics.",
         "evidence": [
           "manifest/pma-reset-reference.json",
-          "mmuverify/l2/pmp.py",
+          "l2/pmp.py",
           "tests/l2/test_pmp.py::test_reset_defaults"
         ]
       }

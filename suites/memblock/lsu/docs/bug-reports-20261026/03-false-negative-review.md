@@ -4,7 +4,7 @@
 
 ## 1. 同源预期隐藏了性能事件错误
 
-旧 `lsuverify/load_s2/env.py:701–703` 将 `is_hw_prefetch && cause[6]` 直接作为 perf3 预期，因而与 RTL 一样永远期望0。旧 `docs/gaps/load_s2.json` 又把它列为结构死计数器，`defect_claim=false`。这证明实现等价，不证明命名的硬件预取 miss 事件语义正确。
+旧 `suites/memblock/lsu/load_s2/env.py:701–703` 将 `is_hw_prefetch && cause[6]` 直接作为 perf3 预期，因而与 RTL 一样永远期望0。旧 `docs/gaps/load_s2.json` 又把它列为结构死计数器，`defect_claim=false`。这证明实现等价，不证明命名的硬件预取 miss 事件语义正确。
 
 新规范测试 `tests/load_s2/test_spec_prefetch_miss.py` 直接检查公开输出，命中对照通过、miss反例失败。**规范失败现已纳入默认 tests，不放在一个全绿回归之外。** 详见 `01-LSU-HWPF-MISS-001.md`。原实现等价模型保留并注明用途；没有把它改得也报错然后宣称已修RTL。
 

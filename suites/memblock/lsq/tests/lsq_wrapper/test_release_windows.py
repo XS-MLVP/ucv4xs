@@ -1,11 +1,13 @@
+
 from dataclasses import replace
 import hashlib
 
 import pytest
 
-from lsqverify.store_payload import add_digest
-from lsqverify.vlq.types import QueuePtr, RobPtr
-from lsqverify.vsq_recovery import PublicWindow, WINDOWS, save
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.store_payload import add_digest
+from suites.memblock.lsq.vlq.types import QueuePtr, RobPtr
+from suites.memblock.lsq.vsq_recovery import PublicWindow, WINDOWS, save
 from .memory_owners import StoreOwner, cached_load
 from .recovery_owners import RecoveryOwners
 
@@ -28,7 +30,7 @@ def store(position, rob, generation):
 
 
 def check_word(pins, lane, owner):
-    prefix = f"io_forward_{lane}_s2Resp_"
+    prefix = P.io(f"forward_{lane}_s2Resp_")
     want = {prefix + "valid": 1, **{prefix + "bits_" + flag: 0 for flag in
             ("forwardInvalid", "matchInvalid", "addrInvalid_valid", "dataInvalid_valid")}}
     for byte in range(16):

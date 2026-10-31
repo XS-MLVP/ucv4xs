@@ -3,8 +3,8 @@ from copy import deepcopy
 
 import pytest
 
-from bpuverify.bpu.model.tage.owner_recency import PROGRAMS,OwnerRecency
-from bpuverify.tage.model.semantic import RecentLearning,Write,Entry
+from suites.frontend.bpu.bpu.model.tage.owner_recency import PROGRAMS,OwnerRecency
+from suites.frontend.bpu.tage.model.semantic import RecentLearning,Write,Entry
 
 
 @pytest.mark.parametrize('policy',('learning','insertion'))

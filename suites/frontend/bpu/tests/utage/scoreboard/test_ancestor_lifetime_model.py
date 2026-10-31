@@ -2,11 +2,10 @@
 from dataclasses import replace
 import pytest
 
-from bpuverify.utage.model.semantic import Context,Events,indices,tag
+from suites.frontend.bpu.utage.model.semantic import Context,Events,indices,tag
 from tests.utage.scoreboard.test_semantic_model import lookup,feedback,POSITIONS
 from tests.utage.scoreboard.test_read_lifetime_model import prepared,bases,values
-from bpuverify.utage.model.ancestor_lifetime import Program,PROFILES,RELATIONS,PC,MATCH_PC,MATCH_HISTORY
-
+from suites.frontend.bpu.utage.model.ancestor_lifetime import Program,PROFILES,RELATIONS,PC,MATCH_PC,MATCH_HISTORY
 
 
 def query(p):

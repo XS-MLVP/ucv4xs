@@ -1,3 +1,4 @@
+
 import ucv.runtime as ucv_paths
 """Audit the old wide-segment claim against producer and consumer contracts.
 
@@ -13,8 +14,9 @@ import re
 
 import pytest
 
-from vagqverify.vagq.driver import response_beat
-from vagqverify.vagq.types import AddrPacket, Beat, DataPacket
+from suites.vector.vagq.legacy_pins import P
+from suites.vector.vagq.vagq.driver import response_beat
+from suites.vector.vagq.vagq.types import AddrPacket, Beat, DataPacket
 
 
 pytestmark = [
@@ -89,11 +91,11 @@ def test_real_root_with_source_matched_response_masks(vagq_env, tmp_path, nf):
             )
         dut.driver.drive(beat)
         output = dut.sample()
-        if cursor < len(packets) and output['io_addrUop_0_ready']:
+        if cursor < len(packets) and output[P.p_addrUop_0_ready]:
             admission.append({'cycle': cycle, 'flow': cursor})
             cursor += 1
         for lane in range(3):
-            prefix = f'io_lduReq_{lane}_'
+            prefix = P.io(f'lduReq_{lane}_')
             if output[prefix + 'valid'] and output[prefix + 'bits_meta_valid']:
                 record = {
                     'cycle': cycle, 'lane': lane,
@@ -112,11 +114,11 @@ def test_real_root_with_source_matched_response_masks(vagq_env, tmp_path, nf):
         for lane, response in enumerate(beat.ldu_resp):
             if response.valid:
                 responses.append({'cycle': cycle, 'lane': lane, **asdict(response)})
-        if output['io_robWriteback_valid']:
+        if output[P.p_robWriteback_valid]:
             writebacks.append({
                 'cycle': cycle,
-                'entry': output['io_robWriteback_bits_entryIdx'],
-                'exception': output['io_robWriteback_bits_exception'],
+                'entry': output[P.p_robWriteback_bits_entryIdx],
+                'exception': output[P.p_robWriteback_bits_exception],
             })
         dut.driver.tick()
 
@@ -125,8 +127,8 @@ def test_real_root_with_source_matched_response_masks(vagq_env, tmp_path, nf):
         beat = response_beat(output)
         beat = replace(beat, ldu_resp=tuple(
             replace(response, issue_mask=(
-                output[f'io_lduReq_{lane}_bits_meta_dataMask']
-                << output[f'io_lduReq_{lane}_bits_meta_byteOffset']
+                output[P.io(f'lduReq_{lane}_bits_meta_dataMask')]
+                << output[P.io(f'lduReq_{lane}_bits_meta_byteOffset')]
             ) & 0xffff) if response.valid else response
             for lane, response in enumerate(beat.ldu_resp)
         ))

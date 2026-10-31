@@ -1,5 +1,8 @@
 # 2026-10-13：原生行缺口到功能需求的归因
 
+> 路径迁移说明（2026-10-31）：本报告仍属于原日期、基线和执行源码；实现文件已迁到工程根。可点击源码链接更新到当前位置，不据此重标历史 PASS/FAIL 或覆盖结论。参见[本轮命名空间迁移](../../../../docs/lessons/suite-namespace-refactor-20261031.md)。
+
+
 ## 2026-10-16：managed执行迁移不改变原生缺口
 
 新完整生产18642项/64worker：18614PASS/25普通FAIL/3strict XFAIL，所有旧节点及
@@ -24,7 +27,7 @@ DAT共约61.1MiB，worker输入提交后回收；新4个未满功能组和两项
 
 编译位置为`rtl/bpu/WriteBuffer_4.sv`：跨owner430–440、454–464、494–504、520–530、
 583–592、628–637、642–651；仲裁442–452、466–476、482–491、508–517；本owner
-第二槽549–557。以上只是当前编译结果的位置索引，新[源/native关联器](../bpuverify/bpu/coverage/main_gaps.py)
+第二槽549–557。以上只是当前编译结果的位置索引，新[源/native关联器](../bpu/coverage/main_gaps.py)
 实际按完整七字段payload复制、来源端口、保留owner及父分支关系提取，不靠固定
 行号范围赋予语义。源行与原生报告文本逐条相等；所有125键对应14个native producer，
 其中12个对应完整payload块，另2个是442/466的control-only else。它们不能被描述
@@ -1270,7 +1273,7 @@ epoch一致、证据完整且integrity为空，未新增SKIP/XFAIL或改RTL/DUT/
 
 现有`dut/bpu/BpuDut_offset.yaml`已导出memory-direct的`ittage.tickCnt_value`及三表
 `needReset/resetSet`，没有观测能力缺失，不需要VPI或重建DUT。另一方面，当时
-`bpuverify/bpu/bundle/activity.py`的`writes`只包含ITTAGE写buffer在途，没有包含
+`suites/frontend/bpu/bpu/bundle/activity.py`的`writes`只包含ITTAGE写buffer在途，没有包含
 `needReset`：普通pipeline/buffer空闲不能证明维护完成。这是当时的代码缺口，
 不是当前状态；后续074已经把真实维护状态纳入committed契约，并检查read-free
 推进、完整写掩码、实际SRAM效果及最终consumer，没有增加case固定等待。
@@ -1294,7 +1297,7 @@ epoch一致、证据完整且integrity为空，未新增SKIP/XFAIL或改RTL/DUT/
 例如地址128对应 bank0/row32 的4084、4085、4087；地址511对应
 bank3/row127 的7916、7917、7919。
 
-输入几何见 [独立地址模型](../bpuverify/utage/model/addressing.py)：
+输入几何见 [独立地址模型](../utage/model/addressing.py)：
 
 ```
 lower_index = (pc XOR fold(history, 6, 6)) & 511
@@ -1446,7 +1449,7 @@ set遍历追数字，应将新增刺激投入真正缺失的语义事件。
 
 工具默认只打印汇总；只有显式`--output`才生成一份小型聚合分类报告，已有文件
 一律不覆盖，不生成逐周期审计/trace。审阅坐标已从可删除的历史JSON移到
-[固定变体目录](../bpuverify/tage/coverage/guard_catalog.py)，但目录本身不是证明：
+[固定变体目录](../tage/coverage/guard_catalog.py)，但目录本身不是证明：
 每次仍需源码验证和native producer关联。pytest单测使用明确标注的合成native
 fixture，不依赖旧结果文件，也不将合成计数当真实验证证据。
 
@@ -1481,7 +1484,7 @@ selector算法完全未测；缺少的是特定provider-table/alternate-confiden
 正常255次有效失败可能是到达8位饱和状态的必要工作量，但不能换成遍历255个
 bank/set，也不能把任意等待255周期视为255次合格失败。
 
-上述基线的`bpuverify/bpu`及`tests/bpu`未找到针对TAGE的`useAltOnNa`或
+上述基线的`suites/frontend/bpu/bpu`及`tests/bpu`未找到针对TAGE的`useAltOnNa`或
 `usefulResetCtr`状态的独立checker/monitor比较；找到的`useful_increase/age`监视
 属于MicroTAGE。SC provider准备过程确实使用TAGE并检查真实provider metadata，
 但不等于完整selector/老化状态参考。因此上表是下一轮集成事件扩展优先级，
@@ -1514,7 +1517,7 @@ SC **3,145/3,481**：剩余336键与现有局部矛盾赋值分类完全相交�
 单纯增加若干训练拍，都不保证执行这个分支。
 
 独立SC的BPU-SC边界用例已检查单票640/5040、四同way票642减4/5038加4的整体
-拒绝及向内恢复，见 [已有独立场景](../bpuverify/sc/case/threshold_scenario.py)。
+拒绝及向内恢复，见 [已有独立场景](../sc/case/threshold_scenario.py)。
 归因起点时，集成用例虽有完整reset-derived阈值/SC SRAM/PHR参考，但SC-used场景主要
 在初值1130附近学习，缺少真实集成反馈下的上下界、拒绝和恢复证据。
 way0的原生分支已有计数，也不能据此断言有效反馈下该行为已被验证：组合分支

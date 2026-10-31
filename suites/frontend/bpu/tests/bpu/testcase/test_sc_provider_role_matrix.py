@@ -1,10 +1,10 @@
 """Intent only: qualified four-key provider roles and shadow lifecycles."""
 import pytest
-from bpuverify.bpu.case.sc.role import check_provider_roles
-from bpuverify.bpu.coverage.sc.role import cases as provider_role_cases
-from bpuverify.bpu.coverage.sc.role import matrix_coverage as provider_role_coverage
-from bpuverify.bpu.coverage.sc.role import physical_bias_coverage
-from bpuverify.bpu.case.sc.role_scenarios import identity as provider_role_identity
+from suites.frontend.bpu.bpu.case.sc.role import check_provider_roles
+from suites.frontend.bpu.bpu.coverage.sc.role import cases as provider_role_cases
+from suites.frontend.bpu.bpu.coverage.sc.role import matrix_coverage as provider_role_coverage
+from suites.frontend.bpu.bpu.coverage.sc.role import physical_bias_coverage
+from suites.frontend.bpu.bpu.case.sc.role_scenarios import identity as provider_role_identity
 
 # Measured on the 2026-10-21 full BPU program run; scheduling hint only.
 pytestmark = pytest.mark.estimated_runtime(34)

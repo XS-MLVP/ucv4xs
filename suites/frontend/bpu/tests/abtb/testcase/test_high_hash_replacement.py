@@ -4,12 +4,12 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.abtb.coverage.catalog import abtb_high_hash_replacement_coverage_model
-from bpuverify.abtb.coverage.catalog import write_abtb_high_hash_replacement_coverage
-from bpuverify.abtb.case.high_hash_scenario import HighHashFullWayGrid
-from bpuverify.abtb.case.high_hash_scenario import ROUTES
-from bpuverify.abtb.case.high_hash_scenario import route_name
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.abtb.coverage.catalog import abtb_high_hash_replacement_coverage_model
+from suites.frontend.bpu.abtb.coverage.catalog import write_abtb_high_hash_replacement_coverage
+from suites.frontend.bpu.abtb.case.high_hash_scenario import HighHashFullWayGrid
+from suites.frontend.bpu.abtb.case.high_hash_scenario import ROUTES
+from suites.frontend.bpu.abtb.case.high_hash_scenario import route_name
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature("BPU-ABTB-048")

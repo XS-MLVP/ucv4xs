@@ -1,9 +1,9 @@
 """Short-provider boundaries cannot be inferred from a passing long provider."""
 import pytest
 
-from bpuverify.bpu.case.early_short_protection import check_early_short_protection
-from bpuverify.bpu.coverage.early_short_protection import EarlyShortProtectionCoverage
-from bpuverify.bpu.model.early_short_protection import EDGES
+from suites.frontend.bpu.bpu.case.early_short_protection import check_early_short_protection
+from suites.frontend.bpu.bpu.coverage.early_short_protection import EarlyShortProtectionCoverage
+from suites.frontend.bpu.bpu.model.early_short_protection import EDGES
 
 
 @pytest.mark.feature('BPU-INT-066')

@@ -3,9 +3,9 @@ from dataclasses import replace
 
 import pytest
 
-from lsqverify.lsq_wrapper.types import Address, Data
-from lsqverify.replay.types import Cause
-from lsqverify.vlq.types import QueuePtr, RobPtr
+from suites.memblock.lsq.lsq_wrapper.types import Address, Data
+from suites.memblock.lsq.replay.types import Cause
+from suites.memblock.lsq.vlq.types import QueuePtr, RobPtr
 from .ldu_rar_owners import LduRarOwners
 from .memory_owners import StoreOwner, cached_load
 

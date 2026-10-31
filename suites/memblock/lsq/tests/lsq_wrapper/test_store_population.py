@@ -1,7 +1,9 @@
 """Real128 virtual uops, all8 sources and full SQ/ROB identities across wraps."""
+
 from dataclasses import replace
 
-from lsqverify.vlq.types import RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.vlq.types import RobPtr
 from .memory_owners import MemoryOwners, StoreOwner, cached_load
 
 
@@ -22,7 +24,7 @@ async def test_all_eight_dispatch_sources_fill_128_real_store_uops_and_finish_fu
         await trace.dispatch(loads=[load])
         await trace.execute([load])
         await trace.idle(3)
-        assert trace.sq_head == start and not lsq.observed["io_sqEmpty"]
+        assert trace.sq_head == start and not lsq.observed[P.p_sqEmpty]
         assert sum(not state["completed"] for state in trace.stores.values()) == 128
         await trace.write_all(range(start, start + 64))
         # Only the actual executed first64 can retire. No ROB movement over

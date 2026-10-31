@@ -1,9 +1,9 @@
 """Old MicroBTB records and concurrent feedback cannot cross reset lifetimes."""
 import json
 import pytest
-from bpuverify.ubtb.model.reset_lifetime import Program, PROFILES
-from bpuverify.ubtb.coverage.reset_lifetime import Coverage
-from bpuverify.ubtb.case.reset_lifetime import check_reset_lifetime
+from suites.frontend.bpu.ubtb.model.reset_lifetime import Program, PROFILES
+from suites.frontend.bpu.ubtb.coverage.reset_lifetime import Coverage
+from suites.frontend.bpu.ubtb.case.reset_lifetime import check_reset_lifetime
 
 
 @pytest.mark.feature('BPU-UBTB-001')

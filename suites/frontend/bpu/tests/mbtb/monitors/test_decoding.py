@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from bpuverify.mbtb.checker.assertions import assert_vector_hit
-from bpuverify.mbtb.checker.assertions import train
-from bpuverify.mbtb.case.definitions import DIRECT
+from suites.frontend.bpu.mbtb.checker.assertions import assert_vector_hit
+from suites.frontend.bpu.mbtb.checker.assertions import train
+from suites.frontend.bpu.mbtb.case.definitions import DIRECT
 
 
 async def test_monitor_decodes_entry_and_meta_from_same_response(mbtb_agent):

@@ -198,7 +198,7 @@ def main():
     reporting_changes = []
     for name, expected in provenance["sources_sha256"].items():
         ok = (ROOT / name).is_file() and sha(ROOT / name) == expected
-        if name.startswith(("tests/", "lsuverify/", "review/")) or name in ("conftest.py", "pytest.ini", "tools/run.py"):
+        if name.startswith(("tests/", "", "review/")) or name in ("conftest.py", "pytest.ini", "tools/run.py"):
             execution_sources.append(dict(path=name, matched=ok))
             if not ok:
                 errors.append(f"execution source changed since run: {name}")

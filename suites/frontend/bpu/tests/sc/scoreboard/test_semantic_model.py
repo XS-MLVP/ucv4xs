@@ -7,10 +7,10 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.sc.model.semantic import Context, DeferredWeights, Events, ScReference, decide
-from bpuverify.sc.transaction.types import ScBaseBranch, ScBatchTraining, ScBranchFeedback, ScHistory
-from bpuverify.sc.checker.semantic import ScSemanticChecker
-from bpuverify.sc.coverage.semantic import ScHistoryCoverage
+from suites.frontend.bpu.sc.model.semantic import Context, DeferredWeights, Events, ScReference, decide
+from suites.frontend.bpu.sc.transaction.types import ScBaseBranch, ScBatchTraining, ScBranchFeedback, ScHistory
+from suites.frontend.bpu.sc.checker.semantic import ScSemanticChecker
+from suites.frontend.bpu.sc.coverage.semantic import ScHistoryCoverage
 
 
 PC = 0x40000040
@@ -36,9 +36,9 @@ def settle(model):
 
 
 def test_algorithm_module_has_no_native_or_signal_dependencies():
-    module = ast.parse(Path('bpuverify/sc/model/semantic.py').read_text())
+    module = ast.parse(Path('sc/model/semantic.py').read_text())
     modules = [node.module or '' for node in ast.walk(module) if isinstance(node, ast.ImportFrom)]
-    assert modules == ['dataclasses', 'bpuverify.common.model.configuration', 'bpuverify.sc.model.threshold', 'bpuverify.sc.transaction.types']
+    assert modules == ['dataclasses', 'suites.frontend.bpu.models.configuration', 'suites.frontend.bpu.sc.model.threshold', 'suites.frontend.bpu.sc.transaction.types']
     assert not any(isinstance(node, ast.Import) for node in ast.walk(module))
 
 

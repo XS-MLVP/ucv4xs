@@ -1,15 +1,17 @@
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.psq.checks import check_word, ptr_values
-from lsqverify.psq.directed import scalar_word
-from lsqverify.psq.types import Address, Attributes, Data, SecondPage
-from lsqverify.raw.types import SqPtr
-from lsqverify.store_queue.actor import StoreActor
-from lsqverify.store_queue.directed import consume
-from lsqverify.vlq.types import RobPtr
-from lsqverify.vsq.types import Dispatch
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.psq.checks import check_word, ptr_values
+from suites.memblock.lsq.psq.directed import scalar_word
+from suites.memblock.lsq.psq.types import Address, Attributes, Data, SecondPage
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.store_queue.actor import StoreActor
+from suites.memblock.lsq.store_queue.directed import consume
+from suites.memblock.lsq.vlq.types import RobPtr
+from suites.memblock.lsq.vsq.types import Dispatch
 from .helpers import pair, requests
 
 
@@ -35,16 +37,16 @@ async def test_real_second_page_or_line_split_partial_consumption_credit(sq, pag
     await env.cycle(dispatch=(Dispatch(),) * 8, addresses=pair(first, 1), data=(Data(True, 0, 6, 0x8877665544332211), Data()),
                     second_pages=pair(SecondPage(True, SqPtr(), second), 0) if page else (SecondPage(),) * 2)
     if page:
-        env.expect({"io_fromStoreUnit_unalignQueueReq_0_ready": 1}, "actual integrated UQ accepts the second physical page", before=True)
+        env.expect({P.p_fromStoreUnit_unalignQueueReq_0_ready: 1}, "actual integrated UQ accepts the second physical page", before=True)
     await env.cycle(addresses=pair(replace(first, vaddr=va + 4, paddr=second, last=True), 1), data=(Data(), Data()),
                     attributes=pair(Attributes(last=False), 1), second_pages=(SecondPage(),) * 2)
     await env.cycle(addresses=(Address(), Address()), attributes=(Attributes(),) * 2)
     from .helpers import wait_valid
-    await wait_valid(env, "io_writeToSbuffer_req_1_valid")
+    await wait_valid(env, P.p_writeToSbuffer_req_1_valid)
     check_word(env, 0, va // 16 * 16, pa // 16 * 16, 0xF000, 0x44332211 << 96)
     check_word(env, 1, va // 16 * 16 + 16, second, 0xF, 0x88776655)
     await env.cycle(sbuffer_ready=(True, False))
-    env.expect({**ptr_values("io_sqDeqPtr_", 0), "io_toLsqEnqCtrl_sqDeq_valid": 0, "io_sqEmpty": 0}, "only first segment consumed, original virtual/physical owner remains live")
+    env.expect({**ptr_values(P.p_sqDeqPtr_, 0), P.p_toLsqEnqCtrl_sqDeq_valid: 0, P.p_sqEmpty: 0}, "only first segment consumed, original virtual/physical owner remains live")
     await consume(env, [(va // 16 * 16 + 16, second, 0xF, 0x88776655)], 1, credits=1)
     env.finish(names)
 

@@ -1,9 +1,9 @@
 """Adjacent recursive owners must not borrow each other's remaining returns."""
 import json
 import pytest
-from bpuverify.bpu.model.ras.adjacent_recursion import Program,DEPTHS,RELATIONS
-from bpuverify.bpu.coverage.ras_adjacent_recursion import Coverage
-from bpuverify.bpu.case.ras.adjacent_recursion import check_adjacent_recursion
+from suites.frontend.bpu.bpu.model.ras.adjacent_recursion import Program,DEPTHS,RELATIONS
+from suites.frontend.bpu.bpu.coverage.ras_adjacent_recursion import Coverage
+from suites.frontend.bpu.bpu.case.ras.adjacent_recursion import check_adjacent_recursion
 
 
 @pytest.mark.feature('BPU-INT-033')

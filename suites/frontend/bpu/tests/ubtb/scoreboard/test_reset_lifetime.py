@@ -2,13 +2,12 @@
 from dataclasses import replace
 import pytest
 from toffee import Scoreboard, ScoreboardMismatch
-from bpuverify.ubtb.checker.semantic import prediction_value
-from bpuverify.ubtb.model.semantic import UbtbEvents, UbtbReference
-from bpuverify.ubtb.transaction.types import PredictRequest
-from bpuverify.ubtb.model.reset_lifetime import Program, PROFILES, RULES
-from bpuverify.ubtb.coverage.reset_lifetime import Coverage
-from bpuverify.ubtb.checker.reset_lifetime import expected
-
+from suites.frontend.bpu.ubtb.checker.semantic import prediction_value
+from suites.frontend.bpu.ubtb.model.semantic import UbtbEvents, UbtbReference
+from suites.frontend.bpu.ubtb.transaction.types import PredictRequest
+from suites.frontend.bpu.ubtb.model.reset_lifetime import Program, PROFILES, RULES
+from suites.frontend.bpu.ubtb.coverage.reset_lifetime import Coverage
+from suites.frontend.bpu.ubtb.checker.reset_lifetime import expected
 
 
 def teach(model, feedback):

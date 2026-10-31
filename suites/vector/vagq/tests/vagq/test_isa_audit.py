@@ -4,17 +4,19 @@ Allocated-slot cleanup is checked separately from architectural memory work.
 Address issue is not a store memory effect. Obligations that this standalone
 root cannot observe are explicitly skipped, never counted as ISA passes.
 """
+
 from collections import Counter
 from dataclasses import asdict, replace
 import json
 
 import pytest
 
-from vagqverify.vagq.driver import response_beat
-from vagqverify.vagq.isa_coverage import PUBLIC_FEATURE_COVERAGE
-from vagqverify.vagq.isa_reference import active_elements, architectural_accesses, vlmax
-from vagqverify.vagq.model import IntegrationModel
-from vagqverify.vagq.types import AddrPacket, Beat, DataPacket
+from suites.vector.vagq.legacy_pins import P
+from suites.vector.vagq.vagq.driver import response_beat
+from suites.vector.vagq.vagq.isa_coverage import PUBLIC_FEATURE_COVERAGE
+from suites.vector.vagq.vagq.isa_reference import active_elements, architectural_accesses, vlmax
+from suites.vector.vagq.vagq.model import IntegrationModel
+from suites.vector.vagq.vagq.types import AddrPacket, Beat, DataPacket
 
 
 pytestmark = [
@@ -70,15 +72,15 @@ def _collect_until_writeback(env, beat, addr, data, *, trace_path, limit=80):
             outputs = env.cycle(beat, admit=(addr, data) if cycle == 0 else None)
             trace.append({'cycle': cycle, 'input': asdict(beat), 'outputs': outputs})
             for lane in range(3):
-                prefix = f"io_lduReq_{lane}_"
+                prefix = P.io(f"lduReq_{lane}_")
                 if (outputs.get(prefix + "valid") and outputs.get(prefix + "bits_meta_valid")
                         and beat.ldu_ready[lane]):
                     active.append((cycle, outputs[prefix + "bits_meta_elemIdx"]))
             for lane in range(2):
-                prefix = f"io_lsqEmptyReq_{lane}_"
+                prefix = P.io(f"lsqEmptyReq_{lane}_")
                 if outputs.get(prefix + "valid") and beat.empty_ready[lane]:
                     empty.append((cycle, outputs[prefix + "bits_issueMask"]))
-            if outputs.get("io_robWriteback_valid"):
+            if outputs.get(P.p_robWriteback_valid):
                 return active, empty
             beat = _response_for_fires(outputs, beat)
         raise AssertionError("audit scenario did not reach writeback")
@@ -163,10 +165,10 @@ def test_ordered_store_address_fills_preserve_elements_and_sq_slots(
             outputs = vagq_env.cycle(beat, admit=(addr, data) if cycle == 0 else None)
             trace.append({'cycle': cycle, 'input': asdict(beat), 'outputs': outputs})
             if cycle == 0:
-                assert outputs['io_addrUop_0_ready']
+                assert outputs[P.p_addrUop_0_ready]
                 # indexDataUop is Valid-only: there is no public ready leaf.
             for lane in range(2):
-                prefix = f'io_staReq_{lane}_'
+                prefix = P.io(f'staReq_{lane}_')
                 if outputs[prefix + 'valid'] and outputs[prefix + 'bits_meta_valid']:
                     if not beat.sta_ready[lane]:
                         blocked = True
@@ -178,7 +180,7 @@ def test_ordered_store_address_fills_preserve_elements_and_sq_slots(
                         'mask': outputs[prefix + 'bits_meta_dataMask'],
                         'sq': outputs[prefix + 'bits_req_sqIdx_value'],
                     })
-            if outputs['io_robWriteback_valid']:
+            if outputs[P.p_robWriteback_valid]:
                 break
             beat = _response_for_fires(outputs, beat)
         else:
@@ -240,13 +242,13 @@ def test_indexed_segment_mop_applies_nonzero_start_field_to_first_address(vagq_e
             beat, admit=(addr, data) if cycle == 0 else None,
         )
         for lane in range(3):
-            prefix = f"io_lduReq_{lane}_"
+            prefix = P.io(f"lduReq_{lane}_")
             if outputs.get(prefix + "valid") and outputs.get(prefix + "bits_meta_valid"):
                 if outputs[prefix + "bits_meta_elemIdx"] == 0:
                     assert outputs[prefix + "bits_meta_dataMask"] == 0xf
                     assert outputs[prefix + "bits_req_data_src_0"] == 0x1231
                     observed = True
-        if outputs.get("io_robWriteback_valid"):
+        if outputs.get(P.p_robWriteback_valid):
             break
         beat = response_beat(outputs)
     else:
@@ -273,18 +275,18 @@ def test_simple_load_fault_can_restart_from_reported_vstart(vagq_env):
         )
         active = [
             lane for lane in range(3)
-            if outputs.get(f"io_lduReq_{lane}_valid")
-            and outputs.get(f"io_lduReq_{lane}_bits_meta_valid")
+            if outputs.get(P.io(f"lduReq_{lane}_valid"))
+            and outputs.get(P.io(f"lduReq_{lane}_bits_meta_valid"))
             and beat.ldu_ready[lane]
         ]
         before_fault.extend(
-            outputs[f"io_lduReq_{lane}_bits_meta_elemIdx"] for lane in active
+            outputs[P.io(f"lduReq_{lane}_bits_meta_elemIdx")] for lane in active
         )
         next_beat = _response_for_fires(outputs, beat)
         if active and not faulted:
             lane = next(
                 (lane for lane in active
-                 if outputs[f"io_lduReq_{lane}_bits_meta_elemIdx"] == 1),
+                 if outputs[P.io(f"lduReq_{lane}_bits_meta_elemIdx")] == 1),
                 None,
             )
             if lane is not None:
@@ -296,8 +298,8 @@ def test_simple_load_fault_can_restart_from_reported_vstart(vagq_env):
                 next_beat = replace(next_beat, ldu_resp=tuple(responses))
                 faulted = True
         beat = next_beat
-        if outputs.get("io_robWriteback_valid"):
-            assert outputs.get("io_robWriteback_bits_exception") == 1
+        if outputs.get(P.p_robWriteback_valid):
+            assert outputs.get(P.p_robWriteback_bits_exception) == 1
             break
     else:
         raise AssertionError("faulting load did not reach exception writeback")
@@ -321,16 +323,16 @@ def test_simple_load_fault_can_restart_from_reported_vstart(vagq_env):
         )
         active = [
             lane for lane in range(3)
-            if outputs.get(f"io_lduReq_{lane}_valid")
-            and outputs.get(f"io_lduReq_{lane}_bits_meta_valid")
+            if outputs.get(P.io(f"lduReq_{lane}_valid"))
+            and outputs.get(P.io(f"lduReq_{lane}_bits_meta_valid"))
             and beat.ldu_ready[lane]
         ]
         resumed.extend(
-            outputs[f"io_lduReq_{lane}_bits_meta_elemIdx"] for lane in active
+            outputs[P.io(f"lduReq_{lane}_bits_meta_elemIdx")] for lane in active
         )
         beat = _response_for_fires(outputs, beat)
-        if outputs.get("io_robWriteback_valid"):
-            assert outputs.get("io_robWriteback_bits_exception") == 0
+        if outputs.get(P.p_robWriteback_valid):
+            assert outputs.get(P.p_robWriteback_bits_exception) == 0
             break
     else:
         raise AssertionError("restarted load did not complete")
@@ -370,15 +372,15 @@ def test_ordered_indexed_load_uops_handoff_between_adjacent_entries(vagq_env):
             if cycle == 0 else None,
         )
         for lane in range(3):
-            prefix = f"io_lduReq_{lane}_"
+            prefix = P.io(f"lduReq_{lane}_")
             if outputs.get(prefix + "valid") and outputs.get(prefix + "bits_meta_valid"):
                 entry = outputs[prefix + "bits_meta_entryIdx"]
                 if entry == first.entry_idx and first_seen is None:
                     first_seen = cycle
                 if entry == second.entry_idx and second_seen is None:
                     second_seen = cycle
-        if outputs.get("io_robWriteback_valid"):
-            completed.add(outputs["io_robWriteback_bits_entryIdx"])
+        if outputs.get(P.p_robWriteback_valid):
+            completed.add(outputs[P.p_robWriteback_bits_entryIdx])
         beat = response_beat(outputs)
         if completed == {first.entry_idx, second.entry_idx}:
             break

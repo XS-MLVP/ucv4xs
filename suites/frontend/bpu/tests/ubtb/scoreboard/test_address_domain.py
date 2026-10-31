@@ -4,11 +4,11 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.ubtb.driver.encoding import _encode_training, _encode_resolve
-from bpuverify.ubtb.model.semantic import UbtbEvents, UbtbReference
-from bpuverify.ubtb.monitor.decode import _decode_prediction_sample
-from bpuverify.ubtb.monitor.semantic import decode_events
-from bpuverify.ubtb.transaction.types import BranchTraining, PredictRequest, UbtbBatchTraining, UbtbBranchFeedback
+from suites.frontend.bpu.ubtb.driver.encoding import _encode_training, _encode_resolve
+from suites.frontend.bpu.ubtb.model.semantic import UbtbEvents, UbtbReference
+from suites.frontend.bpu.ubtb.monitor.decode import _decode_prediction_sample
+from suites.frontend.bpu.ubtb.monitor.semantic import decode_events
+from suites.frontend.bpu.ubtb.transaction.types import BranchTraining, PredictRequest, UbtbBatchTraining, UbtbBranchFeedback
 
 
 FEEDBACK = BranchTraining(0x80001002, 0x80402342, 1, 3, 2)
@@ -33,9 +33,15 @@ def test_resolve_codec_uses_the_same_literal_domain_and_keeps_slot_identity():
 
 
 def test_prediction_monitor_expands_literal_halfword_output():
-    sample = NS(valid=signal(1), bits=NS(taken=signal(1), target_addr=signal(0x402011A1),
+    sample = NS(valid=signal(1), enabled=signal(1), bits=NS(taken=signal(1), target_addr=signal(0x402011A1),
         cfiPosition=signal(3), attribute=NS(branchType=signal(2), rasAction=signal(0))))
     assert _decode_prediction_sample(sample).target == 0x80402342
+
+
+def test_prediction_monitor_treats_disabled_taken_hit_as_no_prediction():
+    sample = NS(valid=signal(1), enabled=signal(0), bits=NS(taken=signal(1), target_addr=signal(0x402011A1),
+        cfiPosition=signal(3), attribute=NS(branchType=signal(2), rasAction=signal(0))))
+    assert _decode_prediction_sample(sample).valid == 0
 
 
 def test_input_monitor_expands_lookup_and_both_feedback_sources():

@@ -1,9 +1,9 @@
 """Natural multi-branch lifetimes, separate from physical-coordinate sweeps."""
 import pytest
 
-from bpuverify.bpu.case.ahead_working_set import check_ahead_working_set
-from bpuverify.bpu.coverage.ahead_working_set import AheadWorkingSetCoverage
-from bpuverify.bpu.model.ahead_working_set import SIZES, KINDS, LIFETIMES, AheadWorkingSetProgram
+from suites.frontend.bpu.bpu.case.ahead_working_set import check_ahead_working_set
+from suites.frontend.bpu.bpu.coverage.ahead_working_set import AheadWorkingSetCoverage
+from suites.frontend.bpu.bpu.model.ahead_working_set import SIZES, KINDS, LIFETIMES, AheadWorkingSetProgram
 
 
 @pytest.mark.feature('BPU-INT-100')
@@ -21,9 +21,9 @@ async def test_natural_branch_working_set_retains_learning_and_reinitializes_new
         coverage.attach_evidence(request.node.user_properties)
 
 
-from bpuverify.bpu.case.ahead_working_set import check_prefix_working_set
-from bpuverify.bpu.coverage.ahead_working_set import PrefixWorkingSetCoverage
-from bpuverify.bpu.model.ahead_working_set import PrefixWorkingSetProgram,PREFIX_PROFILES
+from suites.frontend.bpu.bpu.case.ahead_working_set import check_prefix_working_set
+from suites.frontend.bpu.bpu.coverage.ahead_working_set import PrefixWorkingSetCoverage
+from suites.frontend.bpu.bpu.model.ahead_working_set import PrefixWorkingSetProgram,PREFIX_PROFILES
 
 # Measured on the 2026-10-21 full BPU program run; scheduling hint only.
 pytestmark = pytest.mark.estimated_runtime(58)

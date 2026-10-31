@@ -3,8 +3,8 @@ from collections import Counter
 from copy import deepcopy
 from itertools import product
 import pytest
-from bpuverify.mbtb.model.cleanup_programs import SEMANTIC_PROGRAMS,RULES,programs
-from bpuverify.mbtb.coverage.cleanup_lifetime import Coverage,PHASES
+from suites.frontend.bpu.mbtb.model.cleanup_programs import SEMANTIC_PROGRAMS,RULES,programs
+from suites.frontend.bpu.mbtb.coverage.cleanup_lifetime import Coverage,PHASES
 
 
 def ready(program):

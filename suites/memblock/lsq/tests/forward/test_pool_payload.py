@@ -1,10 +1,12 @@
 """64 public slots, three query lanes and four full-width payload lifetimes."""
+
 import hashlib
 import json
 
-from lsqverify.forward.types import Translation
-from lsqverify.raw.types import SqPtr
-from lsqverify.store_payload import add_digest, check_forward, payload
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.forward.types import Translation
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.store_payload import add_digest, check_forward, payload
 
 
 async def test_all_slots_full_width_high_low_payload_lifetimes(forward, tmp_path):
@@ -26,7 +28,7 @@ async def test_all_slots_full_width_high_low_payload_lifetimes(forward, tmp_path
             env.arm(("FWD-PAYLOAD.pool",), uids[-3:])
             await env.cycle(translations=(Translation(expected[1]),) * 3)
             for lane in range(3):
-                check_forward(env.observed, f"io_query_{lane}_s2Resp_", expected)
+                check_forward(env.observed, P.io(f"query_{lane}_s2Resp_"), expected)
                 add_digest(stream, [generation, slot, lane, *expected])
         await env.idle(3)
         assert set(uids) <= env.coverage.completed and len(uids) == 192

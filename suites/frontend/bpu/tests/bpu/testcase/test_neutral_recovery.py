@@ -1,11 +1,11 @@
 """Neutral use at protection limits does not freeze later branch learning."""
 import json
 import pytest
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.bpu.model.neutral_recovery import PROFILES
-from bpuverify.bpu.coverage.neutral_recovery import Coverage
-from bpuverify.bpu.case.neutral_recovery import run
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.bpu.model.neutral_recovery import PROFILES
+from suites.frontend.bpu.bpu.coverage.neutral_recovery import Coverage
+from suites.frontend.bpu.bpu.case.neutral_recovery import run
 
 
 @pytest.mark.feature('BPU-INT-066')

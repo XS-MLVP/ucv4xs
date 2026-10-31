@@ -5,8 +5,8 @@ from toffee import Execution
 from toffee import MemoryBackend
 from toffee import XPhase
 
-from bpuverify.common.driver.signal import ClockedWriteDriver
-from bpuverify.common.bundle.bindings import PortBinding
+from suites.frontend.bpu.drivers.signal import ClockedWriteDriver
+from suites.frontend.bpu.ports.bindings import PortBinding
 from tests.framework.fakes import Signal
 from tests.framework.fakes import bundle_binding
 

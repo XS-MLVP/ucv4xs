@@ -1,8 +1,8 @@
 """Source-qualified integrated behavior, distinct from UT free-index programs."""
 import json
 from pathlib import Path
-from bpuverify.bpu.model.neutral_recovery import PROFILES, rules
-from bpuverify.bpu.coverage.neutral_recovery import lifetime_coverage
+from suites.frontend.bpu.bpu.model.neutral_recovery import PROFILES, rules
+from suites.frontend.bpu.bpu.coverage.neutral_recovery import lifetime_coverage
 
 
 def test_requirement_has_real_integrated_sources_and_preserves_native_gaps():

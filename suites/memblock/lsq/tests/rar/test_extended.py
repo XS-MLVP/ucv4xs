@@ -3,7 +3,7 @@ import random
 
 import pytest
 
-from lsqverify.rar.types import Query, QueuePtr, Redirect, Release, RobPtr
+from suites.memblock.lsq.rar.types import Query, QueuePtr, Redirect, Release, RobPtr
 
 
 def address(rank):

@@ -7,9 +7,9 @@ from itertools import product
 
 import pytest
 
-from bpuverify.ras.checker.semantic import RasSemanticChecker
-from bpuverify.ras.model.semantic import Events, RasReference, Recovery, Retirement, instruction_return
-from bpuverify.ras.coverage.semantic import RasActionCoverage
+from suites.frontend.bpu.ras.checker.semantic import RasSemanticChecker
+from suites.frontend.bpu.ras.model.semantic import Events, RasReference, Recovery, Retirement, instruction_return
+from suites.frontend.bpu.ras.coverage.semantic import RasActionCoverage
 
 
 def act(model, action, address=None):
@@ -25,8 +25,8 @@ def retire(model, before, action):
 
 
 def test_reference_only_imports_plain_data_not_native_state_or_driver():
-    tree = ast.parse(Path('bpuverify/ras/model/semantic.py').read_text())
-    assert [node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)] == ['dataclasses', 'bpuverify.common.model.configuration', 'copy']
+    tree = ast.parse(Path('ras/model/semantic.py').read_text())
+    assert [node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)] == ['dataclasses', 'suites.frontend.bpu.models.configuration', 'copy']
     assert not any(isinstance(node, ast.Import) for node in ast.walk(tree))
 
 

@@ -2,6 +2,9 @@
 
 # icache-verify-kunminghu-v3
 
+> 路径迁移说明（2026-10-31）：本文记录中的 *verify/common 为当时源码路径；当前实现已迁入 suites.<group>.<suite> 工程根。历史判定、命令与哈希不据此重标；当前映射见仓库 docs/lessons/suite-namespace-refactor-20261031.md。
+
+
 XiangShan **kunminghu-v3** 的 ICache 验证工程。与 `bpu-verify-kunminghu-v3`
 同一套工具链和目录约定：picker memory-direct DUT、xreactor 组件、pytest 用例。
 

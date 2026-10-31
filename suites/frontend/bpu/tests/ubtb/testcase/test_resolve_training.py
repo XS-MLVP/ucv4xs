@@ -3,22 +3,22 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.ubtb.transaction.types import BranchTraining
-from bpuverify.ubtb.transaction.types import UbtbBatchTraining
-from bpuverify.ubtb.transaction.types import UbtbBranchFeedback
-from bpuverify.ubtb.transaction.types import UbtbPrediction
-from bpuverify.ubtb.coverage.catalog import ubtb_resolve_slot_coverage_model
-from bpuverify.ubtb.coverage.catalog import write_ubtb_resolve_slot_coverage
-from bpuverify.ubtb.coverage.catalog import ubtb_resolve_arbitration_coverage_model
-from bpuverify.ubtb.coverage.catalog import write_ubtb_resolve_arbitration_coverage
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.ubtb.checker.assertions import assert_miss
+from suites.frontend.bpu.ubtb.transaction.types import BranchTraining
+from suites.frontend.bpu.ubtb.transaction.types import UbtbBatchTraining
+from suites.frontend.bpu.ubtb.transaction.types import UbtbBranchFeedback
+from suites.frontend.bpu.ubtb.transaction.types import UbtbPrediction
+from suites.frontend.bpu.ubtb.coverage.catalog import ubtb_resolve_slot_coverage_model
+from suites.frontend.bpu.ubtb.coverage.catalog import write_ubtb_resolve_slot_coverage
+from suites.frontend.bpu.ubtb.coverage.catalog import ubtb_resolve_arbitration_coverage_model
+from suites.frontend.bpu.ubtb.coverage.catalog import write_ubtb_resolve_arbitration_coverage
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.ubtb.checker.assertions import assert_miss
 
 
 def resolve_at(pc, slot, branch):
     """Earlier branches execute correctly; later branches are FTQ-masked."""
     earlier = tuple(
-        UbtbBranchFeedback(pc + 0x400 + index * 2, 0, index * 2, 1)
+        UbtbBranchFeedback(pc + 0x400 + index * 2, 0, (index * 4 + 2) % 32, 1)
         for index in range(slot)
     )
     return UbtbBatchTraining(pc, (*earlier, branch))
@@ -39,7 +39,7 @@ async def test_resolve_all_slots_preserve_payload_attributes_and_taken_selection
     attributes = ((1, 0), (2, 0), (2, 2), (3, 0), (3, 1), (3, 2), (3, 3), (2, 0))
     for slot, (branch_type, ras_action) in enumerate(attributes):
         pc = 0x80010000 + slot * 0x40
-        branch = UbtbBranchFeedback(pc + 0x1000 + slot * 2, 1, slot * 2,
+        branch = UbtbBranchFeedback(pc + 0x1000 + slot * 2, 1, slot * 4,
                                     branch_type, ras_action, mispredict=1)
         await ubtb_agent.train_resolve(resolve_at(pc, slot, branch))
         assert await ubtb_agent.predict(pc) == expected(branch), f'selected slot {slot}'
@@ -48,7 +48,7 @@ async def test_resolve_all_slots_preserve_payload_attributes_and_taken_selection
 
         conditional_pc = 0x80020000 + slot * 0x40
         conditional = UbtbBranchFeedback(conditional_pc + 0x1800, 1,
-                                         slot * 2, 1, mispredict=1)
+                                         slot * 4 + 1, 1, mispredict=1)
         await ubtb_agent.train_resolve(resolve_at(conditional_pc, slot, conditional))
         assert await ubtb_agent.predict(conditional_pc) == expected(conditional)
         for decrement in range(1, 4):

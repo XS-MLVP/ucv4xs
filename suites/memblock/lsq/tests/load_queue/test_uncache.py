@@ -1,9 +1,11 @@
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.load_queue.actor import LoadActor
-from lsqverify.load_queue.types import Bus, Bypass, Inputs
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.load_queue.actor import LoadActor
+from suites.memblock.lsq.load_queue.types import Bus, Bypass, Inputs
 
 
 @pytest.mark.parametrize("nc", (True, False), ids=("nc", "mmio"))
@@ -24,24 +26,24 @@ async def transfer(actor, uids, *, nc, lane, fault):
     await actor.execute(uids, controls=base)
     lq.reach("LQ-UNCACHE.nc" if nc else "LQ-UNCACHE.mmio", "LQ-UNCACHE.wake", "LQ-UNCACHE.bypass")
     for _ in range(40):
-        if lq.observed["io_uncache_req_valid"]:
+        if lq.observed[P.p_uncache_req_valid]:
             break
         await actor.step(base)
-        assert not any(lq.observed[f"io_replay_{bank}_valid"] for bank in range(3))
+        assert not any(lq.observed[P.io(f"replay_{bank}_valid")] for bank in range(3))
     else:
         raise AssertionError("real Uncache request did not reach public LoadQueue bus")
-    assert lq.observed["io_uncache_req_bits_addr"] == owner.load.paddr
-    assert lq.observed["io_uncache_req_bits_nc"] == int(nc)
-    mid = lq.observed["io_uncache_req_bits_id"]
+    assert lq.observed[P.p_uncache_req_bits_addr] == owner.load.paddr
+    assert lq.observed[P.p_uncache_req_bits_nc] == int(nc)
+    mid = lq.observed[P.p_uncache_req_bits_id]
     await actor.step(replace(base, bus=Bus(ready=True)))
     await actor.step(replace(base, bus=Bus(ack=True, mid=mid, sid=7)))
     for _ in range(3):
         await actor.step(base)
-        assert not any(lq.observed[f"io_replay_{bank}_valid"] for bank in range(3))
+        assert not any(lq.observed[P.io(f"replay_{bank}_valid")] for bank in range(3))
     data = 0x9988776655443322
     await actor.step(replace(base, bus=Bus(response=True, response_id=7, data=data, error=fault, nderr=fault)))
     for _ in range(40):
-        if any(lq.observed[f"io_replay_{bank}_valid"] for bank in range(3)):
+        if any(lq.observed[P.io(f"replay_{bank}_valid")] for bank in range(3)):
             break
         await actor.step(base)
     else:
@@ -51,9 +53,9 @@ async def transfer(actor, uids, *, nc, lane, fault):
     bypass = [Bypass()] * 3
     bypass[lane] = Bypass(True, owner.load.execution.uop.lq, nc, not nc)
     await actor.step(replace(base, bypass=tuple(bypass)))
-    prefix = f"io_bypass_{lane}_"
+    prefix = P.io(f"bypass_{lane}_")
     assert lq.observed[prefix + "s1Resp_valid"] and lq.observed[prefix + "s1Resp_bits_paddr"] == owner.load.paddr
-    assert lq.observed["io_exceptionInfo_valid"] and lq.observed["io_exceptionInfo_bits_vaddr"] == owner.load.fullva
+    assert lq.observed[P.p_exceptionInfo_valid] and lq.observed[P.p_exceptionInfo_bits_vaddr] == owner.load.fullva
     await actor.step(base)
     assert lq.observed[prefix + "s2Resp_valid"] and lq.observed[prefix + "s2Resp_bits_data"] == data * ((1 << 64) + 1)
     assert lq.observed[prefix + "s2Resp_bits_derr"] == lq.observed[prefix + "s2Resp_bits_nderr"] == int(fault)

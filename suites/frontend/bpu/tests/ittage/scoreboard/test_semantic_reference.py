@@ -6,13 +6,13 @@ from types import SimpleNamespace
 import pytest
 from toffee import ScoreboardMismatch
 
-from bpuverify.ittage.checker.semantic import IttageSemanticChecker
-from bpuverify.ittage.model.semantic import (
+from suites.frontend.bpu.ittage.checker.semantic import IttageSemanticChecker
+from suites.frontend.bpu.ittage.model.semantic import (
     Context, Entry, Events, IttageReference, Metadata, Outcome, Patch, SETS,
     Target, WriteCache, coordinates,
 )
-from bpuverify.ittage.transaction.types import IttagePrediction
-from bpuverify.ittage.coverage.semantic import TargetLearningCoverage
+from suites.frontend.bpu.ittage.transaction.types import IttagePrediction
+from suites.frontend.bpu.ittage.coverage.semantic import TargetLearningCoverage
 
 
 PC, A, B = 0x40000800, 0x40002000, 0x40006000

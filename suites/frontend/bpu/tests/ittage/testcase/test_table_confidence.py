@@ -1,10 +1,10 @@
 """A non-first table provider must also learn from correct feedback."""
 import pytest
 
-from bpuverify.ittage.case.definitions import PC
-from bpuverify.ittage.case.definitions import POSITION
-from bpuverify.ittage.case.definitions import TARGET_A
-from bpuverify.ittage.transaction.types import IttageTraining
+from suites.frontend.bpu.ittage.case.definitions import PC
+from suites.frontend.bpu.ittage.case.definitions import POSITION
+from suites.frontend.bpu.ittage.case.definitions import TARGET_A
+from suites.frontend.bpu.ittage.transaction.types import IttageTraining
 
 
 @pytest.mark.feature('BPU-ITTAGE-003')

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import asdict
 
-from bpuverify.uras.transaction.types import UrasCycle
+from suites.frontend.bpu.uras.transaction.types import UrasCycle
 
 
 async def test_cycle_transaction_has_complete_idle_defaults(uras_agent):

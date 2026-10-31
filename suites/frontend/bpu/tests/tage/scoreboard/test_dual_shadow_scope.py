@@ -3,10 +3,10 @@ from itertools import product
 
 import pytest
 
-from bpuverify.tage.coverage.dual import DUAL_MODES
-from bpuverify.tage.coverage.dual import tage_dual_shadow_coverage_model
-from bpuverify.tage.case.dual_shadow_scenario import expected_witnesses
-from bpuverify.tage.case.dual_shadow_scenario import validate_case
+from suites.frontend.bpu.tage.coverage.dual import DUAL_MODES
+from suites.frontend.bpu.tage.coverage.dual import tage_dual_shadow_coverage_model
+from suites.frontend.bpu.tage.case.dual_shadow_scenario import expected_witnesses
+from suites.frontend.bpu.tage.case.dual_shadow_scenario import validate_case
 
 
 @pytest.mark.parametrize('mode', DUAL_MODES)

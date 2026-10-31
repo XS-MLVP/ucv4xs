@@ -1,11 +1,13 @@
 """Second line-gap expansion and necessary-condition controls for strict."""
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.raw.types import FtqPtr, SqPtr
-from lsqverify.vlq.types import QueuePtr, Redirect, RobPtr
-from lsqverify.replay.types import Cause, Enqueue, LqWakeup, StoreWakeup, TlbHint
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.raw.types import FtqPtr, SqPtr
+from suites.memblock.lsq.vlq.types import QueuePtr, Redirect, RobPtr
+from suites.memblock.lsq.replay.types import Cause, Enqueue, LqWakeup, StoreWakeup, TlbHint
 
 
 async def fill_tlb_pool(env, *, sentinel_ids=0):
@@ -16,7 +18,7 @@ async def fill_tlb_pool(env, *, sentinel_ids=0):
             reqs[lane] = env.request(Cause.TLB_MISS, rob=20 + index, lq=index, tag=index + 1,
                                      tlb_id=index if index < sentinel_ids else 15, mshr=index % 16)
         await env.cycle(reqs)
-    assert env.observed["io_lqFull"] and len(env.model.owners) == 120
+    assert env.observed[P.p_lqFull] and len(env.model.owners) == 120
 
 
 @pytest.mark.parametrize("control", ("not_feedback", "different_slot", "address_not_ready", "ordinary_non_strict"))
@@ -29,12 +31,12 @@ async def test_valid_only_strict_necessary_condition_controls(replay, control):
     await env.cycle({0: req}, address_bits=bits, upper=SqPtr.encode(64))
     uid = env.uid(req)
     await env.idle(4)
-    assert bool(env.observed["io_replay_0_valid"]) == (not strict and bool(bits))
+    assert bool(env.observed[P.p_replay_0_valid]) == (not strict and bool(bits))
     dirty = replace(req, valid=False, replay_feedback=control != "not_feedback", slot=1 if control == "different_slot" else 0,
                     need_replay=False, causes=0, uop=replace(req.uop, strict=False))
     await env.cycle({2: dirty})
     await env.idle(5)
-    assert bool(env.observed["io_replay_0_valid"]) == (not strict and bool(bits))
+    assert bool(env.observed[P.p_replay_0_valid]) == (not strict and bool(bits))
     env.arm("LRQ-IDLE.disabled", [uid])
     await env.cycle(address_ready=SqPtr.encode(8))
     await env.complete()
@@ -129,8 +131,8 @@ async def test_full_width_replay_metadata_and_pointer_identity_reuses_slot(repla
     env.arm(("LRQ-PAYLOAD.metadata", "LRQ-PAYLOAD.vector", "LRQ-OWNER.wait_feedback"), [high_uid])
     await env.idle(6)
     assert any(
-        env.observed[f"io_replay_{bank}_valid"]
-        and env.observed[f"io_replay_{bank}_bits_uop_perfDebugInfo_runahead_checkpoint_id"] == (1 << 64) - 1
+        env.observed[P.io(f"replay_{bank}_valid")]
+        and env.observed[P.io(f"replay_{bank}_bits_uop_perfDebugInfo_runahead_checkpoint_id")] == (1 << 64) - 1
         for bank in range(3)
     )
     await env.complete()
@@ -182,7 +184,7 @@ async def test_four_return_channels_at_each_fifo_tail_alignment(replay, padding)
     env.arm("LRQ-FLUSH.blocked", canceled_uids, reuse=True)
     await env.cycle(redirect=Redirect(True, RobPtr.encode(10), False))
     await env.idle(50)
-    assert not env.observed["io_replayAllocate"]
+    assert not env.observed[P.p_replayAllocate]
     for offset in range(0, 120, 3):
         await env.cycle({lane: env.request(rob=20 + offset + lane, lq=offset + lane, tag=offset + lane + 129)
                          for lane in range(3)})
@@ -209,8 +211,8 @@ async def test_each_slot_selected_in_program_head_window_after_real_completion(r
         await env.cycle(mmio=LqWakeup(True, QueuePtr.encode(base + offset + 2)))
         await env.idle(3)
         for bank in range(3):
-            assert env.observed[f"io_replay_{bank}_valid"]
-            assert env.observed[f"io_replay_{bank}_bits_replayQueueIdx"] == offset + bank
+            assert env.observed[P.io(f"replay_{bank}_valid")]
+            assert env.observed[P.io(f"replay_{bank}_bits_replayQueueIdx")] == offset + bank
         change = await env.cycle(ready=(True,) * 3)
         assert len(change["fired"]) == 3
         feedback = {bank: replace(env.model.owners[offset + bank].request, replay_feedback=True,
@@ -218,4 +220,4 @@ async def test_each_slot_selected_in_program_head_window_after_real_completion(r
         change = await env.cycle(feedback, ready=(False,) * 3)
         assert len(change["completed"]) == 3
     await env.idle(8)
-    assert not env.model.owners and not env.observed["io_replayAllocate"]
+    assert not env.model.owners and not env.observed[P.p_replayAllocate]

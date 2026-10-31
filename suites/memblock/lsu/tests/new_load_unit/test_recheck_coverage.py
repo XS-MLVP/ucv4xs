@@ -1,7 +1,9 @@
 """Parent coverage recheck: never dismiss a live register as a port copy."""
+
 import pytest
 
-from lsuverify.new_load_unit.env import LoadParentEnv
+from suites.memblock.lsu.legacy_pins import P
+from suites.memblock.lsu.new_load_unit.env import LoadParentEnv
 from .test_new_load_unit import ldin, tlb_hit, idle
 
 
@@ -23,12 +25,12 @@ def test_first_nc_access_cause_zero_is_captured_and_cleared(parent):
     parent.cycle(response, "nc translation")
     parent.cycle(idle(), "nc replay request")
     raw = parent.observe_pins()
-    assert raw["io_lqWrite_valid"] == 1
-    assert raw["io_lqWrite_bits_rep_info_cause_0"] == 1
+    assert raw[P.p_lqWrite_valid] == 1
+    assert raw[P.p_lqWrite_bits_rep_info_cause_0] == 1
     # S3 payload registers capture on the next edge even when merge valid=0.
     parent.cycle(idle(), "capture cause0 into S3 head payload")
     clean_beat(parent)
-    assert parent.observe_pins()["io_lqWrite_bits_rep_info_cause_0"] == 0
+    assert parent.observe_pins()[P.p_lqWrite_bits_rep_info_cause_0] == 0
 
 
 def test_nuke_first_cause_and_identity_return_to_zero(parent):
@@ -40,10 +42,10 @@ def test_nuke_first_cause_and_identity_return_to_zero(parent):
         sqIdx_value=5, robIdx_value=3, paddr=0x2000, mask=0xFFFF, matchType=2)
     parent.cycle(response, "S1 detects nuke first")
     parent.cycle(idle(), "S3 observes nuke cause")
-    assert parent.observe_pins()["io_lqWrite_bits_rep_info_cause_11"] == 1
+    assert parent.observe_pins()[P.p_lqWrite_bits_rep_info_cause_11] == 1
     parent.cycle(idle(), "capture nuke payload")
     clean_beat(parent)
-    assert parent.observe_pins()["io_lqWrite_bits_rep_info_cause_11"] == 0
+    assert parent.observe_pins()[P.p_lqWrite_bits_rep_info_cause_11] == 0
 
 
 def test_rr_bank_conflict_without_grant_falls_then_recovers(parent):
@@ -53,12 +55,12 @@ def test_rr_bank_conflict_without_grant_falls_then_recovers(parent):
     response["dcache"]["rr"] = 1
     response["rrGrant"] = 0
     parent.cycle(response, "S2 candidate while beat is visible")
-    assert parent.observe_pins()["io_rrBankConflictFastReplay_candidate"] == 1
+    assert parent.observe_pins()[P.p_rrBankConflictFastReplay_candidate] == 1
     denied = idle()
     denied["dcache"]["bank"] = 1
     denied["dcache"]["rr"] = 1
     parent.cycle(denied, "capture RR conflict without grant")
     raw = parent.observe_pins()
-    assert raw["io_lqWrite_valid"] == 1
-    assert raw["io_lqWrite_bits_rep_info_cause_8"] == 1
+    assert raw[P.p_lqWrite_valid] == 1
+    assert raw[P.p_lqWrite_bits_rep_info_cause_8] == 1
     clean_beat(parent)

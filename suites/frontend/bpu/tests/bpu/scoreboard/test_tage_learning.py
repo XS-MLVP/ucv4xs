@@ -2,9 +2,9 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.bpu.case.definitions import PC, POSITION, LATER_POSITION
-from bpuverify.bpu.case.tage.learning import qualified_learning_event
-from bpuverify.tage.model.semantic import Branch, Context, Feedback, Hint
+from suites.frontend.bpu.bpu.case.definitions import PC, POSITION, LATER_POSITION
+from suites.frontend.bpu.bpu.case.tage.learning import qualified_learning_event
+from suites.frontend.bpu.tage.model.semantic import Branch, Context, Feedback, Hint
 
 
 def stimulus():

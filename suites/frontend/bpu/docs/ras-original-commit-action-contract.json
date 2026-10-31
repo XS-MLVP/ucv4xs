@@ -22,9 +22,9 @@
   "physical_enumeration": false,
   "SDK_RTL_DUT_changes": false,
   "production_layout": {
-    "program": "bpuverify/ras/model/commit_action.py",
-    "coverage": "bpuverify/ras/coverage/commit_action.py",
-    "env": "bpuverify/ras/env/commit_action.py",
+    "program": "ras/model/commit_action.py",
+    "coverage": "ras/coverage/commit_action.py",
+    "env": "ras/env/commit_action.py",
     "test_dut": "tests/ras/testcase/test_commit_action.py",
     "test_model": "tests/ras/scoreboard/test_commit_action.py"
   },

@@ -9,8 +9,8 @@ from __future__ import annotations
 
 import pytest
 
-from icacheverify.waylookup.case.definitions import block
-from icacheverify.waylookup.case.definitions import entry_for_block
+from suites.frontend.icache.waylookup.case.definitions import block
+from suites.frontend.icache.waylookup.case.definitions import entry_for_block
 
 
 @pytest.mark.feature("ICACHE-WAYLOOKUP-011")

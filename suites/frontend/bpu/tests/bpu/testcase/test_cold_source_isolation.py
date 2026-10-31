@@ -1,9 +1,9 @@
 """Cold disable is distinct from disabling an already initialized source."""
 import pytest
 
-from bpuverify.bpu.case.cold_source_isolation import check_cold_source_isolation
-from bpuverify.bpu.coverage.cold_source_isolation import ColdSourceCoverage
-from bpuverify.bpu.model.cold_source_isolation import SOURCES, MODES, ColdSourceProgram
+from suites.frontend.bpu.bpu.case.cold_source_isolation import check_cold_source_isolation
+from suites.frontend.bpu.bpu.coverage.cold_source_isolation import ColdSourceCoverage
+from suites.frontend.bpu.bpu.model.cold_source_isolation import SOURCES, MODES, ColdSourceProgram
 
 
 @pytest.mark.feature('BPU-INT-101')

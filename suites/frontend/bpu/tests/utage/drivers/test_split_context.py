@@ -3,10 +3,10 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.common.model.folded_history import folded_history_values
-from bpuverify.utage.agent.main import UtageAgent
-from bpuverify.utage.model.split_context import contexts, neighbor_context
-from bpuverify.utage.transaction.types import UtageLookup
+from suites.frontend.bpu.models.folded_history import folded_history_values
+from suites.frontend.bpu.utage.agent.main import UtageAgent
+from suites.frontend.bpu.utage.model.split_context import contexts, neighbor_context
+from suites.frontend.bpu.utage.transaction.types import UtageLookup
 
 
 def test_same_context_defaults_preserve_legacy_positional_construction():
@@ -38,23 +38,32 @@ def test_index_and_tag_history_are_independently_staged_for_adjacent_requests():
     requests = [UtageLookup(profile.pc, 6, int(i == 1), folded_history=profile.tag_history,
         index_pc=profile.index_pc, index_history=profile.index_history)
         for i, profile in enumerate(profiles.values())]
+    # Sparse whole-chip history layout: normal index folds are 2/7 (two table
+    # index hashes), S1/override expose the four tag/alternate folds.
+    indices = dict(normal_history=(2, 7), s1_history=(1, 2, 5, 6),
+                   override_history=(1, 2, 5, 6))
     agent = SimpleNamespace(_last_a0_lookup=None, _history_count=33,
+        _history_indices=indices,
         _ahead_btb=lambda request: dict(fastPositions=(request.position, request.base_taken)))
     first = UtageAgent._encode_lookup(agent, requests[0])
     second = UtageAgent._encode_lookup(agent, requests[1])
     assert first['start_pc'] == requests[0].index_pc != first['new_start_pc'] == requests[0].pc
     assert second['start_pc'] == requests[1].index_pc
-    assert second['normal_history'] == folded_history_values(requests[1].index_history, 33)
+    normal = folded_history_values(requests[1].index_history, 33)
+    assert second['normal_history'] == tuple(normal[i] for i in indices['normal_history'])
     assert second['new_start_pc'] == requests[0].pc
-    assert second['s1_history'] == folded_history_values(requests[0].folded_history, 33)
+    s1 = folded_history_values(requests[0].folded_history, 33)
+    assert second['s1_history'] == tuple(s1[i] for i in indices['s1_history'])
     assert second['s1_history'] != second['normal_history']
     assert second['ahead_btb']['fastPositions'] == (6, 0)
-    assert second['override_history'] == folded_history_values(requests[1].folded_history, 33)
+    override = folded_history_values(requests[1].folded_history, 33)
+    assert second['override_history'] == tuple(
+        override[i] for i in indices['override_history'])
     assert agent._last_a0_lookup is requests[1]
 
 
 def test_geometry_agrees_with_independent_integrated_full_history_and_pipeline_model():
-    from bpuverify.bpu.model.bypass.sparse import phase_contexts, joint_proof
+    from suites.frontend.bpu.bpu.model.bypass.sparse import phase_contexts, joint_proof
     program = dict(nodes=(0x40010006, 0x40010016, 0x40010080, 0x400101e2), pc=0x40010006)
     program['positive'] = phase_contexts(program, True)
     program['negative'] = phase_contexts(program, False)

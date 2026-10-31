@@ -2,10 +2,10 @@
 
 import pytest
 
-from bpuverify.sc.coverage.catalog import sc_bias_selector_merge_coverage_model
-from bpuverify.sc.coverage.catalog import write_sc_bias_selector_merge_coverage
-from bpuverify.sc.case.bias_selector_scenario import check_bias_selector_merge
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.sc.coverage.catalog import sc_bias_selector_merge_coverage_model
+from suites.frontend.bpu.sc.coverage.catalog import write_sc_bias_selector_merge_coverage
+from suites.frontend.bpu.sc.case.bias_selector_scenario import check_bias_selector_merge
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature("BPU-SC-019")

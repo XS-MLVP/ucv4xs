@@ -11,7 +11,7 @@ import traceback
 import xml.etree.ElementTree as ET
 
 from tools.refresh_coverage import ROOT, FLOOR, NAMES, read, write, digest, source_epoch
-from bpuverify.common.pytest.points import summary_for, validate_report
+from suites.frontend.bpu.pytest_plugins.points import summary_for, validate_report
 
 CANONICAL = ('feature-points.json','rtl-line-coverage.json','rtl-coverage-manifest.json',
              'verification-report.html','summary.json')
@@ -160,7 +160,7 @@ def run_unpartitioned(args):
                 raise ValueError('feature/test verdict association changed')
         if not args.select and summary_for(features,'all')['executed'] != len(planned):
             raise ValueError('full regression has unexecuted functional points')
-        from bpuverify.common.coverage.rtl import build_report
+        from suites.frontend.bpu.coverage.rtl import build_report
         native = build_report(execution/'rtl-coverage-manifest.json',output/'rtl-line-coverage.json')
         if not args.select and set(native['dut']) != set(NAMES):
             raise ValueError('full regression did not measure all ten DUTs')

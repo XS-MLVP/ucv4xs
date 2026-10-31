@@ -3,9 +3,9 @@ import json
 
 import pytest
 
-from bpuverify.bpu.case.sc_early_learning import run
-from bpuverify.bpu.coverage.sc_early_learning import Coverage
-from bpuverify.bpu.model.sc_early_learning import PROFILES
+from suites.frontend.bpu.bpu.case.sc_early_learning import run
+from suites.frontend.bpu.bpu.coverage.sc_early_learning import Coverage
+from suites.frontend.bpu.bpu.model.sc_early_learning import PROFILES
 
 
 @pytest.mark.feature('BPU-INT-032')

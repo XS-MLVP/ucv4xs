@@ -6,9 +6,9 @@ from types import SimpleNamespace as NS
 import pytest
 from toffee import Scoreboard
 
-from bpuverify.bpu.checker.indirect_service import IndirectServiceChecks
-from bpuverify.bpu.coverage.indirect_service import IndirectServiceCoverage
-from bpuverify.bpu.model.ittage_service import PC,PATHS,TARGETS,STREAM_PC,pending_plan,offered_payload,ENTRY_WIDTH
+from suites.frontend.bpu.bpu.checker.indirect_service import IndirectServiceChecks
+from suites.frontend.bpu.bpu.coverage.indirect_service import IndirectServiceCoverage
+from suites.frontend.bpu.bpu.model.ittage_service import PC,PATHS,TARGETS,STREAM_PC,pending_plan,offered_payload,ENTRY_WIDTH
 from tests.bpu.scoreboard.test_indirect_sources import pending_program,query_path,ENABLED
 from tests.bpu.scoreboard.test_direction_sources import quiet
 

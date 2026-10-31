@@ -1,9 +1,9 @@
 """A history is not an atomic commit group when its two results service separately."""
 import pytest
 
-from bpuverify.bpu.case.mixed_visibility import check_mixed_visibility
-from bpuverify.bpu.coverage.mixed_visibility import MixedVisibilityCoverage
-from bpuverify.bpu.model.tage.mixed_visibility import PROGRAMS
+from suites.frontend.bpu.bpu.case.mixed_visibility import check_mixed_visibility
+from suites.frontend.bpu.bpu.coverage.mixed_visibility import MixedVisibilityCoverage
+from suites.frontend.bpu.bpu.model.tage.mixed_visibility import PROGRAMS
 
 
 @pytest.mark.feature('BPU-INT-086')

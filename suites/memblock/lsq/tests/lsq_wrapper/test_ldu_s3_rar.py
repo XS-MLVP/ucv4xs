@@ -1,11 +1,13 @@
 """Same18 original RAR routing/capacity programs, corrected native S3 fields."""
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.lsq_wrapper.types import Address, Data
-from lsqverify.replay.types import Cause
-from lsqverify.vlq.types import QueuePtr, RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.lsq_wrapper.types import Address, Data
+from suites.memblock.lsq.replay.types import Cause
+from suites.memblock.lsq.vlq.types import QueuePtr, RobPtr
 from .ldu_s3_owners import LduS3RarOwners as LduRarOwners
 from .memory_owners import StoreOwner, cached_load
 
@@ -88,7 +90,7 @@ async def test_LDU_full_96_RAR_original_readers_oldest_query_needs_no_allocation
     await trace.dispatch(loads=loads)
     for n, load in enumerate(loads[1:]):
         await trace.pipeline(load, (n+lane_rotation)%3)
-        assert not lsq.observed["io_toLsqEnqCtrl_lqDeq_valid"] and not lsq.observed["io_lqEmpty"]
+        assert not lsq.observed[P.p_toLsqEnqCtrl_lqDeq_valid] and not lsq.observed[P.p_lqEmpty]
     assert not trace.loads[0]["sent"] and all(s["sent"] and not s["completed"] for s in trace.loads[1:])
     lsq.emit("ldu_full_RAR_public_ownership", original_young_readers=96, oldest_UID=trace.loads[0]["uid"],
              head_releases=0, revokes=0, redirects=0, all_young_S3_returned=True,

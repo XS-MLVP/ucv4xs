@@ -1,11 +1,11 @@
 """PHR profiles use history windows and XOR folding, not uniform writes."""
-from bpuverify.common.model.configuration import *
+from suites.frontend.bpu.models.configuration import *
 
 import pytest
 
-from bpuverify.common.model.folded_history import PHR_FOLD_LAYOUT
-from bpuverify.common.model.folded_history import folded_history_values
-from bpuverify.common.model.folded_history import validate_folded_history_layout
+from suites.frontend.bpu.models.folded_history import PHR_FOLD_LAYOUT
+from suites.frontend.bpu.models.folded_history import folded_history_values
+from suites.frontend.bpu.models.folded_history import validate_folded_history_layout
 
 
 @pytest.mark.parametrize("history", (0, 8, 15, 32, 256, 512, 2048, 65536, (1 << PHR_BITS) - 1, (1 << PHR_STORAGE_BITS) - 1))

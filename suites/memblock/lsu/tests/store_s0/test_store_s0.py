@@ -15,9 +15,9 @@ import random
 
 import pytest
 
-from lsuverify.common.robptr import LEVEL_FLUSH, LEVEL_FLUSH_AFTER, redirect, no_redirect
-from lsuverify.store_s0.coverage import S0_CASES, StoreS0Coverage
-from lsuverify.store_s0.env import (
+from suites.memblock.lsu.pointers import LEVEL_FLUSH, LEVEL_FLUSH_AFTER, redirect, no_redirect
+from suites.memblock.lsu.store_s0.coverage import S0_CASES, StoreS0Coverage
+from suites.memblock.lsu.store_s0.env import (
     ENTRANCE_SCALAR_ISSUE,
     ENTRANCE_UNALIGN_TAIL,
     STIN_FIELDS,

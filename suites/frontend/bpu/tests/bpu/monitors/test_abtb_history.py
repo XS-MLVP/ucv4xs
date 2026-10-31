@@ -2,9 +2,9 @@
 from copy import deepcopy
 
 import pytest
-from bpuverify.bpu.monitor.abtb.history import ObservationHistory, abtb_witness
-from bpuverify.bpu.checker.abtb.stream import PairChecks
-from bpuverify.common.env.trace import trace_exports
+from suites.frontend.bpu.bpu.monitor.abtb.history import ObservationHistory, abtb_witness
+from suites.frontend.bpu.bpu.checker.abtb.stream import PairChecks
+from suites.frontend.bpu.runtime.trace import trace_exports
 
 
 def frame(tick):

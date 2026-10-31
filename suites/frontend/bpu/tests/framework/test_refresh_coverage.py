@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from bpuverify.common.pytest.evidence import collection_digest
-from bpuverify.common.pytest.evidence import fingerprint
+from suites.frontend.bpu.pytest_plugins.evidence import collection_digest
+from suites.frontend.bpu.pytest_plugins.evidence import fingerprint
 from tools import refresh_coverage as refresh
 
 
@@ -162,7 +162,7 @@ def test_new_source_files_and_dut_changes_are_included_in_automatic_epoch(tmp_pa
     monkeypatch.setattr(refresh, 'find_spec', lambda name: type('Spec', (), {
         'origin': None, 'submodule_search_locations': []})())
     for name in ('pytest.ini', 'requirements.txt', 'verification_plan.json',
-                 'bpuverify/new.py', 'tests/unit.py', 'tools/runner.py',
+                 'new.py', 'tests/unit.py', 'tools/runner.py',
                  'rtl/bpu/test.v', 'dut/bpu/native.so'):
         path = tmp_path / name; path.parent.mkdir(parents=True, exist_ok=True); path.write_text(name)
     before = refresh.source_epoch()

@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "date": "2026-10-31",
+  "active_native_tests": [],
+  "open_handles": [],
+  "managed_results_preserved": [
+    "results/ucv-namespace-final-20261031",
+    "results/ucv-namespace-clean-final-20261031"
+  ],
+  "deleted_files": [
+    {
+      "path": "suites/memblock/lsq/memory-direct.fst",
+      "bytes": 253101,
+      "sha256": "c213066edc4a349839ba5de79bdeca5faecf5cef4bcf1dc35d181cb1bab31888",
+      "reason": "Loose default native output generated during namespace-refactor validation; managed run evidence preserved"
+    },
+    {
+      "path": "suites/frontend/ifu/VPredCheckerDut_coverage.dat",
+      "bytes": 6295274,
+      "sha256": "50a65cc7bba332aad583f0f782ccce6f1647f1443955282d38b0aea10b157a46",
+      "reason": "Loose default native output generated during namespace-refactor validation; managed run evidence preserved"
+    },
+    {
+      "path": "suites/frontend/ifu/VIfuUncacheUnitDut_coverage.dat",
+      "bytes": 244332,
+      "sha256": "e76a93fb2c5f3bc5d72b664585e7170b41224d8c4c399045956f7759028b3f8b",
+      "reason": "Loose default native output generated during namespace-refactor validation; managed run evidence preserved"
+    },
+    {
+      "path": "suites/frontend/ifu/memory-direct.fst",
+      "bytes": 562711,
+      "sha256": "c4f9bc84d5358bc0be78e6b40e9e1244f266a691191fd83137ab57c3e92b27ec",
+      "reason": "Loose default native output generated during namespace-refactor validation; managed run evidence preserved"
+    },
+    {
+      "path": "suites/frontend/ftq/memory-direct.fst",
+      "bytes": 17243,
+      "sha256": "14794968565e6d6072716ae89923d984f297c57874307111188c7470c178883f",
+      "reason": "Loose default native output generated during namespace-refactor validation; managed run evidence preserved"
+    },
+    {
+      "path": "suites/frontend/icache/memory-direct.fst",
+      "bytes": 8775,
+      "sha256": "6fd3f1ce007d4d9a195815e63939aaf244f429002acc1e73e3f9338ada7ff9ae",
+      "reason": "Loose default native output generated during namespace-refactor validation; managed run evidence preserved"
+    },
+    {
+      "path": "suites/frontend/bpu/memory-direct.fst",
+      "bytes": 384118,
+      "sha256": "573bc4661c6b6c931abca1c2eac416b96434a55b3c8794010fba75017a45cb8f",
+      "reason": "Loose default native output generated during namespace-refactor validation; managed run evidence preserved"
+    }
+  ],
+  "deleted_bytes": 7765554,
+  "limits": [
+    "Deleted loose waveforms and coverage files are no longer available; do not use them as evidence.",
+    "Committed manifests and managed coverage artifacts remain untouched."
+  ]
+}

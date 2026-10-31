@@ -5,7 +5,7 @@
 
 ## 可重复的相位复现
 
-入口为 `python3 -m bpuverify.common.coverage.phase_audit`，结果为
+入口为 `python3 -m suites.frontend.bpu.coverage.phase_audit`，结果为
 `results/coverage-phase-audit.json`。它原样编译 `rtl/tage/WriteBuffer.sv`，
 通过正常端口写入，内部寄存器和条件仅只读观测，不改 RTL、不改正式 DUT、
 不改正式 `.dat`。准备后清零的是独立诊断模型的计数，不是正式回归数据。
@@ -28,7 +28,7 @@ C 的 tag 和 counter 始终应保持。每一笔后额外保存原始 counter �
 复现命令：
 
 ```sh
-PYTHONPATH=/usr/local/share/picker/python python3 -m bpuverify.common.coverage.phase_audit \
+PYTHONPATH=/usr/local/share/picker/python python3 -m suites.frontend.bpu.coverage.phase_audit \
   --verilator /opt/verilator5/bin/verilator \
   --verilator /opt/verilator-5.052/bin/verilator \
   --o0-control --output results/coverage-phase-audit.json
@@ -70,7 +70,7 @@ coverage counter，再计算本拍条件并执行真实寄存器更新。5.026 `
 ## 正式报告与恢复
 
 新包保留 `build-provenance.json`，记录插桩编译器、选项、原生处理器路径、
-原始 export 目录、主 RTL 与信号结构指纹。`bpuverify.common.coverage.rtl` 校验
+原始 export 目录、主 RTL 与信号结构指纹。`suites.frontend.bpu.coverage.rtl` 校验
 指纹并选择该包记录的处理器；报告把编译器与处理器分开记录。
 历史包缺少来源时不冒称 PATH 上的处理器就是它的插桩编译器。
 
@@ -277,7 +277,7 @@ TAGE 剩余112赋值+8块头、RAS16赋值及 MainBTB8分支的源守卫证据�
 
 前节候选随后已迁入现有 `RasAgent`，不是临时子类：公开 `RasOperation`、
 相邻 `act_many()`、完整 committed 被动观测及 `restore/recover(cfi_pc=...)`。
-独立模型、静态 Bundle/@on Monitor 和覆盖定义放入 `bpuverify`；测试只组织
+独立模型、静态 Bundle/@on Monitor 和覆盖定义放入 `suites.frontend.bpu`；测试只组织
 场景与比较，不暴露边沿/get-set/asyncio gather。覆盖定义不反向依赖测试刺激。
 登记 BPU-RAS-013/014/015，计划增至 258 点，当前最新已审计正式报告仍为
 255 点和 RAS 520/585，不能提前称作正式 PASS。

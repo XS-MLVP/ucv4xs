@@ -7,11 +7,11 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.checker.micro_forwarding import MicroForwardingChecks
-from bpuverify.bpu.coverage.micro_forwarding import MicroForwardingCoverage,forwarding_coverage
-from bpuverify.bpu.model.selection import Kind,StackAction,fallthrough
-from bpuverify.ubtb.model.semantic import UbtbEvents,UbtbReference
-from bpuverify.ubtb.transaction.types import BranchTraining
+from suites.frontend.bpu.bpu.checker.micro_forwarding import MicroForwardingChecks
+from suites.frontend.bpu.bpu.coverage.micro_forwarding import MicroForwardingCoverage,forwarding_coverage
+from suites.frontend.bpu.bpu.model.selection import Kind,StackAction,fallthrough
+from suites.frontend.bpu.ubtb.model.semantic import UbtbEvents,UbtbReference
+from suites.frontend.bpu.ubtb.transaction.types import BranchTraining
 
 
 PC,TARGET,POSITION = 0x40000800,0x40020800,5
@@ -188,7 +188,7 @@ def test_missing_accept_and_reused_source_are_not_proof():
 
 def test_case_has_no_signal_edge_get_set_or_asyncio_task_orchestration():
     for name in ('micro_capacity','micro_forwarding'):
-        tree = ast.parse(Path(f'bpuverify/bpu/case/{name}.py').read_text())
+        tree = ast.parse(Path(f'bpu/case/{name}.py').read_text())
         assert not any(isinstance(node,ast.ClassDef) for node in ast.walk(tree))
         for node in ast.walk(tree):
             if isinstance(node,ast.Call):

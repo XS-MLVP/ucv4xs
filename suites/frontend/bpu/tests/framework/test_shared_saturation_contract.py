@@ -1,8 +1,8 @@
 """Human-readable requirements and source associations precede native proof."""
 import json
 from pathlib import Path
-from bpuverify.bpu.coverage.shared_saturation import RULES,lifetime_coverage
-from bpuverify.bpu.model.tage.shared_saturation import PROGRAMS
+from suites.frontend.bpu.bpu.coverage.shared_saturation import RULES,lifetime_coverage
+from suites.frontend.bpu.bpu.model.tage.shared_saturation import PROGRAMS
 
 
 def test_requirement_is_current_learning_ownership_not_a_storage_coordinate():
@@ -20,7 +20,7 @@ def test_existing_feature_keeps_the_old_capacity_requirement_and_adds_a_new_pair
     for status in ('reached','checked'):
         assert 'kunminghu_v3.bpu.owned-direction-capacity.'+status in feature['evidence']['coverage'][status]
         assert lifetime_coverage(status).instance in feature['evidence']['coverage'][status]
-    assert 'bpuverify/bpu/checker/shared_saturation.py' in feature['evidence']['checks']
+    assert 'bpu/checker/shared_saturation.py' in feature['evidence']['checks']
 
 
 def test_new_schemas_cross_only_declared_semantic_profiles_and_obligations():

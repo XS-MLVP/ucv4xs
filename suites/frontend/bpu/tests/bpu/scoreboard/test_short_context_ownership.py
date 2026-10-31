@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from bpuverify.bpu.model.short_context_ownership import (
+from suites.frontend.bpu.bpu.model.short_context_ownership import (
     OLDER_PATHS, OWNERS, declared_paths, program, validate_paths)
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)

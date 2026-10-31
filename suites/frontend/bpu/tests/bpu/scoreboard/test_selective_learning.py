@@ -3,12 +3,12 @@ from copy import deepcopy
 from dataclasses import replace
 from functools import lru_cache
 import pytest
-from bpuverify.bpu.model.pipeline import Outcome, Resolution, Redirect
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.bpu.model.tage.forwarding import PC
-from bpuverify.bpu.model.tage.service import STREAM_PC, STREAM_POSITION, learning_inflight, pending_plan
-from bpuverify.bpu.model.tage.selective_learning import PROGRAMS, LATER_PROGRAMS, ALL_PROGRAMS, DIRECTIONS, Program, preparation, eligible_counter
-from bpuverify.bpu.coverage.selective_learning import Coverage, RULES
+from suites.frontend.bpu.bpu.model.pipeline import Outcome, Resolution, Redirect
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.tage.forwarding import PC
+from suites.frontend.bpu.bpu.model.tage.service import STREAM_PC, STREAM_POSITION, learning_inflight, pending_plan
+from suites.frontend.bpu.bpu.model.tage.selective_learning import PROGRAMS, LATER_PROGRAMS, ALL_PROGRAMS, DIRECTIONS, Program, preparation, eligible_counter
+from suites.frontend.bpu.bpu.coverage.selective_learning import Coverage, RULES
 from tests.bpu.scoreboard.test_direction_forwarding import establish, resolution, values
 from tests.bpu.scoreboard.test_direction_service import additional_history, via, streaming_query
 from tests.bpu.scoreboard.test_direction_sources import quiet, revisit

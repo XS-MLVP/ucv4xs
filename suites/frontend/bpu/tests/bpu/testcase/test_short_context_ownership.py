@@ -1,9 +1,9 @@
 """One DUT retains two branches across shared short and distinct older paths."""
 import pytest
 
-from bpuverify.bpu.case.short_context_ownership import check_short_context_ownership
-from bpuverify.bpu.coverage.short_context_ownership import ShortContextCoverage
-from bpuverify.bpu.model.short_context_ownership import ShortContextProgram, PROFILES
+from suites.frontend.bpu.bpu.case.short_context_ownership import check_short_context_ownership
+from suites.frontend.bpu.bpu.coverage.short_context_ownership import ShortContextCoverage
+from suites.frontend.bpu.bpu.model.short_context_ownership import ShortContextProgram, PROFILES
 
 
 @pytest.mark.feature('BPU-INT-103')
@@ -18,9 +18,9 @@ async def test_short_learning_shares_old_paths_but_isolates_branch_pcs(bpu_agent
         coverage.attach_evidence(request.node.user_properties)
 
 
-from bpuverify.bpu.case.short_context_ownership import check_short_direction_lifetime
-from bpuverify.bpu.coverage.short_context_ownership import ShortDirectionCoverage
-from bpuverify.bpu.model.short_context_ownership import ShortDirectionProgram,DIRECTION_PROFILES
+from suites.frontend.bpu.bpu.case.short_context_ownership import check_short_direction_lifetime
+from suites.frontend.bpu.bpu.coverage.short_context_ownership import ShortDirectionCoverage
+from suites.frontend.bpu.bpu.model.short_context_ownership import ShortDirectionProgram,DIRECTION_PROFILES
 
 
 @pytest.mark.feature('BPU-INT-103')
@@ -36,9 +36,9 @@ async def test_short_experience_changes_direction_and_recovers_without_long_subs
         coverage.attach_evidence(request.node.user_properties)
 
 
-from bpuverify.bpu.model.short_context_ownership import ShortCrossBranchProgram,WORKING_SET_PROFILES
-from bpuverify.bpu.coverage.short_context_ownership import ShortCrossBranchCoverage
-from bpuverify.bpu.case.short_context_ownership import check_short_cross_branch_working_set
+from suites.frontend.bpu.bpu.model.short_context_ownership import ShortCrossBranchProgram,WORKING_SET_PROFILES
+from suites.frontend.bpu.bpu.coverage.short_context_ownership import ShortCrossBranchCoverage
+from suites.frontend.bpu.bpu.case.short_context_ownership import check_short_cross_branch_working_set
 
 # Measured on the 2026-10-21 full BPU program run; scheduling hint only.
 pytestmark = pytest.mark.estimated_runtime(597)

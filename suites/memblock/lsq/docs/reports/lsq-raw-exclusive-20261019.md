@@ -1,5 +1,8 @@
 # RAW exclusive128：75例实际PASS、覆盖闭环及S3生产者准入纠正
 
+> 路径迁移说明（2026-10-31）：本文记录中的 *verify/common 为当时源码路径；当前实现已迁入 suites.<group>.<suite> 工程根。历史判定、命令与哈希不据此重标；当前映射见仓库 docs/lessons/suite-namespace-refactor-20261031.md。
+
+
 **`lsq-raw-exclusive-06`实际75 PASS，452份启动/结束源全部一致。** 包含RAW叶子21例、
 Replay叶子48例、保留53份真实RTL的Wrapper六例。不是LSQ整体验收，既有RAR、strict
 disabled、SID、WB/zero/释放顺序普通FAIL不抵消，完整目标仍active。
@@ -12,7 +15,7 @@ disabled、SID、WB/zero/释放顺序普通FAIL不抵消，完整目标仍active
 57 Load原义务；不是第129个Store，不一般性放宽半环年龄。
 
 02先用原参考实际运行**63例27 PASS/36 FAIL**；全部36失败为RAW首查或Replay cause10
-更新的半环ValueError，不计RTL反例，原件保留。新[显式opt-in参考](../../lsqverify/sq_endpoint/model.py)
+更新的半环ValueError，不计RTL反例，原件保留。新[显式opt-in参考](../../sq_endpoint/model.py)
 仅接受Load-exclusive向前差128，并仅对Replay cause10扩展比较；shared参考、RTL、
 knownness、比较mask和物理PA字节安全检查不变。普通`sq_after`仍拒绝半环。
 

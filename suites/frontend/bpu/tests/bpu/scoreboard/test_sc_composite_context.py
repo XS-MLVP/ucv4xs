@@ -1,8 +1,8 @@
 """Deadline diagnostics and latched failures stay in reusable check components."""
 from types import SimpleNamespace
 import pytest
-from bpuverify.bpu.checker.sc.history_training import Checks as HistoryChecks
-from bpuverify.bpu.checker.sc.nonzero_scenarios import Checks as NonzeroChecks
+from suites.frontend.bpu.bpu.checker.sc.history_training import Checks as HistoryChecks
+from suites.frontend.bpu.bpu.checker.sc.nonzero_scenarios import Checks as NonzeroChecks
 
 
 @pytest.mark.parametrize('checker_type', (HistoryChecks, NonzeroChecks))

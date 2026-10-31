@@ -23,9 +23,9 @@ def audit(name):
     checker=run/"verification-source/tests/normal_mixed/check.py"
     tree=ast.parse(checker.read_text())
     assert not any(isinstance(n,ast.Attribute) and n.attr in("model","last_change","expected_before","expected_after","dut","_instances") for n in ast.walk(tree))
-    assert not any(isinstance(n,ast.ImportFrom) and n.module and (n.module.startswith("lsqverify") or n.module.startswith("tests")) for n in ast.walk(tree))
+    assert not any(isinstance(n,ast.ImportFrom) and n.module and (n.module.startswith('lsqverify') or n.module.startswith("tests")) for n in ast.walk(tree))
     baseline=json.loads((ROOT/"results/lsq-progress-regression-12/source-evidence.json").read_text())["files"]
-    refs={k:v for k,v in baseline.items() if k.startswith("lsqverify/")}
+    refs={k:v for k,v in baseline.items() if k.startswith('lsqverify/')}
     assert len(refs)==149 and all(source[k]==v for k,v in refs.items())
     assert not list((run/"cases").rglob("*.jsonl")) and not list((run/"cases").rglob("*.fst")) and not list((run/"cases").rglob("*.vcd"))
     cases=[];seen=set();seeds=set();counts=Counter();native_records=0;bytes_total=0;completed=0

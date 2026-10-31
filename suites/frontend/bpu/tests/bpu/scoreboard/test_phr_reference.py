@@ -1,17 +1,17 @@
 """Hand-derived, exhaustive pointer and bit-basis checks for the independent model."""
-from bpuverify.common.model.configuration import *
+from suites.frontend.bpu.models.configuration import *
 from copy import deepcopy
 from itertools import product
 
 import pytest
 
-from bpuverify.bpu.model.phr.model import BpuPhrReference
-from bpuverify.bpu.model.phr.model import LAYOUT
-from bpuverify.bpu.model.phr.model import MASK
-from bpuverify.bpu.model.phr.model import fold
-from bpuverify.bpu.model.phr.model import folds
-from bpuverify.bpu.model.phr.model import path_hash
-from bpuverify.bpu.model.phr.model import subtract
+from suites.frontend.bpu.bpu.model.phr.model import BpuPhrReference
+from suites.frontend.bpu.bpu.model.phr.model import LAYOUT
+from suites.frontend.bpu.bpu.model.phr.model import MASK
+from suites.frontend.bpu.bpu.model.phr.model import fold
+from suites.frontend.bpu.bpu.model.phr.model import folds
+from suites.frontend.bpu.bpu.model.phr.model import path_hash
+from suites.frontend.bpu.bpu.model.phr.model import subtract
 
 
 def boundary():

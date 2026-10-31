@@ -13,12 +13,8 @@ and only when the FTQ index matches, otherwise the queue must survive intact.
 from __future__ import annotations
 
 import pytest
-from toffee import ClockCycles
 
-from icacheverify.waylookup.case.definitions import entry
-from icacheverify.waylookup.driver.encoding import encode_control
-from icacheverify.waylookup.driver.encoding import encode_write
-from icacheverify.waylookup.transaction.types import WayLookupWrite
+from suites.frontend.icache.waylookup.case.definitions import entry
 
 
 @pytest.mark.feature("ICACHE-WAYLOOKUP-004")
@@ -179,17 +175,7 @@ async def test_flush_in_the_write_cycle_discards_the_entry_and_its_exception(way
     """
     agent = waylookup_agent
     payload = entry(0x7201, exception=True)
-    agent.write_payload_drivers[0].set(
-        encode_write(WayLookupWrite(entry=payload, ftq_flag=0, ftq_value=4)))
-    agent.write_valid_drivers[0].set({"valid": 1})
-    agent.control_driver.set(encode_control(flush=1))
-    await ClockCycles(agent.dut.clock, 1)
-    agent.write_valid_drivers[0].set({"valid": 0})
-    agent.control_driver.set(encode_control())
-    agent.model.step(flush=1, write_fire=1,
-                     write_entries=(agent._resident(payload),))
-    await ClockCycles(agent.dut.clock, 1)
-    agent.model.step()
+    await agent.write_with_flush(payload, ftq_value=4)
 
     agent.expect_empty()
     assert agent.rtl_write_ready() == 1, (

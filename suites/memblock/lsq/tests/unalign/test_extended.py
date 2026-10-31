@@ -1,10 +1,12 @@
+
 from dataclasses import asdict, replace
 import random
 
 import pytest
 
-from lsqverify.raw.types import SqPtr
-from lsqverify.unalign.types import Inputs, Recovery, Request, canceled, encode, serial
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.unalign.types import Inputs, Recovery, Request, canceled, encode, serial
 
 
 @pytest.mark.parametrize("lane", (0, 1))
@@ -15,7 +17,7 @@ async def test_address_ready_full_flags_not_just_physical_value(unalign, lane, f
     wrong = replace(req.sq, **{"first" if field == "first_flag" else "second": True})
     await env.cycle({lane: req}, address_ready=wrong)
     await env.idle(3)
-    assert not env.last_change["accepted"] and not env.observed["io_toDeqModule_valid"]
+    assert not env.last_change["accepted"] and not env.observed[P.p_toDeqModule_valid]
     await env.enqueue(req, lane=lane)
     env.arm("UQ-ADMIT." + field)
     await env.drain()
@@ -29,7 +31,7 @@ async def test_two_valid_inputs_only_current_addr_ready_identity_fires(unalign, 
     assert len(change["accepted"]) == 1 and change["accepted"][0]["input_lane"] == first_lane
     await env.enqueue(second, lane=1 - first_lane)
     env.arm(("UQ-ADMIT.multiple_valid", "UQ-CAPACITY.two", "UQ-ORDER.gaps", "UQ-FORWARD.different_pages"))
-    assert env.observed["io_forwardValid_0"] and env.observed["io_forwardValid_1"]
+    assert env.observed[P.p_forwardValid_0] and env.observed[P.p_forwardValid_1]
     await env.drain()
 
 
@@ -41,7 +43,7 @@ async def test_full_stalls_even_when_head_consumes_in_same_cycle(unalign):
     pending = env.request(9, page=0xF00000001)
     for _ in range(4):
         change = await env.enqueue(pending)
-        assert not change["accepted"] and not env.pre_observed["io_fromStaS1_0_ready"]
+        assert not change["accepted"] and not env.pre_observed[P.p_fromStaS1_0_ready]
     env.arm(("UQ-CAPACITY.full", "UQ-CAPACITY.two"), old)
     change = await env.enqueue(pending, ready=True)
     assert len(change["consumed"]) == 1 and not change["accepted"]
@@ -103,7 +105,7 @@ async def test_recovery_cancels_suffix_then_same_slots_finish_new_identity(unali
     cutoff = {"none": 14, "equal": 13, "younger": 12, "all": 10, "repeated": 13}[kind]
     pending = env.request(15, page=0x876543210)
     change = await env.enqueue(pending, redirect=Recovery(True, SqPtr.encode(cutoff)))
-    assert not change["accepted"] and env.pre_observed["io_toDeqModule_valid"]
+    assert not change["accepted"] and env.pre_observed[P.p_toDeqModule_valid]
     if not change["canceled"]:
         env.arm(("UQ-REDIRECT.none", "UQ-REDIRECT.block_enqueue"), old)
         await env.drain()
@@ -149,7 +151,7 @@ async def test_committed_head_consumption_overlaps_recovery_of_younger_tail(unal
     pending = env.request(15, page=0x555555555)
     change = await env.enqueue(pending, ready=True, redirect=Recovery(True, SqPtr.encode(13)))
     assert len(change["consumed"]) == len(change["canceled"]) == 1 and not change["accepted"]
-    assert not env.observed["io_toDeqModule_valid"]
+    assert not env.observed[P.p_toDeqModule_valid]
     env.arm("UQ-REDIRECT.consume_survivor", change["canceled"], reuse=True)
     await env.enqueue(pending, lane=1)
     await env.drain()

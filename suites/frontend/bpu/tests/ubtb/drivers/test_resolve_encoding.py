@@ -3,9 +3,9 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.ubtb.agent.main import UbtbAgent
-from bpuverify.ubtb.transaction.types import UbtbBatchTraining
-from bpuverify.ubtb.transaction.types import UbtbBranchFeedback
+from suites.frontend.bpu.ubtb.agent.main import UbtbAgent
+from suites.frontend.bpu.ubtb.transaction.types import UbtbBatchTraining
+from suites.frontend.bpu.ubtb.transaction.types import UbtbBranchFeedback
 
 
 BRANCH = UbtbBranchFeedback(0x80002460, 1, 7, 3, ras_action=1, mispredict=1)
@@ -38,7 +38,7 @@ def test_resolve_encoder_ignores_invalid_mispredict_for_one_hot_validation():
     (UbtbBatchTraining(1 << 50, ()), 'PC'),
     *[(UbtbBatchTraining(0, (replace(BRANCH, **{field: value}),)), field)
       for field, value in (
-          ('target', 1 << 50), ('position', 16), ('branch_type', 4),
+          ('target', 1 << 50), ('position', 32), ('branch_type', 4),
           ('ras_action', 4), ('taken', 2), ('valid', 2), ('mispredict', 2),
       )],
 ])

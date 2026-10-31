@@ -24,8 +24,8 @@ from uuid import uuid4
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
-from bpuverify.common.pytest.regression import PROFILES
-from bpuverify.common.pytest.points import summary_for, validate_report
+from suites.frontend.bpu.pytest_plugins.regression import PROFILES
+from suites.frontend.bpu.pytest_plugins.points import summary_for, validate_report
 NAMES = ('abtb','bpu','ittage','mbtb','ras','sc','tage','ubtb','uras','utage')
 FLOOR = 86436216832
 DEFAULT_WORKERS = min(32, len(os.sched_getaffinity(0)) if hasattr(os, 'sched_getaffinity')
@@ -53,8 +53,8 @@ def source_epoch():
     lock = ROOT / 'dependencies/versions.json'
     if lock.is_file():
         paths.add(lock)
-    for directory in ('bpuverify', 'tests', 'tools'):
-        paths.update((ROOT / directory).rglob('*.py'))
+    from ucv.runtime import suite_python_sources
+    paths.update(suite_python_sources(ROOT))
     for directory in ('rtl', 'dut'):
         paths.update(path for path in (ROOT / directory).rglob('*') if path.is_file()
                      and (path.suffix in ('.py', '.so', '.v', '.sv', '.yaml', '.json')
@@ -90,8 +90,8 @@ def pytest_command(output, workers, profile='production'):
 
 def execution_inputs(run, expected, verdicts, *, require_coverage=True):
     """Revalidate current worker receipts; never discover inputs in old results."""
-    from bpuverify.common.pytest.evidence import collection_digest
-    from bpuverify.common.pytest.evidence import fingerprint
+    from suites.frontend.bpu.pytest_plugins.evidence import collection_digest
+    from suites.frontend.bpu.pytest_plugins.evidence import fingerprint
     evidence = read(run / 'evidence.json')
     if (evidence.get('format') != 'bpu-pytest-evidence' or evidence.get('version') != 1
             or evidence.get('pytest_exitstatus') != 0 or evidence.get('integrity_errors')
@@ -352,7 +352,7 @@ def main(argv=None):
                             if args.select else execution_inputs(artifact_run, expected, tests))
         for name in ('feature-points.json', 'rtl-coverage-manifest.json', 'functional-manifest.json'):
             shutil.copyfile(artifact_run / name, output / name)
-        from bpuverify.common.coverage.rtl import build_report
+        from suites.frontend.bpu.coverage.rtl import build_report
         from toffee.coverage_report import load_functional_coverage
         from toffee.coverage_report import generate_unified_coverage_report
         native = build_report(output/'rtl-coverage-manifest.json', output/'rtl-line-coverage.json')
@@ -396,7 +396,7 @@ def main(argv=None):
             write(output/'lost-baseline-lines.json', losses)
             raise ValueError('full regression lost previously covered source lines')
         functional = load_functional_coverage(functional_paths)
-        from bpuverify.common.coverage.parallel import validate_parallel_case_coverage
+        from suites.frontend.bpu.coverage.parallel import validate_parallel_case_coverage
         matrices = validate_parallel_case_coverage(functional, profile=args.regression_profile)
         write(output/'matrix-acceptance.json', matrices)
         write(output/'functional-coverage.json', functional)

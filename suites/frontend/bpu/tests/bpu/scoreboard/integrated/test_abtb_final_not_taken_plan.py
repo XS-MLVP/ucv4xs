@@ -1,21 +1,21 @@
 import ast
 from pathlib import Path
 from copy import deepcopy
-import bpuverify.bpu.case.abtb.final_not_taken as production_scenario
+import suites.frontend.bpu.bpu.case.abtb.final_not_taken as production_scenario
 
 SCENARIO = Path(production_scenario.__file__)
 import pytest
-from bpuverify.bpu.model.abtb.final_not_taken import nonzero_violations
-from bpuverify.bpu.case.abtb.final_not_taken_plan import PILOT_CASES
-from bpuverify.bpu.model.abtb.final_not_taken import PHASES
-from bpuverify.bpu.model.abtb.final_not_taken import plan
-from bpuverify.bpu.case.abtb.final_not_taken_plan import programs
-from bpuverify.bpu.case.abtb.final_not_taken_plan import selected_program
-from bpuverify.bpu.model.abtb.final_not_taken import capacity
-from bpuverify.bpu.case.abtb.final_not_taken_plan import required_operations
-from bpuverify.bpu.case.abtb.final_not_taken_plan import input_qualified
-from bpuverify.bpu.case.abtb.final_not_taken_plan import final_comparison
-from bpuverify.bpu.case.abtb.alias_plan import checkpoint_route
+from suites.frontend.bpu.bpu.model.abtb.final_not_taken import nonzero_violations
+from suites.frontend.bpu.bpu.case.abtb.final_not_taken_plan import PILOT_CASES
+from suites.frontend.bpu.bpu.model.abtb.final_not_taken import PHASES
+from suites.frontend.bpu.bpu.model.abtb.final_not_taken import plan
+from suites.frontend.bpu.bpu.case.abtb.final_not_taken_plan import programs
+from suites.frontend.bpu.bpu.case.abtb.final_not_taken_plan import selected_program
+from suites.frontend.bpu.bpu.model.abtb.final_not_taken import capacity
+from suites.frontend.bpu.bpu.case.abtb.final_not_taken_plan import required_operations
+from suites.frontend.bpu.bpu.case.abtb.final_not_taken_plan import input_qualified
+from suites.frontend.bpu.bpu.case.abtb.final_not_taken_plan import final_comparison
+from suites.frontend.bpu.bpu.case.abtb.alias_plan import checkpoint_route
 
 
 @pytest.mark.parametrize('bank,entry_set',PILOT_CASES)
@@ -138,7 +138,7 @@ def test_scenario_keeps_clock_and_pin_scheduling_inside_drivers():
 @pytest.mark.parametrize('budget',[0,-1,True,1.5,65537])
 def test_invalid_observation_budget_rejected(budget):
     from types import SimpleNamespace
-    from bpuverify.bpu.checker.abtb.write import WriteChecker as BudgetedDirectChecks
+    from suites.frontend.bpu.bpu.checker.abtb.write import WriteChecker as BudgetedDirectChecks
     with pytest.raises(ValueError):BudgetedDirectChecks(SimpleNamespace(),max_frames=budget)
 
 
@@ -146,7 +146,7 @@ def test_invalid_observation_budget_rejected(budget):
 def test_real_guard_still_fails_with_context_at_configured_limit(budget):
     from types import SimpleNamespace
     from toffee import ScoreboardMismatch
-    from bpuverify.bpu.checker.abtb.write import WriteChecker as BudgetedDirectChecks
+    from suites.frontend.bpu.bpu.checker.abtb.write import WriteChecker as BudgetedDirectChecks
     checker=BudgetedDirectChecks(SimpleNamespace(),max_frames=budget)
     checker.records=[dict(tick=1)]*budget
     observation=SimpleNamespace(event=SimpleNamespace(tick=2),value={})
@@ -160,7 +160,7 @@ def test_real_guard_still_fails_with_context_at_configured_limit(budget):
 
 def test_default_budget_preserves_original_behavior():
     from types import SimpleNamespace
-    from bpuverify.bpu.checker.abtb.write import WriteChecker as BudgetedDirectChecks
+    from suites.frontend.bpu.bpu.checker.abtb.write import WriteChecker as BudgetedDirectChecks
     assert BudgetedDirectChecks(SimpleNamespace()).max_frames==20000
 
 

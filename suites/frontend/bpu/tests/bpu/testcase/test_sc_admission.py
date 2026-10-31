@@ -2,12 +2,12 @@
 import json
 import pytest
 
-from bpuverify.bpu.case.sc_admission import run,run_burst
-from bpuverify.bpu.coverage.sc_admission import Coverage,BurstCoverage,ReadOnlyCoverage
-from bpuverify.bpu.model.sc_admission import PROFILES,BURST_PROFILES,READ_ONLY_PROFILES
-from bpuverify.bpu.model.sc_admission import CONTEXT_BURST_PROFILES
-from bpuverify.bpu.coverage.sc_admission import ContextBurstCoverage
-from bpuverify.bpu.case.sc_admission import run_context_burst
+from suites.frontend.bpu.bpu.case.sc_admission import run,run_burst
+from suites.frontend.bpu.bpu.coverage.sc_admission import Coverage,BurstCoverage,ReadOnlyCoverage
+from suites.frontend.bpu.bpu.model.sc_admission import PROFILES,BURST_PROFILES,READ_ONLY_PROFILES
+from suites.frontend.bpu.bpu.model.sc_admission import CONTEXT_BURST_PROFILES
+from suites.frontend.bpu.bpu.coverage.sc_admission import ContextBurstCoverage
+from suites.frontend.bpu.bpu.case.sc_admission import run_context_burst
 
 # Measured on the 2026-10-21 full BPU program run; scheduling hint only.
 pytestmark = pytest.mark.estimated_runtime(78)

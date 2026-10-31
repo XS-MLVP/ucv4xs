@@ -2,10 +2,10 @@
 
 import pytest
 
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.bpu.case.phr_recovery import check_recovery
-from bpuverify.bpu.case.phr_direction_repair import check_override
-from bpuverify.bpu.case.phr_taken_wrap import check_taken_wrap
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.bpu.case.phr_recovery import check_recovery
+from suites.frontend.bpu.bpu.case.phr_direction_repair import check_override
+from suites.frontend.bpu.bpu.case.phr_taken_wrap import check_taken_wrap
 
 
 @pytest.mark.feature('BPU-INT-034')

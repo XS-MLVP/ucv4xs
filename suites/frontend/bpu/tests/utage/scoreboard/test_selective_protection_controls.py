@@ -4,14 +4,13 @@ from dataclasses import replace
 from types import SimpleNamespace,FunctionType
 import pytest
 from toffee import ScoreboardMismatch,TransferState
-from bpuverify.utage.model.semantic import Context,Events,UtageReference
-from bpuverify.utage.transaction.types import UtagePrediction,UtageTraining
+from suites.frontend.bpu.utage.model.semantic import Context, TRAIN_HISTORY_INDICES,Events,UtageReference
+from suites.frontend.bpu.utage.transaction.types import UtagePrediction,UtageTraining
 from tests.utage.scoreboard.test_semantic_model import lookup,feedback,learn,POSITIONS
 from tests.utage.scoreboard.test_read_lifetime_model import bases
-from bpuverify.utage.model.selective_protection import Program,MODES,RULES,PC,POSITION,READ_PCS
-from bpuverify.utage.checker.selective_protection import Checks
-from bpuverify.utage.coverage.selective_protection import Coverage
-
+from suites.frontend.bpu.utage.model.selective_protection import Program,MODES,RULES,PC,POSITION,READ_PCS
+from suites.frontend.bpu.utage.checker.selective_protection import Checks
+from suites.frontend.bpu.utage.coverage.selective_protection import Coverage
 
 
 def actual(prediction):
@@ -94,7 +93,7 @@ def test_direction_crossing_requires_exact_original_age_index_and_provider(first
     elif fault=='long-provider-borrowed':actuals[0].meta['abtbResult'][0]['tableId']=1
     elif fault=='wrong-match-history':response['frame']=replace(response['frame'],context=Context())
     elif fault=='wrong-response-direction':response['actual']=replace(response['actual'],taken=1-response['actual'].taken)
-    elif fault=='wrong-metadata-history':actuals[0].meta['foldedPathHistForTrain_hist'][0]['foldedHist']^=1
+    elif fault=='wrong-metadata-history':actuals[0].meta['foldedPathHistForTrain_hist'][TRAIN_HISTORY_INDICES[0]]['foldedHist']^=1
     else:effect['tick']=1000
     with pytest.raises(ScoreboardMismatch) as error:Checks(p).check_cohort(transfers,actuals,monitor,effect)
     assert error.value.context.request['point']

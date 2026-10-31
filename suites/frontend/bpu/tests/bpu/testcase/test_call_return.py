@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.bpu.transaction.types import BpuRedirect
-from bpuverify.bpu.transaction.types import BpuTraining
-from bpuverify.bpu.case.definitions import PREDICTION_LIMIT
+from suites.frontend.bpu.bpu.transaction.types import BpuRedirect
+from suites.frontend.bpu.bpu.transaction.types import BpuTraining
+from suites.frontend.bpu.bpu.case.definitions import PREDICTION_LIMIT
 
 
 CALL_PC = 0x4000_0800

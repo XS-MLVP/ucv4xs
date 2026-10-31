@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.mbtb.checker.assertions import matching_counter
-from bpuverify.mbtb.checker.assertions import matching_entry
-from bpuverify.mbtb.checker.assertions import train
-from bpuverify.mbtb.case.definitions import CONDITIONAL
+from suites.frontend.bpu.mbtb.checker.assertions import matching_counter
+from suites.frontend.bpu.mbtb.checker.assertions import matching_entry
+from suites.frontend.bpu.mbtb.checker.assertions import train
+from suites.frontend.bpu.mbtb.case.definitions import CONDITIONAL
 
 
 @pytest.mark.feature("BPU-MBTB-004")

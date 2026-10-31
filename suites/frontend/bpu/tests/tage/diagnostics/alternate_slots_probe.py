@@ -22,14 +22,14 @@ from toffee import Execution
 from toffee import Scoreboard
 from toffee import XCommClockBackend
 
-from bpuverify.tage.agent.main import TageAgent
-from bpuverify.tage.transaction.types import TageBaseBranch
-from bpuverify.tage.transaction.types import TageTraining
-from bpuverify.common.bundle.bindings import PortBinding
-from bpuverify.common.env.dut import initialize_dut_inputs
-from bpuverify.common.monitor.cycle import CycleMonitor
-from bpuverify.common.env.memory_direct import memory_signal
-from bpuverify.common.env.memory_direct import memory_signal_names
+from suites.frontend.bpu.tage.agent.main import TageAgent
+from suites.frontend.bpu.tage.transaction.types import TageBaseBranch
+from suites.frontend.bpu.tage.transaction.types import TageTraining
+from suites.frontend.bpu.ports.bindings import PortBinding
+from suites.frontend.bpu.runtime.dut import initialize_dut_inputs
+from suites.frontend.bpu.monitors.cycle import CycleMonitor
+from suites.frontend.bpu.runtime.memory_direct import memory_signal
+from suites.frontend.bpu.runtime.memory_direct import memory_signal_names
 
 ROOT = Path(__file__).resolve().parents[3]
 

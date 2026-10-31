@@ -1,11 +1,11 @@
 """Only semantic intent; agent owns inputs, monitors and pipeline completion."""
 import pytest
 
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.mbtb.case.replacement_overlap import check_replacement_overlap
-from bpuverify.mbtb.coverage.replacement_overlap import ReplacementCoverage
-from bpuverify.mbtb.model.replacement_overlap import CASES
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.mbtb.case.replacement_overlap import check_replacement_overlap
+from suites.frontend.bpu.mbtb.coverage.replacement_overlap import ReplacementCoverage
+from suites.frontend.bpu.mbtb.model.replacement_overlap import CASES
 
 
 @pytest.mark.feature('BPU-MBTB-030')

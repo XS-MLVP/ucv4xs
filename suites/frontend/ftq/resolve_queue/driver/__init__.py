@@ -1,0 +1,1 @@
+"""ResolveQueue encoding helpers."""

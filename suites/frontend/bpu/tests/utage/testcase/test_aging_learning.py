@@ -1,11 +1,11 @@
 """Global protection maintenance must not cancel simultaneous real learning."""
 import pytest
 
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.utage.case.aging_learning import check_aging_learning
-from bpuverify.utage.coverage.aging_learning import AgingLearningCoverage
-from bpuverify.utage.model.aging_learning import AgingLearningProgram, RULES
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.utage.case.aging_learning import check_aging_learning
+from suites.frontend.bpu.utage.coverage.aging_learning import AgingLearningCoverage
+from suites.frontend.bpu.utage.model.aging_learning import AgingLearningProgram, RULES
 
 
 @pytest.mark.feature('BPU-UTAGE-017')

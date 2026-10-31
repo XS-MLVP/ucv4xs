@@ -1,5 +1,8 @@
 # 行缺口对应的功能定义补全
 
+> 路径迁移说明（2026-10-31）：本报告仍属于原日期、基线和执行源码；实现文件已迁到工程根。可点击源码链接更新到当前位置，不据此重标历史 PASS/FAIL 或覆盖结论。参见[本轮命名空间迁移](../../../../docs/lessons/suite-namespace-refactor-20261031.md)。
+
+
 ## 范围和定义阶段结论
 
 本次先补定义，再设计/实现测试。范围是
@@ -85,12 +88,12 @@
 
 | 角色 | 实现及职责 |
 | --- | --- |
-| 逻辑程序与独立模型 | [replacement_overlap.py](../bpuverify/mbtb/model/replacement_overlap.py) 在驱动前声明驻留分支、访问资格、原/新受害者和完整最终状态；复用独立替换状态模型，不读取实际 metadata 来选择 golden |
-| 共用比较 | [ReplacementChecks](../bpuverify/mbtb/checker/replacement_overlap.py) 经 xreactor Scoreboard 检查实际输入节拍、全部驻留记录、受害者和原始快照不变性；异常保留 expected/actual 和逻辑程序状态 |
-| UT 场景 | [case](../bpuverify/mbtb/case/replacement_overlap.py) 使用正常 reset、查询和原始 metadata，通过既有 agent/driver 提交相邻反馈 |
-| BPU 来源与发送 | [env](../bpuverify/bpu/env/main_replacement.py) 复用自主来源与历史检查，两个独立发布的预测寿命各自拥有原始反馈；driver 接受与独立输入 monitor 收据一致 |
-| BPU 实际消费者 | [Bundle](../bpuverify/bpu/bundle/main_replacement.py) 只读 memory-direct SDK 端口，[monitor](../bpuverify/bpu/monitor/main_replacement.py) 使用 `@on` 按真实来源寿命关联响应，目标来自实际 MainBTB 输出而非模型结果 |
-| 覆盖 | [ReplacementCoverage](../bpuverify/mbtb/coverage/replacement_overlap.py) 每作用域分别采样 reached/checked，每组 7 场景 × 5 义务 = 35 bin；没有 bank/set 维度 |
+| 逻辑程序与独立模型 | [replacement_overlap.py](../mbtb/model/replacement_overlap.py) 在驱动前声明驻留分支、访问资格、原/新受害者和完整最终状态；复用独立替换状态模型，不读取实际 metadata 来选择 golden |
+| 共用比较 | [ReplacementChecks](../mbtb/checker/replacement_overlap.py) 经 xreactor Scoreboard 检查实际输入节拍、全部驻留记录、受害者和原始快照不变性；异常保留 expected/actual 和逻辑程序状态 |
+| UT 场景 | [case](../mbtb/case/replacement_overlap.py) 使用正常 reset、查询和原始 metadata，通过既有 agent/driver 提交相邻反馈 |
+| BPU 来源与发送 | [env](../bpu/env/main_replacement.py) 复用自主来源与历史检查，两个独立发布的预测寿命各自拥有原始反馈；driver 接受与独立输入 monitor 收据一致 |
+| BPU 实际消费者 | [Bundle](../bpu/bundle/main_replacement.py) 只读 memory-direct SDK 端口，[monitor](../bpu/monitor/main_replacement.py) 使用 `@on` 按真实来源寿命关联响应，目标来自实际 MainBTB 输出而非模型结果 |
+| 覆盖 | [ReplacementCoverage](../mbtb/coverage/replacement_overlap.py) 每作用域分别采样 reached/checked，每组 7 场景 × 5 义务 = 35 bin；没有 bank/set 维度 |
 | pytest 入口 | [MBTB](../tests/mbtb/testcase/test_replacement_overlap.py)、[BPU](../tests/bpu/testcase/test_main_replacement.py) 共 14 节点，仅选择语义参数并调用封装 |
 
 另有 18 项纯模型/检查负对照：手推期望受害者、漏掉最新年龄、错误跨索引转发、

@@ -2,10 +2,10 @@
 from copy import deepcopy
 from itertools import product
 import pytest
-from bpuverify.bpu.model.sc.provider_roles import PROFILES
-from bpuverify.bpu.model.sc.provider_roles import next_feedback
-from bpuverify.bpu.model.sc.provider_roles import selectors
-from bpuverify.bpu.model.sc.provider_roles import validate_transition
+from suites.frontend.bpu.bpu.model.sc.provider_roles import PROFILES
+from suites.frontend.bpu.bpu.model.sc.provider_roles import next_feedback
+from suites.frontend.bpu.bpu.model.sc.provider_roles import selectors
+from suites.frontend.bpu.bpu.model.sc.provider_roles import validate_transition
 
 
 @pytest.mark.parametrize('profile,expected', (

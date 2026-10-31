@@ -5,8 +5,8 @@ import random
 
 import pytest
 
-from lsuverify.load_datapath.coverage import CASES, LoadDataPathCoverage
-from lsuverify.load_datapath.env import (
+from suites.memblock.lsu.load_datapath.coverage import CASES, LoadDataPathCoverage
+from suites.memblock.lsu.load_datapath.env import (
     FORWARD_SOURCES,
     LoadDataPathEnv,
     blank_forward,

@@ -24,7 +24,7 @@ def main():
     before,after=methods(old),methods(new)
     assert set(after)-set(before)=={"restore_cancelled_slots"} and not(set(before)-set(after))
     assert all(before[k]==after[k] for k in before),"normal random planner/source methods must not change"
-    unchanged=[k for k,v in a.items() if (k.startswith("lsqverify/") or k.startswith("tests/lsq_wrapper/") or k=="tests/normal_mixed/sources.py")]
+    unchanged=[k for k,v in a.items() if (k.startswith('lsqverify/') or k.startswith("tests/lsq_wrapper/") or k=="tests/normal_mixed/sources.py")]
     assert all(a[k]==b[k] for k in unchanged)
     x,y=cases(old),cases(new);assert set(x)==set(y)==set(range(0x7100,0x7108))
     rows=[]

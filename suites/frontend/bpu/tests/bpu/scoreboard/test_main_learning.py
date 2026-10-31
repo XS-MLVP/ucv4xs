@@ -6,11 +6,11 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.checker.main_learning import MainLearningChecks
-from bpuverify.bpu.coverage.main_learning import MainLearningCoverage
-from bpuverify.bpu.model.main_sources import BranchTargetSources,source_entries
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.mbtb.model.semantic import Events,Feedback,Branch
+from suites.frontend.bpu.bpu.checker.main_learning import MainLearningChecks
+from suites.frontend.bpu.bpu.coverage.main_learning import MainLearningCoverage
+from suites.frontend.bpu.bpu.model.main_sources import BranchTargetSources,source_entries
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.mbtb.model.semantic import Events,Feedback,Branch
 
 
 PC,TARGET,POSITION = 0x40000800,0x40020800,5
@@ -144,7 +144,7 @@ def test_early_end_or_unplanned_effect_cannot_pass():
 
 
 def test_scenario_keeps_checking_and_signal_timing_out_of_the_case():
-    tree = ast.parse(Path('bpuverify/bpu/case/main_learning.py').read_text())
+    tree = ast.parse(Path('bpu/case/main_learning.py').read_text())
     for node in ast.walk(tree):
         assert not isinstance(node,(ast.ClassDef,ast.Assert))
         if isinstance(node,ast.Call):

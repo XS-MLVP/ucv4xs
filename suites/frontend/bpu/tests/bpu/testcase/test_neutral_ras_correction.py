@@ -1,6 +1,6 @@
 """Natural neutral correction preserves an older call and flushes a younger call."""
 import pytest
-from bpuverify.bpu.case.ras.correction import check_neutral_correction
+from suites.frontend.bpu.bpu.case.ras.correction import check_neutral_correction
 
 
 @pytest.mark.feature('BPU-INT-069')

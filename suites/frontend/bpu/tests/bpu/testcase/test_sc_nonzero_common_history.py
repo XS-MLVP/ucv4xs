@@ -1,8 +1,8 @@
 """Intent only: genuine conditional history, table learning and public readback."""
 from itertools import product
 import pytest
-from bpuverify.bpu.case.sc.nonzero import check_nonzero_history
-from bpuverify.bpu.coverage.sc.nonzero import coverage as nonzero_history_coverage
+from suites.frontend.bpu.bpu.case.sc.nonzero import check_nonzero_history
+from suites.frontend.bpu.bpu.coverage.sc.nonzero import coverage as nonzero_history_coverage
 
 @pytest.mark.feature('BPU-INT-043')
 @pytest.mark.parametrize('bank,direction', tuple(product((0, 1), ('forward', 'backward'))))

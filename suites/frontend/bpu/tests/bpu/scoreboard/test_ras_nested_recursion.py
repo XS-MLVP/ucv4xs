@@ -1,13 +1,11 @@
 """Independent expanded-stack and evidence controls, not hardware credit."""
 import pytest
 
-from bpuverify.ras.model.model import CommittedStack, advance
-from bpuverify.ras.model.semantic import Events, RasReference
-from bpuverify.bpu.model.ras.nested_recursion import (
+from suites.frontend.bpu.ras.model.model import CommittedStack, advance
+from suites.frontend.bpu.ras.model.semantic import Events, RasReference
+from suites.frontend.bpu.bpu.model.ras.nested_recursion import (
     OUTER_RETURN, INNER_RETURN, PROFILES, RULES, expanded_returns)
-from bpuverify.bpu.coverage.ras_nested_recursion import Coverage
-
-
+from suites.frontend.bpu.bpu.coverage.ras_nested_recursion import Coverage
 
 
 @pytest.mark.parametrize('calls', PROFILES)

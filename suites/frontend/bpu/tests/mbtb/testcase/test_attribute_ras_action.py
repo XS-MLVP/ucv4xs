@@ -12,12 +12,12 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.mbtb.checker.assertions import matching_entry
-from bpuverify.mbtb.checker.assertions import matching_way
-from bpuverify.mbtb.checker.assertions import train
-from bpuverify.mbtb.case.definitions import BranchVector
-from bpuverify.mbtb.case.definitions import CONDITIONAL
-from bpuverify.mbtb.case.definitions import NUM_WAYS
+from suites.frontend.bpu.mbtb.checker.assertions import matching_entry
+from suites.frontend.bpu.mbtb.checker.assertions import matching_way
+from suites.frontend.bpu.mbtb.checker.assertions import train
+from suites.frontend.bpu.mbtb.case.definitions import BranchVector
+from suites.frontend.bpu.mbtb.case.definitions import CONDITIONAL
+from suites.frontend.bpu.mbtb.case.definitions import NUM_WAYS
 
 
 # One branch per align-bank/way slot of a 32-byte fetch block, covering all

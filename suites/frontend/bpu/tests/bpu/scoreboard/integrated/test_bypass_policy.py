@@ -1,9 +1,9 @@
 """Parent-policy qualification, priority and real failed-allocation aging threshold."""
 from copy import deepcopy
 import pytest
-from bpuverify.bpu.model.phr.model import folds
-from bpuverify.bpu.model.bypass.policy import TrainingPolicy
-from bpuverify.bpu.model.bypass.policy import derive
+from suites.frontend.bpu.bpu.model.phr.model import folds
+from suites.frontend.bpu.bpu.model.bypass.policy import TrainingPolicy
+from suites.frontend.bpu.bpu.model.bypass.policy import derive
 
 def entry(**changes):
     value=dict(valid=0,hit=0,tableId=0,cfiPosition=0,baseTaken=0,predTaken=0,takenCtr_value=3,baseIsStrongBias=0)

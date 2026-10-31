@@ -8,12 +8,12 @@ import ast
 import pytest
 from toffee import Scoreboard
 
-from bpuverify.bpu.checker.direction_capacity import DirectionCapacityChecks
-from bpuverify.bpu.coverage.direction_capacity import DirectionCapacityCoverage
-from bpuverify.bpu.model.pipeline import Outcome,Resolution,Redirect
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.bpu.model.tage.forwarding import PC,resolved_path
-from bpuverify.bpu.model.tage.service import (
+from suites.frontend.bpu.bpu.checker.direction_capacity import DirectionCapacityChecks
+from suites.frontend.bpu.bpu.coverage.direction_capacity import DirectionCapacityCoverage
+from suites.frontend.bpu.bpu.model.pipeline import Outcome,Resolution,Redirect
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.tage.forwarding import PC,resolved_path
+from suites.frontend.bpu.bpu.model.tage.service import (
     FULL_RETAINED_RETOUCH,ServiceProgram,STREAM_PC,STREAM_POSITION,learning_inflight,pending_plan)
 from tests.bpu.scoreboard.test_direction_service import additional_history,via,counters,streaming_query
 from tests.bpu.scoreboard.test_direction_forwarding import establish,resolution
@@ -218,7 +218,7 @@ def test_no_two_history_shortcut_can_close_a_four_history_capacity_experiment(fa
 
 
 def test_capacity_case_expresses_intent_and_does_not_implement_a_private_framework():
-    tree=ast.parse(Path('bpuverify/bpu/case/direction_capacity.py').read_text())
+    tree=ast.parse(Path('bpu/case/direction_capacity.py').read_text())
     for node in ast.walk(tree):
         assert not isinstance(node,(ast.Assert,ast.ClassDef))
         if isinstance(node,ast.Call):

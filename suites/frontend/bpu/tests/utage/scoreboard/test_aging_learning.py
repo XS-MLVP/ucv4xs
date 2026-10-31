@@ -3,8 +3,8 @@ from copy import deepcopy
 
 import pytest
 
-from bpuverify.utage.model.aging_learning import AgingLearningProgram, RULES
-from bpuverify.utage.model.semantic import Base, Events, UtageReference
+from suites.frontend.bpu.utage.model.aging_learning import AgingLearningProgram, RULES
+from suites.frontend.bpu.utage.model.semantic import Base, Events, UtageReference
 from tests.utage.scoreboard.test_semantic_model import lookup, feedback, learn
 
 

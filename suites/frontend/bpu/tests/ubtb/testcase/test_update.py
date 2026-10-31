@@ -4,12 +4,12 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.ubtb.transaction.types import BranchTraining
-from bpuverify.ubtb.checker.assertions import assert_miss
-from bpuverify.ubtb.checker.assertions import expected_prediction
-from bpuverify.ubtb.checker.assertions import train_taken
-from bpuverify.ubtb.case.definitions import BranchVector
-from bpuverify.ubtb.case.definitions import DIRECT
+from suites.frontend.bpu.ubtb.transaction.types import BranchTraining
+from suites.frontend.bpu.ubtb.checker.assertions import assert_miss
+from suites.frontend.bpu.ubtb.checker.assertions import expected_prediction
+from suites.frontend.bpu.ubtb.checker.assertions import train_taken
+from suites.frontend.bpu.ubtb.case.definitions import BranchVector
+from suites.frontend.bpu.ubtb.case.definitions import DIRECT
 
 
 @pytest.mark.feature("BPU-UBTB-005")

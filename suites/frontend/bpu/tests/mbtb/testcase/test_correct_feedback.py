@@ -4,17 +4,17 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.mbtb.coverage.catalog import mbtb_correct_feedback_coverage_model
-from bpuverify.mbtb.coverage.catalog import write_mbtb_correct_feedback_coverage
-from bpuverify.mbtb.checker.assertions import assert_miss
-from bpuverify.mbtb.checker.assertions import assert_resident_pair
-from bpuverify.mbtb.checker.assertions import matching_entry
-from bpuverify.mbtb.checker.assertions import matching_way
-from bpuverify.mbtb.checker.assertions import train
-from bpuverify.mbtb.case.definitions import BranchVector
-from bpuverify.mbtb.case.definitions import CONDITIONAL
-from bpuverify.mbtb.case.definitions import NUM_WAYS
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.mbtb.coverage.catalog import mbtb_correct_feedback_coverage_model
+from suites.frontend.bpu.mbtb.coverage.catalog import write_mbtb_correct_feedback_coverage
+from suites.frontend.bpu.mbtb.checker.assertions import assert_miss
+from suites.frontend.bpu.mbtb.checker.assertions import assert_resident_pair
+from suites.frontend.bpu.mbtb.checker.assertions import matching_entry
+from suites.frontend.bpu.mbtb.checker.assertions import matching_way
+from suites.frontend.bpu.mbtb.checker.assertions import train
+from suites.frontend.bpu.mbtb.case.definitions import BranchVector
+from suites.frontend.bpu.mbtb.case.definitions import CONDITIONAL
+from suites.frontend.bpu.mbtb.case.definitions import NUM_WAYS
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature("BPU-MBTB-015")

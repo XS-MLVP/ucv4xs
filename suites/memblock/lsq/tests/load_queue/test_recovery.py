@@ -1,13 +1,15 @@
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.load_queue.recovery import RecoveringActor
-from lsqverify.load_queue.types import Bus, Inputs, Load
-from lsqverify.rar.types import Query as RarQuery
-from lsqverify.raw.types import Query as RawQuery
-from lsqverify.replay.types import Cause, TlbHint
-from lsqverify.vlq.types import QueuePtr, Redirect
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.load_queue.recovery import RecoveringActor
+from suites.memblock.lsq.load_queue.types import Bus, Inputs, Load
+from suites.memblock.lsq.rar.types import Query as RarQuery
+from suites.memblock.lsq.raw.types import Query as RawQuery
+from suites.memblock.lsq.replay.types import Cause, TlbHint
+from suites.memblock.lsq.vlq.types import QueuePtr, Redirect
 
 
 @pytest.mark.parametrize("all_cancel", (False, True))
@@ -46,11 +48,11 @@ async def test_sent_uncache_redirect_waits_for_original_response_then_same_slot_
     owner = actor.owner(uids[0])
     await actor.execute(uids)
     for _ in range(40):
-        if lq.observed["io_uncache_req_valid"]:
+        if lq.observed[P.p_uncache_req_valid]:
             break
         await actor.step()
-    assert lq.observed["io_uncache_req_valid"]
-    mid = lq.observed["io_uncache_req_bits_id"]
+    assert lq.observed[P.p_uncache_req_valid]
+    mid = lq.observed[P.p_uncache_req_bits_id]
     await actor.step(Inputs(bus=Bus(ready=True)))
     await actor.step(Inputs(bus=Bus(ack=True, mid=mid, sid=8)))
     lq.reach("LQ-RECOVER.sent_uncache")
@@ -58,7 +60,7 @@ async def test_sent_uncache_redirect_waits_for_original_response_then_same_slot_
     await actor.settle()
     for _ in range(4):
         await actor.step()
-        assert not lq.observed["io_replayAllocate"] and not any(lq.observed[f"io_replay_{bank}_valid"] for bank in range(3))
+        assert not lq.observed[P.p_replayAllocate] and not any(lq.observed[P.io(f"replay_{bank}_valid")] for bank in range(3))
     await actor.step(Inputs(bus=Bus(response=True, response_id=8, data=0xAABBCCDD, error=True, nderr=True)))
     for _ in range(5):
         await actor.step()
@@ -80,8 +82,8 @@ async def test_active_reset_aborts_old_owner_and_same_physical_lq_new_uid_comple
         for _ in range(5):
             await actor.step(Inputs(replay_ready=(True,) * 3 if phase == "issued" else (False,) * 3))
     if phase == "bus":
-        assert lq.observed["io_uncache_req_valid"]
-        mid = lq.observed["io_uncache_req_bits_id"]
+        assert lq.observed[P.p_uncache_req_valid]
+        mid = lq.observed[P.p_uncache_req_bits_id]
         await actor.step(Inputs(bus=Bus(ready=True)))
         await actor.step(Inputs(bus=Bus(ack=True, mid=mid, sid=3)))
     name = "LQ-RESET.active" if phase == "active" else "LQ-RESET.waiting"

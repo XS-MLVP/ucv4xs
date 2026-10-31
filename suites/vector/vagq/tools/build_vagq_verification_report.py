@@ -23,7 +23,7 @@ HERE = Path(__file__).resolve()
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(ROOT))
 
-from vagqverify.vagq.scenario_matrix import (  # noqa: E402
+from suites.vector.vagq.vagq.scenario_matrix import (  # noqa: E402
     OPERATION_NAMES,
     PUBLIC_DIMENSIONS,
     feature_values,
@@ -110,7 +110,7 @@ def _space_report():
     metadata = public_space_metadata()
     return {
         'definition': {
-            'source': 'vagqverify/vagq/scenario_matrix.py',
+            'source': 'vagq/scenario_matrix.py',
             'vlen_bits': metadata['vlen_bits'],
             'vlen_bytes': metadata['vlen_bits'] // 8,
             'flow_bytes': metadata['flow_bytes'],

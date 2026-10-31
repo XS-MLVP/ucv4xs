@@ -4,8 +4,8 @@ from dataclasses import replace
 from types import SimpleNamespace as NS
 
 import pytest
-from bpuverify.bpu.model.tage.retouch_replacement import PROGRAMS
-from bpuverify.bpu.coverage.retouch_replacement import RetouchReplacementCoverage
+from suites.frontend.bpu.bpu.model.tage.retouch_replacement import PROGRAMS
+from suites.frontend.bpu.bpu.coverage.retouch_replacement import RetouchReplacementCoverage
 from tests.bpu.scoreboard.retouch_replacement_fixtures import prepared,learned,released,completed,packet,consumers
 from tests.bpu.scoreboard.test_partial_reuse import transfer
 

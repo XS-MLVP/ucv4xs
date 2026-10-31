@@ -1,12 +1,14 @@
 """Real five-child parent proof from contracts/replay-checkpoint-pool.md."""
+
 from dataclasses import replace
 import hashlib
 import json
 
-from lsqverify.load_queue.actor import LoadActor
-from lsqverify.load_queue.types import Inputs
-from lsqverify.replay.types import Cause
-from lsqverify.vlq.types import QueuePtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.load_queue.actor import LoadActor
+from suites.memblock.lsq.load_queue.types import Inputs
+from suites.memblock.lsq.replay.types import Cause
+from suites.memblock.lsq.vlq.types import QueuePtr
 
 
 class CheckpointActor(LoadActor):
@@ -22,7 +24,7 @@ class CheckpointActor(LoadActor):
         result = await super().step(inp, new_owners=new_owners)
         before = self.env.pre_observed
         for bank in range(3):
-            p = f"io_replay_{bank}_"
+            p = P.io(f"replay_{bank}_")
             if not before[p + "valid"] or not inp.replay_ready[bank]:
                 continue
             slot = before[p + "bits_replayQueueIdx"]

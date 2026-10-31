@@ -1,8 +1,10 @@
 """Actual full-entry bus/bypass and NC RAR, not fake NC-tagged cache reads."""
+
 import pytest
 
-from lsqverify.rar.types import Query as RarQuery
-from lsqverify.vlq.types import QueuePtr, Redirect, RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.rar.types import Query as RarQuery
+from suites.memblock.lsq.vlq.types import QueuePtr, Redirect, RobPtr
 from .uncache_owners import UncacheOwners
 
 
@@ -55,13 +57,13 @@ async def test_real_nc_returned_data_sets_rar_and_retries_older_read_with_actual
     queries = [RarQuery()] * 3
     queries[lane] = RarQuery(True, young.execution.uop.rob, young.execution.uop.lq, young.paddr, True, True)
     await trace.cycle(rar_queries=tuple(queries))
-    assert lsq.pre_observed[f"io_ldu_rarNukeQuery_{lane}_req_ready"]
+    assert lsq.pre_observed[P.io(f"ldu_rarNukeQuery_{lane}_req_ready")]
     await trace.feedback(1)
     await trace.grant(0)
     await trace.bypass(0, lane)
     queries[lane] = RarQuery(True, old.execution.uop.rob, old.execution.uop.lq, old.paddr, True, True)
     await trace.cycle(rar_queries=tuple(queries))
-    lsq.expect({f"io_ldu_rarNukeQuery_{lane}_resp_valid": 1, f"io_ldu_rarNukeQuery_{lane}_resp_bits_nuke": int(same_line)},
+    lsq.expect({P.io(f"ldu_rarNukeQuery_{lane}_resp_valid"): 1, P.io(f"ldu_rarNukeQuery_{lane}_resp_bits_nuke"): int(same_line)},
                "real NC data, not a fake cached NC tag, marks the younger reader released")
     lsq.reach("LSQ-RAR.nc")
     if same_line:
@@ -74,7 +76,7 @@ async def test_real_nc_returned_data_sets_rar_and_retries_older_read_with_actual
         await trace.grant(0)
         await trace.bypass(0, lane)
         await trace.cycle(rar_queries=tuple(queries))
-        lsq.expect({f"io_ldu_rarNukeQuery_{lane}_resp_bits_nuke": 0}, "cancelled young NC record cannot poison the actual fresh read")
+        lsq.expect({P.io(f"ldu_rarNukeQuery_{lane}_resp_bits_nuke"): 0}, "cancelled young NC record cannot poison the actual fresh read")
         await trace.feedback(0)
         await trace.idle(6)
         new = trace.make_load(1, rob=RobPtr.encode(14), same_pa=young.paddr)

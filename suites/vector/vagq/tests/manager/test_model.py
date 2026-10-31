@@ -3,8 +3,8 @@ from itertools import product
 
 import pytest
 
-from vagqverify.manager.model import State, positions
-from vagqverify.manager.types import Allocation, Beat, Idle, Offer
+from suites.vector.vagq.manager.model import State, positions
+from suites.vector.vagq.manager.types import Allocation, Beat, Idle, Offer
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)
 

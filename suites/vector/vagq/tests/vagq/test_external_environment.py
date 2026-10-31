@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from vagqverify.vagq.external_env import PublicVAGQEnvironment, Scenario
-from vagqverify.vagq.types import AddrPacket, DataPacket
+from suites.vector.vagq.vagq.external_env import PublicVAGQEnvironment, Scenario
+from suites.vector.vagq.vagq.types import AddrPacket, DataPacket
 
 
 pytestmark = [

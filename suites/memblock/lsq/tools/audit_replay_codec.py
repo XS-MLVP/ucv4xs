@@ -12,10 +12,10 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from lsqverify.replay.codec import encode
-from lsqverify.replay.types import Enqueue, Inputs, Uop
-from lsqverify.raw.types import FtqPtr, SqPtr
-from lsqverify.vlq.types import QueuePtr, RobPtr
+from suites.memblock.lsq.replay.codec import encode
+from suites.memblock.lsq.replay.types import Enqueue, Inputs, Uop
+from suites.memblock.lsq.raw.types import FtqPtr, SqPtr
+from suites.memblock.lsq.vlq.types import QueuePtr, RobPtr
 
 def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -54,7 +54,7 @@ def audit():
     assert rejected == 5
     output = ROOT / "results/replay-codec-static-01"
     output.mkdir(exist_ok=False)
-    files = (Path(__file__), ROOT / "lsqverify/replay/codec.py", ROOT / "lsqverify/replay/types.py", ROOT / "docs/contracts/load-queue-replay.md")
+    files = (Path(__file__), ROOT / "replay/codec.py", ROOT / "replay/types.py", ROOT / "docs/contracts/load-queue-replay.md")
     digests = {}
     for path in files:
         dest = output / "verification-source" / path.relative_to(ROOT)

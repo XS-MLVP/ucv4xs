@@ -6,14 +6,14 @@ from types import SimpleNamespace
 import pytest
 from toffee import ScoreboardMismatch
 
-from bpuverify.utage.checker.checking import UtageUsefulChecker
-from bpuverify.utage.checker.usefulness_events import UsefulnessChecks
-from bpuverify.utage.model.semantic import Context, indices, tag
-from bpuverify.utage.model.usefulness_events import (
+from suites.frontend.bpu.utage.checker.checking import UtageUsefulChecker
+from suites.frontend.bpu.utage.checker.usefulness_events import UsefulnessChecks
+from suites.frontend.bpu.utage.model.semantic import Context, indices, tag
+from suites.frontend.bpu.utage.model.usefulness_events import (
     HISTORY, NEIGHBOR_HISTORY, PC, SHORT_CONSUMER_HISTORY,
     MODES, ProtectionState, UsefulnessProgram,
 )
-from bpuverify.utage.transaction.types import UtageTraining
+from suites.frontend.bpu.utage.transaction.types import UtageTraining
 
 
 OUTCOMES = (

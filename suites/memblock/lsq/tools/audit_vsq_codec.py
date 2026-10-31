@@ -7,9 +7,9 @@ from pathlib import Path
 import random
 import re
 
-from lsqverify.raw.types import SqPtr
-from lsqverify.vlq.types import Redirect, RobPtr
-from lsqverify.vsq.types import Dispatch, Inputs, encode
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.vlq.types import Redirect, RobPtr
+from suites.memblock.lsq.vsq.types import Dispatch, Inputs, encode
 
 ROOT = Path(__file__).resolve().parents[1]
 

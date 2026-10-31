@@ -22,21 +22,21 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from vagqverify.vagq.exhaustive import build_shape_sequence
-from vagqverify.vagq.scenario_matrix import feature_case_id, legal_public_feature_cases
+from suites.vector.vagq.vagq.exhaustive import build_shape_sequence
+from suites.vector.vagq.vagq.scenario_matrix import feature_case_id, legal_public_feature_cases
 
 
 SOURCES = (
     'tools/run_vagq_exhaustive.py',
     'tests/vagq/test_isa_exhaustive_shape.py',
     'tests/vagq/test_exhaustive_checker.py',
-    'vagqverify/vagq/exhaustive.py',
-    'vagqverify/vagq/scenario_matrix.py',
-    'vagqverify/vagq/isa_reference.py',
-    'vagqverify/maskgen/reference.py',
-    'vagqverify/vagq/probe.py',
-    'vagqverify/vagq/driver.py',
-    'vagqverify/native.py',
+    'vagq/exhaustive.py',
+    'vagq/scenario_matrix.py',
+    'vagq/isa_reference.py',
+    'maskgen/reference.py',
+    'vagq/probe.py',
+    'vagq/driver.py',
+    'native.py',
 )
 
 

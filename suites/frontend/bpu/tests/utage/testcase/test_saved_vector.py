@@ -1,9 +1,9 @@
 """Two independently learned directions recover as one age-owned vector."""
 import json
 import pytest
-from bpuverify.utage.model.saved_vector import PROGRAMS
-from bpuverify.utage.coverage.saved_vector import Coverage
-from bpuverify.utage.case.saved_vector import check_saved_vector
+from suites.frontend.bpu.utage.model.saved_vector import PROGRAMS
+from suites.frontend.bpu.utage.coverage.saved_vector import Coverage
+from suites.frontend.bpu.utage.case.saved_vector import check_saved_vector
 
 
 @pytest.mark.parametrize('program',tuple(pytest.param(p,id=p.label,marks=pytest.mark.feature(

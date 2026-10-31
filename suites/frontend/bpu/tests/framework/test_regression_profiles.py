@@ -6,7 +6,7 @@ import sys
 
 import pytest
 
-from bpuverify.common.pytest import regression
+from suites.frontend.bpu.pytest_plugins import regression
 
 
 @pytest.mark.parametrize('profile,count', [('production', 1), ('physical', 256)])

@@ -2,11 +2,11 @@
 import json
 import pytest
 
-from bpuverify.utage.case.predecessor_retention import run
-from bpuverify.utage.coverage.predecessor_retention import Coverage
-from bpuverify.utage.model.predecessor_retention import Program,PROFILES,MODES
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.utage.case.predecessor_retention import run
+from suites.frontend.bpu.utage.coverage.predecessor_retention import Coverage
+from suites.frontend.bpu.utage.model.predecessor_retention import Program,PROFILES,MODES
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature('BPU-UTAGE-016')

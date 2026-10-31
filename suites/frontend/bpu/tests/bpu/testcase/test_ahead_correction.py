@@ -1,10 +1,10 @@
 """Declared correction scope, no scheduler, cycle or signal mechanics."""
 import pytest
 
-from bpuverify.bpu.case.ahead_correction import check_ahead_correction
-from bpuverify.bpu.coverage.ahead_correction import AheadCorrectionCoverage
-from bpuverify.bpu.model.ahead_correction import AheadCorrectionProgram, SELECTIONS
-from bpuverify.bpu.model.ahead_working_set import SIZES
+from suites.frontend.bpu.bpu.case.ahead_correction import check_ahead_correction
+from suites.frontend.bpu.bpu.coverage.ahead_correction import AheadCorrectionCoverage
+from suites.frontend.bpu.bpu.model.ahead_correction import AheadCorrectionProgram, SELECTIONS
+from suites.frontend.bpu.bpu.model.ahead_working_set import SIZES
 
 
 @pytest.mark.feature('BPU-INT-100')

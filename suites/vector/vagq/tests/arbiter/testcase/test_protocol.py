@@ -1,16 +1,18 @@
 """VAGQArbiter real-DUT scenarios with semantic request/payload checking."""
-from vagqverify.arbiter import probe
-from vagqverify.arbiter.checker import Checker
-from vagqverify.arbiter.coverage import Coverage
-from vagqverify.arbiter.model import observe
-from vagqverify.arbiter.schema import INPUT_NAMES, INPUT_WIDTHS
-from vagqverify.arbiter.types import Beat, LsuReq, NativeReq, StoreDataReq
+
+from suites.vector.vagq.legacy_pins import P
+from suites.vector.vagq.arbiter import probe
+from suites.vector.vagq.arbiter.checker import Checker
+from suites.vector.vagq.arbiter.coverage import Coverage
+from suites.vector.vagq.arbiter.model import observe
+from suites.vector.vagq.arbiter.schema import INPUT_NAMES, INPUT_WIDTHS
+from suites.vector.vagq.arbiter.types import Beat, LsuReq, NativeReq, StoreDataReq
 
 
 def native(group, *, valid=False, rob=0, flag=0, seed=0, invalid_payload=False):
     fields = {}
     for index, name in enumerate(INPUT_NAMES):
-        marker = f'io_{group}_0_bits_'
+        marker = P.io(f'{group}_0_bits_')
         if name.startswith(marker):
             field = name.removeprefix(marker)
             # Keep every generated input field in range, including one-bit

@@ -23,13 +23,14 @@ def audit(name):
     assert old_audit["tests"]=={"PASS":12}
     old={json.loads(p.read_text())["nodeid"]:(p,json.loads(p.read_text())) for p in(prior/"cases").rglob("local-reset-summary.json")}
     expected_shared=json.loads((ROOT/"results/lsq-progress-regression-12/source-evidence.json").read_text())["files"]
-    assert all(source[k]==h for k,h in expected_shared.items() if k.startswith("lsqverify/"))
+    assert all(source[k]==h for k,h in expected_shared.items() if k.startswith('lsqverify/'))
     frozen=run/"verification-source/tests/local_reset"
     tree=ast.parse((frozen/"check.py").read_text())
     assert all(n.module=="collections" for n in tree.body if isinstance(n,ast.ImportFrom))
     assert not any(isinstance(n,ast.Attribute) and n.attr in("model","last_change","dut","expected_before","expected_after","_instances") for n in ast.walk(tree))
     reference=ast.parse((frozen/"reference.py").read_text());cls=next(n for n in reference.body if isinstance(n,ast.ClassDef))
     assert [n.name for n in cls.body if isinstance(n,ast.FunctionDef)]==["advance"] and ast.unparse(cls.bases[0])=="WrapperModel"
+    # Both operands belong to frozen historical snapshots, not current files.
     assert source["tests/local_reset/reference.py"]==json.loads((prior/"source-evidence.json").read_text())["files"]["tests/local_reset/reference.py"]
     seen=set();rotations=set();impact=set();total=Counter();native_records=summary_bytes=0;reports=[]
     for file in sorted((run/"cases").rglob("local-reset-summary.json")):
@@ -102,7 +103,7 @@ def audit(name):
     assert seen==set(nodes) and impact==set(old) and rotations==set(range(3))
     assert not list((run/"cases").rglob("*.jsonl")) and not list((run/"cases").rglob("*.fst")) and not list((run/"cases").rglob("*.vcd"))
     report=dict(status="ACTUAL15_LOCAL_RESET_EXTERNAL_FULL16_AUDITED_NOT_SOC_OR_WHOLE_GOAL_SIGNOFF",run=name,tests=manifest["tests"],snapshot_files=len(source),
-                preserved_shared_reference_files=sum(k.startswith("lsqverify/") for k in expected_shared),first12_native_streams_and_semantic_witnesses_equal=True,
+                preserved_shared_reference_files=sum(k.startswith('lsqverify/') for k in expected_shared),first12_native_streams_and_semantic_witnesses_equal=True,
                 counts=dict(total),native_records=native_records,allocated_UIDs=132,normal_completed_UIDs=72,local_reset_aborted_UIDs=60,
                 external_jobs_aborted=0,same_slot_new_UID_completion_witnesses=60,case_summary_bytes=summary_bytes,per_cycle_JSON=0,waveforms=0,cases=reports,
                 auditor_SHA256=sha(Path(__file__)),limits="Three full16 programs replay compact actual events/SID ownership, first12 exact actual streams unchanged. Full-output comparisons and source checks execute online, not offline unretained raw replay. Retained external NC profile, not native SoC reset/late-old-ack/serial Store proof. Full random/other128/old-generation/final whole-request audit remain.")

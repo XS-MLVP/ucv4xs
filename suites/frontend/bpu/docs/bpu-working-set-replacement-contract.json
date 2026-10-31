@@ -10,12 +10,12 @@
   "distinction": "这不是修复或替换原来的四个失败用例；它们和 MBTB-027 继续保留。只有本新程序实际到达并比较的语义义务可获信用。",
   "scope": "Main/Ahead/MicroTAGE 的已支持自主组成，不声称全预测器、全部地址或完整 FTQ 提交生命周期。复用现有独立参考模型、driver、monitor、checker，不改 RTL、SDK 或 DUT。",
   "production_layout": {
-    "model": "bpuverify/bpu/model/working_set_replacement.py",
-    "checker": "bpuverify/bpu/checker/working_set_replacement.py",
-    "case": "bpuverify/bpu/case/working_set_replacement.py",
+    "model": "bpu/model/working_set_replacement.py",
+    "checker": "bpu/checker/working_set_replacement.py",
+    "case": "bpu/case/working_set_replacement.py",
     "testcase": "tests/bpu/testcase/test_working_set_replacement.py",
     "coverage": {
-      "factory": "bpuverify.bpu.coverage.working_set_replacement",
+      "factory": "suites.frontend.bpu.bpu.coverage.working_set_replacement",
       "instance": "kunminghu_v3.bpu.ahead-identity-replacement"
     },
     "historical_stage": "results/ahead_identity_replacement_stage_20261018"

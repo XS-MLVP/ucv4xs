@@ -4,10 +4,10 @@ import json
 from pathlib import Path
 import pytest
 
-from bpuverify.bpu.model.indirect_path_ownership import PROFILES as PATH_PROFILES, RULES as PATH_RULES
-from bpuverify.bpu.model.conditional_prefix import PROFILES as PREFIX_PROFILES, RULES as PREFIX_RULES
-from bpuverify.bpu.coverage.indirect_path_ownership import lifetime_coverage as path_coverage
-from bpuverify.bpu.coverage.conditional_prefix import lifetime_coverage as prefix_coverage
+from suites.frontend.bpu.bpu.model.indirect_path_ownership import PROFILES as PATH_PROFILES, RULES as PATH_RULES
+from suites.frontend.bpu.bpu.model.conditional_prefix import PROFILES as PREFIX_PROFILES, RULES as PREFIX_RULES
+from suites.frontend.bpu.bpu.coverage.indirect_path_ownership import lifetime_coverage as path_coverage
+from suites.frontend.bpu.bpu.coverage.conditional_prefix import lifetime_coverage as prefix_coverage
 
 
 def test_contracts_define_human_events_before_hardware_credit_not_new_physical_functions():
@@ -40,7 +40,7 @@ def test_production_modules_import_no_prototypes_or_test_helpers():
     paths += [role + '/' + family + '.py' for role in ('model', 'checker', 'coverage', 'env', 'case')
         for family in ('indirect_path_ownership', 'conditional_prefix')]
     for relative in paths:
-        path = Path('bpuverify/bpu') / relative
+        path = Path('bpu') / relative
         tree = ast.parse(path.read_text())
         for node in ast.walk(tree):
             if isinstance(node, ast.ImportFrom):
@@ -52,16 +52,16 @@ def test_production_modules_import_no_prototypes_or_test_helpers():
 
 
 def test_static_bundle_dynamic_monitor_and_semantic_case_remain_separate():
-    bundle = ast.parse(Path('bpuverify/bpu/bundle/indirect_guard.py').read_text())
+    bundle = ast.parse(Path('bpu/bundle/indirect_guard.py').read_text())
     assert not any(isinstance(node, (ast.Await, ast.AsyncFunctionDef)) for node in ast.walk(bundle))
     for family in ('indirect_path_ownership', 'conditional_prefix'):
         testcase = ast.parse(Path('tests/bpu/testcase/test_' + family + '.py').read_text())
-        text = Path('bpuverify/bpu/case/' + family + '.py').read_text()
+        text = Path('bpu/case/' + family + '.py').read_text()
         assert not any(token in text for token in ('FallingEdge', 'RisingEdge', 'ClockCycles', 'get_(', 'set_(', 'asyncio.gather'))
         assert not any(isinstance(node, ast.Name) and node.id in ('FallingEdge', 'RisingEdge', 'ClockCycles') for node in ast.walk(testcase))
-        env = ast.parse(Path('bpuverify/bpu/env/' + family + '.py').read_text())
+        env = ast.parse(Path('bpu/env/' + family + '.py').read_text())
         assert not any(isinstance(node, ast.AsyncFunctionDef) and node.name == 'complete' for node in ast.walk(env))
-    monitor = Path('bpuverify/bpu/monitor/unexecuted_indirect.py').read_text()
+    monitor = Path('bpu/monitor/unexecuted_indirect.py').read_text()
     assert 'indirect_guard_binding' in monitor and 'delivery=\'lossless\'' in monitor
 
 
@@ -87,7 +87,7 @@ def test_pure_helpers_are_kept_out_of_production_import_dependencies():
     for family in ('indirect_path', 'conditional_prefix'):
         text = Path('tests/bpu/scoreboard/_' + family + '_program.py').read_text()
         assert 'sys.path' not in text and '__main__' not in text
-    from bpuverify.common.pytest.isolation import item_scope
+    from suites.frontend.bpu.pytest_plugins.isolation import item_scope
     from types import SimpleNamespace
     item = SimpleNamespace(nodeid='tests/bpu/scoreboard/test_conditional_prefix.py::test_synthetic',
         fixturenames=(), iter_markers=lambda name: ())

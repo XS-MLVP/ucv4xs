@@ -4,9 +4,9 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.ittage.agent.main import IttageAgent
-from bpuverify.common.model.address import decode_pruned_pc
-from bpuverify.common.model.address import encode_pruned_pc
+from suites.frontend.bpu.ittage.agent.main import IttageAgent
+from suites.frontend.bpu.models.address import decode_pruned_pc
+from suites.frontend.bpu.models.address import encode_pruned_pc
 
 
 @pytest.mark.feature("ENV-IF-001")

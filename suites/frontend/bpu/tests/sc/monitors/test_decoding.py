@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from bpuverify.sc.checker.assertions import learn
+from suites.frontend.bpu.sc.checker.assertions import learn
 
 
 async def test_monitor_decodes_decision_and_threshold_metadata(sc_agent):

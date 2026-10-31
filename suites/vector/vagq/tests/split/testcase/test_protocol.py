@@ -1,5 +1,5 @@
 """SplitCtrl real-DUT scenarios use semantic entries and consumer readiness."""
-from vagqverify.split.types import Beat, Entry, Redirect
+from suites.vector.vagq.split.types import Beat, Entry, Redirect
 
 
 def matrix():

@@ -2,14 +2,14 @@ from copy import deepcopy
 from itertools import product
 import pytest
 
-from bpuverify.abtb.model.state.counter import CounterReference
-from bpuverify.abtb.model.state.counter import touch
-from bpuverify.abtb.model.state.counter import victim
-from bpuverify.abtb.model.state.writebuffer import FIELDS
-from bpuverify.abtb.model.state.writebuffer import zero
-from bpuverify.bpu.model.abtb.write import WriteLineageReference
-from bpuverify.bpu.model.abtb.write import cleanup_request
-from bpuverify.bpu.model.abtb.write import training_requests
+from suites.frontend.bpu.abtb.model.state.counter import CounterReference
+from suites.frontend.bpu.abtb.model.state.counter import touch
+from suites.frontend.bpu.abtb.model.state.counter import victim
+from suites.frontend.bpu.abtb.model.state.writebuffer import FIELDS
+from suites.frontend.bpu.abtb.model.state.writebuffer import zero
+from suites.frontend.bpu.bpu.model.abtb.write import WriteLineageReference
+from suites.frontend.bpu.bpu.model.abtb.write import cleanup_request
+from suites.frontend.bpu.bpu.model.abtb.write import training_requests
 
 
 def transaction(bank=0, entry_set=0, *, kind=1, taken=1, way=None, target=0x40010407):

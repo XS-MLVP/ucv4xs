@@ -1,13 +1,15 @@
 """First REAL mixed execution/commit and actual SQ-to-Replay dependencies."""
+
 from dataclasses import asdict, replace
 
 import pytest
 
-from lsqverify.load_queue.types import Load
-from lsqverify.lsq_wrapper.types import Address, Data, Dispatch, Inputs
-from lsqverify.replay.types import Cause, Enqueue, Uop
-from lsqverify.raw.types import SqPtr
-from lsqverify.vlq.types import QueuePtr, RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.load_queue.types import Load
+from suites.memblock.lsq.lsq_wrapper.types import Address, Data, Dispatch, Inputs
+from suites.memblock.lsq.replay.types import Cause, Enqueue, Uop
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.vlq.types import QueuePtr, RobPtr
 
 
 def pair(store_lane=0):
@@ -34,7 +36,7 @@ class Trace:
         await self.env.cycle(inp)
         pre, post = self.env.pre_observed, self.env.observed
         for lane in range(2):
-            p = f"io_sbuffer_req_{lane}_"
+            p = P.io(f"sbuffer_req_{lane}_")
             if pre[p + "valid"] and inp.sbuffer_ready[lane]:
                 assert self.sbuffer == 0
                 self.env.expect({p + "bits_addr": self.address.paddr, p + "bits_vaddr": self.address.vaddr,
@@ -42,12 +44,12 @@ class Trace:
                                 "original store UID actually consumed by Sbuffer", before=True, masks={p + "bits_data": (1 << 64) - 1})
                 self.sbuffer += 1
                 self.env.emit("sbuffer_fire", store_uid=1, lane=lane)
-        if post["io_toLsqEnqCtrl_lqDeq_valid"]:
-            self.load_count += post["io_toLsqEnqCtrl_lqDeq_bits"]
+        if post[P.p_toLsqEnqCtrl_lqDeq_valid]:
+            self.load_count += post[P.p_toLsqEnqCtrl_lqDeq_bits]
             assert self.load_count == 1
             self.env.emit("load_complete", load_uid=2)
-        if post["io_toLsqEnqCtrl_sqDeq_valid"]:
-            self.store_count += post["io_toLsqEnqCtrl_sqDeq_bits"]
+        if post[P.p_toLsqEnqCtrl_sqDeq_valid]:
+            self.store_count += post[P.p_toLsqEnqCtrl_sqDeq_bits]
             assert self.store_count == self.sbuffer == 1
             self.env.emit("store_complete", store_uid=1)
 
@@ -55,10 +57,10 @@ class Trace:
         base = Inputs(pending=RobPtr.encode(2), pending_next=RobPtr.encode(2), sbuffer_ready=(True, True))
         for _ in range(60):
             await self.cycle(base)
-            if self.store_count == self.load_count == self.sbuffer == 1 and self.env.observed["io_lqEmpty"] and self.env.observed["io_sqEmpty"]:
+            if self.store_count == self.load_count == self.sbuffer == 1 and self.env.observed[P.p_lqEmpty] and self.env.observed[P.p_sqEmpty]:
                 for _ in range(6):
                     await self.cycle(base)
-                assert not self.env.observed["io_replayAllocate"] and not self.env.observed["io_uncache_req_valid"]
+                assert not self.env.observed[P.p_replayAllocate] and not self.env.observed[P.p_uncache_req_valid]
                 self.env.emit("complete_pair", load_uid=2, store_uid=1)
                 return
         raise AssertionError("real mixed Load/Store owners did not complete their own effects and deq")
@@ -84,7 +86,7 @@ async def test_mixed_dispatch_both_real_branches_complete_original_owners(lsq, s
     for _ in range(8):
         await trace.cycle(held)
         assert trace.store_count == trace.sbuffer == 0
-    assert trace.load_count == 1 and not lsq.observed["io_sqEmpty"]
+    assert trace.load_count == 1 and not lsq.observed[P.p_sqEmpty]
     await trace.drain()
     lsq.prove("LSQ-RESET.initial", "LSQ-ALLOC.filters", "LSQ-ALLOC.sparse", "LSQ-RETIRE.ordinary", "LSQ-RETIRE.rob_before_sbuffer")
 
@@ -116,7 +118,7 @@ async def test_real_store_readiness_and_std_write_unblock_load_replay(lsq, kind,
     if kind != "same_std":
         for _ in range(5):
             await trace.cycle()
-            assert not any(lsq.observed[f"io_replay_{bank}_valid"] for bank in range(3)) and trace.load_count == 0
+            assert not any(lsq.observed[P.io(f"replay_{bank}_valid")] for bank in range(3)) and trace.load_count == 0
         if kind == "address":
             values = [Address(), Address()]; values[store_lane] = address
             await trace.cycle(Inputs(addresses=tuple(values)))
@@ -124,13 +126,13 @@ async def test_real_store_readiness_and_std_write_unblock_load_replay(lsq, kind,
             values = [Data(), Data()]; values[store_lane] = data
             await trace.cycle(Inputs(data=tuple(values)))
     for _ in range(40):
-        if lsq.observed["io_replay_0_valid"]:
+        if lsq.observed[P.p_replay_0_valid]:
             break
         await trace.cycle()
-    assert lsq.observed["io_replay_0_valid"] and lsq.observed["io_replay_0_bits_uop_robIdx_value"] == load.execution.uop.rob.value
-    slot = lsq.observed["io_replay_0_bits_replayQueueIdx"]
+    assert lsq.observed[P.p_replay_0_valid] and lsq.observed[P.p_replay_0_bits_uop_robIdx_value] == load.execution.uop.rob.value
+    slot = lsq.observed[P.p_replay_0_bits_replayQueueIdx]
     await trace.cycle(Inputs(replay_ready=(True, True, True)))
-    assert lsq.pre_observed["io_replay_0_valid"]
+    assert lsq.pre_observed[P.p_replay_0_valid]
     feedback = replace(load, execution=replace(load.execution, replay_feedback=True, slot=slot, need_replay=False, causes=0))
     await trace.cycle(Inputs(loads=(feedback, Load(), Load())))
     await trace.drain()

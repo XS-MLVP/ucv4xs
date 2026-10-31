@@ -4,7 +4,7 @@ import asyncio
 import pytest
 from toffee import Bundle,ClockCycles,Execution,MemoryBackend,ReadyValid,Role
 
-from bpuverify.bpu.driver.training import BpuTrainingDriver
+from suites.frontend.bpu.bpu.driver.training import BpuTrainingDriver
 
 
 class Signal:

@@ -3,10 +3,10 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.tage.agent.main import TageAgent
-from bpuverify.tage.transaction.types import TageBatchTraining
-from bpuverify.tage.transaction.types import TageBranchFeedback
-from bpuverify.tage.transaction.types import TageLookup
+from suites.frontend.bpu.tage.agent.main import TageAgent
+from suites.frontend.bpu.tage.transaction.types import TageBatchTraining
+from suites.frontend.bpu.tage.transaction.types import TageBranchFeedback
+from suites.frontend.bpu.tage.transaction.types import TageLookup
 
 
 def fake_agent():
@@ -49,7 +49,7 @@ async def test_bad_later_feedback_is_encoded_before_any_submission():
 
 @pytest.mark.parametrize('failure', (None, RuntimeError, asyncio.CancelledError))
 async def test_pressure_schedule_or_failure_always_quiesces_owned_drivers(monkeypatch, failure):
-    import bpuverify.tage.agent.main as module
+    import suites.frontend.bpu.tage.agent.main as module
     calls = []
     async def cycles(clock, count):
         assert clock == 'clock'

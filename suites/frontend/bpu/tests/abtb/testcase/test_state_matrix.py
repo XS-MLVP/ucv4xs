@@ -1,10 +1,10 @@
 """Intent-only state/address/overlap checks; reusable agents own all timing."""
 import pytest
 
-from bpuverify.abtb.case.state.scenarios import check_counter_matrix
-from bpuverify.abtb.case.state.scenarios import check_replacer_matrix
-from bpuverify.abtb.case.state.scenarios import check_reset_training_priority
-from bpuverify.abtb.case.state.scenarios import check_writebuffer_capacity
+from suites.frontend.bpu.abtb.case.state.scenarios import check_counter_matrix
+from suites.frontend.bpu.abtb.case.state.scenarios import check_replacer_matrix
+from suites.frontend.bpu.abtb.case.state.scenarios import check_reset_training_priority
+from suites.frontend.bpu.abtb.case.state.scenarios import check_writebuffer_capacity
 
 
 @pytest.mark.feature('BPU-ABTB-049')

@@ -1,9 +1,9 @@
 """A later source cancellation cannot erase already accepted learning."""
 import json
 import pytest
-from bpuverify.bpu.model.main_accepted_recovery import Program,FATES,MOMENTS
-from bpuverify.bpu.coverage.main_accepted_recovery import Coverage
-from bpuverify.bpu.case.main_accepted_recovery import check_accepted_recovery
+from suites.frontend.bpu.bpu.model.main_accepted_recovery import Program,FATES,MOMENTS
+from suites.frontend.bpu.bpu.coverage.main_accepted_recovery import Coverage
+from suites.frontend.bpu.bpu.case.main_accepted_recovery import check_accepted_recovery
 
 
 @pytest.mark.feature('BPU-INT-005')

@@ -431,11 +431,11 @@
         "used_feedback": "正确且与TAGE一致不读不学，正确但分歧只读不学，随后原SC错误需读并学习五类特征；每阶段均有新的同上下文消费者。",
         "coverage": "kunminghu_v3.bpu.sc-context-learning.reached / checked；每场景十项义务，规则不是新功能ID。",
         "model": [
-          "bpuverify/bpu/model/common_query.py",
-          "bpuverify/bpu/model/statistical_joint_sources.py",
-          "bpuverify/sc/model/semantic.py"
+          "bpu/model/common_query.py",
+          "bpu/model/statistical_joint_sources.py",
+          "sc/model/semantic.py"
         ],
-        "checker": "bpuverify/bpu/checker/statistical_prefix.py",
+        "checker": "bpu/checker/statistical_prefix.py",
         "limits": "SC反馈期间通过正常使能保持TAGE经验，不能冒充TAGE和SC同时学习或资源冲突并发；不覆盖任意GHR/BW位、全FTQ、所有物理副本或RAS组合。"
       },
       "queued_context_program": {

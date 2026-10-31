@@ -6,15 +6,15 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.abtb.coverage.catalog import abtb_microtage_vector_coverage_model
-from bpuverify.abtb.coverage.catalog import write_abtb_microtage_vector_coverage
-from bpuverify.abtb.checker.assertions import assert_position_directions
-from bpuverify.abtb.checker.assertions import fill_taken_position_set
-from bpuverify.abtb.checker.assertions import matching_entry
-from bpuverify.abtb.checker.assertions import train_conditional_direction
-from bpuverify.abtb.case.definitions import NUM_WAYS
-from bpuverify.abtb.case.definitions import same_pc_position_vectors
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.abtb.coverage.catalog import abtb_microtage_vector_coverage_model
+from suites.frontend.bpu.abtb.coverage.catalog import write_abtb_microtage_vector_coverage
+from suites.frontend.bpu.abtb.checker.assertions import assert_position_directions
+from suites.frontend.bpu.abtb.checker.assertions import fill_taken_position_set
+from suites.frontend.bpu.abtb.checker.assertions import matching_entry
+from suites.frontend.bpu.abtb.checker.assertions import train_conditional_direction
+from suites.frontend.bpu.abtb.case.definitions import NUM_WAYS
+from suites.frontend.bpu.abtb.case.definitions import same_pc_position_vectors
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 def assert_s2_sideband(prediction, vectors, ways, *, taken: int, strong: int, set_index: int):
@@ -26,15 +26,11 @@ def assert_s2_sideband(prediction, vectors, ways, *, taken: int, strong: int, se
         sideband = prediction.micro_tage["result"][way]
         assert sideband["valid"] == entry.valid == 1
         bits = sideband["bits"]
-        assert (
-            bits["cfiPosition"],
-            bits["attribute"]["branchType"],
-            bits["attribute"]["rasAction"],
-            bits["taken"],
-            bits["isStrongBias"],
-        ) == (vector.position, vector.branch_type, entry.ras_action, taken, strong), (
-            vector, prediction
-        )
+        # Whole-chip DefaultConfig forwards only taken/kind to MicroTage.
+        # Position/action/strength are verified on the entry, meta and counter
+        # state paths instead.
+        assert (bits["attribute_branchType"], bits["taken"]) == (
+            vector.branch_type, taken), (vector, prediction)
 
 
 @pytest.mark.feature("BPU-ABTB-040")

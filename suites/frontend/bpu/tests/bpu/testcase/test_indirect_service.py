@@ -1,7 +1,7 @@
 """092: representative short/long history classes, not a physical matrix."""
 import pytest
-from bpuverify.bpu.case.indirect_service import check_indirect_service
-from bpuverify.bpu.coverage.indirect_service import IndirectServiceCoverage
+from suites.frontend.bpu.bpu.case.indirect_service import check_indirect_service
+from suites.frontend.bpu.bpu.coverage.indirect_service import IndirectServiceCoverage
 
 
 @pytest.mark.feature('BPU-INT-092')

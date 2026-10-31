@@ -1,0 +1,3113 @@
+{
+  "date": "2026-10-31T04:00:14.541979+00:00",
+  "scope": "Loose ignored simulation outputs and Python/pytest caches under repository source directories; no traversal into toolchains, build caches or result evidence.",
+  "process_check": "No active project simulation/build/test job or open loose artifact descriptor found.",
+  "preserved": [
+    ".cache/",
+    ".tools/",
+    ".venv/",
+    ".venv-uc-toffee/",
+    ".ucv/",
+    ".history/",
+    "results/",
+    "suites/*/*/results/",
+    "dut/ and rtl/ links",
+    "all tracked and untracked source files"
+  ],
+  "deleted_files": [
+    {
+      "path": "VRvcExpanderDut_coverage.dat",
+      "bytes": 80084,
+      "sha256": "da08fd2a89f0716b40ebfdbd4b3ddd6e4264a7dc09c9d95ed82aee42e5338ddb"
+    },
+    {
+      "path": "VIfuDut_coverage.dat",
+      "bytes": 16155477,
+      "sha256": "2824021fadc69a32bfd09ec397e454511c0f4b093a3115bf6466269d0fe93120"
+    },
+    {
+      "path": "VFtqDut_coverage.dat",
+      "bytes": 37691577,
+      "sha256": "6b5535ba289e1a97825ae5eeb7047126629d1f2590694b9c4e37e280191673ad"
+    },
+    {
+      "path": "VPredCheckerDut_coverage.dat",
+      "bytes": 6258670,
+      "sha256": "d12b959169da631d376c0218cad68cd6ae31869c836f49723582316a389476e4"
+    },
+    {
+      "path": "VBpuDut_coverage.dat",
+      "bytes": 123632829,
+      "sha256": "a23dc16b2a221bdc5f0c2247c80689a56fa1cda9422045c92dfa4cb0e8edbc5d"
+    },
+    {
+      "path": "VInstrBoundaryDut_coverage.dat",
+      "bytes": 1109900,
+      "sha256": "95e4542bd658463a9c09b7745b7922eda47b98013dd946b92fbbb8ca94a38cd9"
+    },
+    {
+      "path": "VWayLookupDut_coverage.dat",
+      "bytes": 3206714,
+      "sha256": "6a36109460b233987875a09e4488ff7b3a7941ea5618ea5d7c3bdc39f1bf133f"
+    },
+    {
+      "path": "memory-direct.fst",
+      "bytes": 17385,
+      "sha256": "d4565c830a9128c7bfd36eb1fa5246fbf325c30847175a821f80e684e5bbd2a8"
+    },
+    {
+      "path": "VIfuUncacheUnitDut_coverage.dat",
+      "bytes": 243062,
+      "sha256": "074e76f710c8b6ff3d0edca9785c0da625a23579f0ca4859b74d2a20c79561ea"
+    },
+    {
+      "path": "VFrontendTriggerDut_coverage.dat",
+      "bytes": 3062799,
+      "sha256": "d276790451ac9eafb613d2ecd0c6134ecd21fc9860006521d67b5798315a161f"
+    },
+    {
+      "path": "suites/memblock/lsq/memory-direct.fst",
+      "bytes": 226950,
+      "sha256": "28a8da70dae393e1df5cb04649982f925f98c531e0f226ff6186e26aa777bcc5"
+    },
+    {
+      "path": "suites/frontend/ifu/VRvcExpanderDut_coverage.dat",
+      "bytes": 79343,
+      "sha256": "08218d42367406df8184b6c040c9caa3bc23d589b1b5b1fe4d07d4bec08a85dc"
+    },
+    {
+      "path": "suites/frontend/ifu/VIfuDut_coverage.dat",
+      "bytes": 16156060,
+      "sha256": "63d25d5315e4290087800bc42137886f4b98ad8f0b5635aa71190bb4d412cefe"
+    },
+    {
+      "path": "suites/frontend/ifu/VIfuPerfAnalysisDut_coverage.dat",
+      "bytes": 247546,
+      "sha256": "1e5fd3f1115a3387c6ae40238d5ae340b485f44e2d197a866a91ebc9083a8e71"
+    },
+    {
+      "path": "suites/frontend/ifu/VPredCheckerDut_coverage.dat",
+      "bytes": 6295274,
+      "sha256": "50a65cc7bba332aad583f0f782ccce6f1647f1443955282d38b0aea10b157a46"
+    },
+    {
+      "path": "suites/frontend/ifu/VInstrBoundaryDut_coverage.dat",
+      "bytes": 1116611,
+      "sha256": "6e7e913a982198c3c167e82511ccc043d3c14ff35378c3e83cebf930afb22b57"
+    },
+    {
+      "path": "suites/frontend/ifu/memory-direct.fst",
+      "bytes": 562711,
+      "sha256": "4b8892775085e53e128603e002c676ca05c7b4738410a609d8fc402594b448d8"
+    },
+    {
+      "path": "suites/frontend/ifu/VIfuUncacheUnitDut_coverage.dat",
+      "bytes": 244332,
+      "sha256": "e76a93fb2c5f3bc5d72b664585e7170b41224d8c4c399045956f7759028b3f8b"
+    },
+    {
+      "path": "suites/frontend/ifu/VFrontendTriggerDut_coverage.dat",
+      "bytes": 3073347,
+      "sha256": "e6252e78c870f0b7453d74a9973b88afd6f914ce1c85cd1a6cf5210531f3e799"
+    },
+    {
+      "path": "suites/frontend/ftq/memory-direct.fst",
+      "bytes": 17243,
+      "sha256": "3b2e7c16ed6b31d8fc0200f7811251b457362b9f2544a7ef49cc22a75c450fab"
+    },
+    {
+      "path": "suites/frontend/icache/memory-direct.fst",
+      "bytes": 8775,
+      "sha256": "8b294cd33c0953d248811b4162ee6163ed7aa14763cef601ca9ccc8af3bec8dd"
+    },
+    {
+      "path": "suites/frontend/bpu/memory-direct.fst",
+      "bytes": 201421,
+      "sha256": "c2397938a25e059cca90ea31b3213c86797bfbc3880c6b6d146f446c12198ad9"
+    }
+  ],
+  "deleted_cache_directories": [
+    {
+      "path": ".pytest_cache",
+      "files": 5,
+      "bytes": 7089
+    },
+    {
+      "path": "tests/__pycache__",
+      "files": 14,
+      "bytes": 225928
+    },
+    {
+      "path": "scripts/__pycache__",
+      "files": 2,
+      "bytes": 22692
+    },
+    {
+      "path": "src/ucv/__pycache__",
+      "files": 16,
+      "bytes": 133548
+    },
+    {
+      "path": "suites/vector/vagq/.pytest_cache",
+      "files": 5,
+      "bytes": 49311
+    },
+    {
+      "path": "suites/vector/vagq/tests/__pycache__",
+      "files": 9,
+      "bytes": 26959
+    },
+    {
+      "path": "suites/vector/vagq/tests/ordered/__pycache__",
+      "files": 6,
+      "bytes": 43869
+    },
+    {
+      "path": "suites/vector/vagq/tests/ordered/testcase/__pycache__",
+      "files": 3,
+      "bytes": 28090
+    },
+    {
+      "path": "suites/vector/vagq/tests/merge/__pycache__",
+      "files": 3,
+      "bytes": 41087
+    },
+    {
+      "path": "suites/vector/vagq/tests/merge/testcase/__pycache__",
+      "files": 3,
+      "bytes": 44201
+    },
+    {
+      "path": "suites/vector/vagq/tests/entrytable/__pycache__",
+      "files": 3,
+      "bytes": 27901
+    },
+    {
+      "path": "suites/vector/vagq/tests/entrytable/testcase/__pycache__",
+      "files": 3,
+      "bytes": 38366
+    },
+    {
+      "path": "suites/vector/vagq/tests/framework/__pycache__",
+      "files": 2,
+      "bytes": 11750
+    },
+    {
+      "path": "suites/vector/vagq/tests/storedata/__pycache__",
+      "files": 3,
+      "bytes": 44462
+    },
+    {
+      "path": "suites/vector/vagq/tests/storedata/testcase/__pycache__",
+      "files": 3,
+      "bytes": 42761
+    },
+    {
+      "path": "suites/vector/vagq/tests/manager/__pycache__",
+      "files": 16,
+      "bytes": 115162
+    },
+    {
+      "path": "suites/vector/vagq/tests/manager/testcase/__pycache__",
+      "files": 3,
+      "bytes": 38221
+    },
+    {
+      "path": "suites/vector/vagq/tests/split/__pycache__",
+      "files": 3,
+      "bytes": 61226
+    },
+    {
+      "path": "suites/vector/vagq/tests/split/testcase/__pycache__",
+      "files": 3,
+      "bytes": 45436
+    },
+    {
+      "path": "suites/vector/vagq/tests/maskgen/__pycache__",
+      "files": 9,
+      "bytes": 168527
+    },
+    {
+      "path": "suites/vector/vagq/tests/maskgen/testcase/__pycache__",
+      "files": 6,
+      "bytes": 53799
+    },
+    {
+      "path": "suites/vector/vagq/tests/addrgen/__pycache__",
+      "files": 3,
+      "bytes": 7756
+    },
+    {
+      "path": "suites/vector/vagq/tests/addrgen/testcase/__pycache__",
+      "files": 3,
+      "bytes": 27838
+    },
+    {
+      "path": "suites/vector/vagq/tests/pipeline/__pycache__",
+      "files": 6,
+      "bytes": 40519
+    },
+    {
+      "path": "suites/vector/vagq/tests/pipeline/testcase/__pycache__",
+      "files": 3,
+      "bytes": 17208
+    },
+    {
+      "path": "suites/vector/vagq/tests/arbiter/__pycache__",
+      "files": 3,
+      "bytes": 39771
+    },
+    {
+      "path": "suites/vector/vagq/tests/arbiter/testcase/__pycache__",
+      "files": 3,
+      "bytes": 26830
+    },
+    {
+      "path": "suites/vector/vagq/tests/vagq/__pycache__",
+      "files": 69,
+      "bytes": 1294997
+    },
+    {
+      "path": "suites/vector/vagq/tools/__pycache__",
+      "files": 12,
+      "bytes": 268933
+    },
+    {
+      "path": "suites/vector/vagq/vagqverify/__pycache__",
+      "files": 7,
+      "bytes": 25785
+    },
+    {
+      "path": "suites/vector/vagq/vagqverify/ordered/__pycache__",
+      "files": 9,
+      "bytes": 31683
+    },
+    {
+      "path": "suites/vector/vagq/vagqverify/merge/__pycache__",
+      "files": 8,
+      "bytes": 55326
+    },
+    {
+      "path": "suites/vector/vagq/vagqverify/qualification/__pycache__",
+      "files": 2,
+      "bytes": 9889
+    },
+    {
+      "path": "suites/vector/vagq/vagqverify/entrytable/__pycache__",
+      "files": 8,
+      "bytes": 51962
+    },
+    {
+      "path": "suites/vector/vagq/vagqverify/storedata/__pycache__",
+      "files": 8,
+      "bytes": 48290
+    },
+    {
+      "path": "suites/vector/vagq/vagqverify/manager/__pycache__",
+      "files": 11,
+      "bytes": 37229
+    },
+    {
+      "path": "suites/vector/vagq/vagqverify/common/__pycache__",
+      "files": 1,
+      "bytes": 3764
+    },
+    {
+      "path": "suites/vector/vagq/vagqverify/split/__pycache__",
+      "files": 9,
+      "bytes": 58577
+    },
+    {
+      "path": "suites/vector/vagq/vagqverify/maskgen/__pycache__",
+      "files": 5,
+      "bytes": 32231
+    },
+    {
+      "path": "suites/vector/vagq/vagqverify/addrgen/__pycache__",
+      "files": 3,
+      "bytes": 7495
+    },
+    {
+      "path": "suites/vector/vagq/vagqverify/pipeline/__pycache__",
+      "files": 10,
+      "bytes": 24246
+    },
+    {
+      "path": "suites/vector/vagq/vagqverify/arbiter/__pycache__",
+      "files": 7,
+      "bytes": 38923
+    },
+    {
+      "path": "suites/vector/vagq/vagqverify/vagq/__pycache__",
+      "files": 18,
+      "bytes": 256056
+    },
+    {
+      "path": "suites/memblock/mmu/.pytest_cache",
+      "files": 5,
+      "bytes": 25923
+    },
+    {
+      "path": "suites/memblock/mmu/__pycache__",
+      "files": 3,
+      "bytes": 20038
+    },
+    {
+      "path": "suites/memblock/mmu/tests/__pycache__",
+      "files": 6,
+      "bytes": 61575
+    },
+    {
+      "path": "suites/memblock/mmu/tests/l2/__pycache__",
+      "files": 41,
+      "bytes": 2764886
+    },
+    {
+      "path": "suites/memblock/mmu/tests/wrapper/__pycache__",
+      "files": 4,
+      "bytes": 90508
+    },
+    {
+      "path": "suites/memblock/mmu/tests/tlbfa/__pycache__",
+      "files": 17,
+      "bytes": 342227
+    },
+    {
+      "path": "suites/memblock/mmu/tests/tlbn/__pycache__",
+      "files": 4,
+      "bytes": 391769
+    },
+    {
+      "path": "suites/memblock/mmu/tests/tlb/__pycache__",
+      "files": 4,
+      "bytes": 230774
+    },
+    {
+      "path": "suites/memblock/mmu/mmuverify/__pycache__",
+      "files": 1,
+      "bytes": 165
+    },
+    {
+      "path": "suites/memblock/mmu/mmuverify/l2/__pycache__",
+      "files": 13,
+      "bytes": 215334
+    },
+    {
+      "path": "suites/memblock/mmu/mmuverify/common/__pycache__",
+      "files": 5,
+      "bytes": 16263
+    },
+    {
+      "path": "suites/memblock/mmu/mmuverify/wrapper/__pycache__",
+      "files": 4,
+      "bytes": 39757
+    },
+    {
+      "path": "suites/memblock/mmu/mmuverify/tlbfa/__pycache__",
+      "files": 4,
+      "bytes": 70548
+    },
+    {
+      "path": "suites/memblock/mmu/mmuverify/tlbn/__pycache__",
+      "files": 2,
+      "bytes": 27436
+    },
+    {
+      "path": "suites/memblock/mmu/mmuverify/tlb/__pycache__",
+      "files": 4,
+      "bytes": 39288
+    },
+    {
+      "path": "suites/memblock/mmu/tools/__pycache__",
+      "files": 7,
+      "bytes": 94995
+    },
+    {
+      "path": "suites/memblock/mmu/tools/trace/__pycache__",
+      "files": 2,
+      "bytes": 8760
+    },
+    {
+      "path": "suites/memblock/sbuffer/.pytest_cache",
+      "files": 4,
+      "bytes": 2794
+    },
+    {
+      "path": "suites/memblock/sbuffer/__pycache__",
+      "files": 3,
+      "bytes": 6359
+    },
+    {
+      "path": "suites/memblock/sbuffer/tests/__pycache__",
+      "files": 2,
+      "bytes": 9230
+    },
+    {
+      "path": "suites/memblock/sbuffer/tests/sbuffer/__pycache__",
+      "files": 4,
+      "bytes": 163881
+    },
+    {
+      "path": "suites/memblock/sbuffer/tests/sbuffer_data/__pycache__",
+      "files": 3,
+      "bytes": 68028
+    },
+    {
+      "path": "suites/memblock/sbuffer/sbufferverify/__pycache__",
+      "files": 1,
+      "bytes": 173
+    },
+    {
+      "path": "suites/memblock/sbuffer/sbufferverify/sbuffer/__pycache__",
+      "files": 4,
+      "bytes": 49976
+    },
+    {
+      "path": "suites/memblock/sbuffer/sbufferverify/sbuffer_data/__pycache__",
+      "files": 4,
+      "bytes": 33800
+    },
+    {
+      "path": "suites/memblock/sbuffer/sbufferverify/common/__pycache__",
+      "files": 3,
+      "bytes": 5889
+    },
+    {
+      "path": "suites/memblock/sbuffer/tools/__pycache__",
+      "files": 4,
+      "bytes": 50692
+    },
+    {
+      "path": "suites/memblock/dcache/.pytest_cache",
+      "files": 5,
+      "bytes": 17684
+    },
+    {
+      "path": "suites/memblock/dcache/__pycache__",
+      "files": 3,
+      "bytes": 5760
+    },
+    {
+      "path": "suites/memblock/dcache/tests/__pycache__",
+      "files": 2,
+      "bytes": 8036
+    },
+    {
+      "path": "suites/memblock/dcache/tests/probe_queue/__pycache__",
+      "files": 3,
+      "bytes": 30531
+    },
+    {
+      "path": "suites/memblock/dcache/tests/counter_filter/__pycache__",
+      "files": 3,
+      "bytes": 58405
+    },
+    {
+      "path": "suites/memblock/dcache/tests/miss_track/__pycache__",
+      "files": 3,
+      "bytes": 74734
+    },
+    {
+      "path": "suites/memblock/dcache/tests/miss_ready_gen/__pycache__",
+      "files": 3,
+      "bytes": 33104
+    },
+    {
+      "path": "suites/memblock/dcache/tests/dcache_wrapper/__pycache__",
+      "files": 6,
+      "bytes": 155391
+    },
+    {
+      "path": "suites/memblock/dcache/tests/load_pipe/__pycache__",
+      "files": 3,
+      "bytes": 32801
+    },
+    {
+      "path": "suites/memblock/dcache/tests/banked_data_array/__pycache__",
+      "files": 3,
+      "bytes": 147976
+    },
+    {
+      "path": "suites/memblock/dcache/tests/ctrl_unit/__pycache__",
+      "files": 3,
+      "bytes": 164658
+    },
+    {
+      "path": "suites/memblock/dcache/tests/main_pipe/__pycache__",
+      "files": 3,
+      "bytes": 421417
+    },
+    {
+      "path": "suites/memblock/dcache/tests/dcache/__pycache__",
+      "files": 7,
+      "bytes": 342658
+    },
+    {
+      "path": "suites/memblock/dcache/tests/duplicated_tag_array/__pycache__",
+      "files": 3,
+      "bytes": 107411
+    },
+    {
+      "path": "suites/memblock/dcache/tests/writeback_queue/__pycache__",
+      "files": 3,
+      "bytes": 59135
+    },
+    {
+      "path": "suites/memblock/dcache/tests/miss_queue/__pycache__",
+      "files": 3,
+      "bytes": 268579
+    },
+    {
+      "path": "suites/memblock/dcache/dcacheverify/probe_queue/__pycache__",
+      "files": 2,
+      "bytes": 6984
+    },
+    {
+      "path": "suites/memblock/dcache/dcacheverify/counter_filter/__pycache__",
+      "files": 3,
+      "bytes": 21623
+    },
+    {
+      "path": "suites/memblock/dcache/dcacheverify/miss_track/__pycache__",
+      "files": 3,
+      "bytes": 37024
+    },
+    {
+      "path": "suites/memblock/dcache/dcacheverify/miss_ready_gen/__pycache__",
+      "files": 2,
+      "bytes": 12373
+    },
+    {
+      "path": "suites/memblock/dcache/dcacheverify/dcache_wrapper/__pycache__",
+      "files": 2,
+      "bytes": 18447
+    },
+    {
+      "path": "suites/memblock/dcache/dcacheverify/load_pipe/__pycache__",
+      "files": 3,
+      "bytes": 23732
+    },
+    {
+      "path": "suites/memblock/dcache/dcacheverify/common/__pycache__",
+      "files": 4,
+      "bytes": 12994
+    },
+    {
+      "path": "suites/memblock/dcache/dcacheverify/banked_data_array/__pycache__",
+      "files": 3,
+      "bytes": 44829
+    },
+    {
+      "path": "suites/memblock/dcache/dcacheverify/ctrl_unit/__pycache__",
+      "files": 2,
+      "bytes": 26257
+    },
+    {
+      "path": "suites/memblock/dcache/dcacheverify/main_pipe/__pycache__",
+      "files": 2,
+      "bytes": 67727
+    },
+    {
+      "path": "suites/memblock/dcache/dcacheverify/dcache/__pycache__",
+      "files": 2,
+      "bytes": 42806
+    },
+    {
+      "path": "suites/memblock/dcache/dcacheverify/duplicated_tag_array/__pycache__",
+      "files": 3,
+      "bytes": 35111
+    },
+    {
+      "path": "suites/memblock/dcache/dcacheverify/writeback_queue/__pycache__",
+      "files": 2,
+      "bytes": 13969
+    },
+    {
+      "path": "suites/memblock/dcache/dcacheverify/miss_queue/__pycache__",
+      "files": 2,
+      "bytes": 41824
+    },
+    {
+      "path": "suites/memblock/dcache/tools/__pycache__",
+      "files": 15,
+      "bytes": 123279
+    },
+    {
+      "path": "suites/memblock/lsq/tests/__pycache__",
+      "files": 3,
+      "bytes": 104245
+    },
+    {
+      "path": "suites/memblock/lsq/tests/freelist/__pycache__",
+      "files": 6,
+      "bytes": 74616
+    },
+    {
+      "path": "suites/memblock/lsq/tests/fail_review/__pycache__",
+      "files": 10,
+      "bytes": 164958
+    },
+    {
+      "path": "suites/memblock/lsq/tests/load_uncache/__pycache__",
+      "files": 21,
+      "bytes": 273127
+    },
+    {
+      "path": "suites/memblock/lsq/tests/uncache_entry/__pycache__",
+      "files": 9,
+      "bytes": 139010
+    },
+    {
+      "path": "suites/memblock/lsq/tests/sq_endpoint/__pycache__",
+      "files": 17,
+      "bytes": 186039
+    },
+    {
+      "path": "suites/memblock/lsq/tests/deq/__pycache__",
+      "files": 19,
+      "bytes": 240202
+    },
+    {
+      "path": "suites/memblock/lsq/tests/load_queue/__pycache__",
+      "files": 49,
+      "bytes": 670570
+    },
+    {
+      "path": "suites/memblock/lsq/tests/enter_sbuffer/__pycache__",
+      "files": 6,
+      "bytes": 97048
+    },
+    {
+      "path": "suites/memblock/lsq/tests/store_queue/__pycache__",
+      "files": 48,
+      "bytes": 302104
+    },
+    {
+      "path": "suites/memblock/lsq/tests/age/__pycache__",
+      "files": 6,
+      "bytes": 66255
+    },
+    {
+      "path": "suites/memblock/lsq/tests/unalign/__pycache__",
+      "files": 9,
+      "bytes": 130598
+    },
+    {
+      "path": "suites/memblock/lsq/tests/cam/__pycache__",
+      "files": 6,
+      "bytes": 61526
+    },
+    {
+      "path": "suites/memblock/lsq/tests/normal_replay_probe/__pycache__",
+      "files": 3,
+      "bytes": 4966
+    },
+    {
+      "path": "suites/memblock/lsq/tests/local_reset/__pycache__",
+      "files": 11,
+      "bytes": 85716
+    },
+    {
+      "path": "suites/memblock/lsq/tests/raw/__pycache__",
+      "files": 9,
+      "bytes": 269524
+    },
+    {
+      "path": "suites/memblock/lsq/tests/forward/__pycache__",
+      "files": 19,
+      "bytes": 210645
+    },
+    {
+      "path": "suites/memblock/lsq/tests/replay_cause_probe/__pycache__",
+      "files": 3,
+      "bytes": 3600
+    },
+    {
+      "path": "suites/memblock/lsq/tests/vsq/__pycache__",
+      "files": 25,
+      "bytes": 226703
+    },
+    {
+      "path": "suites/memblock/lsq/tests/replay/__pycache__",
+      "files": 21,
+      "bytes": 407352
+    },
+    {
+      "path": "suites/memblock/lsq/tests/rar/__pycache__",
+      "files": 9,
+      "bytes": 202468
+    },
+    {
+      "path": "suites/memblock/lsq/tests/normal_mixed/__pycache__",
+      "files": 11,
+      "bytes": 100251
+    },
+    {
+      "path": "suites/memblock/lsq/tests/vlq/__pycache__",
+      "files": 9,
+      "bytes": 258728
+    },
+    {
+      "path": "suites/memblock/lsq/tests/lsq_wrapper/__pycache__",
+      "files": 174,
+      "bytes": 2225779
+    },
+    {
+      "path": "suites/memblock/lsq/tests/runtime/__pycache__",
+      "files": 3,
+      "bytes": 52176
+    },
+    {
+      "path": "suites/memblock/lsq/tests/psq/__pycache__",
+      "files": 37,
+      "bytes": 341611
+    },
+    {
+      "path": "suites/memblock/lsq/lsqverify/__pycache__",
+      "files": 19,
+      "bytes": 270354
+    },
+    {
+      "path": "suites/memblock/lsq/lsqverify/freelist/__pycache__",
+      "files": 8,
+      "bytes": 35338
+    },
+    {
+      "path": "suites/memblock/lsq/lsqverify/fail_review/__pycache__",
+      "files": 2,
+      "bytes": 13913
+    },
+    {
+      "path": "suites/memblock/lsq/lsqverify/load_uncache/__pycache__",
+      "files": 5,
+      "bytes": 73080
+    },
+    {
+      "path": "suites/memblock/lsq/lsqverify/uncache_entry/__pycache__",
+      "files": 8,
+      "bytes": 69015
+    },
+    {
+      "path": "suites/memblock/lsq/lsqverify/sq_endpoint/__pycache__",
+      "files": 3,
+      "bytes": 15960
+    },
+    {
+      "path": "suites/memblock/lsq/lsqverify/deq/__pycache__",
+      "files": 10,
+      "bytes": 73789
+    },
+    {
+      "path": "suites/memblock/lsq/lsqverify/load_queue/__pycache__",
+      "files": 11,
+      "bytes": 87360
+    },
+    {
+      "path": "suites/memblock/lsq/lsqverify/enter_sbuffer/__pycache__",
+      "files": 6,
+      "bytes": 29019
+    },
+    {
+      "path": "suites/memblock/lsq/lsqverify/store_queue/__pycache__",
+      "files": 11,
+      "bytes": 72916
+    },
+    {
+      "path": "suites/memblock/lsq/lsqverify/age/__pycache__",
+      "files": 7,
+      "bytes": 32594
+    },
+    {
+      "path": "suites/memblock/lsq/lsqverify/unalign/__pycache__",
+      "files": 6,
+      "bytes": 34934
+    },
+    {
+      "path": "suites/memblock/lsq/lsqverify/cam/__pycache__",
+      "files": 7,
+      "bytes": 40797
+    },
+    {
+      "path": "suites/memblock/lsq/lsqverify/local_reset/__pycache__",
+      "files": 2,
+      "bytes": 3786
+    },
+    {
+      "path": "suites/memblock/lsq/lsqverify/raw/__pycache__",
+      "files": 8,
+      "bytes": 96920
+    },
+    {
+      "path": "suites/memblock/lsq/lsqverify/forward/__pycache__",
+      "files": 9,
+      "bytes": 56495
+    },
+    {
+      "path": "suites/memblock/lsq/lsqverify/common/__pycache__",
+      "files": 1,
+      "bytes": 13745
+    },
+    {
+      "path": "suites/memblock/lsq/lsqverify/vsq/__pycache__",
+      "files": 8,
+      "bytes": 48487
+    },
+    {
+      "path": "suites/memblock/lsq/lsqverify/replay/__pycache__",
+      "files": 8,
+      "bytes": 98738
+    },
+    {
+      "path": "suites/memblock/lsq/lsqverify/rar/__pycache__",
+      "files": 8,
+      "bytes": 76998
+    },
+    {
+      "path": "suites/memblock/lsq/lsqverify/vlq/__pycache__",
+      "files": 8,
+      "bytes": 68082
+    },
+    {
+      "path": "suites/memblock/lsq/lsqverify/lsq_wrapper/__pycache__",
+      "files": 11,
+      "bytes": 70182
+    },
+    {
+      "path": "suites/memblock/lsq/lsqverify/psq/__pycache__",
+      "files": 13,
+      "bytes": 105779
+    },
+    {
+      "path": "suites/memblock/lsq/tools/__pycache__",
+      "files": 245,
+      "bytes": 3994122
+    },
+    {
+      "path": "suites/memblock/lsu/.pytest_cache",
+      "files": 5,
+      "bytes": 47298
+    },
+    {
+      "path": "suites/memblock/lsu/__pycache__",
+      "files": 3,
+      "bytes": 4753
+    },
+    {
+      "path": "suites/memblock/lsu/tests/__pycache__",
+      "files": 3,
+      "bytes": 6195
+    },
+    {
+      "path": "suites/memblock/lsu/tests/load_s0/__pycache__",
+      "files": 4,
+      "bytes": 204019
+    },
+    {
+      "path": "suites/memblock/lsu/tests/new_load_unit/__pycache__",
+      "files": 7,
+      "bytes": 261749
+    },
+    {
+      "path": "suites/memblock/lsu/tests/load_arbiter/__pycache__",
+      "files": 4,
+      "bytes": 92312
+    },
+    {
+      "path": "suites/memblock/lsu/tests/store_s2/__pycache__",
+      "files": 4,
+      "bytes": 79167
+    },
+    {
+      "path": "suites/memblock/lsu/tests/std_exe_unit/__pycache__",
+      "files": 4,
+      "bytes": 83020
+    },
+    {
+      "path": "suites/memblock/lsu/tests/store_s1/__pycache__",
+      "files": 4,
+      "bytes": 182063
+    },
+    {
+      "path": "suites/memblock/lsu/tests/store_s3/__pycache__",
+      "files": 4,
+      "bytes": 74214
+    },
+    {
+      "path": "suites/memblock/lsu/tests/new_store_unit/__pycache__",
+      "files": 4,
+      "bytes": 159695
+    },
+    {
+      "path": "suites/memblock/lsu/tests/load_s2/__pycache__",
+      "files": 7,
+      "bytes": 204049
+    },
+    {
+      "path": "suites/memblock/lsu/tests/store_arbiter/__pycache__",
+      "files": 4,
+      "bytes": 71070
+    },
+    {
+      "path": "suites/memblock/lsu/tests/store_trigger/__pycache__",
+      "files": 4,
+      "bytes": 171523
+    },
+    {
+      "path": "suites/memblock/lsu/tests/load_trigger/__pycache__",
+      "files": 4,
+      "bytes": 142645
+    },
+    {
+      "path": "suites/memblock/lsu/tests/load_s3/__pycache__",
+      "files": 4,
+      "bytes": 147397
+    },
+    {
+      "path": "suites/memblock/lsu/tests/load_datapath/__pycache__",
+      "files": 4,
+      "bytes": 99917
+    },
+    {
+      "path": "suites/memblock/lsu/tests/load_s1/__pycache__",
+      "files": 4,
+      "bytes": 186928
+    },
+    {
+      "path": "suites/memblock/lsu/tests/store_s0/__pycache__",
+      "files": 4,
+      "bytes": 159191
+    },
+    {
+      "path": "suites/memblock/lsu/tests/store_delay/__pycache__",
+      "files": 4,
+      "bytes": 77748
+    },
+    {
+      "path": "suites/memblock/lsu/tests/store_s4/__pycache__",
+      "files": 4,
+      "bytes": 25369
+    },
+    {
+      "path": "suites/memblock/lsu/tests/upstream_spec/__pycache__",
+      "files": 6,
+      "bytes": 33164
+    },
+    {
+      "path": "suites/memblock/lsu/tests/load_s4/__pycache__",
+      "files": 4,
+      "bytes": 30672
+    },
+    {
+      "path": "suites/memblock/lsu/lsuverify/__pycache__",
+      "files": 1,
+      "bytes": 165
+    },
+    {
+      "path": "suites/memblock/lsu/lsuverify/load_s0/__pycache__",
+      "files": 3,
+      "bytes": 40417
+    },
+    {
+      "path": "suites/memblock/lsu/lsuverify/new_load_unit/__pycache__",
+      "files": 2,
+      "bytes": 57412
+    },
+    {
+      "path": "suites/memblock/lsu/lsuverify/load_arbiter/__pycache__",
+      "files": 3,
+      "bytes": 15158
+    },
+    {
+      "path": "suites/memblock/lsu/lsuverify/store_s2/__pycache__",
+      "files": 3,
+      "bytes": 16824
+    },
+    {
+      "path": "suites/memblock/lsu/lsuverify/std_exe_unit/__pycache__",
+      "files": 3,
+      "bytes": 14310
+    },
+    {
+      "path": "suites/memblock/lsu/lsuverify/store_s1/__pycache__",
+      "files": 3,
+      "bytes": 31554
+    },
+    {
+      "path": "suites/memblock/lsu/lsuverify/store_s3/__pycache__",
+      "files": 3,
+      "bytes": 17944
+    },
+    {
+      "path": "suites/memblock/lsu/lsuverify/new_store_unit/__pycache__",
+      "files": 3,
+      "bytes": 29792
+    },
+    {
+      "path": "suites/memblock/lsu/lsuverify/load_s2/__pycache__",
+      "files": 3,
+      "bytes": 56471
+    },
+    {
+      "path": "suites/memblock/lsu/lsuverify/store_arbiter/__pycache__",
+      "files": 3,
+      "bytes": 15918
+    },
+    {
+      "path": "suites/memblock/lsu/lsuverify/store_trigger/__pycache__",
+      "files": 3,
+      "bytes": 15940
+    },
+    {
+      "path": "suites/memblock/lsu/lsuverify/load_trigger/__pycache__",
+      "files": 3,
+      "bytes": 12001
+    },
+    {
+      "path": "suites/memblock/lsu/lsuverify/load_s3/__pycache__",
+      "files": 3,
+      "bytes": 44843
+    },
+    {
+      "path": "suites/memblock/lsu/lsuverify/load_datapath/__pycache__",
+      "files": 3,
+      "bytes": 21051
+    },
+    {
+      "path": "suites/memblock/lsu/lsuverify/load_s1/__pycache__",
+      "files": 3,
+      "bytes": 39807
+    },
+    {
+      "path": "suites/memblock/lsu/lsuverify/common/__pycache__",
+      "files": 5,
+      "bytes": 20463
+    },
+    {
+      "path": "suites/memblock/lsu/lsuverify/store_s0/__pycache__",
+      "files": 3,
+      "bytes": 23125
+    },
+    {
+      "path": "suites/memblock/lsu/lsuverify/store_delay/__pycache__",
+      "files": 3,
+      "bytes": 12612
+    },
+    {
+      "path": "suites/memblock/lsu/lsuverify/store_s4/__pycache__",
+      "files": 3,
+      "bytes": 6321
+    },
+    {
+      "path": "suites/memblock/lsu/lsuverify/load_s4/__pycache__",
+      "files": 3,
+      "bytes": 3702
+    },
+    {
+      "path": "suites/memblock/lsu/tools/__pycache__",
+      "files": 10,
+      "bytes": 145252
+    },
+    {
+      "path": "suites/frontend/ifu/.pytest_cache",
+      "files": 5,
+      "bytes": 14155
+    },
+    {
+      "path": "suites/frontend/ifu/tests/__pycache__",
+      "files": 3,
+      "bytes": 1911
+    },
+    {
+      "path": "suites/frontend/ifu/tests/ifu/__pycache__",
+      "files": 7,
+      "bytes": 561529
+    },
+    {
+      "path": "suites/frontend/ifu/tests/framework/__pycache__",
+      "files": 15,
+      "bytes": 218366
+    },
+    {
+      "path": "suites/frontend/ifu/tests/perf_analysis/__pycache__",
+      "files": 4,
+      "bytes": 88628
+    },
+    {
+      "path": "suites/frontend/ifu/tests/frontend_trigger/__pycache__",
+      "files": 4,
+      "bytes": 122423
+    },
+    {
+      "path": "suites/frontend/ifu/tests/pred_checker/__pycache__",
+      "files": 4,
+      "bytes": 112570
+    },
+    {
+      "path": "suites/frontend/ifu/tests/instr_boundary/__pycache__",
+      "files": 4,
+      "bytes": 104389
+    },
+    {
+      "path": "suites/frontend/ifu/tests/uncache_unit/__pycache__",
+      "files": 4,
+      "bytes": 107122
+    },
+    {
+      "path": "suites/frontend/ifu/tests/rvc_expander/__pycache__",
+      "files": 4,
+      "bytes": 75769
+    },
+    {
+      "path": "suites/frontend/ifu/tools/__pycache__",
+      "files": 2,
+      "bytes": 28451
+    },
+    {
+      "path": "suites/frontend/ifu/ifuverify/__pycache__",
+      "files": 4,
+      "bytes": 55638
+    },
+    {
+      "path": "suites/frontend/ifu/ifuverify/model/__pycache__",
+      "files": 10,
+      "bytes": 97232
+    },
+    {
+      "path": "suites/frontend/ifu/ifuverify/common/__pycache__",
+      "files": 7,
+      "bytes": 24261
+    },
+    {
+      "path": "suites/frontend/ftq/.pytest_cache",
+      "files": 4,
+      "bytes": 11282
+    },
+    {
+      "path": "suites/frontend/ftq/tests/__pycache__",
+      "files": 7,
+      "bytes": 6381
+    },
+    {
+      "path": "suites/frontend/ftq/tests/ftq/__pycache__",
+      "files": 18,
+      "bytes": 551836
+    },
+    {
+      "path": "suites/frontend/ftq/tests/commit_queue/__pycache__",
+      "files": 14,
+      "bytes": 59567
+    },
+    {
+      "path": "suites/frontend/ftq/tests/checkers/__pycache__",
+      "files": 13,
+      "bytes": 90621
+    },
+    {
+      "path": "suites/frontend/ftq/tests/resolve_queue/__pycache__",
+      "files": 33,
+      "bytes": 217380
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/__pycache__",
+      "files": 3,
+      "bytes": 27300
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/ftq/__pycache__",
+      "files": 1,
+      "bytes": 199
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/ftq/checker/__pycache__",
+      "files": 2,
+      "bytes": 3822
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/ftq/driver/__pycache__",
+      "files": 2,
+      "bytes": 3949
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/ftq/bundle/__pycache__",
+      "files": 2,
+      "bytes": 11205
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/ftq/monitor/__pycache__",
+      "files": 2,
+      "bytes": 10701
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/ftq/agent/__pycache__",
+      "files": 2,
+      "bytes": 38788
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/ftq/transaction/__pycache__",
+      "files": 2,
+      "bytes": 12467
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/common/__pycache__",
+      "files": 2,
+      "bytes": 6326
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/common/driver/__pycache__",
+      "files": 2,
+      "bytes": 7628
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/common/monitor/__pycache__",
+      "files": 2,
+      "bytes": 3856
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/common/env/__pycache__",
+      "files": 2,
+      "bytes": 3909
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/commit_queue/__pycache__",
+      "files": 1,
+      "bytes": 216
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/commit_queue/checker/__pycache__",
+      "files": 2,
+      "bytes": 2116
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/commit_queue/bundle/__pycache__",
+      "files": 2,
+      "bytes": 2129
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/commit_queue/monitor/__pycache__",
+      "files": 2,
+      "bytes": 994
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/commit_queue/agent/__pycache__",
+      "files": 2,
+      "bytes": 7667
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/commit_queue/transaction/__pycache__",
+      "files": 2,
+      "bytes": 498
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/resolve_queue/__pycache__",
+      "files": 1,
+      "bytes": 218
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/resolve_queue/checker/__pycache__",
+      "files": 2,
+      "bytes": 6835
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/resolve_queue/driver/__pycache__",
+      "files": 2,
+      "bytes": 1229
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/resolve_queue/bundle/__pycache__",
+      "files": 2,
+      "bytes": 3710
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/resolve_queue/monitor/__pycache__",
+      "files": 2,
+      "bytes": 2544
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/resolve_queue/agent/__pycache__",
+      "files": 2,
+      "bytes": 13025
+    },
+    {
+      "path": "suites/frontend/ftq/ftqverify/resolve_queue/transaction/__pycache__",
+      "files": 2,
+      "bytes": 3566
+    },
+    {
+      "path": "suites/frontend/ftq/tools/__pycache__",
+      "files": 4,
+      "bytes": 36957
+    },
+    {
+      "path": "suites/frontend/icache/.pytest_cache",
+      "files": 4,
+      "bytes": 28471
+    },
+    {
+      "path": "suites/frontend/icache/tests/__pycache__",
+      "files": 3,
+      "bytes": 5259
+    },
+    {
+      "path": "suites/frontend/icache/tests/waylookup/__pycache__",
+      "files": 2,
+      "bytes": 538
+    },
+    {
+      "path": "suites/frontend/icache/tests/waylookup/testcase/__pycache__",
+      "files": 22,
+      "bytes": 385951
+    },
+    {
+      "path": "suites/frontend/icache/tests/metabank/__pycache__",
+      "files": 2,
+      "bytes": 534
+    },
+    {
+      "path": "suites/frontend/icache/tests/metabank/testcase/__pycache__",
+      "files": 13,
+      "bytes": 130909
+    },
+    {
+      "path": "suites/frontend/icache/tests/missunit/__pycache__",
+      "files": 2,
+      "bytes": 534
+    },
+    {
+      "path": "suites/frontend/icache/tests/missunit/testcase/__pycache__",
+      "files": 13,
+      "bytes": 235185
+    },
+    {
+      "path": "suites/frontend/icache/tests/prefetchpipe/__pycache__",
+      "files": 2,
+      "bytes": 550
+    },
+    {
+      "path": "suites/frontend/icache/tests/prefetchpipe/testcase/__pycache__",
+      "files": 7,
+      "bytes": 325123
+    },
+    {
+      "path": "suites/frontend/icache/tests/framework/__pycache__",
+      "files": 3,
+      "bytes": 47778
+    },
+    {
+      "path": "suites/frontend/icache/tests/dataarray/__pycache__",
+      "files": 2,
+      "bytes": 538
+    },
+    {
+      "path": "suites/frontend/icache/tests/dataarray/testcase/__pycache__",
+      "files": 10,
+      "bytes": 153582
+    },
+    {
+      "path": "suites/frontend/icache/tests/icache/__pycache__",
+      "files": 2,
+      "bytes": 526
+    },
+    {
+      "path": "suites/frontend/icache/tests/icache/testcase/__pycache__",
+      "files": 22,
+      "bytes": 513261
+    },
+    {
+      "path": "suites/frontend/icache/tests/metaarray/__pycache__",
+      "files": 2,
+      "bytes": 538
+    },
+    {
+      "path": "suites/frontend/icache/tests/metaarray/testcase/__pycache__",
+      "files": 10,
+      "bytes": 128069
+    },
+    {
+      "path": "suites/frontend/icache/tests/replacer/__pycache__",
+      "files": 2,
+      "bytes": 534
+    },
+    {
+      "path": "suites/frontend/icache/tests/replacer/testcase/__pycache__",
+      "files": 13,
+      "bytes": 72887
+    },
+    {
+      "path": "suites/frontend/icache/tests/mainpipe/__pycache__",
+      "files": 2,
+      "bytes": 534
+    },
+    {
+      "path": "suites/frontend/icache/tests/mainpipe/testcase/__pycache__",
+      "files": 10,
+      "bytes": 305017
+    },
+    {
+      "path": "suites/frontend/icache/tests/mshr/__pycache__",
+      "files": 2,
+      "bytes": 518
+    },
+    {
+      "path": "suites/frontend/icache/tests/mshr/testcase/__pycache__",
+      "files": 13,
+      "bytes": 98602
+    },
+    {
+      "path": "suites/frontend/icache/tests/databank/__pycache__",
+      "files": 2,
+      "bytes": 534
+    },
+    {
+      "path": "suites/frontend/icache/tests/databank/testcase/__pycache__",
+      "files": 10,
+      "bytes": 100054
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/__pycache__",
+      "files": 1,
+      "bytes": 582
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/waylookup/__pycache__",
+      "files": 1,
+      "bytes": 181
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/waylookup/checker/__pycache__",
+      "files": 1,
+      "bytes": 2579
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/waylookup/driver/__pycache__",
+      "files": 1,
+      "bytes": 2497
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/waylookup/bundle/__pycache__",
+      "files": 1,
+      "bytes": 5460
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/waylookup/model/__pycache__",
+      "files": 1,
+      "bytes": 18523
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/waylookup/monitor/__pycache__",
+      "files": 1,
+      "bytes": 4085
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/waylookup/env/__pycache__",
+      "files": 1,
+      "bytes": 956
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/waylookup/agent/__pycache__",
+      "files": 1,
+      "bytes": 34269
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/waylookup/case/__pycache__",
+      "files": 1,
+      "bytes": 3166
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/waylookup/transaction/__pycache__",
+      "files": 1,
+      "bytes": 2759
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/metabank/__pycache__",
+      "files": 1,
+      "bytes": 180
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/metabank/bundle/__pycache__",
+      "files": 1,
+      "bytes": 4909
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/metabank/model/__pycache__",
+      "files": 1,
+      "bytes": 4547
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/metabank/env/__pycache__",
+      "files": 1,
+      "bytes": 888
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/metabank/agent/__pycache__",
+      "files": 1,
+      "bytes": 14252
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/metabank/case/__pycache__",
+      "files": 1,
+      "bytes": 158
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/metabank/transaction/__pycache__",
+      "files": 1,
+      "bytes": 1423
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/missunit/__pycache__",
+      "files": 1,
+      "bytes": 180
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/missunit/bundle/__pycache__",
+      "files": 1,
+      "bytes": 6649
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/missunit/model/__pycache__",
+      "files": 1,
+      "bytes": 14653
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/missunit/env/__pycache__",
+      "files": 1,
+      "bytes": 888
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/missunit/agent/__pycache__",
+      "files": 1,
+      "bytes": 28616
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/missunit/case/__pycache__",
+      "files": 1,
+      "bytes": 158
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/missunit/transaction/__pycache__",
+      "files": 1,
+      "bytes": 1797
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/prefetchpipe/__pycache__",
+      "files": 1,
+      "bytes": 184
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/prefetchpipe/bundle/__pycache__",
+      "files": 1,
+      "bytes": 11271
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/prefetchpipe/model/__pycache__",
+      "files": 1,
+      "bytes": 12511
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/prefetchpipe/env/__pycache__",
+      "files": 1,
+      "bytes": 917
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/prefetchpipe/agent/__pycache__",
+      "files": 1,
+      "bytes": 26210
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/prefetchpipe/transaction/__pycache__",
+      "files": 1,
+      "bytes": 1636
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/dataarray/__pycache__",
+      "files": 1,
+      "bytes": 181
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/dataarray/bundle/__pycache__",
+      "files": 1,
+      "bytes": 4206
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/dataarray/model/__pycache__",
+      "files": 1,
+      "bytes": 8163
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/dataarray/env/__pycache__",
+      "files": 1,
+      "bytes": 894
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/dataarray/agent/__pycache__",
+      "files": 1,
+      "bytes": 15520
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/dataarray/case/__pycache__",
+      "files": 1,
+      "bytes": 159
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/dataarray/transaction/__pycache__",
+      "files": 1,
+      "bytes": 2222
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/icache/__pycache__",
+      "files": 1,
+      "bytes": 178
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/icache/bundle/__pycache__",
+      "files": 1,
+      "bytes": 16345
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/icache/model/__pycache__",
+      "files": 1,
+      "bytes": 19868
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/icache/env/__pycache__",
+      "files": 1,
+      "bytes": 876
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/icache/agent/__pycache__",
+      "files": 1,
+      "bytes": 56090
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/icache/case/__pycache__",
+      "files": 1,
+      "bytes": 3467
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/icache/transaction/__pycache__",
+      "files": 1,
+      "bytes": 2266
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/metaarray/__pycache__",
+      "files": 1,
+      "bytes": 181
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/metaarray/bundle/__pycache__",
+      "files": 1,
+      "bytes": 3612
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/metaarray/model/__pycache__",
+      "files": 1,
+      "bytes": 6438
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/metaarray/env/__pycache__",
+      "files": 1,
+      "bytes": 894
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/metaarray/agent/__pycache__",
+      "files": 1,
+      "bytes": 14728
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/metaarray/case/__pycache__",
+      "files": 1,
+      "bytes": 159
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/metaarray/transaction/__pycache__",
+      "files": 1,
+      "bytes": 1857
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/replacer/__pycache__",
+      "files": 1,
+      "bytes": 180
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/replacer/bundle/__pycache__",
+      "files": 1,
+      "bytes": 4671
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/replacer/model/__pycache__",
+      "files": 1,
+      "bytes": 9447
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/replacer/env/__pycache__",
+      "files": 1,
+      "bytes": 888
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/replacer/agent/__pycache__",
+      "files": 1,
+      "bytes": 14084
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/replacer/case/__pycache__",
+      "files": 1,
+      "bytes": 158
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/replacer/transaction/__pycache__",
+      "files": 1,
+      "bytes": 1545
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/common/__pycache__",
+      "files": 2,
+      "bytes": 4956
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/common/checker/__pycache__",
+      "files": 1,
+      "bytes": 210
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/common/driver/__pycache__",
+      "files": 4,
+      "bytes": 13965
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/common/bundle/__pycache__",
+      "files": 3,
+      "bytes": 9410
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/common/model/__pycache__",
+      "files": 1,
+      "bytes": 206
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/common/coverage/__pycache__",
+      "files": 8,
+      "bytes": 116883
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/common/monitor/__pycache__",
+      "files": 3,
+      "bytes": 9382
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/common/pytest/__pycache__",
+      "files": 19,
+      "bytes": 113424
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/common/env/__pycache__",
+      "files": 10,
+      "bytes": 31627
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/common/transaction/__pycache__",
+      "files": 2,
+      "bytes": 966
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/mainpipe/__pycache__",
+      "files": 1,
+      "bytes": 180
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/mainpipe/bundle/__pycache__",
+      "files": 1,
+      "bytes": 15005
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/mainpipe/model/__pycache__",
+      "files": 1,
+      "bytes": 19739
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/mainpipe/env/__pycache__",
+      "files": 1,
+      "bytes": 888
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/mainpipe/agent/__pycache__",
+      "files": 1,
+      "bytes": 35306
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/mainpipe/case/__pycache__",
+      "files": 1,
+      "bytes": 3791
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/mainpipe/transaction/__pycache__",
+      "files": 1,
+      "bytes": 2838
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/mshr/__pycache__",
+      "files": 1,
+      "bytes": 176
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/mshr/bundle/__pycache__",
+      "files": 1,
+      "bytes": 4620
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/mshr/model/__pycache__",
+      "files": 1,
+      "bytes": 10225
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/mshr/env/__pycache__",
+      "files": 1,
+      "bytes": 864
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/mshr/agent/__pycache__",
+      "files": 1,
+      "bytes": 16542
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/mshr/case/__pycache__",
+      "files": 1,
+      "bytes": 154
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/mshr/transaction/__pycache__",
+      "files": 1,
+      "bytes": 1648
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/databank/__pycache__",
+      "files": 1,
+      "bytes": 180
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/databank/bundle/__pycache__",
+      "files": 1,
+      "bytes": 3628
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/databank/model/__pycache__",
+      "files": 1,
+      "bytes": 4122
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/databank/env/__pycache__",
+      "files": 1,
+      "bytes": 888
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/databank/agent/__pycache__",
+      "files": 1,
+      "bytes": 11336
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/databank/case/__pycache__",
+      "files": 1,
+      "bytes": 158
+    },
+    {
+      "path": "suites/frontend/icache/icacheverify/databank/transaction/__pycache__",
+      "files": 1,
+      "bytes": 1735
+    },
+    {
+      "path": "suites/frontend/icache/tools/__pycache__",
+      "files": 6,
+      "bytes": 62113
+    },
+    {
+      "path": "suites/frontend/bpu/.pytest_cache",
+      "files": 5,
+      "bytes": 1641053
+    },
+    {
+      "path": "suites/frontend/bpu/tests/__pycache__",
+      "files": 5,
+      "bytes": 7095
+    },
+    {
+      "path": "suites/frontend/bpu/tests/ras/__pycache__",
+      "files": 2,
+      "bytes": 543
+    },
+    {
+      "path": "suites/frontend/bpu/tests/ras/testcase/__pycache__",
+      "files": 41,
+      "bytes": 241879
+    },
+    {
+      "path": "suites/frontend/bpu/tests/ras/scoreboard/__pycache__",
+      "files": 28,
+      "bytes": 523199
+    },
+    {
+      "path": "suites/frontend/bpu/tests/ras/bundle/__pycache__",
+      "files": 4,
+      "bytes": 12430
+    },
+    {
+      "path": "suites/frontend/bpu/tests/ras/drivers/__pycache__",
+      "files": 4,
+      "bytes": 6823
+    },
+    {
+      "path": "suites/frontend/bpu/tests/ras/monitors/__pycache__",
+      "files": 4,
+      "bytes": 6820
+    },
+    {
+      "path": "suites/frontend/bpu/tests/utage/__pycache__",
+      "files": 2,
+      "bytes": 557
+    },
+    {
+      "path": "suites/frontend/bpu/tests/utage/testcase/__pycache__",
+      "files": 140,
+      "bytes": 532503
+    },
+    {
+      "path": "suites/frontend/bpu/tests/utage/scoreboard/__pycache__",
+      "files": 118,
+      "bytes": 2605750
+    },
+    {
+      "path": "suites/frontend/bpu/tests/utage/diagnostics/__pycache__",
+      "files": 2,
+      "bytes": 9464
+    },
+    {
+      "path": "suites/frontend/bpu/tests/utage/bundle/__pycache__",
+      "files": 4,
+      "bytes": 20663
+    },
+    {
+      "path": "suites/frontend/bpu/tests/utage/drivers/__pycache__",
+      "files": 7,
+      "bytes": 113621
+    },
+    {
+      "path": "suites/frontend/bpu/tests/utage/monitors/__pycache__",
+      "files": 7,
+      "bytes": 42389
+    },
+    {
+      "path": "suites/frontend/bpu/tests/framework/__pycache__",
+      "files": 233,
+      "bytes": 3594078
+    },
+    {
+      "path": "suites/frontend/bpu/tests/framework/scoreboard/__pycache__",
+      "files": 7,
+      "bytes": 25039
+    },
+    {
+      "path": "suites/frontend/bpu/tests/framework/bundle/__pycache__",
+      "files": 13,
+      "bytes": 158495
+    },
+    {
+      "path": "suites/frontend/bpu/tests/framework/drivers/__pycache__",
+      "files": 10,
+      "bytes": 68214
+    },
+    {
+      "path": "suites/frontend/bpu/tests/framework/transfers/__pycache__",
+      "files": 4,
+      "bytes": 21213
+    },
+    {
+      "path": "suites/frontend/bpu/tests/framework/monitors/__pycache__",
+      "files": 7,
+      "bytes": 60030
+    },
+    {
+      "path": "suites/frontend/bpu/tests/abtb/__pycache__",
+      "files": 2,
+      "bytes": 593
+    },
+    {
+      "path": "suites/frontend/bpu/tests/abtb/testcase/__pycache__",
+      "files": 131,
+      "bytes": 891181
+    },
+    {
+      "path": "suites/frontend/bpu/tests/abtb/scoreboard/__pycache__",
+      "files": 25,
+      "bytes": 352432
+    },
+    {
+      "path": "suites/frontend/bpu/tests/abtb/bundle/__pycache__",
+      "files": 4,
+      "bytes": 23685
+    },
+    {
+      "path": "suites/frontend/bpu/tests/abtb/drivers/__pycache__",
+      "files": 10,
+      "bytes": 124479
+    },
+    {
+      "path": "suites/frontend/bpu/tests/abtb/monitors/__pycache__",
+      "files": 4,
+      "bytes": 14117
+    },
+    {
+      "path": "suites/frontend/bpu/tests/tage/__pycache__",
+      "files": 2,
+      "bytes": 548
+    },
+    {
+      "path": "suites/frontend/bpu/tests/tage/testcase/__pycache__",
+      "files": 94,
+      "bytes": 728310
+    },
+    {
+      "path": "suites/frontend/bpu/tests/tage/scoreboard/__pycache__",
+      "files": 49,
+      "bytes": 661146
+    },
+    {
+      "path": "suites/frontend/bpu/tests/tage/diagnostics/__pycache__",
+      "files": 5,
+      "bytes": 62220
+    },
+    {
+      "path": "suites/frontend/bpu/tests/tage/bundle/__pycache__",
+      "files": 4,
+      "bytes": 19621
+    },
+    {
+      "path": "suites/frontend/bpu/tests/tage/drivers/__pycache__",
+      "files": 4,
+      "bytes": 44996
+    },
+    {
+      "path": "suites/frontend/bpu/tests/tage/monitors/__pycache__",
+      "files": 19,
+      "bytes": 57342
+    },
+    {
+      "path": "suites/frontend/bpu/tests/ubtb/__pycache__",
+      "files": 2,
+      "bytes": 552
+    },
+    {
+      "path": "suites/frontend/bpu/tests/ubtb/testcase/__pycache__",
+      "files": 56,
+      "bytes": 299673
+    },
+    {
+      "path": "suites/frontend/bpu/tests/ubtb/scoreboard/__pycache__",
+      "files": 16,
+      "bytes": 275691
+    },
+    {
+      "path": "suites/frontend/bpu/tests/ubtb/diagnostics/__pycache__",
+      "files": 3,
+      "bytes": 6768
+    },
+    {
+      "path": "suites/frontend/bpu/tests/ubtb/bundle/__pycache__",
+      "files": 4,
+      "bytes": 31385
+    },
+    {
+      "path": "suites/frontend/bpu/tests/ubtb/drivers/__pycache__",
+      "files": 10,
+      "bytes": 54708
+    },
+    {
+      "path": "suites/frontend/bpu/tests/ubtb/monitors/__pycache__",
+      "files": 4,
+      "bytes": 8718
+    },
+    {
+      "path": "suites/frontend/bpu/tests/sc/__pycache__",
+      "files": 2,
+      "bytes": 557
+    },
+    {
+      "path": "suites/frontend/bpu/tests/sc/testcase/__pycache__",
+      "files": 73,
+      "bytes": 318180
+    },
+    {
+      "path": "suites/frontend/bpu/tests/sc/scoreboard/__pycache__",
+      "files": 28,
+      "bytes": 721710
+    },
+    {
+      "path": "suites/frontend/bpu/tests/sc/diagnostics/__pycache__",
+      "files": 2,
+      "bytes": 13860
+    },
+    {
+      "path": "suites/frontend/bpu/tests/sc/bundle/__pycache__",
+      "files": 4,
+      "bytes": 18183
+    },
+    {
+      "path": "suites/frontend/bpu/tests/sc/drivers/__pycache__",
+      "files": 4,
+      "bytes": 18716
+    },
+    {
+      "path": "suites/frontend/bpu/tests/sc/monitors/__pycache__",
+      "files": 7,
+      "bytes": 10782
+    },
+    {
+      "path": "suites/frontend/bpu/tests/uras/__pycache__",
+      "files": 2,
+      "bytes": 552
+    },
+    {
+      "path": "suites/frontend/bpu/tests/uras/testcase/__pycache__",
+      "files": 35,
+      "bytes": 258452
+    },
+    {
+      "path": "suites/frontend/bpu/tests/uras/scoreboard/__pycache__",
+      "files": 4,
+      "bytes": 192086
+    },
+    {
+      "path": "suites/frontend/bpu/tests/uras/diagnostics/__pycache__",
+      "files": 1,
+      "bytes": 2176
+    },
+    {
+      "path": "suites/frontend/bpu/tests/uras/bundle/__pycache__",
+      "files": 4,
+      "bytes": 15804
+    },
+    {
+      "path": "suites/frontend/bpu/tests/uras/drivers/__pycache__",
+      "files": 4,
+      "bytes": 5802
+    },
+    {
+      "path": "suites/frontend/bpu/tests/uras/monitors/__pycache__",
+      "files": 4,
+      "bytes": 5629
+    },
+    {
+      "path": "suites/frontend/bpu/tests/mbtb/__pycache__",
+      "files": 2,
+      "bytes": 583
+    },
+    {
+      "path": "suites/frontend/bpu/tests/mbtb/testcase/__pycache__",
+      "files": 105,
+      "bytes": 428231
+    },
+    {
+      "path": "suites/frontend/bpu/tests/mbtb/scoreboard/__pycache__",
+      "files": 70,
+      "bytes": 1256698
+    },
+    {
+      "path": "suites/frontend/bpu/tests/mbtb/diagnostics/__pycache__",
+      "files": 4,
+      "bytes": 21572
+    },
+    {
+      "path": "suites/frontend/bpu/tests/mbtb/bundle/__pycache__",
+      "files": 4,
+      "bytes": 15824
+    },
+    {
+      "path": "suites/frontend/bpu/tests/mbtb/drivers/__pycache__",
+      "files": 4,
+      "bytes": 10304
+    },
+    {
+      "path": "suites/frontend/bpu/tests/mbtb/monitors/__pycache__",
+      "files": 10,
+      "bytes": 110253
+    },
+    {
+      "path": "suites/frontend/bpu/tests/bpu/__pycache__",
+      "files": 2,
+      "bytes": 591
+    },
+    {
+      "path": "suites/frontend/bpu/tests/bpu/testcase/__pycache__",
+      "files": 466,
+      "bytes": 1591462
+    },
+    {
+      "path": "suites/frontend/bpu/tests/bpu/scoreboard/__pycache__",
+      "files": 522,
+      "bytes": 13975123
+    },
+    {
+      "path": "suites/frontend/bpu/tests/bpu/scoreboard/integrated/__pycache__",
+      "files": 97,
+      "bytes": 1777142
+    },
+    {
+      "path": "suites/frontend/bpu/tests/bpu/diagnostics/__pycache__",
+      "files": 4,
+      "bytes": 5883
+    },
+    {
+      "path": "suites/frontend/bpu/tests/bpu/bundle/__pycache__",
+      "files": 19,
+      "bytes": 196476
+    },
+    {
+      "path": "suites/frontend/bpu/tests/bpu/drivers/__pycache__",
+      "files": 16,
+      "bytes": 306226
+    },
+    {
+      "path": "suites/frontend/bpu/tests/bpu/monitors/__pycache__",
+      "files": 22,
+      "bytes": 333084
+    },
+    {
+      "path": "suites/frontend/bpu/tests/ittage/__pycache__",
+      "files": 2,
+      "bytes": 558
+    },
+    {
+      "path": "suites/frontend/bpu/tests/ittage/testcase/__pycache__",
+      "files": 68,
+      "bytes": 439659
+    },
+    {
+      "path": "suites/frontend/bpu/tests/ittage/scoreboard/__pycache__",
+      "files": 13,
+      "bytes": 252309
+    },
+    {
+      "path": "suites/frontend/bpu/tests/ittage/diagnostics/__pycache__",
+      "files": 2,
+      "bytes": 4842
+    },
+    {
+      "path": "suites/frontend/bpu/tests/ittage/bundle/__pycache__",
+      "files": 4,
+      "bytes": 12581
+    },
+    {
+      "path": "suites/frontend/bpu/tests/ittage/drivers/__pycache__",
+      "files": 4,
+      "bytes": 24666
+    },
+    {
+      "path": "suites/frontend/bpu/tests/ittage/monitors/__pycache__",
+      "files": 4,
+      "bytes": 5330
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/__pycache__",
+      "files": 1,
+      "bytes": 241
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ras/__pycache__",
+      "files": 1,
+      "bytes": 206
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ras/checker/__pycache__",
+      "files": 4,
+      "bytes": 9827
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ras/scoreboard/__pycache__",
+      "files": 1,
+      "bytes": 1841
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ras/driver/__pycache__",
+      "files": 2,
+      "bytes": 998
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ras/bundle/__pycache__",
+      "files": 3,
+      "bytes": 4560
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ras/model/__pycache__",
+      "files": 6,
+      "bytes": 48532
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ras/coverage/__pycache__",
+      "files": 6,
+      "bytes": 28255
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ras/monitor/__pycache__",
+      "files": 5,
+      "bytes": 15604
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ras/env/__pycache__",
+      "files": 3,
+      "bytes": 9069
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ras/agent/__pycache__",
+      "files": 2,
+      "bytes": 15659
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ras/case/__pycache__",
+      "files": 8,
+      "bytes": 39368
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ras/transaction/__pycache__",
+      "files": 2,
+      "bytes": 2711
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/utage/__pycache__",
+      "files": 1,
+      "bytes": 210
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/utage/checker/__pycache__",
+      "files": 26,
+      "bytes": 277585
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/utage/driver/__pycache__",
+      "files": 4,
+      "bytes": 10576
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/utage/bundle/__pycache__",
+      "files": 4,
+      "bytes": 11260
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/utage/model/__pycache__",
+      "files": 30,
+      "bytes": 265965
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/utage/coverage/__pycache__",
+      "files": 29,
+      "bytes": 101588
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/utage/monitor/__pycache__",
+      "files": 16,
+      "bytes": 78494
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/utage/env/__pycache__",
+      "files": 27,
+      "bytes": 242801
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/utage/agent/__pycache__",
+      "files": 2,
+      "bytes": 30125
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/utage/case/__pycache__",
+      "files": 35,
+      "bytes": 133374
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/utage/transaction/__pycache__",
+      "files": 2,
+      "bytes": 4314
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/abtb/__pycache__",
+      "files": 1,
+      "bytes": 208
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/abtb/checker/__pycache__",
+      "files": 3,
+      "bytes": 18416
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/abtb/checker/state/__pycache__",
+      "files": 5,
+      "bytes": 28209
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/abtb/driver/__pycache__",
+      "files": 2,
+      "bytes": 1090
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/abtb/driver/state/__pycache__",
+      "files": 2,
+      "bytes": 3057
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/abtb/bundle/__pycache__",
+      "files": 4,
+      "bytes": 5816
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/abtb/model/__pycache__",
+      "files": 2,
+      "bytes": 28613
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/abtb/model/state/__pycache__",
+      "files": 4,
+      "bytes": 14594
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/abtb/coverage/__pycache__",
+      "files": 5,
+      "bytes": 56988
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/abtb/coverage/state/__pycache__",
+      "files": 2,
+      "bytes": 7734
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/abtb/monitor/__pycache__",
+      "files": 3,
+      "bytes": 9964
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/abtb/monitor/state/__pycache__",
+      "files": 4,
+      "bytes": 16959
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/abtb/env/__pycache__",
+      "files": 2,
+      "bytes": 1067
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/abtb/env/state/__pycache__",
+      "files": 6,
+      "bytes": 76656
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/abtb/agent/__pycache__",
+      "files": 2,
+      "bytes": 17644
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/abtb/case/__pycache__",
+      "files": 5,
+      "bytes": 35597
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/abtb/case/state/__pycache__",
+      "files": 7,
+      "bytes": 13415
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/abtb/transaction/__pycache__",
+      "files": 2,
+      "bytes": 2279
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/tage/__pycache__",
+      "files": 1,
+      "bytes": 208
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/tage/checker/__pycache__",
+      "files": 3,
+      "bytes": 22097
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/tage/driver/__pycache__",
+      "files": 3,
+      "bytes": 9786
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/tage/bundle/__pycache__",
+      "files": 4,
+      "bytes": 9746
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/tage/model/__pycache__",
+      "files": 8,
+      "bytes": 81035
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/tage/coverage/__pycache__",
+      "files": 7,
+      "bytes": 46219
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/tage/monitor/__pycache__",
+      "files": 6,
+      "bytes": 33369
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/tage/env/__pycache__",
+      "files": 2,
+      "bytes": 596
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/tage/agent/__pycache__",
+      "files": 2,
+      "bytes": 48075
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/tage/case/__pycache__",
+      "files": 10,
+      "bytes": 115345
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/tage/transaction/__pycache__",
+      "files": 2,
+      "bytes": 3738
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ubtb/__pycache__",
+      "files": 1,
+      "bytes": 208
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ubtb/checker/__pycache__",
+      "files": 5,
+      "bytes": 13103
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ubtb/driver/__pycache__",
+      "files": 2,
+      "bytes": 5340
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ubtb/bundle/__pycache__",
+      "files": 2,
+      "bytes": 4526
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ubtb/model/__pycache__",
+      "files": 4,
+      "bytes": 19875
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ubtb/coverage/__pycache__",
+      "files": 5,
+      "bytes": 16264
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ubtb/monitor/__pycache__",
+      "files": 4,
+      "bytes": 14779
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ubtb/env/__pycache__",
+      "files": 5,
+      "bytes": 24578
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ubtb/agent/__pycache__",
+      "files": 2,
+      "bytes": 17277
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ubtb/case/__pycache__",
+      "files": 7,
+      "bytes": 15133
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ubtb/transaction/__pycache__",
+      "files": 3,
+      "bytes": 3479
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/sc/__pycache__",
+      "files": 1,
+      "bytes": 204
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/sc/checker/__pycache__",
+      "files": 8,
+      "bytes": 86593
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/sc/driver/__pycache__",
+      "files": 2,
+      "bytes": 6455
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/sc/bundle/__pycache__",
+      "files": 4,
+      "bytes": 9475
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/sc/model/__pycache__",
+      "files": 7,
+      "bytes": 76522
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/sc/coverage/__pycache__",
+      "files": 9,
+      "bytes": 43442
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/sc/monitor/__pycache__",
+      "files": 6,
+      "bytes": 20216
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/sc/env/__pycache__",
+      "files": 6,
+      "bytes": 32772
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/sc/agent/__pycache__",
+      "files": 2,
+      "bytes": 25236
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/sc/case/__pycache__",
+      "files": 10,
+      "bytes": 56024
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/sc/transaction/__pycache__",
+      "files": 2,
+      "bytes": 4538
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/uras/__pycache__",
+      "files": 1,
+      "bytes": 208
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/uras/checker/__pycache__",
+      "files": 3,
+      "bytes": 9408
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/uras/bundle/__pycache__",
+      "files": 2,
+      "bytes": 3570
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/uras/model/__pycache__",
+      "files": 4,
+      "bytes": 14555
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/uras/coverage/__pycache__",
+      "files": 4,
+      "bytes": 14852
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/uras/monitor/__pycache__",
+      "files": 2,
+      "bytes": 6134
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/uras/env/__pycache__",
+      "files": 2,
+      "bytes": 596
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/uras/agent/__pycache__",
+      "files": 2,
+      "bytes": 9823
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/uras/case/__pycache__",
+      "files": 3,
+      "bytes": 8086
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/uras/transaction/__pycache__",
+      "files": 2,
+      "bytes": 1789
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/common/__pycache__",
+      "files": 1,
+      "bytes": 212
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/common/checker/__pycache__",
+      "files": 3,
+      "bytes": 5285
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/common/driver/__pycache__",
+      "files": 2,
+      "bytes": 7352
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/common/bundle/__pycache__",
+      "files": 3,
+      "bytes": 13793
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/common/model/__pycache__",
+      "files": 6,
+      "bytes": 12971
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/common/coverage/__pycache__",
+      "files": 9,
+      "bytes": 135634
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/common/monitor/__pycache__",
+      "files": 3,
+      "bytes": 9379
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/common/pytest/__pycache__",
+      "files": 22,
+      "bytes": 152317
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/common/env/__pycache__",
+      "files": 12,
+      "bytes": 41865
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/common/transaction/__pycache__",
+      "files": 2,
+      "bytes": 948
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/mbtb/__pycache__",
+      "files": 1,
+      "bytes": 208
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/mbtb/checker/__pycache__",
+      "files": 10,
+      "bytes": 63078
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/mbtb/driver/__pycache__",
+      "files": 3,
+      "bytes": 4828
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/mbtb/bundle/__pycache__",
+      "files": 4,
+      "bytes": 7334
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/mbtb/model/__pycache__",
+      "files": 18,
+      "bytes": 150006
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/mbtb/coverage/__pycache__",
+      "files": 13,
+      "bytes": 66245
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/mbtb/monitor/__pycache__",
+      "files": 8,
+      "bytes": 40249
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/mbtb/env/__pycache__",
+      "files": 7,
+      "bytes": 59187
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/mbtb/agent/__pycache__",
+      "files": 3,
+      "bytes": 45196
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/mbtb/case/__pycache__",
+      "files": 23,
+      "bytes": 124614
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/mbtb/transaction/__pycache__",
+      "files": 2,
+      "bytes": 2662
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/__pycache__",
+      "files": 1,
+      "bytes": 206
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/checker/__pycache__",
+      "files": 91,
+      "bytes": 1713525
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/checker/phr/__pycache__",
+      "files": 3,
+      "bytes": 15249
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/checker/ras/__pycache__",
+      "files": 8,
+      "bytes": 73333
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/checker/abtb/__pycache__",
+      "files": 6,
+      "bytes": 69744
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/checker/bypass/__pycache__",
+      "files": 18,
+      "bytes": 41268
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/checker/tage/__pycache__",
+      "files": 7,
+      "bytes": 91391
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/checker/sc/__pycache__",
+      "files": 11,
+      "bytes": 59087
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/driver/__pycache__",
+      "files": 5,
+      "bytes": 21189
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/bundle/__pycache__",
+      "files": 34,
+      "bytes": 149191
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/model/__pycache__",
+      "files": 72,
+      "bytes": 535155
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/model/phr/__pycache__",
+      "files": 2,
+      "bytes": 8379
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/model/ras/__pycache__",
+      "files": 7,
+      "bytes": 19335
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/model/abtb/__pycache__",
+      "files": 5,
+      "bytes": 38630
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/model/bypass/__pycache__",
+      "files": 8,
+      "bytes": 41441
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/model/tage/__pycache__",
+      "files": 25,
+      "bytes": 122447
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/model/sc/__pycache__",
+      "files": 13,
+      "bytes": 77417
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/coverage/__pycache__",
+      "files": 98,
+      "bytes": 369605
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/coverage/phr/__pycache__",
+      "files": 2,
+      "bytes": 4444
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/coverage/abtb/__pycache__",
+      "files": 4,
+      "bytes": 28690
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/coverage/bypass/__pycache__",
+      "files": 4,
+      "bytes": 23985
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/coverage/tage/__pycache__",
+      "files": 6,
+      "bytes": 18936
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/coverage/sc/__pycache__",
+      "files": 7,
+      "bytes": 22290
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/monitor/__pycache__",
+      "files": 12,
+      "bytes": 51127
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/monitor/phr/__pycache__",
+      "files": 2,
+      "bytes": 10666
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/monitor/ras/__pycache__",
+      "files": 4,
+      "bytes": 7768
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/monitor/abtb/__pycache__",
+      "files": 4,
+      "bytes": 21993
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/monitor/bypass/__pycache__",
+      "files": 8,
+      "bytes": 23461
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/monitor/tage/__pycache__",
+      "files": 4,
+      "bytes": 23108
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/monitor/sc/__pycache__",
+      "files": 6,
+      "bytes": 27017
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/env/__pycache__",
+      "files": 79,
+      "bytes": 706523
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/env/phr/__pycache__",
+      "files": 2,
+      "bytes": 12214
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/env/ras/__pycache__",
+      "files": 10,
+      "bytes": 98806
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/env/abtb/__pycache__",
+      "files": 3,
+      "bytes": 5123
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/env/bypass/__pycache__",
+      "files": 14,
+      "bytes": 43611
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/agent/__pycache__",
+      "files": 2,
+      "bytes": 49663
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/case/__pycache__",
+      "files": 94,
+      "bytes": 451652
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/case/ras/__pycache__",
+      "files": 17,
+      "bytes": 69989
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/case/abtb/__pycache__",
+      "files": 18,
+      "bytes": 142897
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/case/bypass/__pycache__",
+      "files": 23,
+      "bytes": 243912
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/case/tage/__pycache__",
+      "files": 6,
+      "bytes": 52843
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/case/sc/__pycache__",
+      "files": 15,
+      "bytes": 139122
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/bpu/transaction/__pycache__",
+      "files": 2,
+      "bytes": 7355
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ittage/__pycache__",
+      "files": 1,
+      "bytes": 212
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ittage/checker/__pycache__",
+      "files": 3,
+      "bytes": 18148
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ittage/driver/__pycache__",
+      "files": 2,
+      "bytes": 1213
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ittage/bundle/__pycache__",
+      "files": 4,
+      "bytes": 7740
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ittage/model/__pycache__",
+      "files": 3,
+      "bytes": 37204
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ittage/coverage/__pycache__",
+      "files": 4,
+      "bytes": 18994
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ittage/monitor/__pycache__",
+      "files": 3,
+      "bytes": 12072
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ittage/env/__pycache__",
+      "files": 2,
+      "bytes": 610
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ittage/agent/__pycache__",
+      "files": 2,
+      "bytes": 18971
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ittage/case/__pycache__",
+      "files": 4,
+      "bytes": 10111
+    },
+    {
+      "path": "suites/frontend/bpu/bpuverify/ittage/transaction/__pycache__",
+      "files": 2,
+      "bytes": 2894
+    },
+    {
+      "path": "suites/frontend/bpu/tools/__pycache__",
+      "files": 20,
+      "bytes": 306143
+    }
+  ],
+  "total_bytes": 297830621,
+  "evidence_boundary": "Loose wave/coverage files lacked managed run provenance and are now unavailable. Managed manifests, verdicts, logs and merged coverage remain untouched."
+}

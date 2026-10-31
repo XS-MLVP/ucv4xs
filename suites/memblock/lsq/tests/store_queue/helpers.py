@@ -1,7 +1,7 @@
-from lsqverify.psq.types import Address, Data
-from lsqverify.raw.types import SqPtr
-from lsqverify.vlq.types import RobPtr
-from lsqverify.vsq.types import Dispatch
+from suites.memblock.lsq.psq.types import Address, Data
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.vlq.types import RobPtr
+from suites.memblock.lsq.vsq.types import Dispatch
 
 
 def requests(items, *, start=0):
@@ -36,6 +36,6 @@ async def finish_special(env, end):
         await env.cycle()
         if env.observed["io_sqEmpty"]:
             break
-    from lsqverify.psq.checks import ptr_values
+    from suites.memblock.lsq.psq.checks import ptr_values
     env.expect({"io_sqEmpty": 1, **ptr_values("io_sqDeqPtr_", end)}, "real physical completion feeds back and releases the original virtual owner")
     await env.idle(3)

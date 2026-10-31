@@ -1,9 +1,9 @@
 """Semantic query history; all phase, source and monitor machinery is below cases."""
 import json
 import pytest
-from bpuverify.bpu.case.common_query import run
-from bpuverify.bpu.coverage.common_query import CommonQueryCoverage
-from bpuverify.bpu.model.common_query import PROFILES
+from suites.frontend.bpu.bpu.case.common_query import run
+from suites.frontend.bpu.bpu.coverage.common_query import CommonQueryCoverage
+from suites.frontend.bpu.bpu.model.common_query import PROFILES
 
 
 @pytest.mark.feature('BPU-INT-043')

@@ -3,7 +3,7 @@ from copy import deepcopy
 
 import pytest
 
-from bpuverify.tage.model.semantic import Branch, Context, Entry, Events, Feedback, Read, TageReference
+from suites.frontend.bpu.tage.model.semantic import Branch, Context, Entry, Events, Feedback, Read, TageReference
 
 
 @pytest.mark.parametrize('seed', (*range(1,65),8192,16384,0x1234,32767))

@@ -1,12 +1,12 @@
 """Pure stimulus constraints; no DUT or raw coverage."""
 import pytest
-from bpuverify.bpu.model.phr.model import MASK
-from bpuverify.bpu.model.phr.model import fold
-from bpuverify.bpu.model.phr.model import folds
-from bpuverify.bpu.model.phr.model import path_hash
-from bpuverify.bpu.case.bypass.two_program_plan import recipe
-from bpuverify.bpu.case.bypass.two_program_plan import full_tags
-from bpuverify.bpu.case.bypass.public_readback import public_readback_pair
+from suites.frontend.bpu.bpu.model.phr.model import MASK
+from suites.frontend.bpu.bpu.model.phr.model import fold
+from suites.frontend.bpu.bpu.model.phr.model import folds
+from suites.frontend.bpu.bpu.model.phr.model import path_hash
+from suites.frontend.bpu.bpu.case.bypass.two_program_plan import recipe
+from suites.frontend.bpu.bpu.case.bypass.two_program_plan import full_tags
+from suites.frontend.bpu.bpu.case.bypass.public_readback import public_readback_pair
 
 @pytest.mark.parametrize("bank",(1,2,3))
 def test_old_steady_upper_index_is_the_actual_missing_physical_bank(bank):
@@ -46,7 +46,7 @@ def test_invalid_bank_rejected():
 @pytest.mark.parametrize("bank",(1,2,3))
 def test_second_program_steady_reads_can_commit_old_bank_and_do_not_alias_old_index(bank):
     from itertools import product
-    from bpuverify.bpu.case.bypass.two_program_plan import read_indices
+    from suites.frontend.bpu.bpu.case.bypass.two_program_plan import read_indices
     plan=recipe(bank)
     old,new=plan["old"],plan["second"]
     assert old["expected_conditional_upper_index"]%4!=new["expected_conditional_upper_index"]%4
@@ -60,7 +60,7 @@ def test_second_program_steady_reads_can_commit_old_bank_and_do_not_alias_old_in
     assert old["expected_conditional_upper_index"] not in indices
 
 
-from bpuverify.bpu.model.bypass.index import IndexPipeline
+from suites.frontend.bpu.bpu.model.bypass.index import IndexPipeline
 
 def step(model,**updates):
     args=dict(reset=0,enable=1,fire0=1,fire2=1,s2=0,s3=0,pc=6,normal_folds=(31,31),tick=1)

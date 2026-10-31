@@ -7,10 +7,10 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.checker.pipeline import PipelineChecker
-from bpuverify.bpu.model.main_sources import source_entries
-from bpuverify.bpu.model.pipeline import Events,Redirect
-from bpuverify.bpu.transaction.types import BpuBatchTraining,BpuBranchFeedback
+from suites.frontend.bpu.bpu.checker.pipeline import PipelineChecker
+from suites.frontend.bpu.bpu.model.main_sources import source_entries
+from suites.frontend.bpu.bpu.model.pipeline import Events,Redirect
+from suites.frontend.bpu.bpu.transaction.types import BpuBatchTraining,BpuBranchFeedback
 from tests.bpu.scoreboard.test_direction_sources import learned,meta,ENABLED
 from tests.bpu.scoreboard.test_main_ownership import input_bits,step
 from tests.bpu.scoreboard.test_pipeline_checking import fixture_row
@@ -148,7 +148,7 @@ def test_trained_tage_transition_rejects_live_older_work_instead_of_guessing_a_l
 
 
 def test_case_expresses_semantic_program_without_timing_or_embedded_checkers():
-    tree=ast.parse(Path('bpuverify/bpu/case/direction_learning.py').read_text())
+    tree=ast.parse(Path('bpu/case/direction_learning.py').read_text())
     for node in ast.walk(tree):
         assert not isinstance(node,(ast.Assert,ast.ClassDef))
         if isinstance(node,ast.Call):

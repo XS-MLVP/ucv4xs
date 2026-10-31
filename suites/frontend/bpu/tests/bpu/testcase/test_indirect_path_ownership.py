@@ -1,9 +1,9 @@
 """Real semantic programs; driver, monitor and phase details stay in their layers."""
 import json
 import pytest
-from bpuverify.bpu.model.indirect_path_ownership import PROFILES
-from bpuverify.bpu.coverage.indirect_path_ownership import Coverage
-from bpuverify.bpu.case.indirect_path_ownership import run
+from suites.frontend.bpu.bpu.model.indirect_path_ownership import PROFILES
+from suites.frontend.bpu.bpu.coverage.indirect_path_ownership import Coverage
+from suites.frontend.bpu.bpu.case.indirect_path_ownership import run
 
 
 @pytest.mark.feature('BPU-INT-032')

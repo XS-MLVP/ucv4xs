@@ -5,15 +5,15 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.mbtb.agent.main import MbtbAgent
-from bpuverify.mbtb.transaction.types import MbtbBatchTraining
-from bpuverify.mbtb.transaction.types import MbtbBranchFeedback
-from bpuverify.mbtb.transaction.types import MbtbEntry
-from bpuverify.mbtb.model.counter import expected_mbtb_counter_activity
-from bpuverify.mbtb.model.counter import expected_mbtb_counter_states
-from bpuverify.mbtb.model.counter import summarize_mbtb_counter_activity
-from bpuverify.mbtb.driver.feedback import expected_mbtb_feedback
-from bpuverify.mbtb.driver.feedback import observed_mbtb_feedback
+from suites.frontend.bpu.mbtb.agent.main import MbtbAgent
+from suites.frontend.bpu.mbtb.transaction.types import MbtbBatchTraining
+from suites.frontend.bpu.mbtb.transaction.types import MbtbBranchFeedback
+from suites.frontend.bpu.mbtb.transaction.types import MbtbEntry
+from suites.frontend.bpu.mbtb.model.counter import expected_mbtb_counter_activity
+from suites.frontend.bpu.mbtb.model.counter import expected_mbtb_counter_states
+from suites.frontend.bpu.mbtb.model.counter import summarize_mbtb_counter_activity
+from suites.frontend.bpu.mbtb.driver.feedback import expected_mbtb_feedback
+from suites.frontend.bpu.mbtb.driver.feedback import observed_mbtb_feedback
 
 
 @pytest.mark.parametrize("align", (0, 1))
@@ -110,8 +110,10 @@ def test_feedback_reference_preserves_sparse_slots_and_freezes_metadata():
 def test_feedback_observer_ignores_payload_of_invalid_slots_only():
     transaction = feedback()
     expected = expected_mbtb_feedback(transaction)
+    # The whole-chip training port has no VictimBTB metadata leaf, so a real
+    # snapshot contains exactly the four trainable ways per alignment.
     sample = {"ready": 1, "bits": {"start_pc0": expected["pc"], "start_pc1": expected["next_pc"],
-              "meta_entries": transaction.meta_entries,
+              "meta_entries": expected["meta_entries"],
               "branches": tuple({"valid": 0, "target": 99} if branch is None else {"valid": 1, **branch}
                                  for branch in expected["resolved"])}}
     assert observed_mbtb_feedback(sample) == expected

@@ -4,7 +4,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from bpuverify.common.pytest.regression import PROFILES
+from suites.frontend.bpu.pytest_plugins.regression import PROFILES
 
 
 def profile_index(root, profile):

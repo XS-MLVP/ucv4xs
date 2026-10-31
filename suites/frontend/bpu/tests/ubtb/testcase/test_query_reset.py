@@ -1,9 +1,9 @@
 """Old request disposition is source-owned, never guessed from equal PCs."""
 import json
 import pytest
-from bpuverify.ubtb.model.query_reset import Program,MODES
-from bpuverify.ubtb.coverage.query_reset import Coverage
-from bpuverify.ubtb.case.query_reset import check_query_reset_lifetime
+from suites.frontend.bpu.ubtb.model.query_reset import Program,MODES
+from suites.frontend.bpu.ubtb.coverage.query_reset import Coverage
+from suites.frontend.bpu.ubtb.case.query_reset import check_query_reset_lifetime
 
 
 @pytest.mark.feature('BPU-UBTB-001')

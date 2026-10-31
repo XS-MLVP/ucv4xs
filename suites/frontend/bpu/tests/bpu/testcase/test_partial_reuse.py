@@ -1,7 +1,7 @@
 """A partially serviced set admits a fresh identity without dropping others."""
 import pytest
-from bpuverify.bpu.case.partial_reuse import check_partial_reuse
-from bpuverify.bpu.coverage.partial_reuse import PartialReuseCoverage
+from suites.frontend.bpu.bpu.case.partial_reuse import check_partial_reuse
+from suites.frontend.bpu.bpu.coverage.partial_reuse import PartialReuseCoverage
 
 
 @pytest.mark.feature('BPU-INT-089')

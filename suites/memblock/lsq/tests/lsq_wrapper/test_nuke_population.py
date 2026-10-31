@@ -1,12 +1,14 @@
 """Capacity dependencies produced/reclaimed by real SQ and VLQ, not test pins."""
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.rar.types import Query as RarQuery
-from lsqverify.raw.types import Query as RawQuery
-from lsqverify.replay.types import Cause
-from lsqverify.vlq.types import RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.rar.types import Query as RarQuery
+from suites.memblock.lsq.raw.types import Query as RawQuery
+from suites.memblock.lsq.replay.types import Cause
+from suites.memblock.lsq.vlq.types import RobPtr
 from .memory_owners import MemoryOwners, StoreOwner, cached_load
 from .test_nuke_memory import raw_query
 
@@ -15,7 +17,7 @@ async def blocked(trace, target):
     for _ in range(8):
         await trace.cycle(replay_ready=(True, True, True))
         assert "grant" not in trace.active_loads[target.execution.uop.lq]
-        assert not any(trace.env.observed[f"io_replay_{bank}_valid"] for bank in range(3))
+        assert not any(trace.env.observed[P.io(f"replay_{bank}_valid")] for bank in range(3))
 
 
 async def finish_target(trace, target):
@@ -34,7 +36,7 @@ async def test_real_cached_rar_96_records_wait_for_actual_vlq_head_then_replay_u
         queries = [RarQuery()] * 3
         queries[lane] = RarQuery(True, load.execution.uop.rob, load.execution.uop.lq, load.paddr, True)
         await trace.cycle(rar_queries=tuple(queries))
-        assert lsq.pre_observed[f"io_ldu_rarNukeQuery_{lane}_req_ready"]
+        assert lsq.pre_observed[P.io(f"ldu_rarNukeQuery_{lane}_req_ready")]
     # Actual execution is allowed out of order, not virtual retirement over
     # the unfinished oldest Load. Its real VLQ head still pins all96 records.
     await trace.execute(loads[1:97])
@@ -42,7 +44,7 @@ async def test_real_cached_rar_96_records_wait_for_actual_vlq_head_then_replay_u
     queries = [RarQuery()] * 3
     queries[lane] = RarQuery(True, target.execution.uop.rob, target.execution.uop.lq, target.paddr, True)
     await trace.cycle(rar_queries=tuple(queries))
-    assert not lsq.pre_observed[f"io_ldu_rarNukeQuery_{lane}_req_ready"]
+    assert not lsq.pre_observed[P.io(f"ldu_rarNukeQuery_{lane}_req_ready")]
     await trace.execute([target])
     lsq.reach("LSQ-RAR.head_reclaim", "LSQ-STRESS.capacity")
     await blocked(trace, target)
@@ -66,12 +68,12 @@ async def test_real_raw_56_records_wait_for_actual_sta_pointer_then_replay_uid_c
         queries = [RawQuery()] * 3
         queries[lane] = raw_query(load)
         await trace.cycle(raw_queries=tuple(queries))
-        assert lsq.pre_observed[f"io_ldu_rawNukeQuery_{lane}_req_ready"]
+        assert lsq.pre_observed[P.io(f"ldu_rawNukeQuery_{lane}_req_ready")]
     await trace.execute(loads[:56])
     queries = [RawQuery()] * 3
     queries[lane] = raw_query(target)
     await trace.cycle(raw_queries=tuple(queries))
-    assert not lsq.pre_observed[f"io_ldu_rawNukeQuery_{lane}_req_ready"]
+    assert not lsq.pre_observed[P.io(f"ldu_rawNukeQuery_{lane}_req_ready")]
     await trace.execute([target])
     lsq.reach("LSQ-STRESS.capacity")
     await blocked(trace, target)
@@ -79,7 +81,7 @@ async def test_real_raw_56_records_wait_for_actual_sta_pointer_then_replay_uid_c
     # Real non-overlapping Store addresses affect both PSQ and RAW. They
     # neither invent rollback nor fake a ready pointer on the Load branch.
     await trace.write_all()
-    lsq.expect({"io_issuePtrExt_value": 8, "io_nuke_rollback_0_valid": 0, "io_nuke_rollback_1_valid": 0},
+    lsq.expect({P.p_issuePtrExt_value: 8, P.p_nuke_rollback_0_valid: 0, P.p_nuke_rollback_1_valid: 0},
                "actual STA prefix crosses exclusive SQ8 and reclaims the real RAW pool without false conflict")
     await finish_target(trace, target)
     assert trace.load_released == 120 and all(s["completed"] for s in trace.stores.values())

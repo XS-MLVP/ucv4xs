@@ -2,9 +2,9 @@
 import ast
 from pathlib import Path
 import pytest
-from bpuverify.bpu.case.bypass.aging_plan import direction_epochs
-from bpuverify.bpu.checker.abtb import checks_general
-from bpuverify.bpu.checker.abtb import checks_aging
+from suites.frontend.bpu.bpu.case.bypass.aging_plan import direction_epochs
+from suites.frontend.bpu.bpu.checker.abtb import checks_general
+from suites.frontend.bpu.bpu.checker.abtb import checks_aging
 
 
 @pytest.mark.parametrize('count', (1,2,80))

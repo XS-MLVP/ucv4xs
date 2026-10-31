@@ -7,10 +7,10 @@ import sys
 
 import pytest
 from toffee import ScoreboardMismatch
-from bpuverify.bpu.model.bypass.model import BypassReference
-from bpuverify.bpu.coverage.bypass.supplemental import IntegratedCoverage
-from bpuverify.bpu.coverage.bypass.supplemental import OPERATIONS
-from bpuverify.bpu.coverage.bypass.supplemental import SOURCES
+from suites.frontend.bpu.bpu.model.bypass.model import BypassReference
+from suites.frontend.bpu.bpu.coverage.bypass.supplemental import IntegratedCoverage
+from suites.frontend.bpu.bpu.coverage.bypass.supplemental import OPERATIONS
+from suites.frontend.bpu.bpu.coverage.bypass.supplemental import SOURCES
 
 
 def inputs(**changes):
@@ -115,23 +115,25 @@ def test_cached_flags_and_writes_are_not_a_source_of_bin_hits():
 
 
 def test_complete_dependency_closure_including_local_imports():
-    root = Path(importlib.import_module('bpuverify.bpu').__file__).resolve().parent
+    root = Path(importlib.import_module('suites.frontend.bpu.bpu').__file__).resolve().parent
     for path in root.rglob('*.py'):
-        module = 'bpuverify.bpu.' + '.'.join(path.relative_to(root).with_suffix('').parts)
+        module = 'suites.frontend.bpu.bpu.' + '.'.join(path.relative_to(root).with_suffix('').parts)
         if module.endswith('.__init__'):
             module = module.removesuffix('.__init__')
         importlib.import_module(module)
         for node in ast.walk(ast.parse(path.read_text())):
             if isinstance(node, ast.ImportFrom) and node.level == 0:
-                assert node.module.split('.')[0] in sys.stdlib_module_names | {'bpuverify', 'toffee', 'pytest'}
+                assert (node.module.startswith('suites.frontend.bpu.')
+                        or node.module.split('.')[0] in sys.stdlib_module_names | {'toffee', 'pytest'})
             elif isinstance(node, ast.Import):
-                assert all(item.name.split('.')[0] in sys.stdlib_module_names | {'bpuverify', 'toffee', 'pytest'}
+                assert all(item.name.startswith('suites.frontend.bpu.')
+                           or item.name.split('.')[0] in sys.stdlib_module_names | {'toffee', 'pytest'}
                            for item in node.names)
 
 
 @pytest.mark.asyncio
 async def test_case_api_publishes_only_after_real_effect_replay(monkeypatch, tmp_path):
-    from bpuverify.bpu.case.bypass import cases
+    from suites.frontend.bpu.bpu.case.bypass import cases
     from tests.bpu.scoreboard.integrated.test_abtb_counter_coverage import full_path_trace
     from tests.bpu.scoreboard.integrated.test_shadow_selection_coverage import selection_trace
     async def scenario(agent, output, **kwargs):
@@ -149,7 +151,7 @@ async def test_case_api_publishes_only_after_real_effect_replay(monkeypatch, tmp
 
 @pytest.mark.asyncio
 async def test_counter_failure_prevents_both_coverage_reports(monkeypatch, tmp_path):
-    from bpuverify.bpu.case.bypass import cases
+    from suites.frontend.bpu.bpu.case.bypass import cases
     from tests.bpu.scoreboard.integrated.test_abtb_counter_coverage import full_path_trace
     from tests.bpu.scoreboard.integrated.test_shadow_selection_coverage import selection_trace
     async def scenario(agent, output, **kwargs):
@@ -164,7 +166,7 @@ async def test_counter_failure_prevents_both_coverage_reports(monkeypatch, tmp_p
 
 @pytest.mark.asyncio
 async def test_case_api_never_publishes_a_failed_scenario(monkeypatch, tmp_path):
-    from bpuverify.bpu.case.bypass import cases
+    from suites.frontend.bpu.bpu.case.bypass import cases
     async def scenario(agent, output, **kwargs):
         raise AssertionError('real checker mismatch')
     monkeypatch.setitem(cases._RUNNERS, 'natural', scenario)
@@ -175,7 +177,7 @@ async def test_case_api_never_publishes_a_failed_scenario(monkeypatch, tmp_path)
 
 @pytest.mark.asyncio
 async def test_unknown_intent_rejected_before_stimulus(tmp_path):
-    from bpuverify.bpu.case.bypass.cases import check_integrated_case
+    from suites.frontend.bpu.bpu.case.bypass.cases import check_integrated_case
     with pytest.raises(ValueError, match='unsupported integrated intent'):
         await check_integrated_case(object(), tmp_path, kind='ready_valid', bank=0)
     assert not list(tmp_path.iterdir())

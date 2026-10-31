@@ -24,9 +24,9 @@ import json
 
 import pytest
 
-from bpuverify.bpu.case.sc.used import check_used
-from bpuverify.bpu.checker.sc.full import FullScChecker
-from bpuverify.common.env.artifacts import write_output
+from suites.frontend.bpu.bpu.case.sc.used import check_used
+from suites.frontend.bpu.bpu.checker.sc.full import FullScChecker
+from suites.frontend.bpu.runtime.artifacts import write_output
 
 
 class DirtyWitness(FullScChecker):

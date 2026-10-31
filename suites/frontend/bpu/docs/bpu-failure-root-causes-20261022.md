@@ -1,5 +1,8 @@
 # BPU 失败用例的 Scala 根因定位（2026-10-22，只读分析）
 
+> 路径迁移说明（2026-10-31）：本报告仍属于原日期、基线和执行源码；实现文件已迁到工程根。可点击源码链接更新到当前位置，不据此重标历史 PASS/FAIL 或覆盖结论。参见[本轮命名空间迁移](../../../../docs/lessons/suite-namespace-refactor-20261031.md)。
+
+
 > 依据一次全量回归 `results/full-regression-20261022-v1`（29907 用例，123 FAIL / 7 XFAIL）。
 > **本文只做定位，不修改任何 RTL，也没有运行 RTL 生成或回归。**
 > 每条结论都给出 `文件:行` 与触发条件；分三档：已确认 RTL 缺陷 / 参考模型缺陷 / 已登记已知项。
@@ -26,7 +29,7 @@
 | `test_main_service`（1） | `mask: expected 2, actual 1` | 期望 way1，DUT 更新了 **way0** |
 
 三者的观测点相同：`MainBtbInternalBank.counterWriteBuffer.io_enq_valid/bits`
-（`bpuverify/bpu/bundle/main_service.py:37` 把 `direction` 绑到这里）。
+（`suites/frontend/bpu/bpu/bundle/main_service.py:37` 把 `direction` 绑到这里）。
 检查器在 `test_ahead_working_set` 里的断言文案直接点了题：
 *"Main direction proposal requires original hit and selected allocation ownership"*。
 
@@ -74,14 +77,14 @@ A 类解释了 17 个 FAIL；此外 `test_main_duplicate_cleanup` 的
 
 ---
 
-## 二、B 类：`bpuverify/tage/model/semantic.py:528`（参考模型，不是 RTL）
+## 二、B 类：`suites/frontend/bpu/tage/model/semantic.py:528`（参考模型，不是 RTL）
 
 ### 现象
 
 `test_opposed_learning_pair`（7）+ `test_direction_turnaround`（3）：
 `value: expected 5, actual 4`，断言点是
 *"each current result has its own latest version and service obligation"*
-（`bpuverify/bpu/checker/mixed_visibility.py:210`）。
+（`suites/frontend/bpu/bpu/checker/mixed_visibility.py:210`）。
 
 同一条失败记录里还有：
 
@@ -94,7 +97,7 @@ A 类解释了 17 个 FAIL；此外 `test_main_duplicate_cleanup` 的
 
 ### 根因
 
-`bpuverify/tage/model/semantic.py`：
+`suites/frontend/bpu/tage/model/semantic.py`：
 
 ```scala
 526:                current = counter if latest is None else latest.write.entry.counter

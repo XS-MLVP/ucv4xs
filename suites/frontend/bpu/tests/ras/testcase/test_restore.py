@@ -1,19 +1,19 @@
 """RAS redirect recovery and enable gate."""
 
 from __future__ import annotations
-from bpuverify.common.model.configuration import *
+from suites.frontend.bpu.models.configuration import *
 
 import pytest
 
-from bpuverify.ras.coverage.catalog import ras_enable_integrity_coverage_model
-from bpuverify.ras.coverage.catalog import write_ras_enable_integrity_coverage
-from bpuverify.ras.checker.assertions import expected_top
-from bpuverify.ras.checker.assertions import pop
-from bpuverify.ras.checker.assertions import push
-from bpuverify.ras.case.definitions import CALL_A
-from bpuverify.ras.case.definitions import CALL_B
-from bpuverify.ras.case.definitions import unique_calls
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.ras.coverage.catalog import ras_enable_integrity_coverage_model
+from suites.frontend.bpu.ras.coverage.catalog import write_ras_enable_integrity_coverage
+from suites.frontend.bpu.ras.checker.assertions import expected_top
+from suites.frontend.bpu.ras.checker.assertions import pop
+from suites.frontend.bpu.ras.checker.assertions import push
+from suites.frontend.bpu.ras.case.definitions import CALL_A
+from suites.frontend.bpu.ras.case.definitions import CALL_B
+from suites.frontend.bpu.ras.case.definitions import unique_calls
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature("BPU-RAS-007")

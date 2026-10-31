@@ -11,10 +11,10 @@ import pytest
 from toffee import Bin, CoverGroupDef, CoverPointDef
 
 from tools.run_vagq_exhaustive import atomic_json
-from vagqverify.native import open_dut
-from vagqverify.vagq.exhaustive import build_shape_sequence, observed_bytes, run_shape_sequence
-from vagqverify.vagq.failure_review import ReviewSession
-from vagqverify.vagq.scenario_matrix import legal_public_feature_cases
+from suites.vector.vagq.native import open_dut
+from suites.vector.vagq.vagq.exhaustive import build_shape_sequence, observed_bytes, run_shape_sequence
+from suites.vector.vagq.vagq.failure_review import ReviewSession
+from suites.vector.vagq.vagq.scenario_matrix import legal_public_feature_cases
 
 
 pytestmark = pytest.mark.vagq_isa_audit

@@ -31,8 +31,8 @@ from __future__ import annotations
 import json
 import pytest
 
-from bpuverify.tage.case.definitions import PC
-from bpuverify.tage.transaction.types import TageTraining
+from suites.frontend.bpu.tage.case.definitions import PC
+from suites.frontend.bpu.tage.transaction.types import TageTraining
 
 POSITION = 4
 INITIAL = 16

@@ -1,11 +1,13 @@
 """Real Store bank to dispatched Load queries, then actual byte/UID completion."""
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.forward.types import Query
-from lsqverify.replay.types import Cause
-from lsqverify.vlq.types import RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.forward.types import Query
+from suites.memblock.lsq.replay.types import Cause
+from suites.memblock.lsq.vlq.types import RobPtr
 from .memory_owners import MemoryOwners, StoreOwner, cached_load
 
 
@@ -17,7 +19,7 @@ def check_bytes(env, load, stores, lane):
             for byte in range(16):
                 if mask >> byte & 1:
                     memory[pa + byte] = value >> (8 * byte) & 255
-    p = f"io_forward_{lane}_s2Resp_"
+    p = P.io(f"forward_{lane}_s2Resp_")
     expected = {p + "valid": 1, **{p + "bits_" + flag: 0 for flag in
                 ("forwardInvalid", "matchInvalid", "addrInvalid_valid", "dataInvalid_valid")}}
     start = load.execution.vaddr % 16
@@ -46,7 +48,7 @@ async def test_real_store_readiness_youngest_bytes_and_kill_before_original_load
     if count == 2:
         await trace.write(1, lane=1, address=variant != "address_hole", data=variant != "data_hole")
     await trace.idle(5)
-    p = f"io_forward_{lane}_s2Resp_"
+    p = P.io(f"forward_{lane}_s2Resp_")
     if variant == "address_hole":
         query = Query(True, load.execution.vaddr, load.execution.uop.sq, 3, wait=True, wait_sq=stores[1].data().sq)
         await trace.forward(load, lane, query=query)
@@ -93,7 +95,7 @@ async def test_cross_word_youngest_pa_alias_must_not_return_old_store_bytes(lsq,
         # implementation conservatively requires multi-match replay; that is
         # a legal block, not a promise of immediate safe forwarding. It must
         # then actually wake via real SQ empty, retain its slot and complete.
-        lsq.expect({f"io_forward_{lane}_s2Resp_valid": 1, f"io_forward_{lane}_s2Resp_bits_forwardInvalid": 1},
+        lsq.expect({P.io(f"forward_{lane}_s2Resp_valid"): 1, P.io(f"forward_{lane}_s2Resp_bits_forwardInvalid"): 1},
                    "same-VA multi-match control is safely blocked rather than returning an unqualified old byte")
         replay = replace(load, execution=replace(load.execution, need_replay=True, causes=1 << Cause.STORE_MULTI_MATCH))
         await trace.execute([replay])
@@ -148,7 +150,7 @@ async def test_real_nonzero_sq_head_keeps_data_dependency_full_sq_generation(lsq
     await trace.idle(5)
     lsq.reach("LSQ-FORWARD.sqid", "LSQ-FORWARD.wrap")
     await trace.forward(load, lane)
-    p = f"io_forward_{lane}_s2Resp_"
+    p = P.io(f"forward_{lane}_s2Resp_")
     lsq.expect({p + "valid": 1, p + "bits_dataInvalid_valid": 1, p + "bits_dataInvalid_bits_first_flag": 0,
                 p + "bits_dataInvalid_bits_second_flag": 1, p + "bits_dataInvalid_bits_value": 48},
                "clipping the age range cannot fabricate the matched Store generation")
@@ -178,7 +180,7 @@ async def test_real_unalign_second_page_blocks_forward_then_original_physical_fr
     await trace.dispatch([store], [load])
     await trace.write_all()
     await trace.forward(load, lane)
-    lsq.expect({f"io_forward_{lane}_s2Resp_valid": 1, f"io_forward_{lane}_s2Resp_bits_forwardInvalid": 1},
+    lsq.expect({P.io(f"forward_{lane}_s2Resp_valid"): 1, P.io(f"forward_{lane}_s2Resp_bits_forwardInvalid"): 1},
                "real UQ second-page match requires replay instead of an unsafe first-page forward")
     lsq.reach("LSQ-FORWARD.page")
     trace.base = replace(trace.base, pending=RobPtr.encode(11), pending_next=RobPtr.encode(11), sbuffer_ready=(True, True))

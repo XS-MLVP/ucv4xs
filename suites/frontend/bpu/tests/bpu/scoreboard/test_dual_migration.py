@@ -1,17 +1,17 @@
 """Independent event programs and wrong synthetic observations; no DUT credit."""
-from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT
+from suites.frontend.bpu.models.configuration import TAGE_ALLOCATION_WAIT
 from copy import deepcopy
 from dataclasses import replace
 from types import SimpleNamespace as NS
 
 import pytest
 from toffee import Scoreboard
-from bpuverify.bpu.checker.dual_migration import DualMigrationChecks
-from bpuverify.bpu.coverage.dual_migration import DualMigrationCoverage, RULES
-from bpuverify.bpu.model.tage.dual_migration import PC, PATHS, OUTCOMES, preparation, counters_after
-from bpuverify.bpu.model.tage.service import STREAM_PC, STREAM_POSITION, learning_inflight
-from bpuverify.bpu.model.pipeline import Outcome, Resolution, Redirect
-from bpuverify.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.checker.dual_migration import DualMigrationChecks
+from suites.frontend.bpu.bpu.coverage.dual_migration import DualMigrationCoverage, RULES
+from suites.frontend.bpu.bpu.model.tage.dual_migration import PC, PATHS, OUTCOMES, preparation, counters_after
+from suites.frontend.bpu.bpu.model.tage.service import STREAM_PC, STREAM_POSITION, learning_inflight
+from suites.frontend.bpu.bpu.model.pipeline import Outcome, Resolution, Redirect
+from suites.frontend.bpu.bpu.model.selection import Kind
 from tests.bpu.scoreboard.test_direction_sources import prepared, quiet, revisit
 from tests.bpu.scoreboard.test_direction_service import via, streaming_query
 from tests.bpu.scoreboard.test_direction_forwarding import resolution
@@ -28,7 +28,7 @@ def fixture(*, initial_pc=None, checks_type=DualMigrationChecks, coverage_type=D
     else:
         from tests.bpu.scoreboard.test_semantic_pipeline import boot
         from tests.bpu.scoreboard.test_direction_sources import ENABLED
-        from bpuverify.bpu.model.direction_sources import DirectionSources
+        from suites.frontend.bpu.bpu.model.direction_sources import DirectionSources
         model, event = boot(DirectionSources(), pc=initial_pc)
         event = replace(event, enabled=ENABLED)
         for _ in range(8):

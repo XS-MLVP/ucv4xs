@@ -1,9 +1,9 @@
 """Actual integrated cross-block sources, never freely chosen UT index inputs."""
 import json
 import pytest
-from bpuverify.bpu.model.cross_block_learning import PROFILES
-from bpuverify.bpu.coverage.cross_block_learning import Coverage
-from bpuverify.bpu.case.cross_block_learning import run
+from suites.frontend.bpu.bpu.model.cross_block_learning import PROFILES
+from suites.frontend.bpu.bpu.coverage.cross_block_learning import Coverage
+from suites.frontend.bpu.bpu.case.cross_block_learning import run
 
 
 @pytest.mark.feature('BPU-INT-044')

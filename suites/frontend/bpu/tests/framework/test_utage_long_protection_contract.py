@@ -2,7 +2,7 @@
 import ast
 import json
 from pathlib import Path
-from bpuverify.utage.model.long_protection import Program,MODES,LIFETIMES,RULES
+from suites.frontend.bpu.utage.model.long_protection import Program,MODES,LIFETIMES,RULES
 
 
 def test_long_provider_requirement_declares_identity_and_preservation_not_physical_sweep():
@@ -15,10 +15,10 @@ def test_long_provider_requirement_declares_identity_and_preservation_not_physic
 def test_new_native_case_exposes_neither_edges_raw_IO_nor_manual_task_gather():
     source=Path('tests/utage/testcase/test_long_protection.py').read_text()
     assert not any(word in source for word in ('FallingEdge','RisingEdge','ClockCycles','asyncio','get_','set_','.Set('))
-    tree=ast.parse(Path('bpuverify/utage/model/long_protection.py').read_text())
+    tree=ast.parse(Path('utage/model/long_protection.py').read_text())
     assert not any(isinstance(node,ast.Import) for node in ast.walk(tree))
     assert {node.module for node in ast.walk(tree) if isinstance(node,ast.ImportFrom)}=={
-        'dataclasses','bpuverify.utage.model.semantic','bpuverify.utage.model.usefulness_events','bpuverify.utage.model.query_identity'}
+        'dataclasses','suites.frontend.bpu.utage.model.semantic','suites.frontend.bpu.utage.model.usefulness_events','suites.frontend.bpu.utage.model.query_identity'}
 
 
 def test_all_cited_hardware_sources_exist_and_have_the_referenced_line():

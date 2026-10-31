@@ -1,7 +1,7 @@
 """One semantic ownership exchange, not a physical coordinate matrix."""
 import pytest
-from bpuverify.bpu.case.dual_migration import check_dual_migration
-from bpuverify.bpu.coverage.dual_migration import DualMigrationCoverage
+from suites.frontend.bpu.bpu.case.dual_migration import check_dual_migration
+from suites.frontend.bpu.bpu.coverage.dual_migration import DualMigrationCoverage
 
 
 @pytest.mark.feature('BPU-INT-089')

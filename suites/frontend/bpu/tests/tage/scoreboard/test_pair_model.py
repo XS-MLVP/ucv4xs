@@ -1,7 +1,7 @@
 import pytest
 
-from bpuverify.tage.model.pair import TagePairModel
-from bpuverify.tage.model.pair import TageTableState
+from suites.frontend.bpu.tage.model.pair import TagePairModel
+from suites.frontend.bpu.tage.model.pair import TageTableState
 
 
 @pytest.mark.parametrize('direction', (0, 1))

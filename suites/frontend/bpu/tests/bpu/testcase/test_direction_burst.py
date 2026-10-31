@@ -1,7 +1,7 @@
 """Both ownership directions, no bank/set/depth Cartesian expansion."""
 import pytest
-from bpuverify.bpu.case.direction_burst import check_direction_burst
-from bpuverify.bpu.coverage.direction_burst import DirectionBurstCoverage
+from suites.frontend.bpu.bpu.case.direction_burst import check_direction_burst
+from suites.frontend.bpu.bpu.coverage.direction_burst import DirectionBurstCoverage
 
 
 @pytest.mark.feature('BPU-INT-090')

@@ -7,7 +7,6 @@ import pytest
 from tools import refresh_coverage as corrected
 
 
-
 def xml(tmp_path, nodes, *, status=None):
     root = ET.Element('testsuites')
     suite = ET.SubElement(root, 'testsuite')

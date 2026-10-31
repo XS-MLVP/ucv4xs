@@ -11,8 +11,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from tools.run_vagq_exhaustive import atomic_json, digest
-from vagqverify.vagq.exhaustive import assess_shape_boundaries, build_shape_sequence, compare_shape
-from vagqverify.vagq.scenario_matrix import legal_public_feature_cases
+from suites.vector.vagq.vagq.exhaustive import assess_shape_boundaries, build_shape_sequence, compare_shape
+from suites.vector.vagq.vagq.scenario_matrix import legal_public_feature_cases
 
 
 def main():

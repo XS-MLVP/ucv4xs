@@ -1,8 +1,8 @@
 """Cross-block meaning and unchanged physical coverage denominators."""
 import json
 from pathlib import Path
-from bpuverify.bpu.model.cross_block_learning import PROFILES,PROGRAMS,RULES
-from bpuverify.bpu.coverage.cross_block_learning import lifetime_coverage
+from suites.frontend.bpu.bpu.model.cross_block_learning import PROFILES,PROGRAMS,RULES
+from suites.frontend.bpu.bpu.coverage.cross_block_learning import lifetime_coverage
 
 
 def test_contract_uses_real_edges_not_free_UT_read_coordinates():

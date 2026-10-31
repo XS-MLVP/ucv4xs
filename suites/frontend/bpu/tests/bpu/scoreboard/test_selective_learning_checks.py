@@ -3,9 +3,9 @@ from copy import deepcopy
 from types import SimpleNamespace as NS
 import pytest
 from toffee import Scoreboard
-from bpuverify.bpu.checker.selective_learning import Checks
-from bpuverify.bpu.coverage.selective_learning import Coverage
-from bpuverify.bpu.model.tage.selective_learning import ALL_PROGRAMS as PROGRAMS, LATER_PROGRAMS
+from suites.frontend.bpu.bpu.checker.selective_learning import Checks
+from suites.frontend.bpu.bpu.coverage.selective_learning import Coverage
+from suites.frontend.bpu.bpu.model.tage.selective_learning import ALL_PROGRAMS as PROGRAMS, LATER_PROGRAMS
 from tests.bpu.scoreboard.test_selective_learning import foundation
 from tests.bpu.scoreboard.test_direction_forwarding import resolution
 

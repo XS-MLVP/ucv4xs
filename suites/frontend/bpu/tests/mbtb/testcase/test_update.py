@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.mbtb.checker.assertions import assert_vector_hit
-from bpuverify.mbtb.checker.assertions import train
-from bpuverify.mbtb.case.definitions import BranchVector
-from bpuverify.mbtb.case.definitions import INDIRECT
+from suites.frontend.bpu.mbtb.checker.assertions import assert_vector_hit
+from suites.frontend.bpu.mbtb.checker.assertions import train
+from suites.frontend.bpu.mbtb.case.definitions import BranchVector
+from suites.frontend.bpu.mbtb.case.definitions import INDIRECT
 
 
 @pytest.mark.feature("BPU-MBTB-005")

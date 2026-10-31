@@ -145,8 +145,8 @@ v8目录仅准备，尚未通过联合相位模型和原生验证。
 ## 当前状态：2026-10-10 23:59 北京时间
 
 真实双对齐训练实验发现验证适配错误：生产
-`bpuverify/bpu/driver/encoding.py:38`把两份逻辑startPc都写成pc，
-`bpuverify/bpu/model/sc/model.py:35`又镜像同一错误，因此旧payload比较
+`suites/frontend/bpu/bpu/driver/encoding.py:38`把两份逻辑startPc都写成pc，
+`suites/frontend/bpu/bpu/model/sc/model.py:35`又镜像同一错误，因此旧payload比较
 不能发现问题。实际FTQ见`Ftq.scala:424–432`：第二份PC应推进一个
 16-byte对齐块，halfword表示为`(pc + 8) & ~7`；MainBtb.scala:111
 起会把该向量旋转到物理align bank。原Driver在真实DUT上对
@@ -824,7 +824,7 @@ BPU；旧选择器识别还漏掉不带数字后缀的第一个 cell。此处先
 隔离失败批次没有并入覆盖率，SC 新批次仍需完整刷新审计后才能正式入账。
 
 记录日期：2026-10-08。数值来自完整 pytest 运行生成的
-`results/rtl-coverage-manifest.json`，再由 `python3 -m bpuverify.rtl_coverage`
+`results/rtl-coverage-manifest.json`，再由 `python3 -m suites.frontend.bpu.rtl_coverage`
 合并到 `results/rtl-line-coverage.json`。只合并本次运行登记的 `.dat`，不读取遗留的
 `verilator-coverage.dat`。`results/feature-points.json` 是 pytest 的功能点判定，
 `results/*/functional-coverage*.json` 是显式定义的 coverpoint/bin（TAGE 的
@@ -2202,7 +2202,7 @@ LCOV／JSON／HTML 的时效／隔离审计见
 共 **24 个分支、48 个此前未分类赋值行**。这里只分类赋值体，不把仍可能
 执行的 guard/anchor 行一并宣布不可达，也不把整个跨端口路径宣布死掉。
 
-`bpuverify/tage_coverage_audit.py` 先核对精确源码守卫、定义、局部位置和
+`suites/frontend/bpu/tage_coverage_audit.py` 先核对精确源码守卫、定义、局部位置和
 赋值目标，再穷举 H（hit）、S（selected）、W（written）、C（compare equal）
 的 16 个取值。dirty-copy 的 `!(H && S) && H && S` 与 clean-copy 的
 `!(H && S) && H && !(!W || C || !S)` 均无满足项；去掉第一个优先级前提后
@@ -3392,7 +3392,7 @@ payload。178 项模型检查、旧完整证据重放及硬件代表最终门禁
 三个前提错误普通 FAIL。见
 `results/coverage-utage-useful-address-integration-candidate-readonly.json`。
 
-能力现已迁入 `bpuverify/utage_{model,observation,shadow_observation,checking,
+能力现已迁入 `suites/frontend/bpu/utage_{model,observation,shadow_observation,checking,
 coverage,addressing,errors,partial_wrap}.py`，agent 提供 `observe_useful()`、
 `observe_shadow()` 和 `observe_partial_wrap()`；具体刺激在 `tests/utage/testcase`。
 旧 BPU-UTAGE-007 也改为仅捕获具体 tag-width 异常：修复后检查应通过并触发
@@ -3558,7 +3558,7 @@ SC、TAGE、WriteBuffer、replacer 的真实训练路径，按模块分别列出
 ### PHR 正式实现迁入，完整刷新已审计（2026-10-08）
 
 独立模型、静态 VPI Bundle、同拍 monitor、fire/flush 关联、Scoreboard
-检查和功能覆盖定义现已迁入 `bpuverify/bpu_phr_*.py`。`BpuAgent.observe_phr`
+检查和功能覆盖定义现已迁入 `suites/frontend/bpu/bpu_phr_*.py`。`BpuAgent.observe_phr`
 独占同拍观测时通过公开 `aclose/start` 交接普通流 monitor，退出后创建新
 monitor；不再用原型代理或访问私有 `_queue`。公开 `BpuRedirect` 保留
 原两参数形式，新增 keyword-only 的 cfi_pc/taken/branch_type，恢复目标
@@ -3744,7 +3744,7 @@ touch 的设计意图需单独审查，不能把参考模型匹配当前实现�
 
 ### AheadBTB 候选迁入进展（2026-10-08，正式刷新前）
 
-四类候选已迁入 `bpuverify/abtb_state/`：独立 model、静态 monitor、checker、
+四类候选已迁入 `suites/frontend/bpu/abtb_state/`：独立 model、静态 monitor、checker、
 driver 与复用 scenario 分层；`tests/abtb/testcase/test_state_matrix.py` 只调用
 意图级场景，没有 IO getter/setter、FallingEdge 或 asyncio.gather。临时训练
 writer 的信号所有权由 `AbtbAgent.using_training_driver()` 和 StateObservation
@@ -4045,7 +4045,7 @@ ABI2 构建已在本次回归生效；保留外部改动，全部原生分母及
 `results/coverage-abtb-production-collection-protection.json`。
 
 完成以上两个实际终态及审计后，已将相位修正版的八个组件和三个测试文件
-迁入 `bpuverify/bpu_sc_state/` 与 `tests/bpu/`。严格 SHA 检查先捕获复制时
+迁入 `suites/frontend/bpu/bpu_sc_state/` 与 `tests/bpu/`。严格 SHA 检查先捕获复制时
 多出的末尾空行，已修正为草案精确字节，没有放宽门禁。正常收集为 5974
 项，原正式四报告不变；1070 份运行源码中仅既有 BPU conftest 增加输出
 fixture，另增八组件／三测试，两个需求尚未登记。见

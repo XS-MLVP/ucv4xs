@@ -4,8 +4,8 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.common.coverage.exports import write_functional_coverage, set_functional_exports, reset_functional_exports
-from bpuverify.common.pytest.managed import measured_functional_case, ManagedFeatures
+from suites.frontend.bpu.coverage.exports import write_functional_coverage, set_functional_exports, reset_functional_exports
+from suites.frontend.bpu.pytest_plugins.managed import measured_functional_case, ManagedFeatures
 from tools.managed_regression import managed_command, execution_verdicts
 
 
@@ -114,7 +114,7 @@ def test_explicit_serializer_contracts_remain_testable_without_dut_credit(tmp_pa
 
 def test_project_export_policy_never_monkeypatches_framework_methods():
     import ast
-    path = Path(__file__).resolve().parents[2]/'bpuverify/common/coverage/exports.py'
+    path = Path(__file__).resolve().parents[2]/'coverage/exports.py'
     for node in ast.walk(ast.parse(path.read_text())):
         assert not (isinstance(node,ast.Assign) and any(isinstance(t,ast.Attribute) for t in node.targets))
 

@@ -5,8 +5,8 @@ import random
 
 import pytest
 
-from lsuverify.std_exe_unit.coverage import STD_CASES, StdExeUnitCoverage
-from lsuverify.std_exe_unit.env import (
+from suites.memblock.lsu.std_exe_unit.coverage import STD_CASES, StdExeUnitCoverage
+from suites.memblock.lsu.std_exe_unit.env import (
     IN_FIELDS,
     VSTD_FIELDS,
     StdExeUnitEnv,

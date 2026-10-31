@@ -5,9 +5,11 @@ import random
 
 import pytest
 
-from dcacheverify.banked_data_array.coverage import BankedDataArrayCoverage
-from dcacheverify.banked_data_array.env import BankedDataArrayEnv
-from dcacheverify.banked_data_array.model import (
+from suites.memblock.dcache.execution import step, refresh
+
+from suites.memblock.dcache.banked_data_array.coverage import BankedDataArrayCoverage
+from suites.memblock.dcache.banked_data_array.env import BankedDataArrayEnv
+from suites.memblock.dcache.banked_data_array.model import (
     BANKS,
     SETS,
     dcache_bank,
@@ -80,7 +82,7 @@ def test_three_ports_independent(bda):
         pins["addr_dup"].Set(addr)
         pins["bankMask"].Set(window_mask(addr))
         pins["lqidx"].Set(port + 1)
-    bda.dut.Step(1)
+    step(bda)
     for port in range(3):
         bda.read[port]["valid"].Set(0)
     bda.refresh()
@@ -166,10 +168,10 @@ def test_read_read_bank_conflict_oldest_wins(bda):
     result = bda.conflict_probe(addr_a, 0, 0xFF, 3, addr_b, 0, 0xFF, 9)
     assert result["rr_conflict"] == [0, 1], result
     assert result["bank_conflict"] == [0, 1], result
-    bda.dut.Step(2)
+    step(bda, 2)
     result = bda.conflict_probe(addr_a, 0, 0xFF, 9, addr_b, 0, 0xFF, 3)
     assert result["rr_conflict"] == [1, 0], result
-    bda.dut.Step(2)
+    step(bda, 2)
     result = bda.conflict_probe(addr_a, 0, 0x000000FF, 1, addr_b, 0, 0x0000FF00, 2)
     assert result["rr_conflict"] == [0, 0], result
 
@@ -193,7 +195,7 @@ def test_read_line_and_write_hazards(bda):
     bda.read[0]["lqidx"].Set(1)
     bda.refresh()
     line_ready = bda._val(bda.line["ready"])
-    bda.dut.Step(1)
+    step(bda)
     bda._idle()
     bda.refresh()
     read_conflict = bda._val(bda.read[0]["bank_conflict"])
@@ -269,14 +271,14 @@ def test_readline_masks_and_pseudo_error(bda):
     bda.line["way_en"].Set(1)
     bda.line["addr"].Set(addr)
     bda.line["rmask"].Set(0xFFFFFFFF)
-    bda.dut.Step(1)
+    step(bda)
     bda.line["valid"].Set(0)
     bda.line["can_go"].Set(1)
     bda.line["can_resp"].Set(1)
-    bda.dut.Step(1)
+    step(bda)
     bda.line["can_go"].Set(0)
     bda.line["can_resp"].Set(1)
-    bda.dut.Step(1)
+    step(bda)
     held = [bda._val(signal) for signal in bda.line["resp"]]
     bda._idle()
     # The held path re-captures the paged buffer; its content is defined by the
@@ -290,11 +292,11 @@ def test_readline_masks_and_pseudo_error(bda):
     bda.line["rmask"].Set(0xFFFFFFFF)
     bda.line["can_go"].Set(1)
     bda.line["stall"].Set(1)
-    bda.dut.Step(1)
+    step(bda)
     bda.line["valid"].Set(0)
     bda.line["can_go"].Set(1)
     bda.line["can_resp"].Set(1)
-    bda.dut.Step(1)
+    step(bda)
     bda._idle()
     # Pseudo-error injection toggles the selected bank bits on the read path.
     window = bda.read_port_injected(0, addr, 0, window_mask(addr),
@@ -409,7 +411,7 @@ def test_pseudo_error_all_banks(bda):
                                     inject_mask=0xA5A5)
     assert window == [value ^ 0xA5A5 for value in expected], window
     # The pseudo-error channel is acknowledged after a read hits an injected bank.
-    bda.dut.Step(1)
+    step(bda)
 
 
 # BDA-FP-003: high address bits on every duplicate write port
@@ -443,7 +445,7 @@ def test_ecc_error_flag_clears_after_read(bda):
     in_flight = list(bda.last_error)
     assert not any(in_flight), in_flight
     for _ in range(2):
-        bda.dut.Step(1)
+        step(bda)
         bda.refresh()
     after = [int(signal.value) for signal in bda.read[0]["error"]]
     assert all(value == 0 for value in after), (in_flight, after)
@@ -458,7 +460,7 @@ def test_readline_data_and_flag_clear(bda):
     assert data == expected
     assert int(bda.line["error"].value) == 0
     for _ in range(2):
-        bda.dut.Step(1)
+        step(bda)
         bda.refresh()
     assert int(bda.line["error"].value) == 0
 

@@ -2,20 +2,20 @@ from copy import deepcopy
 from pathlib import Path
 import ast
 import pytest
-from bpuverify.bpu.model.phr.model import MASK
-from bpuverify.bpu.model.phr.model import fold
-from bpuverify.bpu.model.abtb.alias import capacity
-from bpuverify.bpu.model.abtb.alias import physical_index
-from bpuverify.bpu.model.abtb.alias import plan
-from bpuverify.bpu.model.abtb.alias import reference_group
-from bpuverify.bpu.model.abtb.alias import rtl_bank_set
-from bpuverify.bpu.model.abtb.alias import step
-from bpuverify.bpu.case.abtb.alias_plan import PILOT_CASES
-from bpuverify.bpu.case.abtb.alias_plan import checkpoint_route
-from bpuverify.bpu.case.abtb.alias_plan import final_comparison
-from bpuverify.bpu.case.abtb.alias_plan import input_qualified
-from bpuverify.bpu.case.abtb.alias_plan import programs
-from bpuverify.bpu.case.abtb.alias_plan import qualified_fixture
+from suites.frontend.bpu.bpu.model.phr.model import MASK
+from suites.frontend.bpu.bpu.model.phr.model import fold
+from suites.frontend.bpu.bpu.model.abtb.alias import capacity
+from suites.frontend.bpu.bpu.model.abtb.alias import physical_index
+from suites.frontend.bpu.bpu.model.abtb.alias import plan
+from suites.frontend.bpu.bpu.model.abtb.alias import reference_group
+from suites.frontend.bpu.bpu.model.abtb.alias import rtl_bank_set
+from suites.frontend.bpu.bpu.model.abtb.alias import step
+from suites.frontend.bpu.bpu.case.abtb.alias_plan import PILOT_CASES
+from suites.frontend.bpu.bpu.case.abtb.alias_plan import checkpoint_route
+from suites.frontend.bpu.bpu.case.abtb.alias_plan import final_comparison
+from suites.frontend.bpu.bpu.case.abtb.alias_plan import input_qualified
+from suites.frontend.bpu.bpu.case.abtb.alias_plan import programs
+from suites.frontend.bpu.bpu.case.abtb.alias_plan import qualified_fixture
 
 STAGE = Path(__file__).resolve().parent
 
@@ -152,9 +152,8 @@ def test_joint_PHR_and_index_pipeline_consumes_old_history_before_S1_update(bank
     assert intent['low4_index_source_history'] == intent['low4_history_before_a']
 
 
-
 def test_deep_physical_universe_preserves_all256_groups_and_not_only_four_pilots():
-    from bpuverify.bpu.case.abtb.alias_plan import ALL_CASES
+    from suites.frontend.bpu.bpu.case.abtb.alias_plan import ALL_CASES
     assert len(ALL_CASES) == len(set(ALL_CASES)) == 256
     assert set(ALL_CASES) == {(bank, entry_set) for bank in range(4) for entry_set in range(64)}
     assert set(PILOT_CASES) <= set(ALL_CASES)

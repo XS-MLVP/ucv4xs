@@ -1,15 +1,15 @@
-from bpuverify.common.model.configuration import *
+from suites.frontend.bpu.models.configuration import *
 from copy import deepcopy
 from itertools import product
 
 import pytest
 
-from bpuverify.bpu.model.sc.model import ScReference
-from bpuverify.bpu.model.sc.model import encoded_payload
-from bpuverify.bpu.model.sc.model import sc_requests
+from suites.frontend.bpu.bpu.model.sc.model import ScReference
+from suites.frontend.bpu.bpu.model.sc.model import encoded_payload
+from suites.frontend.bpu.bpu.model.sc.model import sc_requests
 from tests.bpu.scoreboard.test_sc_masked_model import minimal_transaction
-from bpuverify.bpu.model.sc.training_path import train_need_write
-from bpuverify.bpu.model.sc.training_path import training_indices
+from suites.frontend.bpu.bpu.model.sc.training_path import train_need_write
+from suites.frontend.bpu.bpu.model.sc.training_path import training_indices
 
 
 @pytest.mark.parametrize('used,sc,tage,taken', tuple(product(range(2), repeat=4)))

@@ -14,7 +14,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
-from duts import dut_dir  # noqa: E402
+from suites.memblock.dcache.inventory import dut_dir  # noqa: E402
 
 
 def load_dut():

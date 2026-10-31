@@ -12,9 +12,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from tools.run_vagq_exhaustive import audit_attempt, atomic_json, digest
-from vagqverify.waveform import convert_fst, read_public_samples
-from vagqverify.vagq.exhaustive import build_shape_sequence, compare_shape, observed_bytes
-from vagqverify.vagq.scenario_matrix import OPERATION_NAMES, feature_case_id, legal_public_feature_cases
+from suites.vector.vagq.waveform import convert_fst, read_public_samples
+from suites.vector.vagq.vagq.exhaustive import build_shape_sequence, compare_shape, observed_bytes
+from suites.vector.vagq.vagq.scenario_matrix import OPERATION_NAMES, feature_case_id, legal_public_feature_cases
 
 
 def main():
@@ -156,7 +156,7 @@ def main():
         result_receipt_aggregate_sha256=result_hash.hexdigest(),
         all_shape_identities_unique=True,
         functional_artifact_matches_journal=True,
-        unchanged_independent_isa_oracle=frozen['vagqverify/vagq/isa_reference.py'])
+        unchanged_independent_isa_oracle=frozen['vagq/isa_reference.py'])
     atomic_json(run.parent / 'evidence.json', evidence)
     lines = [
         '# VAGQ 全量 shape 重执行结果', '',

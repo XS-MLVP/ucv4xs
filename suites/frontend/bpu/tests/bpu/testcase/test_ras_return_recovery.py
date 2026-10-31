@@ -1,8 +1,8 @@
 """Restore/pop at compression boundaries and two genuine predecessor lifetimes."""
 import pytest
 
-from bpuverify.bpu.case.ras.return_recovery import check_return_recovery
-from bpuverify.bpu.coverage.ras_return_recovery import ReturnRecoveryCoverage
+from suites.frontend.bpu.bpu.case.ras.return_recovery import check_return_recovery
+from suites.frontend.bpu.bpu.coverage.ras_return_recovery import ReturnRecoveryCoverage
 
 
 @pytest.mark.feature('BPU-INT-081')

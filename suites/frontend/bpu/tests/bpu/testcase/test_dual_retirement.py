@@ -1,7 +1,7 @@
 """Both migrated logical owners keep every concurrently retired successor."""
 import pytest
-from bpuverify.bpu.case.dual_retirement import check_dual_retirement
-from bpuverify.bpu.coverage.dual_retirement import DualRetirementCoverage
+from suites.frontend.bpu.bpu.case.dual_retirement import check_dual_retirement
+from suites.frontend.bpu.bpu.coverage.dual_retirement import DualRetirementCoverage
 
 
 @pytest.mark.feature('BPU-INT-090')

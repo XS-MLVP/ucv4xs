@@ -3,10 +3,10 @@ import json
 
 import pytest
 
-from bpuverify.common.coverage.pipeline_ownership import PipelineOwnershipCoverage, PROFILES
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.mbtb.case.pipeline_ownership import check_pipeline_ownership
+from suites.frontend.bpu.coverage.pipeline_ownership import PipelineOwnershipCoverage, PROFILES
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.mbtb.case.pipeline_ownership import check_pipeline_ownership
 
 
 @pytest.mark.feature('BPU-MBTB-007')

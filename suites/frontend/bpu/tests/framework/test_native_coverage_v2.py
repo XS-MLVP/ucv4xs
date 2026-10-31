@@ -4,7 +4,7 @@ from toffee import Bundle, ClockCycles, Execution, RisingEdge, Sequence, Wait, W
 from toffee.ir import signal_expr
 from toffee.declarative import Bin, CoverPoint, Fields, PatternCoverPoint, SignalCoverGroup, covergroup, coverpoint
 
-from bpuverify.common.driver.signal import ResetDriver
+from suites.frontend.bpu.drivers.signal import ResetDriver
 
 
 class ResetPins(Bundle):
@@ -35,7 +35,7 @@ class ResetSequence(PatternCoverPoint[ResetPins]):
 fields = Fields(ResetPins)
 
 
-@covergroup(schema_id='bpuverify.native-reset-probe', contract='actual-reset-pins/v1')
+@covergroup(schema_id='suites.frontend.bpu.native-reset-probe', contract='actual-reset-pins/v1')
 class ResetCoverage(SignalCoverGroup[ResetPins]):
     level = ResetLevel(source=fields.signal(lambda pins: pins.reset, value_type=bool))
     sequence = ResetSequence()

@@ -1,8 +1,8 @@
 """Mixed valid feedback and later absence consumers, no physical matrix."""
 import pytest
 
-from bpuverify.bpu.case.tage.interleaved import check_interleaved_learning
-from bpuverify.bpu.coverage.tage.interleaved import InterleavedCoverage
+from suites.frontend.bpu.bpu.case.tage.interleaved import check_interleaved_learning
+from suites.frontend.bpu.bpu.coverage.tage.interleaved import InterleavedCoverage
 
 
 @pytest.mark.feature('BPU-INT-084')

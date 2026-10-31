@@ -4,8 +4,8 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.common.env.process_scope import DOMAINS, DutProcessScope
-from bpuverify.common.pytest.isolation import collection_index, item_scope, selected_ids
+from suites.frontend.bpu.runtime.process_scope import DOMAINS, DutProcessScope
+from suites.frontend.bpu.pytest_plugins.isolation import collection_index, item_scope, selected_ids
 
 
 def item(node='tests/framework/test_owner.py::test_case', *, fixtures=(), marker=None):

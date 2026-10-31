@@ -5,8 +5,8 @@ from dataclasses import dataclass
 import pytest
 from toffee import ScoreboardMismatch
 
-from bpuverify.common.checker.prediction import compare_prediction
-from bpuverify.common.checker.prediction import observation_expected
+from suites.frontend.bpu.checkers.prediction import compare_prediction
+from suites.frontend.bpu.checkers.prediction import observation_expected
 from toffee import Scoreboard
 
 

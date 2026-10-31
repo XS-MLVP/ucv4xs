@@ -1,11 +1,10 @@
 """Closed-form qualification and lifetime-credit controls; no hardware credit."""
 import pytest
 
-from bpuverify.utage.model.semantic import Context, Events, Feedback, Source, UtageReference, indices
-from bpuverify.utage.model.enable_lifetime import (
+from suites.frontend.bpu.utage.model.semantic import Context, Events, Feedback, Source, UtageReference, indices
+from suites.frontend.bpu.utage.model.enable_lifetime import (
     Program, TABLES, PHASES, RULES, PC, POSITION, HISTORY, NEIGHBOR_HISTORY)
-from bpuverify.utage.coverage.enable_lifetime import Coverage
-
+from suites.frontend.bpu.utage.coverage.enable_lifetime import Coverage
 
 
 @pytest.mark.parametrize('table', TABLES)

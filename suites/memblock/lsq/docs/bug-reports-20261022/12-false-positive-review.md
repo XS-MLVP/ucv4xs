@@ -136,7 +136,7 @@ slot6实际不是普通Store，而是CBO.zero。旧生成器沿用`size=3、mask
 
 源码依据包括`VirtualStoreQueue.scala:282–284`、`NewStoreQueue.scala:1995–2007、727–735`、`NewStoreUnit.scala:476–478`、`Dispatch.scala:594–595`、`CompressUnit.scala:94–96、296–300`及`Rob.scala:768`。
 
-因此旧FIFO字节仍是合法、尚未偿还的写出义务。`lsqverify/store_queue/actor.py:330–340`提前删除owner之后，才出现找不到原owner的`StopIteration`；不是RTL在合法取消后泄漏数据。
+因此旧FIFO字节仍是合法、尚未偿还的写出义务。`suites/memblock/lsq/store_queue/actor.py:330–340`提前删除owner之后，才出现找不到原owner的`StopIteration`；不是RTL在合法取消后泄漏数据。
 
 节点：`tests/store_queue/test_cancel_capacity.py::test_real_cancel_capacity_old_bytes_and_every_new_UID_normal_consumption[True]`。
 

@@ -15,7 +15,7 @@
     "xreactor.protocols.drive_ready_valid(admit=...)",
     "xreactor.AsyncDriver._run_one documented fail-stop behavior",
     "xreactor.XTransfer.cancel",
-    "bpuverify.bpu.driver.training.BpuTrainingDriver.admit_when"
+    "suites.frontend.bpu.bpu.driver.training.BpuTrainingDriver.admit_when"
   ],
   "predecessor": "results/bpu-feedback-gate-qualified-20261018-v1/qualification-analysis.json",
   "new_cross": "真实reset前后来源资格、取消后fresh合法学习、暂缓时不编码/不写入、发射期异常后严格拒绝后续工作",

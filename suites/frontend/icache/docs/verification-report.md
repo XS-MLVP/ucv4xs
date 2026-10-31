@@ -39,7 +39,7 @@ issue 编号。接手新 DUT 前建议通读；本工程的原始案例仍保留
   xcomm native ABI 3 / coverage protocol 5，xreactor `dev/coverage-v2`（`2461d0f`）。
 - 所有用例只通过 `xreactor run` 启动（串行 `--workers 1`，并行 `--workers 4`），
   未直接调用 pytest。
-- 每个 DUT 保持独立的 `icacheverify/<dut>/{agent,bundle,transaction,env,case,model,checker,coverage,driver,monitor}`
+- 每个 DUT 保持独立的 `suites/frontend/icache/<dut>/{agent,bundle,transaction,env,case,model,checker,coverage,driver,monitor}`
   角色目录；`tests/framework/test_repository_layout.py` 的 `IMPLEMENTED` 已如实列出全部 11 个 DUT。
 - 参考模型依据 ISA/公开文档/教科书语义（MSHR 纪律、tree-PLRU、循环 FIFO、VIPT 组相联、
   RISC-V Svpbmt/fence.i/WFI 语义），模型注释中给出语义出处；未从 RTL 反推期望值。

@@ -11,9 +11,9 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from lsqverify.forward.codec import encode
-from lsqverify.forward.types import Inputs, Query, Store, Translation, SecondPage, byte_count
-from lsqverify.raw.types import SqPtr
+from suites.memblock.lsq.forward.codec import encode
+from suites.memblock.lsq.forward.types import Inputs, Query, Store, Translation, SecondPage, byte_count
+from suites.memblock.lsq.raw.types import SqPtr
 
 
 def sha(path):
@@ -55,7 +55,7 @@ def main():
     out = ROOT / "results/forward-codec-static-01"
     out.mkdir(exist_ok=False)
     hashes = {}
-    for path in (Path(__file__), ROOT / "lsqverify/forward/types.py", ROOT / "lsqverify/forward/codec.py"):
+    for path in (Path(__file__), ROOT / "forward/types.py", ROOT / "forward/codec.py"):
         dest = out / "source" / path.relative_to(ROOT)
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(path, dest)

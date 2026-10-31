@@ -1,8 +1,8 @@
 """Pure checker qualification; never hardware or native-coverage credit."""
 import pytest
 
-from bpuverify.bpu.model.sc_early_learning import PROFILES,RULES
-from bpuverify.bpu.coverage.sc_early_learning import Coverage
+from suites.frontend.bpu.bpu.model.sc_early_learning import PROFILES,RULES
+from suites.frontend.bpu.bpu.coverage.sc_early_learning import Coverage
 from tests.bpu.scoreboard._sc_early_program import Program
 
 

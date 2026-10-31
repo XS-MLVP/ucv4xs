@@ -1,13 +1,13 @@
-from bpuverify.common.model.configuration import *
+from suites.frontend.bpu.models.configuration import *
 from copy import deepcopy
 from itertools import product
 import pytest
-from bpuverify.bpu.model.sc.model import advance
-from bpuverify.bpu.model.sc.model import encoded_payload
-from bpuverify.bpu.model.sc.model import sc_requests
-from bpuverify.bpu.model.sc.model import ScReference
-from bpuverify.bpu.model.sc.model import width
-from bpuverify.bpu.model.sc.model import zero_slots
+from suites.frontend.bpu.bpu.model.sc.model import advance
+from suites.frontend.bpu.bpu.model.sc.model import encoded_payload
+from suites.frontend.bpu.bpu.model.sc.model import sc_requests
+from suites.frontend.bpu.bpu.model.sc.model import ScReference
+from suites.frontend.bpu.bpu.model.sc.model import width
+from suites.frontend.bpu.bpu.model.sc.model import zero_slots
 
 MASK_CASES = [(ways, a, b, dirty, ready) for ways in (SC_WAYS, 4 * SC_WAYS)
               for a, b, dirty, ready in product(range(ways), range(ways), (0, 1), (0, 1))]

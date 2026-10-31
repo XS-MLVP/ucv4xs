@@ -2,7 +2,7 @@ from dataclasses import replace
 
 import pytest
 
-from lsqverify.raw.types import SqPtr
+from suites.memblock.lsq.raw.types import SqPtr
 
 
 @pytest.mark.parametrize("lane", range(3))

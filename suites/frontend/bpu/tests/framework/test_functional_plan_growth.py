@@ -6,8 +6,8 @@ from types import SimpleNamespace
 
 import pytest
 from tools import refresh_coverage as staged
-import bpuverify.common.coverage.parallel as matrix_module
-import bpuverify.common.coverage.rtl as native_module
+import suites.frontend.bpu.coverage.parallel as matrix_module
+import suites.frontend.bpu.coverage.rtl as native_module
 import toffee.coverage_report as functional_module
 
 NODE = 'tests/example/test_example.py::test_one'

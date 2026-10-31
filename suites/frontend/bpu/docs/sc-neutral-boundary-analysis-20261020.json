@@ -10,8 +10,8 @@
   "event": "两个不同条件分支共享五家族参数和同一bias特征；在正或负权重边界，两条由原低置信来源取得资格的相反结果同拍返回，应先抵消再保留，而非逐票限幅或用当前置信度取消一票。",
   "legality": "实际执行前缀固定位置1不跳转、位置4跳转；只交换原预测槽0/1与两条分支的关联，不交换执行次序。位置8/12未执行后缀和另一窗口保持。",
   "independent_reference": {
-    "model": "bpuverify/sc/model/neutral_boundary.py",
-    "dependencies": ["dataclasses", "bpuverify.sc.transaction.types"],
+    "model": "sc/model/neutral_boundary.py",
+    "dependencies": ["dataclasses", "suites.frontend.bpu.sc.transaction.types"],
     "method": "显式六位有符号上下界、净票数与阈值闭式公式；不以DUT读值或周期模型状态生成金值。",
     "discrimination": "每个边界先用独立冷原件到达并保持两次；双反馈后用32份fresh反向原件学习。第31和32次的五家族符号、完整定义metadata及阈值共同区分一单位偏置，不能只比较合计方向。"
   },

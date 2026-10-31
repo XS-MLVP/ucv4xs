@@ -3,13 +3,13 @@ from copy import deepcopy
 from types import SimpleNamespace as NS
 import pytest
 from toffee import ScoreboardMismatch
-from bpuverify.mbtb.model.semantic import RetainedEntries,Write,Entry,Target,coordinate,tag
-from bpuverify.bpu.model.main_service import entry_payload
-from bpuverify.bpu.model.main_duplicate_cleanup import Program,IDENTITIES,OVERLAPS,PREPARATIONS,RULES
-from bpuverify.bpu.coverage.main_duplicate_cleanup import Coverage
-from bpuverify.bpu.checker.main_duplicate_cleanup import Checks
+from suites.frontend.bpu.mbtb.model.semantic import RetainedEntries,Write,Entry,Target,coordinate,tag
+from suites.frontend.bpu.bpu.model.main_service import entry_payload
+from suites.frontend.bpu.bpu.model.main_duplicate_cleanup import Program,IDENTITIES,OVERLAPS,PREPARATIONS,RULES
+from suites.frontend.bpu.bpu.coverage.main_duplicate_cleanup import Coverage
+from suites.frontend.bpu.bpu.checker.main_duplicate_cleanup import Checks
 from tests.bpu.scoreboard.test_partial_reuse import transfer
-from bpuverify.bpu.model.selection import Branch,Kind,early,middle,final
+from suites.frontend.bpu.bpu.model.selection import Branch,Kind,early,middle,final
 
 PROGRAMS=tuple(Program(i,o,p) for i in IDENTITIES for o in OVERLAPS for p in PREPARATIONS)
 

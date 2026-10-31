@@ -45,15 +45,19 @@ def setup(project, jobs=16):
                 write(patch_receipt,{'patches':patches,'diff_sha256':
                     digest(git(destination,'diff','HEAD','--binary','--ignore-submodules=all'))})
         # Native library and SWIG wrapper are built together from the same pin.
-        env.update(BUILD_XSPCOMM_SWIG='python',CMAKE_BUILD_PARALLEL_LEVEL=str(jobs),
-                   SETUPTOOLS_SCM_PRETEND_VERSION_FOR_XSPCOMM=project.tools['xcomm']['package_version'])
+        xcomm_pin = project.tools['xcomm']
+        xcomm_distribution = xcomm_pin.get('distribution', 'xspcomm')
+        xcomm_version = xcomm_pin['package_version']
+        env.update(BUILD_XSPCOMM_SWIG='python', CMAKE_BUILD_PARALLEL_LEVEL=str(jobs),
+                   **{f"SETUPTOOLS_SCM_PRETEND_VERSION_FOR_{xcomm_distribution.upper().replace('-', '_')}":
+                      xcomm_version})
         execute([python,'-m','pip','install','--no-build-isolation','--no-deps',sources['xcomm']],env=env,log=log)
         # Picker needs headers/native libraries beside its installed templates.
         xbuild = prefix/'build/xcomm'
         execute(['cmake','-S',sources['xcomm'],'-B',xbuild,'-DCMAKE_BUILD_TYPE=Release',
                  f'-DCMAKE_INSTALL_PREFIX={prefix}','-DBUILD_TESTING=OFF',
-                 '-DSKBUILD_PROJECT_VERSION=0.3.0',
-                 '-DSKBUILD_PROJECT_VERSION_FULL='+project.tools['xcomm']['package_version']],env=env,log=log)
+                 '-DSKBUILD_PROJECT_VERSION='+xcomm_version,
+                 '-DSKBUILD_PROJECT_VERSION_FULL='+xcomm_version],env=env,log=log)
         execute(['cmake','--build',xbuild,'-j',jobs],env=env,log=log)
         execute(['cmake','--install',xbuild],env=env,log=log)
         for name,pin in project.tools['picker']['dependencies'].items():

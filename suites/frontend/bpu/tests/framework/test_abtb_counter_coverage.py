@@ -3,9 +3,9 @@ from copy import deepcopy
 
 import pytest
 
-from bpuverify.common.coverage import rtl as rtl_coverage
-from bpuverify.abtb.coverage.counter import source_index
-from bpuverify.abtb.coverage.counter import source_matrix
+from suites.frontend.bpu.coverage import rtl as rtl_coverage
+from suites.frontend.bpu.abtb.coverage.counter import source_index
+from suites.frontend.bpu.abtb.coverage.counter import source_matrix
 
 
 def block(bank=0,entry_set=0,way=0):

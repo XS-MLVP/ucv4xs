@@ -1,9 +1,8 @@
 """Pure publication controls cannot produce hardware coverage credit."""
 import pytest
 
-from bpuverify.bpu.coverage.main_sibling import Coverage, RULES
-from bpuverify.bpu.model.main_sibling import Program, PHASES, ORIGINS
-
+from suites.frontend.bpu.bpu.coverage.main_sibling import Coverage, RULES
+from suites.frontend.bpu.bpu.model.main_sibling import Program, PHASES, ORIGINS
 
 
 @pytest.mark.parametrize('phase',PHASES)

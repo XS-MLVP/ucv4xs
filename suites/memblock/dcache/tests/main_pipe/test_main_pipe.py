@@ -3,10 +3,10 @@ from __future__ import annotations
 
 import pytest
 
-from dcacheverify.main_pipe.coverage import MainPipeCoverage
-from dcacheverify.load_pipe.model import dcache_index
-from dcacheverify.miss_queue.env import dcache_alias
-from dcacheverify.main_pipe.env import (
+from suites.memblock.dcache.main_pipe.coverage import MainPipeCoverage
+from suites.memblock.dcache.load_pipe.model import dcache_index
+from suites.memblock.dcache.miss_queue.env import dcache_alias
+from suites.memblock.dcache.main_pipe.env import (
     BRANCH,
     BTON,
     BTOB,
@@ -464,7 +464,6 @@ def test_refill_load_and_store_install(mp):
         assert repl["replace_access_set"] == dcache_index(0x6000)
         assert repl["replace_access_way"] == way
         assert not any(snap["miss_req"] for snap in snaps)
-
 
 
 # MP-FP-009 / MP-FP-011

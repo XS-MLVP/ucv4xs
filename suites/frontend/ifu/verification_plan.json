@@ -1,0 +1,704 @@
+{
+  "version": 1,
+  "features": [
+    {
+      "id": "IFU-RVC-001",
+      "component": "RvcExpander",
+      "title": "Full-width instructions pass through unchanged",
+      "description": "An instruction whose low two bits are 11 is already a 32-bit RVI operation. The codec must return the identical word and never report it illegal, so the IFU cannot corrupt or reject ordinary instructions."
+    },
+    {
+      "id": "IFU-RVC-002",
+      "component": "RvcExpander",
+      "title": "Compressed integer operations keep architectural operands",
+      "description": "Compressed immediate, register-register and stack-pointer forms must expand to exactly one RVI instruction with the same destination, source registers and sign-extended immediate. This covers arithmetic, logical, shift and address-generation families used by real code."
+    },
+    {
+      "id": "IFU-RVC-003",
+      "component": "RvcExpander",
+      "title": "Compressed memory accesses address the same bytes",
+      "description": "Compressed loads and stores must produce the RVI width and the architecturally scaled offset, distinguishing sign-extending from zero-extending loads and keeping the stack-relative base register. A wrong offset or width would silently access the wrong memory."
+    },
+    {
+      "id": "IFU-RVC-004",
+      "component": "RvcExpander",
+      "title": "Compressed control transfers reach the same target PC",
+      "description": "Compressed jumps and branches must produce the RVI jump/branch operation with the correct sign-extended byte displacement, condition and link register so that taken and not-taken behaviour is preserved."
+    },
+    {
+      "id": "IFU-RVC-005",
+      "component": "RvcExpander",
+      "title": "Floating-point compressed forms obey FS state",
+      "description": "When the floating-point state is enabled, compressed FP load/store forms expand like their RVI counterparts; when FS is off they must be reported illegal. Integer compressed forms must not change with FS state."
+    },
+    {
+      "id": "IFU-RVC-006",
+      "component": "RvcExpander",
+      "title": "Reserved encodings are rejected, not executed",
+      "description": "Encodings the ISA reserves (zero immediate fields where zero is forbidden, reserved destination registers, reserved quadrant/funct combinations) must raise the illegal signal so the IFU marks an illegal-instruction exception instead of issuing a bogus operation.",
+      "metadata": {
+        "traceability": {
+          "requirement": "RISC-V C/Zcb reserved encodings must raise illegal-instruction; hints must not",
+          "oracle": "model/rvc.py encodes the ISA reservation table independently of the RTL",
+          "observations": [
+            "io_ill",
+            "io_out_bits (only for defined encodings)"
+          ],
+          "controls": [
+            "legal hint 0x6081 stays legal",
+            "defined c.addi4spn expansion compares bit-exact"
+          ],
+          "tests": [
+            "tests/rvc_expander/test_rvc_expander.py::test_reserved_encodings_are_illegal",
+            "tests/rvc_expander/test_rvc_expander.py::test_hint_encodings_remain_legal"
+          ],
+          "residual": "hint expansion bits are allowed to differ from the canonical form"
+        }
+      }
+    },
+    {
+      "id": "IFU-RVC-007",
+      "component": "RvcExpander",
+      "title": "Hint encodings stay legal no-ops",
+      "description": "Compressed hint encodings are permitted by the ISA and must not raise an exception even though a producer may canonicalise their expansion. The decoder must therefore distinguish hints from reserved encodings."
+    },
+    {
+      "id": "IFU-RVC-008",
+      "component": "RvcExpander",
+      "title": "Zcb compressed byte and halfword forms",
+      "description": "The Zcb subset reuses part of the compressed encoding space for byte/halfword loads and stores and for narrow integer extensions. Their offsets, signedness and extension operation must match the architectural definition; reserved subencodings must be rejected."
+    },
+    {
+      "id": "IFU-RVC-009",
+      "component": "RvcExpander",
+      "title": "The codec is stateless",
+      "description": "Expansion depends only on the current input word and FS state. Re-evaluating the same word after unrelated traffic, or alternating inputs, must produce identical results; stale state would make instruction meaning depend on history."
+    },
+    {
+      "id": "IFU-IB-001",
+      "component": "InstrBoundary",
+      "title": "Every slot is classified as an instruction start, continuation or carry-in",
+      "description": "A fetch window is a stream of 16-bit slots. The compressed map gives the width of each instruction that starts in the window, and a carry-in marks slot 0 as the second half of an instruction from the previous window. The module must emit exactly one valid instruction start per architectural instruction, including the carried instruction, and never invent or drop a start."
+    },
+    {
+      "id": "IFU-IB-002",
+      "component": "InstrBoundary",
+      "title": "Instruction coordinates identify its bytes and owning block",
+      "description": "Each start must carry the compressed flag, block ownership, block-relative start/end offsets and cache-line index of its bytes. Later stages use these fields to select the right half of the right fetch block and to compute the PC, so a swapped offset silently fetches the wrong bytes."
+    },
+    {
+      "id": "IFU-IB-003",
+      "component": "InstrBoundary",
+      "title": "The end mask counts instructions over an arbitrary prefix",
+      "description": "The IFU counts instructions in a prefix of the window when an exception or a taken CFI cuts the fetch short. The end mask must therefore mark the last slot of every instruction so that a popcount over the selected range equals the architectural instruction count in that range."
+    },
+    {
+      "id": "IFU-IB-004",
+      "component": "InstrBoundary",
+      "title": "A window ending inside a full-width instruction is reported",
+      "description": "When the fetch window stops after the first half of a 32-bit instruction, the next fetch must resume the second half rather than decode a new instruction. The module reports this separately for the first fetch block's end position and for the combined window end position."
+    },
+    {
+      "id": "IFU-IB-005",
+      "component": "InstrBoundary",
+      "title": "A full-width instruction spanning the block boundary is one instruction",
+      "description": "When a fall-through first block ends immediately after the first half of a full-width instruction, the second block supplies its upper half. The module must mark that start as cross-block so the IFU assembles the halves instead of decoding two unrelated instructions; a compressed or taken end is already complete and must not be marked.",
+      "metadata": {
+        "traceability": {
+          "requirement": "a 32-bit instruction whose halves come from two fetch blocks is one instruction",
+          "oracle": "model/boundary.py slot lattice plus the cross-block condition",
+          "observations": [
+            "isCrossBlockInstr",
+            "valid",
+            "isRvc",
+            "start/end offsets"
+          ],
+          "controls": [
+            "taken first block is complete and must not be marked cross-block",
+            "compressed slot at the block end must not be marked"
+          ],
+          "tests": [
+            "tests/instr_boundary/test_instr_boundary.py::test_cross_block_full_width_continuation"
+          ],
+          "residual": "slot 31 can never be cross-block; port pruned and proven constant"
+        }
+      }
+    },
+    {
+      "id": "IFU-IB-006",
+      "component": "InstrBoundary",
+      "title": "The second block owns its slots with its own coordinates",
+      "description": "Slots beyond the first block's range belong to the second fetch block. Their block-select bit, block-relative offsets and line indices must be derived from the second block's own start, not continue the first block's numbering."
+    },
+    {
+      "id": "IFU-PC-001",
+      "component": "PredChecker",
+      "title": "Only control-flow instructions may be predicted taken",
+      "description": "The predictor's taken bit is a promise about the instruction class: direct jumps, indirect jumps and returns must be predicted taken, conditional branches may be either, and non-control-flow instructions must not be predicted taken. A violation is precisely the condition that must start a redirect, so the checker is the guard that keeps speculative fetch on the architectural path."
+    },
+    {
+      "id": "IFU-PC-002",
+      "component": "PredChecker",
+      "title": "Legal predictions pass the whole window",
+      "description": "When no lane violates the class contract, every valid lane must remain enqueue-eligible and the checker must not redirect. No innocent instruction may be dropped because a later lane exists."
+    },
+    {
+      "id": "IFU-PC-003",
+      "component": "PredChecker",
+      "title": "The first violation truncates the enqueue window",
+      "description": "Speculation after a misprediction is not architecturally executed. The checker must keep valid instructions up to and including the fault lane and prevent every later valid lane from being enqueued, even if those lanes also contain faults."
+    },
+    {
+      "id": "IFU-PC-004",
+      "component": "PredChecker",
+      "title": "Redirect target is the architectural next PC",
+      "description": "For a direct jump or conditional branch the correct target can be computed from the PC and displacement. For an indirect jump or return this stage cannot know the target, so it must redirect to the sequential PC instead of inventing one. The sequential step is two bytes for a compressed or invalid lane and four bytes otherwise.",
+      "metadata": {
+        "traceability": {
+          "requirement": "redirect target is the architectural next PC: PC+displacement for direct/conditional, sequential otherwise",
+          "oracle": "model/pred_checker.py next-PC rule over the 51-bit GuardedPc",
+          "observations": [
+            "checkerRedirect.target",
+            "taken",
+            "branch_type"
+          ],
+          "controls": [
+            "indirect/return fault redirects to PC+4, not to the jump displacement"
+          ],
+          "tests": [
+            "tests/pred_checker/test_pred_checker.py::test_indirect_and_return_faults_redirect_sequentially",
+            "tests/pred_checker/test_pred_checker.py::test_target_arithmetic_spans_the_full_guarded_pc"
+          ],
+          "residual": "target width 51 is observed; the IFU handoff of pc is 50 bits (IFU-ENV-005)"
+        }
+      }
+    },
+    {
+      "id": "IFU-PC-005",
+      "component": "PredChecker",
+      "title": "Redirect carries the fault lane's classification and coordinates",
+      "description": "The FTQ needs to know whether the redirect is taken, whether it was an invalid-taken or non-CFI-taken fault, the original branch attribute, RVC status, block ownership, end offset and cross-block marker. An invalid-taken lane has no meaningful branch attribute and must be reported as such."
+    },
+    {
+      "id": "IFU-PC-006",
+      "component": "PredChecker",
+      "title": "Fetch order fixes fault priority",
+      "description": "When several lanes violate the contract, only the earliest one can be the first misprediction. The reported target and classification must come from that lane, not from a later or more specific-looking fault."
+    },
+    {
+      "id": "IFU-PC-007",
+      "component": "PredChecker",
+      "title": "Redirect is a response, not a sticky state",
+      "description": "A redirect is produced for a request that was valid one cycle earlier and must disappear when the request is withdrawn. Back-to-back requests must each produce their own redirect; stale payload must never leak into an idle cycle."
+    },
+    {
+      "id": "IFU-UC-001",
+      "component": "IfuUncacheUnit",
+      "title": "Idle accepts one request and captures its address and type",
+      "description": "The unit has a single outstanding-request slot. While idle it must advertise ready and, on a valid request, capture the physical address and memory type so later phases never depend on the producer holding those signals. Requests offered while the unit is busy must not disturb the captured values."
+    },
+    {
+      "id": "IFU-UC-002",
+      "component": "IfuUncacheUnit",
+      "title": "Non-idempotent accesses wait for older instructions",
+      "description": "MMIO accesses and PBMT=IO pages are not idempotent, so they may not overtake instructions still in the pipeline. They must wait until the fetch is the first instruction or the machine reports no older instructions, then proceed. Ordinary non-cacheable main memory (PBMT=NC or PMA) may issue without that wait.",
+      "metadata": {
+        "traceability": {
+          "requirement": "non-idempotent (MMIO / PBMT=IO) uncached reads wait for older instructions; NC/PMA do not",
+          "oracle": "model/uncache.py four-phase state machine and memory-order rule",
+          "observations": [
+            "io_toUncache_req_valid",
+            "phase-held address/type"
+          ],
+          "controls": [
+            "PBMT=NC request issues immediately"
+          ],
+          "tests": [
+            "tests/uncache_unit/test_uncache_unit.py::test_non_idempotent_accesses_wait_for_commit",
+            "tests/uncache_unit/test_uncache_unit.py::test_ordinary_non_cacheable_pages_do_not_wait"
+          ],
+          "residual": "wait release is verified only through isFirstInstr/emptyAfter; upstream may add cases"
+        }
+      }
+    },
+    {
+      "id": "IFU-UC-003",
+      "component": "IfuUncacheUnit",
+      "title": "The request is held until the bus accepts it",
+      "description": "A non-cacheable read may be stalled by bus backpressure or by the IFU being unable to accept a response. The request address and type must remain stable and the request must not be dropped; it is launched only on a real bus handshake."
+    },
+    {
+      "id": "IFU-UC-004",
+      "component": "IfuUncacheUnit",
+      "title": "Bus attributes describe the memory type",
+      "description": "The outgoing request must tell the interconnect whether this is an MMIO versus main-memory access and whether the page is non-cacheable, derived from the captured PMP/MMIO and PBMT information rather than from later inputs."
+    },
+    {
+      "id": "IFU-UC-005",
+      "component": "IfuUncacheUnit",
+      "title": "Bus completion becomes read data and an instruction exception",
+      "description": "One accepted bus response supplies the instruction data. A corrupted response is a hardware-error exception, a denied response is an access-fault exception, and a clean response has no exception. Need-resend is preserved for the IFU to finish a cross-page instruction."
+    },
+    {
+      "id": "IFU-UC-006",
+      "component": "IfuUncacheUnit",
+      "title": "Completion is one pulse and the unit returns to idle",
+      "description": "The IFU consumes exactly one completion event per request. The response must be advertised for one cycle with stable data/exception, then the unit must return to idle and advertise ready again, including in the completion cycle itself."
+    },
+    {
+      "id": "IFU-UC-007",
+      "component": "IfuUncacheUnit",
+      "title": "Flush aborts every phase and late responses are discarded",
+      "description": "A pipeline flush cancels the outstanding uncached fetch in any phase, clears the completion pulse and payload, and returns to idle. A bus response arriving after the abort must be ignored instead of producing an instruction."
+    },
+    {
+      "id": "IFU-UC-008",
+      "component": "IfuUncacheUnit",
+      "title": "The single request slot is exclusive",
+      "description": "Only one uncached fetch may be in flight. The unit must not accept a second request until the first completes, and must accept a new request immediately after completion rather than idling for an extra cycle."
+    },
+    {
+      "id": "IFU-TR-001",
+      "component": "FrontendTrigger",
+      "title": "Configuration is per trigger index and updates atomically",
+      "description": "The frontend holds one configuration register per trigger. A CSR update names one index and must replace only that trigger's match type, select/timing/chain bits, action and tdata2; other triggers keep their state. The new configuration becomes visible on the following cycle, so a multi-field update can never be observed partially."
+    },
+    {
+      "id": "IFU-TR-002",
+      "component": "FrontendTrigger",
+      "title": "PC matching compares the full 64-bit trigger value and the configured relation",
+      "description": "A lane matches when its PC equals, is greater-or-equal, or is less-than tdata2 according to the supported Sdtrig match mode.  tdata2 is a 64-bit RW CSR field and the PC is a 50-bit address zero-extended to that width, so the comparison must consider all 64 bits: a trigger value above the implemented address space can never equal a fetch PC, and every implemented PC is less than such a value.  Truncating tdata2 to the address width would alias out-of-range values onto real addresses and invert the less-than relation.  Unsupported match modes must not match.",
+      "metadata": {
+        "traceability": {
+          "requirement": "Sdtrig PC match: PC (50-bit address, zero-extended) compared against the full 64-bit tdata2 field",
+          "oracle": "model/trigger.py compare(): PC masked to 50 bits, tdata2 kept at 64 bits",
+          "observations": [
+            "io_triggered[lane] for all 36 lanes",
+            "tdata2 CSR readback is outside this DUT's boundary"
+          ],
+          "controls": [
+            "in-range EQ/GE/LT still pass",
+            "carry sweep across 128-byte boundaries",
+            "disabled trigger ignores a full 64-bit tdata2"
+          ],
+          "tests": [
+            "tests/frontend_trigger/test_frontend_trigger.py::test_equal_match_raises_configured_action",
+            "tests/frontend_trigger/test_frontend_trigger.py::test_tdata2_above_the_address_space_cannot_equal_a_fetch_pc",
+            "tests/frontend_trigger/test_frontend_trigger.py::test_tdata2_above_the_address_space_is_greater_for_less_than"
+          ],
+          "residual": "R-13: RTL compares only tdata2[49:0]; the two out-of-range tests currently FAIL"
+        }
+      }
+    },
+    {
+      "id": "IFU-TR-003",
+      "component": "FrontendTrigger",
+      "title": "Enable, select and debug mode gate matching",
+      "description": "A trigger participates only when its CSR enable bit is set, when it is not marked select (this unit implements PC matching, not data matching), and when the hart is not already in debug mode. Clearing and restoring any gate must take effect without reconfiguring the trigger."
+    },
+    {
+      "id": "IFU-TR-004",
+      "component": "FrontendTrigger",
+      "title": "A chained trigger arms the next trigger only when both hit with equal timing",
+      "description": "For the legal pairwise chain, a trigger with chain=1 does not fire itself; it enables the immediately following trigger to fire only if both matched and their timing bits agree. A broken link or an unconfigured partner must suppress the terminal action, while an independent unchained trigger on the same PC still fires.",
+      "metadata": {
+        "traceability": {
+          "requirement": "a chained trigger arms its successor instead of firing itself",
+          "oracle": "model/trigger.py Sdtrig pairwise-chain rule",
+          "observations": [
+            "io_triggered[lane]"
+          ],
+          "controls": [
+            "unchained trigger on the same PC still fires"
+          ],
+          "tests": [
+            "tests/frontend_trigger/test_frontend_trigger.py::test_pairwise_chain_arms_the_next_trigger"
+          ],
+          "residual": "timing is generated as before-execution for all triggers; no timing port exists"
+        }
+      }
+    },
+    {
+      "id": "IFU-TR-005",
+      "component": "FrontendTrigger",
+      "title": "Action priority is debug over breakpoint over none",
+      "description": "When several triggers fire on one lane, entering debug mode wins, then a breakpoint exception if the CSR permits it, otherwise no action. Unsupported trace actions must not be turned into a breakpoint."
+    },
+    {
+      "id": "IFU-TR-006",
+      "component": "FrontendTrigger",
+      "title": "Actions are resolved per fetch lane",
+      "description": "Each lane's action vector must depend only on the triggers that match that lane's PC. A hit on one lane must not leak an action onto neighbouring lanes, and two triggers configured for different PCs must produce two independent marked lanes."
+    },
+    {
+      "id": "IFU-TR-007",
+      "component": "FrontendTrigger",
+      "title": "Reset restores the unconfigured disabled state",
+      "description": "After reset no trigger may fire, even if an enable input is asserted: the configuration and enable registers must both be empty until reprogrammed. Reprogramming after reset must work normally."
+    },
+    {
+      "id": "IFU-PA-001",
+      "component": "IfuPerfAnalysis",
+      "title": "Top-down reasons travel with the three-stage fetch pipeline",
+      "description": "A reason snapshot entering from the FTQ must appear at the output exactly after the three frontend stages, with the same reason bits set and no unrelated bits. This keeps the blame attached to the instruction that actually experienced the bubble."
+    },
+    {
+      "id": "IFU-PA-002",
+      "component": "IfuPerfAnalysis",
+      "title": "I-cache and I-TLB miss bubbles are attributed at the waiting stage",
+      "description": "When the ICache reports a miss bubble or the ITLB reports an address-translation bubble, the reason must be injected into the stage that waited and then travel to the output, rather than being attributed to the later redirect."
+    },
+    {
+      "id": "IFU-PA-003",
+      "component": "IfuPerfAnalysis",
+      "title": "A write-back redirect blames a BTB miss across the in-flight window",
+      "description": "A frontend write-back redirect caused by the predecoder must mark a BTB-miss reason in every in-flight stage, so the report lasts for the pipeline depth instead of a single cycle."
+    },
+    {
+      "id": "IFU-PA-004",
+      "component": "IfuPerfAnalysis",
+      "title": "Backend control-flow redirect overrides frontend predictor blame",
+      "description": "When the backend supplies a control-flow redirect and its predictor blame, the output must report that blame (TAGE, ITTAGE, RAS; SC/BTB are tied off in this configuration) in place of the frontend reason, for all stages of the in-flight window."
+    },
+    {
+      "id": "IFU-PA-005",
+      "component": "IfuPerfAnalysis",
+      "title": "Memory-violation and other redirects get distinct blame",
+      "description": "A backend memory-violation redirect must set the memory-violation reason, while any other backend redirect must set the other-redirect reason. The two classes must never be conflated."
+    },
+    {
+      "id": "IFU-PA-006",
+      "component": "IfuPerfAnalysis",
+      "title": "Concurrent annotations follow the documented priority",
+      "description": "A write-back redirect's BTB blame takes precedence over the backend control-flow override for the BTB bit they share, while a backend override replaces only the predictor-class bits it names and leaves unrelated in-flight reasons intact.",
+      "metadata": {
+        "traceability": {
+          "requirement": "write-back BTB blame coexists with backend predictor blame; override replaces only named bits",
+          "oracle": "model/perf.py documented annotation order",
+          "observations": [
+            "io_topdownOut_topdown_reasons[*]"
+          ],
+          "controls": [
+            "backend-only override keeps an unrelated in-flight reason"
+          ],
+          "tests": [
+            "tests/perf_analysis/test_perf_analysis.py::test_writeback_btb_blame_wins_over_backend_override",
+            "tests/perf_analysis/test_perf_analysis.py::test_backend_override_replaces_stage_blame_not_other_reasons"
+          ],
+          "residual": "68 of 76 reason bits have no driving port in this configuration"
+        }
+      }
+    },
+    {
+      "id": "IFU-PA-007",
+      "component": "IfuPerfAnalysis",
+      "title": "Reasons age out with their pipeline stage",
+      "description": "Reason snapshots are replaced by newer stages, not accumulated. A bubble that is no longer in flight must disappear after three cycles; a stale reason that lingers would corrupt later top-down accounting."
+    },
+    {
+      "id": "IFU-TOP-001",
+      "component": "Ifu",
+      "title": "The fetch request handshake accepts and advances one window at a time",
+      "description": "The IFU may accept a request from the ICache only when the first stage can absorb it; an accepted window must advance through the pipeline exactly once, without being silently dropped or duplicated. This is the root contract that makes every later instruction-stream check meaningful."
+    },
+    {
+      "id": "IFU-TOP-002",
+      "component": "Ifu",
+      "title": "The enqueued instruction stream preserves the fetched program",
+      "description": "For a fetch window containing mixed 16-bit and 32-bit instructions, including an instruction whose two halves come from two fetch blocks, the IBuffer beat must carry the correct instruction words, expanded RVC operations, RVC flags, FTQ ownership, end offsets and predicted-taken flags. The folded PC is checked as the observable PC evidence at this port."
+    },
+    {
+      "id": "IFU-TOP-003",
+      "component": "Ifu",
+      "title": "An illegal compressed instruction raises a localized exception",
+      "description": "A compressed encoding the decoder rejects must not be issued as a fabricated operation. The IFU must keep the original word, raise the illegal-instruction exception and set the exception mask on the lane that carries the bad instruction."
+    },
+    {
+      "id": "IFU-TOP-004",
+      "component": "Ifu",
+      "title": "Enqueue alignment follows the IBuffer write-bank pointer",
+      "description": "The IBuffer writes four banks per cycle, so the IFU pre-aligns the instruction window by the low bits of the write pointer and inserts leading bubbles. A second fetch must therefore shift by the number of instructions enqueued by the first, without losing or reordering instructions."
+    },
+    {
+      "id": "IFU-TOP-005",
+      "component": "Ifu",
+      "title": "A misprediction truncates enqueue and redirects the FTQ",
+      "description": "When the predecode checker finds that the predictor was wrong, the IFU must stop enqueueing after the faulting instruction and send the FTQ a redirect with the architectural next PC, taken flag, branch attribute, FTQ index and end offset. The redirect is how the fetched-but-wrong trail is discarded.",
+      "metadata": {
+        "traceability": {
+          "requirement": "misprediction truncates enqueue and redirects FTQ with the correct next PC and attributes",
+          "oracle": "model/fetch.py composes boundary/pred-checker/RVC models into the expected beat and redirect",
+          "observations": [
+            "toIBuffer enqEnable/instrs/isRvc/endOffset",
+            "toFtq wbRedirect valid/pc/target/taken/attribute"
+          ],
+          "controls": [
+            "legal conditional branch does not redirect"
+          ],
+          "tests": [
+            "tests/ifu/test_ifu_fetch.py::test_unpredicted_jump_truncates_enqueue_and_redirects",
+            "tests/ifu/test_ifu_fetch.py::test_control_flow_classification_at_every_instruction_index"
+          ],
+          "residual": "all tested fetch PCs have guard=0; see IFU-ENV-005"
+        }
+      }
+    },
+    {
+      "id": "IFU-TOP-006",
+      "component": "Ifu",
+      "title": "IBuffer backpressure preserves the beat",
+      "description": "When the IBuffer cannot accept, the IBuffer beat (payload and valid) must remain stable for as long as backpressure lasts, and release exactly one beat when ready returns. Losing or changing the beat would enqueue a different instruction stream than was checked."
+    },
+    {
+      "id": "IFU-TOP-007",
+      "component": "Ifu",
+      "title": "A backend redirect discards the in-flight fetch",
+      "description": "A backend redirect invalidates speculative fetch work. A fetch accepted before the redirect must not reach the IBuffer afterwards, and the pipeline must be ready to accept the redirected fetch."
+    },
+    {
+      "id": "IFU-TOP-008",
+      "component": "Ifu",
+      "title": "ICache exception metadata and GPF address write-back",
+      "description": "A page fault, guest page fault or access fault reported with the fetch data must be attached to the correct instruction lane, and a guest page fault must also write its guest physical address and FTQ index to the backend GPA memory. The exception must not be attached to unrelated lanes."
+    },
+    {
+      "id": "IFU-TOP-009",
+      "component": "Ifu",
+      "title": "Uncache fetches deliver one instruction through the uncache channel",
+      "description": "A fetch marked uncacheable must leave the cache pipeline, issue the correct uncached request attributes, wait for the response, expand the returned instruction, attach any bus exception, and redirect the FTQ sequentially. A cross-page resend must preserve the completed half."
+    },
+    {
+      "id": "IFU-TOP-010",
+      "component": "Ifu",
+      "title": "Trigger actions travel with the enqueued instruction",
+      "description": "A configured frontend PC trigger must mark exactly the instruction at the matching PC in the IBuffer beat and leave every other lane with no action, so the backend can raise the breakpoint/debug event for the right instruction."
+    },
+    {
+      "id": "IFU-TOP-011",
+      "component": "Ifu",
+      "title": "An instruction split across two fetch windows is assembled exactly once",
+      "description": "A 32-bit instruction can straddle the 64-byte fetch-block boundary. The first window delivers only its low half and must not enqueue a truncated instruction; the IFU records the original PC and low half. The following window begins with the high half and must enqueue exactly one assembled instruction with the original PC, not two halves, so the backend never sees a corrupted encoding or an extra instruction.",
+      "metadata": {
+        "traceability": {
+          "requirement": "a 32-bit instruction split across two fetch windows is enqueued exactly once",
+          "oracle": "model/fetch.py truncation + carry-word assembly",
+          "observations": [
+            "first window enqEnable excludes the half",
+            "second window lane 3 instruction word and PC"
+          ],
+          "controls": [
+            "RVC at the window end is complete and enqueued in the first window"
+          ],
+          "tests": [
+            "tests/ifu/test_ifu_fetch.py::test_instruction_split_across_two_fetch_windows_is_assembled"
+          ],
+          "residual": "only cross-block split at the last slot is covered"
+        }
+      }
+    },
+    {
+      "id": "IFU-ENV-001",
+      "component": "IfuVerify",
+      "title": "Pruned ports are explicit audited claims, never silent zeros",
+      "description": "Firtool removes signals it proves constant. Reading such a port through a default value would hide a wiring mistake, so the harness refuses defaulted reads, refuses to declare an existing port pruned, and records every declared constant. The audit checks the three pruned ports against the design rule that removes them.",
+      "metadata": {
+        "domain": "environment"
+      }
+    },
+    {
+      "id": "IFU-ENV-002",
+      "component": "IfuVerify",
+      "title": "Checkers reject wrong expectations and wrong algorithms",
+      "description": "Every DUT-level comparison is paired with two controls on real observations: a deliberately altered expected value or observation snapshot must raise, and a complete but wrong algorithm (missing RVC register remap, one instruction per slot, accept-all-taken, wait-for-all-uncached) must be rejected while the correct model passes. This separates a live, discriminating oracle from a tautological checker and names the layer (stimulus, oracle, observation) a failure belongs to.",
+      "metadata": {
+        "domain": "environment"
+      }
+    },
+    {
+      "id": "IFU-ENV-003",
+      "component": "IfuVerify",
+      "title": "Functional points and tests are bidirectionally traceable",
+      "description": "Every declared functional point must be referenced by at least one executable test, every test must reference a declared point, and each component must carry a complete implementation record (requirement, independent oracle, observations, controls, tests, residual). This prevents both orphan tests and unimplemented points.",
+      "metadata": {
+        "domain": "environment"
+      }
+    },
+    {
+      "id": "IFU-ENV-004",
+      "component": "IfuVerify",
+      "title": "Illegal stimulus is rejected at the fixture boundary",
+      "description": "Fetch windows are built from architectural instructions with fixed units (halfword-encoded GuardedPc ports, byte PC in the model). Misaligned PCs, inconsistent compressed flags, out-of-range immediates, overfull windows and an impossible carry-in must raise before reaching the DUT, so a failing test cannot be explained by an illegal input.",
+      "metadata": {
+        "domain": "environment"
+      }
+    },
+    {
+      "id": "IFU-ENV-005",
+      "component": "IfuVerify",
+      "title": "Baseline interface handoff limits are recorded and probed",
+      "description": "A functional point is only verified to the extent the observation can express it. The IFU redirect PC port on this baseline is 50 bits while the internal PC is a 51-bit GuardedPc, so a guarded (overflow) PC cannot be handed to the FTQ. A probe records the exact truncation and the upstream commit that later widened the port; the hardware pass rate excludes this limit.",
+      "metadata": {
+        "domain": "environment"
+      }
+    }
+  ],
+  "residuals": [
+    {
+      "id": "R-01",
+      "behavior": "各 DUT 的 `ENABLE_INITIAL_REG_` 初始化块复位 else 臂",
+      "category": "structural",
+      "evidence": "初始化块在时刻 0 复位必为高；七个 DUT 同形，行覆盖 100%",
+      "owner": "验证环境",
+      "next_action": "不适用",
+      "blocking": false,
+      "acceptance": "accepted-limited",
+      "features": []
+    },
+    {
+      "id": "R-02",
+      "behavior": "`RvcExpander` 的 `io_out_s_load_opc[5:6]` 从不跳变",
+      "category": "structural",
+      "evidence": "选择子只取 7'h3/7'h1F，两值 bit5/6 相同；负对照证明其余位会比较",
+      "owner": "验证环境",
+      "next_action": "不适用",
+      "blocking": false,
+      "acceptance": "accepted-limited",
+      "features": []
+    },
+    {
+      "id": "R-03",
+      "behavior": "`InstrBoundary` 槽 0 blockSel、低 lane 偏移高位、slot31 cross 端口删除",
+      "category": "structural",
+      "evidence": "槽 0 必属第一块；5 位偏移对低 lane 高位恒 0；模型对每个 split/起点扫描证明 slot31 恒 0",
+      "owner": "验证环境",
+      "next_action": "不适用",
+      "blocking": false,
+      "acceptance": "accepted-limited",
+      "features": []
+    },
+    {
+      "id": "R-04",
+      "behavior": "`PredChecker` lane35 PC 的 3 个数据位、lane34 cross 输入端口删除",
+      "category": "structural",
+      "evidence": "lane35 无指令端口；shift=3 时 lane34 只对应压缩 index 31，模型扫描证明恒 0 且 lane33 可为 1",
+      "owner": "验证环境",
+      "next_action": "不适用",
+      "blocking": false,
+      "acceptance": "accepted-limited",
+      "features": []
+    },
+    {
+      "id": "R-05",
+      "behavior": "`Ifu` 第 36 入队 lane 恒 0、lane 0 blockSel 臂",
+      "category": "structural",
+      "evidence": "IFU 显式把对齐填充 lane 置 0；入队掩码 bit35 恒 0",
+      "owner": "验证环境",
+      "next_action": "不适用",
+      "blocking": false,
+      "acceptance": "accepted-limited",
+      "features": []
+    },
+    {
+      "id": "R-06",
+      "behavior": "逐 lane PC/数据位、`toIBuffer.topdownInfo` 部分理由位的双向 toggle",
+      "category": "coverage-limit",
+      "evidence": "覆盖报告列出未跳变位；值比较已覆盖语义，toggle 是度量而非行为",
+      "owner": "验证环境",
+      "next_action": "若要求 100% toggle：按 lane 位扫描 + 理由位注入；当前不阻塞",
+      "blocking": false,
+      "acceptance": "accepted-limited",
+      "features": [
+        "IFU-TOP-002"
+      ]
+    },
+    {
+      "id": "R-07",
+      "behavior": "`IfuPerfAnalysis` 76 个理由位中 66 个无驱动端口",
+      "category": "coverage-limit",
+      "evidence": "端口只暴露 10 个理由位；可达位已 100% 覆盖",
+      "owner": "验证环境",
+      "next_action": "基线改变时重评",
+      "blocking": false,
+      "acceptance": "accepted-limited",
+      "features": [
+        "IFU-PA-006"
+      ]
+    },
+    {
+      "id": "R-08",
+      "behavior": "`toFtq.wbRedirect.pc` 只有 50 位，`GuardedPc` 的 guard 位无法交接",
+      "category": "out-of-domain",
+      "evidence": "探测：输入 0x7FF_FFFF_FFFF_FE，输出 0x3FF_FFFF_FFFF_FE；同拍 51 位 target 正确；本层端口无法表达正确值",
+      "owner": "FTQ / 基线升级",
+      "next_action": "升级基线后端口应为 51 位，测试会因宽度断言失败并强制重判",
+      "blocking": false,
+      "acceptance": "accepted-limited",
+      "features": [
+        "IFU-ENV-005"
+      ]
+    },
+    {
+      "id": "R-09",
+      "behavior": "跨窗口 carry 续取只验证了窗口末尾一种位置",
+      "category": "unproven-scope",
+      "evidence": "split 1..30 已全扫，但 carry 位置/指令类别组合只抽样",
+      "owner": "验证环境",
+      "next_action": "随机化 carry 位置与指令类别；当前不阻塞",
+      "blocking": false,
+      "acceptance": "accepted-limited",
+      "features": [
+        "IFU-TOP-011"
+      ]
+    },
+    {
+      "id": "R-10",
+      "behavior": "`frontend/ftq`、`frontend/icache` 输入侧未做变更复核",
+      "category": "unproven-scope",
+      "evidence": "本轮只核对 `frontend/ifu` 与直接交接（Bundles、IfuRedirectReceiver）",
+      "owner": "验证环境",
+      "next_action": "下一轮按同方法查询并记录",
+      "blocking": false,
+      "acceptance": "accepted-limited",
+      "features": []
+    },
+    {
+      "id": "R-11",
+      "behavior": "`isBackendException`/`hasSatpFlush` 的语义消费",
+      "category": "out-of-domain",
+      "evidence": "IFU 逐拍转发已验证（三组定向 + check_beat 每拍比较）；消费在 IBuffer/后端（`satpFlushFirstFetchFault`）",
+      "owner": "IBuffer / 后端",
+      "next_action": "消费侧用例由 IBuffer 工程承接；本层不重复验证",
+      "blocking": false,
+      "acceptance": "accepted-limited",
+      "features": [
+        "IFU-TOP-008"
+      ]
+    },
+    {
+      "id": "R-12",
+      "behavior": "`toIBuffer.pc`/`isLastInFtqEntry`/`prevIBufEnqPtr` 未导出",
+      "category": "observation-limitation",
+      "evidence": "端口在本基线不存在；PC 语义经 foldpc/指令字/重定向间接覆盖",
+      "owner": "验证环境",
+      "next_action": "需要导出点时补直接观察，或用允许的间接性质并说明遗漏",
+      "blocking": false,
+      "acceptance": "accepted-limited",
+      "features": [
+        "IFU-TOP-002"
+      ]
+    },
+    {
+      "id": "R-13",
+      "behavior": "`FrontendTrigger` 只比较 `tdata2[49:0]`，而 CSR 暴露 `RW(63,0)` 的 64 位字段",
+      "category": "defect",
+      "evidence": "两条定向用例 FAIL：tdata2=2^50+pc 的 EQ 在 lane10 命中；tdata2=2^50 的 LT 36 lane 全不命中。复现见 docs/bugs/frontend-trigger-tdata2-width.md",
+      "owner": "FrontendTrigger / CSR",
+      "next_action": "全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS",
+      "blocking": true,
+      "acceptance": "open",
+      "features": [
+        "IFU-TR-002"
+      ]
+    }
+  ]
+}

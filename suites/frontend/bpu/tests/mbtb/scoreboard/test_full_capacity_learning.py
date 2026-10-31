@@ -5,13 +5,13 @@ from types import SimpleNamespace as NS
 
 import pytest
 from toffee import ScoreboardMismatch, TransferState
-from bpuverify.mbtb.checker.full_capacity_learning import FullCapacityChecks
-from bpuverify.mbtb.coverage.full_capacity_learning import FullCapacityCoverage
-from bpuverify.mbtb.env.full_capacity_learning import planned_payload, observed_payload
-from bpuverify.mbtb.model.full_capacity_learning import FullCapacityProgram, MODES, ORDERS, PC, NEIGHBOR, RULES
-from bpuverify.mbtb.model.replacement import mbtb_replacement_geometry
-from bpuverify.mbtb.model.semantic import Source, Feedback, Branch
-from bpuverify.mbtb.transaction.types import MbtbPrediction, MbtbEntry, MbtbLookup, MbtbBatchTraining, MbtbBranchFeedback
+from suites.frontend.bpu.mbtb.checker.full_capacity_learning import FullCapacityChecks
+from suites.frontend.bpu.mbtb.coverage.full_capacity_learning import FullCapacityCoverage
+from suites.frontend.bpu.mbtb.env.full_capacity_learning import planned_payload, observed_payload
+from suites.frontend.bpu.mbtb.model.full_capacity_learning import FullCapacityProgram, MODES, ORDERS, PC, NEIGHBOR, RULES
+from suites.frontend.bpu.mbtb.model.replacement import mbtb_replacement_geometry
+from suites.frontend.bpu.mbtb.model.semantic import Source, Feedback, Branch
+from suites.frontend.bpu.mbtb.transaction.types import MbtbPrediction, MbtbEntry, MbtbLookup, MbtbBatchTraining, MbtbBranchFeedback
 
 
 def prediction(program, stage, owner):
@@ -219,7 +219,7 @@ def test_lost_recency_or_foreign_neighbor_touch_cannot_preserve_the_wrong_old_re
 
 
 def test_v2_schema_retains_all_36_original_obligations_and_keeps_failed_relation_separate():
-    from bpuverify.mbtb.coverage.full_capacity_learning import obligation
+    from suites.frontend.bpu.mbtb.coverage.full_capacity_learning import obligation
     c = FullCapacityCoverage('adjacent', 'forward', position_relation='new-position')
     for rule in RULES:
         c.record('reached', rule)

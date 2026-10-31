@@ -8,16 +8,16 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.abtb.model.semantic import Entry, Read, Frame, Recency
-from bpuverify.bpu.checker.ahead_working_set import AheadWorkingSetChecks
-from bpuverify.bpu.coverage.ahead_working_set import AheadWorkingSetCoverage
-from bpuverify.bpu.model.ahead_working_set import (SIZES, KINDS, LIFETIMES, AheadWorkingSetProgram,
+from suites.frontend.bpu.abtb.model.semantic import Entry, Read, Frame, Recency
+from suites.frontend.bpu.bpu.checker.ahead_working_set import AheadWorkingSetChecks
+from suites.frontend.bpu.bpu.coverage.ahead_working_set import AheadWorkingSetCoverage
+from suites.frontend.bpu.bpu.model.ahead_working_set import (SIZES, KINDS, LIFETIMES, AheadWorkingSetProgram,
     expected_branch, semantic_history, strong_counter)
-from bpuverify.bpu.model.abtb.alias import mainbtb_route
-from bpuverify.bpu.model.path_history import Checkpoint
-from bpuverify.bpu.model.selection import Branch, Choice, Kind, StackAction
-from bpuverify.mbtb.model.semantic import MbtbReference
-from bpuverify.bpu.model.ahead_working_set import PrefixWorkingSetProgram,PREFIX_PROFILES
+from suites.frontend.bpu.bpu.model.abtb.alias import mainbtb_route
+from suites.frontend.bpu.bpu.model.path_history import Checkpoint
+from suites.frontend.bpu.bpu.model.selection import Branch, Choice, Kind, StackAction
+from suites.frontend.bpu.mbtb.model.semantic import MbtbReference
+from suites.frontend.bpu.bpu.model.ahead_working_set import PrefixWorkingSetProgram,PREFIX_PROFILES
 
 
 @pytest.mark.parametrize('size', tuple(SIZES))
@@ -68,7 +68,7 @@ def test_selective_working_set_prefix_roundtrip_is_owned_by_real_instruction_eve
 
 @pytest.mark.parametrize('profile',PREFIX_PROFILES)
 def test_prefix_program_has_two_distinct_targets_and_real_predecessors_without_physical_sweep(profile):
-    from bpuverify.bpu.model.phr.model import path_hash
+    from suites.frontend.bpu.bpu.model.phr.model import path_hash
     p=PrefixWorkingSetProgram(profile)
     assert path_hash(p.initial_pc,p.initial_pc)==0
     assert len(p.selected)==3 and len(p.order)==6 and len(set(p.order))==6
@@ -86,7 +86,7 @@ def test_prefix_program_has_two_distinct_targets_and_real_predecessors_without_p
     ('none',False,False,(2,12),(False,False)),
     ('none',False,True,(2,12),(False,True))))
 def test_prefix_truth_stops_at_first_error_or_taken_and_never_invents_unexecuted_suffix(choice_name,early,later,positions,wrong):
-    from bpuverify.bpu.model.selection import fallthrough
+    from suites.frontend.bpu.bpu.model.selection import fallthrough
     p=PrefixWorkingSetProgram(PREFIX_PROFILES[0]);edges=p.branches(0)
     choice=(fallthrough(p.pc(0)).branch if choice_name=='none' else
         Branch(edges[choice_name=='later'].position,edges[choice_name=='later'].target,Kind.CONDITIONAL,True))
@@ -104,7 +104,7 @@ def complete_prefix_source():
 
 @pytest.mark.parametrize('fault',('earlier-counter','later-counter','target','kind','position','duplicate-hit','early-choice'))
 def test_prefix_consumer_rejects_complete_identity_or_strength_corruption(complete_prefix_source,monkeypatch,fault):
-    from bpuverify.bpu.checker.ahead_working_set import prefix_consumer_matches
+    from suites.frontend.bpu.bpu.checker.ahead_working_set import prefix_consumer_matches
     p,token=complete_prefix_source
     original=p.bank.snapshot(token)
     frame=original.frame
@@ -123,8 +123,8 @@ def test_prefix_consumer_rejects_complete_identity_or_strength_corruption(comple
 
 @pytest.mark.parametrize('phase',('initial-late','selected-early','selected-NT','restored-early'))
 def test_prefix_lifetime_cannot_close_without_every_real_consumer_phase(phase):
-    from bpuverify.bpu.checker.ahead_working_set import PrefixWorkingSetChecks
-    from bpuverify.bpu.coverage.ahead_working_set import PrefixWorkingSetCoverage
+    from suites.frontend.bpu.bpu.checker.ahead_working_set import PrefixWorkingSetChecks
+    from suites.frontend.bpu.bpu.coverage.ahead_working_set import PrefixWorkingSetCoverage
     p=PrefixWorkingSetProgram(PREFIX_PROFILES[0]);coverage=PrefixWorkingSetCoverage(p)
     checks=PrefixWorkingSetChecks(p,coverage)
     checks.pipeline=NS(current_event=None,raise_failure=lambda:None)
@@ -244,10 +244,10 @@ def test_lifetime_cannot_close_with_incomplete_work_or_mutated_originals(fault):
 
 
 def test_case_expresses_lifetimes_not_signal_edges_and_inputs_do_not_depend_on_native_gaps():
-    path = Path('bpuverify/bpu/case/ahead_working_set.py')
+    path = Path('bpu/case/ahead_working_set.py')
     tree = ast.parse(path.read_text())
     forbidden = {'RisingEdge','FallingEdge','ClockCycles','gather','create_task','get_','set_'}
     assert not {n.id for n in ast.walk(tree) if isinstance(n,ast.Name)} & forbidden
     assert not {n.attr for n in ast.walk(tree) if isinstance(n,ast.Attribute)} & forbidden
-    text = Path('bpuverify/bpu/model/ahead_working_set.py').read_text()
+    text = Path('bpu/model/ahead_working_set.py').read_text()
     assert all(word not in text for word in ('memory_signal','lcov','coverage.info','native_rows','toffee'))

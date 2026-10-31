@@ -1,7 +1,7 @@
 """091: useful learning has its own deferred-service and consumer obligation."""
 import pytest
-from bpuverify.bpu.case.direction_useful import check_direction_useful
-from bpuverify.bpu.coverage.direction_useful import DirectionUsefulCoverage
+from suites.frontend.bpu.bpu.case.direction_useful import check_direction_useful
+from suites.frontend.bpu.bpu.coverage.direction_useful import DirectionUsefulCoverage
 
 
 @pytest.mark.feature('BPU-INT-091')

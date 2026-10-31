@@ -3,9 +3,9 @@ import json
 
 import pytest
 
-from bpuverify.bpu.case.working_set_replacement import check_ahead_identity_replacement
-from bpuverify.bpu.coverage.working_set_replacement import Coverage
-from bpuverify.bpu.model.working_set_replacement import KINDS, Program, geometry
+from suites.frontend.bpu.bpu.case.working_set_replacement import check_ahead_identity_replacement
+from suites.frontend.bpu.bpu.coverage.working_set_replacement import Coverage
+from suites.frontend.bpu.bpu.model.working_set_replacement import KINDS, Program, geometry
 
 
 @pytest.mark.feature('BPU-INT-100')

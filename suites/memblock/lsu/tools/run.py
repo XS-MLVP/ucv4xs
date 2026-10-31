@@ -70,11 +70,11 @@ def main() -> None:
         if junit_path.is_file():
             (output / "junit.xml").write_bytes(junit_path.read_bytes())
         fingerprint = {}
-        for directory in ("tests", "lsuverify", "tools"):
-            for source in sorted((ROOT / directory).rglob("*.py")):
-                fingerprint[str(source.relative_to(ROOT))] = hashlib.sha256(
-                    source.read_bytes()).hexdigest()
-        for relative in ("conftest.py", "pytest.ini", "manifest/toolchain.json",
+        from ucv.runtime import suite_python_sources
+        for source in suite_python_sources(ROOT):
+            fingerprint[str(source.relative_to(ROOT))] = hashlib.sha256(
+                source.read_bytes()).hexdigest()
+        for relative in ("pytest.ini", "manifest/toolchain.json",
                          "manifest/lsu-rtl.sha256"):
             source = ROOT / relative
             fingerprint[relative] = hashlib.sha256(source.read_bytes()).hexdigest()

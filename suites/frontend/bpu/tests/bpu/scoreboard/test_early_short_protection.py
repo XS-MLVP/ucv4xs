@@ -1,17 +1,17 @@
-from bpuverify.bpu.model.early_opposition import FALLBACK
+from suites.frontend.bpu.bpu.model.early_opposition import FALLBACK
 """Pure source programs and checker corruption tests; these give no DUT credit."""
 from dataclasses import replace
 
 import pytest
 
-from bpuverify.bpu.checker.early_direction import live_values, fast_values
-from bpuverify.bpu.checker.early_short_protection import EarlyShortProtectionChecks
-from bpuverify.bpu.coverage.early_short_protection import EarlyShortProtectionCoverage
-from bpuverify.bpu.model.early_aging import allocation, require_recovery_window
-from bpuverify.bpu.model.early_opposition import provider, resident, ahead_owner, main_counter, steady_history
-from bpuverify.bpu.model.early_short_protection import EDGES, OLDER_PATHS, rules, original_identity
-from bpuverify.bpu.model.early_protection import guidance
-from bpuverify.bpu.model.pipeline import Redirect
+from suites.frontend.bpu.bpu.checker.early_direction import live_values, fast_values
+from suites.frontend.bpu.bpu.checker.early_short_protection import EarlyShortProtectionChecks
+from suites.frontend.bpu.bpu.coverage.early_short_protection import EarlyShortProtectionCoverage
+from suites.frontend.bpu.bpu.model.early_aging import allocation, require_recovery_window
+from suites.frontend.bpu.bpu.model.early_opposition import provider, resident, ahead_owner, main_counter, steady_history
+from suites.frontend.bpu.bpu.model.early_short_protection import EDGES, OLDER_PATHS, rules, original_identity
+from suites.frontend.bpu.bpu.model.early_protection import guidance
+from suites.frontend.bpu.bpu.model.pipeline import Redirect
 from tests.bpu.scoreboard.test_early_protection import Program as LongProgram
 from tests.bpu.scoreboard.test_early_direction_checking import actual_live, actual_fast
 from tests.framework.fakes import event as synthetic_event

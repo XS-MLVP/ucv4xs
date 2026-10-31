@@ -1,8 +1,8 @@
 """EntryTable model qualification uses semantic packets, not DUT outputs."""
 import pytest
 
-from vagqverify.entrytable.model import SPLIT, WAIT_A, WAIT_SI, State
-from vagqverify.entrytable.types import AddrPacket, Beat, DataPacket, Redirect, SplitReq
+from suites.vector.vagq.entrytable.model import SPLIT, WAIT_A, WAIT_SI, State
+from suites.vector.vagq.entrytable.types import AddrPacket, Beat, DataPacket, Redirect, SplitReq
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)
 

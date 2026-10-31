@@ -3,16 +3,18 @@
 All stimuli are public dispatch/S3/query/bus/redirect transactions. Even the
 all-entry cancel tests refill the real pool and finish new owners afterwards.
 """
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.load_queue.recovery import RecoveringActor
-from lsqverify.load_queue.types import Bus, Bypass, Inputs, Load
-from lsqverify.rar.types import Query as RarQuery
-from lsqverify.raw.types import Query as RawQuery, SqPtr
-from lsqverify.replay.types import Cause, StoreWakeup, TlbHint
-from lsqverify.vlq.types import QueuePtr, Redirect
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.load_queue.recovery import RecoveringActor
+from suites.memblock.lsq.load_queue.types import Bus, Bypass, Inputs, Load
+from suites.memblock.lsq.rar.types import Query as RarQuery
+from suites.memblock.lsq.raw.types import Query as RawQuery, SqPtr
+from suites.memblock.lsq.replay.types import Cause, StoreWakeup, TlbHint
+from suites.memblock.lsq.vlq.types import QueuePtr, Redirect
 
 
 async def allocate(actor, count, configure=None):
@@ -59,7 +61,7 @@ async def test_full_real_pools_batched_cancel_at_each_return_alignment(lq, prefi
         await query_and_replay(actor, old, rar_count=96, raw_count=56)
         for _ in range(4):
             await actor.step()
-        assert not any(lq.observed[f"io_replay_{bank}_valid"] for bank in range(3))
+        assert not any(lq.observed[P.io(f"replay_{bank}_valid")] for bank in range(3))
         await actor.step(Inputs(redirect=Redirect(True, actor.owner(old[0]).rob, True)))
         await actor.settle()
         cancelled.extend(old)
@@ -87,7 +89,7 @@ async def test_three_simultaneous_address_waits_preserve_all_120_dependency_owne
         await actor.execute(uids[offset:offset + 3])
     for _ in range(5):
         await actor.step()
-        assert not any(lq.observed[f"io_replay_{bank}_valid"] for bank in range(3))
+        assert not any(lq.observed[P.io(f"replay_{bank}_valid")] for bank in range(3))
     await actor.step(Inputs(address_wakeups=(StoreWakeup(True, SqPtr.encode(7)), StoreWakeup())))
     await actor.drain()
     assert {actor.owner(uid).feedback_slot for uid in uids} == set(range(120))
@@ -111,13 +113,13 @@ async def accept_all_bus(actor, uids):
     jobs = {}
     for sid in range(len(uids)):
         for _ in range(80):
-            if actor.env.observed["io_uncache_req_valid"]:
+            if actor.env.observed[P.p_uncache_req_valid]:
                 break
             await actor.step()
         post = actor.env.observed
-        assert post["io_uncache_req_valid"]
-        owner = next(actor.owner(uid) for uid in uids if actor.owner(uid).load.paddr == post["io_uncache_req_bits_addr"])
-        mid = post["io_uncache_req_bits_id"]
+        assert post[P.p_uncache_req_valid]
+        owner = next(actor.owner(uid) for uid in uids if actor.owner(uid).load.paddr == post[P.p_uncache_req_bits_addr])
+        mid = post[P.p_uncache_req_bits_id]
         assert mid not in jobs and owner.uid not in {job["uid"] for job in jobs.values()}
         await actor.step(Inputs(bus=Bus(ready=True)))
         await actor.step(Inputs(bus=Bus(ack=True, mid=mid, sid=sid)))
@@ -146,8 +148,8 @@ async def finish_refilled_uncache(actor, count=16):
         await actor.step(Inputs(bypass=queries + (Bypass(),) * (3 - len(queries))))
         await actor.step()
         for lane, uid in enumerate(batch):
-            assert actor.env.observed[f"io_bypass_{lane}_s2Resp_valid"]
-            assert actor.env.observed[f"io_bypass_{lane}_s2Resp_bits_data"] == by_uid[uid]["data"] * ((1 << 64) + 1)
+            assert actor.env.observed[P.io(f"bypass_{lane}_s2Resp_valid")]
+            assert actor.env.observed[P.io(f"bypass_{lane}_s2Resp_bits_data")] == by_uid[uid]["data"] * ((1 << 64) + 1)
         await actor.feedback(batch)
     await actor.drain()
     return uids
@@ -161,27 +163,27 @@ async def test_all_uncache_entries_cancel_before_accept_then_full_pool_new_uid_f
         await finish_refilled_uncache(actor, count=prefix)
     actor.rob_sequence = 10
     old = await enqueue_full_uncache(actor, nc=phase != "holding_mmio")
-    assert bool(lq.observed["io_uncache_req_valid"]) == (phase == "request_backpressure")
-    buffered = {pin: lq.observed[pin] for pin in ("io_uncache_req_bits_id", "io_uncache_req_bits_addr")}
+    assert bool(lq.observed[P.p_uncache_req_valid]) == (phase == "request_backpressure")
+    buffered = {pin: lq.observed[pin] for pin in (P.p_uncache_req_bits_id, P.p_uncache_req_bits_addr)}
     await actor.step(Inputs(redirect=Redirect(True, actor.owner(old[0]).rob, True)))
     await actor.settle()
     for _ in range(6):
         await actor.step()
-        assert not lq.observed["io_replayAllocate"]
+        assert not lq.observed[P.p_replayAllocate]
         if phase == "holding_mmio":
-            assert not lq.observed["io_uncache_req_valid"]
+            assert not lq.observed[P.p_uncache_req_valid]
         else:
             # The child already fired into the real elastic request register.
             # It has no redirect input, so public top-level ready must accept
             # this stable old request and eventually return its response.
-            assert lq.observed["io_uncache_req_valid"] and all(lq.observed[pin] == value for pin, value in buffered.items())
+            assert lq.observed[P.p_uncache_req_valid] and all(lq.observed[pin] == value for pin, value in buffered.items())
     if phase == "request_backpressure":
         await actor.step(Inputs(bus=Bus(ready=True)))
-        await actor.step(Inputs(bus=Bus(ack=True, mid=buffered["io_uncache_req_bits_id"], sid=3)))
+        await actor.step(Inputs(bus=Bus(ack=True, mid=buffered[P.p_uncache_req_bits_id], sid=3)))
         await actor.step(Inputs(bus=Bus(response=True, response_id=3, data=0xCACE1, error=True)))
         for _ in range(6):
             await actor.step()
-            assert not lq.observed["io_replayAllocate"] and not lq.observed["io_uncache_req_valid"]
+            assert not lq.observed[P.p_replayAllocate] and not lq.observed[P.p_uncache_req_valid]
     await finish_refilled_uncache(actor)
     actor.prove_reuse(("LQ-RECOVER.all", "LQ-RECOVER.reuse"), old)
 
@@ -202,7 +204,7 @@ async def test_each_real_uncache_id_cancel_on_wakeup_then_return_all_and_refill(
             await actor.step(Inputs(bus=Bus(response=True, response_id=job["sid"], data=job["data"], error=True)))
     for _ in range(6):
         await actor.step()
-        assert not lq.observed["io_replayAllocate"] and not lq.observed["io_uncache_req_valid"]
+        assert not lq.observed[P.p_replayAllocate] and not lq.observed[P.p_uncache_req_valid]
     await finish_refilled_uncache(actor)
     actor.prove_reuse(("LQ-RECOVER.sent_uncache", "LQ-RECOVER.reuse"), old)
 
@@ -214,7 +216,7 @@ async def test_second_std_wakeup_lane_unblocks_original_dependency(lq):
     await actor.execute(uids)
     for _ in range(5):
         await actor.step()
-        assert not any(lq.observed[f"io_replay_{bank}_valid"] for bank in range(3))
+        assert not any(lq.observed[P.io(f"replay_{bank}_valid")] for bank in range(3))
     await actor.step(Inputs(data_wakeups=(StoreWakeup(), StoreWakeup(True, SqPtr.encode(7)))))
     await actor.drain()
     actor.checked(("LQ-STORE.data",), uids)
@@ -238,7 +240,7 @@ async def test_mixed_non_address_lane0_and_two_strict_waits_keep_other_owners(lq
     await actor.execute(uids[3:])
     for _ in range(5):
         await actor.step()
-        assert not lq.observed["io_replay_1_valid"] and not lq.observed["io_replay_2_valid"]
+        assert not lq.observed[P.p_replay_1_valid] and not lq.observed[P.p_replay_2_valid]
     await actor.step(Inputs(address_wakeups=(StoreWakeup(True, SqPtr.encode(7)), StoreWakeup())))
     await actor.drain()
     actor.checked(("LQ-STORE.strict", "LQ-REPLAY.causes"), uids)

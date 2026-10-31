@@ -1,10 +1,10 @@
 """Each independently reset owner/depth scenario is a schedulable pytest item."""
 import pytest
 
-from bpuverify.tage.coverage.retained import tage_retained_owner_coverage_model
-from bpuverify.tage.coverage.retained import write_tage_retained_owner_coverage
-from bpuverify.common.env.paths import REPO_ROOT
-from tests.tage.diagnostics.retained_owner_probe import check_case
+from suites.frontend.bpu.tage.coverage.retained import tage_retained_owner_coverage_model
+from suites.frontend.bpu.tage.coverage.retained import write_tage_retained_owner_coverage
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.tage.case.retained_owner import check_case
 
 
 @pytest.mark.feature('BPU-TAGE-034')

@@ -1,4 +1,4 @@
-from lsqverify.replay_cause_lifetimes import trace
+from suites.memblock.lsq.replay_cause_lifetimes import trace
 
 
 async def test_same_original_UID_nine_real_replays_before_actual_LQ_release(lq, tmp_path):

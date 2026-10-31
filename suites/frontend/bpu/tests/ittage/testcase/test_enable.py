@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.ittage.transaction.types import IttageTraining
-from bpuverify.ittage.coverage.catalog import ittage_enable_coverage_model
-from bpuverify.ittage.coverage.catalog import write_ittage_enable_coverage
-from bpuverify.ittage.case.definitions import PC
-from bpuverify.ittage.case.definitions import POSITION
-from bpuverify.ittage.case.definitions import TARGET_A
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.ittage.transaction.types import IttageTraining
+from suites.frontend.bpu.ittage.coverage.catalog import ittage_enable_coverage_model
+from suites.frontend.bpu.ittage.coverage.catalog import write_ittage_enable_coverage
+from suites.frontend.bpu.ittage.case.definitions import PC
+from suites.frontend.bpu.ittage.case.definitions import POSITION
+from suites.frontend.bpu.ittage.case.definitions import TARGET_A
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature("BPU-ITTAGE-011")

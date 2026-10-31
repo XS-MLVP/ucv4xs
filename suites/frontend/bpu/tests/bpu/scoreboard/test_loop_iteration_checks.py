@@ -6,10 +6,10 @@ from types import SimpleNamespace as NS
 import pytest
 from toffee import Scoreboard
 
-from bpuverify.bpu.checker.loop_iteration import LoopIterationChecks
-from bpuverify.bpu.coverage.loop_iteration import LoopIterationCoverage, FinalIterationCoverage
-from bpuverify.bpu.model.loop_iteration import PROGRAMS, MAX_ITERATIONS
-from bpuverify.bpu.transaction.types import BpuRedirect
+from suites.frontend.bpu.bpu.checker.loop_iteration import LoopIterationChecks
+from suites.frontend.bpu.bpu.coverage.loop_iteration import LoopIterationCoverage, FinalIterationCoverage
+from suites.frontend.bpu.bpu.model.loop_iteration import PROGRAMS, MAX_ITERATIONS
+from suites.frontend.bpu.bpu.transaction.types import BpuRedirect
 from tests.bpu.scoreboard.test_loop_iteration_model import natural, cycle, stage_token, token, BACK, PC
 
 

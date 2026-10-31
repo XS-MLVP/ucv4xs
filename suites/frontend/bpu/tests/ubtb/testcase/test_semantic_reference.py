@@ -2,9 +2,9 @@
 import pytest
 from dataclasses import replace
 
-from bpuverify.ubtb.case.definitions import CONDITIONAL, DIRECT, INDIRECT
-from bpuverify.ubtb.checker.assertions import train_taken
-from bpuverify.ubtb.transaction.types import BranchTraining
+from suites.frontend.bpu.ubtb.case.definitions import CONDITIONAL, DIRECT, INDIRECT
+from suites.frontend.bpu.ubtb.checker.assertions import train_taken
+from suites.frontend.bpu.ubtb.transaction.types import BranchTraining
 
 
 @pytest.mark.feature('BPU-UBTB-013')

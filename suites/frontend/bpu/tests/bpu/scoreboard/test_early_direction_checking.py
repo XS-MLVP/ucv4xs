@@ -4,13 +4,13 @@ from types import SimpleNamespace as NS
 import pytest
 from toffee import Scoreboard
 
-from bpuverify.bpu.checker.early_direction import live_values,fast_values
-from bpuverify.bpu.checker.early_direction_learning import EarlyDirectionChecks
-from bpuverify.bpu.coverage.early_direction import EarlyDirectionCoverage,RULES
-from bpuverify.bpu.env.early_direction import EarlyDirectionProgram
-from bpuverify.bpu.model.pipeline import Redirect,Resolution,Outcome
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.bpu.model.main_sources import source_entries
+from suites.frontend.bpu.bpu.checker.early_direction import live_values,fast_values
+from suites.frontend.bpu.bpu.checker.early_direction_learning import EarlyDirectionChecks
+from suites.frontend.bpu.bpu.coverage.early_direction import EarlyDirectionCoverage,RULES
+from suites.frontend.bpu.bpu.env.early_direction import EarlyDirectionProgram
+from suites.frontend.bpu.bpu.model.pipeline import Redirect,Resolution,Outcome
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.main_sources import source_entries
 from tests.bpu.scoreboard.test_early_direction_sources import prepare
 
 
@@ -166,7 +166,7 @@ def test_wrong_resolution_latches_first_failure_without_checked_coverage(fault):
     elif fault=='tick':tick=source.meta_tick
     elif fault=='empty':request=replace(request,branches=())
     else:
-        from bpuverify.bpu.model.selection import StackAction
+        from suites.frontend.bpu.bpu.model.selection import StackAction
         field,value={'position':('position',3),'kind':('kind',Kind.DIRECT),'taken':('taken',True),
             'target':('target',program.pc+2),'mispredict':('mispredict',False),'action':('action',StackAction.CALL)}[fault]
         request=replace(request,branches=(replace(request.branches[0],**{field:value}),))

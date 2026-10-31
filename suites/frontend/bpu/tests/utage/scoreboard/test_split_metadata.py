@@ -4,15 +4,16 @@ from copy import deepcopy
 import pytest
 from toffee import ScoreboardMismatch
 
-from bpuverify.utage.case.useful_address_scenario import UsefulContext
-from bpuverify.utage.model.addressing import FOLD_LAYOUT, fold_history
-from bpuverify.utage.model.split_context import contexts
-from bpuverify.utage.transaction.types import UtagePrediction
+from suites.frontend.bpu.utage.case.useful_address_scenario import UsefulContext
+from suites.frontend.bpu.utage.model.addressing import FOLD_LAYOUT, fold_history
+from suites.frontend.bpu.utage.model.split_context import contexts
+from suites.frontend.bpu.utage.transaction.types import UtagePrediction
+from suites.frontend.bpu.utage.model.semantic import TRAIN_HISTORY_INDICES
 
 
 @pytest.mark.parametrize('fault', (None, 'lower_index', 'upper_index', 'meta_hit', 'tableId',
     'takenCtr_value', 'predTaken', 'baseTaken', 'baseIsStrongBias', 'valid', 'extra_valid', 'position',
-    'port_hit', 'port_taken', *range(19)))
+    'port_hit', 'port_taken', *TRAIN_HISTORY_INDICES))
 async def test_complete_split_context_metadata_is_checked_before_it_can_be_reused(fault, tmp_path):
     profile = contexts()['positive']
     entries = [dict(valid=int(i == 0), hit=int(i == 0), tableId=0, takenCtr_value=4,
@@ -28,7 +29,8 @@ async def test_complete_split_context_metadata_is_checked_before_it_can_be_reuse
     elif fault == 'position': entries[0]['cfiPosition'] ^= 1
     elif fault == 'port_hit': hit ^= 1
     elif fault == 'port_taken': taken ^= 1
-    elif isinstance(fault, int): meta['foldedPathHistForTrain_hist'][fault]['foldedHist'] ^= 1
+    elif isinstance(fault, int):
+        meta['foldedPathHistForTrain_hist'][fault]['foldedHist'] ^= 1
     elif fault is not None: entries[0][fault] ^= 1
     prediction = UtagePrediction(hit, taken, meta)
     before = deepcopy(meta)

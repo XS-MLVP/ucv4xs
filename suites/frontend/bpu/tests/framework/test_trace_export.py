@@ -10,8 +10,8 @@ import sys
 
 import pytest
 
-from bpuverify.common.env.trace import dump_trace
-from bpuverify.common.env.trace import trace_exports
+from suites.frontend.bpu.runtime.trace import dump_trace
+from suites.frontend.bpu.runtime.trace import trace_exports
 
 
 @pytest.mark.parametrize("value", [None, {}, [], object(), {"bad": object()}])
@@ -101,37 +101,38 @@ async def test_concurrent_tasks_have_independent_diagnostic_contexts(tmp_path):
 
 
 TRACE_WRITERS = [
-    'bpuverify/utage/case/partial_wrap_scenario.py',
-    'bpuverify/bpu/case/phr_recovery.py',
-    'bpuverify/bpu/case/phr_direction_repair.py',
-    'bpuverify/bpu/case/phr_taken_wrap.py',
-    'bpuverify/utage/case/useful_address_scenario.py',
-    'bpuverify/bpu/case/bypass/alternate_history.py',
-    'bpuverify/abtb/env/state/counter.py',
-    'bpuverify/bpu/case/bypass/policy_program.py',
-    'bpuverify/bpu/case/bypass/force.py',
-    'bpuverify/bpu/case/bypass/two_program.py',
-    'bpuverify/bpu/case/bypass/history.py',
-    'bpuverify/abtb/env/state/priority.py',
-    'bpuverify/bpu/case/bypass/aging.py',
-    'bpuverify/abtb/env/state/replacer.py',
-    'bpuverify/bpu/case/bypass/lower_ring.py',
-    'bpuverify/abtb/env/state/writebuffer.py',
-    'bpuverify/bpu/case/sc/scenarios.py',
-    'bpuverify/bpu/case/abtb/alias.py',
-    'bpuverify/bpu/case/sc/role_scenarios.py',
-    'bpuverify/bpu/case/abtb/final_not_taken.py',
-    'bpuverify/bpu/case/sc/history_training.py',
-    'bpuverify/bpu/case/bypass/sram.py',
-    'bpuverify/bpu/case/sc/nonzero_scenarios.py',
-    'bpuverify/bpu/case/bypass/natural.py',
-    'bpuverify/bpu/case/abtb/natural.py',
-    'bpuverify/bpu/case/bypass/force_seed.py',
-    'bpuverify/bpu/case/ras/cases.py'
+    'utage/case/partial_wrap_scenario.py',
+    'bpu/case/phr_recovery.py',
+    'bpu/case/phr_direction_repair.py',
+    'bpu/case/phr_taken_wrap.py',
+    'utage/case/useful_address_scenario.py',
+    'bpu/case/bypass/alternate_history.py',
+    'abtb/env/state/counter.py',
+    'bpu/case/bypass/policy_program.py',
+    'bpu/case/bypass/force.py',
+    'bpu/case/bypass/two_program.py',
+    'bpu/case/bypass/history.py',
+    'abtb/env/state/priority.py',
+    'bpu/case/bypass/aging.py',
+    'abtb/env/state/replacer.py',
+    'bpu/case/bypass/lower_ring.py',
+    'abtb/env/state/writebuffer.py',
+    'bpu/case/sc/scenarios.py',
+    'bpu/case/abtb/alias.py',
+    'bpu/case/sc/role_scenarios.py',
+    'bpu/case/abtb/final_not_taken.py',
+    'bpu/case/sc/history_training.py',
+    'bpu/case/bypass/sram.py',
+    'bpu/case/sc/nonzero_scenarios.py',
+    'bpu/case/bypass/natural.py',
+    'bpu/case/abtb/natural.py',
+    'bpu/case/bypass/force_seed.py',
+    'bpu/case/ras/cases.py'
 ]
 
 
-@pytest.mark.parametrize("relative", TRACE_WRITERS)
+# Keep historical parameter IDs stable; only the actual source location moved.
+@pytest.mark.parametrize("relative", TRACE_WRITERS, ids=lambda relative: 'bpuverify/'+relative)
 def test_every_scenario_uses_the_optional_sink(relative):
     root = Path(__file__).resolve().parents[2]
     tree = ast.parse((root / relative).read_text())
@@ -150,7 +151,7 @@ def test_real_pytest_flag_reaches_serial_and_xdist_workers(tmp_path, enabled, wo
     root = Path(__file__).resolve().parents[2]
     test = tmp_path / "test_demo.py"
     test.write_text(
-        "import pytest\nfrom pathlib import Path\nfrom bpuverify.common.env.trace import dump_trace\n@pytest.mark.parametrize('item', [0, 1])\ndef test_demo(item):\n    target = Path(__file__).with_name(f'trace-{item}.json')\n    dump_trace(target, {'tick': item, 'value': [0, 1]})\n"
+        "import pytest\nfrom pathlib import Path\nfrom suites.frontend.bpu.runtime.trace import dump_trace\n@pytest.mark.parametrize('item', [0, 1])\ndef test_demo(item):\n    target = Path(__file__).with_name(f'trace-{item}.json')\n    dump_trace(target, {'tick': item, 'value': [0, 1]})\n"
     )
     config = tmp_path / "pytest.ini"
     config.write_text("[pytest]\n")
@@ -158,7 +159,7 @@ def test_real_pytest_flag_reaches_serial_and_xdist_workers(tmp_path, enabled, wo
            "PYTHONDONTWRITEBYTECODE": "1"}
     env["PYTHONPATH"] = os.pathsep.join((str(root), env.get("PYTHONPATH", "")))
     command = [sys.executable, "-m", "pytest", "-q", "-c", str(config),
-               "-p", "no:cacheprovider", "-p", 'bpuverify.common.pytest.artifacts',
+               "-p", "no:cacheprovider", "-p", 'suites.frontend.bpu.pytest_plugins.artifacts',
                "--basetemp", str(tmp_path / "pytest-tmp")]
     if workers:
         command += ["-p", "xdist.plugin", "-n", str(workers), "--max-worker-restart=0"]

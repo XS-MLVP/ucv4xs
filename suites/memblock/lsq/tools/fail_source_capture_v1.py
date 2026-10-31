@@ -18,7 +18,7 @@ ACTORS = {}
 
 
 def pytest_configure(config):
-    from lsqverify.evidence import Journal
+    from suites.memblock.lsq.evidence import Journal
     original = Journal.write
 
     def observed(self, value):

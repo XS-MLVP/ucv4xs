@@ -1,11 +1,13 @@
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.forward.types import Query, Translation
-from lsqverify.psq.types import Address, Attributes, Data
-from lsqverify.psq.actor import PsqActor
-from lsqverify.raw.types import SqPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.forward.types import Query, Translation
+from suites.memblock.lsq.psq.types import Address, Attributes, Data
+from suites.memblock.lsq.psq.actor import PsqActor
+from suites.memblock.lsq.raw.types import SqPtr
 
 
 @pytest.mark.parametrize("order", ("address", "data", "together"))
@@ -23,7 +25,7 @@ async def test_staged_reference_calibration_real_write_query_and_dequeue(psq_ful
     await env.cycle(queries=(Query(True, address.vaddr, SqPtr.encode(1), 3),) * 3)
     await env.cycle(queries=(Query(),) * 3, translations=(Translation(address.paddr),) * 3)
     await env.idle(12, retired=SqPtr.encode(1), sbuffer_ready=(True, True))
-    assert env.observed["io_sqDeqPtr_value"] == 1
+    assert env.observed[P.p_sqDeqPtr_value] == 1
 
 
 async def test_staged_reference_split_and_redirect_calibration(psq_full):
@@ -36,7 +38,7 @@ async def test_staged_reference_split_and_redirect_calibration(psq_full):
     await env.cycle(redirect_valid=True, redirect=SqPtr.encode(1), enqueue=SqPtr.encode(1))
     await env.cycle(redirect_valid=False)
     await env.idle(12, retired=SqPtr.encode(1), sbuffer_ready=(True, True))
-    assert env.observed["io_sqDeqPtr_value"] == 1
+    assert env.observed[P.p_sqDeqPtr_value] == 1
 
 
 @pytest.mark.parametrize("seed", (0x5301, 0x5302, 0x5303))
@@ -78,17 +80,17 @@ async def test_full_reference_active_reset_new_uid_completes_same_slot(psq_full,
     old = actor.add(cbo=1 if phase != "queue" else None)
     for _ in range(20):
         await actor.step(fair=True, sbuffer_ready=(False, False), cache_response=False, writeback_ready=False)
-        if phase == "queue" and psq_full.observed["io_writeToSbuffer_req_0_valid"]:
+        if phase == "queue" and psq_full.observed[P.p_writeToSbuffer_req_0_valid]:
             break
-        if phase != "queue" and psq_full.observed["io_toDCache_resp_ready"]:
+        if phase != "queue" and psq_full.observed[P.p_toDCache_resp_ready]:
             break
     if phase == "queue":
-        assert psq_full.observed["io_writeToSbuffer_req_0_valid"]
+        assert psq_full.observed[P.p_writeToSbuffer_req_0_valid]
     else:
         assert actor.pending is not None
         if phase == "wb":
             await actor.step(fair=True, writeback_ready=False)
-            assert psq_full.observed["io_writeBack_valid"]
+            assert psq_full.observed[P.p_writeBack_valid]
     assert await actor.reset() == [old]
     new = actor.add(size=2)
     await actor.drain()

@@ -1,10 +1,10 @@
 """Tag-qualified learning and counter ownership need independent oracles."""
 import pytest
 
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.mbtb.case.semantic import cleanup_zero_key, coalesced_reset, unmatched_feedback
-from bpuverify.mbtb.coverage.semantic import SemanticCoverage
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.mbtb.case.semantic import cleanup_zero_key, coalesced_reset, unmatched_feedback
+from suites.frontend.bpu.mbtb.coverage.semantic import SemanticCoverage
 
 
 @pytest.mark.feature('BPU-MBTB-027')

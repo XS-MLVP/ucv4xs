@@ -10,10 +10,10 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from lsqverify.deq.ports import Ports
-from lsqverify.deq.types import DeqControl, Inputs, SecondPage, Store, encode
-from lsqverify.raw.types import SqPtr
-from lsqverify.vlq.types import RobPtr
+from suites.memblock.lsq.deq.ports import Ports
+from suites.memblock.lsq.deq.types import DeqControl, Inputs, SecondPage, Store, encode
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.vlq.types import RobPtr
 
 
 def sha(path):
@@ -64,7 +64,7 @@ def main():
     out = ROOT / "results/deq-codec-static-01"
     out.mkdir(exist_ok=False)
     hashes = {}
-    for path in (Path(__file__), *(ROOT / "lsqverify/deq").glob("*.py")):
+    for path in (Path(__file__), *(ROOT / "deq").glob("*.py")):
         dest = out / "source" / path.relative_to(ROOT)
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(path, dest)

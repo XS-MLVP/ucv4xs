@@ -1,7 +1,7 @@
 import pytest
 
-from lsqverify.deq.agent import PsqAgent
-from lsqverify.deq.types import Store
+from suites.memblock.lsq.deq.agent import PsqAgent
+from suites.memblock.lsq.deq.types import Store
 
 
 @pytest.mark.parametrize("memory", (1, 2, 7))

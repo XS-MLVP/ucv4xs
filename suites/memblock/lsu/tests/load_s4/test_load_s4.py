@@ -5,15 +5,16 @@ import random
 
 import pytest
 
-from lsuverify.common.passthrough import PassthroughEnv, blank, random_payload
-from lsuverify.load_s4.coverage import S4_CASES, LoadS4Coverage
-from lsuverify.load_s4.env import FIELDS
+from suites.memblock.lsu.legacy_pins import P
+from suites.memblock.lsu.passthrough import PassthroughEnv, blank, random_payload
+from suites.memblock.lsu.load_s4.coverage import S4_CASES, LoadS4Coverage
+from suites.memblock.lsu.load_s4.env import FIELDS
 
 
 @pytest.fixture
 def s4(dut_factory):
     dut = dut_factory("load_s4")
-    return PassthroughEnv(dut, FIELDS, "io_pipeIn", "io_unalignConcat",
+    return PassthroughEnv(dut, FIELDS, P.p_pipeIn, P.p_unalignConcat,
                           LoadS4Coverage())
 
 

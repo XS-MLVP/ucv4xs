@@ -10,12 +10,12 @@ from ucv.runtime import historical_path
 import pytest
 
 from tools.run_vagq_exhaustive import atomic_json, digest
-from vagqverify.maskgen.probe import bind_maskgen
-from vagqverify.maskgen.reference import MaskRequest, evaluate_protocol
-from vagqverify.native import open_dut
-from vagqverify.vagq.exhaustive import build_shape_sequence
-from vagqverify.vagq.failure_review import analyze_failure
-from vagqverify.vagq.scenario_matrix import legal_public_feature_cases
+from suites.vector.vagq.maskgen.probe import bind_maskgen
+from suites.vector.vagq.maskgen.reference import MaskRequest, evaluate_protocol
+from suites.vector.vagq.native import open_dut
+from suites.vector.vagq.vagq.exhaustive import build_shape_sequence
+from suites.vector.vagq.vagq.failure_review import analyze_failure
+from suites.vector.vagq.vagq.scenario_matrix import legal_public_feature_cases
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -73,9 +73,9 @@ def test_all_failure_producer_metadata_matches_native_maskgen(native_registratio
         raise RuntimeError('will not overwrite a previous producer qualification')
     source_names = (
         'tests/vagq/test_failure_review_qualification.py',
-        'vagqverify/maskgen/probe.py', 'vagqverify/maskgen/reference.py',
-        'vagqverify/vagq/exhaustive.py', 'vagqverify/vagq/isa_reference.py',
-        'vagqverify/vagq/scenario_matrix.py', 'vagqverify/native.py',
+        'maskgen/probe.py', 'maskgen/reference.py',
+        'vagq/exhaustive.py', 'vagq/isa_reference.py',
+        'vagq/scenario_matrix.py', 'native.py',
     )
     atomic_json(output / 'source-hashes.json', {name: digest(ROOT / name) for name in source_names})
     cases = tuple(legal_public_feature_cases())

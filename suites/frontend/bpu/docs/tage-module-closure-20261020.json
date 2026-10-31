@@ -28,7 +28,7 @@
       "point": "BPU-TAGE-026 reported FAIL"
     },
     "cause": "The test is marked xfail(strict=True, raises=MisassociatedProviderUseful). After the independent semantic reference began comparing useful, it detects the same defect one boundary earlier and raises ScoreboardMismatch; with raises= set, pytest no longer matches the marker and reports an ordinary FAIL.",
-    "fix": "bpuverify/tage/case/way_migration_scenario.as_misassociated_useful() re-labels only an all-`useful` difference set as MisassociatedProviderUseful. Any other mismatch returns None and the caller re-raises the original exception.",
+    "fix": "tage/case/way_migration_scenario.as_misassociated_useful() re-labels only an all-`useful` difference set as MisassociatedProviderUseful. Any other mismatch returns None and the caller re-raises the original exception.",
     "negative_control": "tests/tage/scoreboard/test_way_migration_mismatch.py: useful-only becomes the declared defect; mixed, counter-only and empty difference sets are not re-labelled.",
     "after": {
       "run": "results/tage-module-qualification-20261020-v5",

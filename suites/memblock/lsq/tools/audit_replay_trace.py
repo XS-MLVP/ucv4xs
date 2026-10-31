@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Independent public ownership/packet/feedback, capacity and timer audit.
 
-No import of lsqverify or DUT internals. General dependency and arbitration
+No import of suites.memblock.lsq or DUT internals. General dependency and arbitration
 comparisons are checked from the recorded pre/post expectations, not claimed
 as a second independent arbitration implementation or second DUT execution.
 """

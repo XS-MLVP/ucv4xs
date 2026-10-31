@@ -4,12 +4,12 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.uras.transaction.types import UrasResult
-from bpuverify.uras.checker.assertions import pushed
-from bpuverify.uras.case.definitions import CALL_B
-from bpuverify.uras.case.definitions import MAIN_TOP
-from bpuverify.uras.case.definitions import pending_s3_pop_cycles
-from bpuverify.uras.case.definitions import younger_s2_push_cycles
+from suites.frontend.bpu.uras.transaction.types import UrasResult
+from suites.frontend.bpu.uras.checker.assertions import pushed
+from suites.frontend.bpu.uras.case.definitions import CALL_B
+from suites.frontend.bpu.uras.case.definitions import MAIN_TOP
+from suites.frontend.bpu.uras.case.definitions import pending_s3_pop_cycles
+from suites.frontend.bpu.uras.case.definitions import younger_s2_push_cycles
 
 
 @pytest.mark.feature("BPU-URAS-012")

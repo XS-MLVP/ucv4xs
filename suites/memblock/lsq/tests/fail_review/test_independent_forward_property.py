@@ -2,19 +2,21 @@
 
 The fixture uses the ordinary public driver but replaces the pin-predicting
 model with one that only tracks accepted transactions.  Assertions come from
-``lsqverify.independent_properties``, which reads the original producer ledger
+``suites.memblock.lsq.independent_properties``, which reads the original producer ledger
 and never the RTL's span/decision fields.
 """
+
 import pytest
 from toffee import DriveStable, Execution, RisingEdge, SamplingMonitor, XCommClockBackend
 
-from lsqverify.forward.driver import ForwardDriver
-from lsqverify.forward.env import ForwardEnv
-from lsqverify.forward.model import ForwardModel
-from lsqverify.forward.ports import Ports
-from lsqverify.independent_properties import forward_byte_violations
-from lsqverify.forward.types import Translation
-from lsqverify.raw.types import SqPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.forward.driver import ForwardDriver
+from suites.memblock.lsq.forward.env import ForwardEnv
+from suites.memblock.lsq.forward.model import ForwardModel
+from suites.memblock.lsq.forward.ports import Ports
+from suites.memblock.lsq.independent_properties import forward_byte_violations
+from suites.memblock.lsq.forward.types import Translation
+from suites.memblock.lsq.raw.types import SqPtr
 
 
 class PropertyOnlyModel(ForwardModel):
@@ -74,7 +76,7 @@ async def test_partial_store_coverage_must_block_or_forward_every_produced_byte(
     stores = env.bank({0: older, 1: younger})
     query = env.query(vaddr=0x10000, sq=2, size=4)
     post = await _respond(env, query, older.paddr, lane, stores)
-    prefix = f"io_query_{lane}_s2Resp_"
+    prefix = P.io(f"query_{lane}_s2Resp_")
     assert post[prefix + "valid"]
     load = type("LoadView", (), {"vaddr": query.vaddr, "paddr": older.paddr, "mask": 0xFFFF})()
     violations = forward_byte_violations(load, [(0, older), (1, younger)], post, prefix)
@@ -88,7 +90,7 @@ async def test_fully_covered_bytes_are_a_clean_control(forward_property, lane):
     stores = env.bank({0: older})
     query = env.query(vaddr=0x10000, sq=1, size=4)
     post = await _respond(env, query, older.paddr, lane, stores)
-    prefix = f"io_query_{lane}_s2Resp_"
+    prefix = P.io(f"query_{lane}_s2Resp_")
     load = type("LoadView", (), {"vaddr": query.vaddr, "paddr": older.paddr, "mask": 0xFFFF})()
     assert forward_byte_violations(load, [(0, older)], post, prefix) == []
     # Sensitivity check: the oracle must reject the same clean trace when one
@@ -107,5 +109,5 @@ async def test_retired_wait_target_is_not_an_address_stall(forward_property):
     stores = env.bank({131 % 64: source})
     query = env.query(sq=132, wait=True, wait_sq=SqPtr.encode(66))
     post = await _respond(env, query, source.paddr, 0, stores)
-    assert post["io_query_0_s2Resp_bits_addrInvalid_valid"] == 0, (
+    assert post[P.p_query_0_s2Resp_bits_addrInvalid_valid] == 0, (
         "retired wait target kept the load waiting")

@@ -1,9 +1,9 @@
 """Original provider remains usable at protection limits and after reversal."""
 import pytest
 
-from bpuverify.bpu.case.early_protection import check_early_protection
-from bpuverify.bpu.coverage.early_protection import EarlyProtectionCoverage
-from bpuverify.bpu.model.early_protection import EDGES
+from suites.frontend.bpu.bpu.case.early_protection import check_early_protection
+from suites.frontend.bpu.bpu.coverage.early_protection import EarlyProtectionCoverage
+from suites.frontend.bpu.bpu.model.early_protection import EDGES
 
 
 @pytest.mark.feature('BPU-INT-066')

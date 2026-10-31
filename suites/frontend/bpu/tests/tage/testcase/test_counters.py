@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.tage.transaction.types import TageTraining
-from bpuverify.tage.checker.assertions import allocate
-from bpuverify.tage.checker.assertions import provider_counter
-from bpuverify.tage.case.definitions import PC
-from bpuverify.tage.case.definitions import POSITION
-from bpuverify.tage.case.definitions import SATURATION_ATTEMPTS
+from suites.frontend.bpu.tage.transaction.types import TageTraining
+from suites.frontend.bpu.tage.checker.assertions import allocate
+from suites.frontend.bpu.tage.checker.assertions import provider_counter
+from suites.frontend.bpu.tage.case.definitions import PC
+from suites.frontend.bpu.tage.case.definitions import POSITION
+from suites.frontend.bpu.tage.case.definitions import SATURATION_ATTEMPTS
 
 
 @pytest.mark.feature("BPU-TAGE-003")

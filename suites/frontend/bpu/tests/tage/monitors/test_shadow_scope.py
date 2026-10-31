@@ -2,7 +2,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.tage.agent.main import TageAgent
+from suites.frontend.bpu.tage.agent.main import TageAgent
 
 
 async def test_shadow_scope_requires_started_agent():

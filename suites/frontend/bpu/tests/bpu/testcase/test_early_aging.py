@@ -1,8 +1,8 @@
 """Autonomous integrated failure/maintenance proof, not a bank sweep."""
 import pytest
 
-from bpuverify.bpu.case.early_aging import check_early_aging
-from bpuverify.bpu.coverage.early_aging import EarlyAgingCoverage
+from suites.frontend.bpu.bpu.case.early_aging import check_early_aging
+from suites.frontend.bpu.bpu.coverage.early_aging import EarlyAgingCoverage
 
 
 @pytest.mark.feature('BPU-INT-051')

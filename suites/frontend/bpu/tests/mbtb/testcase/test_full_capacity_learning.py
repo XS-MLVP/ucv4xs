@@ -1,10 +1,10 @@
 """Full-capacity retention in both input orders and communication modes."""
 import pytest
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.mbtb.case.full_capacity_learning import check_full_capacity_learning
-from bpuverify.mbtb.coverage.full_capacity_learning import FullCapacityCoverage
-from bpuverify.mbtb.model.full_capacity_learning import MODES, ORDERS
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.mbtb.case.full_capacity_learning import check_full_capacity_learning
+from suites.frontend.bpu.mbtb.coverage.full_capacity_learning import FullCapacityCoverage
+from suites.frontend.bpu.mbtb.model.full_capacity_learning import MODES, ORDERS
 
 
 @pytest.mark.feature('BPU-MBTB-017')

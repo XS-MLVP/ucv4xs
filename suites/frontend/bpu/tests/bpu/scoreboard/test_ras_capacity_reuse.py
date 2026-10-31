@@ -2,10 +2,10 @@
 from copy import deepcopy
 from types import SimpleNamespace as NS
 import pytest
-from bpuverify.ras.model.semantic import RasReference,Events,Recovery,Retirement
-from bpuverify.bpu.model.ras.capacity import CAPACITY,PRESERVED,OLD_CALL,OLD_RETURN,NEW_CALL,NEW_RETURN,call_address
-from bpuverify.bpu.checker.ras.capacity import RasReuseChecks
-from bpuverify.bpu.coverage.ras_reuse import RasReuseCoverage
+from suites.frontend.bpu.ras.model.semantic import RasReference,Events,Recovery,Retirement
+from suites.frontend.bpu.bpu.model.ras.capacity import CAPACITY,PRESERVED,OLD_CALL,OLD_RETURN,NEW_CALL,NEW_RETURN,call_address
+from suites.frontend.bpu.bpu.checker.ras.capacity import RasReuseChecks
+from suites.frontend.bpu.bpu.coverage.ras_reuse import RasReuseCoverage
 
 
 @pytest.mark.parametrize('adjacent,expected',((True,32),(False,31)))

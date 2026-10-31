@@ -1,16 +1,16 @@
 """Masked way updates must preserve both pending rows and neighbor ways."""
 
 from __future__ import annotations
-from bpuverify.common.model.configuration import *
+from suites.frontend.bpu.models.configuration import *
 
 import pytest
 
-from bpuverify.sc.coverage.catalog import sc_masked_rows_coverage_model
-from bpuverify.sc.coverage.catalog import write_sc_masked_rows_coverage
-from bpuverify.sc.checker.assertions import learn_masked_rows
-from bpuverify.sc.case.definitions import MASKED_POSITIONS
-from bpuverify.sc.case.definitions import NOT_TAKEN_ATTEMPTS
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.sc.coverage.catalog import sc_masked_rows_coverage_model
+from suites.frontend.bpu.sc.coverage.catalog import write_sc_masked_rows_coverage
+from suites.frontend.bpu.sc.checker.assertions import learn_masked_rows
+from suites.frontend.bpu.sc.case.definitions import MASKED_POSITIONS
+from suites.frontend.bpu.sc.case.definitions import NOT_TAKEN_ATTEMPTS
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 def sample_rows(coverage, phase, snapshots, slots):

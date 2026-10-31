@@ -1,14 +1,16 @@
 """Real STA is shared with RAW; public rollback drives real shared recovery."""
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.load_queue.types import Load
-from lsqverify.lsq_wrapper.types import Address
-from lsqverify.rar.types import Query as RarQuery, Release
-from lsqverify.raw.types import Query as RawQuery
-from lsqverify.replay.types import Cause
-from lsqverify.vlq.types import QueuePtr, RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.load_queue.types import Load
+from suites.memblock.lsq.lsq_wrapper.types import Address
+from suites.memblock.lsq.rar.types import Query as RarQuery, Release
+from suites.memblock.lsq.raw.types import Query as RawQuery
+from suites.memblock.lsq.replay.types import Cause
+from suites.memblock.lsq.vlq.types import QueuePtr, RobPtr
 from .memory_owners import MemoryOwners, StoreOwner, cached_load
 from .test_forward_memory import check_bytes
 
@@ -19,7 +21,7 @@ def raw_query(load):
 
 
 def expect_rollback(env, lane, load, address):
-    p, u = f"io_nuke_rollback_{lane}_", load.execution.uop
+    p, u = P.io(f"nuke_rollback_{lane}_"), load.execution.uop
     env.expect({p + "valid": 1, p + "bits_robIdx_flag": int(u.rob.flag), p + "bits_robIdx_value": u.rob.value,
                 p + "bits_robIdx_isFormer": int(u.rob.former), p + "bits_ftqIdx_flag": int(u.ftq.flag),
                 p + "bits_ftqIdx_value": u.ftq.value, p + "bits_ftqOffset": u.offset, p + "bits_isRVC": int(u.rvc),
@@ -44,7 +46,7 @@ async def test_actual_two_sta_raw_conflict_negatives_and_recovered_same_lq_owner
     queries = [RawQuery()] * 3
     queries[first_lane], queries[(first_lane + 1) % 3] = raw_query(loads[0]), raw_query(loads[1])
     await trace.cycle(raw_queries=tuple(queries))
-    assert all(lsq.pre_observed[f"io_ldu_rawNukeQuery_{lane}_req_ready"] for lane in (first_lane, (first_lane + 1) % 3))
+    assert all(lsq.pre_observed[P.io(f"ldu_rawNukeQuery_{lane}_req_ready")] for lane in (first_lane, (first_lane + 1) % 3))
     if variant.startswith("revoke"):
         if variant == "revoke_two":
             await trace.cycle()
@@ -56,7 +58,7 @@ async def test_actual_two_sta_raw_conflict_negatives_and_recovered_same_lq_owner
     await trace.cycle(addresses=addresses)
     await trace.idle(2)
     positive = variant == "dual"
-    lsq.expect({f"io_nuke_rollback_{lane}_valid": int(positive) for lane in range(2)}, "two actual STA nuke only true younger-byte conflicts")
+    lsq.expect({P.io(f"nuke_rollback_{lane}_valid"): int(positive) for lane in range(2)}, "two actual STA nuke only true younger-byte conflicts")
     if variant == "miss":
         # The first STA is a real TLB miss, not a fake RAW-only input. Retry
         # BOTH real stores; now their actual successful addresses must nuke.
@@ -68,15 +70,15 @@ async def test_actual_two_sta_raw_conflict_negatives_and_recovered_same_lq_owner
         for lane in range(2):
             expect_rollback(lsq, lane, loads[lane], addresses[lane])
         u, a = loads[0].execution.uop, addresses[0]
-        lsq.expect({"io_mdpTrain_valid": 1, "io_mdpTrain_bits_ftqIdx_value": u.ftq.value,
-                    "io_mdpTrain_bits_ftqOffset": u.offset, "io_mdpTrain_bits_isRVC": int(u.rvc),
-                    "io_mdpTrain_bits_stFtqIdx_value": a.ftq.value, "io_mdpTrain_bits_stFtqOffset": a.ftq_offset,
-                    "io_mdpTrain_bits_stIsRVC": int(a.rvc)}, "MDP training belongs to oldest original load/store pair")
+        lsq.expect({P.p_mdpTrain_valid: 1, P.p_mdpTrain_bits_ftqIdx_value: u.ftq.value,
+                    P.p_mdpTrain_bits_ftqOffset: u.offset, P.p_mdpTrain_bits_isRVC: int(u.rvc),
+                    P.p_mdpTrain_bits_stFtqIdx_value: a.ftq.value, P.p_mdpTrain_bits_stFtqOffset: a.ftq_offset,
+                    P.p_mdpTrain_bits_stIsRVC: int(a.rvc)}, "MDP training belongs to oldest original load/store pair")
         # Choose the real externally observed oldest rollback, not a private
         # model candidate. Redirect applies simultaneously to both queues.
         actual = lsq.observed
-        cutoff = RobPtr(bool(actual["io_nuke_rollback_0_bits_robIdx_flag"]), actual["io_nuke_rollback_0_bits_robIdx_value"],
-                        bool(actual["io_nuke_rollback_0_bits_robIdx_isFormer"]))
+        cutoff = RobPtr(bool(actual[P.p_nuke_rollback_0_bits_robIdx_flag]), actual[P.p_nuke_rollback_0_bits_robIdx_value],
+                        bool(actual[P.p_nuke_rollback_0_bits_robIdx_isFormer]))
         recovered = await trace.recover_load_suffix(cutoff)
         assert recovered == QueuePtr()
         new = [cached_load(pos, 14 + pos, 2, load.execution.vaddr, load.paddr) for pos, load in enumerate(loads)]
@@ -105,13 +107,13 @@ async def test_real_cached_rar_release_window_replay_feedback_and_vlq_completion
     queries[lane] = RarQuery(True, young.execution.uop.rob, young.execution.uop.lq, young.paddr, True)
     lsq.reach("LSQ-RAR.previous_release" if window == "previous" else "LSQ-RAR.current_release")
     await trace.cycle(rar_queries=tuple(queries), release=release if window == "current" else Release())
-    assert lsq.pre_observed[f"io_ldu_rarNukeQuery_{lane}_req_ready"]
+    assert lsq.pre_observed[P.io(f"ldu_rarNukeQuery_{lane}_req_ready")]
     probe_lane = (lane + 1) % 3
     probe = [RarQuery()] * 3
     probe[probe_lane] = RarQuery(True, old.execution.uop.rob, old.execution.uop.lq, old.paddr)
     await trace.cycle(rar_queries=tuple(probe))
-    lsq.expect({f"io_ldu_rarNukeQuery_{probe_lane}_resp_valid": 1,
-                f"io_ldu_rarNukeQuery_{probe_lane}_resp_bits_nuke": int(window != "none")},
+    lsq.expect({P.io(f"ldu_rarNukeQuery_{probe_lane}_resp_valid"): 1,
+                P.io(f"ldu_rarNukeQuery_{probe_lane}_resp_bits_nuke"): int(window != "none")},
                "original older Load sees only released younger same-line reader")
     await trace.execute([young])
     if window != "none":
@@ -139,7 +141,7 @@ async def test_real_cached_rar_revoke_exact_query_history_before_older_load_prob
     probe_lane, probes = (lane + 1) % 3, [RarQuery()] * 3
     probes[probe_lane] = RarQuery(True, old.execution.uop.rob, old.execution.uop.lq, old.paddr)
     await trace.cycle(rar_queries=tuple(probes))
-    lsq.expect({f"io_ldu_rarNukeQuery_{probe_lane}_resp_valid": 1, f"io_ldu_rarNukeQuery_{probe_lane}_resp_bits_nuke": 0},
+    lsq.expect({P.io(f"ldu_rarNukeQuery_{probe_lane}_resp_valid"): 1, P.io(f"ldu_rarNukeQuery_{probe_lane}_resp_bits_nuke"): 0},
                "revoked original reader cannot survive as a ghost release conflict")
     await trace.finish()
     lsq.prove("LSQ-RAR.revoke")

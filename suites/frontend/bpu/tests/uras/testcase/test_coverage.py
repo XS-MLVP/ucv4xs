@@ -2,17 +2,17 @@
 
 from __future__ import annotations
 
-from bpuverify.uras.transaction.types import UrasCycle
-from bpuverify.uras.transaction.types import UrasResult
-from bpuverify.uras.coverage.catalog import uras_coverage_model
-from bpuverify.uras.coverage.catalog import write_uras_coverage
-from bpuverify.uras.checker.assertions import pushed
-from bpuverify.uras.case.definitions import CALL_A
-from bpuverify.uras.case.definitions import CALL_B
-from bpuverify.uras.case.definitions import MAIN_TOP
-from bpuverify.uras.case.definitions import pending_s3_pop_cycles
-from bpuverify.uras.case.definitions import younger_s2_push_cycles
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.uras.transaction.types import UrasCycle
+from suites.frontend.bpu.uras.transaction.types import UrasResult
+from suites.frontend.bpu.uras.coverage.catalog import uras_coverage_model
+from suites.frontend.bpu.uras.coverage.catalog import write_uras_coverage
+from suites.frontend.bpu.uras.checker.assertions import pushed
+from suites.frontend.bpu.uras.case.definitions import CALL_A
+from suites.frontend.bpu.uras.case.definitions import CALL_B
+from suites.frontend.bpu.uras.case.definitions import MAIN_TOP
+from suites.frontend.bpu.uras.case.definitions import pending_s3_pop_cycles
+from suites.frontend.bpu.uras.case.definitions import younger_s2_push_cycles
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 async def test_uras_functional_coverage_closes_defined_bins(uras_agent):

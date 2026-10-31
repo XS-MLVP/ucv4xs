@@ -9,7 +9,7 @@
       "boundary": "训练读取索引、可识别tag与单独存储的指令位置共同约束置信度候选。当前新版本的tag相同而位置不同，仍不能为旧指令提供计数。",
       "time_contract": "原资格读取与当前学习链分开；兼容转发优先，再用兼容资格读取版本，最后才是原来源提示。",
       "current_conclusion": "8个新程序6PASS/2普通FAIL，旧参考盲点已修正；不减原生分母，不宣称完整BPU可达。",
-      "sources": ["bpuverify/utage/model/semantic.py:265", "bpuverify/utage/model/semantic.py:302", "docs/instruction-confidence-contract.json"]
+      "sources": ["utage/model/semantic.py:265", "utage/model/semantic.py:302", "docs/instruction-confidence-contract.json"]
     },
     {
       "module": "TAGE",
@@ -17,7 +17,7 @@
       "boundary": "当前模型用raw_tag XOR branch.position构造可识别tag，同身份缓存查询为row/tag；位置已进入tag，不是UTAGE那种独立位置载荷。哈希别名仍按该模块自己的合同处理。",
       "time_contract": "原provider/alternate贡献、当前同身份置信度与待写缓存合并分开；不把原饱和提示与当前值策略差异混入位置问题。",
       "current_conclusion": "不能据UTAGE差异擅自再加独立位置字段；访问型PLRU与原饱和提示的既有差异继续保留。",
-      "sources": ["bpuverify/tage/model/semantic.py:280", "bpuverify/tage/model/semantic.py:484", "bpuverify/tage/model/semantic.py:104"]
+      "sources": ["tage/model/semantic.py:280", "tage/model/semantic.py:484", "tage/model/semantic.py:104"]
     },
     {
       "module": "SC",
@@ -25,7 +25,7 @@
       "boundary": "家族、bank、历史索引和参数列定义统计资源；不同指令合法映射同一列时，合格正反投票可以叠加或抵消。不是每条指令独占一份置信度。",
       "time_contract": "各原件保存读取的权重和偏置特征；学习按既定可见性与合格投票形成masked patch，不默认强求跨原件串行原子累计。",
       "current_conclusion": "不能通过拒绝不同位置共享来修SC；应检查合格票、原读取、符号饱和、写掩码与未参与家族保持。",
-      "sources": ["bpuverify/sc/model/semantic.py:1", "bpuverify/sc/model/semantic.py:213"]
+      "sources": ["sc/model/semantic.py:1", "sc/model/semantic.py:213"]
     },
     {
       "module": "MainBTB",
@@ -33,7 +33,7 @@
       "boundary": "有效原条件来源与解析分支位置相配，记录合并以row/tag/position定义；合并后的真实记录主人决定分配计数复位对象，不是无关的提名victim。",
       "time_contract": "当前模型按经过验证的原反馈counter快照计算方向提案，存储与待写服务另有可见性合同；不是从实际SRAM恢复金值，也不自动等同UTAGE的当前版本链。",
       "current_conclusion": "保留已有方向主人不一致、miss无权限与同服务主人丢纠正的普通FAIL，不因本轮UTAGE修正而豁免。",
-      "sources": ["bpuverify/mbtb/model/semantic.py:1", "bpuverify/mbtb/model/semantic.py:345", "bpuverify/mbtb/model/semantic.py:375"]
+      "sources": ["mbtb/model/semantic.py:1", "mbtb/model/semantic.py:345", "mbtb/model/semantic.py:375"]
     },
     {
       "module": "AheadBTB",
@@ -41,7 +41,7 @@
       "boundary": "条目匹配包含原位置、分支类型与栈动作；方向学习按实际执行前缀。待写服务位置可复用，但不能仅因partial tag相同就丢掉不同位置的合法分支。",
       "time_contract": "当前方向计数学习、分配初值复位及实际写入退休各有优先级；不是所有更新都从原counter提示计算。",
       "current_conclusion": "已经有独立与集成的相应成功/失败程序，不为这个审查再枚举bank、set或way。",
-      "sources": ["bpuverify/abtb/model/semantic.py:1", "bpuverify/abtb/model/semantic.py:259", "bpuverify/abtb/model/semantic.py:334"]
+      "sources": ["abtb/model/semantic.py:1", "abtb/model/semantic.py:259", "abtb/model/semantic.py:334"]
     },
     {
       "module": "ITTAGE",
@@ -49,7 +49,7 @@
       "boundary": "当前接口及模型由pc/history计算bank、index、tag，没有独立的CFI位置字段可机械复用。真实目标还受区域目录寿命影响，不能把压缩字段正确误当目标语义正确。",
       "time_contract": "当前模型从原metadata的provider/alternate置信度和原目标计算学习，并保留区域分配前的目标含义；这不是对所有预测器统一最新值累计策略的证明。",
       "current_conclusion": "本审查只描述已有合同，不新增位置条件或修改该策略；既有跨区域目标差异保留。",
-      "sources": ["bpuverify/ittage/model/semantic.py:57", "bpuverify/ittage/model/semantic.py:329"]
+      "sources": ["ittage/model/semantic.py:57", "ittage/model/semantic.py:329"]
     },
     {
       "module": "MicroBTB",
@@ -57,7 +57,7 @@
       "boundary": "同key下，目标、位置、类型和栈动作共同决定反馈是否再次确认该记录；已死记录不能被fall-through结果复活。",
       "time_contract": "捕获的读取命中与稍后计数是否降到零分开；有效原预测不因为当前计数变化而被回溯改写。",
       "current_conclusion": "已有模型明确拒绝把RTL转发hit资格直接抄成死记录复活规则；本次未改此模型。",
-      "sources": ["bpuverify/ubtb/model/semantic.py:145", "bpuverify/ubtb/model/semantic.py:156", "bpuverify/ubtb/model/semantic.py:173"]
+      "sources": ["ubtb/model/semantic.py:145", "ubtb/model/semantic.py:156", "ubtb/model/semantic.py:173"]
     },
     {
       "module": "RAS",
@@ -65,7 +65,7 @@
       "boundary": "相同返回地址不等于同一次调用；数字group/calls字段也可能复用，必须关联独立程序检查点和真实来源。",
       "time_contract": "调用、返回、先返回再调用、取消和退休各按程序前缀演进；栈顶相等不能代替次数和存活范围正确。",
       "current_conclusion": "不把分支计数器候选身份规则套到调用栈，保留RETURN_AND_CALL既有普通FAIL。",
-      "sources": ["bpuverify/ras/model/semantic.py:1", "bpuverify/ras/model/semantic.py:143", "bpuverify/ras/model/semantic.py:217"]
+      "sources": ["ras/model/semantic.py:1", "ras/model/semantic.py:143", "ras/model/semantic.py:217"]
     },
     {
       "module": "MicroRAS",
@@ -73,7 +73,7 @@
       "boundary": "操作的原来源及顺序比物理寄存器名字重要；主RAS只提供当前top，退到未知底部时不能凭空假定更深返回值。",
       "time_contract": "同一栈归约处理正常接纳与修正；中性动作不造调用，RETURN_AND_CALL应先pop后push。",
       "current_conclusion": "既有组合动作差异不因其他常规call/return通过而关闭；本次未修改模型。",
-      "sources": ["bpuverify/uras/model/semantic.py:1", "bpuverify/uras/model/semantic.py:79", "bpuverify/uras/model/semantic.py:111"]
+      "sources": ["uras/model/semantic.py:1", "uras/model/semantic.py:79", "uras/model/semantic.py:111"]
     },
     {
       "module": "BPU composition",
@@ -81,7 +81,7 @@
       "boundary": "PipelineReference管理token存活、取消和历史；source bank管理具体预测/学习。字段相等不能合并不同原件，歧义需要完整FTQ关联，不能用当前线上值修金值。",
       "time_contract": "S1/S2/S3、恢复和真实反馈引用不可变来源；重用独立UT算法不等于自动证明完整FTQ合法性。",
       "current_conclusion": "共享UT算法的错误也可能同时掩盖UT与集成验证；本轮用独立有限语义程序发现UTAGE盲点，另对20组显式依赖证据进行真实影响复验。",
-      "sources": ["bpuverify/bpu/model/pipeline.py:131", "bpuverify/bpu/model/pipeline.py:152", "bpuverify/bpu/model/pipeline.py:200"]
+      "sources": ["bpu/model/pipeline.py:131", "bpu/model/pipeline.py:152", "bpu/model/pipeline.py:200"]
     }
   ],
   "common_requirements": [

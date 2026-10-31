@@ -108,7 +108,7 @@ RAR-REL-001、LQU-SID-001和域受限LQU-MMIO-IF-001仍开放，不能因独立R
 
 ## 9. 用例实施前的适配证据（历史节点，不是功能验收）
 
-已建立`lsqverify/replay/types.py`领域事务和`codec.py`纯公开引脚适配：`tools/audit_replay_codec.py`按固定原始SV逐项核对**除clock外全部400个实际输入**，25个有效编码样本的名称/位宽完全匹配，并拒绝5个域/宽度错误样本，记录在`results/replay-codec-static-01/static-audit.json`及4份冻结源文件中。
+已建立`suites/memblock/lsq/replay/types.py`领域事务和`codec.py`纯公开引脚适配：`tools/audit_replay_codec.py`按固定原始SV逐项核对**除clock外全部400个实际输入**，25个有效编码样本的名称/位宽完全匹配，并拒绝5个域/宽度错误样本，记录在`results/replay-codec-static-01/static-audit.json`及4份冻结源文件中。
 
 该历史节点只证明输入适配没有伪造或漏掉端口，不代表DUT走钟、独立参考、输出检查、功能点checked或RTL覆盖。当时尚无Replay fixture、一般参考或原生功能用例；后续导出和功能证据另见下节，不能将适配静态检查追溯计作功能通过。
 

@@ -6,7 +6,7 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.model.tage.mixed_visibility import PROGRAMS, PRELUDE_PLAN
+from suites.frontend.bpu.bpu.model.tage.mixed_visibility import PROGRAMS, PRELUDE_PLAN
 from tests.bpu.scoreboard.mixed_visibility_fixtures import (
     armed, held, prepared, mixed, relearned, released, completed, packet)
 from tests.bpu.scoreboard.test_partial_reuse import transfer
@@ -115,8 +115,8 @@ def test_missing_last_service_and_changed_snapshot_cannot_get_checked(program):
 
 
 def test_unreviewed_program_cannot_add_physical_labels_to_coverage_or_checks():
-    from bpuverify.bpu.coverage.mixed_visibility import MixedVisibilityCoverage
-    from bpuverify.bpu.checker.mixed_visibility import MixedVisibilityChecks
+    from suites.frontend.bpu.bpu.coverage.mixed_visibility import MixedVisibilityCoverage
+    from suites.frontend.bpu.bpu.checker.mixed_visibility import MixedVisibilityChecks
     foreign = replace(PROGRAMS[0], name='physical-rank-2')
     with pytest.raises(ValueError, match='unknown'): MixedVisibilityCoverage(foreign)
     with pytest.raises(ValueError, match='unknown'): MixedVisibilityChecks(None, None, foreign)

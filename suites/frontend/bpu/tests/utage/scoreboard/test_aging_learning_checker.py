@@ -7,10 +7,10 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.utage.checker.aging_learning import AgingLearningChecks, payload
-from bpuverify.utage.model.aging_learning import AgingLearningProgram, POSITION, RULES
-from bpuverify.utage.model.semantic import Context
-from bpuverify.utage.transaction.types import UtageLookup, UtagePrediction
+from suites.frontend.bpu.utage.checker.aging_learning import AgingLearningChecks, payload
+from suites.frontend.bpu.utage.model.aging_learning import AgingLearningProgram, POSITION, RULES
+from suites.frontend.bpu.utage.model.semantic import Context, TRAIN_HISTORY_INDICES
+from suites.frontend.bpu.utage.transaction.types import UtageLookup, UtagePrediction
 
 
 class CoverageSpy:
@@ -147,7 +147,7 @@ def test_wrong_or_missing_fresh_direction_and_source_preservation_cannot_claim_c
                 if damage == 'counter': slot['takenCtr_value'] += 1
                 elif damage == 'provider': slot['tableId'] = 1
                 elif damage == 'direction': slot['predTaken'] ^= 1
-                elif damage == 'history': actual.meta['foldedPathHistForTrain_hist'][0]['foldedHist'] ^= 1
+                elif damage == 'history': actual.meta['foldedPathHistForTrain_hist'][TRAIN_HISTORY_INDICES[0]]['foldedHist'] ^= 1
                 elif damage == 'missing-consumer': continue
             if damage == 'neighbor' and read.context == program.neighbor:
                 actual.meta['abtbResult'][0]['takenCtr_value'] -= 1
@@ -207,9 +207,9 @@ def test_corrupt_observation_or_feedback_lineage_stops_before_reached(damage):
 
 
 def test_program_imports_geometry_only_not_the_cycle_reference_or_native_access():
-    tree = ast.parse(Path('bpuverify/utage/model/aging_learning.py').read_text())
+    tree = ast.parse(Path('utage/model/aging_learning.py').read_text())
     imports = [(node.module, tuple(name.name for name in node.names)) for node in ast.walk(tree)
                if isinstance(node, ast.ImportFrom)]
     assert imports == [('dataclasses', ('dataclass', 'replace')),
-                       ('bpuverify.utage.model.semantic', ('Context', 'indices'))]
+                       ('suites.frontend.bpu.utage.model.semantic', ('Context', 'indices'))]
     assert not any(isinstance(node, ast.Import) for node in ast.walk(tree))

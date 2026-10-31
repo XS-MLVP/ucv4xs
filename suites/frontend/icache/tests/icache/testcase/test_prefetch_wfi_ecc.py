@@ -4,14 +4,14 @@ from __future__ import annotations
 
 import pytest
 
-from icacheverify.icache.agent.main import ECC_CTRL
-from icacheverify.icache.agent.main import ECC_ENABLE
-from icacheverify.icache.agent.main import ECC_IADDR
-from icacheverify.icache.agent.main import ECC_INJECT
-from icacheverify.icache.agent.main import ECC_TARGET_DATA
-from icacheverify.icache.case.definitions import CASE_INTERLEAVE
-from icacheverify.icache.case.definitions import make_fetch
-from icacheverify.icache.model import icache as model
+from suites.frontend.icache.icache.agent.main import ECC_CTRL
+from suites.frontend.icache.icache.agent.main import ECC_ENABLE
+from suites.frontend.icache.icache.agent.main import ECC_IADDR
+from suites.frontend.icache.icache.agent.main import ECC_INJECT
+from suites.frontend.icache.icache.agent.main import ECC_TARGET_DATA
+from suites.frontend.icache.icache.case.definitions import CASE_INTERLEAVE
+from suites.frontend.icache.icache.case.definitions import make_fetch
+from suites.frontend.icache.icache.model import icache as model
 
 
 async def _wait_memory_idle(agent, extra: int = 10) -> None:

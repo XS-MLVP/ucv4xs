@@ -22,7 +22,7 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from duts import DUTS, dut_dir, export_name, rtl_dir  # noqa: E402
+from suites.memblock.dcache.inventory import DUTS, dut_dir, export_name, rtl_dir  # noqa: E402
 
 PICKER = str(ucv_paths.project_root() / '.tools/bin/picker')
 VERILATOR = Path(str(ucv_paths.project_root() / '.tools/verilator'))

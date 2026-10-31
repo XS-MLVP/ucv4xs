@@ -2,6 +2,9 @@
 
 # DCache 分层验证工程（memblock-hash/dcache）
 
+> 路径迁移说明（2026-10-31）：本文记录中的 *verify/common 为当时源码路径；当前实现已迁入 suites.<group>.<suite> 工程根。历史判定、命令与哈希不据此重标；当前映射见仓库 docs/lessons/suite-namespace-refactor-20261031.md。
+
+
 XiangShan **kunminghu-v3**（`893e1580`）L1 DCache 及其 MemBlock 边界
 （`DCacheWrapper`）的 UT 工程。工具链：Picker memory-direct + toffee main runner，
 RTL 来自 `soc-split/rtl` 的 split-verilog。

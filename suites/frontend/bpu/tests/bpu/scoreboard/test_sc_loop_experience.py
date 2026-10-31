@@ -3,10 +3,10 @@ from copy import deepcopy
 from dataclasses import replace
 import pytest
 
-from bpuverify.bpu.model.sc_loop_experience import Program,PROFILES,RULES
-from bpuverify.bpu.coverage.sc_loop_experience import Coverage
-from bpuverify.sc.model.semantic import Context,Events,ScReference
-from bpuverify.sc.transaction.types import ScHistory,ScBaseBranch,ScBatchTraining,ScBranchFeedback
+from suites.frontend.bpu.bpu.model.sc_loop_experience import Program,PROFILES,RULES
+from suites.frontend.bpu.bpu.coverage.sc_loop_experience import Coverage
+from suites.frontend.bpu.sc.model.semantic import Context,Events,ScReference
+from suites.frontend.bpu.sc.transaction.types import ScHistory,ScBaseBranch,ScBatchTraining,ScBranchFeedback
 
 pytestmark=pytest.mark.toffee_functional_coverage(False)
 

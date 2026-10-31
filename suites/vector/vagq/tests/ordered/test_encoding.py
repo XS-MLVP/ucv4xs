@@ -1,8 +1,8 @@
 """Flat wire encoding is qualified independently from permit semantics."""
 import pytest
 
-from vagqverify.ordered.encoding import encode
-from vagqverify.ordered.types import Beat, Entry, Redirect, SplitDone
+from suites.vector.vagq.ordered.encoding import encode
+from suites.vector.vagq.ordered.types import Beat, Entry, Redirect, SplitDone
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)
 

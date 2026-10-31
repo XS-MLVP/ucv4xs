@@ -5,11 +5,11 @@ from __future__ import annotations
 import pytest
 from toffee import Bundle
 
-from bpuverify.abtb.transaction.types import AbtbLookup
-from bpuverify.common.monitor.cycle import CycleMonitor
-from bpuverify.common.bundle.bindings import PortBinding
-from bpuverify.abtb.checker.assertions import train_taken
-from bpuverify.abtb.case.definitions import CONDITIONAL
+from suites.frontend.bpu.abtb.transaction.types import AbtbLookup
+from suites.frontend.bpu.monitors.cycle import CycleMonitor
+from suites.frontend.bpu.ports.bindings import PortBinding
+from suites.frontend.bpu.abtb.checker.assertions import train_taken
+from suites.frontend.bpu.abtb.case.definitions import CONDITIONAL
 
 
 async def test_lookup_encoder_maps_all_pipeline_controls(abtb_agent):
@@ -18,7 +18,6 @@ async def test_lookup_encoder_maps_all_pipeline_controls(abtb_agent):
         "s0_fire": 1,
         "s1_fire": 1,
         "s2_fire": 1,
-        "s3_fire": 1,
         "start_pc": 0x4000_0800,
         "new_start_pc": 0x4000_0800,
         "path_hash": 0,

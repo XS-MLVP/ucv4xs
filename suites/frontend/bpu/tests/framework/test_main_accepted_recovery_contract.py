@@ -20,7 +20,7 @@ def test_native_case_has_no_edges_raw_signals_wait_constants_or_manual_tasks():
 
 
 def test_environment_uses_complete_original_gate_and_actual_source_ledger():
-    text=(ROOT/'bpuverify/bpu/env/main_accepted_recovery.py').read_text()
+    text=(ROOT/'bpu/env/main_accepted_recovery.py').read_text()
     assert 'prepare_feedback' in text and 'drain=False' in text and 'ledger.live' in text
     assert 'plan_redirect' in text and 'ledger.accepted[-1].source' in text
     assert 'no_commit_inferred=True' in text and 'full_FTQ_reachability_proved=False' in text

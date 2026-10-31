@@ -5,8 +5,8 @@ import random
 
 import pytest
 
-from lsuverify.load_s0.coverage import CASES, LoadS0Coverage
-from lsuverify.load_s0.env import (
+from suites.memblock.lsu.load_s0.coverage import CASES, LoadS0Coverage
+from suites.memblock.lsu.load_s0.env import (
     FAST_FIELDS,
     LDIN_FIELDS,
     REPLAY_FIELDS,

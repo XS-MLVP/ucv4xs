@@ -66,7 +66,7 @@ def audit(name):
     assert {report["family"]:report["cases"] for report in reports}==dict(raw=32,load_uncache=72,psq=66,store_queue=79,load_queue=199)
     wrapper=ROOT/"results/lsq-expanded-13"
     verify_common(wrapper)
-    models=("lsqverify/raw/model.py","lsqverify/load_queue/model.py","lsqverify/load_uncache/model.py","lsqverify/psq/model.py")
+    models=('lsqverify/raw/model.py','lsqverify/load_queue/model.py','lsqverify/load_uncache/model.py','lsqverify/psq/model.py')
     assert all(sha(run/"verification-source"/file)==sha(wrapper/"verification-source"/file) for file in models)
     dest=run/"evidence-auditors"
     dest.mkdir(exist_ok=True)

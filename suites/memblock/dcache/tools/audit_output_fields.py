@@ -3,7 +3,7 @@
 
 Grepping `env.py` for pin names is wrong — envs build names like
 `f"io_read_resp_{port}_{j}_raw_data"`.  So the authoritative source is the runtime
-pin trace produced by `dcacheverify/common/pin_trace.py`:
+pin trace produced by `common/pin_trace.py`:
 
     DCACHE_PIN_TRACE=/tmp/pins.json pytest tests
 
@@ -26,9 +26,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tools"))
-sys.path.insert(0, str(ROOT / "dcacheverify" / "common"))
-from duts import DUTS  # noqa: E402
-from pin_trace import merge  # noqa: E402
+from suites.memblock.dcache.inventory import DUTS  # noqa: E402
+from suites.memblock.dcache.pin_trace import merge  # noqa: E402
 
 PORT_RE = re.compile(r"^\s*(input|output)\s+(?:\[[^\]]+\]\s*)?(\w+)")
 
@@ -92,7 +91,7 @@ def main() -> int:
         }
 
     payload = {
-        "method": "runtime pin fetch trace (dcacheverify/common/pin_trace.py) vs RTL output ports",
+        "method": "runtime pin fetch trace (common/pin_trace.py) vs RTL output ports",
         "note": "a never-fetched output cannot be compared; it must be listed as "
                 "unchecked with a reason, not counted as verified",
         "duts": duts,

@@ -1,6 +1,6 @@
 import pytest
 
-from lsqverify.normal_replay_metadata import PATHS, trace
+from suites.memblock.lsq.normal_replay_metadata import PATHS, trace
 
 
 @pytest.mark.parametrize("path", PATHS)

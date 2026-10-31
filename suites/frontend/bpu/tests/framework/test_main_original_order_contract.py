@@ -23,16 +23,16 @@ def test_case_only_declares_semantic_intent_and_leaves_signal_timing_in_environm
 
 
 def test_new_model_describes_semantic_versions_and_reuses_existing_algorithms():
-    source=(ROOT/'bpuverify/bpu/model/main_original_order.py').read_text();tree=ast.parse(source)
+    source=(ROOT/'bpu/model/main_original_order.py').read_text();tree=ast.parse(source)
     imports={n.module for n in ast.walk(tree) if isinstance(n,ast.ImportFrom)}
-    assert 'bpuverify.mbtb.model.replacement' in imports and 'bpuverify.mbtb.model.semantic' in imports
+    assert 'suites.frontend.bpu.mbtb.model.replacement' in imports and 'suites.frontend.bpu.mbtb.model.semantic' in imports
     assert not any('toffee' in module or 'monitor' in module or 'driver' in module for module in imports)
 
 
 def test_new_environment_drives_no_edges_or_internal_signals():
     names=set()
     for name in ('main_original_order.py','main_original_lifetime.py'):
-        source=(ROOT/'bpuverify/bpu/env'/name).read_text();tree=ast.parse(source)
+        source=(ROOT/'bpu/env'/name).read_text();tree=ast.parse(source)
         local={n.id for n in ast.walk(tree) if isinstance(n,ast.Name)}
         local|={n.attr for n in ast.walk(tree) if isinstance(n,ast.Attribute)}
         assert not local&{'FallingEdge','RisingEdge','ClockCycles','Set','AsImmWrite','gather','sleep','commit'}

@@ -1,4 +1,4 @@
-from lsqverify.load_response_payload import parent_trace
+from suites.memblock.lsq.load_response_payload import parent_trace
 
 
 async def test_each_real_mid_response_bits_source_S3_and_final_LQ_completion(lq,tmp_path):

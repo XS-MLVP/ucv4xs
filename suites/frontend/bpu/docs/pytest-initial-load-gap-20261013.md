@@ -1,5 +1,8 @@
 # 生产并行回归：初始任务配对仍有优化空间
 
+> 路径迁移说明（2026-10-31）：本报告仍属于原日期、基线和执行源码；实现文件已迁到工程根。可点击源码链接更新到当前位置，不据此重标历史 PASS/FAIL 或覆盖结论。参见[本轮命名空间迁移](../../../../docs/lessons/suite-namespace-refactor-20261031.md)。
+
+
 进程并行已进入完整生产入口，不再只是试点：10个 DUT、完整功能点、每个 worker
 的收据和原生覆盖合并均由 `tools.refresh_coverage` 统一执行。代表坐标生产范围的
 首个发布全量为64进程、pytest759.11秒；后续未发布v1为749.24秒。
@@ -7,7 +10,7 @@
 
 本轮只读检查发现一个剩余调度问题，不在运行中改动冻结源码：
 
-- `bpuverify/common/pytest/scheduling.py` 将有 runtime hint 的用例按耗时降序排列。
+- `suites/frontend/bpu/pytest_plugins/scheduling.py` 将有 runtime hint 的用例按耗时降序排列。
 - runner 使用 xdist `--dist=load --maxschedchunk=1`。
 - 当前已安装 xdist 的 `LoadScheduling.schedule()` 在初始分配时仍执行
   `node_chunksize = max(node_chunksize, 2)`，给每个 worker 一段连续的两个用例。
@@ -35,7 +38,7 @@ worker 必须产生完全相同的 nodeid 顺序，串行入口也要保持可�
 
 ## 实施与资格验证（2026-10-13）
 
-上述确定性配对已实现于 `bpuverify/common/pytest/scheduling.py`。有耗时 hint
+上述确定性配对已实现于 `suites/frontend/bpu/pytest_plugins/scheduling.py`。有耗时 hint
 的场景仍降序起跑；每项后接一个没有 feature marker、没有 DUT/agent transitive
 fixture、没有正耗时 hint 的契约检查（有候选才配对）。所有剩余项的相对顺序
 保持不变，候选不足时保留其余降序场景，没有改变测试集合或新增调度器。

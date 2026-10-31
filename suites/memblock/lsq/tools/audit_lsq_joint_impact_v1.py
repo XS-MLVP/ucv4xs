@@ -13,7 +13,7 @@ from audit_sq_initial import ROOT, sha, verify_common
 
 
 def correction_ast(prior,current):
-    relative = "lsqverify/load_queue/model.py"
+    relative = 'lsqverify/load_queue/model.py'
     old,new = (ast.parse((r/"verification-source"/relative).read_text()) for r in (prior,current))
     targets = [n for n in ast.walk(new) if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=="mask" for t in n.targets)]
     originals = [n for n in ast.walk(old) if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=="mask" for t in n.targets)]
@@ -64,7 +64,7 @@ def audit():
     assert len(reached)==len(checked)==82 and all(reached.values()) and sum(bool(v) for v in checked.values())==76
     assert not any(checked[k] for k in ("LSQ-STRESS.seeded","LSQ-STRESS.capacity","LSQ-STRESS.fair_drain"))
     ast_change = correction_ast(oldw,wrapper)
-    assert sha(load/"verification-source/lsqverify/load_queue/model.py")==ast_change["current_sha256"]
+    assert sha(load/'verification-source/lsqverify/load_queue/model.py')==ast_change["current_sha256"]
     report = dict(run=wrapper.name,load_impact_run=load.name,status="NOT_PASS_516_cases_exact_old510_histories_plus_six_joint_cases_reference_AST_and_DA_verified",
                   tests={"PASS":456,"FAIL":60},wrapper_tests=metadata[wrapper][0]["tests"],load_tests=metadata[load][0]["tests"],
                   snapshot_files={r.name:len(metadata[r][1]) for r in (wrapper,load)},wrapper_raw_records=records,load_raw_records=lrecords,

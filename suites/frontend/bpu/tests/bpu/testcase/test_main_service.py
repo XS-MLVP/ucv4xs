@@ -1,7 +1,7 @@
 """Production-driver overlap with autonomous Micro/Main/history expectations."""
 import pytest
-from bpuverify.bpu.case.main_service import check_main_service
-from bpuverify.bpu.coverage.main_service import MainServiceCoverage
+from suites.frontend.bpu.bpu.case.main_service import check_main_service
+from suites.frontend.bpu.bpu.coverage.main_service import MainServiceCoverage
 
 
 @pytest.mark.feature('BPU-INT-093')

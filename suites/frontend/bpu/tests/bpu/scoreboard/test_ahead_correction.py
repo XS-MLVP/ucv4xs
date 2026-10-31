@@ -7,13 +7,13 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.checker.ahead_correction import AheadCorrectionChecks
-from bpuverify.bpu.coverage.ahead_correction import AheadCorrectionCoverage
-from bpuverify.bpu.model.abtb.alias import mainbtb_route
-from bpuverify.bpu.model.ahead_correction import AheadCorrectionProgram, RULES, SELECTIONS
-from bpuverify.bpu.model.ahead_working_set import SIZES
-from bpuverify.bpu.model.path_history import Checkpoint
-from bpuverify.bpu.model.selection import Branch, Choice, Kind, StackAction, fallthrough
+from suites.frontend.bpu.bpu.checker.ahead_correction import AheadCorrectionChecks
+from suites.frontend.bpu.bpu.coverage.ahead_correction import AheadCorrectionCoverage
+from suites.frontend.bpu.bpu.model.abtb.alias import mainbtb_route
+from suites.frontend.bpu.bpu.model.ahead_correction import AheadCorrectionProgram, RULES, SELECTIONS
+from suites.frontend.bpu.bpu.model.ahead_working_set import SIZES
+from suites.frontend.bpu.bpu.model.path_history import Checkpoint
+from suites.frontend.bpu.bpu.model.selection import Branch, Choice, Kind, StackAction, fallthrough
 
 
 @pytest.mark.parametrize('size', tuple(SIZES))
@@ -104,17 +104,17 @@ def test_wrong_final_direction_or_identity_is_a_comparison_failure_not_a_wait(fa
 
 
 def test_correction_case_is_a_lifecycle_not_a_clock_script_or_raw_coordinate_scan():
-    tree = ast.parse(Path('bpuverify/bpu/case/ahead_correction.py').read_text())
+    tree = ast.parse(Path('bpu/case/ahead_correction.py').read_text())
     names = {n.id for n in ast.walk(tree) if isinstance(n, ast.Name)}
     names |= {n.attr for n in ast.walk(tree) if isinstance(n, ast.Attribute)}
     assert not names & {'RisingEdge', 'FallingEdge', 'ClockCycles', 'gather', 'create_task', 'get_', 'set_'}
-    text = Path('bpuverify/bpu/model/ahead_correction.py').read_text()
+    text = Path('bpu/model/ahead_correction.py').read_text()
     assert not any(word in text for word in ('lcov', 'memory_signal', 'native_rows', 'toffee'))
     assert len(RULES) == 10
 
 
 def test_capture_order_is_anchored_to_prediction_acceptance_not_later_metadata():
-    tree = ast.parse(Path('bpuverify/bpu/env/ahead_correction.py').read_text())
+    tree = ast.parse(Path('bpu/env/ahead_correction.py').read_text())
     boundaries = [node.value.attr for node in ast.walk(tree) if isinstance(node, ast.Assign)
                   and any(isinstance(target, ast.Name) and target.id == 'boundary' for target in node.targets)
                   and isinstance(node.value, ast.Attribute)]

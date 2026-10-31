@@ -173,8 +173,8 @@ LQU_RELOCATED_NODES=(
 
 
 def relocated_failure_source_evidence():
-    previous=ROOT/"results/entry-toggle-gap-after-01/verification-source/lsqverify/load_uncache/probe.py"
-    current=ROOT/"lsqverify/load_uncache/probe.py"
+    previous=ROOT/'results/entry-toggle-gap-after-01/verification-source/lsqverify/load_uncache/probe.py'
+    current=ROOT/"load_uncache/probe.py"
     assert sha256_file(previous)=="e0caec07f0513b45210caa4a24ec84541cd26c369df0f20a89c8446195785f17"
     assert sha256_file(current)=="117820cc947b82e5fc39b74278db4ea6677f688b012c5a0f8ecac7eb94cfe77f"
     left,right=previous.read_text(),current.read_text()
@@ -199,9 +199,9 @@ def compare_preexisting_nodes(expected,current):
     for node in LQU_RELOCATED_NODES:
         assert expected[node]["outcome"]==current[node]["outcome"]=="FAIL"
         # Do not normalize arbitrary line numbers, assertions or payloads.
-        frame=re.compile(r"(?m)^lsqverify/load_uncache/probe\.py:(255|266): in consume$")
+        frame=re.compile('(?m)^lsqverify/load_uncache/probe\\.py:(255|266): in consume$')
         assert len(frame.findall(expected[node]["detail"]))==1
-        relocated=frame.sub(lambda m:f"lsqverify/load_uncache/probe.py:{int(m[1])+1}: in consume",expected[node]["detail"])
+        relocated=frame.sub(lambda m:f"'lsqverify/load_uncache/probe.py:'{int(m[1])+1}: in consume",expected[node]["detail"])
         assert current[node]["detail"]==relocated
         normalized_right[node]=dict(current[node],detail=expected[node]["detail"])
     assert normalized_left==normalized_right

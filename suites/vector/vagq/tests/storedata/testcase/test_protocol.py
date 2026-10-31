@@ -1,5 +1,5 @@
 """StoreDataCtrl real-DUT scenarios driven by acknowledged store entries."""
-from vagqverify.storedata.types import Beat, Entry, Redirect, VrfReadResponse
+from suites.vector.vagq.storedata.types import Beat, Entry, Redirect, VrfReadResponse
 
 
 def matrix():

@@ -8,9 +8,9 @@ from __future__ import annotations
 
 import pytest
 
-from icacheverify.dataarray.model.array import DataEntry
-from icacheverify.dataarray.model.array import LineSelect
-from icacheverify.dataarray.model.array import ReadRequest
+from suites.frontend.icache.dataarray.model.array import DataEntry
+from suites.frontend.icache.dataarray.model.array import LineSelect
+from suites.frontend.icache.dataarray.model.array import ReadRequest
 
 LOW_BANKS = 0b0000_1111     # first 32 bytes of a line
 HIGH_BANKS = 0b1111_0000    # second 32 bytes

@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from bpuverify.utage.checker.assertions import allocate
-from bpuverify.utage.case.definitions import PASSING_PC
-from bpuverify.utage.case.definitions import POSITION
+from suites.frontend.bpu.utage.checker.assertions import allocate
+from suites.frontend.bpu.utage.case.definitions import PASSING_PC
+from suites.frontend.bpu.utage.case.definitions import POSITION
 
 
 async def test_monitor_decodes_hit_taken_and_metadata(utage_agent):

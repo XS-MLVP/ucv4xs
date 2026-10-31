@@ -1,9 +1,9 @@
 """Pure SRAM contract tests, independent of native or captured RAM contents."""
 from copy import deepcopy
 import pytest
-from bpuverify.bpu.model.bypass.sram import SramReference
-from bpuverify.bpu.model.bypass.sram import pack_data
-from bpuverify.bpu.model.bypass.sram import zero_data
+from suites.frontend.bpu.bpu.model.bypass.sram import SramReference
+from suites.frontend.bpu.bpu.model.bypass.sram import pack_data
+from suites.frontend.bpu.bpu.model.bypass.sram import zero_data
 
 
 def request(**changes):

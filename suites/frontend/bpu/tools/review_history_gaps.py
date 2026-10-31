@@ -4,8 +4,8 @@ from hashlib import sha256
 import json
 from pathlib import Path
 
-from bpuverify.bpu.coverage.history_gaps import SOURCE,MODEL,local_claims,constrained_claims
-from bpuverify.common.coverage.local_guards import ROOT,Source,match_native,native_points
+from suites.frontend.bpu.bpu.coverage.history_gaps import SOURCE,MODEL,local_claims,constrained_claims
+from suites.frontend.bpu.coverage.local_guards import ROOT,Source,match_native,native_points
 
 
 def review(baseline,*,native_report=None,assume_owned_checkpoints=False):

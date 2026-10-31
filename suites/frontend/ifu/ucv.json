@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "suite": "ifu",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "rvc_expander": {"top": "RvcExpander", "export_name": "RvcExpanderDut"},
+    "instr_boundary": {"top": "InstrBoundary", "export_name": "InstrBoundaryDut"},
+    "pred_checker": {"top": "PredChecker", "export_name": "PredCheckerDut"},
+    "uncache_unit": {"top": "IfuUncacheUnit", "export_name": "IfuUncacheUnitDut"},
+    "frontend_trigger": {"top": "FrontendTrigger", "export_name": "FrontendTriggerDut"},
+    "perf_analysis": {"top": "IfuPerfAnalysis", "export_name": "IfuPerfAnalysisDut"},
+    "ifu": {"top": "Ifu", "export_name": "IfuDut"}
+  },
+  "pytest_root": ".",
+  "tests": ["tests"],
+  "process_isolation": "suite"
+}

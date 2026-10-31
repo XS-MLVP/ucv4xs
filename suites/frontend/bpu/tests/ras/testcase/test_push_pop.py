@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.ras.checker.assertions import expected_top
-from bpuverify.ras.checker.assertions import pop
-from bpuverify.ras.checker.assertions import push
-from bpuverify.ras.case.definitions import CALL_A
-from bpuverify.ras.case.definitions import CALL_B
-from bpuverify.ras.case.definitions import unique_calls
-from bpuverify.ras.transaction.types import RasOperation
+from suites.frontend.bpu.ras.checker.assertions import expected_top
+from suites.frontend.bpu.ras.checker.assertions import pop
+from suites.frontend.bpu.ras.checker.assertions import push
+from suites.frontend.bpu.ras.case.definitions import CALL_A
+from suites.frontend.bpu.ras.case.definitions import CALL_B
+from suites.frontend.bpu.ras.case.definitions import unique_calls
+from suites.frontend.bpu.ras.transaction.types import RasOperation
 
 
 @pytest.mark.feature("BPU-RAS-002")

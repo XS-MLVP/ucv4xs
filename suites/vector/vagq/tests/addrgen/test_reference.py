@@ -1,7 +1,7 @@
 """Fixed arithmetic answers qualify the oracle, not hardware coverage."""
 import pytest
 
-from vagqverify.addrgen.reference import AddressContext, IndexedAddress, StridedAddress, address
+from suites.vector.vagq.addrgen.reference import AddressContext, IndexedAddress, StridedAddress, address
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)
 

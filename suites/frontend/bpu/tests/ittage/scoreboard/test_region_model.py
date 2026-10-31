@@ -1,8 +1,8 @@
 """Reference policy is proved independently of DUT observations."""
 import pytest
 
-from bpuverify.ittage.model.region import IttageRegionModel
-from bpuverify.ittage.model.region import RegionAllocation
+from suites.frontend.bpu.ittage.model.region import IttageRegionModel
+from suites.frontend.bpu.ittage.model.region import RegionAllocation
 
 
 def filled():

@@ -1,13 +1,15 @@
 """Scenarios derived from the remaining815 real Wrapper Replay DA rows."""
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.load_queue.types import Load
-from lsqverify.lsq_wrapper.types import Address, Data
-from lsqverify.raw.types import SqPtr
-from lsqverify.replay.types import Cause, Refill, StoreWakeup, TlbHint
-from lsqverify.vlq.types import RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.load_queue.types import Load
+from suites.memblock.lsq.lsq_wrapper.types import Address, Data
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.replay.types import Cause, Refill, StoreWakeup, TlbHint
+from suites.memblock.lsq.vlq.types import RobPtr
 from .memory_owners import MemoryOwners, StoreOwner, cached_load
 from .test_replay_population import drain_replays
 
@@ -20,7 +22,7 @@ def stores():
 async def no_replay(trace, count=5):
     for _ in range(count):
         await trace.cycle()
-        assert not any(trace.env.observed[f"io_replay_{bank}_valid"] for bank in range(3))
+        assert not any(trace.env.observed[P.io(f"replay_{bank}_valid")] for bank in range(3))
 
 
 @pytest.mark.parametrize("ma_lane", range(3))
@@ -139,11 +141,11 @@ async def test_actual_vlq_head_wins_in_other_replay_banks_not_only_bank_zero(lsq
     slot, bank = 120 - prefix, (120 - prefix) % 3
     # An already selected request must hold while !ready. Head priority is
     # evaluated for the next available S1 selection, not by overwriting it.
-    lsq.expect({f"io_replay_{bank}_valid": 1, f"io_replay_{bank}_bits_replayQueueIdx": bank},
+    lsq.expect({P.io(f"replay_{bank}_valid"): 1, P.io(f"replay_{bank}_bits_replayQueueIdx"): bank},
                "original selected request holds through backpressure before new head selection")
     await trace.cycle(replay_ready=tuple(source == bank for source in range(3)))
-    lsq.expect({f"io_replay_{bank}_valid": 1, f"io_replay_{bank}_bits_replayQueueIdx": slot,
-                f"io_replay_{bank}_bits_uop_lqIdx_value": 0, f"io_replay_{bank}_bits_uop_lqIdx_flag": 0},
+    lsq.expect({P.io(f"replay_{bank}_valid"): 1, P.io(f"replay_{bank}_bits_replayQueueIdx"): slot,
+                P.io(f"replay_{bank}_bits_uop_lqIdx_value"): 0, P.io(f"replay_{bank}_bits_uop_lqIdx_flag"): 0},
                "real VLQ head in bank1/2 defeats earlier Replay allocation age")
     await drain_replays(trace, {state["uid"] for state in trace.loads})
     lsq.prove("LSQ-REPLAY.head", "LSQ-REPLAY.capacity")

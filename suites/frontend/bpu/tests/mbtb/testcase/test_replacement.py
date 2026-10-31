@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.mbtb.checker.assertions import assert_vector_hit
-from bpuverify.mbtb.checker.assertions import train
-from bpuverify.mbtb.case.definitions import NUM_WAYS
-from bpuverify.mbtb.case.definitions import conflict_vectors
+from suites.frontend.bpu.mbtb.checker.assertions import assert_vector_hit
+from suites.frontend.bpu.mbtb.checker.assertions import train
+from suites.frontend.bpu.mbtb.case.definitions import NUM_WAYS
+from suites.frontend.bpu.mbtb.case.definitions import conflict_vectors
 
 
 @pytest.mark.feature("BPU-MBTB-006")

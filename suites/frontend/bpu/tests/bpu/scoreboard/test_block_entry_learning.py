@@ -4,10 +4,10 @@ from dataclasses import replace
 from pathlib import Path
 from types import SimpleNamespace as NS
 import pytest
-from bpuverify.bpu.model.block_entry_learning import PROFILES, RULES, program
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.bpu.checker.block_entry_learning import Checks
-from bpuverify.bpu.coverage.block_entry_learning import Coverage
+from suites.frontend.bpu.bpu.model.block_entry_learning import PROFILES, RULES, program
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.checker.block_entry_learning import Checks
+from suites.frontend.bpu.bpu.coverage.block_entry_learning import Coverage
 from tests.bpu.scoreboard.test_early_direction_checking import Program as LearningProgram
 
 
@@ -71,7 +71,7 @@ def test_atomic_coverage_requires_all_actual_learning_obligations(profile,missin
 
 
 def test_entry_case_does_not_expose_raw_io_or_clock_edges():
-    for name in ('bpuverify/bpu/case/block_entry_learning.py','tests/bpu/testcase/test_block_entry_learning.py'):
+    for name in ('bpu/case/block_entry_learning.py','tests/bpu/testcase/test_block_entry_learning.py'):
         tree=ast.parse(Path(name).read_text()); forbidden={'ClockCycles','RisingEdge','FallingEdge','get_','set_','gather','create_task'}
         assert not {n.id for n in ast.walk(tree) if isinstance(n,ast.Name)} & forbidden
         assert not {n.attr for n in ast.walk(tree) if isinstance(n,ast.Attribute)} & forbidden

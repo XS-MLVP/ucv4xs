@@ -1,8 +1,8 @@
 """StoreDataCtrl semantic model qualification without DUT coverage credit."""
 import pytest
 
-from vagqverify.storedata.model import State, _sq_add, _store_flow_data, need_flush
-from vagqverify.storedata.types import Beat, Entry, Redirect, VrfReadResponse
+from suites.vector.vagq.storedata.model import State, _sq_add, _store_flow_data, need_flush
+from suites.vector.vagq.storedata.types import Beat, Entry, Redirect, VrfReadResponse
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)
 

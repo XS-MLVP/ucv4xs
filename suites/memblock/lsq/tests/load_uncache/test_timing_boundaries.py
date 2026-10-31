@@ -1,9 +1,11 @@
 """Reset phases, historical recovery, slot age and same-edge consumption."""
+
 import pytest
 
 from dataclasses import replace
-from lsqverify.uncache_entry.types import RobPtr
-from lsqverify.load_uncache.sequences import allocate_batch, fill, red
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.uncache_entry.types import RobPtr
+from suites.memblock.lsq.load_uncache.sequences import allocate_batch, fill, red
 
 
 async def phase_setup(env, phase):
@@ -49,7 +51,7 @@ async def test_capacity_rollback_current_and_two_historical_redirects(load_uncac
         await env.idle(distance - 2)
     await env.enqueue(requests, pending=RobPtr.encode(140), controls=red(RobPtr.encode(50)) if distance == 1 else None)
     change = await env.cycle(red(RobPtr.encode(50)) if distance == 0 else None)
-    assert env.observed["io_rollback_valid"] == int(distance == 3)
+    assert env.observed[P.p_rollback_valid] == int(distance == 3)
     if distance >= 2:
         assert len(change["rejected"]) == 3
     env.arm("LQU-ROLLBACK.redirect_window", uids)
@@ -72,7 +74,7 @@ async def test_current_redirect_with_bypass_consumption_has_report(load_uncache,
                   io_bypass_1_s0Req_bits_isMMIOReplay=not nc)
     change = await env.cycle(fields)
     assert change["free"] == [0] and change["entry_changes"][0]["consumed"]
-    assert env.observed["io_bypass_1_s1Resp_valid"] and env.observed["io_exceptionInfo_valid"]
+    assert env.observed[P.p_bypass_1_s1Resp_valid] and env.observed[P.p_exceptionInfo_valid]
     await env.idle(3)
     env.arm("LQU-FLUSH.consume_concurrent", [uid])
 

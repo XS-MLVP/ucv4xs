@@ -4,8 +4,8 @@ import json
 from pathlib import Path
 import pytest
 
-from bpuverify.common.coverage.local_guards import ROOT
-from bpuverify.bpu.coverage.guard_audit import COMPILED,source_claims
+from suites.frontend.bpu.coverage.local_guards import ROOT
+from suites.frontend.bpu.bpu.coverage.guard_audit import COMPILED,ORIGINAL,source_claims
 from tools.review_guard_gaps import review,main
 from tests.framework.test_local_guard_gaps import baseline
 
@@ -26,7 +26,7 @@ def integrated_baseline(baseline):
     epoch.write_text(json.dumps(frozen))
     records=[]
     for item in claims:
-        fields=dict(f=str((ROOT/COMPILED).resolve()),l=str(item['guard']),o=item['arm'],page='v_branch/WriteBuffer_8',
+        fields=dict(f=str((ROOT/COMPILED).resolve()),l=str(item['guard']),o=item['arm'],page='v_branch/WriteBuffer_12',
             S=f"{item['first']}-{item['last']}")
         meta=''.join('\x01'+key+'\x02'+value for key,value in fields.items())
         records.append(f"C '{meta}' 0\n")
@@ -46,7 +46,7 @@ def test_only_the_120_proven_native_keys_are_classified_and_other_bpu_rows_stay_
     assert result['unclassified']==[(COMPILED,2)]
     assert result['native_source_lines']==dict(total=122,hit=1)
     assert not result['functional_pass_credit'] and not result['whole_design_formal_claim']
-    assert {row['file'] for row in result['sources']}=={'rtl/tage/WriteBuffer.sv',COMPILED}
+    assert {row['file'] for row in result['sources']}=={ORIGINAL,COMPILED}
     assert {p:sha256(p.read_bytes()).hexdigest() for p in before}==before
 
 

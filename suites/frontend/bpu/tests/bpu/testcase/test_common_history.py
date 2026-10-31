@@ -1,7 +1,7 @@
 """A real NT recovery may not pre-count an unexecuted later conditional."""
 import pytest
-from bpuverify.bpu.case.common_history import check_common_history
-from bpuverify.bpu.coverage.common_history import CommonHistoryCoverage
+from suites.frontend.bpu.bpu.case.common_history import check_common_history
+from suites.frontend.bpu.bpu.coverage.common_history import CommonHistoryCoverage
 
 
 @pytest.mark.parametrize('public_only',(False,True),ids=('committed-state','public-consumer'))

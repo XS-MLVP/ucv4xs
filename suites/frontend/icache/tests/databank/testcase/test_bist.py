@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import pytest
 
-from icacheverify.databank.model.bank import DataEntry
+from suites.frontend.icache.databank.model.bank import DataEntry
 
 
 SET = 0x5A

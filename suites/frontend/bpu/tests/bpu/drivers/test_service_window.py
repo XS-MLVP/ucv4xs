@@ -3,8 +3,8 @@ import asyncio
 from contextlib import suppress
 import pytest
 from toffee import Bundle, Execution, MemoryBackend, ReadyValid, ReadyValidMonitor, Role, XPhase, RisingEdge, DriveStable, on, XEvent, XEventKind
-from bpuverify.bpu.agent.main import BpuAgent
-from bpuverify.bpu.driver.control import BpuControlDriver, PredictionWindow
+from suites.frontend.bpu.bpu.agent.main import BpuAgent
+from suites.frontend.bpu.bpu.driver.control import BpuControlDriver, PredictionWindow
 from tests.bpu.drivers.test_prediction_window import control_binding
 from tests.framework.fakes import Signal
 

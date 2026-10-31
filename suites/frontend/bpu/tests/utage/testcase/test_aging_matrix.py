@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.utage.coverage.catalog import utage_aging_matrix_coverage_model
-from bpuverify.utage.coverage.catalog import write_utage_aging_matrix_coverage
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.utage.case.aging_scenario import check_two_round_aging
+from suites.frontend.bpu.utage.coverage.catalog import utage_aging_matrix_coverage_model
+from suites.frontend.bpu.utage.coverage.catalog import write_utage_aging_matrix_coverage
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.utage.case.aging_scenario import check_two_round_aging
 
 
 @pytest.mark.feature("BPU-UTAGE-017")

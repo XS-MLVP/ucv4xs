@@ -5,8 +5,8 @@ import random
 
 import pytest
 
-from lsuverify.load_s2.coverage import CASES, LoadS2Coverage
-from lsuverify.load_s2.env import (
+from suites.memblock.lsu.load_s2.coverage import CASES, LoadS2Coverage
+from suites.memblock.lsu.load_s2.env import (
     MSHR_FIELDS,
     NUKE_FIELDS,
     PIPEIN_FIELDS,

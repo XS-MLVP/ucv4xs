@@ -5,14 +5,13 @@ from types import SimpleNamespace
 import pytest
 
 from toffee import ScoreboardMismatch,TransferState
-from bpuverify.utage.model.semantic import Context,Events,UtageReference
-from bpuverify.utage.transaction.types import UtagePrediction,UtageTraining
+from suites.frontend.bpu.utage.model.semantic import Context,Events,UtageReference
+from suites.frontend.bpu.utage.transaction.types import UtagePrediction,UtageTraining
 from tests.utage.scoreboard.test_semantic_model import lookup,feedback,learn,POSITIONS
 from tests.utage.scoreboard.test_read_lifetime_model import bases,values
-from bpuverify.utage.model.query_identity import Program,MODES,RULES,PC,POSITION,READ_PCS
-from bpuverify.utage.checker.query_identity import Checks
-from bpuverify.utage.coverage.query_identity import Coverage
-
+from suites.frontend.bpu.utage.model.query_identity import Program,MODES,RULES,PC,POSITION,READ_PCS
+from suites.frontend.bpu.utage.checker.query_identity import Checks
+from suites.frontend.bpu.utage.coverage.query_identity import Coverage
 
 
 def prepared(p):

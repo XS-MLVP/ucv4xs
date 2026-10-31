@@ -1,7 +1,7 @@
 """Integrated feedback lifecycle intent; no pins, edges or cycle sleeps."""
 import pytest
-from bpuverify.bpu.case.ittage_feedback import check_target_feedback
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.bpu.case.ittage_feedback import check_target_feedback
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature('BPU-INT-062')

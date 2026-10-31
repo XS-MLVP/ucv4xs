@@ -5,8 +5,8 @@ import random
 
 import pytest
 
-from lsuverify.store_s4.coverage import S4_CASES, StoreS4Coverage
-from lsuverify.store_s4.env import FIELDS, StoreS4Env, random_payload
+from suites.memblock.lsu.store_s4.coverage import S4_CASES, StoreS4Coverage
+from suites.memblock.lsu.store_s4.env import FIELDS, StoreS4Env, random_payload
 
 
 @pytest.fixture

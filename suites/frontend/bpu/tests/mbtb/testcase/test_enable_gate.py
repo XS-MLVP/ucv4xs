@@ -4,12 +4,12 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.mbtb.checker.assertions import assert_miss
-from bpuverify.mbtb.checker.assertions import assert_vector_hit
-from bpuverify.mbtb.case.definitions import DIRECT
-from bpuverify.mbtb.case.definitions import INDIRECT
-from bpuverify.mbtb.case.enable_scenarios import observe_lookup_gate
-from bpuverify.mbtb.case.enable_scenarios import observe_training_gate
+from suites.frontend.bpu.mbtb.checker.assertions import assert_miss
+from suites.frontend.bpu.mbtb.checker.assertions import assert_vector_hit
+from suites.frontend.bpu.mbtb.case.definitions import DIRECT
+from suites.frontend.bpu.mbtb.case.definitions import INDIRECT
+from suites.frontend.bpu.mbtb.case.enable_scenarios import observe_lookup_gate
+from suites.frontend.bpu.mbtb.case.enable_scenarios import observe_training_gate
 
 
 @pytest.mark.feature("BPU-MBTB-010")

@@ -1,17 +1,17 @@
 """Normal-event feasibility and closed semantic expectations; no DUT credit."""
-from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT
+from suites.frontend.bpu.models.configuration import TAGE_ALLOCATION_WAIT
 from copy import deepcopy
 from dataclasses import replace
 
 import pytest
 
-from bpuverify.bpu.model.main_sources import source_entries
-from bpuverify.bpu.model.pipeline import Outcome, Redirect, Resolution
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.bpu.model.tage.partial_residency import PC, PATHS, POSITIONS, PROGRAMS
-from bpuverify.bpu.model.tage.service import (
+from suites.frontend.bpu.bpu.model.main_sources import source_entries
+from suites.frontend.bpu.bpu.model.pipeline import Outcome, Redirect, Resolution
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.tage.partial_residency import PC, PATHS, POSITIONS, PROGRAMS
+from suites.frontend.bpu.bpu.model.tage.service import (
     STREAM_PC, STREAM_POSITION, learning_inflight, pending_plan)
-from bpuverify.tage.model.semantic import coordinate
+from suites.frontend.bpu.tage.model.semantic import coordinate
 from tests.bpu.scoreboard.test_direction_forwarding import resolution
 from tests.bpu.scoreboard.test_direction_service import streaming_query, via
 from tests.bpu.scoreboard.test_direction_sources import prepared, quiet, revisit

@@ -1,12 +1,12 @@
 """Disabled MicroRAS must not offer a usable return target."""
 import pytest
 
-from bpuverify.uras.case.definitions import CALL_A
-from bpuverify.uras.checker.assertions import pushed
-from bpuverify.uras.coverage.enable_gate import EnableGateCoverage
-from bpuverify.uras.transaction.types import UrasCycle
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.uras.case.definitions import CALL_A
+from suites.frontend.bpu.uras.checker.assertions import pushed
+from suites.frontend.bpu.uras.coverage.enable_gate import EnableGateCoverage
+from suites.frontend.bpu.uras.transaction.types import UrasCycle
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature("BPU-URAS-017")

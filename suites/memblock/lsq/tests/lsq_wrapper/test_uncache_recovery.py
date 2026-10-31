@@ -1,8 +1,10 @@
 """Real Wrapper cancellation phases, external cleanup and capacity rollback."""
+
 import pytest
 
-from lsqverify.load_queue.types import Load
-from lsqverify.vlq.types import QueuePtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.load_queue.types import Load
+from suites.memblock.lsq.vlq.types import QueuePtr
 from .uncache_recovery import UncacheRecoveryOwners
 
 
@@ -25,13 +27,13 @@ async def test_full_16_uncache_cancel_each_public_phase_cleanup_then_same_slot_n
         for attempt in jobs:
             await trace.respond(attempt, error=True, nderr=True)
         await trace.idle(6)
-    assert bool(lsq.observed["io_uncache_req_valid"]) == (phase == "buffered_nc")
+    assert bool(lsq.observed[P.p_uncache_req_valid]) == (phase == "buffered_nc")
     if phase == "buffered_nc":
-        buffered = {pin: lsq.observed[pin] for pin in ("io_uncache_req_bits_id", "io_uncache_req_bits_addr")}
+        buffered = {pin: lsq.observed[pin] for pin in (P.p_uncache_req_bits_id, P.p_uncache_req_bits_addr)}
     lsq.reach("LSQ-RECOVER.all", "LSQ-RECOVER.reuse")
     assert await trace.cancel(old[0].execution.uop.rob) == QueuePtr.encode(0)
     if phase == "buffered_nc":
-        assert lsq.observed["io_uncache_req_valid"] and all(lsq.observed[pin] == value for pin, value in buffered.items())
+        assert lsq.observed[P.p_uncache_req_valid] and all(lsq.observed[pin] == value for pin, value in buffered.items())
         jobs = [await trace.accept(sid=7)]
     for attempt in jobs:
         if attempt["response"] is None:
@@ -79,7 +81,7 @@ async def test_real_uncache_capacity_rollback_oldest_rejected_metadata_shared_fl
     await trace.cycle(loads=tuple(reversed(new)))
     await trace.cycle()
     rejected = new[16 - occupied]
-    u, p = rejected.execution.uop, "io_nack_rollback_0_"
+    u, p = rejected.execution.uop, P.p_nack_rollback_0_
     lsq.expect({p+"valid": 1, p+"bits_robIdx_flag": int(u.rob.flag), p+"bits_robIdx_value": u.rob.value,
                 p+"bits_robIdx_isFormer": int(u.rob.former), p+"bits_ftqIdx_flag": int(u.ftq.flag),
                 p+"bits_ftqIdx_value": u.ftq.value, p+"bits_ftqOffset": u.offset, p+"bits_isRVC": int(u.rvc),

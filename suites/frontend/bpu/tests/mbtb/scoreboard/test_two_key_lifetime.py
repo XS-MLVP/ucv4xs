@@ -3,9 +3,9 @@ from collections import Counter
 from copy import deepcopy
 from itertools import product
 import pytest
-from bpuverify.mbtb.model.two_key_programs import programs,SEMANTIC_PROGRAMS,RULES
-from bpuverify.mbtb.coverage.two_key_lifetime import Coverage
-from bpuverify.mbtb.model.entry import CARRY_PATTERNS
+from suites.frontend.bpu.mbtb.model.two_key_programs import programs,SEMANTIC_PROGRAMS,RULES
+from suites.frontend.bpu.mbtb.coverage.two_key_lifetime import Coverage
+from suites.frontend.bpu.mbtb.model.entry import CARRY_PATTERNS
 
 
 def receipt():

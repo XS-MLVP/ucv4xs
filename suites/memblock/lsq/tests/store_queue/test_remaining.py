@@ -1,15 +1,17 @@
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.forward.types import Query, Translation
-from lsqverify.psq.checks import check_word, ptr_values, read_ptr
-from lsqverify.psq.directed import scalar_word
-from lsqverify.psq.types import Address, Attributes, Data
-from lsqverify.raw.types import SqPtr
-from lsqverify.store_queue.directed import consume
-from lsqverify.vlq.types import Redirect, RobPtr
-from lsqverify.vsq.types import Dispatch
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.forward.types import Query, Translation
+from suites.memblock.lsq.psq.checks import check_word, ptr_values, read_ptr
+from suites.memblock.lsq.psq.directed import scalar_word
+from suites.memblock.lsq.psq.types import Address, Attributes, Data
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.store_queue.directed import consume
+from suites.memblock.lsq.vlq.types import Redirect, RobPtr
+from suites.memblock.lsq.vsq.types import Dispatch
 from .helpers import finish_special, pair, requests, wait_valid, write
 
 
@@ -27,12 +29,12 @@ async def test_ready_holes_and_tlb_retry_do_not_advance_unready_prefix(sq):
     await env.cycle(dispatch=(Dispatch(),) * 8, addresses=(owners[2][0], owners[1][0]), data=(owners[0][1], owners[2][1]))
     await env.cycle(addresses=(Address(), Address()), data=(Data(), Data()))
     await env.idle(3)
-    env.expect({**ptr_values("io_toLoadQueue_stAddrReadySqPtr_", 0), **ptr_values("io_toLoadQueue_stDataReadySqPtr_", 1),
-                "io_toLoadQueue_stAddrReadyVec_1": 1, "io_toLoadQueue_stAddrReadyVec_2": 1, "io_toLoadQueue_stDataReadyVec_2": 1}, "independent continuous prefixes cannot jump their actual holes")
+    env.expect({**ptr_values(P.p_toLoadQueue_stAddrReadySqPtr_, 0), **ptr_values(P.p_toLoadQueue_stDataReadySqPtr_, 1),
+                P.p_toLoadQueue_stAddrReadyVec_1: 1, P.p_toLoadQueue_stAddrReadyVec_2: 1, P.p_toLoadQueue_stDataReadyVec_2: 1}, "independent continuous prefixes cannot jump their actual holes")
     await env.cycle(addresses=(replace(owners[0][0], tlb_miss=True), Address()))
     await env.cycle(addresses=(Address(), Address()))
     await env.idle(3)
-    env.expect({**ptr_values("io_toLoadQueue_stAddrReadySqPtr_", 0), "io_toLoadQueue_stAddrReadyVec_0": 0}, "TLB miss does not close the address prefix")
+    env.expect({**ptr_values(P.p_toLoadQueue_stAddrReadySqPtr_, 0), P.p_toLoadQueue_stAddrReadyVec_0: 0}, "TLB miss does not close the address prefix")
     await env.cycle(addresses=(owners[0][0], Address()), data=(owners[1][1], Data()))
     await env.cycle(addresses=(Address(), Address()), data=(Data(), Data()))
     await consume(env, [scalar_word(*item) for item in owners], 3, rob_head=RobPtr.encode(11))
@@ -50,12 +52,12 @@ async def test_youngest_missing_data_dependency_then_newest_bytes(sq):
     await env.cycle(addresses=(Address(), Address()), data=(Data(), Data()))
     await env.idle(3)
     await query(env, a1, 2)
-    env.expect({f"io_forward_{lane}_s2Resp_bits_dataInvalid_valid": 1 for lane in range(3)}, "missing newest data must block old-value success")
-    env.expect({f"io_forward_{lane}_s2Resp_bits_dataInvalid_bits_value": 1 for lane in range(3)}, "dependency keeps actual SQ1 owner")
+    env.expect({P.io(f"forward_{lane}_s2Resp_bits_dataInvalid_valid"): 1 for lane in range(3)}, "missing newest data must block old-value success")
+    env.expect({P.io(f"forward_{lane}_s2Resp_bits_dataInvalid_bits_value"): 1 for lane in range(3)}, "dependency keeps actual SQ1 owner")
     await env.cycle(data=(d1, Data()))
     await env.cycle(data=(Data(), Data()))
     await query(env, a1, 2)
-    env.expect({f"io_forward_{lane}_s2Resp_bits_forwardData_{byte}": 0x22 for lane in range(3) for byte in range(8)}, "newest original data wins after real STD arrival")
+    env.expect({P.io(f"forward_{lane}_s2Resp_bits_forwardData_{byte}"): 0x22 for lane in range(3) for byte in range(8)}, "newest original data wins after real STD arrival")
     await consume(env, [scalar_word(a0, d0), scalar_word(a1, d1)], 2, rob_head=RobPtr.encode(12))
     env.finish(names)
 
@@ -68,15 +70,15 @@ async def test_s1_kill_and_dequeue_visible_window_keep_exact_query_owner(sq):
     await env.cycle(dispatch=requests({4: (10, 1)}), rob_head=RobPtr.encode(10))
     await env.cycle(dispatch=(Dispatch(),) * 8)
     await write(env, address, data)
-    await wait_valid(env, "io_writeToSbuffer_req_0_valid")
+    await wait_valid(env, P.p_writeToSbuffer_req_0_valid)
     await env.cycle(sbuffer_ready=(True, True), queries=(Query(True, address.vaddr, SqPtr.encode(1), 3),) * 3)
     check_word(env, 0, *scalar_word(address, data), before=True)
     await env.cycle(queries=(Query(),) * 3, translations=(Translation(address.paddr), Translation(address.paddr, True), Translation(address.paddr)))
-    env.expect({f"io_forward_{lane}_s2Resp_valid": int(lane != 1) for lane in range(3)}, "only killed S0 owner is cancelled while peer queries accepted at real consumption still respond")
+    env.expect({P.io(f"forward_{lane}_s2Resp_valid"): int(lane != 1) for lane in range(3)}, "only killed S0 owner is cancelled while peer queries accepted at real consumption still respond")
     await env.idle(8, translations=(Translation(),) * 3)
-    env.expect({"io_sqEmpty": 1, **ptr_values("io_sqDeqPtr_", 1)}, "real physical credit and virtual feedback have completed")
+    env.expect({P.p_sqEmpty: 1, **ptr_values(P.p_sqDeqPtr_, 1)}, "real physical credit and virtual feedback have completed")
     await query(env, address, 1)
-    env.expect({f"io_forward_{lane}_s2Resp_bits_forwardMask_{byte}": 0 for lane in range(3) for byte in range(16)}, "new queries after release cannot see old slot data")
+    env.expect({P.io(f"forward_{lane}_s2Resp_bits_forwardMask_{byte}"): 0 for lane in range(3) for byte in range(16)}, "new queries after release cannot see old slot data")
     env.finish(names)
 
 
@@ -93,10 +95,10 @@ async def test_legal_previous_dispatch_inflight_recovery_then_new_slot_data(sq):
     seen = False
     for _ in range(14):
         await env.cycle(attributes=(Attributes(), Attributes()))
-        if env.observed["io_toLsqEnqCtrl_sqRedirectPtr_valid"]:
-            env.expect(ptr_values("io_toLsqEnqCtrl_sqRedirectPtr_bits_", 1), "true VSQ recovers exclusive tail from surviving dispatch")
+        if env.observed[P.p_toLsqEnqCtrl_sqRedirectPtr_valid]:
+            env.expect(ptr_values(P.p_toLsqEnqCtrl_sqRedirectPtr_bits_, 1), "true VSQ recovers exclusive tail from surviving dispatch")
             seen = True
-    assert seen and not env.observed["io_toLsqEnqCtrl_sqRecoverStall"]
+    assert seen and not env.observed[P.p_toLsqEnqCtrl_sqRecoverStall]
     new = Address(True, 1, 6, 0x800000, 0xE000000, 3), Data(True, 1, 6, 0xEEEEDDCCBBAA9988)
     await env.cycle(dispatch=requests({4: (11, 1)}, start=1))
     await env.cycle(dispatch=(Dispatch(),) * 8)
@@ -117,17 +119,17 @@ async def test_all_cbo_slots_both_sta_lanes_actual_complete(sq):
         await env.cycle(dispatch=(Dispatch(),) * 8)
         await write(env, Address(True, position % 64, op, va, pa, 3), Data(True, position % 64, op, 0x8877665544332211 + position), lane=lane)
         if cbo == 3:
-            await wait_valid(env, "io_writeToSbuffer_req_0_valid")
+            await wait_valid(env, P.p_writeToSbuffer_req_0_valid)
             await env.cycle(sbuffer_ready=(True, True))
             check_word(env, 0, va, pa, 255, 0, wline=1, before=True)
-            await wait_valid(env, "io_writeBack_valid")
+            await wait_valid(env, P.p_writeBack_valid)
         else:
-            await wait_valid(env, "io_toDCache_req_valid")
-            env.expect({"io_toDCache_req_bits_opcode": cbo, "io_toDCache_req_bits_address": pa}, "slot/lane-specific actual CBO request")
+            await wait_valid(env, P.p_toDCache_req_valid)
+            env.expect({P.p_toDCache_req_bits_opcode: cbo, P.p_toDCache_req_bits_address: pa}, "slot/lane-specific actual CBO request")
             await env.cycle(cache_ready=True)
             await env.cycle(cache_response=True)
         await env.cycle(cache_response=False, writeback_ready=True)
-        env.expect({"io_writeBack_valid": 1, "io_writeBack_bits_robIdx_value": rob.value}, "each slot/lane CBO owner has actual WB fire", before=True)
+        env.expect({P.p_writeBack_valid: 1, P.p_writeBack_bits_robIdx_value: rob.value}, "each slot/lane CBO owner has actual WB fire", before=True)
         await finish_special(env, position + 1)
     env.finish(names)
 
@@ -149,15 +151,15 @@ async def test_retired_split_then_rob_head_cbo_tail_fire_keeps_ordinary_control(
     op = neighbor * 2 + 1
     await env.cycle(rob_head=RobPtr.encode(11), addresses=(Address(True, 1, op, 0xA0000, 0xC000000, 3), Address()), data=(Data(True, 1, op, 0), Data()))
     await env.cycle(addresses=(Address(), Address()), data=(Data(), Data()))
-    await wait_valid(env, "io_writeToSbuffer_req_1_valid")
+    await wait_valid(env, P.p_writeToSbuffer_req_1_valid)
     await env.idle(hold)
     await env.cycle(sbuffer_ready=(True, True))
     check_word(env, 0, 0x94000, 0xABCD000, 0xF000, 0x44332211 << 96, before=True)
     check_word(env, 1, 0x94010, 0xABCD010, 15, 0x88776655, before=True)
-    await wait_valid(env, "io_toDCache_req_valid")
+    await wait_valid(env, P.p_toDCache_req_valid)
     await env.cycle(cache_ready=True)
     await env.cycle(cache_response=True)
     await env.cycle(cache_response=False, writeback_ready=True)
-    env.expect({"io_writeBack_valid": 1, "io_writeBack_bits_robIdx_value": 11}, "nonzero neighbor control also really completes", before=True)
+    env.expect({P.p_writeBack_valid: 1, P.p_writeBack_bits_robIdx_value: 11}, "nonzero neighbor control also really completes", before=True)
     await finish_special(env, 2)
     env.finish(names)

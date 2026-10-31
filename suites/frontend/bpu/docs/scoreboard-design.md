@@ -2,7 +2,7 @@
 
 状态：**已在 xreactor 实现，并迁移到本仓库**。
 
-本仓库的 DUT 专用比较组件位于 `bpuverify/<dut>/checker/`，目录职责见
+本仓库的 DUT 专用比较组件位于 `suites/frontend/bpu/<dut>/checker/`，目录职责见
 [repository-layout.md](repository-layout.md)；本文所述通用机制仍在 xreactor。
 
 本文定义 xreactor/BPU 验证环境 Scoreboard 的职责、用户接口和失败语义。通用

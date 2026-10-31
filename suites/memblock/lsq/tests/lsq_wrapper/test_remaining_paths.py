@@ -1,13 +1,15 @@
 """Each remaining DA scenario must actually finish original/replacement UIDs."""
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.load_queue.types import Load
-from lsqverify.lsq_wrapper.types import Address, Data
-from lsqverify.raw.types import Query as RawQuery, SqPtr
-from lsqverify.replay.types import Cause, StoreWakeup, TlbHint
-from lsqverify.vlq.types import QueuePtr, RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.load_queue.types import Load
+from suites.memblock.lsq.lsq_wrapper.types import Address, Data
+from suites.memblock.lsq.raw.types import Query as RawQuery, SqPtr
+from suites.memblock.lsq.replay.types import Cause, StoreWakeup, TlbHint
+from suites.memblock.lsq.vlq.types import QueuePtr, RobPtr
 from .memory_owners import MemoryOwners, StoreOwner, cached_load
 from .recovery_owners import RecoveryOwners
 from .special_owners import SpecialOwners, SpecialStore
@@ -148,7 +150,7 @@ async def test_entry_zero_cancel_in_request_before_elastic_accept_has_no_externa
     await trace.dispatch([old],with_store=True)
     await trace.cycle(loads=(old,Load(),Load()))
     await trace.idle(2)
-    assert not lsq.observed["io_uncache_req_valid"] and not trace.attempts
+    assert not lsq.observed[P.p_uncache_req_valid] and not trace.attempts
     assert await trace.cancel(old.execution.uop.rob)==QueuePtr.encode(0)
     await trace.discard_cancelled_returns()
     assert not trace.attempts
@@ -173,22 +175,22 @@ async def test_actual_sta_high_raw_select_group_original_rollback_then_same_lq_n
     for first in range(0,56,3):
         batch=[raw_query(load) for load in loads[first:first+3]]
         await trace.cycle(raw_queries=tuple(batch)+(RawQuery(),)*(3-len(batch)))
-        assert all(lsq.pre_observed[f"io_ldu_rawNukeQuery_{lane}_req_ready"] for lane in range(len(batch)))
+        assert all(lsq.pre_observed[P.io(f"ldu_rawNukeQuery_{lane}_req_ready")] for lane in range(len(batch)))
     await trace.execute(loads)
     await no_replay(trace)
     target=8*group+7
     await trace.write(target,lane=sta_lane)
     await trace.idle(2)
     expect_rollback(lsq,sta_lane,loads[target],old[target].address())
-    lsq.expect({f"io_nuke_rollback_{1-sta_lane}_valid":0,"io_mdpTrain_valid":1,
-                "io_mdpTrain_bits_ftqIdx_value":loads[target].execution.uop.ftq.value,
-                "io_mdpTrain_bits_ftqOffset":loads[target].execution.uop.offset,
-                "io_mdpTrain_bits_stFtqIdx_value":old[target].address().ftq.value,
-                "io_mdpTrain_bits_stFtqOffset":old[target].address().ftq_offset},
+    lsq.expect({P.io(f"nuke_rollback_{1-sta_lane}_valid"):0,P.p_mdpTrain_valid:1,
+                P.p_mdpTrain_bits_ftqIdx_value:loads[target].execution.uop.ftq.value,
+                P.p_mdpTrain_bits_ftqOffset:loads[target].execution.uop.offset,
+                P.p_mdpTrain_bits_stFtqIdx_value:old[target].address().ftq.value,
+                P.p_mdpTrain_bits_stFtqOffset:old[target].address().ftq_offset},
                "actual high-group Store STA trains exactly its original younger Load, not a capacity placeholder")
     actual=lsq.observed
-    cutoff=RobPtr(bool(actual[f"io_nuke_rollback_{sta_lane}_bits_robIdx_flag"]),actual[f"io_nuke_rollback_{sta_lane}_bits_robIdx_value"],
-                  bool(actual[f"io_nuke_rollback_{sta_lane}_bits_robIdx_isFormer"]))
+    cutoff=RobPtr(bool(actual[P.io(f"nuke_rollback_{sta_lane}_bits_robIdx_flag")]),actual[P.io(f"nuke_rollback_{sta_lane}_bits_robIdx_value")],
+                  bool(actual[P.io(f"nuke_rollback_{sta_lane}_bits_robIdx_isFormer")]))
     assert await trace.recover_load_suffix(cutoff)==QueuePtr.encode(target)
     new=[cached_load(pos,70+pos,56,old[pos].vaddr,old[pos].paddr) for pos in range(target,56)]
     await trace.dispatch(loads=new)

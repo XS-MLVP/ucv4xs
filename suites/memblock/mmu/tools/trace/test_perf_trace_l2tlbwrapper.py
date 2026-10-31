@@ -1,4 +1,4 @@
-from mmuverify.common.runtime import execution
+from suites.memblock.mmu.execution import execution
 import json, os
 
 

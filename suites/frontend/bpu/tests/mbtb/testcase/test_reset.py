@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.mbtb.checker.assertions import assert_miss
-from bpuverify.mbtb.case.definitions import DIRECT
+from suites.frontend.bpu.mbtb.checker.assertions import assert_miss
+from suites.frontend.bpu.mbtb.case.definitions import DIRECT
 
 
 @pytest.mark.feature("BPU-MBTB-001")

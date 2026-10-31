@@ -1,9 +1,9 @@
 """Final correction must teach its original path, never a younger request."""
 import json
 import pytest
-from bpuverify.bpu.model.late_correction_learning import PROFILES
-from bpuverify.bpu.coverage.late_correction_learning import Coverage
-from bpuverify.bpu.case.late_correction_learning import run
+from suites.frontend.bpu.bpu.model.late_correction_learning import PROFILES
+from suites.frontend.bpu.bpu.coverage.late_correction_learning import Coverage
+from suites.frontend.bpu.bpu.case.late_correction_learning import run
 
 
 @pytest.mark.feature('BPU-INT-044')

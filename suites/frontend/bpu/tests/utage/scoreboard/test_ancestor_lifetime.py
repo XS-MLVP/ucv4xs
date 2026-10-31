@@ -4,12 +4,11 @@ from types import SimpleNamespace
 import pytest
 from toffee import ScoreboardMismatch
 
-from bpuverify.utage.model.semantic import Context,indices
-from bpuverify.utage.model.ancestor_lifetime import Program,PROFILES,RELATIONS,PC,MATCH_PC,MATCH_HISTORY,RULES
+from suites.frontend.bpu.utage.model.semantic import Context,indices
+from suites.frontend.bpu.utage.model.ancestor_lifetime import Program,PROFILES,RELATIONS,PC,MATCH_PC,MATCH_HISTORY,RULES
 from tests.utage.scoreboard.test_ancestor_lifetime_model import derive
-from bpuverify.utage.checker.ancestor_lifetime import Checks
-from bpuverify.utage.coverage.ancestor_lifetime import Coverage
-
+from suites.frontend.bpu.utage.checker.ancestor_lifetime import Checks
+from suites.frontend.bpu.utage.coverage.ancestor_lifetime import Coverage
 
 
 def witnesses(p):

@@ -11,18 +11,18 @@ import pytest
 from toffee import CheckContext
 from toffee import ClockCycles
 from toffee import ScoreboardMode
-from bpuverify.mbtb.agent.main import MbtbAgent
-from bpuverify.mbtb.transaction.types import MbtbBatchTraining
-from bpuverify.mbtb.transaction.types import MbtbBranchFeedback
-from bpuverify.mbtb.transaction.types import MbtbTraining
+from suites.frontend.bpu.mbtb.agent.main import MbtbAgent
+from suites.frontend.bpu.mbtb.transaction.types import MbtbBatchTraining
+from suites.frontend.bpu.mbtb.transaction.types import MbtbBranchFeedback
+from suites.frontend.bpu.mbtb.transaction.types import MbtbTraining
 from tests.conftest import dut_factory
-from bpuverify.common.env.fixtures import agent_fixture
-from bpuverify.mbtb.checker.assertions import assert_miss
-from bpuverify.mbtb.checker.assertions import assert_vector_hit
-from bpuverify.mbtb.checker.assertions import matching_way
-from bpuverify.mbtb.case.definitions import BranchVector
-from bpuverify.mbtb.case.resident_scenario import frozen_check
-from bpuverify.mbtb.case.resident_scenario import snapshot
+from suites.frontend.bpu.runtime.fixtures import agent_fixture
+from suites.frontend.bpu.mbtb.checker.assertions import assert_miss
+from suites.frontend.bpu.mbtb.checker.assertions import assert_vector_hit
+from suites.frontend.bpu.mbtb.checker.assertions import matching_way
+from suites.frontend.bpu.mbtb.case.definitions import BranchVector
+from suites.frontend.bpu.mbtb.case.resident_scenario import frozen_check
+from suites.frontend.bpu.mbtb.case.resident_scenario import snapshot
 
 CASES = []
 

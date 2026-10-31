@@ -3,10 +3,10 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.bpu.model.loop_iteration import LoopIterationReference, MAX_ITERATIONS, loop_successor
-from bpuverify.bpu.model.pipeline import Cycle, Token
-from bpuverify.bpu.model.path_history import Checkpoint
-from bpuverify.bpu.model.selection import Branch, Choice, Kind
+from suites.frontend.bpu.bpu.model.loop_iteration import LoopIterationReference, MAX_ITERATIONS, loop_successor
+from suites.frontend.bpu.bpu.model.pipeline import Cycle, Token
+from suites.frontend.bpu.bpu.model.path_history import Checkpoint
+from suites.frontend.bpu.bpu.model.selection import Branch, Choice, Kind
 
 PC = 0x40000800
 BACK = Branch(1, PC, Kind.CONDITIONAL, True)

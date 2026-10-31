@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.bpu.transaction.types import BpuStage1Source
-from bpuverify.bpu.case.definitions import PC
+from suites.frontend.bpu.bpu.transaction.types import BpuStage1Source
+from suites.frontend.bpu.bpu.case.definitions import PC
 
 
 @pytest.mark.feature("BPU-INT-007")

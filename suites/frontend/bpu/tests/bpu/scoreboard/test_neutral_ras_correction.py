@@ -3,11 +3,11 @@ from copy import deepcopy
 from types import SimpleNamespace
 import pytest
 from toffee import ScoreboardMismatch
-from bpuverify.bpu.case.ras.correction import correction_program
-from bpuverify.bpu.checker.ras.correction import check_correction, check_program_output, check_wrong_path_absent
-from bpuverify.bpu.checker.ras.micro import MicroRasChecker
-from bpuverify.bpu.transaction.types import BpuPrediction, BpuStage1Source
-from bpuverify.uras.model.pipeline import empty_state, advance
+from suites.frontend.bpu.bpu.case.ras.correction import correction_program
+from suites.frontend.bpu.bpu.checker.ras.correction import check_correction, check_program_output, check_wrong_path_absent
+from suites.frontend.bpu.bpu.checker.ras.micro import MicroRasChecker
+from suites.frontend.bpu.bpu.transaction.types import BpuPrediction, BpuStage1Source
+from suites.frontend.bpu.uras.model.pipeline import empty_state, advance
 
 
 def witness(younger_action=2):

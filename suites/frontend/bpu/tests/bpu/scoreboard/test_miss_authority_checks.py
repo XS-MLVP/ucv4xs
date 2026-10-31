@@ -3,14 +3,13 @@ from copy import deepcopy
 from types import SimpleNamespace
 import pytest
 from toffee import ScoreboardMismatch
-from bpuverify.bpu.model.main_service import observed_counter
-from bpuverify.bpu.transaction.types import BpuBatchTraining,BpuBranchFeedback
-from bpuverify.bpu.model.feedback_gate import FeedbackGate,wire_payload
-from bpuverify.bpu.model.window_lifetime import WindowLifetimes,LifetimeError
-from bpuverify.bpu.model.miss_authority import Program,FOREIGN_PC,STREAM_PC,RULES
-from bpuverify.bpu.checker.miss_authority import Checks
-from bpuverify.bpu.coverage.miss_authority import Coverage
-
+from suites.frontend.bpu.bpu.model.main_service import observed_counter
+from suites.frontend.bpu.bpu.transaction.types import BpuBatchTraining,BpuBranchFeedback
+from suites.frontend.bpu.bpu.model.feedback_gate import FeedbackGate,wire_payload
+from suites.frontend.bpu.bpu.model.window_lifetime import WindowLifetimes,LifetimeError
+from suites.frontend.bpu.bpu.model.miss_authority import Program,FOREIGN_PC,STREAM_PC,RULES
+from suites.frontend.bpu.bpu.checker.miss_authority import Checks
+from suites.frontend.bpu.bpu.coverage.miss_authority import Coverage
 
 
 def checks(program):return Checks(SimpleNamespace(checker=SimpleNamespace(current_event=None)),program)

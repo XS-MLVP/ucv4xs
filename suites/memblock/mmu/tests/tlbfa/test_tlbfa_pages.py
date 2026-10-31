@@ -2,8 +2,8 @@
 from __future__ import annotations
 import pytest
 
-from mmuverify.common.runtime import execution
-from mmuverify.tlbfa.model import ALL_STAGE, NO_S2, ONLY_S1, ONLY_S2, TlbfaModel
+from suites.memblock.mmu.execution import execution
+from suites.memblock.mmu.tlbfa.model import ALL_STAGE, NO_S2, ONLY_S1, ONLY_S2, TlbfaModel
 
 from .common import lookup_vpn, make_refill
 
@@ -17,7 +17,7 @@ def vpn_for(kind: int, tag: int, low: int) -> int:
 # TLBFA-PPN-01
 async def test_4k_ppn_low_slot_selection(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         ppn = 0x123456789
         low = (1, 3, 5, 7, 2, 4, 6, 0)
@@ -40,7 +40,7 @@ async def test_4k_ppn_low_slot_selection(tlbfa_env):
 # TLBFA-PAGE-01, TLBFA-PAGE-02, TLBFA-PAGE-03, TLBFA-PAGE-04
 async def test_page_size_boundaries(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         cases = [
             # (way, s1 tag, level, inside offset, boundary offset)
@@ -64,7 +64,7 @@ async def test_page_size_boundaries(tlbfa_env):
 # TLBFA-PAGE-05, TLBFA-PAGE-06
 async def test_valididx_gates_small_pages_and_superpages_use_all_sectors(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         valid = (0, 0, 0, 1, 0, 0, 0, 0)
         data = make_refill(NO_S2, 0, 0x900, 0x222222222, valididx=valid)
@@ -85,7 +85,7 @@ async def test_valididx_gates_small_pages_and_superpages_use_all_sectors(tlbfa_e
 # TLBFA-NAPOT-01, TLBFA-NAPOT-02, TLBFA-PPN-02
 async def test_napot_uses_vpn_low_four_bits(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         tag = 0xA00
         data = make_refill(NO_S2, 0, tag, 0x444444000, n=1, ppn_low=(0,) * 8)
@@ -109,7 +109,7 @@ async def test_napot_uses_vpn_low_four_bits(tlbfa_env):
 # TLBFA-S2IDX-01, TLBFA-S2IDX-02
 async def test_stage2_pte_index_gates_only_stage2_forms(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.program_context(hgatp_vmid=3)
         # onlyStage2: one 4KB subpage is installed by the GPA low bits.
@@ -140,7 +140,7 @@ async def test_stage2_pte_index_gates_only_stage2_forms(tlbfa_env):
 # TLBFA-HIT-03, TLBFA-CTX-01..04, TLBFA-COMBO-03
 async def test_translation_stage_and_context_are_part_of_the_cam_key(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.program_context(satp_asid=1, vsatp_asid=2, hgatp_vmid=3)
         tags = {NO_S2: 0xC00, ONLY_S1: 0xC10, ONLY_S2: 0xC20, ALL_STAGE: 0xC30}
@@ -180,7 +180,7 @@ async def test_translation_stage_and_context_are_part_of_the_cam_key(tlbfa_env):
 # TLBFA-CTX-02, TLBFA-CTX-04, TLBFA-GLOBAL-01
 async def test_global_bit_only_relaxes_asid_and_stage2_ignores_stage1_asid(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.program_context(satp_asid=2, vsatp_asid=3, hgatp_vmid=4)
         global1 = make_refill(NO_S2, 0, 0xD00, 0x123123123, asid=7, perm_g=1)
@@ -206,7 +206,7 @@ async def test_global_bit_only_relaxes_asid_and_stage2_ignores_stage1_asid(tlbfa
 # TLBFA-PAYLOAD-01
 async def test_payload_metadata_is_returned_from_selected_entry(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.program_context(vsatp_asid=2, hgatp_vmid=3)
         data = make_refill(
@@ -230,7 +230,7 @@ async def test_payload_metadata_is_returned_from_selected_entry(tlbfa_env):
 @pytest.mark.characterization
 async def test_all_stage_fake_pte_with_stage2_exception_uses_s1_level(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.program_context(vsatp_asid=1, hgatp_vmid=2)
         data = make_refill(

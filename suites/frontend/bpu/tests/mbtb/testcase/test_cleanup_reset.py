@@ -1,10 +1,9 @@
 """Two semantic cleanup/reset phases; no case-level edges or signal writes."""
 import json
 import pytest
-from bpuverify.mbtb.model.cleanup_reset import Program,PROFILES
-from bpuverify.mbtb.coverage.cleanup_reset import Coverage
-from bpuverify.mbtb.case.cleanup_reset import check_cleanup_reset
-
+from suites.frontend.bpu.mbtb.model.cleanup_reset import Program,PROFILES
+from suites.frontend.bpu.mbtb.coverage.cleanup_reset import Coverage
+from suites.frontend.bpu.mbtb.case.cleanup_reset import check_cleanup_reset
 
 
 @pytest.mark.feature('BPU-MBTB-001')

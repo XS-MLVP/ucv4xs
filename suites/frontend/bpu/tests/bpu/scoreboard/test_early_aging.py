@@ -3,16 +3,16 @@ from dataclasses import replace
 from types import SimpleNamespace as NS
 import pytest
 
-from bpuverify.bpu.checker.early_aging import EarlyAgingChecks, all_protection
-from bpuverify.bpu.coverage.early_aging import EarlyAgingCoverage, AGE_RULES
-from bpuverify.bpu.model.early_aging import FailureLedger, allocation, aged, require_recovery_window
-from bpuverify.bpu.model.early_opposition import provider, main_counter, steady_history
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.utage.model.semantic import Feedback, Context, Source
+from suites.frontend.bpu.bpu.checker.early_aging import EarlyAgingChecks, all_protection
+from suites.frontend.bpu.bpu.coverage.early_aging import EarlyAgingCoverage, AGE_RULES
+from suites.frontend.bpu.bpu.model.early_aging import FailureLedger, allocation, aged, require_recovery_window
+from suites.frontend.bpu.bpu.model.early_opposition import provider, main_counter, steady_history, FALLBACK
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.utage.model.semantic import Feedback, Context, Source
 from tests.bpu.scoreboard.test_early_opposition import Program as SourceProgram
 from tests.bpu.scoreboard.test_early_positive import Program as PositiveProgram
 from tests.bpu.scoreboard.test_early_direction_checking import actual_live, actual_fast
-from bpuverify.bpu.checker.early_direction import live_values, fast_values
+from suites.frontend.bpu.bpu.checker.early_direction import live_values, fast_values
 
 
 def feedback(*, hit=True, table=1, predicted=False, base=False, position=2, end=2, kind=1,
@@ -129,7 +129,7 @@ class Program(PositiveProgram):
             counter = main_counter(source.token)
             if counter == goal:
                 return self.until(source, lambda token: main_counter(token) == goal
-                    and steady_history(token, 2 if goal else 4))
+                    and steady_history(token, 2 if goal else FALLBACK))
             idle = self.quiet()
             taken = counter < goal
             request = self.feedback(source.token, 2, Kind.CONDITIONAL, taken)
@@ -151,7 +151,7 @@ class Program(PositiveProgram):
         self.enable(False)
         for _ in range(8):
             source = self.query(source)
-            if steady_history(source.token, 4):
+            if steady_history(source.token, FALLBACK):
                 break
         else:
             raise AssertionError('fresh fallback history did not become available')
@@ -183,7 +183,7 @@ def test_normal_autonomous_program_counts_128_real_failures_and_observes_parent_
     negative = program.steer(source, 0)
     program.enable(True)
     seed = checks.history_seeds[False][2]
-    negative = program.until(negative, lambda token: steady_history(token, 4)
+    negative = program.until(negative, lambda token: steady_history(token, FALLBACK)
         and (value := provider(program.model.sources, token)) is not None
         and (value.key, value.tag, value.position) == (seed.key, seed.tag, seed.position)
         and value.counter < 4)
@@ -242,7 +242,7 @@ def test_consumer_without_actual_maintenance_cannot_close_a_requirement():
 def test_event_ledger_does_not_import_a_cycle_model_or_signal_interface():
     import ast
     from pathlib import Path
-    import bpuverify.bpu.model.early_aging as module
+    import suites.frontend.bpu.bpu.model.early_aging as module
     tree = ast.parse(Path(module.__file__).read_text())
     imports = [node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)]
     assert imports == ['dataclasses']

@@ -1,7 +1,7 @@
 """OrderedPermitCtrl scenarios are domain beats; no raw pin writes in cases."""
 import pytest
 
-from vagqverify.ordered.types import Beat, Entry, Redirect, SplitDone
+from suites.vector.vagq.ordered.types import Beat, Entry, Redirect, SplitDone
 
 ORDERED_LOAD = 0b110
 ORDERED_STORE = 0b111

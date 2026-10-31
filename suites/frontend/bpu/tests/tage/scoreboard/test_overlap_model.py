@@ -4,9 +4,9 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.tage.model.overlap import expected_tage_overlapped_states
-from bpuverify.tage.model.overlap import expected_tage_overlapped_writes
-from bpuverify.tage.agent.main import TageAgent
+from suites.frontend.bpu.tage.model.overlap import expected_tage_overlapped_states
+from suites.frontend.bpu.tage.model.overlap import expected_tage_overlapped_writes
+from suites.frontend.bpu.tage.agent.main import TageAgent
 
 
 @pytest.mark.parametrize('pc', (0x40000000, 0x40000020, 0x40000001, 0x40000400))

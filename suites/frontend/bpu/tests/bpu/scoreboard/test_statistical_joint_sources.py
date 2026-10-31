@@ -7,8 +7,8 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.bpu.model.pipeline import Redirect, Resolution
-from bpuverify.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.pipeline import Redirect, Resolution
+from suites.frontend.bpu.bpu.model.selection import Kind
 from tests.bpu.scoreboard._statistical_joint_program import Program
 
 
@@ -82,7 +82,7 @@ def test_invalid_younger_feedback_is_rejected_before_any_component_learns():
     p = Program(positive=True)
     target, _, _, fresh = p.prepare()
     idle = p.quiet()
-    from bpuverify.bpu.model.pipeline import Outcome
+    from suites.frontend.bpu.bpu.model.pipeline import Outcome
     request = Resolution(fresh.history, fresh.pc, (Outcome(2, p.d, Kind.CONDITIONAL, True),
         Outcome(4, p.a, Kind.INDIRECT, True)), origin=fresh)
     names = ('micro', 'main', 'ahead', 'short', 'tage', 'indirect', 'sc')
@@ -94,8 +94,8 @@ def test_invalid_younger_feedback_is_rejected_before_any_component_learns():
 
 @pytest.mark.parametrize('positive', (False, True))
 def test_learning_projection_is_pure_and_predicts_the_one_actual_SC_advance(positive):
-    from bpuverify.sc.model.semantic import Context, Events
-    from bpuverify.bpu.model.pipeline import Outcome
+    from suites.frontend.bpu.sc.model.semantic import Context, Events
+    from suites.frontend.bpu.bpu.model.pipeline import Outcome
     p = Program(positive=positive)
     _, _, _, token = p.prepare()
     branches = (Outcome(2,p.d,Kind.CONDITIONAL,not positive),)
@@ -111,7 +111,7 @@ def test_learning_projection_is_pure_and_predicts_the_one_actual_SC_advance(posi
 
 
 def metadata_actual(value):
-    from bpuverify.bpu.bundle.statistical import DEBUG_VECTORS
+    from suites.frontend.bpu.bpu.bundle.statistical import DEBUG_VECTORS
     prediction = value.prediction
     return dict(prediction.metadata(), debug=dict(
         **{name: tuple(row[table] for row in prediction.components) for table,name in enumerate(DEBUG_VECTORS)},
@@ -121,7 +121,7 @@ def metadata_actual(value):
 
 @pytest.mark.parametrize('field', ('scPred','scPathTakenVec','scImliTakenVec','tageCtr','scBiasLowerBits'))
 def test_unused_absent_candidate_payload_is_not_invented_but_authority_remains_checked(field):
-    from bpuverify.bpu.checker.statistical import metadata_values
+    from suites.frontend.bpu.bpu.checker.statistical import metadata_values
     p = Program(positive=False)
     _, _, _, token = p.prepare()
     source = p.bank.statistical_snapshot(token,resolved=True)
@@ -136,7 +136,7 @@ def test_unused_absent_candidate_payload_is_not_invented_but_authority_remains_c
 
 @pytest.mark.parametrize('field', ('scPred','scPathTakenVec','scImliTakenVec','tageCtr','scBiasLowerBits'))
 def test_every_real_candidate_field_still_rejects_corruption(field):
-    from bpuverify.bpu.checker.statistical import metadata_values
+    from suites.frontend.bpu.bpu.checker.statistical import metadata_values
     p = Program(positive=False)
     _, _, _, token = p.prepare()
     actual = metadata_actual(p.bank.statistical_snapshot(token,resolved=True))
@@ -150,8 +150,8 @@ def test_every_real_candidate_field_still_rejects_corruption(field):
 def test_independently_invalid_provider_payload_is_unspecified_but_validity_is_not(field,payload):
     from dataclasses import replace
     from types import SimpleNamespace
-    from bpuverify.sc.model.semantic import decide
-    from bpuverify.bpu.checker.statistical import metadata_values
+    from suites.frontend.bpu.sc.model.semantic import decide
+    from suites.frontend.bpu.bpu.checker.statistical import metadata_values
     p=Program(positive=False)
     _,_,_,token=p.prepare()
     source=p.bank.statistical_snapshot(token,resolved=True)
@@ -170,8 +170,8 @@ def test_independently_invalid_provider_payload_is_unspecified_but_validity_is_n
 def test_invalid_provider_does_not_relax_authority_bias_confidence_or_sc_direction(field):
     from dataclasses import replace
     from types import SimpleNamespace
-    from bpuverify.sc.model.semantic import decide
-    from bpuverify.bpu.checker.statistical import metadata_values
+    from suites.frontend.bpu.sc.model.semantic import decide
+    from suites.frontend.bpu.bpu.checker.statistical import metadata_values
     p=Program(positive=False)
     _,_,_,token=p.prepare()
     source=p.bank.statistical_snapshot(token,resolved=True)
@@ -184,8 +184,8 @@ def test_invalid_provider_does_not_relax_authority_bias_confidence_or_sc_directi
     assert metadata_values(bank,token,actual)[0]!=metadata_values(bank,token,actual)[1]
 
 
-from bpuverify.bpu.coverage.statistical_prefix import Coverage
-from bpuverify.bpu.model.statistical_prefix import PROFILES, RULES
+from suites.frontend.bpu.bpu.coverage.statistical_prefix import Coverage
+from suites.frontend.bpu.bpu.model.statistical_prefix import PROFILES, RULES
 
 
 @pytest.mark.parametrize('profile,missing', tuple((p,r) for p in PROFILES for r in RULES))
@@ -211,7 +211,7 @@ def test_completed_profile_cannot_claim_other_entry_or_direction_obligations(pro
 
 @pytest.mark.parametrize('conflicting',(False,True))
 def test_SC_read_conflict_rejects_before_all_learning_and_disjoint_reads_coexist(conflicting):
-    from bpuverify.bpu.model.pipeline import Outcome
+    from suites.frontend.bpu.bpu.model.pipeline import Outcome
     p = Program(positive=True,pc=0x40000002 if conflicting else 0x40000001)
     _,_,_,token = p.prepare()
     p.quiet()
@@ -232,13 +232,13 @@ def test_SC_read_conflict_rejects_before_all_learning_and_disjoint_reads_coexist
         assert p.bank.sc.read.pc%2 != token.pc%2
 
 
-from bpuverify.bpu.model.statistical_prefix import CONTEXT_PROFILES,ContextLayout
+from suites.frontend.bpu.bpu.model.statistical_prefix import CONTEXT_PROFILES,ContextLayout
 from tests.bpu.scoreboard._statistical_joint_program import ContextProgram
 
 
 @pytest.mark.parametrize('profile',CONTEXT_PROFILES)
 def test_executed_nonzero_prefix_owns_five_family_learning_and_both_used_feedback_classes(profile):
-    from bpuverify.sc.model.semantic import feedback_needs_read
+    from suites.frontend.bpu.sc.model.semantic import feedback_needs_read
     p=ContextProgram(profile)
     control,originals,fresh=p.setup()
     layout=p.layout
@@ -275,15 +275,15 @@ def test_executed_nonzero_prefix_owns_five_family_learning_and_both_used_feedbac
 
 @pytest.mark.parametrize('profile',CONTEXT_PROFILES)
 def test_context_layout_uses_the_existing_genuine_prefix_and_zero_hash_path_edges(profile):
-    from bpuverify.bpu.model.phr.model import path_hash
+    from suites.frontend.bpu.bpu.model.phr.model import path_hash
     p=ContextLayout(profile)
     assert bool(p.prefix_target<p.prefix+2)==p.backward
     assert path_hash(p.prefix+2,p.prefix_target)==path_hash(p.jump,p.b)==path_hash(p.b+p.position,p.d)==0
 
 
 def test_context_lifetime_requires_every_scenario_obligation_and_never_awards_other_profiles():
-    from bpuverify.bpu.coverage.statistical_prefix import ContextCoverage
-    from bpuverify.bpu.model.statistical_prefix import CONTEXT_RULES
+    from suites.frontend.bpu.bpu.coverage.statistical_prefix import ContextCoverage
+    from suites.frontend.bpu.bpu.model.statistical_prefix import CONTEXT_RULES
     for profile in CONTEXT_PROFILES:
         for missing in CONTEXT_RULES:
             coverage=ContextCoverage(profile)
@@ -298,12 +298,12 @@ def test_context_lifetime_requires_every_scenario_obligation_and_never_awards_ot
         assert {name for name,count in counts.items() if count}=={profile+'.'+rule for rule in CONTEXT_RULES}
 
 
-from bpuverify.bpu.model.statistical_prefix import ConcurrentContextLayout,CONCURRENT_CONTEXT_PROFILES,CONCURRENT_CONTEXT_RULES
+from suites.frontend.bpu.bpu.model.statistical_prefix import ConcurrentContextLayout,CONCURRENT_CONTEXT_PROFILES,CONCURRENT_CONTEXT_RULES
 
 
 @pytest.mark.parametrize('profile',CONCURRENT_CONTEXT_PROFILES)
 def test_concurrent_program_refreshes_a_neutral_anchor_without_intercepting_the_real_prefix(profile):
-    from bpuverify.bpu.model.phr.model import path_hash
+    from suites.frontend.bpu.bpu.model.phr.model import path_hash
     layout=ConcurrentContextLayout(profile)
     assert path_hash(layout.a+layout.recovery_offset,layout.a)==0
     assert not layout.prefix_target<=layout.loop<=layout.jump
@@ -313,8 +313,8 @@ def test_concurrent_program_refreshes_a_neutral_anchor_without_intercepting_the_
 @pytest.mark.parametrize('profile',CONCURRENT_CONTEXT_PROFILES)
 @pytest.mark.parametrize('feedback_class',('cold','used-correct','used-wrong'))
 def test_old_nonzero_context_keeps_its_learning_identity_during_new_zero_history_predictions(profile,feedback_class):
-    from bpuverify.bpu.model.pipeline import Outcome
-    from bpuverify.sc.model.semantic import Context,coordinates,feedback_needs_read
+    from suites.frontend.bpu.bpu.model.pipeline import Outcome
+    from suites.frontend.bpu.sc.model.semantic import Context,coordinates,feedback_needs_read
     layout=ConcurrentContextLayout(profile)
     p=ContextProgram(profile,layout_type=ConcurrentContextLayout)
     _,originals,used=p.setup()
@@ -382,7 +382,7 @@ def test_old_nonzero_context_keeps_its_learning_identity_during_new_zero_history
 
 
 def test_concurrent_context_checked_credit_requires_the_complete_behavior_not_only_a_conflict():
-    from bpuverify.bpu.coverage.statistical_prefix import ConcurrentContextCoverage
+    from suites.frontend.bpu.bpu.coverage.statistical_prefix import ConcurrentContextCoverage
     for profile in CONCURRENT_CONTEXT_PROFILES:
         for missing in CONCURRENT_CONTEXT_RULES:
             coverage=ConcurrentContextCoverage(profile)
@@ -400,8 +400,8 @@ def test_concurrent_context_checked_credit_requires_the_complete_behavior_not_on
 @pytest.mark.parametrize('fault',('payload','borrow-current-history','deny-unqualified','early-learning','duplicate-acceptance','accept-conflict'))
 def test_concurrent_context_monitor_rejects_ownership_and_admission_faults(monkeypatch,fault):
     from types import SimpleNamespace
-    from bpuverify.bpu.checker.statistical_prefix import ContextChecks,ConcurrentContextChecks
-    from bpuverify.bpu.coverage.statistical_prefix import ConcurrentContextCoverage
+    from suites.frontend.bpu.bpu.checker.statistical_prefix import ContextChecks,ConcurrentContextChecks
+    from suites.frontend.bpu.bpu.coverage.statistical_prefix import ConcurrentContextCoverage
     profile='forward.agree.same-resource'
     checks=ConcurrentContextChecks(profile,ConcurrentContextCoverage(profile))
     def compare(expected,actual,point):assert expected==actual,point
@@ -452,7 +452,7 @@ def numeric_context():
 
 @pytest.mark.parametrize('consumed',(False,True))
 def test_complete_numeric_experience_matches_the_independently_owned_read(numeric_context,consumed):
-    from bpuverify.bpu.checker.statistical import numeric_values
+    from suites.frontend.bpu.bpu.checker.statistical import numeric_values
     p,_,token=numeric_context
     read=p.bank.statistical_snapshot(token).read
     expected,actual=numeric_values(p.bank,token,numeric_actual(read,consumed=consumed),consumed=consumed)
@@ -465,8 +465,8 @@ def test_complete_numeric_experience_matches_the_independently_owned_read(numeri
 @pytest.mark.parametrize('consumed',(False,True))
 def test_same_sign_and_same_public_decision_do_not_hide_wrong_weight_magnitude(numeric_context,consumed):
     from toffee import Scoreboard
-    from bpuverify.bpu.checker.statistical import numeric_values
-    from bpuverify.sc.model.semantic import decide
+    from suites.frontend.bpu.bpu.checker.statistical import numeric_values
+    from suites.frontend.bpu.sc.model.semantic import decide
     p,_,token=numeric_context
     source=p.bank.statistical_snapshot(token,resolved=True)
     old=source.prediction
@@ -484,8 +484,8 @@ def test_same_sign_and_same_public_decision_do_not_hide_wrong_weight_magnitude(n
 @pytest.mark.parametrize('consumed',(False,True))
 def test_unequal_family_experience_cannot_be_swapped_even_if_the_total_is_unchanged(consumed):
     from types import SimpleNamespace as NS
-    from bpuverify.bpu.checker.statistical import numeric_values
-    from bpuverify.sc.model.semantic import Read,Context
+    from suites.frontend.bpu.bpu.checker.statistical import numeric_values
+    from suites.frontend.bpu.sc.model.semantic import Read,Context
     # Comparator-only pure fixture. It is never installed in a DUT oracle.
     weights=tuple(tuple(value+i for i in range(8)) for value in (1,5,9,-8,-4,0,4))+(tuple(range(-16,16)),)
     read=Read(0x40010000,Context(),tuple(range(1,9)),weights)
@@ -500,8 +500,8 @@ def test_unequal_family_experience_cannot_be_swapped_even_if_the_total_is_unchan
 
 def test_invalid_history_ignores_old_raw_ports_but_requires_actual_zeroed_consumption(numeric_context):
     from types import SimpleNamespace as NS
-    from bpuverify.bpu.checker.statistical import numeric_values
-    from bpuverify.sc.model.semantic import Read,Context
+    from suites.frontend.bpu.bpu.checker.statistical import numeric_values
+    from suites.frontend.bpu.sc.model.semantic import Read,Context
     p,_,token=numeric_context
     original=p.bank.statistical_snapshot(token).read
     weights=list(original.weights);weights[2:6]=((0,)*8,)*4
@@ -523,8 +523,8 @@ def test_invalid_history_ignores_old_raw_ports_but_requires_actual_zeroed_consum
 def invalid_history_evidence_fixture(*,valid=False,nonzero=True):
     """Comparator-only fixture; never installed into a DUT reference."""
     from types import SimpleNamespace as NS
-    from bpuverify.sc.model.semantic import Read,Context
-    from bpuverify.bpu.checker.statistical import InvalidHistoryEvidence
+    from suites.frontend.bpu.sc.model.semantic import Read,Context
+    from suites.frontend.bpu.bpu.checker.statistical import InvalidHistoryEvidence
     read=Read(0x40010000,Context(common_valid=valid),tuple(range(1,9)),
         ((0,)*8,)*7+((0,)*32,))
     token=NS(sequence=11,pc=read.pc,history=NS(sequence=7))
@@ -604,7 +604,7 @@ def test_invalid_history_witness_rejects_missing_or_borrowed_proof_and_nonzero_c
 
 
 def test_unarmed_or_pre_warm_response_cannot_grant_invalid_history_credit():
-    from bpuverify.bpu.checker.statistical import InvalidHistoryEvidence
+    from suites.frontend.bpu.bpu.checker.statistical import InvalidHistoryEvidence
     _,pipeline,cycle,token,actual,check=invalid_history_evidence_fixture()
     witness=InvalidHistoryEvidence()
     witness.observe(pipeline,cycle,actual,2,check)
@@ -622,7 +622,7 @@ def test_unarmed_or_pre_warm_response_cannot_grant_invalid_history_credit():
     (True,True,False,True,(False,)*8)))
 def test_actual_prediction_read_gates_depend_on_owned_history_and_qualified_issue(main,sc,issue,valid,wanted):
     from types import SimpleNamespace as NS
-    from bpuverify.bpu.checker.statistical import live_values
+    from suites.frontend.bpu.bpu.checker.statistical import live_values
     state=dict(valid=valid,ghr=0,bw=0)
     sources=NS(preview_history=lambda *args:NS(lookup=NS(valid=valid,mapping=lambda:state),iteration=NS(after=0)),
         queries=NS(value=NS(mapping=lambda:state),iterations=NS(cursor=0)),
@@ -638,7 +638,7 @@ def test_actual_prediction_read_gates_depend_on_owned_history_and_qualified_issu
 
 @pytest.mark.parametrize('profile',(*CONTEXT_PROFILES,*CONCURRENT_CONTEXT_PROFILES))
 def test_cancelled_nonzero_query_then_invalid_consumer_preserves_all_learned_experience(profile):
-    from bpuverify.bpu.model.statistical_prefix import ConcurrentContextLayout
+    from suites.frontend.bpu.bpu.model.statistical_prefix import ConcurrentContextLayout
     p=ContextProgram(profile,layout_type=None if profile in CONTEXT_PROFILES else ConcurrentContextLayout)
     _,_,source=p.setup()
     p.controls(tage=False)
@@ -658,7 +658,7 @@ def test_cancelled_nonzero_query_then_invalid_consumer_preserves_all_learned_exp
 @pytest.mark.parametrize('width,raw,wanted',((6,0,0),(6,31,31),(6,32,-32),(6,63,-1),
     (7,0,0),(7,63,63),(7,64,-64),(7,127,-1)))
 def test_numeric_readback_uses_the_declared_signed_width(width,raw,wanted):
-    from bpuverify.bpu.checker.statistical import signed_value
+    from suites.frontend.bpu.bpu.checker.statistical import signed_value
     assert signed_value(raw,width)==wanted
     with pytest.raises(ValueError):signed_value(1<<width,width)
 
@@ -670,7 +670,7 @@ def test_numeric_readback_uses_the_declared_signed_width(width,raw,wanted):
 def test_numeric_responses_follow_independent_issue_and_consumption_not_held_port_data(
         numeric_context,read_fire,consume_fire,flushed,enabled,wanted):
     from types import SimpleNamespace as NS
-    from bpuverify.bpu.checker.statistical import numeric_origins
+    from suites.frontend.bpu.bpu.checker.statistical import numeric_origins
     p,originals,token=numeric_context
     previous=NS(enabled=(False,False,True,False,enabled,False,False),
         fires=(read_fire,consume_fire,False,False),flushes=(flushed,False,False))
@@ -681,7 +681,7 @@ def test_numeric_responses_follow_independent_issue_and_consumption_not_held_por
 
 @pytest.mark.parametrize('consumed',(False,True))
 def test_numeric_readback_rejects_foreign_original_not_just_an_equal_PC(numeric_context,consumed):
-    from bpuverify.bpu.checker.statistical import numeric_values
+    from suites.frontend.bpu.bpu.checker.statistical import numeric_values
     p,_,token=numeric_context
     foreign=replace(token,history=replace(token.history))
     with pytest.raises(ValueError,match='owner|original|absent'):
@@ -690,8 +690,8 @@ def test_numeric_readback_rejects_foreign_original_not_just_an_equal_PC(numeric_
 
 def test_reset_cannot_reuse_pre_reset_numeric_source_credit():
     from types import SimpleNamespace as NS
-    from bpuverify.bpu.checker.pipeline import PipelineChecker
-    from bpuverify.bpu.model.statistical_joint_sources import StatisticalJointSources
+    from suites.frontend.bpu.bpu.checker.pipeline import PipelineChecker
+    from suites.frontend.bpu.bpu.model.statistical_joint_sources import StatisticalJointSources
     checker=PipelineChecker(sources=StatisticalJointSources())
     checker.sc_previous_cycle=object();checker.sc_numeric_checked[1]={'read':2,'consume':4}
     checker.capture(dict(inputs=dict(reset=True,training=dict(valid=0,ready=0),redirect=dict(valid=0),
@@ -706,9 +706,9 @@ def test_reset_cannot_reuse_pre_reset_numeric_source_credit():
 def test_missing_numeric_evidence_raises_before_any_checked_credit(kind,fault):
     from types import SimpleNamespace as NS
     from toffee import Scoreboard
-    from bpuverify.bpu.checker.statistical_prefix import Checks,ContextChecks
-    from bpuverify.bpu.coverage.statistical_prefix import Coverage,ContextCoverage
-    from bpuverify.bpu.model.statistical_prefix import RULES,CONTEXT_RULES
+    from suites.frontend.bpu.bpu.checker.statistical_prefix import Checks,ContextChecks
+    from suites.frontend.bpu.bpu.coverage.statistical_prefix import Coverage,ContextCoverage
+    from suites.frontend.bpu.bpu.model.statistical_prefix import RULES,CONTEXT_RULES
     if kind=='prefix':
         profile='conditional-entry.condition-taken'
         coverage=Coverage(profile);checks=Checks(profile,coverage);rules=RULES

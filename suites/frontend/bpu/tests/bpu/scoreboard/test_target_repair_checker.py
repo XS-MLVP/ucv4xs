@@ -3,8 +3,8 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.bpu.checker.target_repair import MissingMicroFullTargetRepair, check_micro_target_repair
-from bpuverify.bpu.transaction.types import BpuMeta, BpuPerf, BpuPrediction, BpuStage1Source, BpuTransaction
+from suites.frontend.bpu.bpu.checker.target_repair import MissingMicroFullTargetRepair, check_micro_target_repair
+from suites.frontend.bpu.bpu.transaction.types import BpuMeta, BpuPerf, BpuPrediction, BpuStage1Source, BpuTransaction
 from tests.bpu.testcase.test_target_boundary import test_early_partial_target_wrap_is_eventually_corrected as hardware_case
 
 

@@ -10,9 +10,9 @@ import random
 
 import pytest
 
-from dcacheverify.common.runtime import execution
-from dcacheverify.ctrl_unit.coverage import CtrlUnitCoverage
-from dcacheverify.ctrl_unit.env import BANKS, CtrlFields, CtrlUnitEnv, TAG_MASK_BITS
+from suites.memblock.dcache.execution import execution
+from suites.memblock.dcache.ctrl_unit.coverage import CtrlUnitCoverage
+from suites.memblock.dcache.ctrl_unit.env import BANKS, CtrlFields, CtrlUnitEnv, TAG_MASK_BITS
 
 
 @pytest.fixture
@@ -27,7 +27,7 @@ def bank_mask(*banks: int) -> int:
 
 # CU-FP-001
 async def test_reset_defaults(cu):
-    async with execution(cu.dut):
+    async with execution(cu):
         await cu.reset()
         assert cu.pe_tag()[0] == 0
         assert cu.pe1["valid"].value == 0
@@ -37,7 +37,7 @@ async def test_reset_defaults(cu):
 
 # CU-FP-002, CU-FP-004
 async def test_ctrl_bitfield_roundtrip(cu):
-    async with execution(cu.dut):
+    async with execution(cu):
         await cu.reset()
         patterns = [
             0x0,
@@ -72,7 +72,7 @@ async def test_ctrl_bitfield_roundtrip(cu):
 
 # CU-FP-003, CU-FP-004
 async def test_delay_and_mask_registers_roundtrip(cu):
-    async with execution(cu.dut):
+    async with execution(cu):
         await cu.reset()
         for delay in (0, 1, 7, 0x0123_4567_89AB_CDEF):
             await cu.write(1, delay)
@@ -93,7 +93,7 @@ async def test_delay_and_mask_registers_roundtrip(cu):
 
 # CU-FP-003
 async def test_partial_write_masks_are_ignored(cu):
-    async with execution(cu.dut):
+    async with execution(cu):
         await cu.reset()
         await cu.write(0, 0x8)
         await cu.write(0, 0xFFFF_FFFF, mask=0x0F)
@@ -117,7 +117,7 @@ async def test_partial_write_masks_are_ignored(cu):
 
 # CU-FP-005, CU-FP-009
 async def test_tag_injection_single_shot_and_hold(cu):
-    async with execution(cu.dut):
+    async with execution(cu):
         await cu.reset()
         await cu.program_tag_mask((1 << TAG_MASK_BITS) - 1)
         await cu.program_ctrl(CtrlFields(ese=True, comp=0, bank=bank_mask(0)))
@@ -174,7 +174,7 @@ async def test_tag_injection_single_shot_and_hold(cu):
 
 # CU-FP-005
 async def test_tag_mask_shapes(cu):
-    async with execution(cu.dut):
+    async with execution(cu):
         await cu.reset()
         for mask in (0, 1, 0x0F0F_0F0F0F, (1 << TAG_MASK_BITS) - 1):
             await cu.program_tag_mask(mask)
@@ -200,7 +200,7 @@ async def test_tag_mask_shapes(cu):
 
 # CU-FP-006
 async def test_data_injection_banks_and_masks(cu):
-    async with execution(cu.dut):
+    async with execution(cu):
         await cu.reset()
         for group in range(8):
             pattern = 0x1111_2222_3333_4444 * (group + 1)
@@ -261,7 +261,7 @@ async def test_data_injection_banks_and_masks(cu):
 
 # CU-FP-007, CU-FP-008
 async def test_delay_and_persist_matrix(cu):
-    async with execution(cu.dut):
+    async with execution(cu):
         await cu.reset()
         for delay in (0, 1, 3, 10):
             for persist in (False, True):
@@ -305,7 +305,7 @@ async def test_delay_and_persist_matrix(cu):
 
 # CU-FP-009
 async def test_consumer_backpressure_holds_request(cu):
-    async with execution(cu.dut):
+    async with execution(cu):
         await cu.reset()
         await cu.program_tag_mask(0x0F0F0F0F0F)
         await cu.program_ctrl(CtrlFields(ese=True, comp=0, bank=bank_mask(0)))
@@ -321,7 +321,7 @@ async def test_consumer_backpressure_holds_request(cu):
 
 # CU-FP-002
 async def test_d_channel_backpressure_and_single_outstanding(cu):
-    async with execution(cu.dut):
+    async with execution(cu):
         await cu.reset()
         await cu.send_write(1, 0x1234)
         # D not accepted yet: queue is full, A must not accept a new request.
@@ -342,7 +342,7 @@ async def test_d_channel_backpressure_and_single_outstanding(cu):
 # CU-FP-002, CU-FP-004
 async def test_random_register_traffic(cu):
     rng = random.Random(0xC7A_2026)
-    async with execution(cu.dut):
+    async with execution(cu):
         await cu.reset()
         model = {"ctrl": 0, "delay": 0, "tag_mask": 0, "data": [0] * 8}
         indices = list(range(11))
@@ -380,7 +380,7 @@ async def test_random_register_traffic(cu):
 
 # CU-FP-002, CU-FP-004
 async def test_alias_address_and_source_echo(cu):
-    async with execution(cu.dut):
+    async with execution(cu):
         await cu.reset()
         # The register decoder uses the low address bits; upper bits are aliases.
         bases = (0x0, 0x80, 0x15555_500, 0x2AAAA_A80, 0x3FFFF_F80)
@@ -401,7 +401,7 @@ async def test_alias_address_and_source_echo(cu):
 
 # CU-FP-004, CU-FP-006
 async def test_full_width_register_and_mask_bit_sweep(cu):
-    async with execution(cu.dut):
+    async with execution(cu):
         await cu.reset()
         full = (1 << 64) - 1
         await cu.write(0, full & ~0x1)   # ese=0, all other ctrl bits set

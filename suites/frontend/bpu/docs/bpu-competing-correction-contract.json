@@ -24,7 +24,7 @@
     "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:195",
     "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:208",
     "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:249",
-    "bpuverify/bpu/model/pipeline.py:210"
+    "bpu/model/pipeline.py:210"
   ],
   "required_rejection_controls": ["只有一条修正", "新分支先学习导致旧lookup未存活", "年轻历史冒充旧历史", "只有预期恢复而未跨下一实际比较", "年轻来源冒领旧NT学习", "缺少真实新消费者", "原metadata或快照被改写"],
   "new_feature_IDs": 0,

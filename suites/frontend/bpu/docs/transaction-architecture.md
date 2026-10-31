@@ -229,7 +229,7 @@ bounded nonzero-key module contract excludes the jointly zero tag/position
 defect; complete FTQ reachability and full functional correctness are not
 implied by native line coverage.
 
-`python3 -m bpuverify.mbtb_branch_audit` checks the exact generated hierarchy
+`python3 -m suites.frontend.bpu.mbtb_branch_audit` checks the exact generated hierarchy
 constants behind eight unhit branch arms: flush mask bit zero is always zero,
 so seven enabled port-zero payload muxes cannot choose the clear arm; the
 counter queue RAM read enable is tied high. Exhaustive Boolean cases and four

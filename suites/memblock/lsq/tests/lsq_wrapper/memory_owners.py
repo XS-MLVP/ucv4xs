@@ -6,13 +6,13 @@ replay grants and cancel/reuse are separate obligations. No reference reads.
 from dataclasses import asdict, dataclass, replace
 from itertools import groupby
 
-from lsqverify.forward.types import Query, Translation
-from lsqverify.load_queue.types import Load
-from lsqverify.lsq_wrapper.types import Address, Data, Dispatch, Inputs
-from lsqverify.psq.types import Attributes, SecondPage
-from lsqverify.raw.types import FtqPtr, SqPtr
-from lsqverify.replay.types import Enqueue, Uop
-from lsqverify.vlq.types import QueuePtr, Redirect, RobPtr
+from suites.memblock.lsq.forward.types import Query, Translation
+from suites.memblock.lsq.load_queue.types import Load
+from suites.memblock.lsq.lsq_wrapper.types import Address, Data, Dispatch, Inputs
+from suites.memblock.lsq.psq.types import Attributes, SecondPage
+from suites.memblock.lsq.raw.types import FtqPtr, SqPtr
+from suites.memblock.lsq.replay.types import Enqueue, Uop
+from suites.memblock.lsq.vlq.types import QueuePtr, Redirect, RobPtr
 
 
 def rob_number(rob):

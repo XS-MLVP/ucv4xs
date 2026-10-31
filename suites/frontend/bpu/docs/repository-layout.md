@@ -1,24 +1,24 @@
 # 验证代码目录与职责
 
-框架源码在 `dependencies/xreactor`（`dev/coverage-v2`），原生配套源码在
-`dependencies/xcomm` 和 `dependencies/picker`，精确版本见 `dependencies/versions.json`。
-它们不放入 `bpuverify`；[迁移与安装说明](xreactor-coverage-v2-migration.md)解释依赖边界。
+验证框架是锁定的 `uc-toffee`（导入名 `toffee`），原生配套源码为 `uc-xcomm`
+和 Picker，精确版本见 `dependencies/versions.json`。它们不放入 `suites.frontend.bpu`；
+依赖升级、能力核对和安装边界见项目工作流及待审核方法文档。
 
 2026-10-10 已切换为「DUT → 组件职责」，不再把所有 Agent、端口、事务、
-模型与场景平铺到 `bpuverify/`。目录迁移不代表新的全量回归通过或覆盖率上涨。
+模型与场景平铺到 `suites/frontend/bpu/`。目录迁移不代表新的全量回归通过或覆盖率上涨。
 
 ```text
-bpuverify/
-├── common/                 # 跨 DUT 设施，不承载某个 DUT 的功能场景
-│   ├── bundle/             # picker 信号绑定、方向、write mode
-│   ├── driver/             # 项目对 xreactor driver 的薄适配
-│   ├── monitor/            # 通用周期采样适配
-│   ├── transaction/        # 通用周期事务数据
-│   ├── env/                # DUT 创建、fixture、memory-direct、产物路径
-│   ├── checker/            # 通用预测比较
-│   ├── model/              # 地址、折叠历史等共享语义
-│   ├── coverage/           # 原生覆盖率、并行合并、相位审查
-│   └── pytest/             # pytest 插件、证据、调度
+suites/frontend/bpu/        # import suites.frontend.bpu
+├── __init__.py             # ROOT，不装载 DUT 或重导出领域符号
+├── ports/                  # 共享 picker 信号绑定、方向、write mode
+├── drivers/                # 项目对 toffee driver 的薄适配
+├── monitors/               # 通用周期采样适配
+├── transactions/           # 通用周期事务数据
+├── runtime/                # DUT 创建、fixture、memory-direct、产物路径
+├── checkers/               # 通用预测比较
+├── models/                 # 地址、折叠历史等共享语义
+├── coverage/               # 原生覆盖率、并行合并、相位审查
+├── pytest_plugins/         # pytest 插件、证据、调度
 ├── abtb/                   # 独立 AheadBTB DUT
 ├── bpu/                    # 集成 BPU DUT
 ├── ittage/
@@ -30,32 +30,31 @@ bpuverify/
 ├── uras/
 └── utage/
 
-bpuverify/tage/             # 以 TAGE 为例
+suites/frontend/bpu/tage/    # 以 TAGE 为例
 ├── agent/main.py           # 组件组合、生命周期、对用例开放的事务 API
 ├── bundle/ports.py         # 静态信号结构与绑定
 ├── transaction/types.py    # 请求、训练、响应的数据类型
 ├── driver/                 # DUT 专属编码／驱动适配
 ├── monitor/                # 被动采样与响应解码
-├── env/pytest.py            # 实际 fixture 定义
+├── env/                    # DUT 专属环境辅助（不定义 pytest fixture）
 ├── case/                   # 可复用场景、向量和场景准备
 ├── model/                  # 独立参考语义
 ├── checker/                # 关联、比较及状态检查
 └── coverage/               # 功能覆盖定义与审查
 
 tests/
-├── conftest.py             # 注册公共 fixture 与插件，不实现环境
-├── framework/              # 公共设施契约测试
+├── conftest.py             # 每个 DUT 唯一的 agent fixture 与公共插件
+├── framework/              # 公共设施契约测试（自动标 selftest）
 └── <dut>/
-    ├── conftest.py         # 导入该 DUT 的 env fixture
     ├── bundle/             # 绑定契约测试；原 interfaces/ 已改名
     ├── drivers/
     ├── monitors/
     ├── scoreboard/
-    └── testcase/test_*.py  # pytest 场景入口，不再夹带可复用支持模块
+    └── testcase/test_*.py  # pytest 场景入口，只调用 agent 事务 API
 ```
 
-角色目录按实际实现创建。比如 MicroRAS 直接复用 `common/driver` 和
-`common/monitor`，不为对称而造空壳专用类或空目录。
+角色目录按实际实现创建。比如 MicroRAS 直接复用 `drivers/` 和
+`monitors/`，不为对称而造空壳专用类或空目录。不再创建 common 包。
 
 ## 分层边界
 
@@ -75,15 +74,15 @@ tests/
 集成 BPU 的内部模块不是新的 DUT，放在对应角色的子目录，例如：
 
 ```text
-bpuverify/bpu/model/abtb/
-bpuverify/bpu/monitor/abtb/
-bpuverify/bpu/checker/abtb/
-bpuverify/bpu/env/abtb/
-bpuverify/bpu/case/abtb/
-bpuverify/bpu/coverage/abtb/
+suites/frontend/bpu/bpu/model/abtb/
+suites/frontend/bpu/bpu/monitor/abtb/
+suites/frontend/bpu/bpu/checker/abtb/
+suites/frontend/bpu/bpu/env/abtb/
+suites/frontend/bpu/bpu/case/abtb/
+suites/frontend/bpu/bpu/coverage/abtb/
 ```
 
-SC、bypass、RAS、PHR 同理。独立 ABTB 的组件则属于 `bpuverify/abtb/`，
+SC、bypass、RAS、PHR 同理。独立 ABTB 的组件则属于 `suites/frontend/bpu/abtb/`，
 不再与集成 BPU 的内部 ABTB 混放。
 
 ## 查找与运行
@@ -91,9 +90,9 @@ SC、bypass、RAS、PHR 同理。独立 ABTB 的组件则属于 `bpuverify/abtb/
 按实际职责导入，不再从几百行的根包 re-export 表中取所有符号：
 
 ```python
-from bpuverify.tage.agent.main import TageAgent
-from bpuverify.tage.transaction.types import TageLookup
-from bpuverify.tage.monitor.write import TageWriteActivityMonitor
+from suites.frontend.bpu.tage.agent.main import TageAgent
+from suites.frontend.bpu.tage.transaction.types import TageLookup
+from suites.frontend.bpu.tage.monitor.write import TageWriteActivityMonitor
 ```
 
 生产回归入口不变：
@@ -110,4 +109,6 @@ native／功能覆盖合并和无退步门禁才能发布。默认不导出逐�
 
 旧源码备份及映射位于 `results/directory-migration-20261010/`。
 `tests/framework/test_repository_layout.py` 防止公共根目录重新平铺、
-fixture 回流 conftest、支持模块回流 testcase 或重引入旧 Interface 目录。
+fixture 回流子目录 conftest、功能用例直接访问 `.dut`/`.pins`、支持模块回流
+testcase 或重引入旧 Interface 目录。`tests/framework` 由 pytest 插件统一标记
+`selftest`，不计硬件功能 credit；该标记不改变既有功能点判定。

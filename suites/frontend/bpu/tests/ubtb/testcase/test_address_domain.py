@@ -1,7 +1,7 @@
 """Semantic tag/target boundaries, with addresses in the public byte API."""
 import pytest
 
-from bpuverify.ubtb.case.address import CASES, check_address_case
+from suites.frontend.bpu.ubtb.case.address import CASES, check_address_case
 
 
 @pytest.mark.feature('BPU-UBTB-008')

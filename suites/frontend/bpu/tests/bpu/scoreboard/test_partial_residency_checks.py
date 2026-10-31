@@ -5,7 +5,7 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.model.tage.partial_residency import PROGRAMS
+from suites.frontend.bpu.bpu.model.tage.partial_residency import PROGRAMS
 from tests.bpu.scoreboard.partial_residency_fixtures import armed, held, drain, packet, completed
 
 
@@ -122,8 +122,8 @@ def test_missing_acceptances_and_repeated_pending_or_service_completion_are_reje
 
 @pytest.mark.parametrize('kind', ('coverage', 'checker'))
 def test_unregistered_semantic_program_cannot_expand_coverage_or_change_expectations(kind):
-    from bpuverify.bpu.coverage.partial_residency import PartialResidencyCoverage
-    from bpuverify.bpu.checker.partial_residency import PartialResidencyChecks
+    from suites.frontend.bpu.bpu.coverage.partial_residency import PartialResidencyCoverage
+    from suites.frontend.bpu.bpu.checker.partial_residency import PartialResidencyChecks
     foreign = replace(PROGRAMS[0], name='unreviewed-variant')
     with pytest.raises(ValueError, match='unknown'):
         if kind == 'coverage':

@@ -1,14 +1,14 @@
 """Pure conditional execution-prefix program, independent of hardware sampling."""
-from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT
+from suites.frontend.bpu.models.configuration import TAGE_ALLOCATION_WAIT
 from copy import deepcopy
 from dataclasses import asdict, replace
 from hashlib import sha256
-from bpuverify.bpu.model.conditional_prefix import PROFILES, target_state
-from bpuverify.bpu.model.pipeline import Outcome, Resolution, Redirect
-from bpuverify.bpu.model.early_aging import require_recovery_window
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.bpu.model.path_history import SHIFT, WIDTH, path_contribution
-from bpuverify.tage.model.semantic import TABLES, HISTORIES
+from suites.frontend.bpu.bpu.model.conditional_prefix import PROFILES, target_state
+from suites.frontend.bpu.bpu.model.pipeline import Outcome, Resolution, Redirect
+from suites.frontend.bpu.bpu.model.early_aging import require_recovery_window
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.path_history import SHIFT, WIDTH, path_contribution
+from suites.frontend.bpu.tage.model.semantic import TABLES, HISTORIES
 from tests.bpu.scoreboard._indirect_path_program import Program as OriginalProgram
 
 

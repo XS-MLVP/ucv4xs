@@ -122,7 +122,7 @@ PR #6691 的关键 diff（`ICacheImp.scala`）：
 
 - `soft_prefetch()` 与 `prefetch_only()` 的放行窗口改为**有界放行**：记录窗口内所有未被
   需求模型预测的 acquire，并要求它们**只能是被提示 / 被命名的那几个块**；出现其它块立即
-  报错（`icacheverify/icache/agent/main.py`）；
+  报错（`suites/frontend/icache/icache/agent/main.py`）；
 - 新增用例 `test_soft_prefetch_fetches_only_the_hinted_block`（`ICACHE-029`）把这一契约
   固定下来；
 - 新增 `ICACHE-ICACHE-030` 的 strict XFAIL 用例，直接复现“`ready=0` 却出现 req1 acquire”。

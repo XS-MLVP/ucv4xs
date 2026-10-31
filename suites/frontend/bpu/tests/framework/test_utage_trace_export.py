@@ -5,8 +5,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.common.env.trace import trace_exports
-from bpuverify.utage.case.useful_address_scenario import UsefulContext
+from suites.frontend.bpu.runtime.trace import trace_exports
+from suites.frontend.bpu.utage.case.useful_address_scenario import UsefulContext
 
 
 @pytest.mark.parametrize('enabled', (False, True))

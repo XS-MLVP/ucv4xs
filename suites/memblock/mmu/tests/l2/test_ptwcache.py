@@ -3,9 +3,10 @@ from __future__ import annotations
 
 import pytest
 
-from mmuverify.common.runtime import execution
-from mmuverify.l2.l2tlb import pte
-from mmuverify.l2.ptwcache import CacheReq
+from suites.memblock.mmu.legacy_pins import P
+from suites.memblock.mmu.execution import execution, refresh, sweep_inputs
+from suites.memblock.mmu.l2.l2tlb import pte
+from suites.memblock.mmu.l2.ptwcache import CacheReq
 
 
 def leaf(ppn: int, **kwargs) -> int:
@@ -35,7 +36,7 @@ async def _prepare(env, satp_asid: int = 0, vsatp_asid: int = 0,
 # PTWC-01: 4KB L0 hit returns the sector PPN, permissions, tag and pteidx.
 async def test_l0_hit_payload(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         ptes = leaves(0x80000)
         await env.refill_l0(0x30000, ptes)
@@ -63,7 +64,7 @@ async def test_l0_hit_payload(ptwcache_env):
 # PTWC-02: the low 3 VPN bits select the sector PTE (ppn_low) and pteidx.
 async def test_l0_sector_selection(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         ptes = leaves(0x80000)
         await env.refill_l0(0x30006, ptes)
@@ -85,7 +86,7 @@ async def test_l0_sector_selection(ptwcache_env):
 # PTWC-03: miss, refill, then hit with the same lookup.
 async def test_miss_then_refill_hit(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         await env.issue(CacheReq(vpn=0x30000))
         miss = await env.wait_resp()
@@ -104,7 +105,7 @@ async def test_miss_then_refill_hit(ptwcache_env):
 # PTWC-04: L1 non-leaf entry provides the next-level table PPN.
 async def test_l1_nonleaf_hit(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         vpn = 0x30000
         target = 0x12345
@@ -123,7 +124,7 @@ async def test_l1_nonleaf_hit(ptwcache_env):
 # PTWC-05: L2 non-leaf entry is reported as l2Hit.
 async def test_l2_nonleaf_hit(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         vpn = 0x30000
         target = 0x23456
@@ -140,7 +141,7 @@ async def test_l2_nonleaf_hit(ptwcache_env):
 # PTWC-06: L3 non-leaf entry is reported as l3Hit (Sv48).
 async def test_l3_nonleaf_hit(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         vpn = 0x30000
         target = 0x34567
@@ -157,7 +158,7 @@ async def test_l3_nonleaf_hit(ptwcache_env):
 # PTWC-07: a 2MB superpage leaf hits the SP cache at level 1.
 async def test_sp_2m_hit(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         vpn = 0x30000
         ppn = 0x4000
@@ -178,7 +179,7 @@ async def test_sp_2m_hit(ptwcache_env):
 # PTWC-08: a 1GB superpage leaf hits the SP cache at level 2.
 async def test_sp_1g_hit(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         vpn = 0x4000000
         ppn = 0x40000
@@ -195,7 +196,7 @@ async def test_sp_1g_hit(ptwcache_env):
 # PTWC-09: a 512GB leaf hits the level-3 SP entry.
 async def test_sp_512g_hit(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         vpn = 0x30000000
         ppn = 1 << 27
@@ -211,7 +212,7 @@ async def test_sp_512g_hit(ptwcache_env):
 # PTWC-10: ASID filtering and global PTEs.
 async def test_asid_filtering(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env, satp_asid=2)
         vpn = 0x30000
         await env.refill_l0(vpn, leaves(0x80000))
@@ -236,7 +237,7 @@ async def test_asid_filtering(ptwcache_env):
 # PTWC-11: onlyStage1 uses vsatp ASID and ignores VMID.
 async def test_only_stage1_asid(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env, satp_asid=1, vsatp_asid=4, vmid=7)
         vpn = 0x31000
         await env.refill_l0(vpn, leaves(0x80000), s2xlate=1)
@@ -259,7 +260,7 @@ async def test_only_stage1_asid(ptwcache_env):
 # PTWC-12: onlyStage2 ignores ASID and checks VMID.
 async def test_only_stage2_vmid(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env, satp_asid=1, vsatp_asid=4, vmid=7)
         vpn = 0x32000
         await env.refill_l0(vpn, leaves(0x80000), s2xlate=2)
@@ -279,7 +280,7 @@ async def test_only_stage2_vmid(ptwcache_env):
 # stage1Hit without a final hit when the S1 PTE is valid.
 async def test_allstage_stage1_hit(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env, satp_asid=1, vsatp_asid=2, vmid=3)
         vpn = 0x33000
         await env.refill_l0(vpn, leaves(0x80000), s2xlate=3)
@@ -296,7 +297,7 @@ async def test_allstage_stage1_hit(ptwcache_env):
 # with pf=1; an allStage invalid entry is not cached (miss).
 async def test_fault_entry_caching(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         vpn = 0x34000
         fault_ptes = [pte(0x80000 + index, v=0, a=0, d=0) for index in range(8)]
@@ -315,7 +316,7 @@ async def test_fault_entry_caching(ptwcache_env):
 # PTWC-15: prefetch fetches are marked in the response.
 async def test_prefetch_flag(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         vpn = 0x35000
         await env.refill_l0(vpn, leaves(0x80000), source=2)
@@ -328,7 +329,7 @@ async def test_prefetch_flag(ptwcache_env):
 # PTWC-16: HPTW requests pass through the cache and expose hptw fields.
 async def test_hptw_path(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env, vmid=7)
         vpn = 0x36000
         ptes = leaves(0x80000)
@@ -350,7 +351,7 @@ async def test_hptw_path(ptwcache_env):
 # the sector PTE vector is returned to the PTW.
 async def test_bitmap_jump(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.set_csr(bme=1, cmode=0)
         vpn = 0x37000
@@ -372,7 +373,7 @@ async def test_bitmap_jump(ptwcache_env):
 # for the HPTW request.
 async def test_bitmap_allstage(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env, vsatp_asid=1)
         env.set_csr(bme=1, cmode=0)
         vpn = 0x38000
@@ -393,7 +394,7 @@ async def test_bitmap_allstage(ptwcache_env):
 # PTWC-19: full sfence invalidates every cache level.
 async def test_full_sfence(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         vpn = 0x39000
         await env.refill_l0(vpn, leaves(0x80000))
@@ -411,7 +412,7 @@ async def test_full_sfence(ptwcache_env):
 # address remains cached. An rs1=1/rs2=0 sfence clears the whole ASID.
 async def test_scoped_sfence(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env, satp_asid=2)
         a, b = 0x3A000, 0x3B000
         await env.refill_l0(a, leaves(0x80000))
@@ -435,7 +436,7 @@ async def test_scoped_sfence(ptwcache_env):
 # PTWC-21: hfence.v and hfence.g invalidate through their own fields.
 async def test_hfence_paths(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env, vsatp_asid=1, vmid=3)
         vpn = 0x3C000
         await env.refill_l0(vpn, leaves(0x80000), s2xlate=1)
@@ -455,7 +456,7 @@ async def test_hfence_paths(ptwcache_env):
 # PTWC-22: response backpressure holds the payload stable.
 async def test_resp_backpressure(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         vpn = 0x3D000
         await env.refill_l0(vpn, leaves(0x80000))
@@ -476,7 +477,7 @@ async def test_resp_backpressure(ptwcache_env):
 # PTWC-23: all four L0 ways in a set are usable and the fifth refill evicts.
 async def test_l0_ways_and_sets(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         base_vpn = 0x40000
         hits = 0
@@ -504,24 +505,17 @@ async def test_l0_ways_and_sets(ptwcache_env):
 @pytest.mark.structural_stress
 async def test_bit_sweep(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
-        exclude = {"clock", "reset", "io_req_valid", "io_resp_ready",
-                   "io_refill_valid", "io_bitmap_wakeup_valid",
-                   "io_bitmap_wakeup_ready"}
+        exclude = {"clock", "reset", P.p_req_valid, P.p_resp_ready,
+                   P.p_refill_valid, P.p_bitmap_wakeup_valid,
+                   P.p_bitmap_wakeup_ready}
         for endpoint in (1, 0):
-            for name, signal in vars(env.dut).items():
-                if name in exclude:
-                    continue
-                if not hasattr(signal, "IsInIO"):
-                    continue
-                if signal.IsInIO() and not signal.IsOutIO():
-                    width = max(1, int(getattr(signal, "mWidth", 1)))
-                    signal.Set(((1 << width) - 1) if endpoint else 0)
+            sweep_inputs(env, endpoint, exclude)
             for entry in env.sfence:
                 for signal in entry.values():
                     signal.Set(0)
-            env.dut.RefreshComb()
+            refresh(env)
             await env.edge()
             for _ in range(3):
                 await env.edge()
@@ -535,7 +529,7 @@ async def test_bit_sweep(ptwcache_env):
 # PTWC-25: every L0 set and way is addressable; the 5th fill evicts a way.
 async def test_l0_sets_ways_sweep(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         hits = 0
         for set_index in range(64):
@@ -558,7 +552,7 @@ async def test_l0_sets_ways_sweep(ptwcache_env):
 # PTWC-26: L1 has 4 sets x 2 ways; each set/way is usable.
 async def test_l1_sets_ways(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         for set_index in range(4):
             for way in range(2):
@@ -574,7 +568,7 @@ async def test_l1_sets_ways(ptwcache_env):
 # PTWC-27: L2/L3 fully-associative entries survive up to 16 distinct fills.
 async def test_l2_l3_capacity(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         l2_hits = 0
         for index in range(16):
@@ -598,7 +592,7 @@ async def test_l2_l3_capacity(ptwcache_env):
 # PTWC-28: SP has 16 entries; fill and hit all of them.
 async def test_sp_capacity(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         hits = 0
         for index in range(16):
@@ -615,7 +609,7 @@ async def test_sp_capacity(ptwcache_env):
 # for the response cf bits.
 async def test_bitmap_wakeup_update(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.set_csr(bme=1, cmode=0)
         vpn = 0x90005
@@ -647,7 +641,7 @@ async def test_bitmap_wakeup_update(ptwcache_env):
 # PTWC-30: a refill for the in-flight request sets the bypass flag.
 async def test_refill_bypass(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         vpn = 0xA0000
         await env.issue(CacheReq(vpn=vpn))
@@ -661,7 +655,7 @@ async def test_refill_bypass(ptwcache_env):
 # PTWC-31: prefetch refills at L1/L2/SP levels set the prefetch bit.
 async def test_prefetch_levels(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         vpn = 0xB0000
         await env.refill_super(vpn, 2, leaf(0x40000), source=2)
@@ -679,7 +673,7 @@ async def test_prefetch_levels(ptwcache_env):
 # page-fault-only entry.
 async def test_invalid_per_stage(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env, vsatp_asid=1, vmid=3)
         vpn = 0xC0000
         bad = [pte(0x80000 + i, v=0, a=0, d=0) for i in range(8)]
@@ -692,7 +686,7 @@ async def test_invalid_per_stage(ptwcache_env):
 # PTWC-33: isFirst=0 passes through unchanged.
 async def test_is_first_passthrough(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         vpn = 0xD0000
         await env.refill_l0(vpn, leaves(0x80000))
@@ -705,7 +699,7 @@ async def test_is_first_passthrough(ptwcache_env):
 # next G-stage table lookup.
 async def test_hptw_upper_levels(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         vpn = 0xE0000
         await env.refill_entries(vpn, 2, [nonleaf(0x2500)] * 8)
@@ -721,7 +715,7 @@ async def test_hptw_upper_levels(ptwcache_env):
 # every (way, sector-index) response path is reachable.
 async def test_l0_all_ways_all_sets(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         base = 0x2000000
         for set_index in range(64):
@@ -761,7 +755,7 @@ async def test_l0_all_ways_all_sets(ptwcache_env):
 # PTWC-36: L1 is 4 sets x 2 ways; both ways of every set are usable.
 async def test_l1_two_ways(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         base = 0x3000000
         for set_index in range(4):
@@ -781,7 +775,7 @@ async def test_l1_two_ways(ptwcache_env):
 # one can be looked up again.
 async def test_l2_l3_fill_and_sweep(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         l2_vpns = [0xE0000 + index * 0x2000 for index in range(16)]
         for index, vpn in enumerate(l2_vpns):
@@ -803,7 +797,7 @@ async def test_l2_l3_fill_and_sweep(ptwcache_env):
 # PTWC-38: SP capacity: all 16 superpage entries survive and hit.
 async def test_sp_fill_and_sweep(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         vpns = [0x40000000 + index * 0x8000000 for index in range(16)]
         for index, vpn in enumerate(vpns):
@@ -818,7 +812,7 @@ async def test_sp_fill_and_sweep(ptwcache_env):
 # PTWC-39: PBMT and permission fields are returned unchanged per sector entry.
 async def test_pbmt_and_perms(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         base = 0x5000000
         for way, pbmt in enumerate((0, 1, 2, 3)):
@@ -844,7 +838,7 @@ async def test_pbmt_and_perms(ptwcache_env):
 # PTWC-40: scoped sfence clears L0 SP L1 L2 and L3 at the right granularity.
 async def test_flush_all_caches(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env, satp_asid=2, vsatp_asid=2)
         v0, v1 = 0x1A000, 0x1300000
         v2, v3, v4 = 0x1B000, 0x1C000, 0x1D000
@@ -883,7 +877,7 @@ async def test_flush_all_caches(ptwcache_env):
 # PTWC-41: hfence.v clears onlyStage1 (h=1) entries in every cache.
 async def test_hfencev_all_levels(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env, vsatp_asid=1, vmid=3)
         v0 = 0x21000
         v1 = 0x5300000
@@ -908,7 +902,7 @@ async def test_hfencev_all_levels(ptwcache_env):
 # G-stage upper-level hits are observed through the HPTW response.
 async def test_hfenceg_all_levels(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env, vmid=5)
         v0 = 0x25000
         v1 = 0x5700000
@@ -934,7 +928,7 @@ async def test_hfenceg_all_levels(ptwcache_env):
 # registered RAM-data fallback instead of the one-cycle bypass.
 async def test_pipeline_stall_ram_fallback(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         vpns = [0x31000 + index * 0x8 for index in range(5)]
         for index, vpn in enumerate(vpns):
@@ -951,7 +945,7 @@ async def test_pipeline_stall_ram_fallback(ptwcache_env):
             env.req["is_first"].Set(1)
             env.req["is_hptw"].Set(0)
             env.req["hptw_id"].Set(0)
-            env.dut.RefreshComb()
+            refresh(env)
             await env.edge()
             env.req["valid"].Set(0)
             accepted.append(vpn)
@@ -977,7 +971,7 @@ async def test_pipeline_stall_ram_fallback(ptwcache_env):
 # every cache and honours the VMID check.
 async def test_virt_sfence_all_levels(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env, vsatp_asid=2, vmid=3)
         env.set_csr(virt=1)
         v0 = 0x33000
@@ -1014,7 +1008,7 @@ async def test_virt_sfence_all_levels(ptwcache_env):
 # address-scoped forms across the caches.
 async def test_hfence_scope_variants(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env, vsatp_asid=2, vmid=5)
         v0 = 0x41000
         v1 = 0x5D00000
@@ -1088,7 +1082,7 @@ async def test_hfence_scope_variants(ptwcache_env):
 # directions by the Bitmap wakeup interface.
 async def test_bitmap_reg_exhaustive(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.set_csr(bme=1, cmode=0)
         base = 0x10000000
@@ -1110,7 +1104,7 @@ async def test_bitmap_reg_exhaustive(ptwcache_env):
                     env.wakeup["check_success"].Set(success)
                     for index in range(8):
                         env.wakeup["pte_index"].Set(index)
-                        env.dut.RefreshComb()
+                        refresh(env)
                         await env.edge()
             env.wakeup["valid"].Set(0)
             for _ in range(4):
@@ -1125,7 +1119,7 @@ async def test_bitmap_reg_exhaustive(ptwcache_env):
 # PTWC-47: an address sfence selects every L0 set in turn (flush-mask sweep).
 async def test_flush_mask_sweep(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         for set_index in range(64):
             vpn = 0x20000000 | (set_index << 3)
@@ -1142,7 +1136,7 @@ async def test_flush_mask_sweep(ptwcache_env):
 # polarities for every valid field (L0/L1/L2/L3/SP).
 async def test_field_polarity_sweep(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         all_ones_44 = (1 << 36) - 1
         ones_leaf = leaf(all_ones_44, g=1)
@@ -1262,7 +1256,7 @@ async def test_field_polarity_sweep(ptwcache_env):
 # and clears the corresponding sector cf bit.
 async def test_bitmap_wakeup_allstage(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env, vsatp_asid=2, vmid=5)
         vpn = 0x50005
         await env.refill_l0(vpn, leaves(0x80000), s2xlate=3)
@@ -1291,7 +1285,7 @@ async def test_bitmap_wakeup_allstage(ptwcache_env):
 # entry) and hits for every 4KB subpage of its range.
 async def test_napot_64k_hit(ptwcache_env):
     env = ptwcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         base_vpn = 0x60000
         ppn = 0x8008  # NAPOT encoding: ppn[3:0] = 4'b1000

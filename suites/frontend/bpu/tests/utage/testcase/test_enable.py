@@ -4,12 +4,12 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.utage.transaction.types import UtageTraining
-from bpuverify.utage.coverage.catalog import utage_enable_coverage_model
-from bpuverify.utage.coverage.catalog import write_utage_enable_coverage
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.utage.case.definitions import PASSING_PC
-from bpuverify.utage.case.definitions import POSITION
+from suites.frontend.bpu.utage.transaction.types import UtageTraining
+from suites.frontend.bpu.utage.coverage.catalog import utage_enable_coverage_model
+from suites.frontend.bpu.utage.coverage.catalog import write_utage_enable_coverage
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.utage.case.definitions import PASSING_PC
+from suites.frontend.bpu.utage.case.definitions import POSITION
 
 
 @pytest.mark.feature("BPU-UTAGE-012")

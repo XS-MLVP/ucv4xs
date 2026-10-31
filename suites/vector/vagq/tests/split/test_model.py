@@ -1,8 +1,8 @@
 """SplitCtrl semantic model qualification without DUT coverage credit."""
 import pytest
 
-from vagqverify.split.model import State, element, idx_offset, need_flush, pending
-from vagqverify.split.types import Beat, Entry, Redirect
+from suites.vector.vagq.split.model import State, element, idx_offset, need_flush, pending
+from suites.vector.vagq.split.types import Beat, Entry, Redirect
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)
 

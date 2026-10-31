@@ -4,10 +4,12 @@ These are deliberately independent of the existing ForwardModel.result
 prediction: one uses the model only for its normal output contract, the other
 checks a byte-origin/blocking property directly on the sampled public pins.
 """
+
 import pytest
 
-from lsqverify.forward.types import Translation
-from lsqverify.raw.types import SqPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.forward.types import Translation
+from suites.memblock.lsq.raw.types import SqPtr
 
 
 @pytest.mark.parametrize("lane", range(3))
@@ -40,7 +42,7 @@ async def test_multi_match_partial_forward_mask_must_block(forward, lane):
     change = await env.cycle(translations={lane: Translation(older.paddr)})
     assert any(answer["uid"] == uid for answer in change["responses"])
     post = env.observed
-    prefix = f"io_query_{lane}_s2Resp_"
+    prefix = P.io(f"query_{lane}_s2Resp_")
     assert post[prefix + "valid"]
     mask = sum(bool(post[prefix + f"bits_forwardMask_{byte}"]) << byte for byte in range(16))
     blocked = any(post[prefix + field] for field in (

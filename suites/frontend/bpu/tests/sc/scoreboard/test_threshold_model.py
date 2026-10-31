@@ -3,9 +3,9 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.sc.transaction.types import ScBatchTraining
-from bpuverify.sc.transaction.types import ScBranchFeedback
-from bpuverify.sc.model.threshold import ScThresholdModel
+from suites.frontend.bpu.sc.transaction.types import ScBatchTraining
+from suites.frontend.bpu.sc.transaction.types import ScBranchFeedback
+from suites.frontend.bpu.sc.model.threshold import ScThresholdModel
 
 
 def feedback(*outcomes, positions=(0, 9, 18, 27), **meta_changes):

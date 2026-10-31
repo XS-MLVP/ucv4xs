@@ -1,10 +1,10 @@
 """Unique stable virtual/physical pages for real contiguous S4 generations."""
 from dataclasses import replace
 
-from lsqverify.forward.types import Query, Translation
-from lsqverify.load_queue.types import Load
-from lsqverify.rar.types import Query as RarQuery
-from lsqverify.raw.types import Query as RawQuery
+from suites.memblock.lsq.forward.types import Query, Translation
+from suites.memblock.lsq.load_queue.types import Load
+from suites.memblock.lsq.rar.types import Query as RarQuery
+from suites.memblock.lsq.raw.types import Query as RawQuery
 from .ldu_s4_precise_owners import PreciseOrdinaryS4Program, PATTERNS as BASE_PATTERNS, LEGAL_CASES
 from .ldu_s4_plain_owners import HIT, MISS, AF, PF
 from .memory_owners import cached_load

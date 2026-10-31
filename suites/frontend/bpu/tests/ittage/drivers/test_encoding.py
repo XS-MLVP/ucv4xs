@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.ittage.transaction.types import IttageBatchTraining
-from bpuverify.ittage.transaction.types import IttageBranchFeedback
-from bpuverify.ittage.transaction.types import IttageLookup
+from suites.frontend.bpu.ittage.transaction.types import IttageBatchTraining
+from suites.frontend.bpu.ittage.transaction.types import IttageBranchFeedback
+from suites.frontend.bpu.ittage.transaction.types import IttageLookup
 
 
 @pytest.mark.feature("ENV-IF-001")
@@ -46,7 +46,7 @@ async def test_lookup_encoder_maps_all_fire_controls(ittage_agent):
         "s2_fire": 1,
         "s3_fire": 1,
         "start_pc": 0x2000_0000,
-        "folded_history": ({"foldedHist": 0},) * 19,
+        "folded_history": ({"foldedHist": 0},) * 9,
     }
 
 
@@ -57,9 +57,9 @@ async def test_lookup_encoder_aligns_s1_history_with_previous_s0(ittage_agent):
     values = ittage_agent.lookup_driver.encoder(second)
 
     assert values["start_pc"] == second.pc >> 1
-    assert values["folded_history"] == ({"foldedHist": 0},) * 19
+    assert values["folded_history"] == ({"foldedHist": 0},) * 9
     third = ittage_agent.lookup_driver.encoder(first)
-    assert third["folded_history"] == ({"foldedHist": 4},) * 19
+    assert third["folded_history"] == ({"foldedHist": 4},) * 9
 
 
 async def test_batch_training_rejects_two_ittage_candidates(ittage_agent):

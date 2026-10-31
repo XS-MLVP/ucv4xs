@@ -3,8 +3,8 @@ import asyncio
 
 import pytest
 from toffee import Bundle, ClockCycles, Execution, MemoryBackend
-from bpuverify.common.bundle.bindings import PortBinding
-from bpuverify.common.monitor.activity import ActivityMonitor
+from suites.frontend.bpu.ports.bindings import PortBinding
+from suites.frontend.bpu.monitors.activity import ActivityMonitor
 from tests.framework.fakes import Signal
 
 

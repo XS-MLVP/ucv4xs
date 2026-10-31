@@ -4,13 +4,13 @@ from types import SimpleNamespace as NS
 import pytest
 from toffee import ScoreboardMismatch
 
-from bpuverify.bpu.model.main_coincident_recovery import Program,PROGRAMS,RULES
-from bpuverify.bpu.coverage.main_coincident_recovery import Coverage
-from bpuverify.bpu.checker.feedback_gate import FeedbackChecker
-from bpuverify.bpu.checker.window_lifetime import WindowPipelineChecker
-from bpuverify.bpu.model.main_sources import BranchTargetSources
-from bpuverify.bpu.model.feedback_gate import wire_payload
-from bpuverify.bpu.model.window_lifetime import LifetimeError
+from suites.frontend.bpu.bpu.model.main_coincident_recovery import Program,PROGRAMS,RULES
+from suites.frontend.bpu.bpu.coverage.main_coincident_recovery import Coverage
+from suites.frontend.bpu.bpu.checker.feedback_gate import FeedbackChecker
+from suites.frontend.bpu.bpu.checker.window_lifetime import WindowPipelineChecker
+from suites.frontend.bpu.bpu.model.main_sources import BranchTargetSources
+from suites.frontend.bpu.bpu.model.feedback_gate import wire_payload
+from suites.frontend.bpu.bpu.model.window_lifetime import LifetimeError
 from tests.bpu.scoreboard.test_feedback_gate import setup,source,prepare,PROJECTION
 from tests.bpu.scoreboard.test_main_accepted_recovery import new_checker,packet,capture
 from tests.bpu.scoreboard.test_partial_reuse import transfer

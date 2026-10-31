@@ -1,10 +1,13 @@
+
 import pytest
+
+from suites.memblock.lsq.legacy_pins import P
 
 
 async def test_empty_queries_are_quiet_without_a_reset_port(forward):
     env = forward
     await env.idle(5)
-    assert not any(env.observed[f"io_query_{lane}_s2Resp_valid"] for lane in range(3))
+    assert not any(env.observed[P.io(f"query_{lane}_s2Resp_valid")] for lane in range(3))
     env.coverage.sample(("FWD-IDLE.quiet",), env.last_tick)
     env.coverage.sample(("FWD-IDLE.quiet",), env.last_tick, checked=True)
 

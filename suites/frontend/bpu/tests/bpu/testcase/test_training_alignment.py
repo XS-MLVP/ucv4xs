@@ -1,7 +1,7 @@
 """Exhaustive legal input intent; no raw pins, edges or event-loop scheduling."""
 import pytest
-from bpuverify.bpu.model.alignment import ALL_CASES
-from bpuverify.bpu.case.alignment import check_training_alignment
+from suites.frontend.bpu.bpu.model.alignment import ALL_CASES
+from suites.frontend.bpu.bpu.case.alignment import check_training_alignment
 
 # Measured on the 2026-10-21 full BPU program run; scheduling hint only.
 pytestmark = pytest.mark.estimated_runtime(25)

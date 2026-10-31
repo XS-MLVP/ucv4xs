@@ -229,12 +229,12 @@ direct指令能携带独立比较过的当前checkpoint，并不是将call来源
    新地址并保留至少一个新live frame。全部旧metadata必须不可变，所有提交组仍
    是复位值；这次只退休两条neutral，不能虚构旧call或新call已提交。
 
-独立[RasReference](../bpuverify/ras/model/semantic.py)仍只维护自己的持久Program、
+独立[RasReference](../ras/model/semantic.py)仍只维护自己的持久Program、
 Frame、版本与退休事件。BOS/guard通过可选静态Bundle只读扩展与public/retained
 在同一输出freeze采样，每一拍与模型自有retired_calls/guarded比较，不反灌模型。
-[checker](../bpuverify/bpu/checker/ras/neutral_gap.py)要求全部8项因果义务完成，
+[checker](../bpu/checker/ras/neutral_gap.py)要求全部8项因果义务完成，
 最后一次真实状态/消费者比较通过后才记checked；两个8-bin FC组不是16个功能。
-[case](../bpuverify/bpu/case/ras/neutral_gap.py)只表达prepare/threshold/reclaim/reuse，
+[case](../bpu/case/ras/neutral_gap.py)只表达prepare/threshold/reclaim/reuse，
 等待、源收集、公共驱动和资源时序在env/driver/monitor中，无case级edge/get_set/task。
 
 CommitChecker只为实际neutral新增无栈操作路径：真实S3动作/PC、resolve/redirect、
@@ -259,8 +259,8 @@ hash核验。341点仍322PASS/17FAIL/2XFAIL；1181功能输入合并一次135.24
 
 ### 096：guard回滚后的调用版本回收与新身份复用
 
-新增[生命周期程序](../bpuverify/bpu/case/ras/capacity.py)继续使用独立
-[RasReference](../bpuverify/ras/model/semantic.py)，不复制specQueue寄存器。
+新增[生命周期程序](../bpu/case/ras/capacity.py)继续使用独立
+[RasReference](../ras/model/semantic.py)，不复制specQueue寄存器。
 模型从真实复位和语义call/return/recovery/retirement维护持久Program/Frame，
 每个调用的版本、重复组和前驱来自自己的操作历史。返回地址由输入指令结束位置
 计算；实际top、SSP/SCTR、tosw或committed cells不能初始化/修正golden。
@@ -283,7 +283,7 @@ cadence、当前来源拒绝、距离仍大于14的较老恢复不解除guard、
 4. fresh新return必须消费新地址，保留旧committed groups和所有原始metadata。
    只看写到slot14/15或某个valid脉冲不能代替这条完整生命周期。
 
-[检查器](../bpuverify/bpu/checker/ras/capacity.py)派生现有RAS语义组件checker，
+[检查器](../bpu/checker/ras/capacity.py)派生现有RAS语义组件checker，
 既比较每拍公共投影和全部八个committed groups，也在真实S3 return输入处检查
 其消费的实际public target。源码合同分别为
 [Ras.scala:71](../XiangShan/src/main/scala/xiangshan/frontend/bpu/ras/Ras.scala#L71)
@@ -297,7 +297,7 @@ guard拒绝call/return、
 输入，不冒称已自主推导全BPU预测器。genuine公共source、指令身份、PHR、顺序
 提交与实际return consumer另行核对；不声称完整FTQ合法性或任意32-version别名
 寿命。runtime collection/recovery公共helper下沉到
-[env/ras/program.py](../bpuverify/bpu/env/ras/program.py)，旧case API只保留兼容导出；
+[env/ras/program.py](../bpu/env/ras/program.py)，旧case API只保留兼容导出；
 case只描述生命周期，不出现edge、task或gather。环境允许显式注入reference，
 无需运行时替换对象或把实现级寄存器镜像当语义模型。
 
@@ -327,7 +327,7 @@ RTL/DUT/SDK、detached HEAD与五份正式报告不改，目标继续开放。
 ### 095：完整分支记录的pending版本取代与clean重激活
 
 MainBTB剩余WriteBuffer_4缺行不是129个缺失功能。093检查两个**不同记录**均被
-保存和服务；[095程序](../bpuverify/bpu/case/main_rewrite.py)检查**同一记录**的
+保存和服务；[095程序](../bpu/case/main_rewrite.py)检查**同一记录**的
 两个真实旧来源如何产生完整新版本，以及clean记录再次修改后的可见性。复用
 独立`MbtbReference`/`RetainedEntries`，核心身份为(row,tag,position)，owner和
 版本由模型维护，不根据实际dirty、出队口或命中位置决定expected。
@@ -347,11 +347,11 @@ SDK monitor必须确认恰好一次完整B entry及两次masked direction服务�
 原始metadata始终不可变，所有新旧branch-owned目标由自有事件和冻结read推导。
 
 `BpuTransaction.prediction`是原S1结果，不能把它误称为已修正的Main结果。
-[检查器](../bpuverify/bpu/checker/main_rewrite.py)同时要求Main真实公开metadata
+[检查器](../bpu/checker/main_rewrite.py)同时要求Main真实公开metadata
 与独立frame匹配，并从自有early/middle选择推导全部S2/S3 correction时刻，再
 比较实际public correction事件；每拍完整目标、类型、控制和最终输出仍由原
 PipelineChecker检查。只看到模型中的new target或单个valid脉冲不算consumer。
-case不包含edge、task、gather；[env](../bpuverify/bpu/env/main_rewrite.py)复用
+case不包含edge、task、gather；[env](../bpu/env/main_rewrite.py)复用
 production AsyncDriver及现有ServiceMonitor/Bundle，并用成熟与服务条件等待。
 
 契约来源是[WriteBuffer.scala:204](../XiangShan/src/main/scala/xiangshan/frontend/bpu/WriteBuffer.scala#L204)
@@ -361,7 +361,7 @@ entry和direction各自的读优先服务。第一次试跑到clean C proposal�
 协议投影错误**：语义region_delta=-1应保持为负一，但端口TargetCarry为枚举
 Underflow=2，不是二补码3。依据
 [Bundles.scala:378](../XiangShan/src/main/scala/xiangshan/frontend/bpu/Bundles.scala#L378)
-修正[projection](../bpuverify/bpu/model/main_service.py)，并增加Fit/Overflow/Underflow
+修正[projection](../bpu/model/main_service.py)，并增加Fit/Overflow/Underflow
 三个纯契约；不是修改RTL或把实际carry反灌golden。该错误不得记成硬件FAIL。
 
 095为一个需求族，八个reached/checked义务不是八个功能点，不按slot、owner、
@@ -384,14 +384,14 @@ RTL/DUT/SDK及五份正式报告未改，失败全量不发布，目标仍开放
 
 ### 094与043：条件事件序列，而不是CommonHR信号方程
 
-新增[CommonDirectionReference](../bpuverify/bpu/model/common_history.py)以有序的
+新增[CommonDirectionReference](../bpu/model/common_history.py)以有序的
 conditional身份和实际完成结果追加历史：普通fetch block完成可以包含其全部NT
 conditional；backend在较早conditional处纠正为NT，只完成截止该指令的前缀，
 **后面的conditional尚未执行，不能提前补零**。模型不读取实际s2/s3、内部GHR/BW、
 queue指针或输出metadata来决定expected。已有SC组件的CommonHR状态检查器仍有
 价值，但其输入来自实际组件边界，不能作为这个自主oracle的替代。
 
-[程序](../bpuverify/bpu/env/common_history.py)组合独立Micro/Main/path模型，正常
+[程序](../bpu/env/common_history.py)组合独立Micro/Main/path模型，正常
 学习PC`0x40000800`：位置1为taken后向conditional，位置5分别为direct正对照或
 conditional；fallback为direct自循环。独立完成事件自然形成GHR255/BW15。只在
 连续完整lookup-window内历史不变、全流水前进且无repair/redirect时，才允许把
@@ -415,7 +415,7 @@ fresh公开prediction的resolve.valid必须先为1，再比较GHR/BW：期望253
 本来就发布conditional-only dedupHitMask；我们的direct对照也验证了这一点。
 问题是较晚的真实conditional还没有执行，不是direct被误当conditional。
 
-[PipelineObservation](../bpuverify/bpu/env/pipeline.py)把pipeline/CommonHR Bundle
+[PipelineObservation](../bpu/env/pipeline.py)把pipeline/CommonHR Bundle
 组合为**一次冻结采样**，同一SDK capture内先处理独立pipeline、再处理历史。
 不能依赖两个`@on`订阅或异步observer任务的执行先后。MemoryBackend测试在第一
 个回调中改变底层信号，第二个仍须读到旧冻结值，且退出后不再采样。cases只描述
@@ -449,7 +449,7 @@ checked均0，未满合计27。未闭合真实缺陷不被框架140个合成sche
 ### 093与028：MainBTB完整目标服务与旧冷源的真实owner资格
 
 MainBTB的entry缓存、方向FIFO不是同一种资源，也不能机械套用ITTAGE/TAGE
-profile。新[093程序](../bpuverify/bpu/case/main_service.py)继续使用已有独立
+profile。新[093程序](../bpu/case/main_service.py)继续使用已有独立
 `BranchTargetSources`及`MbtbReference`；两个真实PC各自通过正常公开反馈建立
 counter0的较早conditional邻居、counter2的较晚indirect owner。所有表项、LRU、
 读快照、原始checkpoint与MicroBTB可信度均从复位/公开事件自行维护。
@@ -474,9 +474,9 @@ enqueue与原公开接纳处于同一Rising采样边界，entry经额外RegNext�
 经有界异常上下文和源码核实后修正，增加提前/延后一周期的负向契约；没有改模型
 算法或把actual值反灌期望，也未导出逐周期轨迹。
 
-[Bundle](../bpuverify/bpu/bundle/main_service.py)仅绑定现有memory-direct完整entry、
+[Bundle](../bpu/bundle/main_service.py)仅绑定现有memory-direct完整entry、
 方向队列及读服务边界；mask以外的方向payload无定义，不变造成学习许可。共用
-[ServiceMonitor](../bpuverify/bpu/monitor/service.py)现在只接收已绑定的静态端口，
+[ServiceMonitor](../bpu/monitor/service.py)现在只接收已绑定的静态端口，
 不再要求checker带history-table属性，也不将Main的alignment伪装成table。
 领域绑定仍在Bundle/env，动态接收仍是SDK原生`ReadyValidMonitor`与lossless`@on`。
 
@@ -528,7 +528,7 @@ Main在S0保存自己的读；ITTAGE在S1接受时保存不可变表项，在S2�
 而已完成S3也不能被后续训练或目录替换重算。所有有定义的实际metadata、S1 PC/
 folds和15位PRNG持续比较；PRNG按物理采样相位推进，不随交易停顿或借实际值重同步。
 
-原062增加[自主学习程序](../bpuverify/bpu/case/indirect_learning.py)，保留旧的十步
+原062增加[自主学习程序](../bpu/case/indirect_learning.py)，保留旧的十步
 provider/alternate测试。四次真实原来源纠正必须依次建立长表provider、使confidence
 2→1→0而保持旧target、在Main已改新target时产生原来源S3纠正，最后才在旧confidence0
 时重学目标。每次反馈都有自己的fresh consumer，原metadata不变，完整S2/S3 repair
@@ -538,22 +538,22 @@ provider/alternate测试。四次真实原来源纠正必须依次建立长表pr
 四个完整上下文目标效果必须保存，释放后按序服务，新请求才看到提交值**。不只是
 检查某dirty位变1，也不将“输入接受”当作“内存已更新”。
 
-[服务程序](../bpuverify/bpu/case/indirect_service.py)在同一间接PC，通过真实的直达/
+[服务程序](../bpu/case/indirect_service.py)在同一间接PC，通过真实的直达/
 中间路径建立四种历史和四个外部区域目标；每个源都有独立checkpoint、row、region
 identity与完整目标快照。短/长历史两类索引宽度分别资格，不遍历中间表、bank或set。
 声明四个confidence3的完整效果后才统一通过现有异步training driver发送；反馈是
 原预测实际正确的non-mispredict，不为制造覆盖发明错误标志。真实预测必须与四次
 相邻接受并行，不能通过暂停预测来帮助写入。
 
-[Checker](../bpuverify/bpu/checker/indirect_service.py)先核对实际offered payload和
+[Checker](../bpu/checker/indirect_service.py)先核对实际offered payload和
 独立pending顺序、四slot保留、零覆盖及稳定blocked front。四个fresh旧值consumer
 均须仍读到confidence2和自己的完整foreign target。释放读压力后，共用的
-[ServiceMonitor](../bpuverify/bpu/monitor/service.py)由xreactor原生
+[ServiceMonitor](../bpu/monitor/service.py)由xreactor原生
 `ReadyValidMonitor`确认恰好四个完整、有序服务，再检查四个新consumer的confidence3、
 目标、完整repair窗口、空pending、原metadata与所有region不变，最后统一给checked。
 case没有时钟边沿、手写task或gather；等待条件和异步收据留在env中。
 
-[只读Bundle](../bpuverify/bpu/bundle/indirect_service.py)仅绑定现有memory-direct/
+[只读Bundle](../bpu/bundle/indirect_service.py)仅绑定现有memory-direct/
 trace-projection字段。输入entry.valid已常量折叠，绝不伪造XData；offered比较实际
 存在的有定义字段，service输出仍完整检查valid。physical mask是包含padding的36位，
 padding本身来自RTL的DontCare，不伪造成独立功能要求。无VPI、内部写入或DUT重建。
@@ -593,7 +593,7 @@ BPU原生33713/46541（72.44%），净增52键逐键等于上述两项隔离资�
 flush也不是这个普通学习事件。因此091新增一个需求族，包含原正确分歧、读优先
 保存、按序服务和提交后可见性四个语义要求；六条采样义务不是六个新功能ID。
 
-[程序](../bpuverify/bpu/case/direction_useful.py)复用真实Main/TAGE/history准备与
+[程序](../bpu/case/direction_useful.py)复用真实Main/TAGE/history准备与
 `DirectionSources`，所有预期由独立`TageReference`产生。两个真实历史在相同PC
 拥有负向counter2/正向counter5的长表provider。暂时禁用TAGE、只把Main准备成3/2，
 保留所有TAGE状态；negative provider正确而原base错误，邻居positive provider与
@@ -608,13 +608,13 @@ gather或时钟边沿。
 的3/2快照，每次提出2/3，不合成0/3。纯模型分别检查这些语义，不能套同一种
 “并行更新必然累加”的规则。
 
-[Bundle](../bpuverify/bpu/bundle/tage_service.py)只读memory-direct已存在的useful
+[Bundle](../bpu/bundle/tage_service.py)只读memory-direct已存在的useful
 enqueue/dequeue、payload、指针和full；优化端口用SDK trace projection还原，
 没有VPI、内部写入或DUT重建。指针到occupancy的函数只是actual投影，绝不进入
-算法状态。[Monitor](../bpuverify/bpu/monitor/tage/service.py)复用原SDK
+算法状态。[Monitor](../bpu/monitor/tage/service.py)复用原SDK
 `ReadyValidMonitor`及lossless `@on`采样，仅选择独立useful通道，不新造调度框架。
 
-[Checker](../bpuverify/bpu/checker/direction_useful.py)比较每个实际enqueue；所有
+[Checker](../bpu/checker/direction_useful.py)比较每个实际enqueue；所有
 四个义务成熟后，在同一独立模型/actual边界核对满容量、稳定blocked front、零
 ready、零丢弃及无flush。继续读两个原历史，新公开consumer必须仍看到旧useful0
 和counter2/5。两者都完成才释放读压力；SDK必须确认四次完整、按序且不多不少
@@ -663,7 +663,7 @@ required schema120→122；功能点通过数、功能事件覆盖和原生行�
 ### 066双向反基预测：先声明来源，再验证实际选择和学习效果
 
 在下面NT-over-T资格之上，新增
-[双向语义程序](../bpuverify/bpu/case/early_positive.py)，仍强化同一个066，不新增
+[双向语义程序](../bpu/case/early_positive.py)，仍强化同一个066，不新增
 功能ID，也不替换原高索引程序。真实最终隔离资格
 `owned-early-positive-qualified-20261015-v1`为1PASS：场景5.17秒、pytest15.14秒，
 两个组各20条reached/checked义务完整。它不是全仓验收，完整生产结果单独报告。
@@ -691,7 +691,7 @@ provider。连续oracle比较仍正确，实际语义返回由更高表候选胜
 不得早于实际效果确认时间，完成时保留两个方向的独立source证明。
 
 更长语义程序还要求
-[显式redirect来源关联](../bpuverify/bpu/checker/pipeline.py)：数值PHR encoding
+[显式redirect来源关联](../bpu/checker/pipeline.py)：数值PHR encoding
 能对应不同完整历史，不能猜最新/最老，或用actual低位修复golden。驱动前验证真实
 published receipt并冻结payload；接受时比较cfiPC、target、taken、kind、action与
 history，成功比较后才消费计划。待接受来源不可retire；reset取消旧计划。
@@ -731,7 +731,7 @@ epoch仍未完成，本轮失败全量不发布为验收。
 ### 066自主反基预测：原来源选择较晚分支并确认useful效果
 
 这不是新的功能ID。原066的高索引四节点程序与所有检查保留；新增
-[语义程序](../bpuverify/bpu/case/early_opposition.py)补的是自主Main/Ahead/MicroTAGE
+[语义程序](../bpu/case/early_opposition.py)补的是自主Main/Ahead/MicroTAGE
 组合的判断资格：**有效NT provider必须推翻同一条件分支的T base**，选择较晚
 direct fallback，并使其原S3来源得到正确的usefulness学习。先前044仅证明NT
 provider学习/消费，base也可能同为NT，不能代替本事件。
@@ -746,7 +746,7 @@ bank/row/way成为强T，但MicroTAGE使用另一真实历史，原NT entry/usef
 实际published来源、完整原metadata及全部选择窗口持续比较，不从实际hit/index/
 provider/表内容反推golden。
 
-[历史与身份规约](../bpuverify/bpu/model/early_opposition.py)用真实边的贡献计算
+[历史与身份规约](../bpu/model/early_opposition.py)用真实边的贡献计算
 短历史固定点，最大历史长度取已有UTAGE配置。它不是“固定等若干周期”：只在
 真正接纳的独立Main消费者满足其12位历史前提时推进。位置2和4分别得到
 `0xAA0`与`0x540`，低4位相同，但MicroTAGE历史不同。counter0本身还不够：
@@ -755,7 +755,7 @@ valid/tag/position/counter一致。纯程序在不同前序/流水相位下可�
 provider；不通过约束实际输出选择一个更容易通过的provider。
 
 期望仍来自`EarlyDirectionSources`的自有模型；新增的不是另一个寄存器镜像。
-[Bundle](../bpuverify/bpu/bundle/early_direction.py)只读现有memory-direct布局，
+[Bundle](../bpu/bundle/early_direction.py)只读现有memory-direct布局，
 增加两表共1024个useful cell。投影双方各自将完整向量编码为非零字典，零为
 固定默认；不是按expected的key过滤actual。缺表/少cell拒绝，实际任意未触及
 cell意外非零也会失败。所有有效response字段继续由独立资格决定。
@@ -766,7 +766,7 @@ cell意外非零也会失败。所有有效response字段继续由独立资格�
 valid字段及全部useful状态始终比较，不使用actual valid/hit掩盖错误。
 既有15位tag高位失败仍保留，不因此把disabled或wrong-tag当成合格预测。
 
-[checker](../bpuverify/bpu/checker/early_opposition.py)保留原S3 fastTrain对象与
+[checker](../bpu/checker/early_opposition.py)保留原S3 fastTrain对象与
 checkpoint owner的身份关联。useful-increase必须来自已经通过coherent S3比较
 的反base token，不能因为恰好同一index写入就给分。模型本拍产生的effect先形成
 待确认义务；**下一完整actual状态比较通过**后才登记效果，不能用模型自证RTL
@@ -810,7 +810,7 @@ epoch在当轮相同；后续源码与最新完整复验见上节。BPU诊断336
 ### 044条件Ahead/MicroTAGE自主组合：独立标签与原始路径训练资格
 
 在非条件`AheadSources`之上增加
-[EarlyDirectionSources](../bpuverify/bpu/model/early_direction_sources.py)，复用独立
+[EarlyDirectionSources](../bpu/model/early_direction_sources.py)，复用独立
 `UtageReference`而非集成shadow monitor采到的写命令。它拥有两张表、完整15位tag、
 方向/useful、在途更新及不可变读取；正常分支发现、已解析方向和自有Main最终选择
 是学习事件，DUT hit/provider/metadata/表内容不进入oracle。诊断中的实际read-tag
@@ -829,13 +829,13 @@ shadow已经写入SRAM：MicroTAGE持续读表，同bank可合法地长期推迟
 `main_pending`不把这种待服务的SRAM义务伪装成无限settling等待。旧snapshot必须
 保有原checkpoint对象身份，显式retire/reset后不能借用，即使PC/history数值相同。
 
-[静态Bundle](../bpuverify/bpu/bundle/early_direction.py)只读现有memory-direct YAML，
-[projection](../bpuverify/bpu/checker/early_direction.py)按独立模型定义的资格比较，
+[静态Bundle](../bpu/bundle/early_direction.py)只读现有memory-direct YAML，
+[projection](../bpu/checker/early_direction.py)按独立模型定义的资格比较，
 不以实际valid/hit掩盖坏payload。检查raw hitVec、有效provider的方向、原S1 metadata
 与合格原S3 metadata、索引和全部19个history folds；当前路径输出、修复和source
 编码继续由自主pipeline比较。没有VPI、内部写、DUT/SDK重建或框架补丁。
 
-[场景](../bpuverify/bpu/case/early_direction.py)先正常发现位置2的条件回边，消费真实
+[场景](../bpu/case/early_direction.py)先正常发现位置2的条件回边，消费真实
 Ahead条件预测，再单独resolve该来源为NT。之后从**新的**Main消费者发现位置4的
 direct fallback，避免把first-mispredict之后的分支当作同一batch中的有效发现。
 自然流继续产生原来源fastTrain，直到一个新S3 receipt消费独立分配出的NT provider。
@@ -892,7 +892,7 @@ required schema112→116；缺类、少一规则或有普通FAIL都不能发布�
 
 这次补的是独立组合oracle，不是将4926个Ahead counter物理缺键拆成功能点。
 已有015/019原场景保留；新增一个正常双边间接分支程序强化它们，功能ID仍335。
-[AheadSources](../bpuverify/bpu/model/ahead_sources.py)组合已有独立AbtbReference与
+[AheadSources](../bpu/model/ahead_sources.py)组合已有独立AbtbReference与
 MainBTB模型，自有PHR/checkpoint和流水线token仍由PipelineReference维护。MicroBTB
 算法也保留，但本真实DUT程序将它关闭以隔离Ahead来源；不是已验收全部预测器组合。
 
@@ -987,13 +987,13 @@ reset、hold、taken和恢复自有checkpoint都保持偶数value；flag仍可�
 捕获新metadata；旧026虽相邻接受，但每笔只更新一个不同owner，都不能证明两份
 旧counter同时进入流水线后，每个owner的两次更新均得到保留。
 
-[纯语义程序](../bpuverify/bpu/model/tage/forwarding.py)从正常Main分支发现、基础方向
+[纯语义程序](../bpu/model/tage/forwarding.py)从正常Main分支发现、基础方向
 学习和两次独立TAGE分配开始，建立同历史下较早NT counter2、较晚T counter5的
 两个最长历史provider。准备过程中每个mispredict位置也与自有最终预测对照；不能
 将较早实际已错的taken分支标成正确、再把错误随意记到较晚分支。NT前缀及T尾项
 表达执行顺序；只在准备Main方向时有意暂停TAGE学习，目标burst时两者均真正开启。
 
-[case](../bpuverify/bpu/case/direction_forwarding.py)随后捕获两个不同的真实S1/S3
+[case](../bpu/case/direction_forwarding.py)随后捕获两个不同的真实S1/S3
 来源。PC/history数值与读内容可以相同，但checkpoint/token对象必须不同，且两个
 来源均在反馈前完成。环境先登记两份原始来源及完整反馈，再一次提交给生产
 AsyncDriver；不在case中创建task/gather、操作边沿或写引脚，也不等待前一笔更新
@@ -1049,7 +1049,7 @@ epoch一致。当轮BPU原生测量为
 SRAM重读的反馈被预测阻塞；085只在读空闲窗口完成相邻学习，都不能证明不需要
 重读的强provider反馈在持续预测下被接受、延迟写回并保持正确版本。
 
-[纯模型程序](../bpuverify/bpu/model/tage/service.py)通过原checkpoint直达PC与经过
+[纯模型程序](../bpu/model/tage/service.py)通过原checkpoint直达PC与经过
 另一个真实checkpoint返回PC的两条路径建立A/B历史，各自有较早NT counter2及
 较晚T counter5。Main分支记录是共享的，TAGE状态/快照则由自己的历史决定。
 四次不同来源按A/B/A/B真实查询顺序采集，全部在反馈前完成，不复制同一receipt。
@@ -1061,7 +1061,7 @@ provider此时会直接取得资格，进一步增强它是**正确反馈**，�
 纯测试逐次用自有最终决策核对错误位置，已经修正最初照搬导致的不真实错误标签；
 最终DUT资格在修正后重跑，不沿用早期候选的PASS来证明当前程序。
 
-[环境](../bpuverify/bpu/env/direction_service.py)一次提交四笔完整NT前缀/T尾项输入，
+[环境](../bpu/env/direction_service.py)一次提交四笔完整NT前缀/T尾项输入，
 仅等发送接受及模型学习成熟，不调用committed drain提前停流。四笔均实际相邻
 接受，且各接受时都有公开预测接受；整个持有窗口的实际读mask必须持续占用该bank，
 训练读端口始终不请求reread。自主history/Main/TAGE/pipeline模型持续运行；实际
@@ -1072,7 +1072,7 @@ provider此时会直接取得资格，进一步增强它是**正确反馈**，�
 在A、B各发一个新查询，二者均须消费旧SRAM值2/5；只看到pending或只检查一个
 历史都不能关闭checked义务。只有这两个consumer成功后，才释放预测读取。
 
-[monitor](../bpuverify/bpu/monitor/tage/service.py)复用SDK `ReadyValidMonitor`，
+[monitor](../bpu/monitor/tage/service.py)复用SDK `ReadyValidMonitor`，
 由其在驱动稳定阶段保存不可变写payload、在对应接受边沿确认`Transfer`。原
 YAML已经具有这些memory-direct IO及bankMask投影，无需VPI、internal写入、DUT
 重建或新的底层时序适配。每个owner必须按独立服务顺序接受A/B两份完整写回，
@@ -1130,13 +1130,13 @@ NT前缀/T尾项，没有伪造metadata或从实际状态重新初始化模型�
 历史语义，不是枚举DUT地址直到行覆盖率上涨，也不将地址标签当成覆盖事件。
 
 五笔不重读反馈在连续同bank预测中相邻接受。静态
-[bundle](../bpuverify/bpu/bundle/tage_service.py)只在本场景增加八个dirty及两个完整
+[bundle](../bpu/bundle/tage_service.py)只在本场景增加八个dirty及两个完整
 incoming payload的只读memory-direct绑定；原086默认不采这些字段。实际的每个
 incoming row/tag/valid/counter均须符合原来源独立计算的顺序。第五笔到达时，实际
 八个dirty必须都为1，且它必须命中A原来的两个逻辑键，不能偷偷变成第五个新键。
 dirty仅是actual资格检查，不决定golden的容量、成熟、hash、内容或推进。
 
-[checker](../bpuverify/bpu/checker/direction_capacity.py)必须保留八份待提交义务，
+[checker](../bpu/checker/direction_capacity.py)必须保留八份待提交义务，
 没有dirty义务被覆盖；闭式预期为A学习两次得到0/7，B/C/D各一次得到1/6。读取
 不释放时，四种历史各有一个新consumer仍须看到旧2/5。只完成两种历史不能关闭
 前四条checked。释放后SDK monitor确认每owner四个、总计八个完整写回，顺序及
@@ -1181,13 +1181,13 @@ BPU原生**33608/46541**，相对085恰新增上述去重50键，十DUT零旧命
 key**。写接口没有背压，这个配置允许替换dirty victim，并不保证无限保留所有
 已接受更新。不能把允许的容量丢弃当RTL错误，也不能把任意丢失纳入golden。
 
-[独立程序](../bpuverify/bpu/model/tage/service.py)建立五种真实历史A/B/C/D/E，
+[独立程序](../bpu/model/tage/service.py)建立五种真实历史A/B/C/D/E，
 T3 row/context各异，同PC、同bank、每历史两个相反方向owner。Main先共享学习至
 0/3，A的旧TAGE值为1/6，其余四种旧值为2/5。五个不同checkpoint均在反馈前捕获。
 相邻完整NT前缀/T尾项反馈使A产生实际待写0/7，B/C/D产生1/6，E再以新key换入1/6。
 不要预先把A学到0/7再拿饱和保持填容量：数值不变可能抑制写请求，达不到前提。
 
-[checker](../bpuverify/bpu/checker/direction_replacement.py)要求E proposal到达时，
+[checker](../bpu/checker/direction_replacement.py)要求E proposal到达时，
 实际八个dirty全为1，且两个被阻塞的完整front仍是A的0/7；五个完整incoming
 row/tag/valid/counter按原来源独立比较，E必须不同于之前四key。只有这些实际
 前提都满足，才为满新键事件记reached。独立版本模型按已规定的服务rank/tree
@@ -1243,7 +1243,7 @@ miss。最终资格还增加了第五proposal时实际A完整front=0/7的直接�
 history程序正常建立两条所有权时间线：原预测provider=5、旧way；当前同逻辑key
 provider=4、相反way。两份值都来自各自独立生成的读快照，actual metadata只被比较。
 
-[程序](../bpuverify/bpu/model/tage/migration.py)使用三个真实两跳历史blocker/
+[程序](../bpu/model/tage/migration.py)使用三个真实两跳历史blocker/
 original/newcomer。路径delta `0x648`和`0xad8`来自七位T3行fold的零空间：它们
 保持三者同bank/同候选row，但tag不同，不是把同一个历史贴三个地址标签。共同
 恢复源可以改变具体row，DUT用例不硬编码row122，也不搜索actual地址直到命中。
@@ -1262,7 +1262,7 @@ useful0并保存真实来源；原key弱化到4后被newcomer替换，newcomer�
 确实不重读SRAM，才能保留旧way和旧counter。完整输入必须仍属原checkpoint；
 原TAGE metadata的旧5提出counter6，而当前保留版本4必须转发成5，不是直接写6。
 
-[monitor](../bpuverify/bpu/monitor/tage/service.py)复用现有memory-direct Bundle、
+[monitor](../bpu/monitor/tage/service.py)复用现有memory-direct Bundle、
 `@on`和SDK ReadyValidMonitor，比较actual原port proposal的row/tag/valid/6，并
 确认恰好一个完整写回到相反的当前owner、counter5。新消费者分别检查原key的新
 owner/result、newcomer的counter5/useful1不变，以及已被替换blocker仍miss；完整
@@ -1312,7 +1312,7 @@ actual write/dirty为推进条件的信号级golden。四次真实预测分别�
 checkpoint，均在原provider为5/旧way时完成；随后才正常替换、保护邻居并把同
 逻辑key重分配为4/新way。四份原metadata保持不变，不重复发送同一receipt。
 
-[环境](../bpuverify/bpu/env/direction_burst.py)通过生产AsyncDriver一次登记并发送
+[环境](../bpu/env/direction_burst.py)通过生产AsyncDriver一次登记并发送
 四个原来源的正确T反馈；monitor独立确认四个相邻的真实接受。每个原强provider
 都独立满足无需SRAM重读的资格，故原way提案始终是5→6；当前保留版本则应把
 四次学习合成到**5、6、7、7**，全部路由到迁移后的owner。最后一笔检验上界保持，
@@ -1405,14 +1405,14 @@ BPU为**33631/46541**，精确新增上述8键；十DUT零旧命中丢失，其�
 本项晚于上面完整生产v2；完整生产的17343PASS/21FAIL/3XFAIL不能被称为本次源码的
 全量验收。继续按用户要求只改模型、验证与必要的框架支持，RTL和DUT不改、不重建。
 
-[DirectionSources](../bpuverify/bpu/model/direction_sources.py)组合已存在的独立
+[DirectionSources](../bpu/model/direction_sources.py)组合已存在的独立
 MainBTB/TAGE算法模型。每个请求拥有独立history checkpoint、Main读快照及TAGE读
 快照；S2用自己的base/selector计算raw与qualified方向，S3消费S2冻结的qualified
 决策。反馈由原请求的自有metadata推导；实际S3 metadata、公开来源及实际接受输入
 的所有定义字段均先比较，不能用实际provider/way/counter重新初始化golden。
 失效字段不比较，未知/已释放/相同编码但不同对象的checkpoint不能借用旧快照。
 
-[场景](../bpuverify/bpu/case/direction_learning.py)只表达六步学习程序：Main弱正学习，
+[场景](../bpu/case/direction_learning.py)只表达六步学习程序：Main弱正学习，
 短历史T2学习NT并增强，长历史T3晋升为弱正provider，暂停TAGE学习后仅增强Main
 至T，再由更短NT alternate纠正raw T方向，最后增强长provider使其保留并获得useful。
 关键对照是Main自己预测T、短alternate预测NT：若错误地绕过alternate改选Main，
@@ -1457,7 +1457,7 @@ metadata边界的每个定义字段、旧来源/错误消费者/多余repair、r
 
 ## ABTB：分支目的地所有权与原生满覆盖漏检
 
-[AbtbReference](../bpuverify/abtb/model/semantic.py)输入是预测/恢复和已接受分支反馈，
+[AbtbReference](../abtb/model/semantic.py)输入是预测/恢复和已接受分支反馈，
 独立维护4 bank × 64 row × 4 way条目、方向计数器、替换recency以及不可变读快照。
 半字PC和四位历史特征独立映射row/bank，24位partial tag匹配条目，22位目标在请求PC
 区域重构；当前配置无carry fix。分支位置、kind、RAS动作及目标均由模型自己维护，
@@ -1475,10 +1475,10 @@ slot/dirty-mask参考，也不按实际dirty/writeResp来安排golden的提交�
 优先级和无背压溢出的边界单独声明；本次丢失场景仅两条不同目的地义务，未达到
 四条容量，不靠制造溢出。
 
-[公开输入monitor](../bpuverify/abtb/monitor/semantic.py)负责信号解码和RiseWrite消费
+[公开输入monitor](../abtb/monitor/semantic.py)负责信号解码和RiseWrite消费
 边界；算法仅接受严格的纯语义值，拒绝信号包装和超出配置的输入。反馈metadata在
 独立UT是上游输入；真实场景返回的是先经模型检查的原始metadata，不修改hit/way。
-[默认checker](../bpuverify/abtb/checker/semantic.py)取代OBSERVE_ONLY，对预测结果、
+[默认checker](../abtb/checker/semantic.py)取代OBSERVE_ONLY，对预测结果、
 有效metadata和`toMicroTage.result`的定义字段逐周期比较；流水返回另检查PC及独立
 history路由。无效payload不拿来判断功能，actual.valid也不能决定是否检查预期命中。
 异常包含tick、事件、独立状态和字段差异；之后不重同步。live S1 `fastPositions`仍由
@@ -1568,7 +1568,7 @@ UTAGE；后续MBTB已接入，见下节。已发现的功能差异和全量回�
 
 ### 独立模型的输入和状态
 
-[MbtbReference](../bpuverify/mbtb/model/semantic.py)从公开预测、resolved分支、上游metadata
+[MbtbReference](../mbtb/model/semantic.py)从公开预测、resolved分支、上游metadata
 和复位/使能事件出发，自行维护512个branch record、方向计数器、按alignment/replacement
 index分组的两路LRU、不可变读快照和在途写入。算法仅依赖Python dataclasses；不导入
 旧`prepared`快照参考，不拿实际SRAM、counter、shadow owner或内部write packet初始化/
@@ -1589,8 +1589,8 @@ FIFO，读服务优先于写退休，空队列flow-through、满队列同边界�
 使用孤立UT的公开feedback counter snapshot；真实用例的原始metadata先由模型检查
 预测来源，再未经修改返回。它是cut-point输入，不是完整BPU/FTQ reference的替代品。
 
-[monitor](../bpuverify/mbtb/monitor/semantic.py)仅解码公开端口及RiseWrite消费边界；
-[default checker](../bpuverify/mbtb/checker/semantic.py)替换OBSERVE_ONLY，逐周期检查
+[monitor](../mbtb/monitor/semantic.py)仅解码公开端口及RiseWrite消费边界；
+[default checker](../mbtb/checker/semantic.py)替换OBSERVE_ONLY，逐周期检查
 所有定义的result/metadata字段，filtered raw hit仍检查位置、属性和counter，raw miss
 的无效payload不成为golden。使能关闭时注册prediction冻结、rawHit metadata门控，
 请求关联使用历史边界资格，不使用后来时刻的使能值。错误立即记录且通过agent/
@@ -1669,7 +1669,7 @@ metadata中原样返回；以及仅提示位0→2变化时，`BranchAttribute.==
   逐set补满属物理副本枚举而非新功能；生产profile本来就只取代表坐标。
 - 8个由生成层次常量证明不可达：flush wayMask bit0恒0使port-0的7个clear
   payload mux无法选择clear臂；计数队列RAM的`R0_en`恒1使读禁止臂不可达。
-  `python3 -m bpuverify.mbtb.coverage.branch_audit`给出16组布尔穷举和4个源码
+  `python3 -m suites.frontend.bpu.mbtb.coverage.branch_audit`给出16组布尔穷举和4个源码
   变异负对照，原始分母不扣减。
 对应49个“未覆盖行”就是上述49个set副本的if行，不是另一批缺口。
 
@@ -1711,7 +1711,7 @@ UTAGE；TAGE和完整BPU仍需建设。RTL及SDK未改，分支保持原状，�
 
 ## TAGE：历史条件化学习与branch identity，而非内部写包复刻
 
-[TageReference](../bpuverify/tage/model/semantic.py)只依赖dataclasses和固定配置的历史
+[TageReference](../tage/model/semantic.py)只依赖dataclasses和固定配置的历史
 layout常量；预测/训练encoder、DUT、旧pair/shadow模型都不参与golden运算。它拥有
 四表×四bank×128row×两way的entry/counter/useful、八个selector bucket、不可变读
 快照、branch-owned在途版本与aging状态。从真实复位开始，15位分配随机状态按种子
@@ -1731,8 +1731,8 @@ branch保留的owner，不能因为反馈nominated way过时而落到peer。未�
 边界是显式当前配置合同，不消耗实际slot/dirty-mask来决定golden。完整FTQ执行轨迹
 是否合法仍不由独立UT保证，不能把该合同推广成无限吞吐或完整BPU参考。
 
-[公开monitor](../bpuverify/tage/monitor/semantic.py)只把IO转成Events、Feedback和Base。
-[默认checker](../bpuverify/tage/checker/semantic.py)替代OBSERVE_ONLY，检查所有定义的
+[公开monitor](../tage/monitor/semantic.py)只把IO转成Events、Feedback和Base。
+[默认checker](../tage/checker/semantic.py)替代OBSERVE_ONLY，检查所有定义的
 public correction、metadata、raw fast provider和SC provider counter。无效payload不
 决定expected命中与否；实际错误valid不能关闭预期比较。异步返回额外检查原请求PC、
 完整history context、有效base/type/confidence和S1位置关联；冻结首错、不重同步，
@@ -1849,7 +1849,7 @@ expected 1、actual 0）抛出同一已知差异；marker 指定了
 
 ## SC：独立权重算法及事件可见性
 
-算法模型：[model/semantic.py](../bpuverify/sc/model/semantic.py)。输入是PC、历史特征、
+算法模型：[model/semantic.py](../sc/model/semantic.py)。输入是PC、历史特征、
 基础预测分支和已接受的反馈。状态为五类自有有符号权重（path/global/backward/loop/bias）、
 四个自适应阈值、不可变读快照及延迟写入。该文件不依赖picker、xreactor或DUT对象；
 debug索引、SRAM内容、实际权重和内部写缓冲包均不作为输入。
@@ -1866,13 +1866,13 @@ TAGE方向与可信度选择bias特征；每项证据为 `2 * weight + 1`，加�
 权重写入。逻辑写patch在有界缓冲中合并、退休，不逐位镜像RTL next-state寄存器。
 容量满且没有背压时的替换属于当前配置可观察合同，不假定无限队列或无条件转发。
 
-[公开输入monitor](../bpuverify/sc/monitor/semantic.py)只解码模块端口。SC UT的TAGE/
+[公开输入monitor](../sc/monitor/semantic.py)只解码模块端口。SC UT的TAGE/
 MainBTB基础预测及训练metadata是合法上游输入；预测输出metadata先经独立模型检查，
 真实场景再将原始metadata不改动地返回训练端。不能把这种cut-point输入模型直接
 宣称为完整BPU预测选择、全局历史生成或恢复的golden。SC原有API使用半字PC，本轮
 显式保留该单位，没有悄悄改变已有用例的地址解释。
 
-[默认checker](../bpuverify/sc/checker/semantic.py)替换仅采样的默认预期，比较所有定义
+[默认checker](../sc/checker/semantic.py)替换仅采样的默认预期，比较所有定义
 的公开预测/置信度/bias元数据及分量方向；debug索引是被比较的actual，不是expected
 的来源。流水返回还核对请求PC与独立折叠历史。RiseWrite的pending值/消费边界转换
 只在适配层处理，用例不等待边沿，不读取权重或指定表索引。失败通过Scoreboard抛出
@@ -1930,7 +1930,7 @@ WriteBuffer 侧有 2 个四 entry 全 dirty 的 `victim = replacerWay_0`、2 个
 
 ### 模型边界
 
-[RasReference](../bpuverify/ras/model/semantic.py)用不可变调用帧和程序前缀表达推测状态，
+[RasReference](../ras/model/semantic.py)用不可变调用帧和程序前缀表达推测状态，
 重复地址按八层分组；模型自行保存八个已提交保留组及有限推测来源。恢复使用模型
 自己产生的检查点，不根据输入metadata的地址字段新建golden栈。提交关联到实际
 已接受的推测操作，地址来自公开的指令请求，不读取specQueue/SRAM当答案。
@@ -1942,11 +1942,11 @@ resolved属性可以不同于较早的推测分类，这是独立UT的反馈输�
 程序深度和重复层次投影到公开metadata；排队信用、恢复和提交的可见性单独维护。
 同周期提交的保留地址可以已更新，而注册的top仍看到上一版本；模型不借实际top校准。
 
-[默认checker](../bpuverify/ras/checker/semantic.py)比较公开top、压缩分组、重复层次和
+[默认checker](../ras/checker/semantic.py)比较公开top、压缩分组、重复层次和
 分配序号，另核对commit metadata。模型自有已提交分组也与只读memory-direct观测
 逐周期比较，包括提交head、全部保留地址和重复计数。这些观测只作为actual，既不
 传入算法模型，也不修改它的状态。未使用VPI、internal写入或逐周期JSON导出。
-信号采样/半字地址转换仍在[monitor](../bpuverify/ras/monitor/semantic.py)，testcase无边沿等待。
+信号采样/半字地址转换仍在[monitor](../ras/monitor/semantic.py)，testcase无边沿等待。
 
 原始队列指针TOSR/NOS、BOS关系及完整FTQ跟踪合法性不是这个程序模型的完整声明，
 原有专门检查器仍保留。源码中的128个来源/检查点历史上限也是模型服务边界，不是
@@ -2038,7 +2038,7 @@ RTL未修改；此轮没有新增合格行点，先前BPU-INT-074的31点增量�
 
 ## UTAGE：历史条件化方向学习，不镜像内部寄存器
 
-[UtageReference](../bpuverify/utage/model/semantic.py)独立维护两张512行方向表、完整15位tag、
+[UtageReference](../utage/model/semantic.py)独立维护两张512行方向表、完整15位tag、
 饱和计数器和useful。输入为预测上下文、上游基础分支、已接受反馈及恢复事件；折叠历史
 用逐位奇偶法计算，hash、provider选择和更新均由模型自行求出。算法文件不依赖DUT、
 picker或xreactor；不读取实际条目、counter、useful、shadow槽位或dirty mask来生成预期。
@@ -2055,10 +2055,10 @@ picker或xreactor；不读取实际条目、counter、useful、shadow槽位或di
 有界最近更新使用版本号和写入义务表达，同地址旧版本取消不允许误清新版本。调度与
 容量属于配置的可观察合同，但算法不逐位复制RTL的dirty/priority next-state逻辑。
 
-[monitor](../bpuverify/utage/monitor/semantic.py)只在适配层解码公开端口及RiseWrite消费
+[monitor](../utage/monitor/semantic.py)只在适配层解码公开端口及RiseWrite消费
 边界。AheadBTB的组合输入另在输出采样相位解码，不以DUT预测值校准模型。memory-direct
 只读useful/tick是actual：复位后及aging后全体比较，其他时刻检查本次学习坐标，包括
-应当保持的坐标。[默认checker](../bpuverify/utage/checker/semantic.py)比较所有定义的
+应当保持的坐标。[默认checker](../utage/checker/semantic.py)比较所有定义的
 公开字段，并核对流水请求的PC、tag历史和索引历史。未定义的idle/非条件payload只按
 输入资格排除，不能按actual.hit排除；任何定义字段错误仍抛出pytest失败且不重同步。
 
@@ -2212,7 +2212,7 @@ AheadBTB 模块合同明确写回要等读空闲窗口（ABTB agent 的 `drain_b
 注释与用例），集成层的持续 S0 读取会把该写回推迟。参考模型在 memory 层提前可见，
 检查器按逐拍 way 命中比较就产生了假阳性。
 
-处理（`BPU-INT-111`，`bpuverify/bpu/checker/pipeline.py` 的
+处理（`BPU-INT-111`，`suites/frontend/bpu/bpu/checker/pipeline.py` 的
 `buffered_duplicate_allowances`）：
 
 1. 额外 way 必须与参考同一行的某个命中 way 内容逐字段相同（position/kind/action/
@@ -2251,7 +2251,7 @@ AheadBTB 模块合同明确写回要等读空闲窗口（ABTB agent 的 `drain_b
 分配必然落到上表。随后以 `s2`/`s3` 重新携带**同一 beat** 恢复，断言
 `tableId=1、cfiPosition=6、takenCtr_value=4、predTaken=1`。
 
-为此在 `bpuverify/utage/agent/main.py` 增加 `submit_predict_branches(override=...)`
+为此在 `suites/frontend/bpu/utage/agent/main.py` 增加 `submit_predict_branches(override=...)`
 与 `recover_prediction_branches(...)`，让恢复路径能重新携带多槽 beat；这是把已有
 agent 能力接到恢复路径，不是新驱动语义。
 
@@ -2316,7 +2316,7 @@ agent 能力接到恢复路径，不是新驱动语义。
 `rtl/sc`/`dut/sc`——该读取超出授权，故阻塞。
 
 本轮换一条已授权的观测路径：集成 `BpuDut` 通过 memory-direct 暴露每个 SC 写缓冲的
-`shadowValid_0_{slot}`、`dirty_0_{slot}` 与 `io_read_0_ready`（`bpuverify/bpu/monitor/sc/observer.py`
+`shadowValid_0_{slot}`、`dirty_0_{slot}` 与 `io_read_0_ready`（`suites/frontend/bpu/bpu/monitor/sc/observer.py`
 本来就绑定）。新增只读见证 `tests/bpu/testcase/test_sc_full_dirty_reachability.py`，继承生产
 `FullScChecker`，在 2 bank × 4 way 共 8 个物理排列上逐周期统计全部 **10 个** buffer（5 张表 × 2 bank）：
 
@@ -2335,7 +2335,7 @@ agent 能力接到恢复路径，不是新驱动语义。
 清掉前一个脏槽；要到四槽全脏，必须四笔不同 `set_index` 的 miss 在四个相邻拍进入同一 buffer、
 且三个边沿的排水都被拒绝。排水被拒本身很常见（约占 39%），但两者在公开程序里从未叠加。
 
-模型侧本来就能处理：`bpuverify/bpu/model/sc/full.py` 的 `full_advance` 已实现 `full_miss`
+模型侧本来就能处理：`suites/frontend/bpu/bpu/model/sc/full.py` 的 `full_advance` 已实现 `full_miss`
 （按 `victim(plru)` 覆盖、`kind='full_overwrite'`），`FullScChecker` 每拍比较全部十个 PLRU
 状态并在下一沿确认动作。因此这是**防御路径**，不是缺模型；两个 arm 保留在原生分母中，
 不授予覆盖信用。
@@ -2387,11 +2387,11 @@ UT已接入，完整BPU仍缺。新缺陷未改RTL、未新增skip/XFAIL，全�
 
 ## UBTB 样板
 
-- 算法层：[model/semantic.py](../bpuverify/ubtb/model/semantic.py)，没有 xreactor、
+- 算法层：[model/semantic.py](../ubtb/model/semantic.py)，没有 xreactor、
   picker 或 DUT 对象。输入 `UbtbEvents`，状态为条目、逻辑recency树、在途学习和lookup。
-- 适配层：[monitor/semantic.py](../bpuverify/ubtb/monitor/semantic.py)，只采公开端口；
+- 适配层：[monitor/semantic.py](../ubtb/monitor/semantic.py)，只采公开端口；
   用 `@on()` 解码事件与观测响应，不生成 expected。
-- 比较层：[checker/semantic.py](../bpuverify/ubtb/checker/semantic.py)，默认在 agent
+- 比较层：[checker/semantic.py](../ubtb/checker/semantic.py)，默认在 agent
   启动时启用；无显式 expected 的预测也必须与模型比较。无效响应只检查valid，命中
   响应比较全部有效字段。失败给出事件、周期、独立状态与字段差异，不自动重同步。
 
@@ -2443,7 +2443,7 @@ python -m pytest -q tests/ubtb/testcase/test_semantic_reference.py
 
 ## MicroRAS：抽象栈而非寄存器镜像
 
-[UrasReference](../bpuverify/uras/model/semantic.py)接收`RasEvents`，其中包含接受操作、
+[UrasReference](../uras/model/semantic.py)接收`RasEvents`，其中包含接受操作、
 较年轻/较老位置的纠正、推进、退休、redirect和reset。状态只有操作窗口、主顶部的
 可知性及预测结果；模型不接收DUT的`hasPush/hasPop/retAddr`等内部状态。
 
@@ -2452,8 +2452,8 @@ python -m pytest -q tests/ubtb/testcase/test_semantic_reference.py
 的内容未知，不能编造返回地址；后续call又可建立已知顶部。纯测试另用**较新→较老**
 的消去代数交叉验证，不以同一代码或实际输出计算expected。
 
-cycle、pulse、stream都默认启用[公开事件monitor](../bpuverify/uras/monitor/semantic.py)
-和[Scoreboard比较](../bpuverify/uras/checker/semantic.py)，用例没有边沿等待。RiseWrite
+cycle、pulse、stream都默认启用[公开事件monitor](../uras/monitor/semantic.py)
+和[Scoreboard比较](../uras/checker/semantic.py)，用例没有边沿等待。RiseWrite
 待写值转换仍限于adapter。usable=0的目标位未定义；usable=1比较精确地址。URAS不
 拥有主RAS深层存储，也不由此声称已验证集成BPU的主RAS或其恢复。继承端口`enable`
 在当前MicroRAS实现中没有门控，本模型未凭空给它添加门控规范。
@@ -2510,7 +2510,7 @@ S1 return，但较早的S3 return使深度未知，公开结果应为usable=0。
 
 ## ITTAGE：自有状态与读取/提交边界
 
-[IttageReference](../bpuverify/ittage/model/semantic.py)独立维护三张表、两bank、计数器、
+[IttageReference](../ittage/model/semantic.py)独立维护三张表、两bank、计数器、
 useful、目标编码与16项region目录，以及被接受反馈、待写更新、写缓存和读取快照。
 模型没有DUT/picker/xreactor对象；slot状态是语义字段更新，不是采来的RAM位向量。
 反馈经学习与排队后才对后续读取可见；同bank读取优先，另一bank仍可提交；预测使用
@@ -2584,7 +2584,7 @@ reference仍未完成。XiangShan处于detached HEAD，该次验证
 
 ### 已补的组合依赖，不冒充完整组合golden
 
-[PathHistoryReference](../bpuverify/bpu/model/path_history.py)维护完整52-bit逻辑path word，
+[PathHistoryReference](../bpu/model/path_history.py)维护完整52-bit逻辑path word，
 每条taken边做两位推进并加入独立地址贡献；not-taken不插入path边。checkpoint是
 模型自己生成的不可变版本，restore回到该版本再应用真实分支结果，不接收实际
 `phrLowBits`来修正history。复制/伪造、其他实例、复位前和已retire的checkpoint都
@@ -2592,7 +2592,7 @@ reference仍未完成。XiangShan处于detached HEAD，该次验证
 FTQ checkpoint的释放与周期调度尚未接通，因此它不是新的PHR寄存器镜像或完整
 PHR物理实现证明。当前地址输入合同是普通49-bit半字PC/target，guard上界仍待组合。
 
-[选择规则](../bpuverify/bpu/model/selection.py)以语义branch候选和可选方向纠正为输入：
+[选择规则](../bpu/model/selection.py)以语义branch候选和可选方向纠正为输入：
 ahead有任意有效记录即抑制micro，即使ahead全部NT；选择按branch位置而非way顺序；
 S2 raw provider与S3合格纠正不同，S3的SC优先于TAGE；Return与ReturnAndCall不混淆，
 ITTAGE只改无Pop的indirect。S2不因target-only差异纠正；S3根据是否已有S2纠正，
@@ -2618,8 +2618,8 @@ resolve为NT。完整轨迹/FTQ可达性不由这组孤立反馈前置程序声�
 MainBTB先占位、首次NT错误分配单个负向provider的真实过程，并明确检查hasAlt=0。
 预期仍要求两个counter都2→1、useful都0→1、两个原provider owner保持不变。
 
-[component monitor](../bpuverify/bpu/monitor/tage/semantic.py)从真实TAGE公开IO读取
-PC、fold、base和反馈；[checker](../bpuverify/bpu/checker/tage/semantic.py)复用完整
+[component monitor](../bpu/monitor/tage/semantic.py)从真实TAGE公开IO读取
+PC、fold、base和反馈；[checker](../bpu/checker/tage/semantic.py)复用完整
 `TageReference`，从reset独立维护全部表、selector、随机分配、aging和在途更新，
 不从实际SRAM/随机数/写包初始化或修正状态。所有定义的纠正、raw fast provider和
 SC counter均比较；public BPU metadata再关联到确切的自有历史frame。此处普通
@@ -2663,7 +2663,7 @@ feedback路由被观察，不能标作完整独立BPU历史/路由golden。
 
 ### 自主周期组合076/077与生产metadata接收
 
-[PipelineReference](../bpuverify/bpu/model/pipeline.py)从reset和环境事件推进自己的三级
+[PipelineReference](../bpu/model/pipeline.py)从reset和环境事件推进自己的三级
 token：每个请求拥有PC、完整history checkpoint和预测候选快照；由自己的候选独立
 决定阶段选择、middle/final repair、请求替换、年轻请求冲刷、next-PC与历史恢复。
 模型自己生成occupancy/fire/flush，实际阶段信号只作为actual参与比较，不用于推进
@@ -2671,7 +2671,7 @@ golden。CSR控制有两周期无条件延迟，核心reset不擅自清除该延
 
 输入只有公开配置/ready、redirect与accepted resolve等语义事件；启动时各组件的
 SRAM初始化完成状态明确作为**服务可用输入**，不声称独立验证各组件reset扫表长度。
-[MicroOnlySources](../bpuverify/bpu/model/micro_sources.py)复用独立`UbtbReference`，
+[MicroOnlySources](../bpu/model/micro_sources.py)复用独立`UbtbReference`，
 从正常反馈建立条目，模型自有的S3结果产生fast feedback；不读取实际预测表、分配
 结果或metadata建立条目。其他预测表必须保持cold或disabled；其他已使能预测器的
 学习、call/return学习及FTQ commit均明确报不支持，不能忽略后继续给checked信用。
@@ -2685,7 +2685,7 @@ lookup folds。
 
 这也验证了一个生产接收协议问题：生成的meta端口虽有ready引脚，`Bpu.scala`中
 `meta.valid := s3_valid`，且S3不因meta.ready停顿。原先直接用ready/valid握手接收
-会漏掉ready低时的metadata。[BpuMetadataPort](../bpuverify/bpu/bundle/ports.py)仅
+会漏掉ready低时的metadata。[BpuMetadataPort](../bpu/bundle/ports.py)仅
 通过SDK公开`fire`触发扩展改为valid-only，所有物理引脚绑定保持真实；现有SDK
 monitor仍负责pre-edge快照、下一edge时间戳和数据流。没有复制队列、假ready、
 修改SDK私有方法或改变原source配对周期。076要求原生产agent在meta.ready保持
@@ -2726,7 +2726,7 @@ FAIL保留，完整BPU参考与全量验收仍未完成。
 不能把fast与qualified当作同一方向，也不能因为两条路径偶然都NT就认为owner路由
 已得到有区分性的验证。
 
-新增[078程序](../bpuverify/bpu/case/tage/fast_routing.py)只用一个PC/history和两条
+新增[078程序](../bpu/case/tage/fast_routing.py)只用一个PC/history和两条
 正常conditional：先形成T2/way0的较早强NT，再形成同row T2/way1的较晚弱T。
 初始counter分别2/4、没有alternate、两条base都NT：独立TAGE模型预期raw为NT/T，
 因此S2选中较晚分支；弱T provider尚未取得最终使用资格，因此S3纠正为fallthrough。
@@ -2736,7 +2736,7 @@ FAIL保留，完整BPU参考与全量验收仍未完成。
 
 为建立有区分性的owner，新增独立模型的`Read.allocation`和
 `TageReference.allocation_at_next_accept`：invalid/weak/unused候选、历史表优先和
-自有LFSR的学习流水时刻由模型计算。[环境](../bpuverify/bpu/env/tage_semantic.py)
+自有LFSR的学习流水时刻由模型计算。[环境](../bpu/env/tage_semantic.py)
 在真实读/更新排空后等待**模型预测的机会**，随后交给原SDK driver接受；核对实际
 接受恰在预测的下一输入边界，不能受背压后悄悄换一个时刻。等待有失败预算，
 不是固定settling delay，也不根据DUT随机状态调节golden。73项纯分配预测测试
@@ -2744,7 +2744,7 @@ FAIL保留，完整BPU参考与全量验收仍未完成。
 
 原先按expected target搜索单次override可能跳过多余的同目标纠正；新增agent
 `corrections_for`保留整个原请求S1至S3窗口内**所有**override的顺序、PC和tick。
-[checker](../bpuverify/bpu/checker/tage/fast_routing.py)由独立TAGE方向和语义选择函数
+[checker](../bpu/checker/tage/fast_routing.py)由独立TAGE方向和语义选择函数
 构造完整期望序列：weak应是S2跳转后S3回退，strong应只有S2。wrong-PC/target/tick、
 丢失或多余的override均不能被搜索条件隐藏。case没有边沿等待、pin get/set或task编排。
 21项反向/资格检查包括交换MainBTB结果槽位、坏raw方向只给reached不给checked、
@@ -2794,7 +2794,7 @@ component输出和公开metadata；完整S2/T、S3/NT纠正，再增强provider�
 consumer契约不变。较早邻分支须保持。比较/准备资格移到checker，case不含
 assert、edge、get/set、固定settling delay或asyncio编排。
 
-新发现历史不能只由参数标签建立：[checker](../bpuverify/bpu/checker/tage/fast_routing.py)
+新发现历史不能只由参数标签建立：[checker](../bpu/checker/tage/fast_routing.py)
 要求两个真实接受的taken conditional miss（MainBTB raw metadata未匹配），位置按
 指定历史且接受tick严格递增。重复、同周期、倒序、非conditional、NT、非错误预测、
 已知分支或未ready都不能建立发现资格。新的consumer还须晚于两个实际接受；
@@ -2828,7 +2828,7 @@ SDK改动或重建，既有普通RTL FAIL及完整BPU组合缺口继续保留。
 ### Provider/alternate层级079：局部guard不等于原生行点不可达
 
 079将剩余的`Tage.sv:619/621`缺口归因为**更短历史alternate的有区分性选择**，
-不是再遍历物理坐标。[程序](../bpuverify/bpu/case/tage/alternate.py)在同一PC/history
+不是再遍历物理坐标。[程序](../bpu/case/tage/alternate.py)在同一PC/history
 用正常反馈建立T2的强NT，随后一次真正的T误预测反馈分配T3弱T，保留T2为NT
 alternate。关闭TAGE学习、把MainBTB base训练成T，再恢复TAGE；此时T3和base
 都T，只有T2 alternate为NT，错误选择无法靠同方向巧合隐藏。
@@ -2839,10 +2839,10 @@ fallthrough。再给该分支一次真实T反馈，T3从4增强到5、T2从2更�
 无TAGE provider。准备、保留、方向及全部定义metadata从reset独立推导；不使用
 实际SRAM、随机数、分配/写包作为golden，不伪造metadata，也不扫描bank/set。
 
-[环境分配入口](../bpuverify/bpu/env/tage_semantic.py)现支持已有provider上的更长
+[环境分配入口](../bpu/env/tage_semantic.py)现支持已有provider上的更长
 历史分配；Hint由已经独立验证的source期望值构造，并核对真实接受的PC、history、
 base、branch及精确时刻。不合格或无更长历史的分配明确失败，不以固定空等或
-观察实际随机状态改变预期。[共用选择检查](../bpuverify/bpu/checker/tage/selection.py)
+观察实际随机状态改变预期。[共用选择检查](../bpu/checker/tage/selection.py)
 由独立TAGE frame和语义选择函数生成S1/S2/S3完整预期；078与079共用它，不在
 case复制时序匹配/比较算法。MainBTB base和上游PHR仍明确是component cut point，
 这些证据不是完整BPU/FTQ oracle或任意反馈轨迹合法性的证明。
@@ -2900,7 +2900,7 @@ RTL、DUT及SDK均未修改/重建，完整目标继续保持未完成。
 已命中行中的错误不可能靠这份残差分类豁免。此结论限定于当前独立SC/TAGE的
 生成变体，不能套用到集成BPU的不同WriteBuffer变体或其他模块。
 
-[源码校验与native映射](../bpuverify/common/coverage/local_guards.py)要求：guard
+[源码校验与native映射](../coverage/local_guards.py)要求：guard
 定义和词法嵌套仍与当前编译源码一致；相应两态条件无解；每个声称分类的缺失键
 的全部native `l/arm/S` producer都属于已证明的那个arm。缺失producer不当作零，
 toggle不混入行计数，额外/错误producer及非零矛盾计数均拒绝分类；未知行完整保留。
@@ -2913,7 +2913,7 @@ TAGE此前未分类的8个块头已得到明确关联：例如871来自
 `l=365/arm=if/S=365-374`，并被外层hit与内层not-hit同时约束。这与079的619
 外层alternate表达式是不同映射，不能只根据相近行或一个矛盾信号作统一判断。
 
-[审阅坐标目录](../bpuverify/tage/coverage/guard_catalog.py)不是golden行为或证明；
+[审阅坐标目录](../tage/coverage/guard_catalog.py)不是golden行为或证明；
 它只选择当前变体需要复核的范围，每次仍执行源码、条件及native关联检查。旧
 审计依赖的可删除历史JSON不再是单测输入；单测的合成native fixture明确不作为
 真实验证证据。没有RTL/internal/VPI写入，没有DUT/SDK修改或重建。
@@ -2947,16 +2947,16 @@ TAGE此前未分类的8个块头已得到明确关联：例如871来自
 
 原集成重复调用场景只提交9/10次call，未验证“恢复较老检查点、重放那次call、
 舍弃真实年轻后缀、随后退休重复return”的组合。这是操作及所有权缺口，不是
-缺少更多物理槽位。新增[080场景](../bpuverify/bpu/case/ras/redo_unwind.py)用正常
+缺少更多物理槽位。新增[080场景](../bpu/case/ras/redo_unwind.py)用正常
 反馈学到self-call和一个base目标故意不同的return；取得真实S3来源，先提交幸存
 前缀，再恢复第8/9次call的真实pre-operation检查点并通过公开`ras_action=CALL`
 重放，最后消费并提交真实返回。两种上下文仅区分压缩组末项与新组首项。
 
-[语义检查器](../bpuverify/bpu/checker/ras/semantic.py)复用独立UT的
-[RasReference](../bpuverify/ras/model/semantic.py)，不是复刻TOSR/NOS/队列寄存器。
+[语义检查器](../bpu/checker/ras/semantic.py)复用独立UT的
+[RasReference](../ras/model/semantic.py)，不是复刻TOSR/NOS/队列寄存器。
 从reset起自有调用帧、重复分组、检查点和提交操作；所有实际保留存储只作actual，
 不用于初始化/修正golden。组件IO已是本周期事件，不套用独立顶层的引脚launch
-延迟：[monitor](../bpuverify/bpu/monitor/ras/semantic.py)在SDK `DriveStable`解码
+延迟：[monitor](../bpu/monitor/ras/semantic.py)在SDK `DriveStable`解码
 动作，在`RisingEdge`比较公开top/redirectMeta/commitMeta及全部8个保留组。
 恢复/退休效果按组件的一拍注册合同比较；事件tick差3是该合同的reactor相位，
 不是发给测试的固定settling等待。
@@ -3054,7 +3054,7 @@ MicroBtb仍缺169个DA键，MicroBtbReplacer缺28键。082只运行一个配置�
 全过程复用`PipelineObservation`的自主token/三级选择/repair/history模型和
 `MicroOnlySources`中的独立`UbtbReference`。条目、confidence和替换recency从reset
 自行维护，没有采样DUT表内容、hit或victim线来修正预期。另由
-[领域checker](../bpuverify/bpu/checker/micro_capacity.py)将每笔公开来源关联到唯一
+[领域checker](../bpu/checker/micro_capacity.py)将每笔公开来源关联到唯一
 已比较的prediction tick，比较程序指定的目标/位置/taken及同源metadata；旧tick、
 错误来源和已复用输出均拒绝。其他预测器关闭，S2合法地把早期命中纠正为fallthrough，
 该快训导致的confidence下降仍由模型负责；幸存项是在各自消费时检查，不声称之后
@@ -3111,7 +3111,7 @@ actual挑选相近采样相位，更不把actual写回模型。公开token、选
 门禁；schema84→86，功能点327→328。相邻性同时核对driver接受及独立观测的实际
 反馈事件，完整PC/target/position/kind/action/taken/mispredict均比较，不是发了两个
 任务就登记并行完成。共享的停流、来源捕获和完成条件移入
-[micro环境](../bpuverify/bpu/env/micro.py)，case不见edge、get/set或asyncio编排。
+[micro环境](../bpu/env/micro.py)，case不见edge、get/set或asyncio编排。
 
 本轮还修复等待辅助函数的错误传播：Python predicate在仿真pump内运行，不能
 直接抛出checker异常，否则同一失配会同时成为call FAIL和teardown ERROR。
@@ -3146,7 +3146,7 @@ epoch合法性或所有预测器组合，已有普通RTL FAIL保持，整体目�
 为328。问题不是缺一个bank坐标，而是集成反馈里的MainBTB metadata本来由DUT
 产生：若直接作为golden输入，即使训练、响应都来自错误请求，局部模型也可能自洽。
 
-[BranchTargetSources](../bpuverify/bpu/model/main_sources.py)在自主周期engine中组合
+[BranchTargetSources](../bpu/model/main_sources.py)在自主周期engine中组合
 独立的`UbtbReference`与`MbtbReference`。MainBTB内容、方向、替换及在途写义务
 均从reset维护；每次issue保存自己的不可变查询快照。S2/S3的四路候选、方向、
 target、选择、repair、后续PC与history都由这些自有状态推导，实际stage信号、
@@ -3157,7 +3157,7 @@ Micro-only与Micro/Main两种profile是并列组合，不将“只支持Micro学
 
 `Resolution.origin`显式引用模型已经发布的确切`Token`对象。相同PC与低位history
 可能对应冷查询、学习后查询两个不同快照，不能用相等数值搜索替代请求身份。
-[检查器](../bpuverify/bpu/checker/pipeline.py)将真实S1接受和S3 metadata时间戳
+[检查器](../bpu/checker/pipeline.py)将真实S1接受和S3 metadata时间戳
 关联到该owner，比较公开PC、预测payload、独立history及MainBTB所有有效metadata
 字段。rawHit为0时payload未定义，不强行比较；命中时position/kind/action/counter
 均比较。driver发送前登记已检查来源及冻结的反馈副本，实际输入被接受时再比较
@@ -3166,12 +3166,12 @@ Micro-only与Micro/Main两种profile是并列组合，不将“只支持Micro学
 伪造RTL FTQ commit。复制对象、跨模型owner、已释放来源、错时间戳或错字段均报错，
 失败保持原异常，不搜索附近同PC帧或重同步状态。
 
-[场景](../bpuverify/bpu/case/main_learning.py)只表达语义程序：冷态真实来源接受
+[场景](../bpu/case/main_learning.py)只表达语义程序：冷态真实来源接受
 T反馈，后续消费MainBTB弱正counter2；同来源NT反馈降至1，MicroBTB仍预测T但
 MainBTB应纠正为NT；再由新真实来源接受T反馈，原物理owner恢复counter2并重新
 一致。既比较逐周期choices/fire/flush/history与MainBTB metadata，也在自有静稳
 条件下比较MicroBTB confidence。停流、训练排空和来源捕获放在
-[环境](../bpuverify/bpu/env/branch_targets.py)，case不含edge、固定等待或get/set。
+[环境](../bpu/env/branch_targets.py)，case不含edge、固定等待或get/set。
 两种窗口布局为aligned及rotated-unaligned，检验同一逻辑事件在窗口变换后仍能成立，
 不乘bank/set笛卡尔积。
 
@@ -3215,14 +3215,14 @@ wrong-owner/错误消费者/不重同步反向检查。合成actual只检验适�
 实际随机状态。随后保留TAGE强NT、正常把MainBTB base训练为T，再一次完整resolve
 全部8条NT；这是一条真实完整的未跳转路径，不是换几个空槽编号。
 
-[语义程序](../bpuverify/bpu/model/tage/interleaved.py)只描述分支位置、目标与已解析
+[语义程序](../bpu/model/tage/interleaved.py)只描述分支位置、目标与已解析
 结果；不是新的寄存器镜像或替代oracle。
-[环境](../bpuverify/bpu/env/tage_interleaved.py)复用已有SDK driver、monitor和有
+[环境](../bpu/env/tage_interleaved.py)复用已有SDK driver、monitor和有
 真实完成条件的训练排空。base准备逆分支顺序进行，较早已执行分支均NT、最后一条T；
 两次T对应2位counter的0→1→2，不是等两拍。case不含assert、edge、get/set、
 固定settling delay或asyncio编排，不展开bank/set矩阵。
 
-[checker](../bpuverify/bpu/checker/tage/interleaved.py)继续使用从reset维护全部
+[checker](../bpu/checker/tage/interleaved.py)继续使用从reset维护全部
 TAGE表/计数器/useful/selector/在途学习的`TageReference`，保存各来源的自有查询
 快照。真实接受时逐项比较全部8条分支、完整history、MainBTB position匹配、原始
 独立预期hint及resolve槽向量。四条matched与四条unmatched不能压缩后再按槽号
@@ -3293,4 +3293,4 @@ TAGE功能/原生分支已满，更不豁免独立TAGE的026普通FAIL。
 5. 全量通过情况和已知缺陷单独报告；纯模型测试通过不等于真实 DUT 资格验证通过。
 
 局部模型可以分阶段建设，但不能以补文件/空基类、signal级检查或覆盖率全绿替代
-上述验收。公共基础设施继续复用 xreactor，领域模型留在 `bpuverify/<dut>/model/`。
+上述验收。公共基础设施继续复用 xreactor，领域模型留在 `suites/frontend/bpu/<dut>/model/`。

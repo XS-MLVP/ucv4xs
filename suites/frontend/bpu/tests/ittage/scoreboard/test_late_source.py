@@ -1,5 +1,5 @@
 """Original-snapshot qualification, independent of a native DUT."""
-from bpuverify.ittage.model.semantic import Context, Events, IttageReference, Metadata, Outcome
+from suites.frontend.bpu.ittage.model.semantic import Context, Events, IttageReference, Metadata, Outcome
 
 PC, A = 0x40000800, 0x40002000
 

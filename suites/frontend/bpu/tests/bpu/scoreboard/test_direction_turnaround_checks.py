@@ -5,8 +5,8 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.coverage.direction_turnaround import DirectionTurnaroundCoverage
-from bpuverify.bpu.model.tage.direction_turnaround import PROGRAMS
+from suites.frontend.bpu.bpu.coverage.direction_turnaround import DirectionTurnaroundCoverage
+from suites.frontend.bpu.bpu.model.tage.direction_turnaround import PROGRAMS
 from tests.bpu.scoreboard.direction_turnaround_fixtures import armed,mixed,relearned,released,completed,packet
 from tests.bpu.scoreboard.test_partial_reuse import transfer
 from tests.bpu.scoreboard.test_direction_forwarding import resolution

@@ -4,8 +4,8 @@ from types import SimpleNamespace
 
 import pytest
 from toffee import Scoreboard, ScoreboardMismatch
-from bpuverify.bpu.checker.ittage import check_metadata
-from bpuverify.bpu.model.ittage import Entry, IttageContextModel
+from suites.frontend.bpu.bpu.checker.ittage import check_metadata
+from suites.frontend.bpu.bpu.model.ittage import Entry, IttageContextModel
 
 
 def context():

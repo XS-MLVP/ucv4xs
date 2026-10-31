@@ -15,9 +15,9 @@ sys.path.insert(0, str(ROOT))
 from tools.build_vagq_failure_review_report import check_manifest
 from tools.build_vagq_reference_fix_report import audit_wave, junit
 from tools.run_vagq_exhaustive import atomic_json, digest
-from vagqverify.vagq.exhaustive import assess_shape_boundaries, build_shape_sequence
-from vagqverify.vagq.nf0_focus import PROFILES, assess_events, compatible_shapes, make_variant, ready_values, shape_scope
-from vagqverify.vagq.scenario_matrix import legal_public_feature_cases
+from suites.vector.vagq.vagq.exhaustive import assess_shape_boundaries, build_shape_sequence
+from suites.vector.vagq.vagq.nf0_focus import PROFILES, assess_events, compatible_shapes, make_variant, ready_values, shape_scope
+from suites.vector.vagq.vagq.scenario_matrix import legal_public_feature_cases
 
 
 def audit_history(out):

@@ -23,15 +23,15 @@ sys.path.insert(0, str(ROOT))
 
 from tools.run_vagq_exhaustive import atomic_json, digest
 from tools.run_vagq_failure_review import audit
-from vagqverify.maskgen.reference import MaskRequest, evaluate_protocol
-from vagqverify.vagq.exhaustive import (
+from suites.vector.vagq.maskgen.reference import MaskRequest, evaluate_protocol
+from suites.vector.vagq.vagq.exhaustive import (
     U64_MASK, build_shape_sequence, compare_shape, observed_bytes,
 )
-from vagqverify.vagq.failure_review import analyze_failure
-from vagqverify.vagq.scenario_matrix import (
+from suites.vector.vagq.vagq.failure_review import analyze_failure
+from suites.vector.vagq.vagq.scenario_matrix import (
     FeatureCase, OPERATION_NAMES, legal_public_feature_cases,
 )
-from vagqverify.waveform import convert_fst, read_public_samples
+from suites.vector.vagq.waveform import convert_fst, read_public_samples
 
 
 FAMILY_NAMES = {
@@ -445,7 +445,7 @@ def main():
     evidence = dict(original_failed_shapes_sha256=digest(original / 'failed-shapes.json'),
         original_report_sha256=digest(original / 'report.json'),
         frozen_source_epoch_verified=True, original_rtl_and_native_unchanged=True,
-        independent_isa_oracle_sha256=frozen['vagqverify/vagq/isa_reference.py'],
+        independent_isa_oracle_sha256=frozen['vagq/isa_reference.py'],
         receipt_and_journal_verified=2278, original_checker_recomputed=2278,
         offline_explanations_recomputed=2278, actually_driven_acks_verified=True,
         checker_qualification=checker_qualification,
@@ -525,7 +525,7 @@ def write_readme(review, report, rows):
         '本次定位使用的布局、active mask 和起点并非 adapter 擅自猜测。',
         '',
         '但全输出资格检查真实 **FAIL**：2278 项中共 **10596 个 uop** 的 `mergeWriteMask` 模型与 DUT 不同。',
-        '`vagqverify/maskgen/reference.py::mop_info()` 把 field-major 的 `destLsrcOffset` 当作 `destination_window`；',
+        '`maskgen/reference.py::mop_info()` 把 field-major 的 `destLsrcOffset` 当作 `destination_window`；',
         'Scala 实际单独保存 `destElemWindow=lmulOffset`。按源契约的元素窗口单独计算后，',
         '**13536/13536** 原生样本所有字段都解释一致。该字段不参与原 exhaustive 的输入布局/架构字节答案，',
         '也不参与本次停滞 pending-bit 计算，故不是四组原始失败的原因；',

@@ -24,7 +24,7 @@ def main():
     env = dict(os.environ, BPU_DIAGNOSTIC_STAGE=str(stage))
     env['PYTHONPATH'] = os.pathsep.join((str(ROOT), str(ucv_paths.project_root() / '.tools/sources/toffee/src'), str(ucv_paths.project_root() / '.tools/share/picker/python'), env.get('PYTHONPATH', '')))
     command = [sys.executable, '-m', 'pytest', '-c', str(ROOT / 'pytest.ini'), '-q', '--tb=short',
-        '-p', 'no:bpuverify.common.pytest.features', '-p', 'tests.mbtb.diagnostics.isolated_plugin',
+        '-p', 'no:suites.frontend.bpu.pytest_plugins.features', '-p', 'tests.mbtb.diagnostics.isolated_plugin',
         str(ROOT / 'tests/mbtb/diagnostics/flush_key_probe.py')]
     print(f'Isolated stage: {stage}', flush=True)
     run = subprocess.run(command, cwd=ROOT, env=env, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)

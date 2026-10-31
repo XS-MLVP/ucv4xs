@@ -2,8 +2,8 @@
 from dataclasses import replace
 import pytest
 
-from bpuverify.bpu.model.path_history import PathHistoryReference,WIDTH,SHIFT
-from bpuverify.bpu.coverage.history_gaps import residue_contract
+from suites.frontend.bpu.bpu.model.path_history import PathHistoryReference,WIDTH,SHIFT
+from suites.frontend.bpu.bpu.coverage.history_gaps import residue_contract
 
 
 def test_owned_cursor_orbit_is_closed_under_hold_taken_and_any_owned_restore():

@@ -16,11 +16,11 @@ sys.path.insert(0, str(ROOT))
 
 from tools.build_vagq_failure_review_report import check_manifest
 from tools.run_vagq_exhaustive import atomic_json, digest
-from vagqverify.maskgen.reference import MaskRequest, allocated_uops, evaluate_protocol
-from vagqverify.vagq.exhaustive import U64_MASK, assess_shape_boundaries, build_shape_sequence
-from vagqverify.vagq.isa_reference import architectural_accesses
-from vagqverify.vagq.scenario_matrix import FeatureCase, legal_public_feature_cases
-from vagqverify.waveform import convert_fst, read_public_samples
+from suites.vector.vagq.maskgen.reference import MaskRequest, allocated_uops, evaluate_protocol
+from suites.vector.vagq.vagq.exhaustive import U64_MASK, assess_shape_boundaries, build_shape_sequence
+from suites.vector.vagq.vagq.isa_reference import architectural_accesses
+from suites.vector.vagq.vagq.scenario_matrix import FeatureCase, legal_public_feature_cases
+from suites.vector.vagq.waveform import convert_fst, read_public_samples
 
 
 def junit(path):
@@ -188,7 +188,7 @@ def main():
     after = json.loads((out / 'after/source-hashes.json').read_text())
     for name, expected in after.items():
         assert digest(ROOT / name) == digest(out / 'after/sources' / name) == expected
-    assert digest(ROOT / 'vagqverify/maskgen/reference.py') != baseline['before_sources']['vagqverify/maskgen/reference.py']
+    assert digest(ROOT / 'maskgen/reference.py') != baseline['before_sources']['maskgen/reference.py']
 
     runs = {name: check_manifest(out / name / 'execution/manifest.json')
             for name in ('producer-recheck', 'directed', 'regression', 'extended-canaries')}

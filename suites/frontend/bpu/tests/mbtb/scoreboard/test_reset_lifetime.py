@@ -3,13 +3,12 @@ from copy import deepcopy
 from dataclasses import replace
 import pytest
 from toffee import ScoreboardMismatch
-from bpuverify.mbtb.model.semantic import (
+from suites.frontend.bpu.mbtb.model.semantic import (
     Branch as Outcome, Events, Feedback, MbtbReference, Source, tag)
-from bpuverify.mbtb.transaction.types import MbtbEntry, MbtbPrediction
-from bpuverify.mbtb.model.reset_lifetime import Program, PROFILES, RULES
-from bpuverify.mbtb.coverage.reset_lifetime import Coverage
-from bpuverify.mbtb.checker.reset_lifetime import Checks
-
+from suites.frontend.bpu.mbtb.transaction.types import MbtbEntry, MbtbPrediction
+from suites.frontend.bpu.mbtb.model.reset_lifetime import Program, PROFILES, RULES
+from suites.frontend.bpu.mbtb.coverage.reset_lifetime import Coverage
+from suites.frontend.bpu.mbtb.checker.reset_lifetime import Checks
 
 
 def feedback(model, branch, *, taken=True, allocate=True):

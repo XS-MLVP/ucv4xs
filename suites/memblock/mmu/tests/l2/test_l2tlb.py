@@ -3,8 +3,8 @@ from __future__ import annotations
 
 import pytest
 
-from mmuverify.common.runtime import execution
-from mmuverify.common.checks import check_l2_success
+from suites.memblock.mmu.execution import execution, refresh
+from suites.memblock.mmu.checks import check_l2_success
 from tests.l2.soundness_helpers import check_address_fence_and_neighbor
 from tests.l2.soundness_helpers import check_misaligned_1g_leaf
 
@@ -15,7 +15,7 @@ async def test_isa_misaligned_1g_leaf_is_page_fault(l2tlb_env):
 
 async def test_address_fence_preserves_neighbor(l2tlb_env):
     await check_address_fence_and_neighbor(l2tlb_env, _prepare, _build)
-from mmuverify.l2.l2tlb import pte
+from suites.memblock.mmu.l2.l2tlb import pte
 
 
 def _setup(env, csr: dict | None = None) -> None:
@@ -34,7 +34,7 @@ async def _prepare(env, csr: dict | None = None) -> None:
 # memory read, with the level and sector PPN selected by the walker.
 async def test_1g_leaf_through_real_walk(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.start_walk(0x40000, leaf_at_root=True)
         await env.issue(0x12345, 0)
@@ -56,7 +56,7 @@ async def test_1g_leaf_through_real_walk(l2tlb_env):
 # a translation.
 async def test_invalid_root_pte_reports_fault(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.start_walk(0x40000, leaf_at_root=False)
         env.walk_script = {6: [pte(0, v=0, a=0, d=0)]}
@@ -73,7 +73,7 @@ async def test_invalid_root_pte_reports_fault(l2tlb_env):
 # L2TLB-FAULT-02: a leaf with PBMT set while mPBMTE=0 must fault.
 async def test_pbmt_without_enable_faults(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.start_walk(0x40000, leaf_at_root=True,
                        perms=dict(r=1, w=1, x=1, u=1, a=1, d=1, pbmt=3))
@@ -89,7 +89,7 @@ async def test_pbmt_without_enable_faults(l2tlb_env):
 # once the PTE is resident in the PtwCache.
 async def test_repeat_request_hits_pwt_cache(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.start_walk(0x40000, leaf_at_root=True)
         await env.issue(0x45678, 0)
@@ -110,7 +110,7 @@ async def test_repeat_request_hits_pwt_cache(l2tlb_env):
 # L2TLB-FENCE-01: sfence between the two requests forces a new walk.
 async def test_sfence_forces_walk(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.start_walk(0x40000, leaf_at_root=True)
         await env.issue(0x56789, 0)
@@ -137,7 +137,7 @@ async def test_sfence_forces_walk(l2tlb_env):
 # L2TLB-PORT-01: the second TLB port also completes a translation.
 async def test_second_port_translation(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.start_walk(0x40000, leaf_at_root=True)
         await env.issue(0x6789A, 0, port=1)
@@ -153,7 +153,7 @@ async def test_second_port_translation(l2tlb_env):
 # L2TLB-WALK-02: a 4KB translation walks root, middle and leaf levels.
 async def test_4k_page_through_level0_walk(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.start_walk(0xABC)
         await env.issue(0x12345, 0)
@@ -171,7 +171,7 @@ async def test_4k_page_through_level0_walk(l2tlb_env):
 # L2TLB-WALK-03: a 2MB leaf at level 1 also completes and reports level 1.
 async def test_2m_page_through_level1_walk(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.start_walk(0x4000, leaf_at_root=False)
         env.walk_script = {6: [pte(0x80001, a=0, d=0), pte(0x4000, r=1, w=1, x=1, u=1, a=1, d=1)]}
@@ -191,7 +191,7 @@ async def test_2m_page_through_level1_walk(l2tlb_env):
 # the per-source script) also walks correctly end to end.
 async def test_memory_image_4k_walk(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.walk_script = None
         env.memory.build_sv39(0x80000, 0x12345, 0xABC)
@@ -215,7 +215,7 @@ def _build(env, vpn: int, ppn: int, mid: int = 0x80001, leaf: int = 0x80002,
 # the PtwCache and both return their own PPN.
 async def test_two_4k_translations(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.walk_script = None
         _build(env, 0x12345, 0xABC, mid=0x80001, leaf=0x80002)
@@ -233,7 +233,7 @@ async def test_two_4k_translations(l2tlb_env):
 # L2TLB-MULTI-02: distinct root indexes fetch distinct root lines.
 async def test_root_index_variants(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.walk_script = None
         cases = [(0x1000, 0x100), (0x4000000, 0x200)]
@@ -250,7 +250,7 @@ async def test_root_index_variants(l2tlb_env):
 # level 1 and the LLPTW path is exercised.
 async def test_2m_leaf_memory_image(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.walk_script = None
         _build(env, 0x20000, 0x4000, level=1, mid=0x80005)
@@ -266,7 +266,7 @@ async def test_2m_leaf_memory_image(l2tlb_env):
 # L2TLB-FAULT-03: misaligned 2MB superpage PPN must fault.
 async def test_misaligned_2m_leaf_faults(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.walk_script = None
         _build(env, 0x22000, 0x4001, level=1, mid=0x80006)
@@ -278,7 +278,7 @@ async def test_misaligned_2m_leaf_faults(l2tlb_env):
 # L2TLB-FAULT-04: reserved PTE bits fault.
 async def test_reserved_bits_fault(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.walk_script = None
         _build(env, 0x24000, 0xABC, mid=0x80007, leaf=0x80008)
@@ -292,7 +292,7 @@ async def test_reserved_bits_fault(l2tlb_env):
 # L2TLB-FAULT-05: denying PMP for the walk address must produce an access fault.
 async def test_pmp_denied_access_fault(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.walk_script = None
         env.memory.build_sv39(0x80000, 0x26000, 0xABC)
@@ -306,7 +306,7 @@ async def test_pmp_denied_access_fault(l2tlb_env):
 # L2TLB-PORT-02: both ports fire on an actual clock edge and complete.
 async def test_two_ports_same_cycle(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.walk_script = None
         _build(env, 0x28000, 0x110, mid=0x80009, leaf=0x8000A)
@@ -318,7 +318,7 @@ async def test_two_ports_same_cycle(l2tlb_env):
             req["s2xlate"].Set(0)
         accepted = [False, False]
         for _ in range(40):
-            env.dut.RefreshComb()
+            refresh(env)
             fires = [not accepted[i] and env.read(req["ready"])
                      for i, req in enumerate((env.req, env.req1))]
             await env.service_memory(1)
@@ -336,7 +336,6 @@ async def test_two_ports_same_cycle(l2tlb_env):
             assert snap["s1_ppn"] == ppn >> 3, (i, snap)
             assert snap["s1_v"] == 1 and snap["s1_pf"] == 0 and snap["s1_af"] == 0, (i, snap)
             check_l2_success(snap)
-
 
 
 # L2TLB-STAGE-01: only-stage-1 uses vsatp and returns the VS ASID.
@@ -384,7 +383,6 @@ async def test_two_ports_same_cycle(l2tlb_env):
 
 # L2TLB-BITMAP-01: with BME=1 and CMODE=0 the walk consults the bitmap table
 # through Bitmap/BitmapCache; an all-ones bitmap admits the translation.
-
 
 
 # L2TLB-BITMAP-03: BCLEAR invalidates the bitmap cache and forces re-reads.
@@ -416,7 +414,7 @@ async def test_two_ports_same_cycle(l2tlb_env):
 @pytest.mark.parametrize("mem_latency", [0, 1, 7])
 async def test_four_outstanding_translations(l2tlb_env, mem_latency):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.walk_script = None
         env.mem_latency = mem_latency
@@ -447,7 +445,7 @@ async def test_four_outstanding_translations(l2tlb_env, mem_latency):
 # L2TLB-STAGE-01: only-stage-1 uses vsatp and returns the VS ASID.
 async def test_only_stage1_uses_vsatp(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env, dict(satp_mode=8, satp_asid=0, satp_ppn=0x80000,
                                  vsatp_mode=8, vsatp_asid=2, vsatp_ppn=0x81000,
                                  imode=0))
@@ -468,7 +466,7 @@ async def test_only_stage1_uses_vsatp(l2tlb_env):
 # L2TLB-STAGE-02: only-stage-2 walks hgatp and returns an S2 entry.
 async def test_only_stage2_uses_hgatp(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env, dict(satp_mode=8, satp_asid=0, satp_ppn=0x80000,
                                  hgatp_mode=8, hgatp_vmid=5, hgatp_ppn=0x82000,
                                  imode=0))
@@ -489,7 +487,7 @@ async def test_only_stage2_uses_hgatp(l2tlb_env):
 # G-stage mapping, exercising HPTW in addition to PTW.
 async def test_all_stage_identity_gstage(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env, dict(satp_mode=8, satp_asid=0, satp_ppn=0x80000,
                                  vsatp_mode=8, vsatp_asid=1, vsatp_ppn=0x80010,
                                  hgatp_mode=8, hgatp_vmid=7, hgatp_ppn=0x82000,
@@ -516,7 +514,7 @@ async def test_all_stage_identity_gstage(l2tlb_env):
 # widths) must not break a subsequent walk when an allow-all entry is kept.
 async def test_pmp_configuration_sweep(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         for index in range(16):
             await env.write_csr(0x3B0 + index, (index + 1) << 20)
@@ -536,7 +534,7 @@ async def test_pmp_configuration_sweep(l2tlb_env):
 # all answered with their own PPNs.
 async def test_many_translations(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.walk_script = None
         cases = []
@@ -563,7 +561,7 @@ async def test_many_translations(l2tlb_env):
 # L2TLB-CACHE-03: a small resident working set is served without re-walking.
 async def test_cache_resident_replays(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.walk_script = None
         cases = []
@@ -590,7 +588,7 @@ async def test_cache_resident_replays(l2tlb_env):
 # L2TLB-BACKPRESSURE-01: the response is held stable while ready is low.
 async def test_response_backpressure(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.walk_script = None
         _build(env, 0x50000, 0xABC, mid=0x80040, leaf=0x80041)
@@ -614,7 +612,7 @@ async def test_response_backpressure(l2tlb_env):
 # completes with a fresh walk.
 async def test_sfence_during_walk(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.walk_script = None
         _build(env, 0x52000, 0xABC, mid=0x80042, leaf=0x80043)
@@ -642,7 +640,7 @@ async def test_sfence_during_walk(l2tlb_env):
 # walks through the new root and returns the new translation.
 async def test_satp_change_with_sfence_rewalks(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.walk_script = None
         _build(env, 0x54000, 0xABC, mid=0x80044, leaf=0x80045)
@@ -672,7 +670,7 @@ async def test_satp_change_with_sfence_rewalks(l2tlb_env):
 # page cache after the first walk.
 async def test_shared_leaf_line_hits(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.walk_script = None
         _build(env, 0x56000, 0xABC, mid=0x80046, leaf=0x80047)
@@ -693,7 +691,7 @@ async def test_shared_leaf_line_hits(l2tlb_env):
 # L2TLB-PMP-02: a TOR entry covering the page tables allows the walk.
 async def test_pmp_tor_allow(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         # TOR: [0, pmpaddr0 << 2), RWX. Cover 0x00000000..0xBFFFFFFF.
         await env.write_csr(0x3A0, 0x00000000)
@@ -711,7 +709,7 @@ async def test_pmp_tor_allow(l2tlb_env):
 # and must leave a working allow-all configuration.
 async def test_csr_decode_sweep(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         for addr in range(0x3A0, 0x3C0):
             await env.write_csr(addr, 0)
@@ -729,7 +727,7 @@ async def test_csr_decode_sweep(l2tlb_env):
 # through Bitmap/BitmapCache; an all-ones bitmap admits the translation.
 async def test_bitmap_enabled_walk(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.walk_script = None
         _build(env, 0x5C000, 0xABC, mid=0x80060, leaf=0x80061)
@@ -746,11 +744,10 @@ async def test_bitmap_enabled_walk(l2tlb_env):
             [(req.source, hex(req.address)) for req in env.requests]
 
 
-
 # L2TLB-BITMAP-03: BCLEAR invalidates the bitmap cache and forces re-reads.
 async def test_bitmap_clear(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.walk_script = None
         _build(env, 0x60000, 0xABC, mid=0x80064, leaf=0x80065)
@@ -776,7 +773,7 @@ async def test_bitmap_clear(l2tlb_env):
 # requests can be in flight at once.
 async def test_memory_latency_and_two_outstanding(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.walk_script = None
         _build(env, 0x62000, 0xABC, mid=0x80066, leaf=0x80067)
@@ -803,7 +800,7 @@ async def test_memory_latency_and_two_outstanding(l2tlb_env):
 # L2TLB-FENCE-03: address-scoped sfence variants flush and re-walk.
 async def test_sfence_scoped_variants(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.walk_script = None
         _build(env, 0x66000, 0xABC, mid=0x80069, leaf=0x8006A)
@@ -832,7 +829,7 @@ async def test_sfence_scoped_variants(l2tlb_env):
 # L2TLB-PMP-03: entries 16..31 and their configuration bytes are writable.
 async def test_pmp_high_entries(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         for index in range(16):
             await env.write_csr(0x3C0 + index, (index + 1) << 22)
@@ -852,7 +849,7 @@ async def test_pmp_high_entries(l2tlb_env):
 # entries across sets.
 async def test_bitmap_many_walks(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.walk_script = None
         for offset in range(0, 0x2000, 64):
@@ -876,7 +873,7 @@ async def test_bitmap_many_walks(l2tlb_env):
 # request source.
 async def test_all_stage_with_bitmap(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env, dict(satp_mode=8, satp_asid=0, satp_ppn=0x80000,
                                  vsatp_mode=8, vsatp_asid=1, vsatp_ppn=0x80010,
                                  hgatp_mode=8, hgatp_vmid=7, hgatp_ppn=0x82000,
@@ -902,7 +899,7 @@ async def test_all_stage_with_bitmap(l2tlb_env):
 # all bits set denies the translation (af), while an all-zero word allows it.
 async def test_bitmap_deny_and_allow(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.walk_script = None
         _build(env, 0x5C000, 0xABC, mid=0x80060, leaf=0x80061)
@@ -937,7 +934,7 @@ async def test_bitmap_deny_and_allow(l2tlb_env):
 # same PTE rewrite followed by a scoped sfence re-walks and returns 0xDEF.
 async def test_sfence_all_rewalks_after_pte_change(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.walk_script = None
         vpn = 0x77000
@@ -968,7 +965,7 @@ async def test_sfence_all_rewalks_after_pte_change(l2tlb_env):
 # and returns the new PPN.  This is the positive counterpart of FENCE-04.
 async def test_sfence_scoped_rewalks_after_pte_change(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.walk_script = None
         vpn = 0x78000
@@ -1019,7 +1016,7 @@ async def _pma_cover_page_tables(env, entry1_cfg: int) -> None:
 
 async def test_pma_cacheable_page_tables_walk(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _pma_cover_page_tables(env, 0x4F)  # C=1, A=TOR, RWX
         await env.issue(0x7A000, 0)
         resp = await env.wait_response(note="pma cacheable")
@@ -1034,7 +1031,7 @@ async def test_pma_cacheable_page_tables_walk(l2tlb_env):
 
 async def test_pma_non_cacheable_page_tables_fault(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _pma_cover_page_tables(env, 0x0F)  # C=0, A=TOR, RWX
         await env.issue(0x7A000, 0)
         resp = await env.wait_response(note="pma non-cacheable")
@@ -1044,7 +1041,7 @@ async def test_pma_non_cacheable_page_tables_fault(l2tlb_env):
 
 async def test_pma_unreadable_page_tables_fault(l2tlb_env):
     env = l2tlb_env
-    async with execution(env.dut):
+    async with execution(env):
         await _pma_cover_page_tables(env, 0x4E)  # C=1, A=TOR, R=0
         await env.issue(0x7A000, 0)
         resp = await env.wait_response(note="pma unreadable")

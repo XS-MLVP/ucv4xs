@@ -1,5 +1,5 @@
 """Synthetic input contracts only: none is a DUT/coverage reachability claim."""
-from bpuverify.common.model.configuration import *
+from suites.frontend.bpu.models.configuration import *
 from copy import deepcopy
 from itertools import product
 from pathlib import Path
@@ -7,18 +7,18 @@ from types import SimpleNamespace
 import re
 import pytest
 from toffee import Bundle
-from bpuverify.common.bundle.bindings import PortBinding
-from bpuverify.bpu.model.sc.model import NAMES
-from bpuverify.bpu.model.sc.model import ScReference
-from bpuverify.bpu.model.sc.model import encoded_payload
-from bpuverify.bpu.model.sc.model import width
-from bpuverify.bpu.model.sc.training_path import train_need_write
-from bpuverify.bpu.model.sc.history import history_indices
-from bpuverify.sc.transaction.types import ScBatchTraining
-from bpuverify.sc.transaction.types import ScBranchFeedback
-from bpuverify.sc.model.threshold import ScThresholdModel
-from bpuverify.bpu.model.sc.used import branch_effects, used_requests, threshold_update, UsedScReference, ThresholdReference
-from bpuverify.bpu.monitor.sc.used import UsedScMonitor, pipeline_leaves
+from suites.frontend.bpu.ports.bindings import PortBinding
+from suites.frontend.bpu.bpu.model.sc.model import NAMES
+from suites.frontend.bpu.bpu.model.sc.model import ScReference
+from suites.frontend.bpu.bpu.model.sc.model import encoded_payload
+from suites.frontend.bpu.bpu.model.sc.model import width
+from suites.frontend.bpu.bpu.model.sc.training_path import train_need_write
+from suites.frontend.bpu.bpu.model.sc.history import history_indices
+from suites.frontend.bpu.sc.transaction.types import ScBatchTraining
+from suites.frontend.bpu.sc.transaction.types import ScBranchFeedback
+from suites.frontend.bpu.sc.model.threshold import ScThresholdModel
+from suites.frontend.bpu.bpu.model.sc.used import branch_effects, used_requests, threshold_update, UsedScReference, ThresholdReference
+from suites.frontend.bpu.bpu.monitor.sc.used import UsedScMonitor, pipeline_leaves
 POSITIONS_COUNT = POSITIONS
 POSITIONS = tuple(8 + (way ^ 1) for way in range(SC_WAYS))
 ROOT = Path(__file__).resolve().parents[3]
@@ -234,8 +234,8 @@ def test_monitor_all35_leaves_exist_with_correct_width_in_native_yaml():
         assert entries['BpuDut_top.Bpu.sc.' + leaf] == (13 if leaf.startswith(('scThreshold_', 't1_writeThresVec_')) else 1)
 
 def install_fake_base(monkeypatch):
-    import bpuverify.bpu.monitor.sc.used as used_monitor
-    from bpuverify.bpu.bundle.values import _plain
+    import suites.frontend.bpu.bpu.monitor.sc.used as used_monitor
+    from suites.frontend.bpu.bpu.bundle.values import _plain
 
     def base(self, agent):
         self.paths = {'sc': 'Bpu.sc.'}

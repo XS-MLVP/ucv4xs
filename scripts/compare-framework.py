@@ -35,7 +35,14 @@ def main():
     for suite in project.select(args.suites):
         original=Path(project.local.get('historical_roots',{}).get(suite.name,''))
         if not original.is_dir():raise RuntimeError(f'Missing historical source: {suite.name}')
-        target=view/suite.name
+        # Current implementations import suites.<group>.<suite>. Build an
+        # isolated checkout-shaped namespace so replay never imports the live
+        # verification implementation by accident. Frozen old BPU retains its
+        # historical local package and still finds it through target below.
+        target=view/'suites'/suite.path.parent.name/suite.name
+        for directory in (view/'suites', target.parent):
+            directory.mkdir(parents=True,exist_ok=True)
+            (directory/'__init__.py').write_text('"""Isolated comparison namespace."""\n')
         # BPU's current bench targets DefaultConfig. Its pre-port toffee
         # snapshot is the only comparable input for the historical Minimal RTL.
         bench = root/'.history/bpu-before-default-port' if suite.name=='bpu' else suite.path
@@ -60,7 +67,7 @@ def main():
             # receipt reader changes in this disposable copy: old flat artifacts
             # have no ucv generated-closure receipt. No model/checker is changed.
             write(target/'replay-inputs.json',{k:v['sha256'] for k,v in files.items() if k.startswith('rtl/')})
-            path=target/'vagqverify/native.py';text=path.read_text()
+            path=target/'native.py';text=path.read_text()
             a=text.index('def verify_rtl():');b=text.index('\n\ndef public_signals',a)
             text=text[:a]+'''def verify_rtl():
     from ucv.common import read, file_hash
@@ -69,10 +76,11 @@ def main():
             raise RuntimeError(f'Frozen framework-comparison input changed: {relative}')
 '''+text[b:]
             path.write_text(text)
-            record['inputs'][suite.name]['input_boundary_adapter']={'path':'vagqverify/native.py','sha256':file_hash(path),
+            record['inputs'][suite.name]['input_boundary_adapter']={'path':'native.py','sha256':file_hash(path),
                 'purpose':'Validate the exact historical flat RTL hashes instead of new generated-closure receipt layout'}
         env=project.environment()
-        env.update(PYTHONPATH=str(root/'src')+os.pathsep+str(target),UCV_SEED='1',PYTHONHASHSEED='1')
+        env.update(PYTHONPATH=os.pathsep.join([str(root/'src'),str(view),str(target)]),
+                   UCV_SEED='1',PYTHONHASHSEED='1')
         flags=['-q','-p','no:cacheprovider','-p','ucv.pytest_plugin','-c',str(target/'pytest.ini'),
                '--rootdir='+str(target),'--durations=10']
         if suite.name=='bpu':

@@ -1,7 +1,7 @@
 """File-reader qualification only; no DUT or architectural model."""
 import pytest
 
-from vagqverify.waveform import read_public_samples
+from suites.vector.vagq.waveform import read_public_samples
 
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)

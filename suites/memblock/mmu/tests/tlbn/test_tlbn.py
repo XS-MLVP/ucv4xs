@@ -1,8 +1,8 @@
 """TLBNonBlock (MemBlock DTLB) functional tests."""
 from __future__ import annotations
 
-from mmuverify.common.runtime import execution
-from mmuverify.tlbfa.model import ALL_STAGE, NO_S2, ONLY_S1, ONLY_S2
+from suites.memblock.mmu.execution import execution, refresh
+from suites.memblock.mmu.tlbfa.model import ALL_STAGE, NO_S2, ONLY_S1, ONLY_S2
 
 from tests.tlbn.common import (READ, WRITE, ATOM_WRITE, dtlb_refill, expected_gpaddr,
                      expected_paddr, expected_pbmt, gen_ppn_s1, perm_expectations)
@@ -30,7 +30,7 @@ def _check_data(snap, data, vaddr, *, cmd=READ, dmode=0, sum_=0, mxr=0,
 # virtual address through without a PTW request.
 async def test_reset_and_bare_mode(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         for port in range(4):
             assert env.read(env.ports[port]["resp"]["valid"]) == 0
@@ -48,7 +48,7 @@ async def test_reset_and_bare_mode(tlbn_env):
 # PMP request with the command.
 async def test_no_translate_uses_pmp_addr(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         snap = await env.issue(0, 0x22223333, cmd=WRITE, no_translate=1,
                                pmp_addr=0x00445566)
@@ -66,7 +66,7 @@ async def test_no_translate_uses_pmp_addr(tlbn_env):
 # installs a sector entry that hits with the expected PPN and page offset.
 async def test_miss_and_refill_hit(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, satp_mode=8, satp_asid=0, dmode=0)
         vaddr = 0x12345678
@@ -92,7 +92,7 @@ async def test_miss_and_refill_hit(tlbn_env):
 # the low 18 bits.
 async def test_superpage_ppn_merge(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, satp_mode=9, dmode=0)
         for vaddr, level, ppn in ((0x12340000, 1, 0x40000),
@@ -112,7 +112,7 @@ async def test_superpage_ppn_merge(tlbn_env):
 # DTLB-05: ASID filtering and full sfence invalidation.
 async def test_asid_and_sfence(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, satp_mode=8, satp_asid=3, dmode=0)
         vaddr = 0x23456000
@@ -134,7 +134,7 @@ async def test_asid_and_sfence(tlbn_env):
 # DTLB-06: load permissions: R or MXR+X, and the U/S rule with SUM.
 async def test_load_permissions(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, satp_mode=8, dmode=0)
         vaddr = 0x30000000
@@ -164,7 +164,7 @@ async def test_load_permissions(tlbn_env):
 # DTLB-07: store requires W and D; AMO write follows the same rule.
 async def test_store_permissions(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, satp_mode=8, dmode=0)
         vaddr = 0x31000000
@@ -201,7 +201,7 @@ async def test_store_permissions(tlbn_env):
 # DTLB-08: A/D update faults and access-fault priority.
 async def test_ad_and_access_fault_priority(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, satp_mode=8, dmode=0)
         vaddr = 0x32000000
@@ -232,7 +232,7 @@ async def test_ad_and_access_fault_priority(tlbn_env):
 # DTLB-09: PBMT composition per translation class.
 async def test_pbmt_composition(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, satp_mode=8, dmode=0)
         vaddr = 0x40000000
@@ -259,7 +259,7 @@ async def test_pbmt_composition(tlbn_env):
 # DTLB-10: onlyStage1 uses vsatp and returns the S1 PPN.
 async def test_only_stage1(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, virt=1, vsatp_mode=8, vsatp_asid=2,
                        hgatp_mode=0, dmode=0)
@@ -278,7 +278,7 @@ async def test_only_stage1(tlbn_env):
 # as gpaddr.
 async def test_only_stage2(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, virt=1, vsatp_mode=0, hgatp_mode=8,
                        hgatp_vmid=5, dmode=0)
@@ -298,7 +298,7 @@ async def test_only_stage2(tlbn_env):
 # stages' permissions.
 async def test_all_stage_clean(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, virt=1, vsatp_mode=8, hgatp_mode=8, dmode=0)
         vaddr = 0x61000000
@@ -336,7 +336,7 @@ async def test_all_stage_clean(tlbn_env):
 # another walk request.
 async def test_all_stage_gpa_replay(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, virt=1, vsatp_mode=8, hgatp_mode=8, dmode=0)
         vaddr = 0x62000000
@@ -364,7 +364,7 @@ async def test_all_stage_gpa_replay(tlbn_env):
 # does not raise a leaf page fault.
 async def test_fake_and_nonleaf_marker(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, satp_mode=8, dmode=0)
         vaddr = 0x70000000
@@ -391,7 +391,7 @@ async def test_fake_and_nonleaf_marker(tlbn_env):
 # per-port PTW requests and PMP outputs.
 async def test_four_port_concurrency(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, satp_mode=8, dmode=0)
         vaddrs = [0x80000000 + index * 0x8000 for index in range(4)]
@@ -402,7 +402,7 @@ async def test_four_port_concurrency(tlbn_env):
             env._set(entry["fullva"], vaddr)
             if "cmd" in entry:
                 env._set(entry["cmd"], READ)
-        env.dut.RefreshComb()
+        refresh(env)
         await env.edge()
         snaps = []
         for port in range(4):
@@ -427,7 +427,7 @@ async def test_four_port_concurrency(tlbn_env):
             env._set(entry["fullva"], vaddr)
             if "cmd" in entry:
                 env._set(entry["cmd"], READ)
-        env.dut.RefreshComb()
+        refresh(env)
         await env.edge()
         hits = [env._request_snap(port)[0] for port in range(4)]
         for entry in env.ports:
@@ -442,7 +442,7 @@ async def test_four_port_concurrency(tlbn_env):
 # DTLB-16: the second response duplicate (ports 0/1) mirrors the first paddr.
 async def test_response_duplicates(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, satp_mode=8, dmode=0)
         vaddr = 0x90000000
@@ -460,7 +460,7 @@ async def test_response_duplicates(tlbn_env):
 # for every port that exposes a cmd.
 async def test_pmp_outputs(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, satp_mode=8, dmode=0)
         vaddr = 0x91000000
@@ -480,7 +480,7 @@ async def test_pmp_outputs(tlbn_env):
 # accesses and event 1 counts misses after the two registered stages.
 async def test_perf_events(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, satp_mode=8, dmode=0)
         vaddr = 0x92000000
@@ -502,7 +502,7 @@ async def test_perf_events(tlbn_env):
 # DTLB-19: killing a request suppresses its response and PTW request.
 async def test_killed_request_is_dropped(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, satp_mode=8, dmode=0)
         snap = await env.issue(0, 0x93000000, cmd=READ, kill=1)
@@ -515,7 +515,7 @@ async def test_killed_request_is_dropped(tlbn_env):
 # DTLB-20: ports 2 and 3 have their own request/response paths and PTW ports.
 async def test_ports_two_and_three(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, satp_mode=8, dmode=0)
         for port in (2, 3):
@@ -537,7 +537,7 @@ async def test_ports_two_and_three(tlbn_env):
 # the other seven lanes.
 async def test_sector_valididx_lane(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, satp_mode=8, dmode=0)
         base = 0x95000000
@@ -561,7 +561,7 @@ async def test_sector_valididx_lane(tlbn_env):
 # DTLB-22: every sector lane resolves to its own PPN through ppn_low.
 async def test_sector_all_lanes(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, satp_mode=8, dmode=0)
         base = 0x96000000
@@ -583,7 +583,7 @@ async def test_sector_all_lanes(tlbn_env):
 # DTLB-23: sfence address+ASID, ASID-only, hfence.v and hfence.g forms.
 async def test_sfence_forms(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, satp_mode=8, satp_asid=2, dmode=0)
         a, b = 0x97000000, 0x97800000
@@ -615,7 +615,7 @@ async def test_sfence_forms(tlbn_env):
 # DTLB-24: onlyStage2 VMID filtering.
 async def test_only_stage2_vmid_filtering(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, virt=1, vsatp_mode=0, hgatp_mode=8,
                        hgatp_vmid=5, dmode=0)
@@ -636,7 +636,7 @@ async def test_only_stage2_vmid_filtering(tlbn_env):
 # refill still completes.
 async def test_storage_capacity(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, satp_mode=8, dmode=0)
         base = 0x100000000
@@ -667,7 +667,7 @@ async def test_storage_capacity(tlbn_env):
 # write fault on a store is reported as gpf_st after GPA replay.
 async def test_all_stage_store_fault(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, virt=1, vsatp_mode=8, hgatp_mode=8, dmode=0)
         vaddr = 0x99000000
@@ -690,7 +690,7 @@ async def test_all_stage_store_fault(tlbn_env):
 # addressed ASID and hfence forms update all 48 ways' valid bits.
 async def test_sfence_after_fill(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, satp_mode=8, satp_asid=1, dmode=0)
         base = 0x200000000
@@ -740,7 +740,7 @@ async def test_sfence_after_fill(tlbn_env):
 # DTLB-28: GPA replay works on the second requestor port as well.
 async def test_gpa_replay_port_two(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, virt=1, vsatp_mode=8, hgatp_mode=8, dmode=0)
         port = 2
@@ -764,7 +764,7 @@ async def test_gpa_replay_port_two(tlbn_env):
 # clears that state, so the next lookup performs a normal walk again.
 async def test_redirect_clears_need_gpa(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await _context(env, virt=1, vsatp_mode=8, hgatp_mode=8, dmode=0)
         vaddr = 0x310000000
@@ -790,7 +790,7 @@ async def test_redirect_clears_need_gpa(tlbn_env):
 # clear the corresponding stage-class entries while leaving noS2 intact.
 async def test_hfence_asid_vmid_scoped(tlbn_env):
     env = tlbn_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         # onlyStage1 entries with vsatp ASID 3.
         await _context(env, virt=1, vsatp_mode=8, vsatp_asid=3,

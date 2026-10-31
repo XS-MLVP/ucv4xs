@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.common.model.configuration import TAGE_TABLES, POSITIONS
-from bpuverify.tage.transaction.types import TageTraining
-from bpuverify.tage.coverage.catalog import tage_selector_coverage_model
-from bpuverify.tage.coverage.catalog import write_tage_selector_coverage
-from bpuverify.tage.case.definitions import PC
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.tage.checker.assertions import await_cold_allocation
+from suites.frontend.bpu.models.configuration import TAGE_TABLES, POSITIONS
+from suites.frontend.bpu.tage.transaction.types import TageTraining
+from suites.frontend.bpu.tage.coverage.catalog import tage_selector_coverage_model
+from suites.frontend.bpu.tage.coverage.catalog import write_tage_selector_coverage
+from suites.frontend.bpu.tage.case.definitions import PC
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.tage.checker.assertions import await_cold_allocation
 
 
 @pytest.mark.feature("BPU-TAGE-013")

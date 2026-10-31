@@ -1,5 +1,8 @@
 # 集成 AheadBTB：自然预测流与覆盖率刷新进展
 
+> 路径迁移说明（2026-10-31）：本报告仍属于原日期、基线和执行源码；实现文件已迁到工程根。可点击源码链接更新到当前位置，不据此重标历史 PASS/FAIL 或覆盖结论。参见[本轮命名空间迁移](../../../../docs/lessons/suite-namespace-refactor-20261031.md)。
+
+
 ## 当前生产并行验收：2026-10-10 15:59 北京时间
 
 正式默认入口已接入最多32个独立worker和run/worker/nodeid产物隔离；
@@ -1380,7 +1383,7 @@ BPU原生行覆盖29954/46541，比上一独立审计基线29205增加749行，�
 查出并在新版本修复三处`bypass_model`延迟导入。九个场景新增成功报告返回，
 刺激主体保持AST一致。完整候选343项测试通过，旧候选及失败证据均未覆盖。
 
-当前已实际迁入`bpuverify/integrated`：60个与最终候选逐字节相同的组件，
+当前已实际迁入`suites/frontend/bpu/integrated`：60个与最终候选逐字节相同的组件，
 另加一个RAS意图/覆盖封装。正常测试不依赖临时路径或迁移契约文件，也不
 接触edge/get_set/gather。功能覆盖使用xreactor CoverGroup/Scoreboard，从
 真实采样输入重放全部shadow和1024 useful值；只有下一观测状态比较通过才
@@ -2571,7 +2574,7 @@ cache可保存快照，必须分别建模FTQ槽位、redirect、resolve缓存和
 新增隔离`ftq_native_v1`，使用静态Bundle、SignalDriver所有权和双相位
 `@on`被动监视。预测器控制driver排除ready/meta_ready，避免与FTQ
 driver争用；AsRiseWrite保持不变，提交细节藏在driver中，测试用例
-只声明fill/hold/retire/wrap/refill意图。生产bpuverify/tests未改，
+只声明fill/hold/retire/wrap/refill意图。生产suites/frontend/bpu/tests未改，
 原生全量回归及两个审计等待器继续运行。
 
 23项纯模型测试实际通过；真实BPU试验1 PASS、源码和四份正式报告

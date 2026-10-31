@@ -1,8 +1,8 @@
 """MergeCtrl semantic model qualification without DUT coverage credit."""
 import pytest
 
-from vagqverify.merge.model import State, _expand_mask
-from vagqverify.merge.types import Beat, Entry, Redirect, Response
+from suites.vector.vagq.merge.model import State, _expand_mask
+from suites.vector.vagq.merge.types import Beat, Entry, Redirect, Response
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)
 

@@ -1,7 +1,7 @@
 """Independent pending history must survive the migrated key's fresh/old chain."""
 import pytest
-from bpuverify.bpu.case.neighbor_migration import check_neighbor_migration
-from bpuverify.bpu.coverage.neighbor_migration import NeighborMigrationCoverage
+from suites.frontend.bpu.bpu.case.neighbor_migration import check_neighbor_migration
+from suites.frontend.bpu.bpu.coverage.neighbor_migration import NeighborMigrationCoverage
 
 
 @pytest.mark.feature('BPU-INT-089')

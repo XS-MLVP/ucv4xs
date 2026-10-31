@@ -5,13 +5,13 @@ from types import SimpleNamespace as NS
 
 from toffee import XEvent,XEventKind,XPhase
 
-from bpuverify.bpu.checker.direction_turnaround import DirectionTurnaroundChecks
-from bpuverify.bpu.coverage.direction_turnaround import DirectionTurnaroundCoverage
-from bpuverify.bpu.model.pipeline import Redirect
-from bpuverify.bpu.model.tage.asymmetric_retirement import OUTCOMES,PRELUDE_PLAN
-from bpuverify.bpu.model.tage.mixed_visibility import PARTIAL_PLAN,FIRST_SERVICE
-from bpuverify.bpu.model.tage.neighbor_migration import PC,HISTORY_PATHS
-from bpuverify.bpu.model.tage.service import STREAM_PC
+from suites.frontend.bpu.bpu.checker.direction_turnaround import DirectionTurnaroundChecks
+from suites.frontend.bpu.bpu.coverage.direction_turnaround import DirectionTurnaroundCoverage
+from suites.frontend.bpu.bpu.model.pipeline import Redirect
+from suites.frontend.bpu.bpu.model.tage.asymmetric_retirement import OUTCOMES,PRELUDE_PLAN
+from suites.frontend.bpu.bpu.model.tage.mixed_visibility import PARTIAL_PLAN,FIRST_SERVICE
+from suites.frontend.bpu.bpu.model.tage.neighbor_migration import PC,HISTORY_PATHS
+from suites.frontend.bpu.bpu.model.tage.service import STREAM_PC
 from tests.bpu.scoreboard.test_neighbor_migration import fixture
 from tests.bpu.scoreboard.test_dual_migration import source
 from tests.bpu.scoreboard.test_direction_sources import quiet

@@ -4,8 +4,8 @@ from copy import deepcopy
 from dataclasses import replace
 from pathlib import Path
 import pytest
-from bpuverify.utage.model.delayed_agreement import PROGRAMS, Program, RULES
-from bpuverify.utage.coverage.delayed_agreement import Coverage
+from suites.frontend.bpu.utage.model.delayed_agreement import PROGRAMS, Program, RULES
+from suites.frontend.bpu.utage.coverage.delayed_agreement import Coverage
 from tests.utage.scoreboard.test_delayed_protection import exercise
 
 
@@ -101,8 +101,8 @@ def test_complete_cohort_has_only_its_own_semantic_bins(p):
 def test_case_hides_timing_and_program_is_not_a_storage_coordinate():
     with pytest.raises(ValueError): Program('bank0', 'interleaved')
     with pytest.raises(ValueError): Program('serial', 'index128')
-    for name in ('tests/utage/testcase/test_delayed_agreement.py', 'bpuverify/utage/case/delayed_agreement.py'):
+    for name in ('tests/utage/testcase/test_delayed_agreement.py', 'utage/case/delayed_agreement.py'):
         text = Path(name).read_text()
         assert not any(s in text for s in ('asyncio', 'ClockCycles', 'FallingEdge', 'RisingEdge', 'get_', 'set_'))
-    tree = ast.parse(Path('bpuverify/utage/model/delayed_agreement.py').read_text())
+    tree = ast.parse(Path('utage/model/delayed_agreement.py').read_text())
     assert not any(isinstance(n, ast.Import) for n in ast.walk(tree))

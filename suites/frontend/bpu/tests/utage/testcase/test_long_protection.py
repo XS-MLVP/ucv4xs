@@ -1,9 +1,9 @@
 """Long provider correction preserves two full identities and short experience."""
 import json
 import pytest
-from bpuverify.utage.model.long_protection import Program,MODES,LIFETIMES
-from bpuverify.utage.coverage.long_protection import Coverage
-from bpuverify.utage.case.long_protection import run
+from suites.frontend.bpu.utage.model.long_protection import Program,MODES,LIFETIMES
+from suites.frontend.bpu.utage.coverage.long_protection import Coverage
+from suites.frontend.bpu.utage.case.long_protection import run
 
 
 @pytest.mark.feature('BPU-UTAGE-021')

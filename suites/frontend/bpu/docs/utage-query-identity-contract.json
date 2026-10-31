@@ -44,12 +44,12 @@
   "DUT_case_status": "independently qualified; normal-layout production qualification pending",
   "historical_preimplementation_status": "not implemented or qualified yet",
   "production_layout": {
-    "model": "bpuverify/utage/model/query_identity.py",
-    "checker": "bpuverify/utage/checker/query_identity.py",
-    "case": "bpuverify/utage/case/query_identity.py",
+    "model": "utage/model/query_identity.py",
+    "checker": "utage/checker/query_identity.py",
+    "case": "utage/case/query_identity.py",
     "testcase": "tests/utage/testcase/test_query_identity.py",
     "coverage": {
-      "factory": "bpuverify.utage.coverage.query_identity",
+      "factory": "suites.frontend.bpu.utage.coverage.query_identity",
       "instance": "kunminghu_v3.utage.complete-index-alias"
     },
     "historical_stage": "results/utage_index_alias_stage_20261018"

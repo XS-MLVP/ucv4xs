@@ -6,12 +6,12 @@ from pathlib import Path
 from types import SimpleNamespace as NS, FunctionType
 import pytest
 from toffee import TransferState, ScoreboardMismatch
-from bpuverify.utage.model.semantic import UtageReference, Events, Context
-from bpuverify.utage.model.delayed_protection import PROGRAMS, Program, RULES, PC, POSITION, READ_PCS
-from bpuverify.utage.checker.delayed_protection import Checks
-from bpuverify.utage.coverage.delayed_protection import Coverage
-from bpuverify.utage.transaction.types import UtageTraining
-from bpuverify.utage.checker.checking import UtageUsefulChecker
+from suites.frontend.bpu.utage.model.semantic import UtageReference, Events, Context
+from suites.frontend.bpu.utage.model.delayed_protection import PROGRAMS, Program, RULES, PC, POSITION, READ_PCS
+from suites.frontend.bpu.utage.checker.delayed_protection import Checks
+from suites.frontend.bpu.utage.coverage.delayed_protection import Coverage
+from suites.frontend.bpu.utage.transaction.types import UtageTraining
+from suites.frontend.bpu.utage.checker.checking import UtageUsefulChecker
 from tests.utage.scoreboard.test_semantic_model import lookup, feedback
 from tests.utage.scoreboard.test_read_lifetime_model import bases
 from tests.utage.scoreboard.test_selective_protection_controls import actual
@@ -182,8 +182,8 @@ def test_complete_cohort_has_only_its_own_semantic_bins_once(p):
 def test_program_is_not_a_physical_matrix_and_case_has_no_clock_io_plumbing():
     with pytest.raises(ValueError): Program('bank0', 'interleaved')
     with pytest.raises(ValueError): Program('serial', 'slot7')
-    for name in ('tests/utage/testcase/test_delayed_protection.py', 'bpuverify/utage/case/delayed_protection.py'):
+    for name in ('tests/utage/testcase/test_delayed_protection.py', 'utage/case/delayed_protection.py'):
         text = Path(name).read_text()
         assert not any(s in text for s in ('asyncio', 'ClockCycles', 'FallingEdge', 'RisingEdge', 'get_', 'set_'))
-    tree = ast.parse(Path('bpuverify/utage/model/delayed_protection.py').read_text())
+    tree = ast.parse(Path('utage/model/delayed_protection.py').read_text())
     assert not any(isinstance(n, ast.Import) for n in ast.walk(tree))

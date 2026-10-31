@@ -1,11 +1,13 @@
 """Pure contract tests for the independent event-driven virtual system."""
+
 import json
 
 import pytest
 
-from vagqverify.vagq.types import AddrPacket, Beat
-from vagqverify.vagq.virtual_coverage import VIRTUAL_COVERAGE
-from vagqverify.vagq.virtual_system import (
+from suites.vector.vagq.legacy_pins import P
+from suites.vector.vagq.vagq.types import AddrPacket, Beat
+from suites.vector.vagq.vagq.virtual_coverage import VIRTUAL_COVERAGE
+from suites.vector.vagq.vagq.virtual_system import (
     EventScheduler,
     PHASE_RESPONSE,
     PHASE_RETIRE,
@@ -106,19 +108,19 @@ def test_virtual_vrf_rob_and_voq_contracts_are_serializable():
     system.admit(addr, cycle=0)
     system.vrf.set_old_data(addr.entry_idx, 0xAA)
     system.vrf.observe_read({
-        'io_vrfReadReq_valid': 1,
-        'io_vrfReadReq_bits_entryIdx': 0,
-        'io_vrfReadReq_bits_robIdx_value': 30,
+        P.p_vrfReadReq_valid: 1,
+        P.p_vrfReadReq_bits_entryIdx: 0,
+        P.p_vrfReadReq_bits_robIdx_value: 30,
     }, cycle=0)
     assert system.begin_cycle(1)['vrf'].valid is False
     assert system.begin_cycle(2)['vrf'].data == 0xAA
 
     system.rob.writeback({
-        'io_robWriteback_valid': 1,
-        'io_robWriteback_bits_entryIdx': 0,
-        'io_robWriteback_bits_robIdx_value': 30,
-        'io_robWriteback_bits_exception': 0,
-        'io_robWriteback_bits_faultVstart': 0,
+        P.p_robWriteback_valid: 1,
+        P.p_robWriteback_bits_entryIdx: 0,
+        P.p_robWriteback_bits_robIdx_value: 30,
+        P.p_robWriteback_bits_exception: 0,
+        P.p_robWriteback_bits_faultVstart: 0,
     }, cycle=3)
     system.begin_cycle(4)
     assert system.rob.retires == [{
@@ -126,15 +128,15 @@ def test_virtual_vrf_rob_and_voq_contracts_are_serializable():
     }]
 
     outputs = {
-        'io_staReq_0_valid': 1,
-        'io_staReq_0_bits_meta_valid': 1,
-        'io_staReq_0_bits_meta_elemIdx': 0,
-        'io_staReq_0_bits_meta_entryIdx': 0,
-        'io_staReq_0_bits_meta_byteOffset': 0,
-        'io_staReq_0_bits_meta_dataMask': 1,
-        'io_staReq_0_bits_req_robIdx_value': 30,
-        'io_staReq_0_bits_req_data_src_0': 0x1000,
-        'io_staReq_1_valid': 0,
+        P.p_staReq_0_valid: 1,
+        P.p_staReq_0_bits_meta_valid: 1,
+        P.p_staReq_0_bits_meta_elemIdx: 0,
+        P.p_staReq_0_bits_meta_entryIdx: 0,
+        P.p_staReq_0_bits_meta_byteOffset: 0,
+        P.p_staReq_0_bits_meta_dataMask: 1,
+        P.p_staReq_0_bits_req_robIdx_value: 30,
+        P.p_staReq_0_bits_req_data_src_0: 0x1000,
+        P.p_staReq_1_valid: 0,
     }
     refined = system.refine_ready(outputs, Beat(sta_ready=(True, True)))
     assert refined.sta_ready == (True, False)

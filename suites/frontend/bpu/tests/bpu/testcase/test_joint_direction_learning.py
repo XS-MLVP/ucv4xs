@@ -1,8 +1,8 @@
 """Complete shared outcome lifecycles, not signal-level test plumbing."""
 import pytest
-from bpuverify.bpu.model.joint_direction_learning import PROFILES
-from bpuverify.bpu.coverage.joint_direction_learning import Coverage
-from bpuverify.bpu.case.joint_direction_learning import check_joint_learning
+from suites.frontend.bpu.bpu.model.joint_direction_learning import PROFILES
+from suites.frontend.bpu.bpu.coverage.joint_direction_learning import Coverage
+from suites.frontend.bpu.bpu.case.joint_direction_learning import check_joint_learning
 
 
 @pytest.mark.feature('BPU-INT-106')

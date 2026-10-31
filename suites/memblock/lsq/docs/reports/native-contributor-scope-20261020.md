@@ -1,5 +1,8 @@
 # Wrapper 覆盖丢失闭环：实际 native 贡献范围、逐点归因与完整 fresh 重跑
 
+> 路径迁移说明（2026-10-31）：本文记录中的 *verify/common 为当时源码路径；当前实现已迁入 suites.<group>.<suite> 工程根。历史判定、命令与哈希不据此重标；当前映射见仓库 docs/lessons/suite-namespace-refactor-20261031.md。
+
+
 **结果：此前 2125 个 Wrapper toggle 旧命中丢失已定位并经真实重跑解决。根因是
 四目录命令漏跑了同一 Wrapper build 的 41 个原节点，不是已证明的初始化、
 随机上下文或工具合并故障。新的完整贡献范围运行有 1066 节点，897 PASS /

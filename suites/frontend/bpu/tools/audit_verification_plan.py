@@ -11,8 +11,8 @@ from hashlib import file_digest
 import json
 from pathlib import Path
 
-from bpuverify.common.pytest.evidence import worst
-from bpuverify.common.pytest.points import domain, make_report, validate_plan
+from suites.frontend.bpu.pytest_plugins.evidence import worst
+from suites.frontend.bpu.pytest_plugins.points import domain, make_report, validate_plan
 
 ROOT = Path(__file__).resolve().parents[1]
 

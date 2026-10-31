@@ -4,12 +4,12 @@ from dataclasses import replace
 from types import SimpleNamespace as NS
 import pytest
 from toffee import TransferState
-from bpuverify.utage.model.semantic import UtageReference, Events, Context
-from bpuverify.utage.model.cross_branch_protection import PROGRAMS, Program, RULES, POSITION
-from bpuverify.utage.checker.cross_branch_protection import Checks
-from bpuverify.utage.coverage.cross_branch_protection import Coverage
-from bpuverify.utage.checker.checking import UtageUsefulChecker
-from bpuverify.utage.transaction.types import UtageTraining
+from suites.frontend.bpu.utage.model.semantic import UtageReference, Events, Context
+from suites.frontend.bpu.utage.model.cross_branch_protection import PROGRAMS, Program, RULES, POSITION
+from suites.frontend.bpu.utage.checker.cross_branch_protection import Checks
+from suites.frontend.bpu.utage.coverage.cross_branch_protection import Coverage
+from suites.frontend.bpu.utage.checker.checking import UtageUsefulChecker
+from suites.frontend.bpu.utage.transaction.types import UtageTraining
 from tests.utage.scoreboard.test_semantic_model import lookup, feedback
 from tests.utage.scoreboard.test_read_lifetime_model import bases
 from tests.utage.scoreboard.test_selective_protection_controls import actual

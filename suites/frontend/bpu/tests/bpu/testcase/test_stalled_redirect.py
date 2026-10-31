@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.bpu.transaction.types import BpuRedirect
-from bpuverify.bpu.case.definitions import PC
-from bpuverify.bpu.case.definitions import REDIRECT_PC
+from suites.frontend.bpu.bpu.transaction.types import BpuRedirect
+from suites.frontend.bpu.bpu.case.definitions import PC
+from suites.frontend.bpu.bpu.case.definitions import REDIRECT_PC
 
 
 @pytest.mark.feature("BPU-INT-010")

@@ -4,14 +4,14 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.ras.coverage.catalog import ras_overflow_recovery_coverage_model
-from bpuverify.ras.coverage.catalog import write_ras_overflow_recovery_coverage
-from bpuverify.ras.checker.assertions import expected_top
-from bpuverify.ras.checker.assertions import pop
-from bpuverify.ras.checker.assertions import push
-from bpuverify.ras.case.definitions import CallVector
-from bpuverify.ras.case.definitions import unique_calls
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.ras.coverage.catalog import ras_overflow_recovery_coverage_model
+from suites.frontend.bpu.ras.coverage.catalog import write_ras_overflow_recovery_coverage
+from suites.frontend.bpu.ras.checker.assertions import expected_top
+from suites.frontend.bpu.ras.checker.assertions import pop
+from suites.frontend.bpu.ras.checker.assertions import push
+from suites.frontend.bpu.ras.case.definitions import CallVector
+from suites.frontend.bpu.ras.case.definitions import unique_calls
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature("BPU-RAS-010")

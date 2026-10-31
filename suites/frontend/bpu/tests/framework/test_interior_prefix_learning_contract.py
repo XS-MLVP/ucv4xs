@@ -2,8 +2,8 @@
 import ast
 import json
 from pathlib import Path
-from bpuverify.bpu.coverage.interior_prefix_learning import RULES
-from bpuverify.bpu.model.tage.interior_prefix_learning import PROGRAMS
+from suites.frontend.bpu.bpu.coverage.interior_prefix_learning import RULES
+from suites.frontend.bpu.bpu.model.tage.interior_prefix_learning import PROGRAMS
 
 
 def test_interior_prefix_requirement_is_behavior_not_physical_coordinate():
@@ -16,9 +16,9 @@ def test_interior_prefix_requirement_is_behavior_not_physical_coordinate():
 def test_native_case_hides_edges_raw_IO_and_task_join_details():
     text=Path('tests/bpu/testcase/test_interior_prefix_learning.py').read_text()
     assert not any(word in text for word in ('FallingEdge','RisingEdge','ClockCycles','asyncio.gather','get_','set_','.Set('))
-    tree=ast.parse(Path('bpuverify/bpu/model/tage/interior_prefix_learning.py').read_text())
+    tree=ast.parse(Path('bpu/model/tage/interior_prefix_learning.py').read_text())
     assert {node.module for node in ast.walk(tree) if isinstance(node,ast.ImportFrom)}=={
-        'dataclasses','bpuverify.bpu.model.tage.direction_turnaround','bpuverify.bpu.model.tage.dual_migration'}
+        'dataclasses','suites.frontend.bpu.bpu.model.tage.direction_turnaround','suites.frontend.bpu.bpu.model.tage.dual_migration'}
 
 
 def test_all_source_supported_semantic_references_exist():

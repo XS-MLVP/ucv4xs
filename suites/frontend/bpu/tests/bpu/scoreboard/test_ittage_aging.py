@@ -5,11 +5,11 @@ from dataclasses import asdict
 from copy import deepcopy
 import pytest
 from toffee import ScoreboardMismatch
-from bpuverify.bpu.model.ittage_aging import SETS,BANKS,MAX_TICK,ENTRY_MASK,USEFUL_MASK,tick_step,table_step,write_plan
-from bpuverify.bpu.coverage.ittage_aging import AgingCoverage,RULES
-from bpuverify.bpu.checker.ittage_aging import IttageAgingChecker
-from bpuverify.bpu.model.sc.model import canonical,encoded_payload
-from bpuverify.bpu.transaction.types import BpuBatchTraining,BpuBranchFeedback
+from suites.frontend.bpu.bpu.model.ittage_aging import SETS,BANKS,MAX_TICK,ENTRY_MASK,USEFUL_MASK,tick_step,table_step,write_plan
+from suites.frontend.bpu.bpu.coverage.ittage_aging import AgingCoverage,RULES
+from suites.frontend.bpu.bpu.checker.ittage_aging import IttageAgingChecker
+from suites.frontend.bpu.bpu.model.sc.model import canonical,encoded_payload
+from suites.frontend.bpu.bpu.transaction.types import BpuBatchTraining,BpuBranchFeedback
 
 
 def tx(*,allocate=False,mispredict=1,counter=2,correct=False):

@@ -1,7 +1,7 @@
 """Static signed composition observations use the existing public Bundle."""
 from toffee import Bundle
-from bpuverify.bpu.bundle.statistical import statistical_bundle
-from bpuverify.bpu.bundle.values import _plain
+from suites.frontend.bpu.bpu.bundle.statistical import statistical_bundle
+from suites.frontend.bpu.bpu.bundle.values import _plain
 
 
 class Signal:

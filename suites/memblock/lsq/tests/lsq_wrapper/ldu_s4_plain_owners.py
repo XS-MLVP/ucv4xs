@@ -1,10 +1,10 @@
 """Ordinary LD PF/AF S4 stimuli, no HLV/unsolicited poison assumptions."""
 from dataclasses import asdict, dataclass, replace
 
-from lsqverify.forward.types import Query, Translation
-from lsqverify.load_queue.types import Load
-from lsqverify.rar.types import Query as RarQuery
-from lsqverify.raw.types import Query as RawQuery
+from suites.memblock.lsq.forward.types import Query, Translation
+from suites.memblock.lsq.load_queue.types import Load
+from suites.memblock.lsq.rar.types import Query as RarQuery
+from suites.memblock.lsq.raw.types import Query as RawQuery
 from .ldu_s4_owners import S4Program
 
 

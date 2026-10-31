@@ -1,9 +1,9 @@
 """Check address/hash preconditions before using the DUT."""
 import pytest
-from bpuverify.bpu.model.phr.model import path_hash
-from bpuverify.bpu.case.bypass.force_plan import second_key
-from bpuverify.bpu.case.bypass.force_plan import upper_full_tag
-from bpuverify.bpu.case.bypass.lower_plan import recipe
+from suites.frontend.bpu.bpu.model.phr.model import path_hash
+from suites.frontend.bpu.bpu.case.bypass.force_plan import second_key
+from suites.frontend.bpu.bpu.case.bypass.force_plan import upper_full_tag
+from suites.frontend.bpu.bpu.case.bypass.lower_plan import recipe
 
 
 @pytest.mark.parametrize('edge', range(4))
@@ -26,8 +26,8 @@ def test_cold_checkpoint_program_counters_are_distinct_before_any_training():
 
 
 def test_cold_checkpoint_scan_reaches_all_leads_in_increasing_order():
-    from bpuverify.bpu.case.bypass.force_seed import checkpoint_program_counters
-    from bpuverify.bpu.case.sc.role_scenarios import source_pc
+    from suites.frontend.bpu.bpu.case.bypass.force_seed import checkpoint_program_counters
+    from suites.frontend.bpu.bpu.case.sc.role_scenarios import source_pc
     first, second = recipe(), second_key()
     pcs = checkpoint_program_counters(first['a'], first['b'], first['c'],
         (second['a'], second['b'], second['c']))
@@ -42,24 +42,21 @@ def test_append_order_regression_would_ask_for_a_PC_already_passed():
     assert old_order[2] > old_order[3]
 
 
-
 def test_upper_full_tag_is_representable_before_invoking_DUT():
     assert upper_full_tag(second_key()['a']) == 0
     assert second_key()['expected_upper_full_tag'] < 256
 
 
 def test_previous_position1_PC_cannot_hit_either_stored_tag():
-    from bpuverify.bpu.case.bypass.lower_plan import lower_full_tag
+    from suites.frontend.bpu.bpu.case.bypass.lower_plan import lower_full_tag
     assert lower_full_tag(0x40010420) == 1040
     assert upper_full_tag(0x40010420) == 2336
-
-
 
 
 @pytest.mark.parametrize('valid,position,counter,expected', ((0,0,7,0),(1,4,7,0),(1,0,7,1),(1,0,0,1)))
 def test_public_qualification_filters_valid_position_not_correctness(valid, position, counter, expected):
     from types import SimpleNamespace
-    from bpuverify.bpu.case.bypass.force_second_key import conditional_slots
+    from suites.frontend.bpu.bpu.case.bypass.force_second_key import conditional_slots
     entry = dict(valid=valid, cfiPosition=position, takenCtr_value=counter)
     actual = SimpleNamespace(meta=SimpleNamespace(resolve={'utage': {'abtbResult': [entry]}}))
     assert len(conditional_slots(actual, 0)) == expected
@@ -78,7 +75,7 @@ def _multi_hit_fixture():
 
 
 def _check_multi_hit(actual, source, payload):
-    from bpuverify.bpu.case.bypass.public_readback import public_readback_pair
+    from suites.frontend.bpu.bpu.case.bypass.public_readback import public_readback_pair
     from toffee import Scoreboard
     expected, observed = public_readback_pair(actual, source, payload,
         pc=0x40010000, index=0, position=0)

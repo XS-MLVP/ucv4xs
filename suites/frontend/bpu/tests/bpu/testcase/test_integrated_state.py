@@ -1,7 +1,7 @@
 """Intent-only integration scenarios; reusable drivers/monitors own timing and checking."""
 import pytest
-from bpuverify.bpu.case.bypass.cases import check_integrated_case
-from bpuverify.bpu.case.ras.cases import check_retirement_case
+from suites.frontend.bpu.bpu.case.bypass.cases import check_integrated_case
+from suites.frontend.bpu.bpu.case.ras.cases import check_retirement_case
 
 
 @pytest.mark.feature('BPU-INT-044')

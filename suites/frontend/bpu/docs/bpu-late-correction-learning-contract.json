@@ -22,11 +22,11 @@
     "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:190",
     "XiangShan/src/main/scala/xiangshan/frontend/bpu/Bpu.scala:205",
     "XiangShan/src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:141",
-    "bpuverify/bpu/model/early_direction_sources.py:105",
-    "bpuverify/bpu/model/direction_sources.py:56"
+    "bpu/model/early_direction_sources.py:105",
+    "bpu/model/direction_sources.py:56"
   ],
   "required_rejection_controls": ["只有S3纠正而原早级条件无资格", "年轻相同PC原件冒领教导", "将年轻S2纠正错当原S2", "复制Checkpoint或Token", "只有预期分配而没有下一实际状态", "原公开metadata或各域快照被改写", "只有Main结果正确而没有短方向新消费者", "恢复原件超出物理保留窗口"],
-  "reference_composition": "bpuverify/bpu/model/early_late_sources.py",
+  "reference_composition": "bpu/model/early_late_sources.py",
   "new_predictor_algorithms": 0,
   "new_feature_IDs": 0,
   "no_bank_set_way_sweep": true,

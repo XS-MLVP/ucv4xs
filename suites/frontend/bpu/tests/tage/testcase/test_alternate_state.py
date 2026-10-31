@@ -1,10 +1,10 @@
 import pytest
 
-from bpuverify.tage.coverage.catalog import tage_alternate_coverage_model
-from bpuverify.tage.coverage.catalog import write_tage_alternate_coverage
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.tage.case.alternate_scenario import check_pair_matrix
-from bpuverify.tage.case.alternate_scenario import check_mixed_overlap
+from suites.frontend.bpu.tage.coverage.catalog import tage_alternate_coverage_model
+from suites.frontend.bpu.tage.coverage.catalog import write_tage_alternate_coverage
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.tage.case.alternate_scenario import check_pair_matrix
+from suites.frontend.bpu.tage.case.alternate_scenario import check_mixed_overlap
 
 
 @pytest.mark.feature('BPU-TAGE-029')

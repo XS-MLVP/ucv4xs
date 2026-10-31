@@ -1,7 +1,7 @@
 """Two semantic tag classes, not a physical bank/set sweep."""
 import pytest
-from bpuverify.bpu.case.early_direction import check_early_direction
-from bpuverify.bpu.coverage.early_direction import EarlyDirectionCoverage
+from suites.frontend.bpu.bpu.case.early_direction import check_early_direction
+from suites.frontend.bpu.bpu.coverage.early_direction import EarlyDirectionCoverage
 
 
 @pytest.mark.feature('BPU-INT-044')

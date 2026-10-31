@@ -4,14 +4,14 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.ubtb.checker.assertions import assert_hit
-from bpuverify.ubtb.checker.assertions import assert_miss
-from bpuverify.ubtb.checker.assertions import train_not_taken
-from bpuverify.ubtb.checker.assertions import train_taken
-from bpuverify.ubtb.case.definitions import CONDITIONAL
-from bpuverify.ubtb.case.definitions import DIRECT
-from bpuverify.ubtb.case.definitions import INDIRECT
-from bpuverify.ubtb.case.definitions import NOT_TAKEN
+from suites.frontend.bpu.ubtb.checker.assertions import assert_hit
+from suites.frontend.bpu.ubtb.checker.assertions import assert_miss
+from suites.frontend.bpu.ubtb.checker.assertions import train_not_taken
+from suites.frontend.bpu.ubtb.checker.assertions import train_taken
+from suites.frontend.bpu.ubtb.case.definitions import CONDITIONAL
+from suites.frontend.bpu.ubtb.case.definitions import DIRECT
+from suites.frontend.bpu.ubtb.case.definitions import INDIRECT
+from suites.frontend.bpu.ubtb.case.definitions import NOT_TAKEN
 
 
 @pytest.mark.feature("BPU-UBTB-002")

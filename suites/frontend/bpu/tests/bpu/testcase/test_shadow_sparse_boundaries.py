@@ -1,7 +1,7 @@
 """Tighter semantic wrap boundaries, not a physical bank/set sweep."""
 import pytest
 
-from bpuverify.bpu.case.bypass.sparse_wrap import check_sparse_wrap
+from suites.frontend.bpu.bpu.case.bypass.sparse_wrap import check_sparse_wrap
 
 
 @pytest.mark.feature('BPU-INT-065')

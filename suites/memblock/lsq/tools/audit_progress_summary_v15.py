@@ -54,7 +54,7 @@ def audit():
         prior=ROOT/"results"/name;m,files,ns=baseline_metadata(prior)
         assert not(expected_nodes.keys()&ns.keys());expected_nodes.update(ns);expected_failures.update(failures(prior));baseline_tests[name]=m["tests"]
         for k,v in files.items():
-            if k.startswith("lsqverify/"):expected_sources.setdefault(k,set()).add(v)
+            if k.startswith('lsqverify/'):expected_sources.setdefault(k,set()).add(v)
         for family,names in JOURNALS.items():
             for filename in names:
                 for p in(prior/"cases").rglob(Path(filename).with_suffix(".summary.json").name):
@@ -74,7 +74,7 @@ def audit():
     assert current==expected_nodes and failures(run)==expected_failures and len(expected_failures)==227
     assert manifest["tests"]==dict(Counter("FAIL" if x else "PASS" for x in current.values()))=={"PASS":2085,"FAIL":227}
     assert len(expected_sources)==149 and all(len(v)==1 for v in expected_sources.values())
-    assert aggregate((k,next(iter(v))) for k,v in expected_sources.items())==launch["groups"]["lsqverify"]
+    assert aggregate((k,next(iter(v))) for k,v in expected_sources.items())==launch["groups"]['lsqverify']
     matched=records=avoided=summary_bytes=0;families=[]
     for family,names in JOURNALS.items():
         actual=Counter();n=0

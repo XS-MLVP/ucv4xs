@@ -1,7 +1,7 @@
 """Sparse conditional traffic preserves a survivor before the next update."""
 import pytest
 
-from bpuverify.bpu.case.bypass.sparse_wrap import check_sparse_wrap
+from suites.frontend.bpu.bpu.case.bypass.sparse_wrap import check_sparse_wrap
 
 
 @pytest.mark.feature('BPU-INT-064')

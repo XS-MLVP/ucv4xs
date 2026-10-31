@@ -1,8 +1,8 @@
 """Toggle-directed legal stimulus for TLBFA state and public inputs."""
 from __future__ import annotations
 
-from mmuverify.common.runtime import execution
-from mmuverify.tlbfa.model import ALL_STAGE, NO_S2
+from suites.memblock.mmu.execution import execution
+from suites.memblock.mmu.tlbfa.model import ALL_STAGE, NO_S2
 
 from .common import lookup_vpn, make_refill
 
@@ -14,7 +14,7 @@ ALL_ONES = (1 << 50) - 1
 # response distribution; it is a legal interface stimulus for storage testing.
 async def test_all_storage_bits_toggle_in_every_way(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         ones = make_refill(
             ALL_STAGE,
@@ -75,7 +75,7 @@ async def test_all_storage_bits_toggle_in_every_way(tlbfa_env):
 # check on every access.
 async def test_request_vpn_and_stage_bits_toggle(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         entry = make_refill(NO_S2, 0, 0x31000, 0x111111111, asid=0)
         await env.refill(entry, 0, "toggle anchor")
@@ -89,7 +89,7 @@ async def test_request_vpn_and_stage_bits_toggle(tlbfa_env):
 # TLBFA-CTX-01: CSR context bits are all exercised.
 async def test_context_input_bits_toggle(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await env.edge()
         env.program_context(satp_asid=0xFFFF, vsatp_asid=0xFFFF, hgatp_vmid=0x3FFF, virt=1, bme=1, cmode=1)
@@ -106,7 +106,7 @@ async def test_context_input_bits_toggle(tlbfa_env):
 # fences that must not match the installed translation.
 async def test_sfence_address_and_asid_bits_toggle(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.program_context(satp_asid=1)
         anchor = make_refill(NO_S2, 0, 0x32000, 0x222222222, asid=1)

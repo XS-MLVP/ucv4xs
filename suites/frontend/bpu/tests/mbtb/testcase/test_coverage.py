@@ -2,25 +2,25 @@
 
 from __future__ import annotations
 
-from bpuverify.mbtb.coverage.catalog import mbtb_coverage_model
-from bpuverify.mbtb.coverage.catalog import write_mbtb_coverage
-from bpuverify.mbtb.checker.assertions import assert_miss
-from bpuverify.mbtb.checker.assertions import assert_filtered_raw_hit
-from bpuverify.mbtb.checker.assertions import assert_vector_hit
-from bpuverify.mbtb.checker.assertions import matching_counter
-from bpuverify.mbtb.checker.assertions import train
-from bpuverify.mbtb.case.definitions import BRANCH_TYPES
-from bpuverify.mbtb.case.definitions import CONDITIONAL
-from bpuverify.mbtb.case.definitions import DIRECT
-from bpuverify.mbtb.case.definitions import INDIRECT
-from bpuverify.mbtb.case.definitions import LATE_START_PC
-from bpuverify.mbtb.case.definitions import NEXT_PAGE_BRANCH
-from bpuverify.mbtb.case.definitions import PAGE_END_PC
-from bpuverify.mbtb.case.definitions import VISIBLE_NEXT_PAGE_BRANCH
-from bpuverify.mbtb.case.definitions import BranchVector
-from bpuverify.mbtb.case.enable_scenarios import observe_lookup_gate
-from bpuverify.mbtb.case.enable_scenarios import observe_training_gate
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.mbtb.coverage.catalog import mbtb_coverage_model
+from suites.frontend.bpu.mbtb.coverage.catalog import write_mbtb_coverage
+from suites.frontend.bpu.mbtb.checker.assertions import assert_miss
+from suites.frontend.bpu.mbtb.checker.assertions import assert_filtered_raw_hit
+from suites.frontend.bpu.mbtb.checker.assertions import assert_vector_hit
+from suites.frontend.bpu.mbtb.checker.assertions import matching_counter
+from suites.frontend.bpu.mbtb.checker.assertions import train
+from suites.frontend.bpu.mbtb.case.definitions import BRANCH_TYPES
+from suites.frontend.bpu.mbtb.case.definitions import CONDITIONAL
+from suites.frontend.bpu.mbtb.case.definitions import DIRECT
+from suites.frontend.bpu.mbtb.case.definitions import INDIRECT
+from suites.frontend.bpu.mbtb.case.definitions import LATE_START_PC
+from suites.frontend.bpu.mbtb.case.definitions import NEXT_PAGE_BRANCH
+from suites.frontend.bpu.mbtb.case.definitions import PAGE_END_PC
+from suites.frontend.bpu.mbtb.case.definitions import VISIBLE_NEXT_PAGE_BRANCH
+from suites.frontend.bpu.mbtb.case.definitions import BranchVector
+from suites.frontend.bpu.mbtb.case.enable_scenarios import observe_lookup_gate
+from suites.frontend.bpu.mbtb.case.enable_scenarios import observe_training_gate
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 async def test_mbtb_functional_coverage_closes_defined_bins(mbtb_agent):

@@ -1,6 +1,6 @@
 """All two banks/four ways/both agreement profiles use real DUT feedback."""
 import pytest
-from bpuverify.bpu.case.sc.used_checks import run_used_case
+from suites.frontend.bpu.bpu.case.sc.used_checks import run_used_case
 
 # Measured on the 2026-10-21 full BPU program run; scheduling hint only.
 pytestmark = pytest.mark.estimated_runtime(35)

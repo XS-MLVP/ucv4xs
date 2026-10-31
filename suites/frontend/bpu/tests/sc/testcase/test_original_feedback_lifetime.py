@@ -2,11 +2,11 @@
 import json
 import pytest
 
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.sc.model.original_feedback import FeedbackProgram
-from bpuverify.sc.coverage.original_feedback import FeedbackCoverage
-from bpuverify.sc.case.original_feedback import check_ignored_original_feedback
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.sc.model.original_feedback import FeedbackProgram
+from suites.frontend.bpu.sc.coverage.original_feedback import FeedbackCoverage
+from suites.frontend.bpu.sc.case.original_feedback import check_ignored_original_feedback
 
 
 @pytest.mark.feature('BPU-SC-011')

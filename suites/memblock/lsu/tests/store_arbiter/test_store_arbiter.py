@@ -10,7 +10,7 @@ import random
 
 import pytest
 
-from lsuverify.store_arbiter.coverage import (
+from suites.memblock.lsu.store_arbiter.coverage import (
     BEAT_KINDS,
     FIELD_WIDTHS,
     GROUP_FIELDS,
@@ -20,7 +20,7 @@ from lsuverify.store_arbiter.coverage import (
     TAIL_GROUPS,
     StoreArbiterCoverage,
 )
-from lsuverify.store_arbiter.env import (
+from suites.memblock.lsu.store_arbiter.env import (
     BUBBLE,
     IN0_FIELDS,
     IN1_FIELDS,

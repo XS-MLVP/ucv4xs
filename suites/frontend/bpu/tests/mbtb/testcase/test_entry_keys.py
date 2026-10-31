@@ -1,8 +1,8 @@
 """Both pending entry keys retain their own data, in either feedback order."""
 import json
 import pytest
-from bpuverify.mbtb.coverage.two_key_lifetime import Coverage
-from bpuverify.mbtb.case.two_key_lifetime import check_two_key_lifetime
+from suites.frontend.bpu.mbtb.coverage.two_key_lifetime import Coverage
+from suites.frontend.bpu.mbtb.case.two_key_lifetime import check_two_key_lifetime
 
 
 @pytest.mark.feature("BPU-MBTB-022")

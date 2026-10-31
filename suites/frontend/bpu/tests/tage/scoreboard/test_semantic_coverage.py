@@ -3,9 +3,9 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.tage.case.semantic import POSITION, PC, PROFILES, accepted_learning, pipelined_readback
-from bpuverify.tage.coverage.semantic import SemanticCoverage
-from bpuverify.tage.model.semantic import Branch, Context, Feedback, coordinate
+from suites.frontend.bpu.tage.case.semantic import POSITION, PC, PROFILES, accepted_learning, pipelined_readback
+from suites.frontend.bpu.tage.coverage.semantic import SemanticCoverage
+from suites.frontend.bpu.tage.model.semantic import Branch, Context, Feedback, coordinate
 
 
 def test_four_profiles_are_distinguishing_in_every_table_not_a_physical_sweep():

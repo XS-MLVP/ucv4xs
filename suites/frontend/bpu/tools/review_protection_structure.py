@@ -167,6 +167,6 @@ def review(text):
     require(all(reset_first<=m.start()<reset_last or aging_first<=m.start()<aging_last or
                 normal_first<=m.start()<normal_last for m in writes),'protection write outside reviewed priority blocks')
     blocking=re.findall(r'\busefulEntries_\d+_\d+_value\s*=(?!=)\s*([^;]+);',code)
-    require(all(re.fullmatch(r'_RANDOM\[[^]]+\]\[[^]]+\]',compact(rhs)) for rhs in blocking),
+    require(all(re.fullmatch(r'(?:_RANDOM\[[^]]+\]\[[^]]+\]|2\x27h0)',compact(rhs)) for rhs in blocking),
             'unexpected blocking protection assignment outside random initialization')
     return Structure(modules[0],sha256(text.encode()).hexdigest(),initial,maintenance,tuple(sorted(rows,key=lambda r:r['index'])))

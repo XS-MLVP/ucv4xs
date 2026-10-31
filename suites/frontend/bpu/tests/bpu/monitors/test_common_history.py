@@ -2,9 +2,9 @@
 from types import SimpleNamespace as NS
 import pytest
 from toffee import Bundle,ClockCycles,Execution,MemoryBackend
-from bpuverify.common.bundle.bindings import PortBinding
-from bpuverify.bpu.env import pipeline as module
-from bpuverify.bpu.checker import common_history as common_module
+from suites.frontend.bpu.ports.bindings import PortBinding
+from suites.frontend.bpu.bpu.env import pipeline as module
+from suites.frontend.bpu.bpu.checker import common_history as common_module
 from tests.framework.fakes import Signal
 
 
@@ -27,7 +27,7 @@ async def test_one_capture_freezes_both_views_before_pipeline_processing_and_sto
     monkeypatch.setattr(module,'PipelineChecker',Pipeline)
     monkeypatch.setattr(common_module,'CommonHistoryChecks',Common)
     monkeypatch.setattr(module,'pipeline_binding',lambda *a,**kw:PortBinding(clock,Bundle(value=data),'pipeline'))
-    from bpuverify.bpu.bundle import common_history as binding_module
+    from suites.frontend.bpu.bpu.bundle import common_history as binding_module
     monkeypatch.setattr(binding_module,'common_history_binding',lambda *a,**kw:PortBinding(clock,Bundle(value=data),'common'))
     async with Execution(MemoryBackend(clock)) as execution:
         observation=module.PipelineObservation(NS(_execution=execution),with_common_history=with_common)

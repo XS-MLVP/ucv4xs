@@ -5,7 +5,7 @@ globally, and every non-declared difference must survive.
 """
 from types import SimpleNamespace
 
-from bpuverify.utage.checker.semantic import UtageSemanticChecker
+from suites.frontend.bpu.utage.checker.semantic import UtageSemanticChecker
 
 
 def prediction(pc, positions=(5, 6, 7, 8), tables=(0, None, None, None), indices=(17, 33)):

@@ -27,7 +27,7 @@
     "prior_proofs": [
       "results/utage_read_lifetime_stage_20261018",
       "results/utage_ancestor_lifetime_stage_20261018",
-      "bpuverify/utage/model/read_ownership.py"
+      "utage/model/read_ownership.py"
     ],
     "new_obligation": "同一个实际并发burst必须直接区分before/same/after查询年龄，并在后续真实新来源周转后保留全部原响应，而不能把几个独立单查询用例拼成多年龄证明。",
     "causal_limit": "不是全部1908零行的原因，不承诺新增行，也不把每个保留位置作为功能点。",
@@ -66,12 +66,12 @@
   "physical_enumeration": false,
   "RTL_DUT_SDK_changes": false,
   "production_layout": {
-    "model": "bpuverify/utage/model/query_cohort.py",
-    "checker": "bpuverify/utage/checker/query_cohort.py",
-    "case": "bpuverify/utage/case/query_cohort.py",
+    "model": "utage/model/query_cohort.py",
+    "checker": "utage/checker/query_cohort.py",
+    "case": "utage/case/query_cohort.py",
     "testcase": "tests/utage/testcase/test_query_cohort.py",
     "coverage": {
-      "factory": "bpuverify.utage.coverage.query_cohort",
+      "factory": "suites.frontend.bpu.utage.coverage.query_cohort",
       "instance": "kunminghu_v3.utage.query-cohort-turnover"
     },
     "historical_stage": "results/utage_cohort_turnover_stage_20261018"

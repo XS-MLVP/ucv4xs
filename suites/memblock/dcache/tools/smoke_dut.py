@@ -17,7 +17,7 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
-from duts import DUTS, dut_dir, export_name  # noqa: E402
+from suites.memblock.dcache.inventory import DUTS, dut_dir, export_name  # noqa: E402
 
 SMOKE = '''
 import importlib.util, sys

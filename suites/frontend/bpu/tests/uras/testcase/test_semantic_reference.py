@@ -1,10 +1,10 @@
 """Verify event semantics through default driver/monitor/reference checks."""
 import pytest
 
-from bpuverify.uras.case.semantic import check_held_call_repair
-from bpuverify.uras.coverage.semantic import HELD_PROFILES, HeldCallCoverage
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.uras.case.semantic import check_held_call_repair
+from suites.frontend.bpu.uras.coverage.semantic import HELD_PROFILES, HeldCallCoverage
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature('BPU-URAS-003')
@@ -19,9 +19,9 @@ async def test_held_call_correction_survives_withdrawal_and_is_consumed_once(ura
         coverage.write(output_directory(REPO_ROOT, 'uras'))
         request.node.user_properties.append(('semantic_uras_held_call_repair', json.dumps(evidence, sort_keys=True)))
 
-from bpuverify.uras.case.definitions import CALL_A, CALL_B, MAIN_TOP
-from bpuverify.uras.case.semantic import concurrent_program, coroutine_correction
-from bpuverify.uras.transaction.types import UrasCycle
+from suites.frontend.bpu.uras.case.definitions import CALL_A, CALL_B, MAIN_TOP
+from suites.frontend.bpu.uras.case.semantic import concurrent_program, coroutine_correction
+from suites.frontend.bpu.uras.transaction.types import UrasCycle
 
 
 @pytest.mark.feature('BPU-URAS-008')

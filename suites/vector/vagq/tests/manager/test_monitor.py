@@ -2,8 +2,8 @@
 import pytest
 from toffee import XEvent, XEventKind, XPhase
 
-from vagqverify.manager.monitor import CycleAssembler
-from vagqverify.manager.types import Allocation, Beat, Boundary
+from suites.vector.vagq.manager.monitor import CycleAssembler
+from suites.vector.vagq.manager.types import Allocation, Beat, Boundary
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)
 IDLE = Boundary(False, Beat(), Allocation())

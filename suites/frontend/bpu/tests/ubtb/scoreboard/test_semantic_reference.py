@@ -5,9 +5,9 @@ from types import SimpleNamespace
 import pytest
 from toffee import CheckContext, ScoreboardMismatch, ScoreboardMode
 
-from bpuverify.ubtb.checker.semantic import UbtbSemanticChecker
-from bpuverify.ubtb.model.semantic import UbtbEvents, UbtbReference, _RecencyTree
-from bpuverify.ubtb.transaction.types import (
+from suites.frontend.bpu.ubtb.checker.semantic import UbtbSemanticChecker
+from suites.frontend.bpu.ubtb.model.semantic import UbtbEvents, UbtbReference, _RecencyTree
+from suites.frontend.bpu.ubtb.transaction.types import (
     BranchTraining, PredictRequest, UbtbBatchTraining, UbtbBranchFeedback,
 )
 

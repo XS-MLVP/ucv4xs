@@ -3,11 +3,11 @@ from dataclasses import replace
 from pathlib import Path
 import ast
 import pytest
-from bpuverify.bpu.checker.neutral_recovery import Checks
-from bpuverify.bpu.coverage.neutral_recovery import Coverage
-from bpuverify.bpu.model.neutral_recovery import PROFILES, STEPS, rules
-from bpuverify.bpu.model.early_positive_protection import OLDER_PATHS
-from bpuverify.bpu.model.early_opposition import provider
+from suites.frontend.bpu.bpu.checker.neutral_recovery import Checks
+from suites.frontend.bpu.bpu.coverage.neutral_recovery import Coverage
+from suites.frontend.bpu.bpu.model.neutral_recovery import PROFILES, STEPS, rules
+from suites.frontend.bpu.bpu.model.early_positive_protection import OLDER_PATHS
+from suites.frontend.bpu.bpu.model.early_opposition import provider
 from tests.bpu.scoreboard.test_early_positive_protection import Program as SourceProgram
 
 
@@ -149,7 +149,7 @@ def test_atomic_checked_credit_requires_every_profile_obligation(profile, missin
 
 
 def test_semantic_case_hides_native_timing_and_io():
-    for name in ('tests/bpu/testcase/test_neutral_recovery.py', 'bpuverify/bpu/case/neutral_recovery.py'):
+    for name in ('tests/bpu/testcase/test_neutral_recovery.py', 'bpu/case/neutral_recovery.py'):
         tree = ast.parse(Path(name).read_text())
         forbidden = {'ClockCycles', 'RisingEdge', 'FallingEdge', 'get_', 'set_', 'gather', 'create_task'}
         assert not {n.id for n in ast.walk(tree) if isinstance(n, ast.Name)} & forbidden

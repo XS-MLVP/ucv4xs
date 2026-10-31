@@ -1,7 +1,7 @@
 """Original RAW records live until the Load's exclusive address boundary."""
 import pytest
 
-from lsqverify.vlq.types import RobPtr
+from suites.memblock.lsq.vlq.types import RobPtr
 
 
 @pytest.mark.parametrize("start",(0,63,255))

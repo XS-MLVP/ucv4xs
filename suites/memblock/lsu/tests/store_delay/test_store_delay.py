@@ -9,8 +9,8 @@ import random
 
 import pytest
 
-from lsuverify.store_delay.coverage import DelayPipelineCoverage
-from lsuverify.store_delay.env import (
+from suites.memblock.lsu.store_delay.coverage import DelayPipelineCoverage
+from suites.memblock.lsu.store_delay.env import (
     LEVEL_FLUSH,
     LEVEL_FLUSH_AFTER,
     PAYLOAD_FIELDS,
@@ -242,6 +242,6 @@ def test_seeded_random_stream_matches_reference(dly):
 
 
 def test_case_inventory_is_exact():
-    from lsuverify.store_delay.coverage import DELAY_CASES
+    from suites.memblock.lsu.store_delay.coverage import DELAY_CASES
     assert len(DELAY_CASES) == len(set(DELAY_CASES))
     assert len(DELAY_CASES) == 18

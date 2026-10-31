@@ -4,9 +4,9 @@ from itertools import product
 from types import SimpleNamespace
 import pytest
 from toffee import ScoreboardMismatch
-from bpuverify.bpu.checker.tage.aging import TageAgingChecker
-from bpuverify.bpu.coverage.tage.aging import AgingCoverage
-from bpuverify.bpu.model.tage.aging import empty_set,prediction,candidate_masks,transition,counter_transition,clear_step
+from suites.frontend.bpu.bpu.checker.tage.aging import TageAgingChecker
+from suites.frontend.bpu.bpu.coverage.tage.aging import AgingCoverage
+from suites.frontend.bpu.bpu.model.tage.aging import empty_set,prediction,candidate_masks,transition,counter_transition,clear_step
 
 
 @pytest.mark.parametrize('counter,fire,need,can,busy',tuple(product((0,1,254,255),(0,1),(0,1),(0,255),(0,1))))
@@ -148,7 +148,7 @@ def test_wrong_valid_TAGE_direction_preserves_reached_and_does_not_credit_alloca
 def source_row(checker,tx=None,fire=(0,0,0,0)):
     from tests.bpu.scoreboard.test_tage_selector import transaction,bits
     selector=dict(reset=0,selectors=list(checker.selector.values),enable=1,fire=fire,use_meta=1,
-        raw_tags=[34]*8,reads=deepcopy(checker.cells),votes=[dict(valid=0,index=0,inc=0,dec=0) for _ in range(16)],
+        raw_tags=[34]*8,reads=deepcopy(checker.cells),votes=[dict(valid=0,index=0,inc=0,dec=0) for _ in range(8)],
         training=dict(valid=int(tx is not None),ready=1,bits=bits(tx or transaction(valid=0))))
     tables=[]
     for t in range(8):

@@ -54,7 +54,7 @@ FTQ 会屏蔽同一次训练中首个误预测之后的分支。ResolveQueue 还
 
 06 的现有集成准备先保存多个冷原预测，再顺序训练；它没有把真实 FTQ 的上述约束完整纳入。因此“完整 BPU 测试失败”仍不等于“完整 SoC 可达”。
 
-依据：[ResolveQueue.scala](../../XiangShan/src/main/scala/xiangshan/frontend/ftq/ResolveQueue.scala)、[Ftq.scala 的 trainCache 和 trainFirstMispredictMask](../../XiangShan/src/main/scala/xiangshan/frontend/ftq/Ftq.scala)、[当前清理场景准备代码](../../bpuverify/bpu/env/main_duplicate_cleanup.py)、[teach／send_input](../../bpuverify/bpu/env/bounded_sources.py)。
+依据：[ResolveQueue.scala](../../XiangShan/src/main/scala/xiangshan/frontend/ftq/ResolveQueue.scala)、[Ftq.scala 的 trainCache 和 trainFirstMispredictMask](../../XiangShan/src/main/scala/xiangshan/frontend/ftq/Ftq.scala)、[当前清理场景准备代码](../../bpu/env/main_duplicate_cleanup.py)、[teach／send_input](../../bpu/env/bounded_sources.py)。
 
 ### 禁用 RAS 不会让 BPU 停止产生调用输入
 

@@ -5,13 +5,13 @@ from types import SimpleNamespace as NS
 import pytest
 from toffee import Scoreboard
 
-from bpuverify.bpu.model.common_history import Value,Block,CommonDirectionReference
-from bpuverify.bpu.model.selection import Branch,Kind
-from bpuverify.bpu.model.pipeline import Outcome
-from bpuverify.bpu.checker.common_history import CommonHistoryChecks
-from bpuverify.bpu.coverage.common_history import CommonHistoryCoverage
-from bpuverify.bpu.transaction.types import BpuRedirect
-from bpuverify.bpu.env.common_history import PC,FALL
+from suites.frontend.bpu.bpu.model.common_history import Value,Block,CommonDirectionReference
+from suites.frontend.bpu.bpu.model.selection import Branch,Kind
+from suites.frontend.bpu.bpu.model.pipeline import Outcome
+from suites.frontend.bpu.bpu.checker.common_history import CommonHistoryChecks
+from suites.frontend.bpu.bpu.coverage.common_history import CommonHistoryCoverage
+from suites.frontend.bpu.bpu.transaction.types import BpuRedirect
+from suites.frontend.bpu.bpu.env.common_history import PC,FALL
 from tests.bpu.scoreboard.test_main_service import prepared,resolve
 from tests.bpu.scoreboard.test_direction_sources import revisit
 
@@ -239,7 +239,7 @@ def test_common_observation_requires_the_same_pipeline_event_before_advancing(fa
 
 @pytest.mark.parametrize('interruption',('none','stall','middle-repair','final-repair','redirect'))
 def test_lookup_sources_require_an_uninterrupted_full_window_of_independently_unchanged_history(interruption):
-    from bpuverify.bpu.model.common_history import LOOKUP_WINDOW_CAPACITY
+    from suites.frontend.bpu.bpu.model.common_history import LOOKUP_WINDOW_CAPACITY
     checks,actual,r,_,_=fixture(public_only=True)
     checks.plans.clear();checks.sources.clear();checks.stable=0
     token=actual.token

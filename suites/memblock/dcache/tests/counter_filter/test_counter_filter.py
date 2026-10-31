@@ -5,9 +5,9 @@ import random
 
 import pytest
 
-from dcacheverify.counter_filter.coverage import CounterFilterCoverage
-from dcacheverify.counter_filter.env import CounterFilterEnv
-from dcacheverify.counter_filter.model import SIZE
+from suites.memblock.dcache.counter_filter.coverage import CounterFilterCoverage
+from suites.memblock.dcache.counter_filter.env import CounterFilterEnv
+from suites.memblock.dcache.counter_filter.model import SIZE
 
 NONE = None
 

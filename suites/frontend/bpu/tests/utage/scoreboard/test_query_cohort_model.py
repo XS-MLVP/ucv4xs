@@ -3,12 +3,11 @@ from copy import deepcopy
 from dataclasses import replace
 import pytest
 
-from bpuverify.utage.model.semantic import Events
-from bpuverify.utage.case.definitions import SHADOW_CAPACITY
+from suites.frontend.bpu.utage.model.semantic import Events
+from suites.frontend.bpu.utage.case.definitions import SHADOW_CAPACITY
 from tests.utage.scoreboard.test_semantic_model import lookup,feedback,learn,POSITIONS
 from tests.utage.scoreboard.test_read_lifetime_model import prepared,bases,values
-from bpuverify.utage.model.query_cohort import Program,PROFILES,ANCESTRIES,PC,NEIGHBOR
-
+from suites.frontend.bpu.utage.model.query_cohort import Program,PROFILES,ANCESTRIES,PC,NEIGHBOR
 
 
 def derive(program):

@@ -6,8 +6,8 @@ from types import SimpleNamespace as NS
 import pytest
 from toffee import CoverageDatabase, TransferState
 
-from bpuverify.common.checker.pipeline_ownership import check_batch_completed, check_owned_stream
-from bpuverify.common.coverage.pipeline_ownership import (
+from suites.frontend.bpu.checkers.pipeline_ownership import check_batch_completed, check_owned_stream
+from suites.frontend.bpu.coverage.pipeline_ownership import (
     PipelineOwnershipCoverage, PROFILES, RULES, ownership_coverage)
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)

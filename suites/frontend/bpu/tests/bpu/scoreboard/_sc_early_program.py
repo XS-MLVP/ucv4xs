@@ -1,18 +1,18 @@
 """Synthetic actuals qualify checkers only; all predictors start from reset."""
-from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT
+from suites.frontend.bpu.models.configuration import TAGE_ALLOCATION_WAIT
 from dataclasses import replace
 from types import SimpleNamespace as NS
 
 from toffee import Scoreboard,XEvent,XEventKind,XPhase
 
-from bpuverify.bpu.checker.sc_early_learning import Checks
-from bpuverify.bpu.model.pipeline import Redirect,Resolution,Outcome
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.bpu.model.statistical_joint_sources import StatisticalJointSources
-from bpuverify.tage.model.semantic import TABLES
+from suites.frontend.bpu.bpu.checker.sc_early_learning import Checks
+from suites.frontend.bpu.bpu.model.pipeline import Redirect,Resolution,Outcome
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.statistical_joint_sources import StatisticalJointSources
+from suites.frontend.bpu.tage.model.semantic import TABLES
 from tests.bpu.scoreboard._conditional_prefix_program import Program as Foundation
 from tests.bpu.scoreboard.test_early_direction_checking import actual_live,actual_fast
-from bpuverify.bpu.checker.early_direction import live_values,fast_values
+from suites.frontend.bpu.bpu.checker.early_direction import live_values,fast_values
 
 
 class Program(Foundation):

@@ -1,9 +1,9 @@
 """An accepted original effect survives a coincident prediction recovery."""
 import json
 import pytest
-from bpuverify.bpu.model.main_coincident_recovery import PROGRAMS
-from bpuverify.bpu.coverage.main_coincident_recovery import Coverage
-from bpuverify.bpu.case.main_coincident_recovery import check_coincident_recovery
+from suites.frontend.bpu.bpu.model.main_coincident_recovery import PROGRAMS
+from suites.frontend.bpu.bpu.coverage.main_coincident_recovery import Coverage
+from suites.frontend.bpu.bpu.case.main_coincident_recovery import check_coincident_recovery
 
 
 @pytest.mark.feature('BPU-INT-005')

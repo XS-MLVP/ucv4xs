@@ -3,7 +3,7 @@ import random
 
 import pytest
 
-from lsqverify.vlq.types import Dispatch, QueuePtr, Redirect, RobPtr, Writeback
+from suites.memblock.lsq.vlq.types import Dispatch, QueuePtr, Redirect, RobPtr, Writeback
 
 
 async def fill_on_one_lane(env, size, lane):

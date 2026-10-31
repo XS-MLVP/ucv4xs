@@ -2,11 +2,10 @@
 from copy import deepcopy
 from dataclasses import replace
 import pytest
-from bpuverify.mbtb.model.semantic import Source,MbtbReference,Events,Feedback,Branch,tag
-from bpuverify.bpu.model.main_sources import source_entries
-from bpuverify.bpu.model.main_service import counter_payload
-from bpuverify.bpu.model.miss_authority import Program,PC,FOREIGN_PC,RESIDENT_POSITION,STREAM_PC
-
+from suites.frontend.bpu.mbtb.model.semantic import Source,MbtbReference,Events,Feedback,Branch,tag
+from suites.frontend.bpu.bpu.model.main_sources import source_entries
+from suites.frontend.bpu.bpu.model.main_service import counter_payload
+from suites.frontend.bpu.bpu.model.miss_authority import Program,PC,FOREIGN_PC,RESIDENT_POSITION,STREAM_PC
 
 
 def lookup(model, pc=PC):
@@ -28,7 +27,6 @@ def learn(model, request):
     model.advance(Events(feedback=request))
     for _ in range(5):
         model.advance()
-
 
 
 def derive(p,*,canonical=False):

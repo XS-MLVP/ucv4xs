@@ -1,8 +1,8 @@
 """No signal edges or task scheduling in the scenario entry point."""
 import pytest
 
-from bpuverify.bpu.case.micro_forwarding import check_micro_forwarding
-from bpuverify.bpu.coverage.micro_forwarding import MicroForwardingCoverage
+from suites.frontend.bpu.bpu.case.micro_forwarding import check_micro_forwarding
+from suites.frontend.bpu.bpu.coverage.micro_forwarding import MicroForwardingCoverage
 
 
 @pytest.mark.feature('BPU-INT-083')

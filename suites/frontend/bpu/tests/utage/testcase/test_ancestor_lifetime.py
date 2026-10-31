@@ -1,10 +1,9 @@
 """Read and match ancestry remain distinct across a real learning effect."""
 import json
 import pytest
-from bpuverify.utage.model.ancestor_lifetime import Program,PROFILES,RELATIONS
-from bpuverify.utage.coverage.ancestor_lifetime import Coverage
-from bpuverify.utage.case.ancestor_lifetime import check_ancestor_lifetime
-
+from suites.frontend.bpu.utage.model.ancestor_lifetime import Program,PROFILES,RELATIONS
+from suites.frontend.bpu.utage.coverage.ancestor_lifetime import Coverage
+from suites.frontend.bpu.utage.case.ancestor_lifetime import check_ancestor_lifetime
 
 
 @pytest.mark.feature('BPU-UTAGE-006')

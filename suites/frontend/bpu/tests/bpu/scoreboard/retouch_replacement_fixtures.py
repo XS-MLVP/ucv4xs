@@ -4,13 +4,13 @@ from dataclasses import replace
 from types import SimpleNamespace as NS
 
 from toffee import Scoreboard
-from bpuverify.bpu.checker.retouch_replacement import RetouchReplacementChecks
-from bpuverify.bpu.coverage.retouch_replacement import RetouchReplacementCoverage
-from bpuverify.bpu.model.tage.retouch_replacement import AccessRecencySources,READ_STREAM
-from bpuverify.bpu.model.tage.forwarding import PC,resolved_path
-from bpuverify.bpu.model.tage.service import learning_inflight
-from bpuverify.bpu.model.pipeline import Redirect
-from bpuverify.bpu.model.direction_sources import HISTORY_PORTS
+from suites.frontend.bpu.bpu.checker.retouch_replacement import RetouchReplacementChecks
+from suites.frontend.bpu.bpu.coverage.retouch_replacement import RetouchReplacementCoverage
+from suites.frontend.bpu.bpu.model.tage.retouch_replacement import AccessRecencySources,READ_STREAM
+from suites.frontend.bpu.bpu.model.tage.forwarding import PC,resolved_path
+from suites.frontend.bpu.bpu.model.tage.service import learning_inflight
+from suites.frontend.bpu.bpu.model.pipeline import Redirect
+from suites.frontend.bpu.bpu.model.direction_sources import HISTORY_PORTS
 from tests.bpu.scoreboard.test_direction_forwarding import establish,resolution,values
 from tests.bpu.scoreboard.test_direction_service import additional_history,via,streaming_query
 from tests.bpu.scoreboard.test_direction_sources import quiet,revisit

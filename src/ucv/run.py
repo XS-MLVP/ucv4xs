@@ -14,8 +14,23 @@ def source_identity(project,suites):
         for p in directory.rglob('*'):
             if p.is_file() and p.suffix in {'.py','.ini','.json','.toml','.scala','.patch'} and not p.is_symlink() and not {'rtl','dut','results','__pycache__'} & set(p.relative_to(directory).parts):
                 files[str(p.relative_to(project.root))]=file_hash(p)
-    for p in [project.root/'ucv.json',project.root/'dependencies/versions.json',project.root/'dependencies/python.txt']:
+    namespace_files = [project.root/'suites/__init__.py',
+                       *{s.path.parent/'__init__.py' for s in suites}]
+    for p in [project.root/'ucv.json',project.root/'pyproject.toml',
+              project.root/'dependencies/versions.json',project.root/'dependencies/python.txt',
+              *namespace_files]:
+        if not p.is_file():
+            continue
         files[str(p.relative_to(project.root))]=file_hash(p)
+    development=project.local.get('development_toffee')
+    if development:
+        for path in (project.root/'.ucv/local.json',project.root/development['receipt']):
+            files[str(path.relative_to(project.root))]=file_hash(path)
+        source=Path(development['source']).expanduser().resolve()
+        names=git(source,'ls-files','--cached','--others','--exclude-standard','-z').split('\0')
+        for name in sorted(set(names)):
+            if name and (source/name).is_file():
+                files['development/toffee/'+name]=file_hash(source/name)
     try:
         commit=git(project.root,'rev-parse','HEAD')
         status=git(project.root,'status','--porcelain=v1')
@@ -30,13 +45,35 @@ def collection_arguments(suite):
     return ['-o', 'testpaths=' + ' '.join(shlex.quote(p) for p in paths)]
 
 
+def declared(suite):
+    """Suite summary plus any machine-readable residual register.
+
+    PASS/FAIL/XFAIL/SKIP only describe executed tests, so "unproven scope" has
+    no verdict.  A suite may declare it in ``verification_plan.json``; the run
+    record carries it so the report cannot present the case counts as the whole
+    status.  Suites without a register are unaffected.
+    """
+
+    summary=suite.summary()
+    path=suite.path/'verification_plan.json'
+    if not path.is_file():
+        return summary
+    plan=read(path)
+    rows=plan.get('residuals') if isinstance(plan,dict) else None
+    if not isinstance(rows,list):
+        return summary
+    summary['residuals']=[{k:row.get(k) for k in
+        ('id','category','blocking','acceptance','owner','next_action')} for row in rows
+        if isinstance(row,dict) and row.get('id')]
+    return summary
+
 def run(project,suites,workers=8,seed=1,pytest_args=None,collect_only=False,output=None):
     if workers<1:raise UcvError('workers must be positive')
     if not 0<=seed<=4294967295:raise UcvError('seed must be in [0, 4294967295]')
     extra=list(pytest_args or [])
     if any(a in {'-c','-o','--output','--workers'} or a.startswith(('-c','-o','--output=','--workers=','--toffee-output','--rootdir','--override-ini','--junitxml','--bpu-dut-scope','--bpu-partition','-n','--numprocesses')) for a in extra):
         raise UcvError('ucv owns output, pytest roots, BPU partitioning and worker budgets')
-    python=project.root/'.venv/bin/python'
+    python=project.runtime_python()
     if not python.exists():raise UcvError('Run ucv setup first')
     from .validation import installed_tools
     installed=installed_tools(project)
@@ -50,7 +87,7 @@ def run(project,suites,workers=8,seed=1,pytest_args=None,collect_only=False,outp
             if not source or not Path(source).is_dir():raise UcvError(f'Missing external source for {suite.name}')
     output.mkdir(parents=True)
     record={'schema':1,'started_at':now(),'source':source_identity(project,suites),
-            'suites':[s.summary() for s in suites], 'mixed_baseline':len({s.baseline_key for s in suites})>1,
+            'suites':[declared(s) for s in suites], 'mixed_baseline':len({s.baseline_key for s in suites})>1,
             'tools':project.tools,'installed_tools':installed,'seed':seed,'workers':workers,'pytest_args':extra,
             'collect_only':collect_only,'tasks':[],'status':'RUNNING'}
     write(output/'run.json',record)
@@ -61,7 +98,8 @@ def run(project,suites,workers=8,seed=1,pytest_args=None,collect_only=False,outp
                 stack.enter_context(lock(project.root/'.cache/locks'/('suite-run-'+suite.name)))
             for suite in suites:
                 env=project.environment()
-                env.update(PYTHONPATH=str(project.root/'src')+os.pathsep+str(suite.path),
+                env.update(PYTHONPATH=os.pathsep.join(
+                               [str(project.root/'src'),str(project.root),str(suite.path)]),
                            UCV_SEED=str(seed),PYTHONHASHSEED=str(seed),DCACHE_TEST_RANDOM_SEED=str(seed))
                 flags=[*collection_arguments(suite),'-q','-p','no:cacheprovider','-p','ucv.pytest_plugin','--durations=20',
                        '-c',str(suite.path/'pytest.ini'),'--rootdir='+str(suite.path)]
@@ -116,13 +154,20 @@ def run(project,suites,workers=8,seed=1,pytest_args=None,collect_only=False,outp
                      'status':'PASS' if result.returncode==0 else 'FAIL',
                      'command':list(map(str,command)),'output':label,'cases':'cases/'+label+'/cases.json'}
                 if not (output/row['cases']).exists():row['status']='ERROR'
+                elif result.returncode==0:
+                    counts=read(output/row['cases']).get('counts',{})
+                    if counts.get('INCOMPLETE'):row['status']='INCOMPLETE'
+                    elif counts.get('UNCERTAIN'):row['status']='UNCERTAIN'
                 print(f'{label}: {row["status"]} (exit {result.returncode})',flush=True)
                 return row
             with ThreadPoolExecutor(max_workers=width) as pool:
                 for future in as_completed([pool.submit(one,t) for t in tasks]):
                     record['tasks'].append(future.result())
                     write(output/'run.json',record)
-            record['status']='PASS' if all(t['status']=='PASS' for t in record['tasks']) else 'FAIL'
+            states={t['status'] for t in record['tasks']}
+            record['status']=('FAIL' if states & {'FAIL','ERROR'} else
+                              'INCOMPLETE' if 'INCOMPLETE' in states else
+                              'UNCERTAIN' if 'UNCERTAIN' in states else 'PASS')
     except BaseException as error:
         record['status']='ERROR';record['error']=str(error)
         raise

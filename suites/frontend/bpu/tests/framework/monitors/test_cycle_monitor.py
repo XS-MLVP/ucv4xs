@@ -5,8 +5,8 @@ from toffee import ClockCycles
 from toffee import Execution
 from toffee import MemoryBackend
 
-from bpuverify.common.monitor.cycle import CycleMonitor
-from bpuverify.common.bundle.bindings import PortBinding
+from suites.frontend.bpu.monitors.cycle import CycleMonitor
+from suites.frontend.bpu.ports.bindings import PortBinding
 from tests.framework.fakes import Signal
 from tests.framework.fakes import bundle_binding
 

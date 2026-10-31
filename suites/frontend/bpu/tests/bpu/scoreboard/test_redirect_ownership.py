@@ -5,9 +5,9 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.checker.pipeline import environment
-from bpuverify.bpu.model.pipeline import Redirect
-from bpuverify.bpu.transaction.types import BpuRedirect
+from suites.frontend.bpu.bpu.checker.pipeline import environment
+from suites.frontend.bpu.bpu.model.pipeline import Redirect
+from suites.frontend.bpu.bpu.transaction.types import BpuRedirect
 from tests.bpu.scoreboard.test_main_ownership import ready,input_bits
 from tests.bpu.scoreboard.test_pipeline_checking import fixture_row
 

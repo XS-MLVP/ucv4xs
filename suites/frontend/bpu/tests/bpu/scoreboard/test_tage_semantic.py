@@ -1,4 +1,4 @@
-from bpuverify.common.model.configuration import TAGE_TABLES, RESULT_SLOTS
+from suites.frontend.bpu.models.configuration import TAGE_TABLES, RESULT_SLOTS
 from copy import deepcopy
 from dataclasses import replace
 from types import SimpleNamespace
@@ -6,10 +6,10 @@ from types import SimpleNamespace
 import pytest
 from toffee import ScoreboardMismatch
 
-from bpuverify.bpu.bundle.tage_semantic import HISTORY_PORTS
-from bpuverify.bpu.checker.tage.semantic import TageSemanticComponentChecker
-from bpuverify.bpu.monitor.tage.semantic import consumed_context
-from bpuverify.tage.model.semantic import Context, Events, FOLD_IDS, coordinate
+from suites.frontend.bpu.bpu.bundle.tage_semantic import HISTORY_PORTS
+from suites.frontend.bpu.bpu.checker.tage.semantic import TageSemanticComponentChecker
+from suites.frontend.bpu.bpu.monitor.tage.semantic import consumed_context
+from suites.frontend.bpu.tage.model.semantic import Context, Events, FOLD_IDS, coordinate
 from tests.tage.scoreboard.test_semantic_model import BASES, PC, POSITION, actual_prediction, feedback, learn, lookup
 
 
@@ -36,7 +36,7 @@ def checker_and_source():
     checker.events, checker.input_tick = Events(), 3
     # Live position is not consumed by TAGE; use the model-owned S1 positions.
     bases = (replace(BASES[0], position=0), *BASES[1:])
-    from bpuverify.tage.model.semantic import decide
+    from suites.frontend.bpu.tage.model.semantic import decide
     wanted = decide(checker.model.frame, bases, checker.model.selectors)
     actual = actual_prediction(wanted)
     extras = {name: tuple(wanted.get(f'{slot}.{field}', 0) for slot in range(RESULT_SLOTS))

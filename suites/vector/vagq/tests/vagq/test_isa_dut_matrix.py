@@ -4,21 +4,23 @@ The checks in this file compare public requests against the independent
 architectural access oracle.  They deliberately do not reuse the integration
 model as the expected address source.
 """
+
 from collections import Counter
 from dataclasses import asdict, replace
 import json
 
 import pytest
 
-from vagqverify.vagq.driver import response_beat
-from vagqverify.vagq.isa_reference import architectural_accesses
-from vagqverify.vagq.isa_coverage import DUT_COVERAGE, PUBLIC_FEATURE_COVERAGE
-from vagqverify.vagq.isa_reference import emul_encoding
-from vagqverify.vagq.scenario_matrix import representative_public_feature_cases
-from vagqverify.vagq.scenario_matrix import (
+from suites.vector.vagq.legacy_pins import P
+from suites.vector.vagq.vagq.driver import response_beat
+from suites.vector.vagq.vagq.isa_reference import architectural_accesses
+from suites.vector.vagq.vagq.isa_coverage import DUT_COVERAGE, PUBLIC_FEATURE_COVERAGE
+from suites.vector.vagq.vagq.isa_reference import emul_encoding
+from suites.vector.vagq.vagq.scenario_matrix import representative_public_feature_cases
+from suites.vector.vagq.vagq.scenario_matrix import (
     feature_case_id,
 )
-from vagqverify.vagq.types import AddrPacket, Beat, DataPacket, Response
+from suites.vector.vagq.vagq.types import AddrPacket, Beat, DataPacket, Response
 
 
 pytestmark = pytest.mark.vagq_isa_audit
@@ -147,7 +149,7 @@ def _active_outputs(outputs, *, load):
     lanes = 3 if load else 2
     result = []
     for lane in range(lanes):
-        prefix = f'io_{group}_{lane}_'
+        prefix = P.io(f'{group}_{lane}_')
         if outputs.get(prefix + 'valid') and outputs.get(prefix + 'bits_meta_valid'):
             result.append({
                 'lane': lane,
@@ -220,7 +222,7 @@ def _run_single(env, addr, data, *, index_values=None, arch_mask=None, vrf_data=
             item['cycle'] = cycle
             observed.append(item)
         for lane in range(2):
-            prefix = f'io_lsqEmptyReq_{lane}_'
+            prefix = P.io(f'lsqEmptyReq_{lane}_')
             if outputs.get(prefix + 'valid'):
                 empty_observed.append({
                     'cycle': cycle,
@@ -230,9 +232,9 @@ def _run_single(env, addr, data, *, index_values=None, arch_mask=None, vrf_data=
                     'is_load': outputs[prefix + 'bits_isLoad'],
                     'lq': outputs[prefix + 'bits_lqIdx_value'],
                 })
-        if outputs.get('io_robWriteback_valid'):
-            assert outputs['io_robWriteback_bits_entryIdx'] == addr.entry_idx
-            assert outputs['io_robWriteback_bits_robIdx_value'] == addr.rob_value
+        if outputs.get(P.p_robWriteback_valid):
+            assert outputs[P.p_robWriteback_bits_entryIdx] == addr.entry_idx
+            assert outputs[P.p_robWriteback_bits_robIdx_value] == addr.rob_value
             break
         beat = response_beat(outputs, data=vrf_data)
     else:
@@ -471,13 +473,13 @@ def test_nonzero_segment_start_field_is_visible_in_real_request_address(vagq_env
             beat, admit=(addr, data) if cycle == 0 else None,
         )
         for lane in range(3):
-            prefix = f'io_lduReq_{lane}_'
+            prefix = P.io(f'lduReq_{lane}_')
             if outputs.get(prefix + 'valid') and outputs.get(prefix + 'bits_meta_valid'):
                 if outputs[prefix + 'bits_meta_elemIdx'] == 0:
                     assert outputs[prefix + 'bits_meta_dataMask'] == 0xF
                     assert outputs[prefix + 'bits_req_data_src_0'] == 0x1231
                     observed = True
-        if outputs.get('io_robWriteback_valid'):
+        if outputs.get(P.p_robWriteback_valid):
             break
         beat = response_beat(outputs)
     else:
@@ -619,26 +621,26 @@ def test_multi_uop_index_window_is_partitioned_without_gaps_or_duplicates(
         )
         last_outputs = outputs
         ready_history.append((
-            outputs.get('io_addrUop_0_ready'),
-            outputs.get('io_addrUop_1_ready'),
+            outputs.get(P.p_addrUop_0_ready),
+            outputs.get(P.p_addrUop_1_ready),
         ))
         for lane in range(3):
-            prefix = f'io_lduReq_{lane}_'
+            prefix = P.io(f'lduReq_{lane}_')
             if outputs.get(prefix + 'valid') and outputs.get(prefix + 'bits_meta_valid'):
                 entry = outputs[prefix + 'bits_meta_entryIdx']
                 observed.setdefault(entry, []).append((
                     outputs[prefix + 'bits_meta_elemIdx'],
                     outputs[prefix + 'bits_req_data_src_0'],
                 ))
-        if outputs.get('io_robWriteback_valid'):
-            completed.add(outputs['io_robWriteback_bits_entryIdx'])
+        if outputs.get(P.p_robWriteback_valid):
+            completed.add(outputs[P.p_robWriteback_bits_entryIdx])
         if completed == {first.entry_idx, second.entry_idx}:
             break
         beat = response_beat(outputs)
     else:
         raise AssertionError(
             f'multi-uop indexed load did not complete: observed={observed}, '
-            f'last_writeback={last_outputs.get("io_robWriteback_valid")}, '
+            f'last_writeback={last_outputs.get(P.p_robWriteback_valid)}, '
             f'ready={ready_history[:8]}'
         )
 
@@ -774,7 +776,7 @@ def test_load_nack_retries_the_same_architectural_element(vagq_env):
             next_beat = replace(next_beat, ldu_resp=tuple(responses))
             nacked = True
         beat = next_beat
-        if outputs.get('io_robWriteback_valid'):
+        if outputs.get(P.p_robWriteback_valid):
             break
     else:
         raise AssertionError('NACK retry did not complete')
@@ -782,7 +784,7 @@ def test_load_nack_retries_the_same_architectural_element(vagq_env):
 
 
 def test_redirect_flushes_pending_public_request_without_writeback(vagq_env):
-    from vagqverify.vagq.types import Redirect
+    from suites.vector.vagq.vagq.types import Redirect
 
     addr = _addr(entry=6, rob=246, uop_type=0, vl=1, v0=0x1)
     data = _data(addr, 8)
@@ -861,8 +863,8 @@ def test_store_precise_fault_restarts_at_fault_element_without_repeating_prefix(
                 next_beat = replace(next_beat, sta_resp=tuple(responses))
                 fault_sent = True
         beat = next_beat
-        if outputs.get('io_robWriteback_valid'):
-            assert outputs['io_robWriteback_bits_exception'] == 1
+        if outputs.get(P.p_robWriteback_valid):
+            assert outputs[P.p_robWriteback_bits_exception] == 1
             break
     else:
         raise AssertionError('store precise-fault trace did not write back')
@@ -885,8 +887,8 @@ def test_store_precise_fault_restarts_at_fault_element_without_repeating_prefix(
         beat = response_beat(
             outputs, data=0x0123456789ABCDEFFEDCBA9876543210,
         )
-        if outputs.get('io_robWriteback_valid'):
-            assert outputs['io_robWriteback_bits_exception'] == 0
+        if outputs.get(P.p_robWriteback_valid):
+            assert outputs[P.p_robWriteback_bits_exception] == 0
             break
     else:
         raise AssertionError('store restart did not complete')
@@ -925,8 +927,8 @@ def test_load_precise_fault_restarts_at_reported_vstart(vagq_env):
                 next_beat = replace(next_beat, ldu_resp=tuple(responses))
                 fault_sent = True
         beat = next_beat
-        if outputs.get('io_robWriteback_valid'):
-            assert outputs['io_robWriteback_bits_exception'] == 1
+        if outputs.get(P.p_robWriteback_valid):
+            assert outputs[P.p_robWriteback_bits_exception] == 1
             break
     else:
         raise AssertionError('load precise-fault trace did not write back')
@@ -946,8 +948,8 @@ def test_load_precise_fault_restarts_at_reported_vstart(vagq_env):
         )
         resumed.extend(item['element'] for item in _active_outputs(outputs, load=True))
         beat = response_beat(outputs)
-        if outputs.get('io_robWriteback_valid'):
-            assert outputs['io_robWriteback_bits_exception'] == 0
+        if outputs.get(P.p_robWriteback_valid):
+            assert outputs[P.p_robWriteback_bits_exception] == 0
             break
     else:
         raise AssertionError('load restart did not complete')

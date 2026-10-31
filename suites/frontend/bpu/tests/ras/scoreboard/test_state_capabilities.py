@@ -3,14 +3,14 @@ from itertools import product
 from types import SimpleNamespace
 
 import pytest
-from bpuverify.ras.agent.main import RasAgent
-from bpuverify.ras.transaction.types import RasOperation
-from bpuverify.ras.driver.encoding import encode_cfi_pc
-from bpuverify.ras.monitor.observation import RasCommittedMonitor
-from bpuverify.ras.coverage.supplemental import ras_committed_cells_coverage_model as committed_coverage
-from bpuverify.ras.coverage.supplemental import ras_adjacent_coverage_model as adjacent_coverage
-from bpuverify.ras.coverage.supplemental import ras_redirect_redo_coverage_model as redirect_coverage
-from bpuverify.ras.case.adjacent_cases import cases
+from suites.frontend.bpu.ras.agent.main import RasAgent
+from suites.frontend.bpu.ras.transaction.types import RasOperation
+from suites.frontend.bpu.ras.driver.encoding import encode_cfi_pc
+from suites.frontend.bpu.ras.monitor.observation import RasCommittedMonitor
+from suites.frontend.bpu.ras.coverage.supplemental import ras_committed_cells_coverage_model as committed_coverage
+from suites.frontend.bpu.ras.coverage.supplemental import ras_adjacent_coverage_model as adjacent_coverage
+from suites.frontend.bpu.ras.coverage.supplemental import ras_redirect_redo_coverage_model as redirect_coverage
+from suites.frontend.bpu.ras.case.adjacent_cases import cases
 from tests.framework.fakes import native_name_dut
 
 
@@ -28,10 +28,13 @@ def test_invalid_operation_is_rejected_before_any_drive(kwargs):
 
 @pytest.mark.parametrize('action,branch_type', ((0, 2), (1, 3), (2, 2), (3, 3)))
 def test_action_default_and_explicit_branch_type(action, branch_type):
-    assert RasOperation(action).frame()['branch_type'] == branch_type
-    assert RasOperation(action, branch_type=0).frame()['branch_type'] == 0
+    # The DefaultConfig whole-chip MicroRas input has no branchType leaf; only
+    # rasAction, cfiPosition and startPc are driven, and enable is the persistent
+    # module gate rather than pulse payload.
+    assert 'branch_type' not in RasOperation(action).frame()
+    assert RasOperation(action).frame()['action'] == action
     assert RasOperation(action, start_pc=(1 << 51) - 1, position=15, enable=0).frame() == dict(
-        action=action, branch_type=branch_type, start_pc=(1 << 51) - 1, position=15, enable=0)
+        action=action, start_pc=(1 << 51) - 1, position=15)
 
 
 @pytest.mark.parametrize('pc', (-2, -1, 1, 3, 1 << 50, True, None, '0x1000'))

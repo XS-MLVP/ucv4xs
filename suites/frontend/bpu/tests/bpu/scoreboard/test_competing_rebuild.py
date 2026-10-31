@@ -7,9 +7,9 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.bpu.model.pipeline import Redirect
-from bpuverify.bpu.model.tage.partial_residency import PAIR, PROGRAMS
-from bpuverify.bpu.model.tage.service import STREAM_PC
+from suites.frontend.bpu.bpu.model.pipeline import Redirect
+from suites.frontend.bpu.bpu.model.tage.partial_residency import PAIR, PROGRAMS
+from suites.frontend.bpu.bpu.model.tage.service import STREAM_PC
 from tests.bpu.scoreboard.test_direction_forwarding import resolution
 from tests.bpu.scoreboard.test_direction_sources import quiet
 from tests.bpu.scoreboard.test_partial_residency import prepare_program, profile

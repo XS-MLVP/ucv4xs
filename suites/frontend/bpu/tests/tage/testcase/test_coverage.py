@@ -1,16 +1,16 @@
 from __future__ import annotations
 
-from bpuverify.tage.transaction.types import TageTraining
-from bpuverify.tage.coverage.catalog import tage_coverage_model
-from bpuverify.tage.coverage.catalog import write_tage_coverage
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.tage.checker.assertions import allocate
-from bpuverify.tage.checker.assertions import fill_useful_set
-from bpuverify.tage.checker.assertions import provider_depth
-from bpuverify.tage.checker.assertions import reach_highest_provider
-from bpuverify.tage.checker.assertions import require_miss
-from bpuverify.tage.case.definitions import PC
-from bpuverify.tage.case.definitions import POSITION
+from suites.frontend.bpu.tage.transaction.types import TageTraining
+from suites.frontend.bpu.tage.coverage.catalog import tage_coverage_model
+from suites.frontend.bpu.tage.coverage.catalog import write_tage_coverage
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.tage.checker.assertions import allocate
+from suites.frontend.bpu.tage.checker.assertions import fill_useful_set
+from suites.frontend.bpu.tage.checker.assertions import provider_depth
+from suites.frontend.bpu.tage.checker.assertions import reach_highest_provider
+from suites.frontend.bpu.tage.checker.assertions import require_miss
+from suites.frontend.bpu.tage.case.definitions import PC
+from suites.frontend.bpu.tage.case.definitions import POSITION
 
 
 async def test_tage_functional_coverage_closes_defined_bins(tage_agent):

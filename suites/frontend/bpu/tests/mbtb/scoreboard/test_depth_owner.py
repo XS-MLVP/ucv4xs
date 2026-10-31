@@ -4,7 +4,7 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.mbtb.model.depth import expected_mbtb_depth_one_states
+from suites.frontend.bpu.mbtb.model.depth import expected_mbtb_depth_one_states
 from tests.mbtb.scoreboard.test_depth_model import prepared
 
 

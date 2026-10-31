@@ -1,5 +1,8 @@
 # 采样成本：三项"优化"的实测结论与更正（2026-10-22）
 
+> 路径迁移说明（2026-10-31）：本报告仍属于原日期、基线和执行源码；实现文件已迁到工程根。可点击源码链接更新到当前位置，不据此重标历史 PASS/FAIL 或覆盖结论。参见[本轮命名空间迁移](../../../../docs/lessons/suite-namespace-refactor-20261031.md)。
+
+
 > 上一轮我给出的三项改动里，**有两项是错的**：它们会真正削弱检查，而不是消除浪费。
 > 本文记录实测证据、更正，以及实际落地的那一项的真实收益（约 0.80 倍墙钟，不是 13 倍）。
 
@@ -13,7 +16,7 @@
 实测它不是重复读，而是**同一份寄存器状态被两个相位各自校验一次**：
 
 ```python
-# bpuverify/bpu/checker/abtb/checks_aging.py:104
+# suites/frontend/bpu/bpu/checker/abtb/checks_aging.py:104
 self.states(abtb)          # 在 observe_controls 里，即 preedge 相位
 #   -> compare(self.counter.plru[bank], actual['states'])   # 64 set
 #   -> compare(self.counter.plru[bank], actual['shadow'])   # 64 set
@@ -34,7 +37,7 @@ self.states(abtb)          # 在 observe_controls 里，即 preedge 相位
 
 `compile_sampler` 产出 `BundleValue`/`LogicValue` 树，调用方随后用 `_plain` 再走一遍
 把它转成 `dict`/`tuple`/`int`。每个叶子被分配两次对象、递归两次。
-新增 `bpuverify/common/env/plain_sampler.py::compile_plain`，一次成型，直接产出
+新增 `suites/frontend/bpu/runtime/plain_sampler.py::compile_plain`，一次成型，直接产出
 `_plain(compile_sampler(node)())` 的等价结构。
 
 ## 二、`compile_plain` 的实测收益（不是 13 倍）

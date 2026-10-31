@@ -4,18 +4,18 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.mbtb.case.retained_pressure import preceding_displacers
-from bpuverify.mbtb.transaction.types import MbtbBatchTraining
-from bpuverify.mbtb.transaction.types import MbtbBranchFeedback
-from bpuverify.mbtb.coverage.catalog import mbtb_multi_hit_cleanup_coverage_model
-from bpuverify.mbtb.coverage.catalog import write_mbtb_multi_hit_cleanup_coverage
-from bpuverify.mbtb.checker.assertions import assert_miss
-from bpuverify.mbtb.checker.assertions import assert_vector_hit
-from bpuverify.mbtb.checker.assertions import matching_way
-from bpuverify.mbtb.checker.assertions import train
-from bpuverify.mbtb.case.definitions import BranchVector
-from bpuverify.mbtb.case.definitions import DIRECT
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.mbtb.case.retained_pressure import preceding_displacers
+from suites.frontend.bpu.mbtb.transaction.types import MbtbBatchTraining
+from suites.frontend.bpu.mbtb.transaction.types import MbtbBranchFeedback
+from suites.frontend.bpu.mbtb.coverage.catalog import mbtb_multi_hit_cleanup_coverage_model
+from suites.frontend.bpu.mbtb.coverage.catalog import write_mbtb_multi_hit_cleanup_coverage
+from suites.frontend.bpu.mbtb.checker.assertions import assert_miss
+from suites.frontend.bpu.mbtb.checker.assertions import assert_vector_hit
+from suites.frontend.bpu.mbtb.checker.assertions import matching_way
+from suites.frontend.bpu.mbtb.checker.assertions import train
+from suites.frontend.bpu.mbtb.case.definitions import BranchVector
+from suites.frontend.bpu.mbtb.case.definitions import DIRECT
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature("BPU-MBTB-019")

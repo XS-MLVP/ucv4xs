@@ -1,10 +1,12 @@
 """Full-pool public-output proof, defined in replay-checkpoint-pool.md."""
+
 from dataclasses import replace
 import hashlib
 import json
 
-from lsqverify.replay.types import Cause
-from lsqverify.vlq.types import QueuePtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.replay.types import Cause
+from suites.memblock.lsq.vlq.types import QueuePtr
 
 
 async def test_checkpoint_high_low_lifetimes_at_every_public_replay_slot(replay, tmp_path):
@@ -31,7 +33,7 @@ async def test_checkpoint_high_low_lifetimes_at_every_public_replay_slot(replay,
             change = await env.cycle(group)
             assert len(change["allocated"]) == 3
             uids.extend(owner["uid"] for owner in change["allocated"])
-        assert env.observed["io_lqFull"] and env.observed["io_replayAllocate"]
+        assert env.observed[P.p_lqFull] and env.observed[P.p_replayAllocate]
         env.arm("LRQ-PAYLOAD.pool_checkpoint", uids)
 
         # Only public replay outputs choose which request is fed back. The
@@ -41,7 +43,7 @@ async def test_checkpoint_high_low_lifetimes_at_every_public_replay_slot(replay,
         for _ in range(240):
             beats = []
             for bank in range(3):
-                p = f"io_replay_{bank}_"
+                p = P.io(f"replay_{bank}_")
                 if not env.observed[p + "valid"]:
                     continue
                 slot = env.observed[p + "bits_replayQueueIdx"]
@@ -64,7 +66,7 @@ async def test_checkpoint_high_low_lifetimes_at_every_public_replay_slot(replay,
             raise AssertionError("not every public replay slot actually handshook")
         assert set(issued) == set(range(120)) and len(issued_lq) == 120
         # Every request has issued, but none has yet returned a completion.
-        assert env.observed["io_lqFull"] and env.observed["io_replayAllocate"]
+        assert env.observed[P.p_lqFull] and env.observed[P.p_replayAllocate]
         env.arm(("LRQ-BANK.all_slots", "LRQ-RECYCLE.public_slots"), uids)
         for offset in range(0, 120, 3):
             feedback = {
@@ -77,7 +79,7 @@ async def test_checkpoint_high_low_lifetimes_at_every_public_replay_slot(replay,
             assert len(change["completed"]) == 3
         await env.idle(50, ready=(False,) * 3)
         assert set(uids) <= env.coverage.completed
-        assert not env.observed["io_replayAllocate"] and not env.observed["io_lqFull"]
+        assert not env.observed[P.p_replayAllocate] and not env.observed[P.p_lqFull]
         all_uids.extend(uids)
         lifetimes.append(dict(generation=generation, checkpoint=checkpoint, allocated=120,
                               public_slots=sorted(issued), handshakes=120, feedback_completed=120))

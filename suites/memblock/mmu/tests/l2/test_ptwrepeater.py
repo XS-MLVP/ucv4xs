@@ -1,7 +1,11 @@
 """PTWRepeaterNB UT: single outstanding request, response hold and flush."""
 from __future__ import annotations
 
-from mmuverify.common.runtime import execution
+
+from suites.memblock.mmu.legacy_pins import P
+from suites.memblock.mmu.execution import execution, sweep_inputs
+
+HPTW_SWEEP_EXCLUDE = {"clock", "reset", P.p_req_valid, P.p_resp_ready}
 
 
 async def _respond(env, tag: int, ppn: int, s2: int = 0) -> None:
@@ -16,7 +20,7 @@ async def _respond(env, tag: int, ppn: int, s2: int = 0) -> None:
 # PTWREP-01
 async def test_request_to_ptw_and_response_hold(repeater_env):
     env = repeater_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         assert env.read(env.req_ready) == 1
         env.req_valid.Set(1)
@@ -63,7 +67,7 @@ async def test_request_to_ptw_and_response_hold(repeater_env):
 # PTWREP-02
 async def test_second_request_is_blocked_until_first_completes(repeater_env):
     env = repeater_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.req_valid.Set(1)
         env.req_vpn.Set(0x111)
@@ -84,7 +88,7 @@ async def test_second_request_is_blocked_until_first_completes(repeater_env):
 # PTWREP-03
 async def test_flush_cancels_request_and_response_phases(repeater_env):
     env = repeater_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         # Flush while the request is waiting for PTW.
         env.req_valid.Set(1)
@@ -125,7 +129,7 @@ async def test_flush_cancels_request_and_response_phases(repeater_env):
 # response paths.
 async def test_stage_encodings_pass_through(repeater_env):
     env = repeater_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         for stage in (0, 1, 2, 3):
             env.req_valid.Set(1)
@@ -151,7 +155,7 @@ async def test_stage_encodings_pass_through(repeater_env):
 # PTWREP-05: all-ones and all-zeros payloads pass through unchanged.
 async def test_payload_extremes(repeater_env):
     env = repeater_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         for tag, ppn, s2 in (((1 << 35) - 1, 0x1FFFFFFFFF, 3), (0, 0, 0)):
             env.req_valid.Set(1)
@@ -174,7 +178,7 @@ async def test_payload_extremes(repeater_env):
 # PTWREP-06: every flush source individually cancels the outstanding request.
 async def test_flush_sources(repeater_env):
     env = repeater_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         for signal in env.csr_changed:
             env.req_valid.Set(1)
@@ -191,25 +195,14 @@ async def test_flush_sources(repeater_env):
             assert env.read(env.ptw_valid) == 0
 
 
-def _sweep_inputs(dut, value: int, exclude=("clock", "reset")) -> None:
-    for name, signal in vars(dut).items():
-        if name in exclude:
-            continue
-        if not hasattr(signal, "IsInIO"):
-            continue
-        if signal.IsInIO() and not signal.IsOutIO():
-            width = max(1, int(getattr(signal, "mWidth", 1)))
-            signal.Set(((1 << width) - 1) if value else 0)
-
-
 # PTWREP-07: all interface payload bits toggle in both directions through
 # valid transactions. This is interface stress, not a functional bin.
 async def test_all_payload_bits_toggle(repeater_env):
     env = repeater_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         for endpoint in (1, 0):
-            _sweep_inputs(env.dut, endpoint)
+            sweep_inputs(env, endpoint, HPTW_SWEEP_EXCLUDE)
             env.req_valid.Set(1)
             env.req_vpn.Set((1 << 38) - 1 if endpoint else 0)
             env.req_s2.Set(3 if endpoint else 0)
@@ -223,7 +216,7 @@ async def test_all_payload_bits_toggle(repeater_env):
             await env.edge()
             env.ptw_ready.Set(0)
             # Latch a full response payload and release it.
-            _sweep_inputs(env.dut, endpoint)
+            sweep_inputs(env, endpoint, HPTW_SWEEP_EXCLUDE)
             env.ptw_resp_valid.Set(1)
             env.ptw_resp_s2.Set(3 if endpoint else 0)
             env.ptw_resp_tag.Set((1 << 35) - 1 if endpoint else 0)
@@ -235,5 +228,5 @@ async def test_all_payload_bits_toggle(repeater_env):
             assert env.read(env.ptw_valid) == 0
             assert env.read(env.resp_valid) == 0
         # Leave the flush sources at zero.
-        _sweep_inputs(env.dut, 0)
+        sweep_inputs(env, 0, HPTW_SWEEP_EXCLUDE)
         await env.edge()

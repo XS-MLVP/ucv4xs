@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.abtb.checker.assertions import matching_entry
-from bpuverify.abtb.checker.assertions import train_taken
-from bpuverify.abtb.case.definitions import CONDITIONAL
+from suites.frontend.bpu.abtb.checker.assertions import matching_entry
+from suites.frontend.bpu.abtb.checker.assertions import train_taken
+from suites.frontend.bpu.abtb.case.definitions import CONDITIONAL
 
 
 @pytest.mark.feature("BPU-ABTB-007")
@@ -26,10 +26,10 @@ async def test_metadata_and_microtage_sideband_match_prediction(abtb_agent):
     assert sideband["result"][index]["valid"] == entry.valid
     assert sideband["result"][index]["bits"]["taken"] == entry.taken
     assert (
-        sideband["result"][index]["bits"]["cfiPosition"]
-        == entry.position
-    )
-    assert (
-        sideband["result"][index]["bits"]["attribute"]["branchType"]
+        sideband["result"][index]["bits"]["attribute_branchType"]
         == entry.branch_type
     )
+    # The whole-chip MicroTage consumes only taken/kind from AheadBTB, so the
+    # sideband's position/action/strength leaves were folded away. Position is
+    # still checked on the entry and metadata paths above.
+    assert sideband["fastPositions"][index] == entry.position

@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from icacheverify.icache.case.definitions import make_fetch
-from icacheverify.icache.model import icache as model
+from suites.frontend.icache.icache.case.definitions import make_fetch
+from suites.frontend.icache.icache.model import icache as model
 
 
 @pytest.mark.feature("ICACHE-ICACHE-001")
@@ -222,8 +222,8 @@ async def test_rvc_maps_stitch_when_the_second_fetch_starts_after_the_first(icac
     agent = icache_agent
     req0 = make_fetch(0x4040, 15, ftq_idx=1)   # non-cross, block ends at slot 16
     req1 = make_fetch(0x4024, 31, ftq_idx=2)   # cross, starts at slot 18
-    from icacheverify.icache.case.definitions import CASE_OVERLAP2
-    from icacheverify.icache.case.definitions import prefetch_case
+    from suites.frontend.icache.icache.case.definitions import CASE_OVERLAP2
+    from suites.frontend.icache.icache.case.definitions import prefetch_case
     assert prefetch_case(req0, req1) == CASE_OVERLAP2
     # request 1's second line is request 0's line; warm both lines first.
     await agent.send(make_fetch(0x4000, 15))
@@ -233,7 +233,6 @@ async def test_rvc_maps_stitch_when_the_second_fetch_starts_after_the_first(icac
     assert observed.two_fetch_valid == 1
     assert observed.blocks[1].valid == 1
     assert len(agent.acquires) == before, "both lines must be resident"
-
 
 
 @pytest.mark.feature("ICACHE-ICACHE-028")

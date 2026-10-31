@@ -1,8 +1,8 @@
 """The public endpoint profile must not even bind internal GHR/BW state."""
 from types import SimpleNamespace as NS
 import pytest
-from bpuverify.bpu.bundle import common_history as module
-from bpuverify.bpu.bundle.values import _plain
+from suites.frontend.bpu.bpu.bundle import common_history as module
+from suites.frontend.bpu.bpu.bundle.values import _plain
 
 
 class Signal:

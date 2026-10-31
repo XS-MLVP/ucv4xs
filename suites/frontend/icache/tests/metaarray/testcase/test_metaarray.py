@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from icacheverify.metaarray.model.array import MetaEntry
-from icacheverify.metaarray.model.array import MetaWay
+from suites.frontend.icache.metaarray.model.array import MetaEntry
+from suites.frontend.icache.metaarray.model.array import MetaWay
 
 
 @pytest.mark.feature("ICACHE-METAARRAY-001")

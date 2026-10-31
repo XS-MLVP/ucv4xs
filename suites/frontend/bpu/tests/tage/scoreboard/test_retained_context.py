@@ -8,10 +8,10 @@ from toffee import Scoreboard
 from toffee import ScoreboardMismatch
 from toffee import ScoreboardMode
 
-from bpuverify.tage.transaction.types import TagePrediction
-from bpuverify.common.checker.prediction import compare_prediction
-from tests.tage.diagnostics.retained_owner_probe import read_profiles
-from bpuverify.tage.case.way_migration_scenario import snapshot
+from suites.frontend.bpu.tage.transaction.types import TagePrediction
+from suites.frontend.bpu.checkers.prediction import compare_prediction
+from suites.frontend.bpu.tage.case.retained_owner import read_profiles
+from suites.frontend.bpu.tage.case.way_migration_scenario import snapshot
 
 
 class Transfer:

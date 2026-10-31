@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.uras.transaction.types import UrasCycle
-from bpuverify.uras.transaction.types import UrasResult
-from bpuverify.uras.case.definitions import MAIN_TOP
+from suites.frontend.bpu.uras.transaction.types import UrasCycle
+from suites.frontend.bpu.uras.transaction.types import UrasResult
+from suites.frontend.bpu.uras.case.definitions import MAIN_TOP
 
 
 @pytest.mark.feature("BPU-URAS-006")

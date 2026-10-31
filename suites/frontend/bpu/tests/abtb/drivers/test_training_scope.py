@@ -3,8 +3,8 @@ from contextlib import asynccontextmanager
 from types import SimpleNamespace
 import pytest
 
-from bpuverify.abtb.agent.main import AbtbAgent
-from bpuverify.abtb.env.state.session import StateObservation
+from suites.frontend.bpu.abtb.agent.main import AbtbAgent
+from suites.frontend.bpu.abtb.env.state.session import StateObservation
 
 
 class OriginalDriver:

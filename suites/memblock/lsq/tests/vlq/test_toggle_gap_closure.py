@@ -6,7 +6,7 @@ three complete allocate/complete/reuse lifecycles, while the independent VLQ
 ledger checks every public release and recovery result.
 """
 
-from lsqverify.vlq.types import Redirect, RobPtr
+from suites.memblock.lsq.vlq.types import Redirect, RobPtr
 
 
 async def fill_and_drain(env, robs):

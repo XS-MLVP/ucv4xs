@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import pytest
 
-from icacheverify.waylookup.case.definitions import entry
+from suites.frontend.icache.waylookup.case.definitions import entry
 
 
 @pytest.mark.feature("ICACHE-WAYLOOKUP-001")

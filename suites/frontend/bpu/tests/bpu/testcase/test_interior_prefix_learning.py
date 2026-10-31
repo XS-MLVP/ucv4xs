@@ -1,11 +1,11 @@
 """Real original prefix feedback updates current versions without old bound hints."""
 import json
 import pytest
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.bpu.model.tage.interior_prefix_learning import PROGRAMS
-from bpuverify.bpu.coverage.interior_prefix_learning import Coverage
-from bpuverify.bpu.case.interior_prefix_learning import check_interior_prefix
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.bpu.model.tage.interior_prefix_learning import PROGRAMS
+from suites.frontend.bpu.bpu.coverage.interior_prefix_learning import Coverage
+from suites.frontend.bpu.bpu.case.interior_prefix_learning import check_interior_prefix
 
 
 @pytest.mark.feature('BPU-INT-086')

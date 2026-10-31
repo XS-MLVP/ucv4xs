@@ -4,19 +4,19 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.bpu.transaction.types import BpuBranchFeedback
-from bpuverify.bpu.coverage.catalog import bpu_sc_same_way_feedback_coverage_model
-from bpuverify.bpu.coverage.catalog import write_bpu_sc_same_way_feedback_coverage
-from bpuverify.bpu.checker.assertions import revisit_from_redirect
-from bpuverify.bpu.checker.assertions import sc_decisions_for_positions
-from bpuverify.bpu.checker.assertions import tage_provider_signatures
-from bpuverify.bpu.case.definitions import EARLIER_TARGET
-from bpuverify.bpu.case.definitions import LATER_TARGET
-from bpuverify.bpu.case.definitions import PC
-from bpuverify.bpu.case.definitions import SC_SAME_WAY_POSITIONS
-from bpuverify.bpu.case.scenarios import prepare_same_way_sc_providers
-from bpuverify.bpu.case.scenarios import train_sc_feedback_with_tage_held
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.bpu.transaction.types import BpuBranchFeedback
+from suites.frontend.bpu.bpu.coverage.catalog import bpu_sc_same_way_feedback_coverage_model
+from suites.frontend.bpu.bpu.coverage.catalog import write_bpu_sc_same_way_feedback_coverage
+from suites.frontend.bpu.bpu.checker.assertions import revisit_from_redirect
+from suites.frontend.bpu.bpu.checker.assertions import sc_decisions_for_positions
+from suites.frontend.bpu.bpu.checker.assertions import tage_provider_signatures
+from suites.frontend.bpu.bpu.case.definitions import EARLIER_TARGET
+from suites.frontend.bpu.bpu.case.definitions import LATER_TARGET
+from suites.frontend.bpu.bpu.case.definitions import PC
+from suites.frontend.bpu.bpu.case.definitions import SC_SAME_WAY_POSITIONS
+from suites.frontend.bpu.bpu.case.scenarios import prepare_same_way_sc_providers
+from suites.frontend.bpu.bpu.case.scenarios import train_sc_feedback_with_tage_held
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature("BPU-INT-023")

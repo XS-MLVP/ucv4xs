@@ -1,5 +1,5 @@
 """Own-event programs and synthetic checker faults, not actual DUT coverage."""
-from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT
+from suites.frontend.bpu.models.configuration import TAGE_ALLOCATION_WAIT
 from dataclasses import replace
 from copy import deepcopy
 from pathlib import Path
@@ -9,12 +9,12 @@ import ast
 import pytest
 from toffee import Scoreboard
 
-from bpuverify.bpu.checker.direction_forwarding import DirectionForwardingChecks
-from bpuverify.bpu.coverage.direction_forwarding import DirectionForwardingCoverage
-from bpuverify.bpu.model.pipeline import Outcome,Resolution
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.bpu.model.main_sources import source_entries
-from bpuverify.bpu.model.tage.forwarding import PC,POSITIONS,TARGETS,establish_program,resolved_path
+from suites.frontend.bpu.bpu.checker.direction_forwarding import DirectionForwardingChecks
+from suites.frontend.bpu.bpu.coverage.direction_forwarding import DirectionForwardingCoverage
+from suites.frontend.bpu.bpu.model.pipeline import Outcome,Resolution
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.main_sources import source_entries
+from suites.frontend.bpu.bpu.model.tage.forwarding import PC,POSITIONS,TARGETS,establish_program,resolved_path
 from tests.bpu.scoreboard.test_direction_sources import prepared,quiet,revisit
 
 
@@ -238,7 +238,7 @@ def test_program_keeps_executed_prefixes_and_one_wrong_branch_without_case_level
         assert [index for index,_,_ in active]==sorted(index for index,_,_ in active)
         assert not any(taken for _,taken,_ in active[:-1])
         assert (owner is not None)==(operation=='allocate')
-    tree=ast.parse(Path('bpuverify/bpu/case/direction_forwarding.py').read_text())
+    tree=ast.parse(Path('bpu/case/direction_forwarding.py').read_text())
     for node in ast.walk(tree):
         assert not isinstance(node,(ast.Assert,ast.ClassDef))
         if isinstance(node,ast.Call):

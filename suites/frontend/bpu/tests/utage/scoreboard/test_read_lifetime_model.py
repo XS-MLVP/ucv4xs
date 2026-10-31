@@ -2,10 +2,9 @@
 from copy import deepcopy
 import pytest
 
-from bpuverify.utage.model.semantic import Base,Context,Events,UtageReference,indices,tag
+from suites.frontend.bpu.utage.model.semantic import Base,Context,Events,UtageReference,indices,tag
 from tests.utage.scoreboard.test_semantic_model import lookup,feedback,learn,POSITIONS
-from bpuverify.utage.model.read_lifetime import Program,PROFILES,RELATIONS,PC,POSITION,NEIGHBOR
-
+from suites.frontend.bpu.utage.model.read_lifetime import Program,PROFILES,RELATIONS,PC,POSITION,NEIGHBOR
 
 
 def bases(taken):return (Base(True,POSITION,bool(taken),1),Base(),Base(),Base())

@@ -5,10 +5,10 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.checker.pipeline import PipelineChecker
-from bpuverify.bpu.model.indirect_sources import IndirectSources
-from bpuverify.bpu.model.main_sources import source_entries
-from bpuverify.bpu.transaction.types import BpuBatchTraining,BpuBranchFeedback
+from suites.frontend.bpu.bpu.checker.pipeline import PipelineChecker
+from suites.frontend.bpu.bpu.model.indirect_sources import IndirectSources
+from suites.frontend.bpu.bpu.model.main_sources import source_entries
+from suites.frontend.bpu.bpu.transaction.types import BpuBatchTraining,BpuBranchFeedback
 from tests.bpu.scoreboard.test_indirect_sources import ENABLED
 from tests.bpu.scoreboard.test_main_ownership import step,input_bits
 from tests.bpu.scoreboard.test_pipeline_checking import fixture_row

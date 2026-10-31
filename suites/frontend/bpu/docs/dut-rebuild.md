@@ -7,7 +7,7 @@
 trace 代码恢复 direct/projection/expr/const 只读映射并合入 offset YAML；
 不能将优化过的信号等同于不可观测，也不应为此强制 `--public-flat-rw`。
 生产 monitor 统一通过
-`bpuverify.common.env.memory_direct` 绑定；基地址为零、offset 不匹配或字段缺失均立即
+`suites.frontend.bpu.runtime.memory_direct` 绑定；基地址为零、offset 不匹配或字段缺失均立即
 报错，禁止退回 VPI，也不使用生成 wrapper 的共享内部信号缓存。
 
 可复现构建入口（`<stage>` 必须是新建的绝对路径目录）：
@@ -112,7 +112,7 @@ env VERILATOR_ROOT=/opt/verilator-5.052/share/verilator \
 本次旧包保存在 `/tmp/xcomm-abi3-06UMed/backup-bpu-dut/`；旧系统 picker/xcomm
 保存在 `/tmp/xcomm-abi3-06UMed/system-backup/`。这些是当前机器上的临时备份，
 不是长期归档。生成的 coverage `.dat` 可能仍记录原 staging 绝对路径；
-`bpuverify.common.coverage.rtl` 会按 DUT 名称解析到当前 `dut/` 中的生成源文件。
+`suites.frontend.bpu.coverage.rtl` 会按 DUT 名称解析到当前 `dut/` 中的生成源文件。
 
 ## 回归
 
@@ -208,7 +208,7 @@ TAGE-024 的双 way／四索引 pending、useful 增加与未选 tag 保持关�
 三种反馈适配层负对照均检出；剩余 317 行中的 40 个 hit／非 hit 矛盾赋值及
 另外 48 个优先级排除矛盾赋值只另列分析，不剔除原始分母，另外 229 行仍需审查。
 新优先级证明及重复运行入口见 `results/coverage-tage-priority-unreachable.json`
-与 `python3 -m bpuverify.tage.coverage.coverage_audit`。十个原生 LCOV 与 HTML／JSON
+与 `python3 -m suites.frontend.bpu.tage.coverage.coverage_audit`。十个原生 LCOV 与 HTML／JSON
 行计数一致，独立 probe 和负对照 `.dat` 不在正式清单中。
 TAGE-025/026 的四索引／双向迁移对照再检查真实捕获 metadata 与无关 tag
 useful 保持。捕获后无 reset，七拍反馈经被动 monitor 核对；新鲜组 120/120

@@ -7,11 +7,11 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.utage.model.semantic import Base, Context, Entry, Events, Feedback, RecentUpdates, Source, UtageReference, indices, tag
-from bpuverify.utage.agent.main import UtageAgent
-from bpuverify.utage.coverage.semantic import SemanticCoverage
-from bpuverify.utage.checker.semantic import UtageSemanticChecker, prediction_values
-from bpuverify.utage.transaction.types import UtagePrediction
+from suites.frontend.bpu.utage.model.semantic import Base, Context, Entry, Events, Feedback, RecentUpdates, Source, UtageReference, indices, tag
+from suites.frontend.bpu.utage.agent.main import UtageAgent
+from suites.frontend.bpu.utage.coverage.semantic import SemanticCoverage
+from suites.frontend.bpu.utage.checker.semantic import UtageSemanticChecker, prediction_values
+from suites.frontend.bpu.utage.transaction.types import UtagePrediction
 
 
 PC = 0x40000000
@@ -45,9 +45,9 @@ def learn(model, request):
 
 
 def test_algorithm_has_no_native_driver_or_framework_dependency():
-    tree = ast.parse(Path('bpuverify/utage/model/semantic.py').read_text())
+    tree = ast.parse(Path('utage/model/semantic.py').read_text())
     assert [node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)] == [
-        'dataclasses', 'bpuverify.common.model.configuration', 'bpuverify.common.model.folded_history']
+        'dataclasses', 'suites.frontend.bpu.models.configuration', 'suites.frontend.bpu.models.folded_history']
     assert not any(isinstance(node, ast.Import) for node in ast.walk(tree))
 
 
@@ -56,7 +56,12 @@ def test_history_features_use_bit_parity_not_driver_chunk_algorithm(history):
     context = Context.from_recent(history)
     low, high = history & 31, history & 511
     assert indices(PC, context) == (low, high)
-    assert context.folds[0] == history & 15
+    # Fold (5,4) is consumed by the training tag hash. Its value is the
+    # 4-bit parity reduction of the 5-bit history window, not a chunk copy.
+    expected = sum((sum((history >> position) & 1
+                        for position in range(bit, 5, 4)) % 2) << bit
+                   for bit in range(4))
+    assert context.folds[1] == expected
 
 
 @pytest.mark.parametrize('pc,expected', ((PC, (0, 0)), (PC | 2, (32, 0)), (PC | 8, (128, 0)), (PC | 1024, (16, 32)), (PC | 16384, (0, 128))))

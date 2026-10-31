@@ -5,12 +5,12 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.mbtb.agent.main import MbtbAgent
-from bpuverify.mbtb.transaction.types import MbtbEntry
-from bpuverify.mbtb.model.entry import expected_mbtb_entry_activity
-from bpuverify.mbtb.model.entry import expected_mbtb_entry_states
-from bpuverify.mbtb.model.entry import mbtb_retarget_targets
-from bpuverify.mbtb.model.entry import summarize_mbtb_entry_activity
+from suites.frontend.bpu.mbtb.agent.main import MbtbAgent
+from suites.frontend.bpu.mbtb.transaction.types import MbtbEntry
+from suites.frontend.bpu.mbtb.model.entry import expected_mbtb_entry_activity
+from suites.frontend.bpu.mbtb.model.entry import expected_mbtb_entry_states
+from suites.frontend.bpu.mbtb.model.entry import mbtb_retarget_targets
+from suites.frontend.bpu.mbtb.model.entry import summarize_mbtb_entry_activity
 
 
 SPAN = 1 << 20

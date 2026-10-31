@@ -29,14 +29,14 @@ def test_case_has_no_edge_scheduler_or_signal_level_work():
 
 
 def test_model_has_no_monitor_DUT_or_actual_state_dependency():
-    tree=ast.parse((ROOT/'bpuverify/bpu/model/ras/adjacent_recursion.py').read_text())
+    tree=ast.parse((ROOT/'bpu/model/ras/adjacent_recursion.py').read_text())
     imports={n.module for n in ast.walk(tree) if isinstance(n,ast.ImportFrom)}
-    assert imports=={'dataclasses','bpuverify.ras.model.model'}
+    assert imports=={'dataclasses','suites.frontend.bpu.ras.model.model'}
     names={n.id for n in ast.walk(tree) if isinstance(n,ast.Name)}
     assert not names&{'dut','monitor','actual','get_','set_'}
 
 
 def test_environment_reuses_existing_genuine_source_and_retirement_lifetime():
-    text=(ROOT/'bpuverify/bpu/env/ras/adjacent_recursion.py').read_text()
+    text=(ROOT/'bpu/env/ras/adjacent_recursion.py').read_text()
     assert 'check_lifetime' in text and 'layer_pcs=program.layer_pcs' in text
     assert 'root_pc=ROOT' in text and 'results.' not in text

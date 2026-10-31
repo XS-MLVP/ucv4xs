@@ -4,9 +4,9 @@ from heapq import merge
 
 import pytest
 from toffee import ScoreboardMismatch
-from bpuverify.bpu.coverage.abtb.session import CounterCaseCoverage
-from bpuverify.bpu.coverage.abtb.supplemental import CounterCoverage
-from bpuverify.bpu.coverage.bypass.supplemental import IntegratedCoverage
+from suites.frontend.bpu.bpu.coverage.abtb.session import CounterCaseCoverage
+from suites.frontend.bpu.bpu.coverage.abtb.supplemental import CounterCoverage
+from suites.frontend.bpu.bpu.coverage.bypass.supplemental import IntegratedCoverage
 from tests.bpu.scoreboard.integrated.test_abtb_counter_coverage import full_path_trace
 from tests.bpu.scoreboard.integrated.test_coverage_collection import useful_trace
 

@@ -7,11 +7,11 @@ from types import SimpleNamespace as NS
 import ast
 import pytest
 from toffee import Transfer, XEvent, XEventKind, XPhase
-from bpuverify.bpu.checker.partial_reuse import PartialReuseChecks
-from bpuverify.bpu.coverage.partial_reuse import PartialReuseCoverage
-from bpuverify.bpu.model.tage.partial_reuse import PC, HISTORY_PATHS, NEIGHBOR_NAMES, OUTCOMES
-from bpuverify.bpu.model.tage.service import STREAM_PC, learning_inflight, pending_plan
-from bpuverify.bpu.model.pipeline import Redirect
+from suites.frontend.bpu.bpu.checker.partial_reuse import PartialReuseChecks
+from suites.frontend.bpu.bpu.coverage.partial_reuse import PartialReuseCoverage
+from suites.frontend.bpu.bpu.model.tage.partial_reuse import PC, HISTORY_PATHS, NEIGHBOR_NAMES, OUTCOMES
+from suites.frontend.bpu.bpu.model.tage.service import STREAM_PC, learning_inflight, pending_plan
+from suites.frontend.bpu.bpu.model.pipeline import Redirect
 from tests.bpu.scoreboard.test_neighbor_migration import fixture as prepare_fixture
 from tests.bpu.scoreboard.test_dual_migration import source
 from tests.bpu.scoreboard.test_direction_sources import quiet
@@ -322,7 +322,7 @@ def test_every_original_input_snapshot_is_immutable(index):
 
 
 def test_case_has_no_raw_io_clock_wait_or_private_async_scheduler():
-    for path in ('bpuverify/bpu/case/partial_reuse.py', 'tests/bpu/testcase/test_partial_reuse.py'):
+    for path in ('bpu/case/partial_reuse.py', 'tests/bpu/testcase/test_partial_reuse.py'):
         for node in ast.walk(ast.parse(Path(path).read_text())):
             assert not isinstance(node, (ast.Assert, ast.ClassDef))
             if isinstance(node, ast.Call):

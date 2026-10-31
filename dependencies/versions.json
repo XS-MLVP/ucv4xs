@@ -1,7 +1,8 @@
 {
   "toffee": {
     "repository": "https://github.com/XS-MLVP/toffee.git",
-    "commit": "4a09d21a89d2a8367efd56cbd440575edbe646d3"
+    "commit": "f57150021791535d4b2fd01056c106f0cad53177",
+    "distribution": "uc-toffee"
   },
   "picker": {
     "repository": "https://github.com/XS-MLVP/picker.git",
@@ -30,8 +31,9 @@
   },
   "xcomm": {
     "repository": "https://github.com/XS-MLVP/xcomm.git",
-    "commit": "c39db6652cd08d46df05d08f0bb5a033b83e4d2f",
-    "package_version": "0.3.0.dev3",
+    "commit": "2e4a4a99293360c2a642025000c6948b24cf8e88",
+    "distribution": "uc-xcomm",
+    "package_version": "1.1.1",
     "native_abi": 3,
     "coverage_protocol": 5,
     "patches": [

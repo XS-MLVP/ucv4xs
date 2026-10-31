@@ -2,7 +2,10 @@
 from __future__ import annotations
 import pytest
 
-from mmuverify.common.runtime import execution
+from suites.memblock.mmu.legacy_pins import P
+from suites.memblock.mmu.execution import execution, refresh, sweep_inputs
+
+HPTW_SWEEP_EXCLUDE = {"clock", "reset", P.p_req_valid, P.p_resp_ready}
 
 
 async def _prepare(env) -> None:
@@ -10,11 +13,11 @@ async def _prepare(env) -> None:
     env.csr["hgatp_mode"].Set(8)
     env.csr["hgatp_vmid"].Set(5)
     env.csr["hgatp_ppn"].Set(0x82000)
-    env.dut.RefreshComb()
+    refresh(env)
     await env.edge()
 
 
-from mmuverify.l2.l2tlb import pte
+from suites.memblock.mmu.l2.l2tlb import pte
 
 
 def _root_leaf(env, gvpn: int, ppn: int, **perms) -> None:
@@ -26,7 +29,7 @@ def _root_leaf(env, gvpn: int, ppn: int, **perms) -> None:
 # HPTW-01: 4KB G-stage translation walks root, middle and leaf.
 async def test_hptw_4k_walk(hptw_env):
     env = hptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.memory.build_sv39(0x82000, 0x30000, 0x90000, mid_ppn=0x82001,
                               leaf_ppn=0x82002)
@@ -44,7 +47,7 @@ async def test_hptw_4k_walk(hptw_env):
 # HPTW-02: 2MB leaf at level 1 uses two memory reads.
 async def test_hptw_2m_leaf(hptw_env):
     env = hptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.memory.build_sv39(0x82000, 0x30000, 0x4000, level=1,
                               mid_ppn=0x82001)
@@ -59,7 +62,7 @@ async def test_hptw_2m_leaf(hptw_env):
 # HPTW-03: 1GB leaf at the root uses one memory read.
 async def test_hptw_1g_leaf(hptw_env):
     env = hptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         _root_leaf(env, 0x30000, 0x40000)
         await env.issue(0x30000)
@@ -73,7 +76,7 @@ async def test_hptw_1g_leaf(hptw_env):
 # HPTW-04: an invalid root PTE reports a guest page fault.
 async def test_hptw_invalid_root(hptw_env):
     env = hptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.memory.write((0x82000 << 12) + ((0x30000 >> 18) & 0x1FF) * 8,
                          pte(0, v=0, a=0, d=0))
@@ -86,7 +89,7 @@ async def test_hptw_invalid_root(hptw_env):
 # HPTW-05: a misaligned 2MB leaf reports a guest page fault.
 async def test_hptw_misaligned_2m(hptw_env):
     env = hptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.memory.build_sv39(0x82000, 0x30000, 0x4001, level=1,
                               mid_ppn=0x82001)
@@ -99,7 +102,7 @@ async def test_hptw_misaligned_2m(hptw_env):
 # HPTW-06: PMP denial produces a guest access fault and no memory read.
 async def test_hptw_pmp_denied(hptw_env):
     env = hptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.memory.build_sv39(0x82000, 0x30000, 0x90000, mid_ppn=0x82001,
                               leaf_ppn=0x82002)
@@ -113,7 +116,7 @@ async def test_hptw_pmp_denied(hptw_env):
 # HPTW-07: io_mem_mask stalls the walk until it is released.
 async def test_hptw_mem_mask_stall(hptw_env):
     env = hptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.memory.build_sv39(0x82000, 0x30000, 0x90000, mid_ppn=0x82001,
                               leaf_ppn=0x82002)
@@ -137,7 +140,7 @@ async def test_hptw_mem_mask_stall(hptw_env):
 # HPTW-08: sfence in the middle of a walk aborts it; a later request works.
 async def test_hptw_sfence_mid_walk(hptw_env):
     env = hptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.memory.build_sv39(0x82000, 0x30000, 0x90000, mid_ppn=0x82001,
                               leaf_ppn=0x82002)
@@ -161,7 +164,7 @@ async def test_hptw_sfence_mid_walk(hptw_env):
 # HPTW-09: hgatp.changed flushes and forces a new walk.
 async def test_hptw_csr_change(hptw_env):
     env = hptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.memory.build_sv39(0x82000, 0x30000, 0x90000, mid_ppn=0x82001,
                               leaf_ppn=0x82002)
@@ -185,7 +188,7 @@ async def test_hptw_csr_change(hptw_env):
 # HPTW-10: the response is held stable under backpressure.
 async def test_hptw_response_backpressure(hptw_env):
     env = hptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.memory.build_sv39(0x82000, 0x30000, 0x90000, mid_ppn=0x82001,
                               leaf_ppn=0x82002)
@@ -205,7 +208,7 @@ async def test_hptw_response_backpressure(hptw_env):
 # HPTW-11: a level-hit hint skips the corresponding upper-level read.
 async def test_hptw_level_hit_hint(hptw_env):
     env = hptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         # l1Hit: the level-1 PTE is already known and req.ppn is the leaf table.
         env.memory.write((0x82002 << 12) + ((0x30000 & 0x1FF) * 8),
@@ -218,11 +221,10 @@ async def test_hptw_level_hit_hint(hptw_env):
             env.coverage.sample("hit", "4k", "l1")
 
 
-
 # HPTW-12: an l2-hit hint starts the walk at level 1 using req.ppn.
 async def test_hptw_l2_hit_hint(hptw_env):
     env = hptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.memory.build_sv39(0x82000, 0x30000, 0x4000, level=1, mid_ppn=0x82001)
         await env.issue(0x30000, ppn=0x82001, l2hit=1)
@@ -235,11 +237,11 @@ async def test_hptw_l2_hit_hint(hptw_env):
 # HPTW-13: a bitmap-checked cached leaf uses the bitmap request/response path.
 async def test_hptw_bitmap_check(hptw_env):
     env = hptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.csr["bme"].Set(1)
         env.csr["cmode"].Set(0)
-        env.dut.RefreshComb()
+        refresh(env)
         leaf = pte(0x90000, r=1, w=1, x=1, u=1, a=1, d=1)
         await env.issue(0x30000, jmp_bitmap=1, bitmap_pte=leaf,
                         bitmap_fromsp=1, bitmap_splevel=0)
@@ -258,10 +260,10 @@ async def test_hptw_bitmap_check(hptw_env):
 # HPTW-15: Sv48 l3-hit hint skips the top-level read.
 async def test_hptw_l3_hit_hint(hptw_env):
     env = hptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.csr["hgatp_mode"].Set(9)
-        env.dut.RefreshComb()
+        refresh(env)
         # l3-hit: level-3 PTE is cached, req.ppn is the next-level table.
         env.memory.write((0x82001 << 12) + ((0x30000 >> 18) & 0x1FF) * 8,
                          pte(0x40000, r=1, w=1, x=1, u=1, a=1, d=1))
@@ -272,27 +274,10 @@ async def test_hptw_l3_hit_hint(hptw_env):
             env.coverage.sample("hit", "2m", "l3")
 
 
-def _sweep_hptw_inputs(dut, value: int) -> None:
-    exclude = {"clock", "reset", "io_req_valid", "io_resp_ready", "io_mem_req_ready",
-               "io_mem_resp_valid", "io_mem_mask", "io_pmp_resp_ld",
-               "io_pmp_resp_mmio", "io_bitmap_req_ready", "io_bitmap_resp_valid",
-               "io_bitmap_resp_cf", "io_sfence_valid", "io_csr_hgatp_changed",
-               "io_csr_satp_changed", "io_csr_vsatp_changed",
-               "io_csr_priv_virt_changed"}
-    for name, signal in vars(dut).items():
-        if name in exclude:
-            continue
-        if not hasattr(signal, "IsInIO"):
-            continue
-        if signal.IsInIO() and not signal.IsOutIO():
-            width = max(1, int(getattr(signal, "mWidth", 1)))
-            signal.Set(((1 << width) - 1) if value else 0)
-
-
 # HPTW-16: payload/CSR bit sweep plus extreme translation values.
 async def test_hptw_bit_sweep(hptw_env):
     env = hptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         # Response tag / PPN / vmid extremes.
         env.memory.write((0x82000 << 12) + ((0x3FFFFFFFF >> 18) & 0x1FF) * 8,
@@ -323,23 +308,23 @@ async def test_hptw_bit_sweep(hptw_env):
         assert high["ppn"] == (1 << 36) - 1
         assert high["perm_d"] == 0 and high["perm_w"] == 0
         # Drive every remaining data/CSR input bit through both directions.
-        _sweep_hptw_inputs(env.dut, 1)
+        sweep_inputs(env, 1, HPTW_SWEEP_EXCLUDE)
         await env.edge()
         env.sfence.Set(1)
         await env.edge()
         env.sfence.Set(0)
-        _sweep_hptw_inputs(env.dut, 0)
+        sweep_inputs(env, 0, HPTW_SWEEP_EXCLUDE)
         await env.edge()
 
 
 # HPTW-17: the non-SP bitmap path uses the ptes[] vector and level 0.
 async def test_hptw_bitmap_ptes_vector(hptw_env):
     env = hptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.csr["bme"].Set(1)
         env.csr["cmode"].Set(0)
-        env.dut.RefreshComb()
+        refresh(env)
         leaf = pte(0x90000, r=1, w=1, x=1, u=1, a=1, d=1)
         await env.issue(0x30000, jmp_bitmap=1, bitmap_ptes=[leaf] * 8,
                         bitmap_fromsp=0, bitmap_hitway=5)
@@ -353,7 +338,7 @@ async def test_hptw_bitmap_ptes_vector(hptw_env):
 # HPTW-18: PMP MMIO denial also produces a guest access fault.
 async def test_hptw_pmp_mmio_fault(hptw_env):
     env = hptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.memory.build_sv39(0x82000, 0x30000, 0x90000)
         env.pmp["mmio"].Set(1)
@@ -366,7 +351,7 @@ async def test_hptw_pmp_mmio_fault(hptw_env):
 # HPTW-19: each remaining CSR-change source independently flushes state.
 async def test_hptw_csr_sources(hptw_env):
     env = hptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.memory.build_sv39(0x82000, 0x30000, 0x90000)
         for key in ("satp_changed", "vsatp_changed", "virt_changed"):
@@ -382,11 +367,11 @@ async def test_hptw_csr_sources(hptw_env):
 # HPTW-20: high physical page-table addresses drive address payload bits.
 async def test_hptw_high_address(hptw_env):
     env = hptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         root = (1 << 36) - 1
         env.csr["hgatp_ppn"].Set(root)
-        env.dut.RefreshComb()
+        refresh(env)
         env.memory.write((root << 12) + ((0x30000 >> 18) & 0x1FF) * 8,
                          pte(0x40000, r=1, w=1, x=1, u=1, a=1, d=1))
         await env.issue(0x30000)
@@ -397,10 +382,10 @@ async def test_hptw_high_address(hptw_env):
 # HPTW-21: NAPOT + PBMT leaf fields reach the response when enabled.
 async def test_hptw_napot_pbmt(hptw_env):
     env = hptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await _prepare(env)
         env.csr["mpbmte"].Set(1)
-        env.dut.RefreshComb()
+        refresh(env)
         env.memory.build_sv39(0x82000, 0x30000, 0x90008, mid_ppn=0x82001,
                               leaf_ppn=0x82002,
                               perms=dict(r=1, w=1, x=1, u=1, a=1, d=1,
@@ -420,12 +405,12 @@ async def test_hptw_napot_pbmt(hptw_env):
 @pytest.mark.characterization
 async def test_hptw_reset_without_flush_observation(hptw_env):
     env = hptw_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset(post_sfence=False)
         env.csr["hgatp_mode"].Set(8)
         env.csr["hgatp_vmid"].Set(5)
         env.csr["hgatp_ppn"].Set(0x82000)
-        env.dut.RefreshComb()
+        refresh(env)
         await env.edge()
         env.memory.build_sv39(0x82000, 0x30000, 0x90000, mid_ppn=0x82001,
                               leaf_ppn=0x82002)
@@ -443,7 +428,7 @@ async def test_hptw_reset_without_flush_observation(hptw_env):
         env.csr["hgatp_mode"].Set(8)
         env.csr["hgatp_vmid"].Set(5)
         env.csr["hgatp_ppn"].Set(0x82000)
-        env.dut.RefreshComb()
+        refresh(env)
         await env.edge()
         env.memory.build_sv39(0x82000, 0x30000, 0x90000, mid_ppn=0x82001,
                               leaf_ppn=0x82002)

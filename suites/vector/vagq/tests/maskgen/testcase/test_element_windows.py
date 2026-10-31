@@ -7,8 +7,8 @@ import os
 import pytest
 
 from tools.run_vagq_exhaustive import atomic_json
-from vagqverify.maskgen.probe import bind_maskgen
-from vagqverify.maskgen.reference import MaskRequest, allocated_uops, evaluate_protocol, mop_info
+from suites.vector.vagq.maskgen.probe import bind_maskgen
+from suites.vector.vagq.maskgen.reference import MaskRequest, allocated_uops, evaluate_protocol, mop_info
 
 
 def _configurations():

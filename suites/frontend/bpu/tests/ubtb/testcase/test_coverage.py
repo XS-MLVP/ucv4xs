@@ -2,24 +2,24 @@
 
 from __future__ import annotations
 
-from bpuverify.common.coverage.exports import write_functional_coverage
+from suites.frontend.bpu.coverage.exports import write_functional_coverage
 
-from bpuverify.common.env.artifacts import output_path
+from suites.frontend.bpu.runtime.artifacts import output_path
 
 from toffee import CoverageDatabase
 
-from bpuverify.ubtb.transaction.types import BranchTraining
-from bpuverify.ubtb.coverage.catalog import ubtb_coverage_model
-from bpuverify.ubtb.coverage.catalog import ubtb_useful_coverage_model
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.ubtb.checker.assertions import assert_hit
-from bpuverify.ubtb.checker.assertions import assert_miss
-from bpuverify.ubtb.checker.assertions import train_not_taken
-from bpuverify.ubtb.checker.assertions import train_taken
-from bpuverify.ubtb.case.definitions import BranchVector
-from bpuverify.ubtb.case.definitions import DIRECT
-from bpuverify.ubtb.case.definitions import NOT_TAKEN
-from bpuverify.ubtb.case.definitions import random_training_vectors
+from suites.frontend.bpu.ubtb.transaction.types import BranchTraining
+from suites.frontend.bpu.ubtb.coverage.catalog import ubtb_coverage_model
+from suites.frontend.bpu.ubtb.coverage.catalog import ubtb_useful_coverage_model
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.ubtb.checker.assertions import assert_hit
+from suites.frontend.bpu.ubtb.checker.assertions import assert_miss
+from suites.frontend.bpu.ubtb.checker.assertions import train_not_taken
+from suites.frontend.bpu.ubtb.checker.assertions import train_taken
+from suites.frontend.bpu.ubtb.case.definitions import BranchVector
+from suites.frontend.bpu.ubtb.case.definitions import DIRECT
+from suites.frontend.bpu.ubtb.case.definitions import NOT_TAKEN
+from suites.frontend.bpu.ubtb.case.definitions import random_training_vectors
 
 
 async def test_ubtb_functional_coverage_closes_defined_bins(ubtb_agent):

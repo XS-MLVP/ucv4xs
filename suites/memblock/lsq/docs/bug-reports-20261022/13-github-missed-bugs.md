@@ -81,9 +81,9 @@
       val s2SafeForward        = !s2MultiMatch || s2FullOverlap
 ```
 
-本地`lsqverify/forward/model.py:100–104`也按同样的范围语义判断：
+本地`suites/memblock/lsq/forward/model.py:100–104`也按同样的范围语义判断：
 
-<!-- source: memblock-hash/lsq/lsqverify/forward/model.py:100-104 -->
+<!-- source: memblock-hash/lsq/suites/memblock/lsq/forward/model.py:100-104 -->
 ```python
             start = query.vaddr % 16
             end = start + byte_count(query.size) - 1
@@ -142,8 +142,8 @@ PR要求只有真实总线错误才产生异常候选，并从同拍候选中按
 
 ### 本地UT为什么会放过
 
-- `lsqverify/uncache_entry/model.py:96–100`同样在每次消费时构造`FaultReport(True, ...)`，没有先按真实错误过滤。
-- `lsqverify/load_uncache/model.py:165`使用`next((out.exception for out in outs if out.exception.valid), None)`，也是按物理entry顺序取第一个。
+- `suites/memblock/lsq/uncache_entry/model.py:96–100`同样在每次消费时构造`FaultReport(True, ...)`，没有先按真实错误过滤。
+- `suites/memblock/lsq/load_uncache/model.py:165`使用`next((out.exception for out in outs if out.exception.valid), None)`，也是按物理entry顺序取第一个。
 - `tests/load_uncache/test_full.py:105–131`虽有多lane消费和异常“priority”测试，但分配顺序通常与ROB年龄一致，断言也选择较低槽的候选。没有让低槽的年轻正常项与高槽的老故障项同拍竞争。
 
 所以这里不是“根本没有测异常”，而是**仲裁oracle验证了与RTL相同的错误策略，刺激又没有打散槽号和年龄的关系**。这也是“参考没有读内部寄存器”仍不能保证语义完全独立的实例。
@@ -175,7 +175,7 @@ PR要求只有真实总线错误才产生异常候选，并从同拍候选中按
 ### 为什么本套UT没发现
 
 - `manifest/duts.json:17`明确记录当前Replay DUT阈值12。
-- `lsqverify/replay/model.py:228、240`把12写入模型判断。
+- `suites/memblock/lsq/replay/model.py:228、240`把12写入模型判断。
 - `tests/replay/test_timing.py:139–173`测试的是默认12下进入冷却和恢复，没有切换阈值。
 
 因此默认配置即使所有冷却分支都命中，也不能证明其它配置合法。固定原生DUT的运行用例变化，不能替代参数变体或Constantin配置验证。

@@ -1,9 +1,9 @@
 """One original feedback need not touch every branch in its prediction."""
 import pytest
 
-from bpuverify.bpu.case.retouch_replacement import check_retouch_replacement
-from bpuverify.bpu.coverage.owner_recency import OwnerRecencyCoverage
-from bpuverify.bpu.model.tage.owner_recency import PROGRAMS
+from suites.frontend.bpu.bpu.case.retouch_replacement import check_retouch_replacement
+from suites.frontend.bpu.bpu.coverage.owner_recency import OwnerRecencyCoverage
+from suites.frontend.bpu.bpu.model.tage.owner_recency import PROGRAMS
 
 
 @pytest.mark.feature('BPU-INT-088')

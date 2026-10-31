@@ -1,5 +1,5 @@
 """Initial timing measurements before reviewing the native coverage gaps."""
-from lsqverify.vlq.types import QueuePtr
+from suites.memblock.lsq.vlq.types import QueuePtr
 
 
 async def test_empty_idle(vlq):

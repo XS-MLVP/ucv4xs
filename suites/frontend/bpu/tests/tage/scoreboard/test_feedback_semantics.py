@@ -3,10 +3,10 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.tage.transaction.types import TageBatchTraining
-from bpuverify.tage.transaction.types import TageBranchFeedback
-from bpuverify.tage.driver.feedback import expected_tage_feedback
-from bpuverify.tage.driver.feedback import observed_tage_feedback
+from suites.frontend.bpu.tage.transaction.types import TageBatchTraining
+from suites.frontend.bpu.tage.transaction.types import TageBranchFeedback
+from suites.frontend.bpu.tage.driver.feedback import expected_tage_feedback
+from suites.frontend.bpu.tage.driver.feedback import observed_tage_feedback
 
 
 def branch(position=6, **changes):

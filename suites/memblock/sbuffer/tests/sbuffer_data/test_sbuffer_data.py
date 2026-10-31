@@ -10,9 +10,9 @@ import random
 
 import pytest
 
-from sbufferverify.common.runtime import execution
-from sbufferverify.sbuffer_data.env import Op
-from sbufferverify.sbuffer_data.model import WriteRequest
+from suites.memblock.sbuffer.execution import execution
+from suites.memblock.sbuffer.sbuffer_data.env import Op
+from suites.memblock.sbuffer.sbuffer_data.model import WriteRequest
 
 
 def payload(seed: int) -> int:
@@ -23,7 +23,7 @@ def payload(seed: int) -> int:
 # SBD-RESET-01, SBD-STABLE-01
 async def test_reset_initializes_masks_and_idle_is_stable(sbuffer_data_env):
     env = sbuffer_data_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset("reset_idle")
         await env.idle(3, "after_reset")
 
@@ -31,7 +31,7 @@ async def test_reset_initializes_masks_and_idle_is_stable(sbuffer_data_env):
 # SBD-WRITE-02, SBD-ARRAY-01
 async def test_wline_both_ports_all_lines(sbuffer_data_env):
     env = sbuffer_data_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         # Each line's write buffer must see both wline values, and the 16B lane
         # offset must move high->low so its second bit is exercised both ways.
@@ -47,7 +47,7 @@ async def test_wline_both_ports_all_lines(sbuffer_data_env):
 # SBD-WRITE-01, SBD-WRITE-06
 async def test_single_byte_each_lane(sbuffer_data_env):
     env = sbuffer_data_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         for byte in range(16):
             req = WriteRequest(
@@ -61,7 +61,7 @@ async def test_single_byte_each_lane(sbuffer_data_env):
 # SBD-WRITE-02
 async def test_wline_broadcasts_payload_to_whole_line(sbuffer_data_env):
     env = sbuffer_data_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         # wline with zero data and a partial mask: mask must be ignored.
         await env.issue((WriteRequest(1 << 4, 0x0001, 0, 0, True),))
@@ -75,7 +75,7 @@ async def test_wline_broadcasts_payload_to_whole_line(sbuffer_data_env):
 # SBD-WRITE-03
 async def test_vword_offset_selects_low_two_bits_only(sbuffer_data_env):
     env = sbuffer_data_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await env.issue((WriteRequest(1 << 6, 0xFFFF, payload(4), 1),))
         # High page bits change, low lane bits stay: same 16B window.
@@ -91,7 +91,7 @@ async def test_vword_offset_selects_low_two_bits_only(sbuffer_data_env):
 # SBD-WRITE-04, SBD-FLUSH-02
 async def test_wvec_multi_line_broadcast(sbuffer_data_env):
     env = sbuffer_data_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         wvec = (1 << 2) | (1 << 7) | (1 << 13)
         await env.issue((WriteRequest(wvec, 0xF0F0, payload(7), 3),))
@@ -105,7 +105,7 @@ async def test_wvec_multi_line_broadcast(sbuffer_data_env):
 # SBD-WRITE-08, SBD-FLUSH-01, SBD-FLUSH-02
 async def test_all_lines_and_lanes_are_independent(sbuffer_data_env):
     env = sbuffer_data_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         for line in range(16):
             for lane in range(4):
@@ -121,7 +121,7 @@ async def test_all_lines_and_lanes_are_independent(sbuffer_data_env):
 # SBD-WRITE-07
 async def test_dual_port_combinations(sbuffer_data_env):
     env = sbuffer_data_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         # Different lines in one cycle.
         await env.issue(
@@ -156,7 +156,7 @@ async def test_dual_port_combinations(sbuffer_data_env):
 # SBD-WRITE-08, SBD-WRITE-06
 async def test_back_to_back_writes_accumulate(sbuffer_data_env):
     env = sbuffer_data_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         # One request per cycle: the four lanes of a line accumulate.
         await env.burst([Op((WriteRequest(1 << 5, 0xFFFF, payload(20 + lane), lane),)) for lane in range(4)])
@@ -170,7 +170,7 @@ async def test_back_to_back_writes_accumulate(sbuffer_data_env):
 # SBD-FLUSH-01, SBD-FLUSH-02, SBD-FLUSH-04
 async def test_flush_single_two_many_all(sbuffer_data_env):
     env = sbuffer_data_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await env.issue(
             (WriteRequest((1 << 8) | (1 << 12), 0xFFFF, payload(33), 0),)
@@ -187,7 +187,7 @@ async def test_flush_single_two_many_all(sbuffer_data_env):
 # SBD-FLUSH-03
 async def test_flush_and_write_same_cycle(sbuffer_data_env):
     env = sbuffer_data_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await env.issue((WriteRequest(1 << 8, 0xFFFF, payload(35), 0),))
         # Same line: clean wins for untouched bytes, write keeps its own byte.
@@ -201,7 +201,7 @@ async def test_flush_and_write_same_cycle(sbuffer_data_env):
 # SBD-WRITE-05, SBD-FLUSH-04, SBD-STABLE-01
 async def test_invalid_requests_do_nothing(sbuffer_data_env):
     env = sbuffer_data_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await env.issue((WriteRequest(1 << 10, 0xFFFF, payload(40), 0),))
         # Payload looks like a full-line broadcast but valid is low.
@@ -214,7 +214,7 @@ async def test_invalid_requests_do_nothing(sbuffer_data_env):
 # SBD-RESET-01
 async def test_reset_contexts(sbuffer_data_env):
     env = sbuffer_data_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset("reset_idle")
         await env.issue((WriteRequest(1 << 13, 0xFFFF, payload(42), 0),))
         # Reset while a clean request is being captured: masks all clear.
@@ -228,7 +228,7 @@ async def test_reset_contexts(sbuffer_data_env):
 # SBD-ARRAY-01: every storage cell and both write ports are independently reachable
 async def test_exhaustive_cell_and_port_sweep(sbuffer_data_env):
     env = sbuffer_data_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         full = (1 << 128) - 1
         # One single-byte write per (line, lane, byte) on port 0, then on port 1.
@@ -274,7 +274,7 @@ async def test_exhaustive_cell_and_port_sweep(sbuffer_data_env):
 async def test_random_legal_traffic(sbuffer_data_env):
     env = sbuffer_data_env
     rng = random.Random(0x5B0F_2026)
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         for _ in range(120):
             roll = rng.random()

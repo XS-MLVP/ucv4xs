@@ -1,9 +1,9 @@
 import pytest
 
-from bpuverify.bpu.case.tage.alternate import check_alternate
-from bpuverify.bpu.coverage.tage.alternate import AlternateCoverage
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.bpu.case.tage.alternate import check_alternate
+from suites.frontend.bpu.bpu.coverage.tage.alternate import AlternateCoverage
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature('BPU-INT-079')

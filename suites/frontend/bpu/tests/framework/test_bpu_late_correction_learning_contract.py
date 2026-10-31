@@ -1,8 +1,8 @@
 """Human original-teaching events, separate domains and unchanged physical schema."""
 import json
 from pathlib import Path
-from bpuverify.bpu.model.late_correction_learning import PROFILES,PROGRAMS,RULES
-from bpuverify.bpu.coverage.late_correction_learning import lifetime_coverage
+from suites.frontend.bpu.bpu.model.late_correction_learning import PROFILES,PROGRAMS,RULES
+from suites.frontend.bpu.bpu.coverage.late_correction_learning import lifetime_coverage
 
 
 def test_contract_defines_original_teaching_before_coverage_not_physical_variants():

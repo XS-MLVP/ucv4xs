@@ -2,8 +2,8 @@
 import pytest
 from toffee import ScoreboardMismatch
 
-from bpuverify.bpu.case.abtb.requirements import required_counter_paths
-from bpuverify.bpu.case.abtb.requirements import require_counter_paths
+from suites.frontend.bpu.bpu.case.abtb.requirements import required_counter_paths
+from suites.frontend.bpu.bpu.case.abtb.requirements import require_counter_paths
 
 CAUSES = ('same_position_taken', 'final_not_taken', 'later_taken')
 ALL_LABELS = required_counter_paths(bank=1, entry_set=1, causes=CAUSES)

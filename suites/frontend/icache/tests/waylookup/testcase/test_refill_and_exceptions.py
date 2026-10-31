@@ -12,8 +12,8 @@ from __future__ import annotations
 
 import pytest
 
-from icacheverify.waylookup.case.definitions import block
-from icacheverify.waylookup.case.definitions import entry_for_block
+from suites.frontend.icache.waylookup.case.definitions import block
+from suites.frontend.icache.waylookup.case.definitions import entry_for_block
 
 
 @pytest.mark.feature("ICACHE-WAYLOOKUP-014")
@@ -110,7 +110,7 @@ async def test_second_output_slot_carries_the_exception_code(waylookup_agent):
     """The next entry's latched exception code appears on output slot 1."""
     import dataclasses
 
-    from icacheverify.waylookup.transaction.types import ItlbException
+    from suites.frontend.icache.waylookup.transaction.types import ItlbException
 
     agent = waylookup_agent
     for code in (1, 2, 3, 4, 7):

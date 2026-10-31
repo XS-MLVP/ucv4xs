@@ -6,9 +6,9 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.checker.ras.semantic import RasSemanticComponentChecker
-from bpuverify.bpu.coverage.ras_redo import RedoCoverage, RULES, redo_coverage
-from bpuverify.ras.model.semantic import Events, RasReference, Recovery, Retirement
+from suites.frontend.bpu.bpu.checker.ras.semantic import RasSemanticComponentChecker
+from suites.frontend.bpu.bpu.coverage.ras_redo import RedoCoverage, RULES, redo_coverage
+from suites.frontend.bpu.ras.model.semantic import Events, RasReference, Recovery, Retirement
 
 
 ADDRESS = 0x80030020
@@ -303,7 +303,7 @@ def test_closed_form_survivor_fault_preserves_first_exception(fault):
 
 
 def test_case_has_no_edge_wait_get_set_or_native_state_seed():
-    tree = ast.parse(Path('bpuverify/bpu/case/ras/redo_unwind.py').read_text())
+    tree = ast.parse(Path('bpu/case/ras/redo_unwind.py').read_text())
     forbidden = {'ClockCycles','FallingEdge','RisingEdge','get_','set_','gather','GetInternalSignal'}
     for node in ast.walk(tree):
         if isinstance(node,ast.Call):

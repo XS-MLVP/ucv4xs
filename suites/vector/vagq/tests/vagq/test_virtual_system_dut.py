@@ -3,10 +3,10 @@ from pathlib import Path
 
 import pytest
 
-from vagqverify.vagq.external_env import PublicVAGQEnvironment, Scenario
-from vagqverify.vagq.types import AddrPacket, DataPacket
-from vagqverify.vagq.virtual_coverage import VIRTUAL_COVERAGE
-from vagqverify.vagq.virtual_system import VirtualSystem, VirtualSystemConfig
+from suites.vector.vagq.vagq.external_env import PublicVAGQEnvironment, Scenario
+from suites.vector.vagq.vagq.types import AddrPacket, DataPacket
+from suites.vector.vagq.vagq.virtual_coverage import VIRTUAL_COVERAGE
+from suites.vector.vagq.vagq.virtual_system import VirtualSystem, VirtualSystemConfig
 
 
 pytestmark = [

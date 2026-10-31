@@ -12,21 +12,21 @@ import types
 from audit_sq_initial import ROOT, sha
 
 sys.path.insert(0,str(ROOT))
-from lsqverify.forward.types import Inputs, Query
-from lsqverify.raw.types import SqPtr
+from suites.memblock.lsq.forward.types import Inputs, Query
+from suites.memblock.lsq.raw.types import SqPtr
 
 
 def load(path,name):
     module=types.ModuleType(name)
-    module.__package__="lsqverify.forward"
+    module.__package__="suites.memblock.lsq.forward"
     sys.modules[name]=module
     exec(compile(path.read_text(),str(path),"exec"),module.__dict__)
     return module
 
 
 def main():
-    old=ROOT/"results/lsq-sq-endpoint-01/verification-source/lsqverify/forward/model.py"
-    new=ROOT/"lsqverify/forward/model.py"
+    old=ROOT/'results/lsq-sq-endpoint-01/verification-source/lsqverify/forward/model.py'
+    new=ROOT/"forward/model.py"
     a,b=ast.parse(old.read_text()),ast.parse(new.read_text())
     comparisons=[n for n in ast.walk(a) if isinstance(n,ast.Compare) and isinstance(n.left,ast.Constant) and n.left.value==0
                  and len(n.comparators)==2 and isinstance(n.comparators[0],ast.Name) and n.comparators[0].id=="age"

@@ -3,9 +3,9 @@ import json
 
 import pytest
 
-from bpuverify.bpu.coverage.main_sibling import Coverage
-from bpuverify.bpu.model.main_dynamic_target import Program, PHASES, ORIGINS
-from bpuverify.bpu.case.main_dynamic_target import check_main_dynamic_target
+from suites.frontend.bpu.bpu.coverage.main_sibling import Coverage
+from suites.frontend.bpu.bpu.model.main_dynamic_target import Program, PHASES, ORIGINS
+from suites.frontend.bpu.bpu.case.main_dynamic_target import check_main_dynamic_target
 
 
 @pytest.mark.feature('BPU-MBTB-028')

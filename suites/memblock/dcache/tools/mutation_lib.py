@@ -27,10 +27,10 @@ def _xor_low_bit(value, mask: int = 1):
     return value ^ mask
 
 
-@_register("bda_readback", "dcacheverify.banked_data_array.model",
+@_register("bda_readback", "suites.memblock.dcache.banked_data_array.model",
            "readback_fault", "first read-window bank flipped after the model answer")
 def _bda_readback():
-    from dcacheverify.banked_data_array import model as mod
+    from suites.memblock.dcache.banked_data_array import model as mod
 
     original = mod.BankedDataArrayModel.read_result
 
@@ -42,10 +42,10 @@ def _bda_readback():
     mod.BankedDataArrayModel.read_result = patched
 
 
-@_register("cf_expected", "dcacheverify.counter_filter.model",
+@_register("cf_expected", "suites.memblock.dcache.counter_filter.model",
            "expected_mutation", "query hit/miss inverted")
 def _cf_expected():
-    from dcacheverify.counter_filter import model as mod
+    from suites.memblock.dcache.counter_filter import model as mod
 
     original = mod.CounterFilterModel.query
 
@@ -55,10 +55,10 @@ def _cf_expected():
     mod.CounterFilterModel.query = patched
 
 
-@_register("dta_readback", "dcacheverify.duplicated_tag_array.model",
+@_register("dta_readback", "suites.memblock.dcache.duplicated_tag_array.model",
            "readback_fault", "tag word low bit flipped after the model answer")
 def _dta_readback():
-    from dcacheverify.duplicated_tag_array import model as mod
+    from suites.memblock.dcache.duplicated_tag_array import model as mod
 
     target = getattr(mod, "DuplicatedTagArrayModel")
     original = target.read
@@ -71,10 +71,10 @@ def _dta_readback():
     target.read = patched
 
 
-@_register("mq_expected", "dcacheverify.miss_queue.env",
+@_register("mq_expected", "suites.memblock.dcache.miss_queue.env",
            "expected_mutation", "refill beat recombination flipped")
 def _mq_expected():
-    from dcacheverify.miss_queue import env as mod
+    from suites.memblock.dcache.miss_queue import env as mod
 
     original = mod.line_from_beats
 
@@ -84,28 +84,28 @@ def _mq_expected():
     mod.line_from_beats = patched
 
 
-@_register("lp_expected", "dcacheverify.load_pipe.env",
+@_register("lp_expected", "suites.memblock.dcache.load_pipe.env",
            "expected_mutation", "DCache index oracle shifted")
 def _lp_expected():
-    from dcacheverify.load_pipe import env as mod
+    from suites.memblock.dcache.load_pipe import env as mod
 
     original = mod.dcache_index
     mod.dcache_index = lambda vaddr: (original(vaddr) + 1) & 0xFF
 
 
-@_register("mp_expected", "dcacheverify.miss_queue.env",
+@_register("mp_expected", "suites.memblock.dcache.miss_queue.env",
            "expected_mutation", "alias oracle shifted")
 def _mp_expected():
-    from dcacheverify.miss_queue import env as mod
+    from suites.memblock.dcache.miss_queue import env as mod
 
     original = mod.dcache_alias
     mod.dcache_alias = lambda vaddr: (original(vaddr) + 1) & 0x3
 
 
-@_register("dcache_readback", "dcacheverify.dcache.env",
+@_register("dcache_readback", "suites.memblock.dcache.dcache.env",
            "readback_fault", "load response data low bit flipped")
 def _dcache_readback():
-    from dcacheverify.dcache import env as mod
+    from suites.memblock.dcache.dcache import env as mod
 
     original = mod.DcacheEnv.load_response
 
@@ -117,10 +117,10 @@ def _dcache_readback():
     mod.DcacheEnv.load_response = patched
 
 
-@_register("store_hit_readback", "dcacheverify.dcache.env",
+@_register("store_hit_readback", "suites.memblock.dcache.dcache.env",
            "readback_fault", "store hit id flipped, response otherwise intact")
 def _store_hit_readback():
-    from dcacheverify.dcache import env as mod
+    from suites.memblock.dcache.dcache import env as mod
 
     original = mod.DcacheEnv.wait_store_hit
 

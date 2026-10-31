@@ -10,8 +10,8 @@ import random
 
 import pytest
 
-from lsuverify.store_trigger.coverage import StoreTriggerCoverage
-from lsuverify.store_trigger.env import (
+from suites.memblock.lsu.store_trigger.coverage import StoreTriggerCoverage
+from suites.memblock.lsu.store_trigger.env import (
     ACTION_BREAKPOINT,
     ACTION_CODE_BREAKPOINT,
     ACTION_CODE_DEBUG,
@@ -318,6 +318,6 @@ def test_vaddr_and_mask_full_width_are_exercised(trig):
 
 
 def test_every_declared_case_is_reachable_by_the_suite():
-    from lsuverify.store_trigger.coverage import TRIGGER_CASES
+    from suites.memblock.lsu.store_trigger.coverage import TRIGGER_CASES
     assert len(TRIGGER_CASES) == len(set(TRIGGER_CASES))
     assert len(TRIGGER_CASES) == 32

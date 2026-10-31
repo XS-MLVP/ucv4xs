@@ -4,7 +4,7 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.model.tage.confidence_boundary import PROGRAMS
+from suites.frontend.bpu.bpu.model.tage.confidence_boundary import PROGRAMS
 from tests.bpu.scoreboard.confidence_boundary_fixtures import mixed,relearned,released,completed,packet
 from tests.bpu.scoreboard.test_partial_reuse import transfer
 

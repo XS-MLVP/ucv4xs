@@ -1,8 +1,10 @@
 """VAGQArbiter semantic qualification without DUT coverage credit."""
+
 import pytest
 
-from vagqverify.arbiter.model import _older, observe
-from vagqverify.arbiter.types import Beat, LsuReq, NativeReq, StoreDataReq
+from suites.vector.vagq.legacy_pins import P
+from suites.vector.vagq.arbiter.model import _older, observe
+from suites.vector.vagq.arbiter.types import Beat, LsuReq, NativeReq, StoreDataReq
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)
 
@@ -76,9 +78,9 @@ def test_native_older_blocks_first_lane_but_next_lane_reserves_vagq():
         ldu_ready=(True, True, True),
     ))
     assert observed.load_grants == (None, 0, None)
-    assert observed.outputs['io_lduReq_0_bits_req_ctrl_fuType'] == 0x55
-    assert observed.outputs['io_lduReq_1_bits_meta_entryIdx'] == 0
-    assert observed.outputs['io_issueLda_0_ready'] == 1
+    assert observed.outputs[P.p_lduReq_0_bits_req_ctrl_fuType] == 0x55
+    assert observed.outputs[P.p_lduReq_1_bits_meta_entryIdx] == 0
+    assert observed.outputs[P.p_issueLda_0_ready] == 1
 
 
 def test_vagq_older_displaces_native_and_routes_all_active_metadata():
@@ -108,14 +110,14 @@ def test_vagq_older_displaces_native_and_routes_all_active_metadata():
         ldu_ready=(False, True, True),
     ))
     assert observed.load_grants[0] == 0
-    assert observed.outputs['io_issueLda_0_ready'] == 0
-    assert observed.outputs['io_lduReq_0_bits_meta_valid'] == 1
-    assert observed.outputs['io_lduReq_0_bits_meta_entryIdx'] == 3
-    assert observed.outputs['io_lduReq_0_bits_meta_elemIdx'] == 19
-    assert observed.outputs['io_lduReq_0_bits_req_data_src_0'] == request.vaddr
-    assert observed.outputs['io_lduReq_0_bits_req_data_pc'] == request.pc
-    assert observed.outputs['io_lduReq_0_bits_req_ctrl_vecWen'] == 1
-    assert observed.outputs['io_vagqLsuReq_0_ready'] == 0
+    assert observed.outputs[P.p_issueLda_0_ready] == 0
+    assert observed.outputs[P.p_lduReq_0_bits_meta_valid] == 1
+    assert observed.outputs[P.p_lduReq_0_bits_meta_entryIdx] == 3
+    assert observed.outputs[P.p_lduReq_0_bits_meta_elemIdx] == 19
+    assert observed.outputs[P.p_lduReq_0_bits_req_data_src_0] == request.vaddr
+    assert observed.outputs[P.p_lduReq_0_bits_req_data_pc] == request.pc
+    assert observed.outputs[P.p_lduReq_0_bits_req_ctrl_vecWen] == 1
+    assert observed.outputs[P.p_vagqLsuReq_0_ready] == 0
 
 
 def test_std_busy_is_independent_per_lane_and_ready_is_not_valid_dependent():
@@ -126,11 +128,11 @@ def test_std_busy_is_independent_per_lane_and_ready_is_not_valid_dependent():
         ),
         std_busy=(True, False),
     ))
-    assert observed.outputs['io_vagqStoreDataReq_0_ready'] == 0
-    assert observed.outputs['io_vagqStdData_0_valid'] == 0
-    assert observed.outputs['io_vagqStoreDataReq_1_ready'] == 1
-    assert observed.outputs['io_vagqStdData_1_valid'] == 1
-    assert observed.outputs['io_vagqStdData_1_bits_data'] == 0x5678
+    assert observed.outputs[P.p_vagqStoreDataReq_0_ready] == 0
+    assert observed.outputs[P.p_vagqStdData_0_valid] == 0
+    assert observed.outputs[P.p_vagqStoreDataReq_1_ready] == 1
+    assert observed.outputs[P.p_vagqStdData_1_valid] == 1
+    assert observed.outputs[P.p_vagqStdData_1_bits_data] == 0x5678
 
 
 def test_circular_age_predicates_cover_flag_wrap():

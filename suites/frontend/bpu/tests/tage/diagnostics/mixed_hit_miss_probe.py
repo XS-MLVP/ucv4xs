@@ -1,7 +1,7 @@
 """Real two-branch hit/allocation diagnostic, excluded from formal coverage."""
 
 from __future__ import annotations
-from bpuverify.common.model.configuration import *
+from suites.frontend.bpu.models.configuration import *
 import ucv.runtime as ucv_paths
 
 import argparse
@@ -17,16 +17,16 @@ from toffee import Execution
 from toffee import Scoreboard
 from toffee import XCommClockBackend
 
-from bpuverify.tage.agent.main import TageAgent
-from bpuverify.tage.transaction.types import TageBaseBranch
-from bpuverify.tage.transaction.types import TageBatchTraining
-from bpuverify.tage.transaction.types import TageBranchFeedback
-from bpuverify.common.env.dut import initialize_dut_inputs
-from bpuverify.tage.case.definitions import HIGHEST_TABLE
-from bpuverify.tage.case.way_migration_scenario import cell
-from bpuverify.tage.case.way_migration_scenario import prepare_unprotected_highest_ways
-from bpuverify.tage.case.way_migration_scenario import read_grid
-from bpuverify.tage.case.way_migration_scenario import snapshot
+from suites.frontend.bpu.tage.agent.main import TageAgent
+from suites.frontend.bpu.tage.transaction.types import TageBaseBranch
+from suites.frontend.bpu.tage.transaction.types import TageBatchTraining
+from suites.frontend.bpu.tage.transaction.types import TageBranchFeedback
+from suites.frontend.bpu.runtime.dut import initialize_dut_inputs
+from suites.frontend.bpu.tage.case.definitions import HIGHEST_TABLE
+from suites.frontend.bpu.tage.case.way_migration_scenario import cell
+from suites.frontend.bpu.tage.case.way_migration_scenario import prepare_unprotected_highest_ways
+from suites.frontend.bpu.tage.case.way_migration_scenario import read_grid
+from suites.frontend.bpu.tage.case.way_migration_scenario import snapshot
 
 ROOT = Path(__file__).resolve().parents[3]
 

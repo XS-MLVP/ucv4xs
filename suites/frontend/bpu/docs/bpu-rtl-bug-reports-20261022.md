@@ -1,5 +1,8 @@
 # BPU RTL Bug Report（9 项 · 2026-10-22）
 
+> 路径迁移说明（2026-10-31）：本报告仍属于原日期、基线和执行源码；实现文件已迁到工程根。可点击源码链接更新到当前位置，不据此重标历史 PASS/FAIL 或覆盖结论。参见[本轮命名空间迁移](../../../../docs/lessons/suite-namespace-refactor-20261031.md)。
+
+
 来源：一次全量仿真回归 `results/full-regression-20261022-v1`
 （29907 个用例、29777 PASS、**123 FAIL**、7 XFAIL）。
 
@@ -73,7 +76,7 @@ mask: expected 2, actual 1;      values.1: expected 2, actual MISSING
 ```
 
 观测点是 `counterWriteBuffer.io_enq_valid` / `io_enq_bits_{wayMask,counters}`
-（只读绑定 `bpuverify/bpu/bundle/main_service.py:37`）。
+（只读绑定 `suites/frontend/bpu/bpu/bundle/main_service.py:37`）。
 
 ### 根因
 
@@ -176,7 +179,7 @@ val trainHasAbtbBranch = t0_abtbResult(i).valid &&
 
 ### 为什么确定是 RTL
 
-参考模型的要求写在 `bpuverify/utage/model/dual_source.py:91-96`：
+参考模型的要求写在 `suites/frontend/bpu/utage/model/dual_source.py:91-96`：
 
 ```python
 active = tuple(table for table, value in enumerate(before)
@@ -298,7 +301,7 @@ Mux(t0_chosenFirst, ~PriorityEncoder(t0_firstHit.reverse), ~PriorityEncoder(t0_e
 
 ### 为什么确定是 RTL
 
-模型侧 `bpuverify/utage/model/persistence.py:63-77` 只接受"被服务版本不得回退、
+模型侧 `suites/frontend/bpu/utage/model/persistence.py:63-77` 只接受"被服务版本不得回退、
 服务必须对应已发布版本"，且 `finish_phase(persistent=True)` 会断言
 "每个原始身份的最新学习必须已经落盘"。也就是说：**同一套账本在别的模块
 （如 SC、TAGE）能通过，只有 UTAGE 短表对不上**。
@@ -458,7 +461,7 @@ uras.io.enable := ctrl.rasEnable && ctrl.mbtbEnable
 
 ### 为什么确定是 RTL
 
-参考模型 `bpuverify/uras/model/semantic.py:148-152` 明确：
+参考模型 `suites/frontend/bpu/uras/model/semantic.py:148-152` 明确：
 
 ```python
 # A disabled MicroRAS must not expose a usable return target.
@@ -817,7 +820,7 @@ private val t1_hitMask = t1_meta.entries.map { e =>
 
 | 类别 | 数 | 说明 |
 |---|---:|---|
-| 参考模型缺陷 | 10 | TAGE 写提案用了预测时的旧计数（`bpuverify/tage/model/semantic.py:528`）。三方对照：程序计划 5、独立计划 5、**DUT 实际 5**、模型 4 |
+| 参考模型缺陷 | 10 | TAGE 写提案用了预测时的旧计数（`suites/frontend/bpu/tage/model/semantic.py:528`）。三方对照：程序计划 5、独立计划 5、**DUT 实际 5**、模型 4 |
 | 断言映射假设未定案 | 8 | `test_owner_recency` / `test_retouch_replacement`：模型按"保留槽序号"索引，RTL 按写缓冲分配序，映射未验证 |
 | 流水线级联 | 19 | `choice/flush/history/folded` 差异。差异的量与"方向判反 → 分支未被执行 → 历史少推一位"一致，但共用同一套模型，**需修完上面 9 条后复跑才能定案** |
 

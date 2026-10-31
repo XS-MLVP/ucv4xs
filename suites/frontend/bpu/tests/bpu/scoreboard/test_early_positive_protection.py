@@ -1,15 +1,15 @@
-from bpuverify.bpu.model.early_opposition import FALLBACK
+from suites.frontend.bpu.bpu.model.early_opposition import FALLBACK
 """Taken protection programs use synthetic actuals here, never DUT credit."""
 import ast
 from dataclasses import replace
 from pathlib import Path
 
-from bpuverify.bpu.checker.early_positive_protection import EarlyPositiveProtectionChecks
-from bpuverify.bpu.coverage.early_positive_protection import EarlyPositiveProtectionCoverage
-from bpuverify.bpu.model.early_opposition import resident, ahead_owner, steady_history, main_counter, provider
-from bpuverify.bpu.model.early_positive_protection import EDGES, OLDER_PATHS, rules
-from bpuverify.bpu.model.early_protection import Identity, ProtectionLedger, guidance
-from bpuverify.utage.model.semantic import Context, Feedback, Source
+from suites.frontend.bpu.bpu.checker.early_positive_protection import EarlyPositiveProtectionChecks
+from suites.frontend.bpu.bpu.coverage.early_positive_protection import EarlyPositiveProtectionCoverage
+from suites.frontend.bpu.bpu.model.early_opposition import resident, ahead_owner, steady_history, main_counter, provider
+from suites.frontend.bpu.bpu.model.early_positive_protection import EDGES, OLDER_PATHS, rules
+from suites.frontend.bpu.bpu.model.early_protection import Identity, ProtectionLedger, guidance
+from suites.frontend.bpu.utage.model.semantic import Context, Feedback, Source
 from tests.bpu.scoreboard.test_early_short_protection import Program as WindowProgram
 from tests.bpu.scoreboard.test_early_positive import Program as PositiveProgram
 
@@ -247,7 +247,7 @@ async def test_allocated_direction_cannot_be_overridden_by_the_consumer_request(
 
 
 def test_semantic_case_has_no_edges_raw_pin_writes_or_task_join_details():
-    tree = ast.parse(Path('bpuverify/bpu/case/early_positive_protection.py').read_text())
+    tree = ast.parse(Path('bpu/case/early_positive_protection.py').read_text())
     forbidden = {'ClockCycles','RisingEdge','FallingEdge','gather','create_task','set_','get_'}
     assert not {n.id for n in ast.walk(tree) if isinstance(n, ast.Name)} & forbidden
     assert not {n.attr for n in ast.walk(tree) if isinstance(n, ast.Attribute)} & forbidden

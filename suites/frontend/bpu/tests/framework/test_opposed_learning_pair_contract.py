@@ -22,9 +22,9 @@ def test_case_never_exposes_edges_raw_signals_or_manual_tasks():
 
 
 def test_new_program_is_declarative_and_has_no_actual_state_seed():
-    tree=ast.parse((ROOT/'bpuverify/bpu/model/tage/opposed_learning_pair.py').read_text())
+    tree=ast.parse((ROOT/'bpu/model/tage/opposed_learning_pair.py').read_text())
     imports={n.module for n in ast.walk(tree) if isinstance(n,ast.ImportFrom)}
-    assert imports=={'bpuverify.bpu.model.tage.direction_turnaround'}
+    assert imports=={'suites.frontend.bpu.bpu.model.tage.direction_turnaround'}
     names={n.id for n in ast.walk(tree) if isinstance(n,ast.Name)}
     assert not names&{'dut','actual','monitor','signal','get_','set_'}
 

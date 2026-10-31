@@ -1,10 +1,12 @@
 """Second gap analysis: real-child cancellation and FIFO return alignment."""
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.uncache_entry.types import RobPtr
-from lsqverify.load_uncache.sequences import allocate_batch, fill, red
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.uncache_entry.types import RobPtr
+from suites.memblock.lsq.load_uncache.sequences import allocate_batch, fill, red
 
 
 @pytest.mark.parametrize("phase", ("holding", "request", "wakeup"))
@@ -77,11 +79,11 @@ async def test_withdrawn_high_group_waiter_falls_back_to_current_candidates(load
         req = env.request(nc=True, rob=rob, lq=slot + 60, paddr=0x345600000000 + slot * 0x1000, tag=slot + 1)
         await allocate_batch(env, {slot % 3: req})
     assert env.model.pipe[0] == 0
-    change = await env.cycle({"io_uncache_req_ready": 1})
+    change = await env.cycle({P.p_uncache_req_ready: 1})
     # Entry0 originally won while only the low group was present. That
     # acceptance leaves one further low-group preference before alternating.
     assert change["internal_slot"] == 1
-    change = await env.cycle({"io_uncache_req_ready": 1})
+    change = await env.cycle({P.p_uncache_req_ready: 1})
     assert change["internal_slot"] == 8 and 9 in env.model.groups[1].waiters
     uid = env.model.owners[9].uid
     await env.cycle(red(RobPtr.encode(50)))
@@ -98,11 +100,11 @@ async def test_full_mid_width_unmatched_sid_and_out_of_order_responses(load_unca
     loads, uids = await fill(env)
     await env.accept_all()
     for mid in range(16, 128):
-        await env.cycle({"io_uncache_idResp_valid": 1, "io_uncache_idResp_bits_mid": mid, "io_uncache_idResp_bits_sid": mid % 16})
+        await env.cycle({P.p_uncache_idResp_valid: 1, P.p_uncache_idResp_bits_mid: mid, P.p_uncache_idResp_bits_sid: mid % 16})
     # No valid SID yet: arbitrary external responses must not produce wakeups.
     for sid in range(16):
         await env.respond(sid, 0xDEADBEEF)
-        assert not env.observed["io_ncWakeup_valid"]
+        assert not env.observed[P.p_ncWakeup_valid]
     for slot in range(16):
         await env.bind(slot, 15 - slot)
     for slot in reversed(range(16)):

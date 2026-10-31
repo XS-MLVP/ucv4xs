@@ -1,7 +1,7 @@
 """Integrated strengthening of the existing omitted-notification contract."""
 import pytest
-from bpuverify.bpu.case.ras.neutral_gap import check_neutral_gap
-from bpuverify.bpu.coverage.ras_neutral_gap import RasNeutralGapCoverage
+from suites.frontend.bpu.bpu.case.ras.neutral_gap import check_neutral_gap
+from suites.frontend.bpu.bpu.coverage.ras_neutral_gap import RasNeutralGapCoverage
 
 
 @pytest.mark.feature('BPU-RAS-016')

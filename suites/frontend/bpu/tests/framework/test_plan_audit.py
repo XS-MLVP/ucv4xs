@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from bpuverify.common.pytest.points import validate_plan
+from suites.frontend.bpu.pytest_plugins.points import validate_plan
 from tools.audit_verification_plan import audit, markdown
 
 

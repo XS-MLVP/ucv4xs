@@ -1,10 +1,10 @@
 """Depth-one retained ownership under same-bank pressure and opposite-bank flow."""
 import itertools
 import pytest
-from bpuverify.mbtb.coverage.catalog import mbtb_depth_coverage_model
-from bpuverify.mbtb.coverage.catalog import write_mbtb_depth_coverage
-from bpuverify.mbtb.case import depth_scenario
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.mbtb.coverage.catalog import mbtb_depth_coverage_model
+from suites.frontend.bpu.mbtb.coverage.catalog import write_mbtb_depth_coverage
+from suites.frontend.bpu.mbtb.case import depth_scenario
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature('BPU-MBTB-025')

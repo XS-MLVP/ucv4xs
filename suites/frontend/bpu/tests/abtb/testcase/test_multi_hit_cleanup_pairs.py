@@ -14,12 +14,12 @@ import json
 
 import pytest
 
-from bpuverify.abtb.case.definitions import CONDITIONAL
-from bpuverify.abtb.case.definitions import DIRECT
-from bpuverify.abtb.checker.assertions import assert_miss
-from bpuverify.abtb.transaction.types import AbtbTraining
-from bpuverify.common.env.artifacts import write_output
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.abtb.case.definitions import CONDITIONAL
+from suites.frontend.bpu.abtb.case.definitions import DIRECT
+from suites.frontend.bpu.abtb.checker.assertions import assert_miss
+from suites.frontend.bpu.abtb.transaction.types import AbtbTraining
+from suites.frontend.bpu.runtime.artifacts import write_output
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 ROUNDS = 6
 

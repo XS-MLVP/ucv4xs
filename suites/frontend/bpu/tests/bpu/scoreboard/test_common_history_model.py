@@ -1,13 +1,13 @@
 """Independent arithmetic/path checks, no DUT and no hardware observations."""
 from itertools import product
 import pytest
-from bpuverify.bpu.model.phr.model import path_hash
-from bpuverify.bpu.model.sc.common_state import backwards
-from bpuverify.bpu.model.sc.common_state import dedup
-from bpuverify.bpu.model.sc.common_state import recovery
-from bpuverify.bpu.model.sc.common_state import shifted
-from bpuverify.bpu.model.sc.common_state import update
-from bpuverify.bpu.case.sc.nonzero_scenarios import recipe
+from suites.frontend.bpu.bpu.model.phr.model import path_hash
+from suites.frontend.bpu.bpu.model.sc.common_state import backwards
+from suites.frontend.bpu.bpu.model.sc.common_state import dedup
+from suites.frontend.bpu.bpu.model.sc.common_state import recovery
+from suites.frontend.bpu.bpu.model.sc.common_state import shifted
+from suites.frontend.bpu.bpu.model.sc.common_state import update
+from suites.frontend.bpu.bpu.case.sc.nonzero_scenarios import recipe
 
 
 @pytest.mark.parametrize('bank,direction', tuple(product((0, 1), ('forward', 'backward'))))

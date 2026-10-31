@@ -16,8 +16,8 @@ def pytest_configure(config):
     stage = Path(os.environ['BPU_DIAGNOSTIC_STAGE']).resolve()
     if stage == ROOT or not (stage / 'protected.json').is_file():
         raise RuntimeError('diagnostic stage must be isolated and contain protected report hashes')
-    import bpuverify.common.env.dut as factory
-    import bpuverify.common.env.paths as support
+    import suites.frontend.bpu.runtime.dut as factory
+    import suites.frontend.bpu.runtime.paths as support
     factory.ROOT = support.REPO_ROOT = stage
     factory.RTL_COVERAGE_FILES.clear()
     original = factory.DutFactory.create
@@ -26,7 +26,7 @@ def pytest_configure(config):
     factory.DutFactory.create = isolated
 
 def pytest_sessionfinish(session, exitstatus):
-    from bpuverify.common.env.dut import RTL_COVERAGE_FILES
+    from suites.frontend.bpu.runtime.dut import RTL_COVERAGE_FILES
     from tests.mbtb.diagnostics.flush_key_probe import CASES
     stage = Path(os.environ['BPU_DIAGNOSTIC_STAGE'])
     protected = json.loads((stage / 'protected.json').read_text())

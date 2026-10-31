@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Independent staged public-query audit. No lsqverify or DUT internal imports."""
+'Independent staged public-query audit. No lsqverify or DUT internal imports.'
 import argparse
 import ast
 from collections import Counter

@@ -1,5 +1,8 @@
 # 第一阶段交付报告（历史快照）
 
+> 路径迁移说明（2026-10-31）：本文记录中的 *verify/common 为当时源码路径；当前实现已迁入 suites.<group>.<suite> 工程根。历史判定、命令与哈希不据此重标；当前映射见仓库 docs/lessons/suite-namespace-refactor-20261031.md。
+
+
 > **可信度复核更正（2026-10-25）**：本报告保留旧 run 的历史指标；当前归因以
 > `verification-soundness-20261025.md` 为准。原 5 个 strict XFAIL 的 DUT 缺陷归因
 > 已被验证侧反证推翻；“100% sampled bins”不等于功能验收或不可达证明。

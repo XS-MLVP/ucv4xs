@@ -6,11 +6,11 @@ from types import SimpleNamespace as NS
 import ast
 import pytest
 
-from bpuverify.bpu.checker.full_neighbor_migration import FullNeighborMigrationChecks
-from bpuverify.bpu.coverage.full_neighbor_migration import FullNeighborMigrationCoverage
-from bpuverify.bpu.model.tage.full_neighbor_migration import PC, HISTORY_PATHS, NEIGHBOR_NAMES, OUTCOMES
-from bpuverify.bpu.model.tage.service import STREAM_PC, learning_inflight, pending_plan
-from bpuverify.bpu.model.pipeline import Redirect
+from suites.frontend.bpu.bpu.checker.full_neighbor_migration import FullNeighborMigrationChecks
+from suites.frontend.bpu.bpu.coverage.full_neighbor_migration import FullNeighborMigrationCoverage
+from suites.frontend.bpu.bpu.model.tage.full_neighbor_migration import PC, HISTORY_PATHS, NEIGHBOR_NAMES, OUTCOMES
+from suites.frontend.bpu.bpu.model.tage.service import STREAM_PC, learning_inflight, pending_plan
+from suites.frontend.bpu.bpu.model.pipeline import Redirect
 from tests.bpu.scoreboard.test_neighbor_migration import fixture as neighbor_fixture, row
 from tests.bpu.scoreboard.test_dual_migration import source
 from tests.bpu.scoreboard.test_direction_sources import quiet
@@ -219,7 +219,7 @@ def test_each_actual_input_snapshot_survives_full_capacity_learning(index):
 
 
 def test_full_case_has_no_raw_io_edges_or_private_scheduler():
-    for path in ('bpuverify/bpu/case/full_neighbor_migration.py', 'tests/bpu/testcase/test_full_neighbor_migration.py'):
+    for path in ('bpu/case/full_neighbor_migration.py', 'tests/bpu/testcase/test_full_neighbor_migration.py'):
         for node in ast.walk(ast.parse(Path(path).read_text())):
             assert not isinstance(node, (ast.Assert, ast.ClassDef))
             if isinstance(node, ast.Call):

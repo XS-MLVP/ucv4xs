@@ -5,8 +5,8 @@ import random
 
 import pytest
 
-from dcacheverify.load_pipe.coverage import LoadPipeCoverage
-from dcacheverify.load_pipe.env import LoadPipeEnv
+from suites.memblock.dcache.load_pipe.coverage import LoadPipeCoverage
+from suites.memblock.dcache.load_pipe.env import LoadPipeEnv
 
 
 @pytest.fixture

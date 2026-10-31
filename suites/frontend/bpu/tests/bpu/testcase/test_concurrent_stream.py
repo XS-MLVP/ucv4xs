@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.bpu.transaction.types import BpuTraining
-from bpuverify.bpu.case.definitions import PC
-from bpuverify.bpu.case.definitions import POSITION
-from bpuverify.bpu.case.definitions import TARGET
+from suites.frontend.bpu.bpu.transaction.types import BpuTraining
+from suites.frontend.bpu.bpu.case.definitions import PC
+from suites.frontend.bpu.bpu.case.definitions import POSITION
+from suites.frontend.bpu.bpu.case.definitions import TARGET
 
 
 @pytest.mark.feature("BPU-INT-009")

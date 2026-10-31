@@ -5,7 +5,7 @@ from types import SimpleNamespace as NS
 import pytest
 from toffee import Scoreboard
 
-from bpuverify.bpu.checker.statistical import composition_values
+from suites.frontend.bpu.bpu.checker.statistical import composition_values
 
 
 def fixture():

@@ -1,4 +1,5 @@
 """All16 retained external SIDs: real returns precede legal SID reallocation."""
+
 from dataclasses import replace
 import json
 from pathlib import Path
@@ -7,14 +8,16 @@ import pytest
 
 from .owners import RetainedUncacheProgram
 
+from suites.memblock.lsq.legacy_pins import P
+
 
 class FullPopulationProgram(RetainedUncacheProgram):
     async def accept_visible(self,loads,sid):
         for _ in range(80):
-            if self.env.observed["io_uncache_req_valid"]:break
+            if self.env.observed[P.p_uncache_req_valid]:break
             await self.cycle()
         else:raise AssertionError("full16 visible original request never arrived")
-        pa=self.env.observed["io_uncache_req_bits_addr"]
+        pa=self.env.observed[P.p_uncache_req_bits_addr]
         load=next(p for p in loads if p.paddr==pa)
         mid=await self.accept(load,sid)
         return dict(load=load,mid=mid,sid=sid)
@@ -41,15 +44,15 @@ class FullPopulationProgram(RetainedUncacheProgram):
         pending={p.execution.uop.lq.value:p for p in fresh}
         for _ in range(120):
             if not pending:break
-            bank=next((b for b in range(3) if self.env.observed[f"io_replay_{b}_valid"]),None)
+            bank=next((b for b in range(3) if self.env.observed[P.io(f"replay_{b}_valid")]),None)
             if bank is None:await self.cycle();continue
-            value=self.env.observed[f"io_replay_{bank}_bits_uop_lqIdx_value"]
+            value=self.env.observed[P.io(f"replay_{bank}_bits_uop_lqIdx_value")]
             load=pending.pop(value)
             await self.finish_load(load,await self.grant(load),assert_empty=False)
         assert not pending
         await self.idle(16)
-        assert self.env.observed["io_lqEmpty"] and self.env.observed["io_sqEmpty"] and not self.env.observed["io_replayAllocate"]
-        assert not self.env.observed["io_uncache_req_valid"] and not self.env.observed["io_ldExceptionInfo_valid"]
+        assert self.env.observed[P.p_lqEmpty] and self.env.observed[P.p_sqEmpty] and not self.env.observed[P.p_replayAllocate]
+        assert not self.env.observed[P.p_uncache_req_valid] and not self.env.observed[P.p_ldExceptionInfo_valid]
         self.report=self.checker.finish()
         assert len(self.report["UIDs"])==32 and len(self.report["same_slot_completion_witnesses"])==16
         return self.report

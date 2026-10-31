@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from bpuverify.ittage.checker.assertions import allocate
+from suites.frontend.bpu.ittage.checker.assertions import allocate
 
 
 async def test_monitor_decodes_provider_target_and_meta(ittage_agent):

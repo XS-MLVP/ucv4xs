@@ -4,12 +4,12 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.ubtb.checker.assertions import assert_hit
-from bpuverify.ubtb.checker.assertions import expected_prediction
-from bpuverify.ubtb.checker.assertions import train_taken
-from bpuverify.ubtb.case.definitions import CONDITIONAL
-from bpuverify.ubtb.case.definitions import DIRECT
-from bpuverify.ubtb.case.definitions import INDIRECT
+from suites.frontend.bpu.ubtb.checker.assertions import assert_hit
+from suites.frontend.bpu.ubtb.checker.assertions import expected_prediction
+from suites.frontend.bpu.ubtb.checker.assertions import train_taken
+from suites.frontend.bpu.ubtb.case.definitions import CONDITIONAL
+from suites.frontend.bpu.ubtb.case.definitions import DIRECT
+from suites.frontend.bpu.ubtb.case.definitions import INDIRECT
 
 
 @pytest.mark.feature("BPU-UBTB-013")

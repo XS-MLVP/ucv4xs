@@ -2,12 +2,12 @@
 from copy import deepcopy
 from dataclasses import replace, asdict
 import pytest
-from bpuverify.bpu.model.early_joint_sources import EarlyJointSources
-from bpuverify.bpu.model.pipeline import Resolution
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.bpu.model.early_opposition import provider, resident
-from bpuverify.utage.model.semantic import Entry, tag
-from bpuverify.tage.model.semantic import TABLES
+from suites.frontend.bpu.bpu.model.early_joint_sources import EarlyJointSources
+from suites.frontend.bpu.bpu.model.pipeline import Resolution
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.early_opposition import provider, resident
+from suites.frontend.bpu.utage.model.semantic import Entry, tag
+from suites.frontend.bpu.tage.model.semantic import TABLES
 from tests.bpu.scoreboard._indirect_path_program import Program
 from tests.bpu.scoreboard import test_joint_sources as old
 
@@ -174,7 +174,6 @@ def complete_teaching(pc, flowing):
     return detail
 
 
-
 def six_once():
     p = Program(0x40000001, flowing=False)
     p.source(pc=p.a)
@@ -192,8 +191,6 @@ def six_once():
             p.step()
     assert counts == dict.fromkeys(names, 8)
     return counts
-
-
 
 
 def test_all_six_components_advance_exactly_once():

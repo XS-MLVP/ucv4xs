@@ -1,8 +1,8 @@
 """Ordinary-memory shared recovery/reset histories, no private/reference reads."""
 from dataclasses import replace
 
-from lsqverify.lsq_wrapper.types import Inputs
-from lsqverify.vlq.types import QueuePtr, Redirect
+from suites.memblock.lsq.lsq_wrapper.types import Inputs
+from suites.memblock.lsq.vlq.types import QueuePtr, Redirect
 from .memory_owners import MemoryOwners, rob_number
 
 

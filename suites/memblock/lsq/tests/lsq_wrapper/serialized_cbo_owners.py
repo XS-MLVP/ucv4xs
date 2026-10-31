@@ -1,9 +1,9 @@
 """True empty-ROB CBO dispatch, no younger admission until original WB/retire."""
 from dataclasses import replace
 
-from lsqverify.load_queue.types import Load
-from lsqverify.lsq_wrapper.types import Dispatch
-from lsqverify.raw.types import SqPtr
+from suites.memblock.lsq.load_queue.types import Load
+from suites.memblock.lsq.lsq_wrapper.types import Dispatch
+from suites.memblock.lsq.raw.types import SqPtr
 from .special_owners import SpecialOwners
 
 

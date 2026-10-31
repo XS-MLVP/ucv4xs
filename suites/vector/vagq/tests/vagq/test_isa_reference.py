@@ -1,7 +1,7 @@
 """Pure RVV v1.0 oracle qualification; no DUT or Chisel-derived model."""
 import pytest
 
-from vagqverify.vagq.isa_reference import (
+from suites.vector.vagq.vagq.isa_reference import (
     access_order_is_legal,
     architectural_accesses,
     allowed_destination_values,

@@ -1,8 +1,8 @@
 """Compare logical owner results; same-cycle lane outputs are not paired origins."""
 import pytest
 
-from bpuverify.bpu.case.asymmetric_retirement import check_asymmetric_retirement
-from bpuverify.bpu.coverage.asymmetric_retirement import AsymmetricRetirementCoverage
+from suites.frontend.bpu.bpu.case.asymmetric_retirement import check_asymmetric_retirement
+from suites.frontend.bpu.bpu.coverage.asymmetric_retirement import AsymmetricRetirementCoverage
 
 
 @pytest.mark.feature('BPU-INT-086')

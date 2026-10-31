@@ -6,8 +6,8 @@ so PLRU slot choice is not over-specified.
 """
 from __future__ import annotations
 
-from sbufferverify.common.runtime import execution
-from sbufferverify.sbuffer.model import Enq
+from suites.memblock.sbuffer.execution import execution
+from suites.memblock.sbuffer.sbuffer.model import Enq
 
 
 def data(byte_value: int) -> int:
@@ -17,7 +17,7 @@ def data(byte_value: int) -> int:
 # SBT-RESET-01
 async def test_reset_and_idle(sbuffer_env):
     env = sbuffer_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset("idle")
         await env.settle(3)
         assert env.read(env.sbempty) == 1
@@ -29,7 +29,7 @@ async def test_reset_and_idle(sbuffer_env):
 async def test_merge_and_forward(sbuffer_env):
     env = sbuffer_env
     env.timeout.Set(0x3FFFFF)
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         line = Enq(ptag=5, vtag=9, lane=1, mask=0x000F, data=data(0x10))
         await env.enqueue([line])
@@ -64,7 +64,7 @@ async def test_merge_and_forward(sbuffer_env):
 async def test_dual_port_enqueue(sbuffer_env):
     env = sbuffer_env
     env.timeout.Set(0x3FFFFF)
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         # Same physical line, two lanes in one cycle: one line, merged mask.
         await env.enqueue(
@@ -108,7 +108,7 @@ async def test_dual_port_enqueue(sbuffer_env):
 # SBT-DRAIN-01
 async def test_timeout_writeout_all_lanes(sbuffer_env):
     env = sbuffer_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.timeout.Set(3)
         for lane in range(4):
@@ -129,7 +129,7 @@ async def test_timeout_writeout_all_lanes(sbuffer_env):
 # SBT-DRAIN-01
 async def test_replay_resends_same_line(sbuffer_env):
     env = sbuffer_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.timeout.Set(2)
         await env.enqueue([Enq(ptag=60, vtag=70, lane=0, mask=0x00FF, data=data(0xA0))])
@@ -159,7 +159,7 @@ async def test_replay_resends_same_line(sbuffer_env):
 async def test_fence_flush_empty_requires_sqempty(sbuffer_env):
     env = sbuffer_env
     env.timeout.Set(0x3FFFFF)
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         for index in range(3):
             await env.enqueue([Enq(ptag=80 + index, vtag=90 + index, lane=index, mask=0xFFFF, data=data(0xB0 + index))])
@@ -191,7 +191,7 @@ async def test_fence_flush_empty_requires_sqempty(sbuffer_env):
 async def test_cmo_completion_uses_sbempty_without_sqempty(sbuffer_env):
     env = sbuffer_env
     env.timeout.Set(0x3FFFFF)
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         for index in range(2):
             await env.enqueue([Enq(ptag=100 + index, vtag=110 + index, lane=index, mask=0xFFFF, data=data(0xD0 + index))])
@@ -223,7 +223,7 @@ async def test_cmo_completion_uses_sbempty_without_sqempty(sbuffer_env):
 async def test_uarch_drain_on_vtag_mismatch_merge(sbuffer_env):
     env = sbuffer_env
     env.timeout.Set(0x3FFFFF)
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await env.enqueue([Enq(ptag=120, vtag=130, lane=0, mask=0x000F, data=data(0xE0))])
         await env.settle(2)
@@ -251,7 +251,7 @@ async def test_capacity_full_and_resume(sbuffer_env):
     env = sbuffer_env
     env.force_write.Set(1)
     env.timeout.Set(0x3FFFFF)
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         # Hold DCache ready low: one line becomes inflight, the rest stay
         # active, so the valid count can actually reach 16.
@@ -282,7 +282,7 @@ async def test_capacity_full_and_resume(sbuffer_env):
 # SBT-REQ-01, SBT-FWD-01
 async def test_sameblock_serialization(sbuffer_env):
     env = sbuffer_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.timeout.Set(3)
         await env.enqueue([Enq(ptag=240, vtag=250, lane=0, mask=0x000F, data=data(0x40))])
@@ -313,7 +313,7 @@ async def test_sameblock_serialization(sbuffer_env):
 async def test_reset_with_entries(sbuffer_env):
     env = sbuffer_env
     env.timeout.Set(0x3FFFFF)
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset("idle")
         for index in range(3):
             await env.enqueue([Enq(ptag=180 + index, vtag=190 + index, lane=index, mask=0xFFFF, data=data(0x60 + index))])
@@ -328,7 +328,7 @@ async def test_reset_with_entries(sbuffer_env):
 async def test_port1_same_tag_fills_all_slots(sbuffer_env):
     env = sbuffer_env
     env.timeout.Set(0x3FFFFF)
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         # For each slot, create the line with port 0 + port 1 on the same fresh
         # tag, then merge all four lanes. Masks alternate which port owns the
@@ -361,7 +361,7 @@ async def test_port1_same_tag_fills_all_slots(sbuffer_env):
 async def test_replay_each_line_slot(sbuffer_env):
     env = sbuffer_env
     env.force_write.Set(1)
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.timeout.Set(2)
         for line in range(16):
@@ -415,7 +415,7 @@ async def test_replay_each_line_slot(sbuffer_env):
 async def test_wline_zero_all_lines(sbuffer_env):
     env = sbuffer_env
     env.timeout.Set(0x3FFFFF)
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         # Fill all 16 slots so every slot's wline path is exercised. DCache
         # ready is low, so at most one line becomes inflight and the rest stay
@@ -448,7 +448,7 @@ async def test_wline_zero_all_lines(sbuffer_env):
 async def test_each_lane_merge_and_forward(sbuffer_env):
     env = sbuffer_env
     env.timeout.Set(0x3FFFFF)
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         for line in range(8):
             await env.enqueue(
@@ -479,14 +479,13 @@ async def test_each_lane_merge_and_forward(sbuffer_env):
         await env.edge()
 
 
-
 # SBT-WRITE-01: data-bit toggle saturation for the first eight slots
 async def test_data_bit_saturation(sbuffer_env):
     env = sbuffer_env
     env.timeout.Set(0x3FFFFF)
     zero = 0
     ones = (1 << 128) - 1
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         for line in range(8):
             await env.enqueue([Enq(ptag=0x300 + line, vtag=0x320 + line, lane=0, mask=0x0001, data=zero)])

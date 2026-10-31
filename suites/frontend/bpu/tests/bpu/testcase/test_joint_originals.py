@@ -1,8 +1,8 @@
 """Sixteen cold/trained programs, without per-signal or asyncio plumbing."""
 import pytest
-from bpuverify.bpu.model.joint_originals import PROFILES
-from bpuverify.bpu.coverage.joint_originals import Coverage
-from bpuverify.bpu.case.joint_originals import check_joint_originals
+from suites.frontend.bpu.bpu.model.joint_originals import PROFILES
+from suites.frontend.bpu.bpu.coverage.joint_originals import Coverage
+from suites.frontend.bpu.bpu.case.joint_originals import check_joint_originals
 
 
 @pytest.mark.feature('BPU-INT-107')

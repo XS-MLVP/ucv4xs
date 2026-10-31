@@ -2,7 +2,7 @@
 """Audit first real-parent round, preserving every original missing RTL line.
 
 Directed evidence only, NOT a complete PSQ model or module acceptance. No
-lsqverify/reference/DUT-internal imports; raw pins and original producer data.
+reference/DUT-internal imports; raw pins and original producer data.
 """
 import argparse
 from collections import Counter

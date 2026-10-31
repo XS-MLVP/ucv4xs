@@ -5,8 +5,8 @@ import random
 
 import pytest
 
-from lsuverify.load_s3.coverage import CASES, LoadS3Coverage
-from lsuverify.load_s3.env import (
+from suites.memblock.lsu.load_s3.coverage import CASES, LoadS3Coverage
+from suites.memblock.lsu.load_s3.env import (
     CAUSE_OH,
     CONCAT_FIELDS,
     EXC_BITS,

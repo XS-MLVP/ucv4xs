@@ -5,14 +5,14 @@ from types import SimpleNamespace
 import pytest
 
 from toffee import ScoreboardMismatch,TransferState
-from bpuverify.utage.model.semantic import Events,tag
-from bpuverify.utage.transaction.types import UtagePrediction,UtageTraining
-from bpuverify.utage.case.definitions import SHADOW_CAPACITY
-from bpuverify.utage.model.query_cohort import Program,PROFILES,ANCESTRIES,COHORT_SIZE,RULES,PC,POSITION
-from bpuverify.utage.checker.query_cohort import Checks
-from bpuverify.utage.coverage.query_cohort import Coverage
+from suites.frontend.bpu.utage.model.semantic import (Events, NORMAL_HISTORY_INDICES,
+    TRAIN_HISTORY_INDICES, tag)
+from suites.frontend.bpu.utage.transaction.types import UtagePrediction,UtageTraining
+from suites.frontend.bpu.utage.case.definitions import SHADOW_CAPACITY
+from suites.frontend.bpu.utage.model.query_cohort import Program,PROFILES,ANCESTRIES,COHORT_SIZE,RULES,PC,POSITION
+from suites.frontend.bpu.utage.checker.query_cohort import Checks
+from suites.frontend.bpu.utage.coverage.query_cohort import Coverage
 from tests.utage.scoreboard.test_query_cohort_model import derive
-
 
 
 def prediction(reference):
@@ -62,9 +62,16 @@ def test_wrong_owner_wrong_version_or_incomplete_cohort_is_rejected(profile,ance
     elif fault=='pending-transfer':transfers[0].state=TransferState.PROCESSING
     elif fault=='idle-read':read['events']=replace(read['events'],select=False)
     elif fault=='wrong-read-index':read['read']=replace(read['read'],indices=(511,511))
-    elif fault=='wrong-read-history':read['events']=replace(read['events'],read_context=replace(
-        p.read_context,folds=(p.read_context.folds[0]^1,*p.read_context.folds[1:])))
-    elif fault=='wrong-match-history':response['frame']=replace(response['frame'],context=replace(p.match_context,folds=(p.match_context.folds[0]^1,*p.match_context.folds[1:])))
+    elif fault=='wrong-read-history':
+        index = NORMAL_HISTORY_INDICES[0]
+        folds = list(p.read_context.folds); folds[index] ^= 1
+        read['events'] = replace(read['events'], read_context=replace(
+            p.read_context, folds=tuple(folds)))
+    elif fault=='wrong-match-history':
+        index = TRAIN_HISTORY_INDICES[0]
+        folds = list(p.match_context.folds); folds[index] ^= 1
+        response['frame'] = replace(response['frame'], context=replace(
+            p.match_context, folds=tuple(folds)))
     elif fault=='equal-younger-read':
         old=read['read'];read['read']=replace(old,entries=tuple(list(old.entries)))
         assert old==read['read'] and old.entries is not read['read'].entries

@@ -136,7 +136,7 @@ def calibration():
     correction_path=ROOT/'results/lsq-RAW-owners-after-01/ROB-source-correction-v1.json'
     correction=load(correction_path)
     assert correction['old_bytes_reconstructed_and_verified_against_original_full_library_aggregate']
-    assert correction['new_producer_SHA256']==sha256_file(ROOT/'lsqverify/load_raw_owners.py')
+    assert correction['new_producer_SHA256']==sha256_file(ROOT/'load_raw_owners.py')
     for name in ('lq-RAW-owners-after-01','lsq-RAW-owners-after-01'):
         historical=load(ROOT/'results'/name/'load-RAW-owners-evidence-v1.json')
         assert not historical['normal_ROB_admission']['proven']

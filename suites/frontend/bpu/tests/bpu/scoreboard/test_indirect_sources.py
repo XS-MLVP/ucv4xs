@@ -1,16 +1,16 @@
 """Independent semantic composition; these synthetic tests are not DUT credit."""
-from bpuverify.common.model.configuration import ITTAGE_ALLOCATION_WAIT
+from suites.frontend.bpu.models.configuration import ITTAGE_ALLOCATION_WAIT
 
 from copy import deepcopy
 from dataclasses import replace
 
 import pytest
 
-from bpuverify.bpu.model.indirect_sources import IndirectSources,allocation,context_for
-from bpuverify.bpu.model.ittage_service import PC,POSITION,PATHS,TARGETS,STREAM_PC,pending_plan
-from bpuverify.bpu.model.pipeline import Outcome,Resolution,Redirect
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.tage.model.semantic import lfsr_next
+from suites.frontend.bpu.bpu.model.indirect_sources import IndirectSources,allocation,context_for
+from suites.frontend.bpu.bpu.model.ittage_service import PC,POSITION,PATHS,TARGETS,STREAM_PC,pending_plan
+from suites.frontend.bpu.bpu.model.pipeline import Outcome,Resolution,Redirect
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.tage.model.semantic import lfsr_next
 from tests.bpu.scoreboard.test_semantic_pipeline import boot
 from tests.bpu.scoreboard.test_direction_sources import quiet,revisit
 

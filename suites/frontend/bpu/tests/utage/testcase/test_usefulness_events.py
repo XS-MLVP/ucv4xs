@@ -1,11 +1,11 @@
 """Readable protection obligations; environment owns scheduling and observation."""
 import pytest
 
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.utage.case.usefulness_events import check_usefulness_event
-from bpuverify.utage.coverage.usefulness_events import UsefulnessCoverage
-from bpuverify.utage.model.usefulness_events import MODES, RULES, UsefulnessProgram
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.utage.case.usefulness_events import check_usefulness_event
+from suites.frontend.bpu.utage.coverage.usefulness_events import UsefulnessCoverage
+from suites.frontend.bpu.utage.model.usefulness_events import MODES, RULES, UsefulnessProgram
 
 
 @pytest.mark.feature('BPU-UTAGE-020')

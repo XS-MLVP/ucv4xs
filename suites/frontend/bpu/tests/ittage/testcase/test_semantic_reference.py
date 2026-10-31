@@ -1,9 +1,9 @@
 """Real semantic programs, checked by the agent's default reference."""
 import pytest
 
-from bpuverify.ittage.case.definitions import PC, POSITION
-from bpuverify.ittage.case.semantic import CROSS_TARGET, retarget_without_table_allocation
-from bpuverify.ittage.transaction.types import IttageTraining
+from suites.frontend.bpu.ittage.case.definitions import PC, POSITION
+from suites.frontend.bpu.ittage.case.semantic import CROSS_TARGET, retarget_without_table_allocation
+from suites.frontend.bpu.ittage.transaction.types import IttageTraining
 
 
 @pytest.mark.feature('BPU-ITTAGE-009')

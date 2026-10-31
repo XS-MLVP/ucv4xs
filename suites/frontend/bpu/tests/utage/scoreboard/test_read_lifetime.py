@@ -4,13 +4,12 @@ from types import SimpleNamespace
 import pytest
 
 from toffee import ScoreboardMismatch
-from bpuverify.utage.model.semantic import Context,Events
+from suites.frontend.bpu.utage.model.semantic import Context,Events
 from tests.utage.scoreboard.test_semantic_model import feedback,POSITIONS
-from bpuverify.utage.model.read_lifetime import Program,PROFILES,RELATIONS,PC,RULES
+from suites.frontend.bpu.utage.model.read_lifetime import Program,PROFILES,RELATIONS,PC,RULES
 from tests.utage.scoreboard.test_read_lifetime_model import prepared,bases
-from bpuverify.utage.checker.read_lifetime import Checks,values
-from bpuverify.utage.coverage.read_lifetime import Coverage
-
+from suites.frontend.bpu.utage.checker.read_lifetime import Checks,values
+from suites.frontend.bpu.utage.coverage.read_lifetime import Coverage
 
 
 def witnesses(p):
@@ -108,10 +107,10 @@ def test_miss_does_not_turn_undefined_provider_or_direction_payload_into_an_orac
 
 
 from copy import deepcopy
-from bpuverify.utage.model.semantic import UtageReference
-from bpuverify.utage.model.read_lifetime import LateReplacementProgram,REBUILD_PROFILES,REBUILD_RULES,MODES
-from bpuverify.utage.coverage.read_lifetime import LateReplacementCoverage
-from bpuverify.utage.checker.read_lifetime import LateReplacementChecks
+from suites.frontend.bpu.utage.model.semantic import UtageReference
+from suites.frontend.bpu.utage.model.read_lifetime import LateReplacementProgram,REBUILD_PROFILES,REBUILD_RULES,MODES
+from suites.frontend.bpu.utage.coverage.read_lifetime import LateReplacementCoverage
+from suites.frontend.bpu.utage.checker.read_lifetime import LateReplacementChecks
 from tests.utage.scoreboard.test_semantic_model import lookup,learn
 from tests.utage.scoreboard.test_read_lifetime_model import values as model_values
 

@@ -2,10 +2,10 @@
 from copy import deepcopy
 from types import SimpleNamespace as NS
 import pytest
-from bpuverify.bpu.coverage.main_service import MainServiceCoverage,main_service_rules
-from bpuverify.bpu.checker.main_service import MainServiceChecks
-from bpuverify.bpu.model.main_service import PCS,PEER_POSITION,POSITION,old_target,new_target,reclassification_effect,after_earlier_branch,entry_plan
-from bpuverify.bpu.model.main_sources import source_entries
+from suites.frontend.bpu.bpu.coverage.main_service import MainServiceCoverage,main_service_rules
+from suites.frontend.bpu.bpu.checker.main_service import MainServiceChecks
+from suites.frontend.bpu.bpu.model.main_service import PCS,PEER_POSITION,POSITION,old_target,new_target,reclassification_effect,after_earlier_branch,entry_plan
+from suites.frontend.bpu.bpu.model.main_sources import source_entries
 from tests.bpu.scoreboard.test_main_service import armed,fixture,consumers,raw_counter,revisit
 
 

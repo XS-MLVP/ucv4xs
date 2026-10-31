@@ -9,9 +9,9 @@ import time
 import pytest
 from toffee import Bin, CoverGroupDef, CoverPointDef
 
-from vagqverify.native import open_dut
-from vagqverify.vagq.exhaustive import ShapeSession, build_shape_sequence, run_shape_sequence
-from vagqverify.vagq.scenario_matrix import feature_case_id, legal_public_feature_cases
+from suites.vector.vagq.native import open_dut
+from suites.vector.vagq.vagq.exhaustive import ShapeSession, build_shape_sequence, run_shape_sequence
+from suites.vector.vagq.vagq.scenario_matrix import feature_case_id, legal_public_feature_cases
 
 
 pytestmark = [pytest.mark.vagq_exhaustive, pytest.mark.vagq_isa_audit]

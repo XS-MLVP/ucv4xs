@@ -1,20 +1,31 @@
 from __future__ import annotations
 
-from bpuverify.ittage.transaction.types import IttageTraining
-from bpuverify.ittage.coverage.catalog import ittage_coverage_model
-from bpuverify.ittage.coverage.catalog import write_ittage_coverage
-from bpuverify.ittage.checker.assertions import exhaust_allocation_candidates
-from bpuverify.ittage.case.definitions import PC
-from bpuverify.ittage.case.definitions import POSITION
-from bpuverify.ittage.case.definitions import TARGET_A
-from bpuverify.ittage.case.definitions import TARGET_B
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.ittage.transaction.types import IttageTraining
+from suites.frontend.bpu.ittage.coverage.catalog import ittage_coverage_model
+from suites.frontend.bpu.ittage.coverage.catalog import write_ittage_coverage
+from suites.frontend.bpu.ittage.checker.assertions import exhaust_allocation_candidates
+from suites.frontend.bpu.ittage.case.definitions import PC
+from suites.frontend.bpu.ittage.case.definitions import POSITION
+from suites.frontend.bpu.ittage.case.definitions import TARGET_A
+from suites.frontend.bpu.ittage.case.definitions import TARGET_B
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 async def test_ittage_functional_coverage_closes_defined_bins(ittage_agent):
     coverage = ittage_coverage_model()
     await ittage_agent.reset()
-    cold = await ittage_agent.predict(PC)
+    # DefaultConfig chooses the first allocation table from an LFSR. This
+    # scenario needs a real first allocation below the longest table so that a
+    # later update can expose the alternate; scan fixed rows for one.
+    candidates = (PC + 0x20, PC + 0x60, PC + 0xE0, PC)
+    pc = None
+    for candidate in candidates:
+        probe = await ittage_agent.predict(candidate)
+        if probe.meta['allocate']['valid']:
+            pc = candidate
+            break
+    assert pc is not None
+    cold = await ittage_agent.predict(pc)
     assert cold.hit == 0 and cold.meta["provider"]["valid"] == 0
     coverage.sample({
         "lookup": "miss", "target": "none", "operation": "idle",
@@ -23,8 +34,8 @@ async def test_ittage_functional_coverage_closes_defined_bins(ittage_agent):
         "history": "zero",
         "training_slot": "none",
     })
-    await ittage_agent.train(IttageTraining(PC, POSITION, TARGET_A, cold.meta, 1))
-    prediction = await ittage_agent.predict(PC)
+    await ittage_agent.train(IttageTraining(pc, POSITION, TARGET_A, cold.meta, 1))
+    prediction = await ittage_agent.predict(pc)
     assert prediction.hit == 1 and prediction.target == TARGET_A
     assert prediction.meta["provider"]["valid"] == 1
     coverage.sample({
@@ -34,8 +45,8 @@ async def test_ittage_functional_coverage_closes_defined_bins(ittage_agent):
         "history": "zero",
         "training_slot": "first",
     })
-    await ittage_agent.train(IttageTraining(PC, POSITION, TARGET_B, prediction.meta, 1))
-    prediction = await ittage_agent.predict(PC)
+    await ittage_agent.train(IttageTraining(pc, POSITION, TARGET_B, prediction.meta, 1))
+    prediction = await ittage_agent.predict(pc)
     assert prediction.hit == 1 and prediction.target == TARGET_B
     coverage.sample({
         "lookup": "hit", "target": "changed", "operation": "update",
@@ -48,8 +59,8 @@ async def test_ittage_functional_coverage_closes_defined_bins(ittage_agent):
     for _ in range(4):
         if prediction.meta["providerCnt_value"] == 0:
             break
-        await ittage_agent.train(IttageTraining(PC, POSITION, TARGET_A, prediction.meta, 0))
-        prediction = await ittage_agent.predict(PC)
+        await ittage_agent.train(IttageTraining(pc, POSITION, TARGET_A, prediction.meta, 0))
+        prediction = await ittage_agent.predict(pc)
     assert prediction.hit == 1 and prediction.target == TARGET_A
     assert prediction.meta["providerCnt_value"] == 0
     assert prediction.meta["altProvider"]["valid"] == 1
@@ -62,7 +73,7 @@ async def test_ittage_functional_coverage_closes_defined_bins(ittage_agent):
     })
 
     await ittage_agent.set_enabled(False)
-    disabled = await ittage_agent.predict(PC)
+    disabled = await ittage_agent.predict(pc)
     assert disabled.hit == 0
     coverage.sample({
         "lookup": "miss", "target": "none", "operation": "idle",

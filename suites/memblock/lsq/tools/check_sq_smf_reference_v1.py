@@ -11,20 +11,20 @@ import types
 from audit_sq_initial import ROOT, sha
 
 sys.path.insert(0,str(ROOT))
-from lsqverify.raw.types import SqPtr
+from suites.memblock.lsq.raw.types import SqPtr
 
 
 def load(file,name):
     module=types.ModuleType(name)
-    module.__package__="lsqverify.replay"
+    module.__package__="suites.memblock.lsq.replay"
     sys.modules[name]=module
     exec(compile(file.read_text(),str(file),"exec"),module.__dict__)
     return module
 
 
 def main():
-    old=ROOT/"results/lsq-sq-endpoint-02/verification-source/lsqverify/replay/model.py"
-    new=ROOT/"lsqverify/replay/model.py"
+    old=ROOT/'results/lsq-sq-endpoint-02/verification-source/lsqverify/replay/model.py'
+    new=ROOT/"replay/model.py"
     a,b=ast.parse(old.read_text()),ast.parse(new.read_text())
     helper=[n for n in b.body if isinstance(n,ast.FunctionDef) and n.name=="sq_exclusive_after"]
     assert len(helper)==1

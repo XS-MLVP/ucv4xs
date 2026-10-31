@@ -1,8 +1,8 @@
 """Single-slot pipe model qualification with fixed protocol answers."""
 import pytest
 
-from vagqverify.pipeline.model import State
-from vagqverify.pipeline.types import Beat, Pipe3Payload, PipePayload
+from suites.vector.vagq.pipeline.model import State
+from suites.vector.vagq.pipeline.types import Beat, Pipe3Payload, PipePayload
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)
 

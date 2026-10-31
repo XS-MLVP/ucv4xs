@@ -18,8 +18,8 @@
   ],
   "prior_evidence": {
     "qualified_identity_pair": "results/utage-index-alias-qualified-20261018-v1/qualification-analysis.json",
-    "old_protection_events": "bpuverify/utage/model/usefulness_events.py 包含九类事件；lower-hold明确复用旧错误来源，不替代本需求的每次新来源。",
-    "old_high_index": "bpuverify/utage/case/split_context.py 的count反馈重复原metadata；本需求不重复单个高地址的物理角色矩阵。",
+    "old_protection_events": "utage/model/usefulness_events.py 包含九类事件；lower-hold明确复用旧错误来源，不替代本需求的每次新来源。",
+    "old_high_index": "utage/case/split_context.py 的count反馈重复原metadata；本需求不重复单个高地址的物理角色矩阵。",
     "aging": "已有tests/utage/testcase/test_aging_learning.py单独验证128次分配失败后的维护重叠；本批不重复该等待或声称覆盖维护事件。"
   },
   "gap_basis": {
@@ -42,12 +42,12 @@
   "new_feature_IDs": 0,
   "physical_enumeration": false,
   "production_layout": {
-    "model": "bpuverify/utage/model/selective_protection.py",
-    "checker": "bpuverify/utage/checker/selective_protection.py",
-    "case": "bpuverify/utage/case/selective_protection.py",
+    "model": "utage/model/selective_protection.py",
+    "checker": "utage/checker/selective_protection.py",
+    "case": "utage/case/selective_protection.py",
     "testcase": "tests/utage/testcase/test_selective_protection.py",
     "coverage": {
-      "factory": "bpuverify.utage.coverage.selective_protection",
+      "factory": "suites.frontend.bpu.utage.coverage.selective_protection",
       "instance": "kunminghu_v3.utage.selective-protection-alias"
     },
     "historical_stage": "results/utage_protection_alias_stage_20261018"

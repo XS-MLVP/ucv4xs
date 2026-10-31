@@ -4,7 +4,7 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.env.phr.observation import BpuPhrObservation
+from suites.frontend.bpu.bpu.env.phr.observation import BpuPhrObservation
 
 
 class Checks:

@@ -1,8 +1,8 @@
 """Independent ordered-permit model qualification."""
 import pytest
 
-from vagqverify.ordered.model import State
-from vagqverify.ordered.types import Beat, Entry, Permit, Redirect, SplitDone
+from suites.vector.vagq.ordered.model import State
+from suites.vector.vagq.ordered.types import Beat, Entry, Permit, Redirect, SplitDone
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)
 ORDERED_LOAD = 0b110

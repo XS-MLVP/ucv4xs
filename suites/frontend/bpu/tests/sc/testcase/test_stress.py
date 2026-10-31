@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.sc.transaction.types import ScTraining
-from bpuverify.sc.checker.assertions import learn
-from bpuverify.sc.case.definitions import PC
-from bpuverify.sc.case.definitions import POSITION
-from bpuverify.sc.case.definitions import SATURATION_ATTEMPTS
-from bpuverify.sc.case.definitions import TAGE_COUNTER
+from suites.frontend.bpu.sc.transaction.types import ScTraining
+from suites.frontend.bpu.sc.checker.assertions import learn
+from suites.frontend.bpu.sc.case.definitions import PC
+from suites.frontend.bpu.sc.case.definitions import POSITION
+from suites.frontend.bpu.sc.case.definitions import SATURATION_ATTEMPTS
+from suites.frontend.bpu.sc.case.definitions import TAGE_COUNTER
 
 
 @pytest.mark.feature("BPU-SC-005")

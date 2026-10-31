@@ -3,7 +3,7 @@ from copy import deepcopy
 
 import pytest
 
-from bpuverify.tage.model.semantic import Entry, Events, RecentLearning, TageReference, Write
+from suites.frontend.bpu.tage.model.semantic import Entry, Events, RecentLearning, TageReference, Write
 
 
 def component_state(model):

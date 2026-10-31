@@ -1,30 +1,30 @@
 """Every installed DUT and production observation layer must bind native memory."""
 import pytest
 
-from bpuverify.abtb.agent.main import AbtbAgent
-from bpuverify.bpu.agent.main import BpuAgent
-from bpuverify.ras.agent.main import RasAgent
-from bpuverify.tage.agent.main import TageAgent
-from bpuverify.utage.agent.main import UtageAgent
-from bpuverify.common.env.memory_direct import require_memory_direct
-from bpuverify.abtb.monitor.state.writebuffer import CapacityMonitor
-from bpuverify.abtb.monitor.state.replacer import ReplacerMonitor
-from bpuverify.bpu.monitor.phr.observation import BpuPhrMonitor
-from bpuverify.bpu.monitor.sc.observer import ScMonitor
-from bpuverify.bpu.monitor.sc.common_state import CommonStateMonitor
-from bpuverify.bpu.monitor.sc.common_routes import CommonHistoryMonitor
-from bpuverify.bpu.monitor.abtb.observation import IntegratedMonitor
-from bpuverify.bpu.monitor.bypass.policy import SramMonitor
-from bpuverify.mbtb.monitor.counter import MbtbCounterActivityMonitor
-from bpuverify.mbtb.monitor.entry import MbtbEntryActivityMonitor
-from bpuverify.mbtb.monitor.shadow import MbtbEntryShadowMonitor
-from bpuverify.ras.monitor.observation import RasCommittedMonitor
-from bpuverify.sc.monitor.threshold import ScThresholdMonitor
-from bpuverify.tage.monitor.state import TagePredictionStateMonitor
-from bpuverify.tage.monitor.write import TageWriteActivityMonitor
-from bpuverify.tage.monitor.shadow import TageShadowMonitor
-from bpuverify.utage.monitor.observation import UtageUsefulMonitor
-from bpuverify.utage.monitor.shadow import UtageShadowMonitor
+from suites.frontend.bpu.abtb.agent.main import AbtbAgent
+from suites.frontend.bpu.bpu.agent.main import BpuAgent
+from suites.frontend.bpu.ras.agent.main import RasAgent
+from suites.frontend.bpu.tage.agent.main import TageAgent
+from suites.frontend.bpu.utage.agent.main import UtageAgent
+from suites.frontend.bpu.runtime.memory_direct import require_memory_direct
+from suites.frontend.bpu.abtb.monitor.state.writebuffer import CapacityMonitor
+from suites.frontend.bpu.abtb.monitor.state.replacer import ReplacerMonitor
+from suites.frontend.bpu.bpu.monitor.phr.observation import BpuPhrMonitor
+from suites.frontend.bpu.bpu.monitor.sc.observer import ScMonitor
+from suites.frontend.bpu.bpu.monitor.sc.common_state import CommonStateMonitor
+from suites.frontend.bpu.bpu.monitor.sc.common_routes import CommonHistoryMonitor
+from suites.frontend.bpu.bpu.monitor.abtb.observation import IntegratedMonitor
+from suites.frontend.bpu.bpu.monitor.bypass.policy import SramMonitor
+from suites.frontend.bpu.mbtb.monitor.counter import MbtbCounterActivityMonitor
+from suites.frontend.bpu.mbtb.monitor.entry import MbtbEntryActivityMonitor
+from suites.frontend.bpu.mbtb.monitor.shadow import MbtbEntryShadowMonitor
+from suites.frontend.bpu.ras.monitor.observation import RasCommittedMonitor
+from suites.frontend.bpu.sc.monitor.threshold import ScThresholdMonitor
+from suites.frontend.bpu.tage.monitor.state import TagePredictionStateMonitor
+from suites.frontend.bpu.tage.monitor.write import TageWriteActivityMonitor
+from suites.frontend.bpu.tage.monitor.shadow import TageShadowMonitor
+from suites.frontend.bpu.utage.monitor.observation import UtageUsefulMonitor
+from suites.frontend.bpu.utage.monitor.shadow import UtageShadowMonitor
 
 
 def observation_layers(name, dut):

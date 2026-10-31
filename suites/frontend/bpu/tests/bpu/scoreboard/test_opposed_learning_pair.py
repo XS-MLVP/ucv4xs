@@ -1,10 +1,10 @@
 """Independent arithmetic, full source lifetimes and adversarial actuals."""
 from copy import deepcopy
 import pytest
-from bpuverify.bpu.model.tage.opposed_learning_pair import PROGRAMS,ORDERS,BOUNDARIES,program,pending_states
-from bpuverify.bpu.model.tage.neighbor_migration import PC
-from bpuverify.bpu.checker.opposed_learning_pair import OpposedLearningPairChecks
-from bpuverify.bpu.coverage.opposed_learning_pair import Coverage
+from suites.frontend.bpu.bpu.model.tage.opposed_learning_pair import PROGRAMS,ORDERS,BOUNDARIES,program,pending_states
+from suites.frontend.bpu.bpu.model.tage.neighbor_migration import PC
+from suites.frontend.bpu.bpu.checker.opposed_learning_pair import OpposedLearningPairChecks
+from suites.frontend.bpu.bpu.coverage.opposed_learning_pair import Coverage
 from tests.bpu.scoreboard.test_direction_turnaround_model import (
     test_reversed_outcomes_use_each_current_version_and_preserve_all_unrelated_histories as check_reference_program)
 from tests.bpu.scoreboard.direction_turnaround_fixtures import completed,relearned,released

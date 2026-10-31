@@ -1,15 +1,17 @@
 """Seeded external producer/bus actors, no reference state used to decide work."""
+
 from dataclasses import replace
 import random
 
 import pytest
 
-from lsqverify.load_queue.actor import LoadActor
-from lsqverify.load_queue.types import Bus, Bypass, Inputs, Load
-from lsqverify.rar.types import Query as RarQuery
-from lsqverify.raw.types import Query as RawQuery, SqPtr
-from lsqverify.replay.types import Cause, L2Hint, Refill, StoreWakeup, TlbHint
-from lsqverify.vlq.types import QueuePtr, RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.load_queue.actor import LoadActor
+from suites.memblock.lsq.load_queue.types import Bus, Bypass, Inputs, Load
+from suites.memblock.lsq.rar.types import Query as RarQuery
+from suites.memblock.lsq.raw.types import Query as RawQuery, SqPtr
+from suites.memblock.lsq.replay.types import Cause, L2Hint, Refill, StoreWakeup, TlbHint
+from suites.memblock.lsq.vlq.types import QueuePtr, RobPtr
 
 
 class Traffic:
@@ -102,9 +104,9 @@ class Traffic:
             del self.jobs[response["mid"]]
         if ack:
             ack.update(phase="response", bound=self.cycle)
-        if pre["io_uncache_req_valid"] and bus.ready:
-            owner = next(o for o in actor.live.values() if o.load.paddr == pre["io_uncache_req_bits_addr"])
-            mid = pre["io_uncache_req_bits_id"]
+        if pre[P.p_uncache_req_valid] and bus.ready:
+            owner = next(o for o in actor.live.values() if o.load.paddr == pre[P.p_uncache_req_bits_addr])
+            mid = pre[P.p_uncache_req_bits_id]
             assert mid not in self.jobs
             sid = rng.choice(free_sids)
             self.jobs[mid] = dict(mid=mid, uid=owner.uid, sid=sid, phase="ack", accepted=self.cycle,
@@ -117,12 +119,12 @@ class Traffic:
             if req.causes == 1:
                 self.types.add(req.nc)
         for lane, uid in enumerate(bypass_uids):
-            assert post[f"io_bypass_{lane}_s1Resp_valid"]
+            assert post[P.io(f"bypass_{lane}_s1Resp_valid")]
             self.consumed.add(uid)
             self.expected.append(dict(tick=tick + 2, lane=lane, **self.returned.pop(uid)))
         for packet in self.expected:
             if packet["tick"] == tick:
-                p = f"io_bypass_{packet['lane']}_s2Resp_"
+                p = P.io(f"bypass_{packet['lane']}_s2Resp_")
                 assert post[p + "valid"] and post[p + "bits_data"] == packet["data"] * ((1 << 64) + 1)
                 assert post[p + "bits_derr"] == int(packet["error"]) and post[p + "bits_nderr"] == int(packet["nderr"])
 

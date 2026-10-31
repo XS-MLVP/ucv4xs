@@ -1,7 +1,7 @@
 """Owned acceptance-window controls; no SDK or DUT observations are golden."""
 from types import SimpleNamespace as N
 import pytest
-from bpuverify.bpu.monitor.admission_window import AdmissionWindow
+from suites.frontend.bpu.bpu.monitor.admission_window import AdmissionWindow
 
 PC=0x40000800
 

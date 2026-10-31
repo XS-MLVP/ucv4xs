@@ -5,9 +5,9 @@ import random
 
 import pytest
 
-from lsuverify.common.robptr import LEVEL_FLUSH, LEVEL_FLUSH_AFTER
-from lsuverify.store_s3.coverage import S3_CASES, StoreS3Coverage
-from lsuverify.store_s3.env import (
+from suites.memblock.lsu.pointers import LEVEL_FLUSH, LEVEL_FLUSH_AFTER
+from suites.memblock.lsu.store_s3.coverage import S3_CASES, StoreS3Coverage
+from suites.memblock.lsu.store_s3.env import (
     CONCAT_FIELDS,
     PIPE_IN_FIELDS,
     StoreS3Env,

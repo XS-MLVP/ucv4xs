@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.bpu.case.definitions import PC
+from suites.frontend.bpu.bpu.case.definitions import PC
 
 
 @pytest.mark.feature("BPU-INT-003")

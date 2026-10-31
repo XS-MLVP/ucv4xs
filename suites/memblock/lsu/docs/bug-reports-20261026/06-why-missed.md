@@ -2,7 +2,7 @@
 
 **结论：7个已确认RTL Bug中，4个的组合已被旧测试实际到达（HWPF、Store tval、S3 kill、matchInvalid），但旧模型给出了同样错误的预期；CBO的CBO/NC两条边分别到达而组合未到达；prefetch.w的写变体未枚举且模型同源；StdExe性能计数器则根本没有可观测端口。** 因此主要根因不是随机测试数量不足，而是**参考模型同源、检查点选错、功能组合缺失、覆盖bin只记录“采样过”**。除StdExe外，其余6个即使只增加断言、仍以旧模型为oracle，也会继续通过。
 
-本复盘绑定固定提交 `893e1580b705d81f113c30c7a05734e09a08050e`，分析对象是上游核查前的 `tests/`、`lsuverify/` 与 `docs/gaps/`，不是事后新测试。
+本复盘绑定固定提交 `893e1580b705d81f113c30c7a05734e09a08050e`，分析对象是上游核查前的 `tests/`、`suites/memblock/lsu/` 与 `docs/gaps/`，不是事后新测试。
 
 ## 1. 先看总表
 
@@ -37,7 +37,7 @@ FULLVA = 0x4000
 assert int(nsu.exc["vaddr"].value) == VADDR
 ```
 
-这不是“没给掩码场景”，而是**输入VA与TLB fullva本来就不同，测试却选择相信输入VA**。参考模型同样在`lsuverify/store_s1/env.py:281`写：
+这不是“没给掩码场景”，而是**输入VA与TLB fullva本来就不同，测试却选择相信输入VA**。参考模型同样在`suites/memblock/lsu/store_s1/env.py:281`写：
 
 ```python
 "fullva": pipe_in["fullva"],
@@ -47,7 +47,7 @@ assert int(nsu.exc["vaddr"].value) == VADDR
 
 ### 2.2 CBO+NC：一个IO样本被推广成“所有uncache都报AF”
 
-模型`lsuverify/store_s2/env.py:115-120`：
+模型`suites/memblock/lsu/store_s2/env.py:115-120`：
 
 ```python
 is_uncache = is_nc or is_mmio
@@ -73,7 +73,7 @@ assert got["pipeOut_valid"] == 0
 assert got["detail"]["kill"] == 1
 ```
 
-而同一拍还有`io_ldout_toRob_valid`、`io_ldout_toIntRf_valid`、`io_lqWrite_valid`。模型在`lsuverify/load_s3/env.py:481-495`计算`ldout_valid`、`int_rf_valid`、`lq_write_valid`时都没有`kill`项，所以即使测试把这些输出和模型比较，也会得到`(1,1,1)`并判为正确。上游#6154的核心正是“kill了但写回仍在”，旧测试与旧模型刚好都停在“pipeOut停了”。
+而同一拍还有`io_ldout_toRob_valid`、`io_ldout_toIntRf_valid`、`io_lqWrite_valid`。模型在`suites/memblock/lsu/load_s3/env.py:481-495`计算`ldout_valid`、`int_rf_valid`、`lq_write_valid`时都没有`kill`项，所以即使测试把这些输出和模型比较，也会得到`(1,1,1)`并判为正确。上游#6154的核心正是“kill了但写回仍在”，旧测试与旧模型刚好都停在“pipeOut停了”。
 
 ### 2.4 matchInvalid：测试只证明rollback，没证明replay状态被清除
 
@@ -86,7 +86,7 @@ assert got["pipeOut_bits"]["matchInvalid"] == 1
 assert got["pipeOut_bits"]["headAlwaysWriteback"] == 1
 ```
 
-没有检查`lqWrite.rep_info_need_rep`和13个`rep_info_cause_*`。模型`lsuverify/load_s3/env.py:514`仍按普通cause优先级选择：
+没有检查`lqWrite.rep_info_need_rep`和13个`rep_info_cause_*`。模型`suites/memblock/lsu/load_s3/env.py:514`仍按普通cause优先级选择：
 
 ```python
 cause_src = concat if use_head_replay else pipe
@@ -101,7 +101,7 @@ LoadUnitS0测试只覆盖：
 - `fu=0x01`：prefetch.i
 - `fu=0x03`：prefetch.r
 
-从未使用`fu=0x05`（该提交的prefetch.w）。模型`lsuverify/load_s0/env.py:350,414`：
+从未使用`fu=0x05`（该提交的prefetch.w）。模型`suites/memblock/lsu/load_s0/env.py:350,414`：
 
 ```python
 prefetch = (bits["accessType_instrType"] >> 2) & 1
@@ -112,7 +112,7 @@ prefetch = (bits["accessType_instrType"] >> 2) & 1
 
 ### 2.6 HWPF：已知矛盾，但被归类为“结构死逻辑”
 
-`lsuverify/load_s2/env.py:701-703`直接复制：
+`suites/memblock/lsu/load_s2/env.py:701-703`直接复制：
 
 ```python
 self.perf[3] = [int(valid and is_hw_prefetch and not kill and cause[6]), ...]
@@ -122,7 +122,7 @@ self.perf[3] = [int(valid and is_hw_prefetch and not kill and cause[6]), ...]
 
 ### 2.7 StdExe计数器：没有端口，也没有模型
 
-`lsuverify/std_exe_unit/env.py:86-111`只收集`in/out/toRob/atomicData/sqData/feedBack`，没有`io_perf_*`；测试与功能覆盖里也没有`STD_out_of_range_issue`。该计数器不在StdExeUnit的功能接口上，旧UT只验证功能行为，因此完全没有观察点。上游#6653是代码审查发现的；本工程只能在固定源码上补静态契约检查。
+`suites/memblock/lsu/std_exe_unit/env.py:86-111`只收集`in/out/toRob/atomicData/sqData/feedBack`，没有`io_perf_*`；测试与功能覆盖里也没有`STD_out_of_range_issue`。该计数器不在StdExeUnit的功能接口上，旧UT只验证功能行为，因此完全没有观察点。上游#6653是代码审查发现的；本工程只能在固定源码上补静态契约检查。
 
 ## 3. 覆盖为什么显示100%却没发现
 

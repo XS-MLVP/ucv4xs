@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from bpuverify.ras.coverage.guard_audit import CHILD, PARENT, ROOT, audit, inspect_sources, witnesses
+from suites.frontend.bpu.ras.coverage.guard_audit import CHILD, PARENT, ROOT, audit, inspect_sources, witnesses
 
 
 def report():
@@ -55,8 +55,8 @@ def test_source_mutations_invalidate_guard_proof(tmp_path, drift):
         before, after = "commitValid & commitInfo_attribute_rasAction == 2'h1", "commitValid & commitInfo_attribute_rasAction == 2'h2"
     else:
         path = tmp_path / CHILD
-        before, after = (('if (_GEN_6)', 'if (_GEN_7)') if drift == 'child-priority' else
-                         ('_GEN_46 = io_commit_popValid', '_GEN_46 = io_commit_pushValid'))
+        before, after = (('if (_GEN_18)', 'if (_GEN_20)') if drift == 'child-priority' else
+                         ('_GEN_19 = io_commit_popValid', '_GEN_19 = io_commit_pushValid'))
     path.write_text(path.read_text().replace(before, after, 1))
     with pytest.raises(ValueError):
         inspect_sources(tmp_path)

@@ -1,5 +1,8 @@
 # 正常Load的RAW全池原UID、checkpoint与真实父级恢复
 
+> 路径迁移说明（2026-10-31）：本文记录中的 *verify/common 为当时源码路径；当前实现已迁入 suites.<group>.<suite> 工程根。历史判定、命令与哈希不据此重标；当前映射见仓库 docs/lessons/suite-namespace-refactor-20261031.md。
+
+
 当前结论：**源投影补强后的两层定向运行和完整八build after专项审计完成，
 1569节点1377 PASS/192 FAIL；证据索引接入实际exit0。整体LSQ仍ACTIVE_NOT_ACCEPTED。** 固定开源893e1580b原样
 RTL/Chisel，Picker原生DUT、完整X Reactor参考与逐拍检查均不修改。

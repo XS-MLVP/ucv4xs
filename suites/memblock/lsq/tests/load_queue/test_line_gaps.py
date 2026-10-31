@@ -1,13 +1,15 @@
 """Cases added AFTER the 5558-row lq-expanded-04 DA inventory review."""
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.load_queue.actor import LoadActor
-from lsqverify.load_queue.types import Bus, Bypass, Inputs
-from lsqverify.raw.types import Query as RawQuery, SqPtr, Store
-from lsqverify.replay.types import Cause, Refill, StoreWakeup, TlbHint
-from lsqverify.vlq.types import RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.load_queue.actor import LoadActor
+from suites.memblock.lsq.load_queue.types import Bus, Bypass, Inputs
+from suites.memblock.lsq.raw.types import Query as RawQuery, SqPtr, Store
+from suites.memblock.lsq.replay.types import Cause, Refill, StoreWakeup, TlbHint
+from suites.memblock.lsq.vlq.types import RobPtr
 
 
 async def allocate(actor, count):
@@ -43,7 +45,7 @@ async def test_dependency_payload_for_every_replay_slot_from_every_s3_source(lq,
         await actor.execute([uid], lanes=(lane,))
     for _ in range(5):
         await actor.step()
-        assert not any(lq.observed[f"io_replay_{bank}_valid"] for bank in range(3))
+        assert not any(lq.observed[P.io(f"replay_{bank}_valid")] for bank in range(3))
     if cause == Cause.ADDRESS_DEPENDENCE:
         await actor.step(Inputs(address_wakeups=(StoreWakeup(True, SqPtr.encode(7)), StoreWakeup())))
     elif cause == Cause.TLB_MISS:
@@ -67,7 +69,7 @@ async def test_real_head_near_candidates_in_last_age_slot_of_all_three_banks(lq)
     for _ in range(3):
         await actor.step()
     await actor.step(Inputs(replay_ready=(True,) * 3))
-    assert [lq.observed[f"io_replay_{bank}_bits_replayQueueIdx"] for bank in range(3)] == [117, 118, 119]
+    assert [lq.observed[P.io(f"replay_{bank}_bits_replayQueueIdx")] for bank in range(3)] == [117, 118, 119]
     await actor.drain()
     actor.checked(("LQ-HEAD.replay_priority",), uids)
 
@@ -88,7 +90,7 @@ async def test_both_raw_store_lanes_select_all_physical_groups_with_original_met
         await actor.step()
         await actor.step()
         for lane in range(2):
-            p = f"io_nuke_rollback_{lane}_"
+            p = P.io(f"nuke_rollback_{lane}_")
             assert lq.observed[p + "valid"] and lq.observed[p + "bits_robIdx_value"] == o.rob.value
             assert lq.observed[p + "bits_stFtqIdx_value"] == 40 + lane
     await actor.drain(controls=Inputs(address_ready=SqPtr.encode(11)))
@@ -108,11 +110,11 @@ async def test_three_lane_uncache_sorted_payload_and_parallel_bypass_consumption
     data = {}
     for sid in range(16):
         for _ in range(80):
-            if lq.observed["io_uncache_req_valid"]:
+            if lq.observed[P.p_uncache_req_valid]:
                 break
             await actor.step()
-        owner = next(actor.owner(uid) for uid in uids if actor.owner(uid).load.paddr == lq.observed["io_uncache_req_bits_addr"])
-        mid = lq.observed["io_uncache_req_bits_id"]
+        owner = next(actor.owner(uid) for uid in uids if actor.owner(uid).load.paddr == lq.observed[P.p_uncache_req_bits_addr])
+        mid = lq.observed[P.p_uncache_req_bits_id]
         value = 0xFEDCBA9876000000 | owner.uid
         data[owner.uid] = value
         await actor.step(Inputs(bus=Bus(ready=True)))
@@ -129,7 +131,7 @@ async def test_three_lane_uncache_sorted_payload_and_parallel_bypass_consumption
         await actor.step(Inputs(bypass=queries + (Bypass(),) * (3 - len(queries))))
         await actor.step()
         for lane, uid in enumerate(batch):
-            assert lq.observed[f"io_bypass_{lane}_s2Resp_valid"] and lq.observed[f"io_bypass_{lane}_s2Resp_bits_data"] == data[uid] * ((1 << 64) + 1)
+            assert lq.observed[P.io(f"bypass_{lane}_s2Resp_valid")] and lq.observed[P.io(f"bypass_{lane}_s2Resp_bits_data")] == data[uid] * ((1 << 64) + 1)
         await actor.feedback(batch)
     await actor.drain()
     actor.checked(("LQ-UNCACHE.all_entries", "LQ-UNCACHE.bypass"), uids)

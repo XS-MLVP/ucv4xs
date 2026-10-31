@@ -1,9 +1,9 @@
 """Real paths, shared short prerequisites and retained long-history identities."""
 import pytest
 
-from bpuverify.bpu.case.history_working_set import (check_history_working_set,check_short_path_retention,check_short_mixed_lifetime)
-from bpuverify.bpu.coverage.history_working_set import HistoryWorkingSetCoverage,ShortPathRetentionCoverage,ShortMixedPathCoverage
-from bpuverify.bpu.model.history_working_set import (HistoryWorkingSetProgram,PROFILES,ShortWorkingSetProgram,
+from suites.frontend.bpu.bpu.case.history_working_set import (check_history_working_set,check_short_path_retention,check_short_mixed_lifetime)
+from suites.frontend.bpu.bpu.coverage.history_working_set import HistoryWorkingSetCoverage,ShortPathRetentionCoverage,ShortMixedPathCoverage
+from suites.frontend.bpu.bpu.model.history_working_set import (HistoryWorkingSetProgram,PROFILES,ShortWorkingSetProgram,
     SHORT_PROFILES,ShortMixedWorkingSetProgram,SHORT_MIXED_PROFILES)
 
 # Measured on the 2026-10-21 full BPU program run; scheduling hint only.

@@ -1,9 +1,9 @@
 """Read ages and branch-version semantics, not a physical coordinate matrix."""
 import json
 import pytest
-from bpuverify.utage.model.query_cohort import Program,PROFILES,ANCESTRIES
-from bpuverify.utage.coverage.query_cohort import Coverage
-from bpuverify.utage.case.query_cohort import run
+from suites.frontend.bpu.utage.model.query_cohort import Program,PROFILES,ANCESTRIES
+from suites.frontend.bpu.utage.coverage.query_cohort import Coverage
+from suites.frontend.bpu.utage.case.query_cohort import run
 
 
 @pytest.mark.feature('BPU-UTAGE-006')

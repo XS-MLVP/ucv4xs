@@ -15,16 +15,16 @@ from toffee import Execution
 from toffee import MemoryBackend
 from toffee import ScoreboardMismatch
 from toffee import Transfer
-from bpuverify.bpu.bundle.values import _plain
-from bpuverify.bpu.checker.abtb.write import WriteChecker as DirectChecks
-from bpuverify.bpu.checker.abtb.write import entry
-from bpuverify.bpu.checker.abtb.write import expected_ports
-from bpuverify.bpu.checker.abtb.write import qualified
-from bpuverify.bpu.checker.abtb.write import read_inputs
-from bpuverify.bpu.monitor.abtb.write import ENTRY_NAMES
-from bpuverify.bpu.monitor.abtb.write import WriteMonitor
-from bpuverify.bpu.env.abtb.write import WriteObservation as DirectObservation
-from bpuverify.bpu.model.abtb.write import WriteLineageReference
+from suites.frontend.bpu.bpu.bundle.values import _plain
+from suites.frontend.bpu.bpu.checker.abtb.write import WriteChecker as DirectChecks
+from suites.frontend.bpu.bpu.checker.abtb.write import entry
+from suites.frontend.bpu.bpu.checker.abtb.write import expected_ports
+from suites.frontend.bpu.bpu.checker.abtb.write import qualified
+from suites.frontend.bpu.bpu.checker.abtb.write import read_inputs
+from suites.frontend.bpu.bpu.monitor.abtb.write import ENTRY_NAMES
+from suites.frontend.bpu.bpu.monitor.abtb.write import WriteMonitor
+from suites.frontend.bpu.bpu.env.abtb.write import WriteObservation as DirectObservation
+from suites.frontend.bpu.bpu.model.abtb.write import WriteLineageReference
 
 STAGE = Path(__file__).resolve().parent
 RTL = Path(__file__).resolve().parents[4] / 'rtl/bpu'
@@ -143,7 +143,7 @@ def test_binding_is_static_readonly_and_every_leaf_exists_in_matching_compiled_R
         suffix = path.removeprefix('bpu0.abtb.')
         parts = suffix.split('.')
         name = 'WriteBuffer.sv' if len(parts) == 3 and parts[1] == 'writeBuffer' else\
-            'SplittedSRAMTemplate.sv' if len(parts) == 3 and parts[1] == 'sram' else 'AheadBtbBank.sv'
+            'SplittedSRAMTemplate_2.sv' if len(parts) == 3 and parts[1] == 'sram' else 'AheadBtbBank.sv'
         assert re.search(r'\b' + re.escape(parts[-1]) + r'\b', (RTL / name).read_text()), (path, name)
     snapshot = _plain(monitor.binding.bits.sample())
     assert snapshot['reset'] == 1 and len(snapshot['banks']) == 4
@@ -286,7 +286,7 @@ def test_capture_failure_is_latched_on_owner_and_rethrown_with_state_and_exact_e
 
 
 async def test_scope_cleanup_preserves_resume_streams_and_closes_children_even_after_failure(monkeypatch):
-    from bpuverify.bpu.env.phr.observation import BpuPhrObservation
+    from suites.frontend.bpu.bpu.env.phr.observation import BpuPhrObservation
     order = []
     async def base_close(self, *, resume_streams):
         order.append(('base', resume_streams))
@@ -396,8 +396,8 @@ def test_pending_public_reset_cache_cannot_replace_committed_internal_reset():
 
 
 def test_native_binding_cache_is_per_model_and_closed_handle_lookup_fails():
-    from bpuverify.common.env.memory_direct import memory_signal
-    from bpuverify.common.env.memory_direct import require_memory_direct
+    from suites.frontend.bpu.runtime.memory_direct import memory_signal
+    from suites.frontend.bpu.runtime.memory_direct import require_memory_direct
     first, second = agent(), agent()
     one, two = WriteMonitor(first), WriteMonitor(second)
     assert one.binding.bits.reset is not two.binding.bits.reset

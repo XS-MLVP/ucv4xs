@@ -1,15 +1,15 @@
-from bpuverify.bpu.model.early_opposition import FALLBACK
+from suites.frontend.bpu.bpu.model.early_opposition import FALLBACK
 """Independent two-consumer paths and adversarial actual response controls."""
 import ast
 from dataclasses import replace
 from pathlib import Path
 from types import SimpleNamespace as NS
 import pytest
-from bpuverify.bpu.model.short_revisit import PROFILES,program,rules
-from bpuverify.bpu.model.early_opposition import provider
-from bpuverify.bpu.model.pipeline import Redirect
-from bpuverify.bpu.checker.short_revisit import Checks
-from bpuverify.bpu.coverage.short_revisit import Coverage
+from suites.frontend.bpu.bpu.model.short_revisit import PROFILES,program,rules
+from suites.frontend.bpu.bpu.model.early_opposition import provider
+from suites.frontend.bpu.bpu.model.pipeline import Redirect
+from suites.frontend.bpu.bpu.checker.short_revisit import Checks
+from suites.frontend.bpu.bpu.coverage.short_revisit import Coverage
 from tests.bpu.scoreboard.test_entry_protection import Program as ProtectionProgram
 from tests.bpu.scoreboard.test_early_short_protection import Program as WindowProgram
 
@@ -143,7 +143,7 @@ def test_older_paths_have_distinct_long_read_contexts_but_same_short_identity(en
 
 
 def test_case_hides_io_edges_and_task_scheduling():
-    for name in ('bpuverify/bpu/case/short_revisit.py','tests/bpu/testcase/test_short_revisit.py'):
+    for name in ('bpu/case/short_revisit.py','tests/bpu/testcase/test_short_revisit.py'):
         tree=ast.parse(Path(name).read_text()); forbidden={'RisingEdge','FallingEdge','ClockCycles','get_','set_','gather','create_task'}
         assert not {n.id for n in ast.walk(tree) if isinstance(n,ast.Name)} & forbidden
         assert not {n.attr for n in ast.walk(tree) if isinstance(n,ast.Attribute)} & forbidden

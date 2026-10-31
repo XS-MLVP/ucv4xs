@@ -9,8 +9,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from tools.run_vagq_exhaustive import atomic_json, digest
-from vagqverify.vagq.failure_review import analyze_failure
-from vagqverify.vagq.scenario_matrix import legal_public_feature_cases
+from suites.vector.vagq.vagq.failure_review import analyze_failure
+from suites.vector.vagq.vagq.scenario_matrix import legal_public_feature_cases
 
 
 def main():

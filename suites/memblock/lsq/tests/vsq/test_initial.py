@@ -1,14 +1,16 @@
+
 import pytest
 
-from lsqverify.raw.types import SqPtr
-from lsqverify.vlq.types import Redirect, RobPtr
-from lsqverify.vsq.types import Dispatch
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.vlq.types import Redirect, RobPtr
+from suites.memblock.lsq.vsq.types import Dispatch
 
 
 async def test_empty_has_no_retire_or_recovery(vsq):
     env = vsq
     await env.idle(6)
-    assert env.observed["io_empty"] and not env.observed["io_toPhysicalQueue_redirectPtr_valid"]
+    assert env.observed[P.p_empty] and not env.observed[P.p_toPhysicalQueue_redirectPtr_valid]
     env.coverage.sample(("VSQ-IDLE.quiet",), env.last_tick)
     env.coverage.sample(("VSQ-IDLE.quiet",), env.last_tick, checked=True)
 
@@ -19,9 +21,9 @@ async def test_single_store_head_precommit_then_real_retirement(vsq, lane):
     change = await env.cycle(env.requests({lane: (10, 1)}))
     env.arm(("VSQ-INTERVAL.one", "VSQ-PRECOMMIT.head", "VSQ-PRECOMMIT.payload", "VSQ-RETIRE.rob", "VSQ-RETIRE.latency"))
     await env.idle(4, rob_head=RobPtr.encode(10))
-    assert env.observed["io_toPhysicalQueue_preCommitPtr_valid"]
-    assert env.observed["io_toPhysicalQueue_preCommitPtr_bits_value"] == 1
-    assert env.observed["io_toPhysicalQueue_retiredPtr_value"] == 0 and not env.observed["io_empty"]
+    assert env.observed[P.p_toPhysicalQueue_preCommitPtr_valid]
+    assert env.observed[P.p_toPhysicalQueue_preCommitPtr_bits_value] == 1
+    assert env.observed[P.p_toPhysicalQueue_retiredPtr_value] == 0 and not env.observed[P.p_empty]
     await env.drain(RobPtr.encode(11))
     env.arm("VSQ-RETIRE.no_duplicate", [change["accepted"][0]["uid"]])
     await env.idle(3)
@@ -42,7 +44,7 @@ async def test_eight_uops_retire_physical_sum_not_virtual_count(vsq):
     change = await env.cycle(env.requests({lane: (10 + lane, (1, 2, 3, 4, 0, 1, 2, 16)[lane]) for lane in range(8)}))
     env.arm(("VSQ-ADMIT.dense", "VSQ-ORDER.batch8", "VSQ-INTERVAL.maximum", "VSQ-INTERVAL.multi"))
     await env.idle(4)
-    assert env.observed["io_toPhysicalQueue_retiredPtr_value"] == 0
+    assert env.observed[P.p_toPhysicalQueue_retiredPtr_value] == 0
     env.arm("VSQ-ORDER.head_block", [item["uid"] for item in change["accepted"]])
     await env.drain(RobPtr.encode(18))
 
@@ -54,9 +56,9 @@ async def test_redirect_keeps_exclusive_end_then_new_uid_uses_canceled_interval(
     old = list(env.last_change["accepted"])
     await env.cycle(redirect=Redirect(True, RobPtr.encode(11), flush_self))
     await env.idle(6)
-    assert not env.observed["io_sqRecoverStall"]
+    assert not env.observed[P.p_sqRecoverStall]
     expected = 2 if flush_self else 6
-    assert env.observed["io_toPhysicalQueue_physicalQueueEnqPtr_value"] == expected
+    assert env.observed[P.p_toPhysicalQueue_physicalQueueEnqPtr_value] == expected
     await env.cycle(env.requests({7: (13, 1)}))
     new_uid = env.last_change["accepted"][0]["uid"]
     assert new_uid > old[-1]["uid"]

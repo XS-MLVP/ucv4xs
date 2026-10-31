@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from icacheverify.prefetchpipe.model import prefetchpipe as model
-from icacheverify.prefetchpipe.model.prefetchpipe import ItlbResponse
-from icacheverify.prefetchpipe.model.prefetchpipe import MetaEntry
-from icacheverify.prefetchpipe.model.prefetchpipe import PrefetchRequest
+from suites.frontend.icache.prefetchpipe.model import prefetchpipe as model
+from suites.frontend.icache.prefetchpipe.model.prefetchpipe import ItlbResponse
+from suites.frontend.icache.prefetchpipe.model.prefetchpipe import MetaEntry
+from suites.frontend.icache.prefetchpipe.model.prefetchpipe import PrefetchRequest
 
 PTAG = 0x23456
 

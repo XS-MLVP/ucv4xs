@@ -5,11 +5,11 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.checker.pipeline import PipelineChecker,public_main_metadata
-from bpuverify.bpu.model.main_sources import BranchTargetSources,source_entries
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.bpu.model.pipeline import Redirect
-from bpuverify.bpu.transaction.types import BpuBatchTraining,BpuBranchFeedback
+from suites.frontend.bpu.bpu.checker.pipeline import PipelineChecker,public_main_metadata
+from suites.frontend.bpu.bpu.model.main_sources import BranchTargetSources,source_entries
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.pipeline import Redirect
+from suites.frontend.bpu.bpu.transaction.types import BpuBatchTraining,BpuBranchFeedback
 from tests.bpu.scoreboard.test_main_sources import ENABLED
 from tests.bpu.scoreboard.test_pipeline_checking import fixture_row
 from tests.bpu.scoreboard.test_semantic_pipeline import PC,boot

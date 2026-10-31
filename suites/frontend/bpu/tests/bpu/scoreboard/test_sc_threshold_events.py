@@ -1,10 +1,10 @@
 """Pure event contracts; synthetic samples never claim native reachability."""
-from bpuverify.common.model.configuration import *
+from suites.frontend.bpu.models.configuration import *
 import pytest
 from toffee import Scoreboard, ScoreboardMismatch, CoverageDatabase, CheckContext, ScoreboardMode
-from bpuverify.bpu.coverage.sc.bounds import ThresholdCoverage, RULES
-from bpuverify.bpu.model.sc.bounds import threshold_events
-from bpuverify.bpu.model.sc.used import threshold_update, MINIMUM, MAXIMUM, INITIAL
+from suites.frontend.bpu.bpu.coverage.sc.bounds import ThresholdCoverage, RULES
+from suites.frontend.bpu.bpu.model.sc.bounds import threshold_events
+from suites.frontend.bpu.bpu.model.sc.used import threshold_update, MINIMUM, MAXIMUM, INITIAL
 
 CASES=(
     ('increase-interior',INITIAL,(1,)),

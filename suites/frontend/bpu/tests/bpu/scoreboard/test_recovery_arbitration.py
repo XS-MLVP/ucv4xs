@@ -5,9 +5,9 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.model.path_history import Checkpoint
-from bpuverify.bpu.model.recovery_arbitration import RecoveryProgram
-from bpuverify.bpu.checker.recovery_arbitration import RecoveryChecks,RULES
+from suites.frontend.bpu.bpu.model.path_history import Checkpoint
+from suites.frontend.bpu.bpu.model.recovery_arbitration import RecoveryProgram
+from suites.frontend.bpu.bpu.checker.recovery_arbitration import RecoveryChecks,RULES
 
 pytestmark=pytest.mark.toffee_functional_coverage(False)
 

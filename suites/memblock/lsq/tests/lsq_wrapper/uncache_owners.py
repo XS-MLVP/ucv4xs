@@ -5,12 +5,12 @@ compare every retained defined output; this is NOT the protocol-only fixture.
 """
 from dataclasses import asdict, replace
 
-from lsqverify.load_queue.types import Bypass, Load
-from lsqverify.lsq_wrapper.types import Address, Bus, Data, Dispatch, Inputs
-from lsqverify.psq.types import Attributes
-from lsqverify.raw.types import FtqPtr, SqPtr
-from lsqverify.replay.types import Enqueue, Uop
-from lsqverify.vlq.types import QueuePtr, Redirect, RobPtr
+from suites.memblock.lsq.load_queue.types import Bypass, Load
+from suites.memblock.lsq.lsq_wrapper.types import Address, Bus, Data, Dispatch, Inputs
+from suites.memblock.lsq.psq.types import Attributes
+from suites.memblock.lsq.raw.types import FtqPtr, SqPtr
+from suites.memblock.lsq.replay.types import Enqueue, Uop
+from suites.memblock.lsq.vlq.types import QueuePtr, Redirect, RobPtr
 from .memory_owners import StoreOwner, rob_number
 
 

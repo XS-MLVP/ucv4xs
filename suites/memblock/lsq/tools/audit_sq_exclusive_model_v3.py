@@ -16,19 +16,19 @@ sys.path.insert(0,str(ROOT))
 
 from audit_sq_exclusive_model_v1 import typed
 from audit_sq_initial import sha, verify_common
-from lsqverify.raw.model import LoadQueueRawModel
-from lsqverify.raw.types import Inputs as RawInputs, SqPtr
-from lsqverify.replay.model import ReplayModel, sq_after
-from lsqverify.replay.types import Inputs as ReplayInputs
-from lsqverify.sq_endpoint.model import ExclusiveRawModel, ExclusiveReplayModel
+from suites.memblock.lsq.raw.model import LoadQueueRawModel
+from suites.memblock.lsq.raw.types import Inputs as RawInputs, SqPtr
+from suites.memblock.lsq.replay.model import ReplayModel, sq_after
+from suites.memblock.lsq.replay.types import Inputs as ReplayInputs
+from suites.memblock.lsq.sq_endpoint.model import ExclusiveRawModel, ExclusiveReplayModel
 
 
 def audit(name):
     run=ROOT/"results"/name
     manifest,source,_=verify_common(run)
     frozen=run/"verification-source"
-    old=ast.parse((frozen/"lsqverify/raw/model.py").read_text())
-    new=ast.parse((frozen/"lsqverify/sq_endpoint/model.py").read_text())
+    old=ast.parse((frozen/'lsqverify/raw/model.py').read_text())
+    new=ast.parse((frozen/'lsqverify/sq_endpoint/model.py').read_text())
     original=next(n for n in ast.walk(old) if isinstance(n,ast.FunctionDef) and n.name=="context")
     replacement=next(n for n in ast.walk(new) if isinstance(n,ast.FunctionDef) and n.name=="context")
     loop=next(n for n in original.body if isinstance(n,ast.For))
@@ -56,8 +56,8 @@ def audit(name):
     previous,old_source,_=verify_common(prior)
     assert previous["tests"]=={"PASS":1691,"FAIL":191}
     for key,digest in old_source.items():
-        if key.startswith("lsqverify/"):assert source[key]==digest,("shared reference changed",key)
-    assert sha(ROOT/"lsqverify/sq_endpoint/model.py")==source["lsqverify/sq_endpoint/model.py"]
+        if key.startswith('lsqverify/'):assert source[key]==digest,("shared reference changed",key)
+    assert sha(ROOT/"sq_endpoint/model.py")==source['lsqverify/sq_endpoint/model.py']
     specs=json.loads((frozen/"manifest/duts.json").read_text())["duts"]
     counts,trace_hashes={},{}
     for family,filename,kind,legacy,extended in(("RAW","load_queue_raw.jsonl",RawInputs,lambda:LoadQueueRawModel(specs["load_queue_raw"]),lambda:ExclusiveRawModel(specs["load_queue_raw"])),
@@ -93,7 +93,7 @@ def audit(name):
     report=dict(status="PASS_NARROW_OPT_IN_REFERENCE_IMPACT_NOT_NATIVE_OR_GOAL_SIGNOFF",run=name,tests=manifest["tests"],snapshot_files=len(source),
                 general_half_ring_rejections_preserved=rejected,RAW_context_AST_only_delta="remove exact-half ValueError and use <= half for Load-exclusive forward position",Replay_delta="RAW_CAPACITY only; all other causes inherited",counts=counts,
                 original_logs_SHA256=trace_hashes,auditors=hashes,preserved_auditor_failures=[
-                    "v1 direct script import had no project root on sys.path: ModuleNotFoundError:lsqverify before any gate",
+                    'v1 direct script import had no project root on sys.path: ModuleNotFoundError:lsqverify before any gate',
                     "v2 bootstrapped import but v1 ast.walk method inventory omitted the existing nested flushed closure. v3 checks class-level methods and requires the unchanged nested closure explicitly; raw-context exact AST normalization gate retained."],
                 limits="Archived old-input pre/post/change equivalence is reference-impact only, not new native DUT execution or an independent semantic oracle. Shared models unchanged; arbitrary half-ring comparisons remain rejected. Parent capacity/random/full goal still need actual native and independent effects gates.")
     out=run/"exclusive-reference-impact-v3.json"

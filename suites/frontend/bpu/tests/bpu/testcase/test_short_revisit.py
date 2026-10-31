@@ -1,9 +1,9 @@
 """Two interior entries and two meaningful older paths, not a coordinate sweep."""
 import json
 import pytest
-from bpuverify.bpu.model.short_revisit import PROFILES
-from bpuverify.bpu.coverage.short_revisit import Coverage
-from bpuverify.bpu.case.short_revisit import run
+from suites.frontend.bpu.bpu.model.short_revisit import PROFILES
+from suites.frontend.bpu.bpu.coverage.short_revisit import Coverage
+from suites.frontend.bpu.bpu.case.short_revisit import run
 
 
 @pytest.mark.feature('BPU-INT-066')

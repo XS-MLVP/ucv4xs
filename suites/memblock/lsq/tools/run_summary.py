@@ -27,8 +27,8 @@ def aggregate(pairs):
 
 def source_summary():
     groups=defaultdict(list)
-    paths=[ROOT/"pytest.ini",ROOT/"README.md"]
-    for folder in("lsqverify","tests","tools","docs/contracts","manifest"):
+    paths=[ROOT/"pytest.ini",ROOT/"README.md",*ucv_paths.suite_python_sources(ROOT)]
+    for folder in("docs/contracts","manifest"):
         paths.extend(p for p in(ROOT/folder).rglob("*") if p.is_file() and "__pycache__" not in p.parts and p.suffix!=".pyc")
     pairs=[]
     for p in paths:

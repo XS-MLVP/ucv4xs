@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.ittage.checker.assertions import exhaust_allocation_candidates
-from bpuverify.ittage.checker.assertions import train_no_allocation_misses
+from suites.frontend.bpu.ittage.checker.assertions import exhaust_allocation_candidates
+from suites.frontend.bpu.ittage.checker.assertions import train_no_allocation_misses
 
 
 @pytest.mark.feature("BPU-ITTAGE-008")

@@ -1,9 +1,9 @@
 """Warm short/long branch experiences share one genuine executed prefix."""
 import json
 import pytest
-from bpuverify.utage.model.dual_source import PROGRAMS
-from bpuverify.utage.coverage.dual_source import Coverage
-from bpuverify.utage.case.dual_source import check_dual_source
+from suites.frontend.bpu.utage.model.dual_source import PROGRAMS
+from suites.frontend.bpu.utage.coverage.dual_source import Coverage
+from suites.frontend.bpu.utage.case.dual_source import check_dual_source
 
 
 def parameters():

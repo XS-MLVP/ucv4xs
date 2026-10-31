@@ -1,15 +1,17 @@
 """Real Store address holes -> Forward -> Replay grant -> original completion."""
+
 from dataclasses import asdict, replace
 import hashlib
 import json
 
-from lsqverify.forward.types import Query, Translation
-from lsqverify.lsq_wrapper.types import Address
-from lsqverify.raw.types import SqPtr
-from lsqverify.replay.types import Cause, StoreWakeup
-from lsqverify.store_payload import add_digest
-from lsqverify.store_strict import check_response, record
-from lsqverify.vlq.types import QueuePtr, RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.forward.types import Query, Translation
+from suites.memblock.lsq.lsq_wrapper.types import Address
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.replay.types import Cause, StoreWakeup
+from suites.memblock.lsq.store_payload import add_digest
+from suites.memblock.lsq.store_strict import check_response, record
+from suites.memblock.lsq.vlq.types import QueuePtr, RobPtr
 from .memory_owners import MemoryOwners, StoreOwner, cached_load
 
 
@@ -35,7 +37,7 @@ async def test_strict_hole_real_replay_wakeup_grant_and_four_lifetimes(lsq, tmp_
             await trace.write(start + slot, lane=slot % 2, address=slot < 63)
         await trace.idle(6)
         expected = record(generation, 0)
-        assert lsq.observed["io_issuePtrExt_value"] == 63
+        assert lsq.observed[P.p_issuePtrExt_value] == 63
         assert trace.sq_head == start and not any(s["completed"] for s in trace.stores.values() if s["owner"].position >= start)
         responses = dict(strict_blocked=0, precise_unblocked=0, strict_after_STA_unblocked=0)
 
@@ -58,8 +60,8 @@ async def test_strict_hole_real_replay_wakeup_grant_and_four_lifetimes(lsq, tmp_
         await trace.execute(precise)
         for _ in range(6):
             await trace.cycle()
-            assert not any(lsq.observed[f"io_replay_{bank}_valid"] for bank in range(3))
-        assert lsq.observed["io_replayAllocate"] and trace.sq_head == start
+            assert not any(lsq.observed[P.io(f"replay_{bank}_valid")] for bank in range(3))
+        assert lsq.observed[P.p_replayAllocate] and trace.sq_head == start
         assert not any(trace.active_loads[load.execution.uop.lq]["completed"] for load in strict + precise)
         lane = generation % 2
         await trace.cycle(addresses=tuple(stores[63].address() if i == lane else Address() for i in range(2)),
@@ -69,7 +71,7 @@ async def test_strict_hole_real_replay_wakeup_grant_and_four_lifetimes(lsq, tmp_
         granted = {}
         for _ in range(40):
             for bank in range(3):
-                p = f"io_replay_{bank}_"
+                p = P.io(f"replay_{bank}_")
                 if not lsq.observed[p + "valid"]:
                     continue
                 key = QueuePtr(bool(lsq.observed[p + "bits_uop_lqIdx_flag"]), lsq.observed[p + "bits_uop_lqIdx_value"])
@@ -95,7 +97,7 @@ async def test_strict_hole_real_replay_wakeup_grant_and_four_lifetimes(lsq, tmp_
         await trace.finish()
         assert trace.sq_head == start + 64 and all(trace.stores[start + slot]["completed"] for slot in range(64))
         assert all(trace.active_loads[load.execution.uop.lq]["completed"] for load in strict + precise)
-        assert not lsq.observed["io_replayAllocate"] and lsq.observed["io_lqEmpty"] and lsq.observed["io_sqEmpty"]
+        assert not lsq.observed[P.p_replayAllocate] and lsq.observed[P.p_lqEmpty] and lsq.observed[P.p_sqEmpty]
         for slot in range(64):
             state = trace.stores[start + slot]
             add_digest(stream, ["actual_store_completed", state["uid"], start + slot, state["last_fire"]])

@@ -44,7 +44,7 @@ def main(argv=None):
             path=args.directory or Path(read(project.root/'.ucv/last-run.json')['path'])
             result=report(path,args.compare)
             print(json.dumps({k:v for k,v in result.items() if k not in {'cases','coverage_reports','coverage_artifacts'}},ensure_ascii=False,indent=2))
-            return 0 if result['hardware_verdict']=='PASS' else 1
+            return 0 if result['hardware_verdict'] in {'PASS','UNCERTAIN'} else 1
         suites=project.select(args.selection,args.require_unified_baseline)
         if args.command in {'list','doctor'}:
             result={'suites':[s.summary() for s in suites],
@@ -80,9 +80,10 @@ def main(argv=None):
         from .run import run
         from .report import report
         output,result=run(project,suites,args.workers,args.seed,forwarded,args.collect_only,args.output)
-        report(output)
+        summary=report(output)
         print(output)
-        return int(result['status']!='PASS')
+        return int(result['status'] not in {'PASS','UNCERTAIN'} or
+                   summary['hardware_verdict'] not in {'PASS','UNCERTAIN'})
     except (UcvError,OSError,ValueError,KeyError) as error:
         print(f'ucv: {error}',file=sys.stderr)
         return 2

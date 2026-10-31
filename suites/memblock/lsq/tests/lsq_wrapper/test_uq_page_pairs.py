@@ -1,14 +1,16 @@
+
 from dataclasses import asdict, replace
 import hashlib
 
 import pytest
 
-from lsqverify.lsq_wrapper.types import Address, Data
-from lsqverify.psq.types import SecondPage
-from lsqverify.raw.types import SqPtr
-from lsqverify.store_payload import add_digest
-from lsqverify.uq_page_pairs import BASES, check_first_word, record, save, second_pa
-from lsqverify.vlq.types import RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.lsq_wrapper.types import Address, Data
+from suites.memblock.lsq.psq.types import SecondPage
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.store_payload import add_digest
+from suites.memblock.lsq.uq_page_pairs import BASES, check_first_word, record, save, second_pa
+from suites.memblock.lsq.vlq.types import RobPtr
 from .memory_owners import MemoryOwners, StoreOwner, cached_load
 
 
@@ -43,7 +45,7 @@ async def test_real_cross_page_pair_high_low_PA_original_Loads_and_Store_fragmen
             req = SecondPage(True, SqPtr.encode(store.position), store.second_page)
             for _ in range(30):
                 await trace.cycle(second_pages=tuple(req if source == index else SecondPage() for source in range(2)))
-                if lsq.pre_observed[f"io_sta_unalignQueueReq_{index}_ready"]:
+                if lsq.pre_observed[P.io(f"sta_unalignQueueReq_{index}_ready")]:
                     break
             else:
                 raise AssertionError("actual Wrapper UQ page handshake missing")
@@ -54,7 +56,7 @@ async def test_real_cross_page_pair_high_low_PA_original_Loads_and_Store_fragmen
         assert trace.sq_head == base and all(not trace.stores[store.position]["consumed"] for store in stores)
         for index, load in enumerate(loads):
             pins = await trace.forward(load, lane)
-            check_first_word(pins, f"io_forward_{lane}_s2Resp_", record(profile, index))
+            check_first_word(pins, P.io(f"forward_{lane}_s2Resp_"), record(profile, index))
             add_digest(stream, ["actual_first_word_forward", profile, lane, index, record(profile, index)])
         await trace.execute(loads)
         await trace.finish(pending=RobPtr.encode(program))

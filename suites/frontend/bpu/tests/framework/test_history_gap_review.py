@@ -5,8 +5,8 @@ from pathlib import Path
 import re
 import pytest
 
-from bpuverify.bpu.coverage.history_gaps import SOURCE,MODEL,assignment,local_claims,constrained_claims,cursor_sources
-from bpuverify.common.coverage.local_guards import ROOT,Source
+from suites.frontend.bpu.bpu.coverage.history_gaps import SOURCE,MODEL,assignment,local_claims,constrained_claims,cursor_sources
+from suites.frontend.bpu.coverage.local_guards import ROOT,Source
 from tools.review_history_gaps import review,main
 
 
@@ -109,8 +109,8 @@ def test_local_proof_rejects_changed_winner_or_ternary_body(monkeypatch,before,a
     ("phrPtr_value <= 10'h0;","phrPtr_value <= 10'h1;"),
     ("s1_phrPtr_value <= 10'h0;","s1_phrPtr_value <= 10'h1;"),
     ("{1'h0, io_train_s3_phrMeta_phrPtr_value} + 11'h212);","{1'h0, io_train_s3_phrMeta_phrPtr_value} + 11'h213);"),
-    ("_GEN_25 = {1'h0, io_train_redirect_valid ? _GEN_12 : phrPtr_value};","_GEN_25 = 11'h1;"),
-    ("new_value_14 = 11'(_GEN_25 + 11'hF);","new_value_14 = 11'(_GEN_25 + 11'hE);"),
+    ("_GEN_22 = {1'h0, io_train_redirect_valid ? _GEN_11 : phrPtr_value};","_GEN_22 = 11'h1;"),
+    ("new_value_14 = 11'(_GEN_22 + 11'hF);","new_value_14 = 11'(_GEN_22 + 11'hE);"),
     ("if (_new_ptr_value_T_29 == 10'h0)","if (_new_ptr_value_T_29 == 10'h1)"),
     ('phr_0 <= phrWriteBits[14];','phr_0 <= phrWriteBits[15];'),
 ))
@@ -128,7 +128,10 @@ def test_new_unaccounted_pointer_writer_invalidates_inductive_closure():
 
 
 def test_hit_or_absent_incompatible_assignment_rejects_the_input_constraint():
-    source=Source(SOURCE);raw,_=candidate_zeros(source);raw.remove((SOURCE,7897))
+    source=Source(SOURCE);raw,_=candidate_zeros(source);line=next(n for n,text in enumerate(source.lines,1)
+        if re.fullmatch(r'phr_\d+ <= phrWrite(?:Bits|LowBits)\[\d+\];',text)
+        and (int(re.match(r'phr_(\d+)',text).group(1))-int(re.search(r'\[(\d+)\]',text).group(1))-1)%2)
+    raw.remove((SOURCE,line))
     with pytest.raises(AssertionError,match='incompatible assignment'):constrained_claims(source,raw)
 
 

@@ -4,11 +4,11 @@ from copy import deepcopy
 import pytest
 from toffee import Scoreboard, ScoreboardMismatch
 
-from bpuverify.bpu.model.bypass.model import BypassReference
-from bpuverify.bpu.model.bypass.partial_wrap import filled_with, retained_fallback, qualifies_return_request
-from bpuverify.bpu.case.bypass.two_program_plan import recipe
-from bpuverify.bpu.case.bypass.public_readback import public_readback_pair
-from bpuverify.bpu.model.phr.model import MASK, path_hash, fold, folds
+from suites.frontend.bpu.bpu.model.bypass.model import BypassReference
+from suites.frontend.bpu.bpu.model.bypass.partial_wrap import filled_with, retained_fallback, qualifies_return_request
+from suites.frontend.bpu.bpu.case.bypass.two_program_plan import recipe
+from suites.frontend.bpu.bpu.case.bypass.public_readback import public_readback_pair
+from suites.frontend.bpu.bpu.model.phr.model import MASK, path_hash, fold, folds
 from tests.bpu.scoreboard.integrated.test_coverage_collection import inputs
 
 

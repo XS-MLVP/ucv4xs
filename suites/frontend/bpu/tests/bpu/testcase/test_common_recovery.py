@@ -1,9 +1,9 @@
 """Actual CFI kind and direction, not old predictions, own the replayed prefix."""
 import pytest
 
-from bpuverify.bpu.case.common_recovery import check_common_recovery
-from bpuverify.bpu.coverage.common_recovery import CommonRecoveryCoverage
-from bpuverify.bpu.model.common_recovery import PROFILES
+from suites.frontend.bpu.bpu.case.common_recovery import check_common_recovery
+from suites.frontend.bpu.bpu.coverage.common_recovery import CommonRecoveryCoverage
+from suites.frontend.bpu.bpu.model.common_recovery import PROFILES
 
 
 @pytest.mark.feature('BPU-INT-043')

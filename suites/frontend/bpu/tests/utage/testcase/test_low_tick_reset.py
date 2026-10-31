@@ -4,12 +4,12 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.utage.transaction.types import UtageTraining
-from bpuverify.utage.coverage.catalog import utage_low_tick_coverage_model
-from bpuverify.utage.coverage.catalog import write_utage_low_tick_coverage
-from bpuverify.utage.case.definitions import PASSING_PC
-from bpuverify.utage.case.definitions import POSITION
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.utage.transaction.types import UtageTraining
+from suites.frontend.bpu.utage.coverage.catalog import utage_low_tick_coverage_model
+from suites.frontend.bpu.utage.coverage.catalog import write_utage_low_tick_coverage
+from suites.frontend.bpu.utage.case.definitions import PASSING_PC
+from suites.frontend.bpu.utage.case.definitions import POSITION
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 LOW_TICK_FAILURES = 130  # bit 7 is asserted after 128 failed allocations
@@ -75,3 +75,45 @@ async def test_low_table_tick_ages_useful_after_sustained_failed_allocations(uta
     coverage.sample({"outcome": "preserved", "provider": "higher"})
     coverage.assert_coverage(100.0)
     write_utage_low_tick_coverage(coverage, REPO_ROOT)
+
+
+# The shadow buffer owns the full 4-bank x 128-set useful array, so one aging
+# sweep is a whole-array operation. Populate every table-0 cell with useful=1
+# through genuine allocations, then let a highest-table miss stream reach the
+# 128-failure aging tick. This is the complete semantic case for
+# "aging decrements every nonzero useful counter", not an enumeration of one
+# physical register.
+ALL_USEFUL_PCS = 0x4000_0000
+
+
+@pytest.mark.feature("BPU-UTAGE-028")
+@pytest.mark.estimated_runtime(300)
+async def test_every_useful_cell_is_aged_by_one_global_sweep(utage_agent):
+    await utage_agent.reset()
+    base = ALL_USEFUL_PCS
+    # index0 = (pc[8:5] << 5) | (pc[4:0] ^ fold(history,5,5)); with a zero
+    # low-five-bit PC and history = index & 31 this covers all 512 indices.
+    for index in range(512):
+        pc = base + (index & 0x1E0)
+        history = index & 0x1F
+        cold = await utage_agent.predict(pc, POSITION, 0, folded_history=history)
+        assert cold.hit == 0, (index, cold)
+        assert cold.meta["readIndex"][0] == index, (index, cold.meta["readIndex"])
+        await utage_agent.train(UtageTraining(pc, POSITION, 1, cold.meta))
+
+    # Same table-0 index, different tag: the lower table already has useful
+    # set, so this miss allocates the upper table instead.
+    trigger_pc = base + 0x400 + 0x1E0
+    trigger_history = 31
+    cold = await utage_agent.predict(trigger_pc, POSITION, 0, folded_history=trigger_history)
+    assert cold.hit == 0
+    await utage_agent.train(UtageTraining(trigger_pc, POSITION, 1, cold.meta))
+    highest = await utage_agent.predict(trigger_pc, POSITION, 0, folded_history=trigger_history)
+    assert (highest.hit, highest.meta["abtbResult"][0]["tableId"]) == (1, 1)
+
+    # Each fresh opposite outcome is a failed allocation; the 128th failure
+    # crosses bit 7 and runs exactly one useful-array aging sweep.
+    for attempt in range(LOW_TICK_FAILURES - 2):
+        await utage_agent.train(UtageTraining(trigger_pc, POSITION, 0, highest.meta))
+    observed = await utage_agent.predict(trigger_pc, POSITION, 0, folded_history=trigger_history)
+    assert observed.hit == 1

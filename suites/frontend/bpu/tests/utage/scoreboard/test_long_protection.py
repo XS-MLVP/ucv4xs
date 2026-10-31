@@ -4,10 +4,10 @@ from dataclasses import replace
 from types import SimpleNamespace as NS
 import pytest
 from toffee import ScoreboardMismatch,TransferState
-from bpuverify.utage.model.semantic import Context,Events,UtageReference
-from bpuverify.utage.model.long_protection import Program,MODES,LIFETIMES,RULES,PC,READ_PCS,SHADOW_CAPACITY
-from bpuverify.utage.checker.long_protection import Checks
-from bpuverify.utage.coverage.long_protection import Coverage
+from suites.frontend.bpu.utage.model.semantic import Context,Events,UtageReference
+from suites.frontend.bpu.utage.model.long_protection import Program,MODES,LIFETIMES,RULES,PC,READ_PCS,SHADOW_CAPACITY
+from suites.frontend.bpu.utage.checker.long_protection import Checks
+from suites.frontend.bpu.utage.coverage.long_protection import Coverage
 from tests.utage.scoreboard.test_semantic_model import lookup,feedback,learn,POSITIONS
 from tests.utage.scoreboard.test_read_lifetime_model import bases,values
 from tests.utage.scoreboard.test_selective_protection_controls import actual

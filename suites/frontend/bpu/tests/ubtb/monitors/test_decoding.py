@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from bpuverify.ubtb.transaction.types import UbtbPrediction
-from bpuverify.ubtb.checker.assertions import train_taken
-from bpuverify.ubtb.case.definitions import DIRECT
+from suites.frontend.bpu.ubtb.transaction.types import UbtbPrediction
+from suites.frontend.bpu.ubtb.checker.assertions import train_taken
+from suites.frontend.bpu.ubtb.case.definitions import DIRECT
 
 
 async def test_prediction_monitor_decodes_every_architectural_field(ubtb_agent):

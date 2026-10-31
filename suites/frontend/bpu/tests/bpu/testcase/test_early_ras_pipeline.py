@@ -1,6 +1,6 @@
 """Three real calls overlap an adjacent or one-neutral-gap return."""
 import pytest
-from bpuverify.bpu.case.ras.early import check_early_calls
+from suites.frontend.bpu.bpu.case.ras.early import check_early_calls
 
 
 @pytest.mark.feature('BPU-INT-068')

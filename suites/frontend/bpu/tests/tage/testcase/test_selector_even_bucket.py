@@ -39,7 +39,7 @@ import json
 
 import pytest
 
-from bpuverify.tage.transaction.types import TageTraining
+from suites.frontend.bpu.tage.transaction.types import TageTraining
 
 POSITION = 4
 LOW, HIGH = 0, 31

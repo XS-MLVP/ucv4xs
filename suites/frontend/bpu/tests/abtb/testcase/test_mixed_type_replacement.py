@@ -6,18 +6,18 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.abtb.coverage.catalog import abtb_mixed_type_replacement_coverage_model
-from bpuverify.abtb.coverage.catalog import write_abtb_mixed_type_replacement_coverage
-from bpuverify.abtb.checker.assertions import assert_miss
-from bpuverify.abtb.checker.assertions import fill_taken_position_set
-from bpuverify.abtb.checker.assertions import matching_entry
-from bpuverify.abtb.checker.assertions import maybe_matching_entry
-from bpuverify.abtb.checker.assertions import train_conditional_direction
-from bpuverify.abtb.checker.assertions import train_taken
-from bpuverify.abtb.case.definitions import NUM_WAYS
-from bpuverify.abtb.case.definitions import interior_set_vectors
-from bpuverify.abtb.case.definitions import same_pc_position_vectors
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.abtb.coverage.catalog import abtb_mixed_type_replacement_coverage_model
+from suites.frontend.bpu.abtb.coverage.catalog import write_abtb_mixed_type_replacement_coverage
+from suites.frontend.bpu.abtb.checker.assertions import assert_miss
+from suites.frontend.bpu.abtb.checker.assertions import fill_taken_position_set
+from suites.frontend.bpu.abtb.checker.assertions import matching_entry
+from suites.frontend.bpu.abtb.checker.assertions import maybe_matching_entry
+from suites.frontend.bpu.abtb.checker.assertions import train_conditional_direction
+from suites.frontend.bpu.abtb.checker.assertions import train_taken
+from suites.frontend.bpu.abtb.case.definitions import NUM_WAYS
+from suites.frontend.bpu.abtb.case.definitions import interior_set_vectors
+from suites.frontend.bpu.abtb.case.definitions import same_pc_position_vectors
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 BANK = 3

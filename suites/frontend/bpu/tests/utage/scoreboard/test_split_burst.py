@@ -4,9 +4,9 @@ from types import SimpleNamespace
 import pytest
 from toffee import Scoreboard, ScoreboardMismatch, TransferState
 
-from bpuverify.utage.env.lookup import check_lookup_burst
-from bpuverify.utage.model.split_context import contexts, neighbor_context
-from bpuverify.utage.transaction.types import UtageLookup
+from suites.frontend.bpu.utage.env.lookup import check_lookup_burst
+from suites.frontend.bpu.utage.model.split_context import contexts, neighbor_context
+from suites.frontend.bpu.utage.transaction.types import UtageLookup
 
 
 @pytest.mark.parametrize('fault', (None, 'empty', 'pending', 'missing_acceptance', 'missing_response',

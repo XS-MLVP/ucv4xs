@@ -2,15 +2,15 @@
 from copy import deepcopy
 from itertools import product
 import pytest
-from bpuverify.bpu.model.sc.model import NAMES
-from bpuverify.bpu.model.sc.model import advance
-from bpuverify.bpu.model.sc.model import zero_slots
-from bpuverify.bpu.model.sc.model import width
-from bpuverify.abtb.model.state.replacer import touch
-from bpuverify.abtb.model.state.replacer import victim
-from bpuverify.bpu.model.sc.full import FullScReference, full_advance
+from suites.frontend.bpu.bpu.model.sc.model import NAMES
+from suites.frontend.bpu.bpu.model.sc.model import advance
+from suites.frontend.bpu.bpu.model.sc.model import zero_slots
+from suites.frontend.bpu.bpu.model.sc.model import width
+from suites.frontend.bpu.abtb.model.state.replacer import touch
+from suites.frontend.bpu.abtb.model.state.replacer import victim
+from suites.frontend.bpu.bpu.model.sc.full import FullScReference, full_advance
 from tests.bpu.scoreboard.test_used_reference import transaction
-from bpuverify.bpu.model.sc.used import used_requests
+from suites.frontend.bpu.bpu.model.sc.used import used_requests
 
 def payload(key, ways=8, value=1, lane=0):
     return dict(set_index=key, masks=[int(i == lane) for i in range(ways)], data=[value if i == lane else 0 for i in range(ways)])

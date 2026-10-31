@@ -1,13 +1,13 @@
 """Logical Main state and source lifetime are independent of DUT signal state."""
 from copy import deepcopy
 import pytest
-from bpuverify.bpu.model.main_cold_original_order import Program,ORDERS,PHASES,COUNTERS,RULES
-from bpuverify.bpu.model.main_original_order import PC,STREAM_PC,EARLIER,LATER,INITIAL_TARGET,TARGETS,LATER_TARGET
-from bpuverify.bpu.model.main_sources import source_entries
-from bpuverify.bpu.model.main_service import counter_payload
-from bpuverify.bpu.model.window_lifetime import WindowLifetimes,LifetimeError
-from bpuverify.bpu.coverage.main_cold_original_order import Coverage
-from bpuverify.mbtb.model.semantic import MbtbReference,Events,Feedback,Branch
+from suites.frontend.bpu.bpu.model.main_cold_original_order import Program,ORDERS,PHASES,COUNTERS,RULES
+from suites.frontend.bpu.bpu.model.main_original_order import PC,STREAM_PC,EARLIER,LATER,INITIAL_TARGET,TARGETS,LATER_TARGET
+from suites.frontend.bpu.bpu.model.main_sources import source_entries
+from suites.frontend.bpu.bpu.model.main_service import counter_payload
+from suites.frontend.bpu.bpu.model.window_lifetime import WindowLifetimes,LifetimeError
+from suites.frontend.bpu.bpu.coverage.main_cold_original_order import Coverage
+from suites.frontend.bpu.mbtb.model.semantic import MbtbReference,Events,Feedback,Branch
 
 
 def settle(model,*,busy=False):
@@ -90,6 +90,6 @@ def test_a_complete_cold_semantic_lifetime_only_credits_its_nine_obligations(ord
 
 
 def test_cold_and_current_source_bins_are_distinct_semantic_claims():
-    from bpuverify.bpu.coverage.main_original_order import Coverage as CurrentCoverage
+    from suites.frontend.bpu.bpu.coverage.main_original_order import Coverage as CurrentCoverage
     p=Program(ORDERS[0],PHASES[0],0)
     assert Coverage(p).groups['checked'].instance!=CurrentCoverage(p).groups['checked'].instance

@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from toffee import TransferState
-from bpuverify.sc.checker.assertions import learn
-from bpuverify.sc.checker.assertions import require_used
-from bpuverify.sc.case.definitions import PC
-from bpuverify.sc.case.definitions import POSITION
-from bpuverify.sc.case.definitions import TAGE_COUNTER
+from suites.frontend.bpu.sc.checker.assertions import learn
+from suites.frontend.bpu.sc.checker.assertions import require_used
+from suites.frontend.bpu.sc.case.definitions import PC
+from suites.frontend.bpu.sc.case.definitions import POSITION
+from suites.frontend.bpu.sc.case.definitions import TAGE_COUNTER
 
 
 async def test_back_to_back_sc_lookups_overlap_and_complete_at_s2(sc_agent):

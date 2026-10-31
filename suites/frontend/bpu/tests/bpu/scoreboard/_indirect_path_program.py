@@ -1,11 +1,11 @@
 """Pure semantic program helper; not imported by production verification code."""
-from bpuverify.common.model.configuration import TAGE_ALLOCATION_WAIT, TAGE_HISTORIES, TAGE_TABLES, PHR_STORAGE_BITS
+from suites.frontend.bpu.models.configuration import TAGE_ALLOCATION_WAIT, TAGE_HISTORIES, TAGE_TABLES, PHR_STORAGE_BITS
 from copy import deepcopy
 from dataclasses import replace
-from bpuverify.bpu.model.early_joint_sources import EarlyJointSources
-from bpuverify.bpu.model.pipeline import Outcome, Resolution
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.bpu.model.path_history import path_contribution
+from suites.frontend.bpu.bpu.model.early_joint_sources import EarlyJointSources
+from suites.frontend.bpu.bpu.model.pipeline import Outcome, Resolution
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.path_history import path_contribution
 from tests.bpu.scoreboard.test_early_late_sources import Program as Foundation
 
 

@@ -4,11 +4,11 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.bpu.model.pipeline import Resolution
-from bpuverify.bpu.model.sc.ownership import OwnedStatisticalReference
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.sc.model.semantic import Events
-from bpuverify.sc.transaction.types import ScHistory
+from suites.frontend.bpu.bpu.model.pipeline import Resolution
+from suites.frontend.bpu.bpu.model.sc.ownership import OwnedStatisticalReference
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.sc.model.semantic import Events
+from suites.frontend.bpu.sc.transaction.types import ScHistory
 from tests.bpu.scoreboard import test_joint_sources as joint
 
 
@@ -309,11 +309,11 @@ def test_only_real_conditional_feedback_has_statistical_learning_eligibility():
 def test_the_layer_imports_existing_algorithms_not_signal_or_DUT_observers():
     import ast
     from pathlib import Path
-    tree = ast.parse(Path('bpuverify/bpu/model/sc/ownership.py').read_text())
+    tree = ast.parse(Path('bpu/model/sc/ownership.py').read_text())
     modules = {node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)}
-    assert modules == {'bpuverify.common.model.configuration', 'dataclasses', 'bpuverify.bpu.model.direction_sources',
-        'bpuverify.bpu.model.indirect_sources', 'bpuverify.bpu.model.pipeline',
-        'bpuverify.bpu.model.selection', 'bpuverify.sc.model.semantic', 'bpuverify.sc.transaction.types'}
+    assert modules == {'suites.frontend.bpu.models.configuration', 'dataclasses', 'suites.frontend.bpu.bpu.model.direction_sources',
+        'suites.frontend.bpu.bpu.model.indirect_sources', 'suites.frontend.bpu.bpu.model.pipeline',
+        'suites.frontend.bpu.bpu.model.selection', 'suites.frontend.bpu.sc.model.semantic', 'suites.frontend.bpu.sc.transaction.types'}
     assert not any(isinstance(node, ast.Import) for node in ast.walk(tree))
 
 

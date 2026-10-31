@@ -1,6 +1,6 @@
 import pytest
 
-from lsqverify.load_raw_owners import trace
+from suites.memblock.lsq.load_raw_owners import trace
 
 
 @pytest.mark.parametrize('target',range(56))

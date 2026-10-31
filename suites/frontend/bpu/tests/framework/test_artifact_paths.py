@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from bpuverify.common.env import artifacts
+from suites.frontend.bpu.runtime import artifacts
 
 
 @pytest.fixture(autouse=True)

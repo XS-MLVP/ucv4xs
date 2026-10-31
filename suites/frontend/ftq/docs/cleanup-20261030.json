@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-30",
+  "reason": "driver/monitor 重组和测试分层收尾后回收旧正式结果与开发中间结果，保留 2026-10-30 最终手工覆盖证据和统一入口运行",
+  "kept": [
+    "results/ftq-final-20261030b",
+    "results/ucv-ftq-full-20261030b"
+  ],
+  "removed": [
+    {
+      "path": "results/ftq-final-20261029",
+      "bytes": 1944980912
+    },
+    {
+      "path": "results/ucv-ftq-full-20261029",
+      "bytes": 45264279
+    },
+    {
+      "path": "results/dev-arch",
+      "bytes": 2381995412
+    },
+    {
+      "path": "results/dev-guard",
+      "bytes": 75385315
+    },
+    {
+      "path": "results/dev-hit",
+      "bytes": 73693112
+    },
+    {
+      "path": "results/dev-ifu",
+      "bytes": 37695554
+    },
+    {
+      "path": "results/dev-laneifu",
+      "bytes": 38937962
+    },
+    {
+      "path": "results/dev-mask",
+      "bytes": 339234683
+    },
+    {
+      "path": "results/dev-matrix2",
+      "bytes": 70873242
+    },
+    {
+      "path": "results/dev-s3x",
+      "bytes": 37692706
+    },
+    {
+      "path": "results/dev-sweep",
+      "bytes": 73589335
+    },
+    {
+      "path": "results/probe2591",
+      "bytes": 15563869
+    },
+    {
+      "path": "results/ftq-final-20261030",
+      "bytes": 2382096508
+    },
+    {
+      "path": "results/ucv-ftq-full-20261030",
+      "bytes": 45313285
+    },
+    {
+      "path": "results/dev-layer",
+      "bytes": 1130797565
+    }
+  ],
+  "removed_bytes": 8693113739
+}

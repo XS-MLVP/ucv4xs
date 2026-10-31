@@ -1,11 +1,13 @@
 """True VSQ special permission plus original Load, actual WB/effect ownership."""
+
 from dataclasses import replace
 import json
 from pathlib import Path
 
 import pytest
 
-from lsqverify.vlq.types import RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.vlq.types import RobPtr
 from .special_owners import SpecialOwners, SpecialStore
 
 
@@ -58,12 +60,12 @@ async def test_zero_actual_wb_and_sq_release_require_own_zero_transfer(lsq_probe
     if old_queued:
         await trace.write(0)
         trace.activate(1)
-        await trace.wait("io_sbuffer_req_0_valid")
+        await trace.wait(P.p_sbuffer_req_0_valid)
     await trace.write(zero.position, lane=1)
     await trace.idle(10)
     lsq_probe.reach("LSQ-RETIRE.zero_ownership")
     trace.base = replace(trace.base, sbuffer_ready=(True, True), writeback_ready=True)
-    await trace.wait("io_mmioStout_valid")
+    await trace.wait(P.p_mmioStout_valid)
     await trace.cycle()
     assert any(wb["position"] == zero.position for wb in trace.wbs)
     await trace.finish(observe_only=True)
@@ -83,7 +85,7 @@ async def test_actual_special_finish_cannot_release_unconsumed_old_store_prefix(
     await trace.allocate()
     await trace.write(0)
     trace.activate(1)
-    await trace.wait("io_sbuffer_req_0_valid")
+    await trace.wait(P.p_sbuffer_req_0_valid)
     if not old_stalled:
         trace.base = replace(trace.base, sbuffer_ready=(True, True))
         for _ in range(30):
@@ -97,7 +99,7 @@ async def test_actual_special_finish_cannot_release_unconsumed_old_store_prefix(
     lsq_probe.reach("LSQ-RETIRE.finish_prefix")
     if memory != 1:
         await trace.bus_respond()
-        await trace.wait("io_mmioStout_valid")
+        await trace.wait(P.p_mmioStout_valid)
         await trace.cycle(writeback_ready=True)
     for _ in range(5):
         await trace.cycle()
@@ -120,7 +122,7 @@ async def test_actual_split_tail_wline_belongs_to_ordinary_owner_not_neighbor_cb
     await trace.write(0)
     trace.activate(1)
     await trace.write(1, lane=1)
-    await trace.wait("io_sbuffer_req_0_valid")
+    await trace.wait(P.p_sbuffer_req_0_valid)
     trace.base = replace(trace.base, sbuffer_ready=(True, True))
     for _ in range(30):
         await trace.cycle()

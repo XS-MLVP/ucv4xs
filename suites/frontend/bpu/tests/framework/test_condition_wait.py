@@ -2,7 +2,7 @@
 import pytest
 from toffee import ClockCycles,Execution,MemoryBackend
 
-from bpuverify.common.env.wait import wait_condition
+from suites.frontend.bpu.runtime.wait import wait_condition
 
 
 @pytest.mark.parametrize('point',('sample','satisfied'))

@@ -1,11 +1,11 @@
 """Logical lifetimes; drivers and monitors own every pipeline boundary."""
 import pytest
 
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.utage.case.working_set import check_working_set
-from bpuverify.utage.coverage.working_set import WorkingSetCoverage
-from bpuverify.utage.model.working_set import MODES, SIZES, WorkingSetProgram
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.utage.case.working_set import check_working_set
+from suites.frontend.bpu.utage.coverage.working_set import WorkingSetCoverage
+from suites.frontend.bpu.utage.model.working_set import MODES, SIZES, WorkingSetProgram
 
 
 @pytest.mark.feature('BPU-UTAGE-020')

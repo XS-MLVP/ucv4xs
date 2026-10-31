@@ -2,15 +2,15 @@
 
 from __future__ import annotations
 
-from bpuverify.utage.transaction.types import UtageTraining
-from bpuverify.utage.coverage.catalog import utage_coverage_model
-from bpuverify.utage.coverage.catalog import write_utage_coverage
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.utage.checker.assertions import allocate
-from bpuverify.utage.checker.assertions import counter
-from bpuverify.utage.case.definitions import PASSING_PC
-from bpuverify.utage.case.definitions import POSITION
-from bpuverify.utage.case.definitions import SATURATION_ATTEMPTS
+from suites.frontend.bpu.utage.transaction.types import UtageTraining
+from suites.frontend.bpu.utage.coverage.catalog import utage_coverage_model
+from suites.frontend.bpu.utage.coverage.catalog import write_utage_coverage
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.utage.checker.assertions import allocate
+from suites.frontend.bpu.utage.checker.assertions import counter
+from suites.frontend.bpu.utage.case.definitions import PASSING_PC
+from suites.frontend.bpu.utage.case.definitions import POSITION
+from suites.frontend.bpu.utage.case.definitions import SATURATION_ATTEMPTS
 
 
 async def test_utage_functional_coverage_closes_defined_bins(utage_agent):

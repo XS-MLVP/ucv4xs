@@ -51,8 +51,8 @@ def test_unknown_selection_path_fails_closed(tmp_path, monkeypatch):
 
 def test_epoch_delta_reports_changed_removed_and_ignores_untracked(tmp_path, monkeypatch):
     monkeypatch.setattr(run_cost, 'ROOT', tmp_path)
-    tracked = write(tmp_path / 'bpuverify/x.py', 'value = 1\n')
-    gone = write(tmp_path / 'bpuverify/y.py', 'value = 2\n')
+    tracked = write(tmp_path / 'x.py', 'value = 1\n')
+    gone = write(tmp_path / 'y.py', 'value = 2\n')
     run = tmp_path / 'results/run'
     run.mkdir(parents=True)
     (run / 'source-epoch.json').write_text(json.dumps({
@@ -60,7 +60,7 @@ def test_epoch_delta_reports_changed_removed_and_ignores_untracked(tmp_path, mon
         str(gone.resolve()): 'deadbeef',
     }))
     write(tmp_path / 'untracked.py', 'other = 3\n')
-    write(tmp_path / 'bpuverify/x.py', 'value = 2\n')
+    write(tmp_path / 'x.py', 'value = 2\n')
     gone.unlink()  # a removed source file must be reported separately
     delta = run_cost.epoch_delta(run)
     assert delta['changed'] == ['x.py']

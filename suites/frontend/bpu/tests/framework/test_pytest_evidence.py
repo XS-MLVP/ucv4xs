@@ -5,7 +5,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.common.pytest import evidence
+from suites.frontend.bpu.pytest_plugins import evidence
 
 
 @pytest.fixture

@@ -21,7 +21,10 @@ one line per set so its model does not need a PLRU.  A `handled=0` response is
 retried like the LSU would replay it, and the L2 side is kept ready (`ack_ready`)
 so writebacks always drain.
 """
+
 from __future__ import annotations
+
+from suites.memblock.dcache.execution import step
 
 import random
 
@@ -43,7 +46,7 @@ def block_of(addr: int) -> int:
 
 def collect_same_set(start: int, count: int, span: int = 0x400000) -> list[int]:
     """Collect `count` block addresses mapping to the same set as `start`."""
-    from dcacheverify.load_pipe.model import dcache_index
+    from suites.memblock.dcache.load_pipe.model import dcache_index
     want = dcache_index(start)
     out = [start]
     addr = start + 0x40
@@ -56,7 +59,7 @@ def collect_same_set(start: int, count: int, span: int = 0x400000) -> list[int]:
 
 def same_set_addresses(start: int, count: int) -> list[int]:
     """Return `count` block addresses that map to the same DCache set."""
-    from dcacheverify.load_pipe.model import dcache_index
+    from suites.memblock.dcache.load_pipe.model import dcache_index
     want = dcache_index(start)
     found = [start]
     addr = start + 0x40
@@ -140,7 +143,7 @@ def pump(dc, model: dict, cycles: int = 4) -> None:
             model["pending"].pop(block, None)
             model["retired"].add(block)
             entry["absorbed"] = True
-        dc.dut.Step(1)
+        step(dc)
         dc.refresh()
 
 
@@ -179,7 +182,7 @@ def observe_miss(dc, model: dict, block: int, context: str,
                     return True
                 raise AssertionError(
                     f"{context}: unexpected Acquire for {address:#x} (want {block:#x})")
-        dc.dut.Step(1)
+        step(dc)
         dc.refresh()
     return False
 
@@ -195,7 +198,7 @@ def store_word(dc, addr: int, word: int, mask: int, value: int, store_id: int,
     accepted = False
     for _ in range(6):
         accepted = accepted or bool(dc._val(dc.store["req_ready"]))
-        dc.dut.Step(1)
+        step(dc)
         dc.refresh()
         if accepted:
             break
@@ -269,7 +272,7 @@ def run_random(dc, seed: int, operations: int = 36) -> dict:
                 service(dc, model, block, f"load miss {cycle}")
                 pump(dc, model, 2)
                 for _ in range(6):
-                    dc.dut.Step(1)
+                    step(dc)
                 response = dc.load_once(0, load_addr, load_addr,
                                         context=f"random reload {cycle}")
                 assert response["miss"] == 0, (cycle, response)

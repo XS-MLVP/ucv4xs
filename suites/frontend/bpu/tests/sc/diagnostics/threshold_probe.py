@@ -20,15 +20,15 @@ from toffee import Execution
 from toffee import Scoreboard
 from toffee import XCommClockBackend
 
-from bpuverify.sc.agent.main import ScAgent
-from bpuverify.sc.transaction.types import ScBaseBranch
-from bpuverify.sc.transaction.types import ScBatchTraining
-from bpuverify.sc.transaction.types import ScBranchFeedback
-from bpuverify.common.bundle.bindings import PortBinding
-from bpuverify.common.env.dut import initialize_dut_inputs
-from bpuverify.common.monitor.cycle import CycleMonitor
-from bpuverify.common.env.memory_direct import memory_signal
-from bpuverify.common.env.memory_direct import memory_signal_names
+from suites.frontend.bpu.sc.agent.main import ScAgent
+from suites.frontend.bpu.sc.transaction.types import ScBaseBranch
+from suites.frontend.bpu.sc.transaction.types import ScBatchTraining
+from suites.frontend.bpu.sc.transaction.types import ScBranchFeedback
+from suites.frontend.bpu.ports.bindings import PortBinding
+from suites.frontend.bpu.runtime.dut import initialize_dut_inputs
+from suites.frontend.bpu.monitors.cycle import CycleMonitor
+from suites.frontend.bpu.runtime.memory_direct import memory_signal
+from suites.frontend.bpu.runtime.memory_direct import memory_signal_names
 
 
 # The current MinimalConfig: five SC tables, 13-bit threshold, four ways.

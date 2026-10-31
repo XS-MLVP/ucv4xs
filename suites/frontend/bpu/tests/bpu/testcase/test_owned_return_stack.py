@@ -2,9 +2,9 @@
 import json
 import pytest
 
-from bpuverify.bpu.case.owned_return_stack import check_owned_return_stack
-from bpuverify.bpu.coverage.owned_return_stack import OwnedReturnCoverage
-from bpuverify.bpu.model.owned_return_stack import PROGRAMS
+from suites.frontend.bpu.bpu.case.owned_return_stack import check_owned_return_stack
+from suites.frontend.bpu.bpu.coverage.owned_return_stack import OwnedReturnCoverage
+from suites.frontend.bpu.bpu.model.owned_return_stack import PROGRAMS
 
 
 def parameters():

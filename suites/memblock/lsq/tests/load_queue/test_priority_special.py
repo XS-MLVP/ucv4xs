@@ -1,11 +1,13 @@
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.load_queue.actor import LoadActor
-from lsqverify.load_queue.types import Inputs
-from lsqverify.replay.types import Cause, TlbHint
-from lsqverify.vlq.types import RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.load_queue.actor import LoadActor
+from suites.memblock.lsq.load_queue.types import Inputs
+from suites.memblock.lsq.replay.types import Cause, TlbHint
+from suites.memblock.lsq.vlq.types import RobPtr
 
 
 @pytest.mark.parametrize("bank", range(3))
@@ -29,11 +31,11 @@ async def test_real_vlq_program_head_feedback_overrides_replay_insertion_age(lq,
         await actor.execute(order[offset:offset + 3])
     for _ in range(3):
         await actor.step()
-    assert lq.observed[f"io_replay_{bank}_bits_replayQueueIdx"] == bank
+    assert lq.observed[P.io(f"replay_{bank}_bits_replayQueueIdx")] == bank
     await actor.step(Inputs(replay_ready=tuple(i == bank for i in range(3))))
-    assert lq.observed[f"io_replay_{bank}_valid"]
-    assert lq.observed[f"io_replay_{bank}_bits_replayQueueIdx"] == 6 + bank
-    assert lq.observed[f"io_replay_{bank}_bits_uop_lqIdx_value"] == actor.owner(target).position % 120
+    assert lq.observed[P.io(f"replay_{bank}_valid")]
+    assert lq.observed[P.io(f"replay_{bank}_bits_replayQueueIdx")] == 6 + bank
+    assert lq.observed[P.io(f"replay_{bank}_bits_uop_lqIdx_value")] == actor.owner(target).position % 120
     lq.reach("LQ-HEAD.replay_priority")
     await actor.drain()
     actor.checked(("LQ-HEAD.replay_priority",), uids)
@@ -52,16 +54,16 @@ async def test_special_mode_exact_2048_boundary_and_real_next_rob_head(lq, eligi
     trigger = lq.last_tick
     for _ in range(2046):
         await actor.step(base)
-        assert not lq.observed["io_specialMode"]
+        assert not lq.observed[P.p_specialMode]
     assert (lq.last_tick - trigger) // 2 == 2046
     await actor.step(base)
-    assert not lq.observed["io_specialMode"]
+    assert not lq.observed[P.p_specialMode]
     await actor.step(base)
-    assert bool(lq.observed["io_specialMode"]) == eligible
+    assert bool(lq.observed[P.p_specialMode]) == eligible
     next_head = replace(owner.rob, former=not owner.rob.former) if former_change else RobPtr.encode(1)
     moved = replace(base, pending_next=next_head)
     await actor.step(moved)
-    assert not lq.observed["io_specialMode"]
+    assert not lq.observed[P.p_specialMode]
     await actor.step(replace(moved, fast_tlb=TlbHint(True, 15)))
     await actor.drain(controls=moved)
     if eligible:

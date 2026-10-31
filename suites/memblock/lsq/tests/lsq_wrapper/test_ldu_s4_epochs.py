@@ -1,4 +1,5 @@
 """Real S4 slot/flag generations, never pointer preloads or reset shortcuts."""
+
 from dataclasses import replace
 
 import pytest
@@ -6,6 +7,8 @@ import pytest
 from .ldu_s4_owners import PATTERNS, S4Program
 from .memory_owners import cached_load
 from .mixed_owners import rob_pointer
+
+from suites.memblock.lsq.legacy_pins import P
 
 
 @pytest.mark.parametrize("rotation",range(3))
@@ -36,7 +39,7 @@ async def test_S4_300_real_programs_all_LQ_SQ_codes_original_effects_and_same_sl
             trace.base=replace(trace.base,pending=rob_pointer(order+1),pending_next=rob_pointer(order+1))
             for _ in range(20):await trace.cycle()
             assert all(s["complete"] or s["cancelled"] for s in trace.loads)
-            assert lsq.observed["io_lqEmpty"] and lsq.observed["io_sqEmpty"]
+            assert lsq.observed[P.p_lqEmpty] and lsq.observed[P.p_sqEmpty]
             lq,order,uid=lq+1,order+1,trace.sequence
     assert codes==set(range(240)) and physical==set(range(120)) and (sq,lq,order)==(300,602,1510)
     lsq.emit("S4_real_epochs_complete",rotation=rotation,programs=300,distinct_target_LQ_codes=240,

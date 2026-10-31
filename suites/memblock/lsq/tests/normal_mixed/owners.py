@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 import random
 
-from lsqverify.replay.types import Cause,Refill,TlbHint
+from suites.memblock.lsq.replay.types import Cause,Refill,TlbHint
 from tests.lsq_wrapper.ldu_s4_mixed_owners import LduS4MixedOwners
 from .sources import SourceJobs
 from .check import NormalMixedCheck,CheckedEnv

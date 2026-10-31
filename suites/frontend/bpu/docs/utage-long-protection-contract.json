@@ -11,7 +11,7 @@
     "groups": [35, 36, 37, 38, 39],
     "baseline_zero_rows": 1903,
     "existing_short_combination": "docs/utage-selective-protection-contract.json",
-    "existing_single_provider_events": "bpuverify/utage/model/usefulness_events.py",
+    "existing_single_provider_events": "utage/model/usefulness_events.py",
     "missing_cross": "已有完整索引选择性保护程序只验证短提供者；单身份长表奖惩不能证明双身份交错下的长表下界纠错、原查询年龄以及短经验保持。",
     "source_instance_correction": "35至39组的1903个零行仅属于短表BypassShadowBuffer；长表BypassShadowBuffer_1在最近完整测量已行全满。长表组合是独立的验证质量缺口，不是这1903行的直接成因。",
     "direct_zero_row_causality_claimed": false,

@@ -1,5 +1,8 @@
 # Load响应池：真实三层响应数据、错误与S3闭环
 
+> 路径迁移说明（2026-10-31）：本文记录中的 *verify/common 为当时源码路径；当前实现已迁入 suites.<group>.<suite> 工程根。历史判定、命令与哈希不据此重标；当前映射见仓库 docs/lessons/suite-namespace-refactor-20261031.md。
+
+
 结论：**本补例完成真实运行和八build专项审计；完整LSQ仍ACTIVE_NOT_ACCEPTED。**
 不修改固定开源893e1580b目标RTL/Chisel，不以串行正例替代SID、混合流量、跨页
 或其他原失败。38-DUT统一regression15的2330节点/227 FAIL及原缺口库存不回填。

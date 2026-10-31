@@ -45,7 +45,7 @@ def load(path):
 
 def original_sources():
     old = load(ROOT / "results" / PRIOR / "source-aggregate-launch.json")
-    extra = {"lsqverify": {"lsqverify/normal_replay_metadata.py"},
+    extra = {'lsqverify': {'lsqverify/normal_replay_metadata.py'},
         "tests": {*FILES.values(), "tests/normal_replay_probe/test_probe.py"}}
     rows = {}
     for group, excluded in extra.items():
@@ -125,7 +125,7 @@ def id_padding_source_proof():
 def calibration():
     correction_path = ROOT / "results/normal-replay-metadata-probe-01/FTQ-source-projection-correction-v1.json"
     ftq = load(correction_path)
-    assert ftq["corrected_producer_SHA256"] == sha256_file(ROOT / "lsqverify/normal_replay_metadata.py")
+    assert ftq["corrected_producer_SHA256"] == sha256_file(ROOT / "normal_replay_metadata.py")
     assert ftq["old_bytes_reconstructed_and_entire_library_aggregate_verified"]
     historical = []
     for after in ("lrq-normal-metadata-after-01", "lq-normal-metadata-after-01", "lsq-normal-metadata-after-01"):

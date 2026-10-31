@@ -2,13 +2,13 @@
 from copy import deepcopy
 from dataclasses import replace
 import pytest
-from bpuverify.bpu.model.pipeline import Outcome,Resolution
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.bpu.model.direction_sources import DirectionSources
-from bpuverify.bpu.model.indirect_sources import IndirectSources
+from suites.frontend.bpu.bpu.model.pipeline import Outcome,Resolution
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.direction_sources import DirectionSources
+from suites.frontend.bpu.bpu.model.indirect_sources import IndirectSources
 from tests.bpu.scoreboard.test_semantic_pipeline import boot,PC
 from tests.bpu.scoreboard.test_direction_sources import quiet,revisit
-from bpuverify.bpu.model.joint_sources import JointLateSources
+from suites.frontend.bpu.bpu.model.joint_sources import JointLateSources
 
 ENABLED=(False,False,True,True,False,True,False)
 CONDITION,INDIRECT=2,10

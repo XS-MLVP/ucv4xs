@@ -14,9 +14,9 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.abtb.case.definitions import CONDITIONAL
-from bpuverify.abtb.checker.assertions import assert_miss
-from bpuverify.abtb.transaction.types import AbtbTraining
+from suites.frontend.bpu.abtb.case.definitions import CONDITIONAL
+from suites.frontend.bpu.abtb.checker.assertions import assert_miss
+from suites.frontend.bpu.abtb.transaction.types import AbtbTraining
 
 
 async def install(agent):

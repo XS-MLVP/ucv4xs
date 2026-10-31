@@ -1,7 +1,7 @@
 """A recovered direction change must return the non-priority shadow payload."""
 import pytest
 
-from bpuverify.bpu.case.abtb.recovery_cases import check_direction_recovery_case
+from suites.frontend.bpu.bpu.case.abtb.recovery_cases import check_direction_recovery_case
 
 
 @pytest.mark.feature('BPU-INT-057')

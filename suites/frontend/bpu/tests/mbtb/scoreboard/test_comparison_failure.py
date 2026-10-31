@@ -3,8 +3,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.mbtb.agent.main import MbtbAgent
-from bpuverify.mbtb.checker.semantic import MbtbSemanticChecker
+from suites.frontend.bpu.mbtb.agent.main import MbtbAgent
+from suites.frontend.bpu.mbtb.checker.semantic import MbtbSemanticChecker
 
 
 def test_independent_failure_precedes_custom_comparison_and_is_not_raised_twice():

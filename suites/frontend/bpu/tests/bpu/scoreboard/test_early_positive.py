@@ -1,13 +1,13 @@
-from bpuverify.bpu.model.early_opposition import FALLBACK
+from suites.frontend.bpu.bpu.model.early_opposition import FALLBACK
 """Two-polarity semantic program; synthetic actuals earn no DUT coverage."""
 from dataclasses import replace
 from types import SimpleNamespace as NS
 import pytest
 
-from bpuverify.bpu.checker.early_positive import EarlyPositiveChecks
-from bpuverify.bpu.coverage.early_positive import EarlyPositiveCoverage,EXTRA_RULES
-from bpuverify.bpu.model.early_opposition import ahead_owner,steady_history,provider
-from bpuverify.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.checker.early_positive import EarlyPositiveChecks
+from suites.frontend.bpu.bpu.coverage.early_positive import EarlyPositiveCoverage,EXTRA_RULES
+from suites.frontend.bpu.bpu.model.early_opposition import ahead_owner,steady_history,provider
+from suites.frontend.bpu.bpu.model.selection import Kind
 from tests.bpu.scoreboard.test_early_opposition import Program as NegativeProgram
 
 

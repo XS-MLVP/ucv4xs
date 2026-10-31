@@ -1,7 +1,7 @@
 """Functional intent; state preparation, protocol and checking are reusable."""
 import pytest
 
-from bpuverify.bpu.case.bypass.partial_wrap import check_partial_wrap
+from suites.frontend.bpu.bpu.case.bypass.partial_wrap import check_partial_wrap
 
 
 @pytest.mark.feature('BPU-INT-063')

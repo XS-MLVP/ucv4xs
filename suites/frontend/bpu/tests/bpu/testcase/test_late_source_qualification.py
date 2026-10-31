@@ -3,9 +3,9 @@ import json
 
 import pytest
 
-from bpuverify.bpu.coverage.late_source import LateSourceCoverage
-from bpuverify.bpu.env.indirect_learning import indirect_program
-from bpuverify.bpu.transaction.types import BpuBranchFeedback
+from suites.frontend.bpu.bpu.coverage.late_source import LateSourceCoverage
+from suites.frontend.bpu.bpu.env.indirect_learning import indirect_program
+from suites.frontend.bpu.bpu.transaction.types import BpuBranchFeedback
 
 LATE_PC = 0x4000_1800
 POSITION = 4

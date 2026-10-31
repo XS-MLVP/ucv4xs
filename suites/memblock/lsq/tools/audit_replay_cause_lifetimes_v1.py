@@ -45,7 +45,7 @@ def calibration():
     assert width['parameter_chain'] == source_chain() and width['parameter_chain']['address_bit'] == 5
     v3_path = width_path.with_name('PA-bit5-producer-correction-v3.json')
     v3 = load(v3_path)
-    assert v3['corrected_producer_SHA256'] == sha256_file(ROOT / 'lsqverify/replay_cause_lifetimes.py')
+    assert v3['corrected_producer_SHA256'] == sha256_file(ROOT / 'replay_cause_lifetimes.py')
     assert v3['old02producer_bytes_and_entire_library_aggregate_verified']
     assert report['old_helper_bytes_and_entire_library_and_test_aggregates_verified']
     assert report['first_post_audit_actual_exitstatus'] == 1
@@ -75,7 +75,7 @@ def calibration():
 
 def old_sources():
     prior = load(ROOT / "results" / BASE / "source-aggregate-launch.json")
-    excludes = {"lsqverify": {"lsqverify/replay_cause_lifetimes.py"},
+    excludes = {'lsqverify': {'lsqverify/replay_cause_lifetimes.py'},
         "tests": {*NEW.values(), "tests/replay_cause_probe/test_probe.py"}}
     result = {}
     for group, names in excludes.items():

@@ -6,9 +6,9 @@ import os
 import pytest
 
 from tools.run_vagq_exhaustive import atomic_json
-from vagqverify.native import open_dut
-from vagqverify.vagq.exhaustive import ShapeSession
-from vagqverify.vagq.nf0_focus import PROFILES, compatible_shapes, make_variant, run_variant
+from suites.vector.vagq.native import open_dut
+from suites.vector.vagq.vagq.exhaustive import ShapeSession
+from suites.vector.vagq.vagq.nf0_focus import PROFILES, compatible_shapes, make_variant, run_variant
 
 pytestmark = pytest.mark.vagq_isa_audit
 

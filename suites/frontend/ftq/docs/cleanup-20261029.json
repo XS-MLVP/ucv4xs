@@ -1,0 +1,115 @@
+{
+  "date": "2026-10-29",
+  "reason": "\u56de\u6536 FTQ \u5f00\u53d1\u8fc7\u7a0b\u4e2d\u95f4\u7ed3\u679c\uff0c\u4fdd\u7559\u6700\u7ec8\u624b\u5de5\u8986\u76d6\u8bc1\u636e\u548c\u7edf\u4e00\u5165\u53e3\u5168\u91cf\u8fd0\u884c",
+  "kept": [
+    "results/ftq-final-20261029",
+    "results/ucv-ftq-full-20261029"
+  ],
+  "removed": [
+    {
+      "path": "results/dev-cq",
+      "bytes": 3641626
+    },
+    {
+      "path": "results/dev-cqtoggle",
+      "bytes": 1165956
+    },
+    {
+      "path": "results/dev-edge",
+      "bytes": 75388354
+    },
+    {
+      "path": "results/dev-edge2",
+      "bytes": 301544154
+    },
+    {
+      "path": "results/dev-faults",
+      "bytes": 75385442
+    },
+    {
+      "path": "results/dev-ftq",
+      "bytes": 794981419
+    },
+    {
+      "path": "results/dev-full1",
+      "bytes": 1115430572
+    },
+    {
+      "path": "results/dev-full2",
+      "bytes": 1137943877
+    },
+    {
+      "path": "results/dev-full3",
+      "bytes": 1298315207
+    },
+    {
+      "path": "results/dev-full4",
+      "bytes": 1302558457
+    },
+    {
+      "path": "results/dev-full5",
+      "bytes": 1338658147
+    },
+    {
+      "path": "results/dev-full6",
+      "bytes": 1429246472
+    },
+    {
+      "path": "results/dev-integ",
+      "bytes": 75384704
+    },
+    {
+      "path": "results/dev-integ2",
+      "bytes": 113080881
+    },
+    {
+      "path": "results/dev-matrix",
+      "bytes": 12503461
+    },
+    {
+      "path": "results/dev-meta-toggle",
+      "bytes": 37696549
+    },
+    {
+      "path": "results/dev-new",
+      "bytes": 6552117
+    },
+    {
+      "path": "results/dev-rq",
+      "bytes": 76828170
+    },
+    {
+      "path": "results/dev-rqtoggle",
+      "bytes": 8026319
+    },
+    {
+      "path": "results/dev-s3",
+      "bytes": 37692707
+    },
+    {
+      "path": "results/dev-slot",
+      "bytes": 12726017
+    },
+    {
+      "path": "results/dev-stress",
+      "bytes": 43645979
+    },
+    {
+      "path": "results/dev-top-sweep",
+      "bytes": 37701850
+    },
+    {
+      "path": "results/dev-topcommit",
+      "bytes": 37693293
+    },
+    {
+      "path": "results/runner-smoke",
+      "bytes": 98496476
+    },
+    {
+      "path": "results/ucv-smoke",
+      "bytes": 38396467
+    }
+  ],
+  "removed_bytes": 9510684673
+}

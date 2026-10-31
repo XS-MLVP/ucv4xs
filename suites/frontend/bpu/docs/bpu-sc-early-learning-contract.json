@@ -16,7 +16,7 @@
   },
   "profiles": ["compressed-entry.held", "compressed-entry.flowing", "conditional-entry.held", "conditional-entry.flowing"],
   "case": "tests/bpu/testcase/test_sc_early_learning.py",
-  "checker": "bpuverify/bpu/checker/sc_early_learning.py",
+  "checker": "bpu/checker/sc_early_learning.py",
   "models": "复用StatisticalJointSources及已有各子模块语义算法，不增加预测器算法。",
   "coverage_family": "kunminghu_v3.bpu.sc-early-learning",
   "atomic_obligations_per_profile": 14,

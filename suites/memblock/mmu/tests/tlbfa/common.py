@@ -1,7 +1,7 @@
 """Shared builders for TLBFA test vectors."""
 from __future__ import annotations
 
-from mmuverify.tlbfa.model import ALL_STAGE, NO_S2, ONLY_S1, ONLY_S2, Refill
+from suites.memblock.mmu.tlbfa.model import ALL_STAGE, NO_S2, ONLY_S1, ONLY_S2, Refill
 
 
 def make_refill(

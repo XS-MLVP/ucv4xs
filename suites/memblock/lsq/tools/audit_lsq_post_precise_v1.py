@@ -40,7 +40,7 @@ def main():
     clean=subprocess.check_output(["git","status","--short","--untracked-files=no"],cwd=ucv_paths.source_path_for(ROOT),text=True).strip()
     assert head=="893e1580b705d81f113c30c7a05734e09a08050e" and not clean and rtl_count==53
     reference=json.loads((RESULTS/selected[0]/"source-evidence.json").read_text())["files"]
-    refs={p:h for p,h in reference.items() if p.startswith("lsqverify/")}
+    refs={p:h for p,h in reference.items() if p.startswith('lsqverify/')}
     assert all(digest(ROOT/p)==h for p,h in refs.items())
     broken=[]
     docs=[ROOT/"README.md",ROOT/"docs/ut-plan.md",*(ROOT/"docs/reports"/n for n in("lsq-progress-regression-12-20261019.md","lsq-s4-precise-20261019.md","lsq-local-reset-20261019.md"))]

@@ -8,12 +8,12 @@ from types import SimpleNamespace as NS
 import pytest
 from toffee import ScoreboardMismatch
 
-from bpuverify.bpu.checker.tage.interleaved import InterleavedLearningChecker
-from bpuverify.bpu.coverage.tage.interleaved import InterleavedCoverage
-from bpuverify.bpu.model.selection import fallthrough
-from bpuverify.bpu.model.tage.interleaved import PC,TRACKED,UNTRACKED,RESOLVED,OWNERS,target,opposing_base_program,discovery_outcomes
-from bpuverify.bpu.transaction.types import BpuPrediction
-from bpuverify.tage.model.semantic import Base,Branch,Context,Events,Feedback,Hint,decide
+from suites.frontend.bpu.bpu.checker.tage.interleaved import InterleavedLearningChecker
+from suites.frontend.bpu.bpu.coverage.tage.interleaved import InterleavedCoverage
+from suites.frontend.bpu.bpu.model.selection import fallthrough
+from suites.frontend.bpu.bpu.model.tage.interleaved import PC,TRACKED,UNTRACKED,RESOLVED,OWNERS,target,opposing_base_program,discovery_outcomes
+from suites.frontend.bpu.bpu.transaction.types import BpuPrediction
+from suites.frontend.bpu.tage.model.semantic import Base,Branch,Context,Events,Feedback,Hint,decide
 from tests.tage.scoreboard.test_semantic_model import actual_prediction,learn,lookup
 
 
@@ -218,7 +218,7 @@ def test_reset_expires_pending_receipts_and_all_partial_obligations():
 def test_coverage_is_empty_until_acceptance_and_case_does_not_implement_checking_or_timing():
     checker,_ = prepared()
     assert all(group.coverage==0 for group in checker.coverage.groups.values())
-    tree = ast.parse(Path('bpuverify/bpu/case/tage/interleaved.py').read_text())
+    tree = ast.parse(Path('bpu/case/tage/interleaved.py').read_text())
     for node in ast.walk(tree):
         assert not isinstance(node,(ast.Assert,ast.ClassDef))
         if isinstance(node,ast.Call):

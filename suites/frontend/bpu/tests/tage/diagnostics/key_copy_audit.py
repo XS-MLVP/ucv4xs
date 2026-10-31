@@ -6,9 +6,9 @@ import json
 from pathlib import Path
 from unittest.mock import patch
 
-from bpuverify.tage.coverage.coverage_audit import ROOT
-from bpuverify.tage.coverage.coverage_audit import SOURCE
-from bpuverify.tage.coverage.coverage_audit import audit_key_copies
+from suites.frontend.bpu.tage.coverage.coverage_audit import ROOT
+from suites.frontend.bpu.tage.coverage.coverage_audit import SOURCE
+from suites.frontend.bpu.tage.coverage.coverage_audit import audit_key_copies
 
 
 def run() -> dict[str, object]:

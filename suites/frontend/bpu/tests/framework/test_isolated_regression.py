@@ -4,8 +4,8 @@ from threading import Event, Thread
 
 import pytest
 
-from bpuverify.common.coverage import rtl
-from bpuverify.common.pytest.points import make_report
+from suites.frontend.bpu.coverage import rtl
+from suites.frontend.bpu.pytest_plugins.points import make_report
 from tools.dut_isolated_regression import WorkerBudget, combine_features, worker_allocation
 
 

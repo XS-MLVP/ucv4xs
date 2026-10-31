@@ -2,9 +2,9 @@
 from copy import deepcopy
 from dataclasses import replace
 import pytest
-from bpuverify.bpu.transaction.types import BpuBatchTraining,BpuBranchFeedback
-from bpuverify.bpu.model.window_lifetime import WindowLifetimes,LifetimeError,freeze
-from bpuverify.bpu.model.feedback_gate import FeedbackGate,wire_payload
+from suites.frontend.bpu.bpu.transaction.types import BpuBatchTraining,BpuBranchFeedback
+from suites.frontend.bpu.bpu.model.window_lifetime import WindowLifetimes,LifetimeError,freeze
+from suites.frontend.bpu.bpu.model.feedback_gate import FeedbackGate,wire_payload
 
 PC=0x40000800
 PROJECTION={'history':{'phrPtr':{'flag':0,'value':0},'phrLowBits':0},'main':({'hit':0},)}

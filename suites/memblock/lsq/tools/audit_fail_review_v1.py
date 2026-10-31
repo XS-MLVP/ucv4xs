@@ -427,7 +427,7 @@ def unresolved_head_cancel():
     node = "tests.store_queue.test_cancel_capacity::test_real_cancel_capacity_old_bytes_and_every_new_UID_normal_consumption[True]"
     detail = cases(LATEST)[node]["detail"]
     assert detail.startswith("RuntimeError: coroutine raised StopIteration")
-    assert "lsqverify/store_queue/actor.py:234" in detail
+    assert 'lsqverify/store_queue/actor.py:234' in detail
     paths = list((ROOT / "results" / LATEST / "cases").rglob("vsq-cancel-capacity-failure.json"))
     assert len(paths) == 1
     path, witness = paths[0], load(paths[0])
@@ -449,7 +449,7 @@ def unresolved_head_cancel():
         assert not (owner["data"] ^ data) & selected
         observed.append(dict(lane=lane, old_UID=owner["uid"], physical_position=owner["position"], actual_VA=va, actual_PA=pa, mask=mask))
     assert observed
-    actor = ROOT / "lsqverify/store_queue/actor.py"
+    actor = ROOT / "store_queue/actor.py"
     text = actor.read_text().splitlines()
     assert "self.live.values()" in text[233] and "del self.live[self.all[uid].position]" in text[338]
     fifo = ROOT / "rtl/store_queue/EnterSbufferQueue.sv"

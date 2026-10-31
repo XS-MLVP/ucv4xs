@@ -2,12 +2,12 @@
 import json
 import pytest
 
-from bpuverify.common.env.artifacts import output_path
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.ras.case.retirement_gap import check_gap
-from bpuverify.ras.coverage.supplemental import RETIREMENT_GAP_CONTRACTS
-from bpuverify.ras.coverage.supplemental import ras_retirement_gap_coverage_model
-from bpuverify.ras.coverage.supplemental import write_ras_scenario_coverage
+from suites.frontend.bpu.runtime.artifacts import output_path
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.ras.case.retirement_gap import check_gap
+from suites.frontend.bpu.ras.coverage.supplemental import RETIREMENT_GAP_CONTRACTS
+from suites.frontend.bpu.ras.coverage.supplemental import ras_retirement_gap_coverage_model
+from suites.frontend.bpu.ras.coverage.supplemental import write_ras_scenario_coverage
 
 
 @pytest.mark.feature('BPU-RAS-016')

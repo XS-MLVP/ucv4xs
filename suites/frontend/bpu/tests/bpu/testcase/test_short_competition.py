@@ -1,8 +1,8 @@
 """Normal old protection yields to a different branch without mixed identity."""
 import pytest
-from bpuverify.bpu.model.short_competition import Program,PROFILES
-from bpuverify.bpu.coverage.short_competition import Coverage
-from bpuverify.bpu.case.short_competition import check_competition
+from suites.frontend.bpu.bpu.model.short_competition import Program,PROFILES
+from suites.frontend.bpu.bpu.coverage.short_competition import Coverage
+from suites.frontend.bpu.bpu.case.short_competition import check_competition
 
 # Measured on the 2026-10-21 full BPU program run; scheduling hint only.
 pytestmark = pytest.mark.estimated_runtime(128)

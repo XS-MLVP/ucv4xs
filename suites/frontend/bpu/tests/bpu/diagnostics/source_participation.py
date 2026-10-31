@@ -2,8 +2,8 @@
 import json
 import pytest
 
-from bpuverify.bpu.env.indirect_learning import indirect_program
-from bpuverify.bpu.env.source_participation import PC,PROFILES,observe_source_participation
+from suites.frontend.bpu.bpu.env.indirect_learning import indirect_program
+from suites.frontend.bpu.bpu.env.source_participation import PC,PROFILES,observe_source_participation
 
 
 @pytest.mark.parametrize('profile',PROFILES)

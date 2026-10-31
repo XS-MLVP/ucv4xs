@@ -4,10 +4,10 @@ from dataclasses import replace
 from types import SimpleNamespace
 import pytest
 from toffee import Scoreboard, ScoreboardMismatch, CoverageDatabase
-from bpuverify.bpu.checker.ittage_region import RegionChecker
-from bpuverify.bpu.coverage.ittage import DirectoryCoverage, DIRECTORY_RULES
-from bpuverify.bpu.model.ittage import IttageContextModel, Entry
-from bpuverify.bpu.model.ittage_region import directory_program, allocation_rule
+from suites.frontend.bpu.bpu.checker.ittage_region import RegionChecker
+from suites.frontend.bpu.bpu.coverage.ittage import DirectoryCoverage, DIRECTORY_RULES
+from suites.frontend.bpu.bpu.model.ittage import IttageContextModel, Entry
+from suites.frontend.bpu.bpu.model.ittage_region import directory_program, allocation_rule
 from tests.bpu.scoreboard.test_ittage_region import Trace, transaction, PC
 
 

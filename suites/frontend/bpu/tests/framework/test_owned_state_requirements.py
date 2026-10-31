@@ -16,7 +16,7 @@ FAMILIES = (
 
 @pytest.mark.parametrize('dut,family,instance,denominator,features', FAMILIES)
 def test_semantic_family_has_its_own_complete_paired_schema(dut, family, instance, denominator, features):
-    factory = importlib.import_module(f'bpuverify.{dut}.coverage.{family}').lifetime_coverage
+    factory = importlib.import_module(f'suites.frontend.bpu.{dut}.coverage.{family}').lifetime_coverage
     reached, checked = (factory(status) for status in ('reached', 'checked'))
     assert reached.definition.digest == checked.definition.digest
     assert tuple(reached.definition.points[0].bins) == tuple(checked.definition.points[0].bins)

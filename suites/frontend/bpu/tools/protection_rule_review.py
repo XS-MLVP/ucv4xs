@@ -110,8 +110,15 @@ def extract(source):
     read_map=tuple(value for name in reversed(names) for value in muxes[name])
     reset_match=re.search(r'\bif\s*\(reset\)\s*(begin)',text)
     require(reset_match is not None,'explicit synchronous reset required')
-    clocked=list(re.finditer(r'always\s*@\(posedge\s+clock\)\s*(begin)',text))
-    require(len(clocked)==1,'one explicit active clocked process required')
+    processes=list(re.finditer(r'always\s*@\(posedge\s+clock(?:\s+or\s+posedge\s+reset)?\)\s*(begin)',text))
+    require(processes,'one explicit active clocked process required')
+    reset_process=None
+    for process in processes:
+        process_end,_=block(text,process.start(1))
+        if process.end(1)<=reset_match.start()<process_end:
+            reset_process=process;break
+    require(reset_process is not None,'reset must be inside an active clocked process')
+    clocked=[reset_process]
     clocked_end,_=block(text,clocked[0].start(1))
     require(not re.search(CELL+r'\s*=(?!=)',text[clocked[0].end(1):clocked_end]),
         'blocking protection assignments are outside the certified transition')

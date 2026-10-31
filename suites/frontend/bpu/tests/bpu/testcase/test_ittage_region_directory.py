@@ -1,6 +1,6 @@
 """Capacity-driven region lifecycle, not a physical bank/set sweep."""
 import pytest
-from bpuverify.bpu.case.ittage_capacity import check_directory
+from suites.frontend.bpu.bpu.case.ittage_capacity import check_directory
 
 
 @pytest.mark.feature('BPU-INT-067')

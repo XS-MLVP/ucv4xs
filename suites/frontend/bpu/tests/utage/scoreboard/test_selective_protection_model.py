@@ -1,11 +1,10 @@
 """Prove every declared phase with the unchanged independent predictor model."""
 from copy import deepcopy
 import pytest
-from bpuverify.utage.model.semantic import Events,UtageReference
+from suites.frontend.bpu.utage.model.semantic import Events,UtageReference
 from tests.utage.scoreboard.test_semantic_model import lookup,feedback,learn
 from tests.utage.scoreboard.test_read_lifetime_model import bases,values
-from bpuverify.utage.model.selective_protection import Program,PC,READ_PCS,MODES
-
+from suites.frontend.bpu.utage.model.selective_protection import Program,PC,READ_PCS,MODES
 
 
 @pytest.mark.parametrize('first',(0,1))

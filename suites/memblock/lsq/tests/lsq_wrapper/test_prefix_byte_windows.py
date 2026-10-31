@@ -1,13 +1,15 @@
 """Actual interleaved dispatch gives each Load its exclusive Store prefix."""
+
 from dataclasses import replace
 import hashlib
 
 import pytest
 
-from lsqverify.raw.types import SqPtr
-from lsqverify.store_payload import add_digest
-from lsqverify.store_prefix import WINDOWS, check_byte, lifetime, producer, save_witness
-from lsqverify.vlq.types import RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.store_payload import add_digest
+from suites.memblock.lsq.store_prefix import WINDOWS, check_byte, lifetime, producer, save_witness
+from suites.memblock.lsq.vlq.types import RobPtr
 from .memory_owners import MemoryOwners, StoreOwner, cached_load
 
 
@@ -36,7 +38,7 @@ async def test_real_interleaved_Load_prefix_excludes_younger_alias_and_completes
             assert load.execution.uop.sq == SqPtr.encode(position + 1)
             pins = await trace.forward(load, lane)
             expected = producer(gen, position)
-            check_byte(pins, f"io_forward_{lane}_s2Resp_", expected)
+            check_byte(pins, P.io(f"forward_{lane}_s2Resp_"), expected)
             add_digest(stream, [gen, position, position + 1, lane, *expected])
             assert trace.sq_head == start
         await trace.execute(loads)

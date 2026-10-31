@@ -4,8 +4,8 @@ from hashlib import sha256
 import json
 from pathlib import Path
 
-from bpuverify.bpu.coverage.main_gaps import SOURCE,associate,producer_witnesses
-from bpuverify.common.coverage.local_guards import ROOT,native_points
+from suites.frontend.bpu.bpu.coverage.main_gaps import SOURCE,associate,producer_witnesses
+from suites.frontend.bpu.coverage.local_guards import ROOT,native_points
 from tools.coverage_delta import lcov_rows
 
 
@@ -83,7 +83,7 @@ def review(baseline,*,standalone_baseline=None):
         native_schema=str(schema),native_schema_sha256=entry['sha256'],
         native_source_lines=row['source_lines'],measurement_current_for_worktree=False,
         analysis_code_sha256=sha256(Path(__file__).read_bytes()).hexdigest(),
-        association_code_sha256=sha256((ROOT/'bpuverify/bpu/coverage/main_gaps.py').read_bytes()).hexdigest())
+        association_code_sha256=sha256((ROOT/'bpu/coverage/main_gaps.py').read_bytes()).hexdigest())
     if standalone_baseline is not None:result['standalone']=standalone_witnesses(result,standalone_baseline,report)
     return result
 

@@ -4,8 +4,8 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.bpu.model.tage.confidence_boundary import PROGRAMS,source_counts
-from bpuverify.bpu.model.tage.service import learning_inflight,pending_plan
+from suites.frontend.bpu.bpu.model.tage.confidence_boundary import PROGRAMS,source_counts
+from suites.frontend.bpu.bpu.model.tage.service import learning_inflight,pending_plan
 from tests.bpu.scoreboard.confidence_boundary_fixtures import mixed
 from tests.bpu.scoreboard.test_direction_forwarding import resolution
 from tests.bpu.scoreboard.test_mixed_visibility_model import mature

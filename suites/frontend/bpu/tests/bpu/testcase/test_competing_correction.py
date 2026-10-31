@@ -1,9 +1,9 @@
 """Two independently owned corrections, one restored path and a new consumer."""
 import json
 import pytest
-from bpuverify.bpu.model.competing_correction import PROFILES
-from bpuverify.bpu.coverage.competing_correction import Coverage
-from bpuverify.bpu.case.competing_correction import run
+from suites.frontend.bpu.bpu.model.competing_correction import PROFILES
+from suites.frontend.bpu.bpu.coverage.competing_correction import Coverage
+from suites.frontend.bpu.bpu.case.competing_correction import run
 
 
 @pytest.mark.feature('BPU-INT-034')

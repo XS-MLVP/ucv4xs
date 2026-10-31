@@ -5,8 +5,8 @@ import pytest
 
 from toffee import Bin, CheckContext, CoverGroupDef, CoverPointDef, Scoreboard, ScoreboardMode
 
-from vagqverify.maskgen.probe import bind_maskgen
-from vagqverify.maskgen.reference import MaskRequest, evaluate_protocol, mop_info
+from suites.vector.vagq.maskgen.probe import bind_maskgen
+from suites.vector.vagq.maskgen.reference import MaskRequest, evaluate_protocol, mop_info
 
 
 def _layout(request):

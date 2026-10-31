@@ -2,7 +2,7 @@
 from types import SimpleNamespace
 
 import pytest
-from bpuverify.common.pytest.scheduling import order_tests
+from suites.frontend.bpu.pytest_plugins.scheduling import order_tests
 
 
 def item(name, *args, **kwargs):
@@ -101,7 +101,7 @@ def test_no_hints_preserves_original_order_even_with_contract_candidates():
 
 @pytest.mark.parametrize('has_evidence', [False, True])
 def test_project_hook_orders_before_evidence_and_legacy_mapping(has_evidence):
-    from bpuverify.common.pytest import features as pytest_features
+    from suites.frontend.bpu.pytest_plugins import features as pytest_features
     values = [item('short'), item('long', 800)]
     for value in values:
         value.iter_markers = lambda name: []
@@ -119,7 +119,7 @@ def test_real_pytest_workers_record_the_same_long_first_collection(tmp_path, wor
     from pathlib import Path
     import subprocess
     import sys
-    from bpuverify.common.pytest.evidence import collection_digest
+    from suites.frontend.bpu.pytest_plugins.evidence import collection_digest
 
     (tmp_path / 'plan.json').write_text(json.dumps({'features': [{'id': 'ORDER-001'}]}))
     config = tmp_path / 'pytest.ini'
@@ -142,7 +142,7 @@ def test_real_pytest_workers_record_the_same_long_first_collection(tmp_path, wor
     env = {**os.environ, 'PYTEST_DISABLE_PLUGIN_AUTOLOAD': '1'}
     env['PYTHONPATH'] = os.pathsep.join((str(root), env.get('PYTHONPATH', '')))
     command = [sys.executable, '-m', 'pytest', '-q', '-p', 'no:cacheprovider',
-               '-p', 'bpuverify.common.pytest.features', '-c', str(config),
+               '-p', 'suites.frontend.bpu.pytest_plugins.features', '-c', str(config),
                '--rtl-retention=raw', f'--artifact-run={run}']
     if workers > 1:
         command.extend(('-p', 'xdist.plugin', '-n', str(workers), '--dist=load',
@@ -167,7 +167,7 @@ def test_real_xdist_initial_pairing_separates_the_two_long_scenarios(tmp_path):
     from pathlib import Path
     import subprocess
     import sys
-    from bpuverify.common.pytest.evidence import collection_digest
+    from suites.frontend.bpu.pytest_plugins.evidence import collection_digest
 
     (tmp_path / 'plan.json').write_text(json.dumps({'features': [{'id': 'ORDER-001'}]}))
     config = tmp_path / 'pytest.ini'
@@ -192,7 +192,7 @@ def test_real_xdist_initial_pairing_separates_the_two_long_scenarios(tmp_path):
     env = {**os.environ, 'PYTEST_DISABLE_PLUGIN_AUTOLOAD': '1'}
     env['PYTHONPATH'] = os.pathsep.join((str(root), env.get('PYTHONPATH', '')))
     command = [sys.executable, '-m', 'pytest', '-q', '-p', 'no:cacheprovider',
-               '-p', 'bpuverify.common.pytest.features', '-p', 'xdist.plugin', '-c', str(config),
+               '-p', 'suites.frontend.bpu.pytest_plugins.features', '-p', 'xdist.plugin', '-c', str(config),
                '--rtl-retention=raw', f'--artifact-run={run}', '-n', '2', '--dist=load',
                '--maxschedchunk=1', '--max-worker-restart=0']
     child = subprocess.run(command, cwd=tmp_path, env=env, capture_output=True, text=True, timeout=30)

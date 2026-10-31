@@ -1,10 +1,12 @@
 """Gap-driven all120 RAW_CAPACITY owners, original public grant/slot ledgers."""
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.raw.types import SqPtr
-from lsqverify.replay.types import Cause
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.replay.types import Cause
 
 
 @pytest.mark.parametrize("start",(0,255))
@@ -15,18 +17,18 @@ async def test_full120_RAW_capacity_exclusive128_preserves_every_original_public
     reqs=[replay.request(Cause.RAW_CAPACITY,rob=10+i,lq=i,sq=end,tag=64+i) for i in range(120)]
     for req in reqs:
         await replay.cycle({lane:req},raw_full=True,address_ready=SqPtr.encode(start),dequeue=SqPtr.encode(start),upper=SqPtr.encode(start+64))
-        assert not any(replay.observed[f"io_replay_{b}_valid"] for b in range(3))
-    assert replay.observed["io_lqFull"] and replay.observed["io_replayAllocate"]
+        assert not any(replay.observed[P.io(f"replay_{b}_valid")] for b in range(3))
+    assert replay.observed[P.p_lqFull] and replay.observed[P.p_replayAllocate]
     for _ in range(6):
         await replay.cycle()
-        assert not any(replay.observed[f"io_replay_{b}_valid"] for b in range(3))
+        assert not any(replay.observed[P.io(f"replay_{b}_valid")] for b in range(3))
     await replay.cycle(**(dict(raw_full=False) if wake=="pool_credit" else dict(address_ready=SqPtr.encode(end))))
     grants={}
     for _ in range(360):
         pre=dict(replay.observed)
         await replay.cycle(ready=(True,True,True))
         for bank in range(3):
-            p=f"io_replay_{bank}_"
+            p=P.io(f"replay_{bank}_")
             if not pre[p+"valid"]:continue
             lq=120*pre[p+"bits_uop_lqIdx_flag"]+pre[p+"bits_uop_lqIdx_value"]
             assert lq in range(120) and lq not in grants
@@ -45,5 +47,5 @@ async def test_full120_RAW_capacity_exclusive128_preserves_every_original_public
         feedback=replace(reqs[lq],replay_feedback=True,slot=slot,need_replay=False,causes=0)
         await replay.cycle({lane:feedback},ready=(False,False,False))
     await replay.idle(12)
-    assert not replay.observed["io_lqFull"] and not replay.observed["io_replayAllocate"]
-    assert not any(replay.observed[f"io_replay_{b}_valid"] for b in range(3))
+    assert not replay.observed[P.p_lqFull] and not replay.observed[P.p_replayAllocate]
+    assert not any(replay.observed[P.io(f"replay_{b}_valid")] for b in range(3))

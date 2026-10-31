@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.bpu.transaction.types import BpuRedirect
-from bpuverify.bpu.transaction.types import BpuTraining
-from bpuverify.bpu.coverage.catalog import bpu_s3_target_coverage_model
-from bpuverify.bpu.coverage.catalog import write_bpu_s3_target_coverage
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.bpu.transaction.types import BpuRedirect
+from suites.frontend.bpu.bpu.transaction.types import BpuTraining
+from suites.frontend.bpu.bpu.coverage.catalog import bpu_s3_target_coverage_model
+from suites.frontend.bpu.bpu.coverage.catalog import write_bpu_s3_target_coverage
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 PC = 0x4000_0800

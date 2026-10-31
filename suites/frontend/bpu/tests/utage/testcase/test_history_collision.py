@@ -2,10 +2,10 @@
 
 import pytest
 
-from bpuverify.utage.coverage.catalog import utage_history_collision_coverage_model
-from bpuverify.utage.coverage.catalog import write_utage_history_collision_coverage
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.utage.case.collision_scenario import check_history_collisions
+from suites.frontend.bpu.utage.coverage.catalog import utage_history_collision_coverage_model
+from suites.frontend.bpu.utage.coverage.catalog import write_utage_history_collision_coverage
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.utage.case.collision_scenario import check_history_collisions
 
 
 @pytest.mark.feature("BPU-UTAGE-019")

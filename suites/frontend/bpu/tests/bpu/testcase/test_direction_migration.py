@@ -1,7 +1,7 @@
 """Two cross-owner directions, not a bank/depth Cartesian product."""
 import pytest
-from bpuverify.bpu.case.direction_migration import check_direction_migration
-from bpuverify.bpu.coverage.direction_migration import DirectionMigrationCoverage
+from suites.frontend.bpu.bpu.case.direction_migration import check_direction_migration
+from suites.frontend.bpu.bpu.coverage.direction_migration import DirectionMigrationCoverage
 
 
 @pytest.mark.feature('BPU-INT-089')

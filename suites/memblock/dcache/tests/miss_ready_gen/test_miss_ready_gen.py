@@ -5,8 +5,8 @@ import random
 
 import pytest
 
-from dcacheverify.miss_ready_gen.coverage import READY_CLASSES, MissReadyGenCoverage
-from dcacheverify.miss_ready_gen.env import CH0_FIELDS, CH_FIELDS, MissReadyGenEnv
+from suites.memblock.dcache.miss_ready_gen.coverage import READY_CLASSES, MissReadyGenCoverage
+from suites.memblock.dcache.miss_ready_gen.env import CH0_FIELDS, CH_FIELDS, MissReadyGenEnv
 
 
 @pytest.fixture

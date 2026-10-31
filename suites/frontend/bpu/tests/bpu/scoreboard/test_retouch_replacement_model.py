@@ -3,8 +3,8 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.bpu.model.tage.retouch_replacement import PROGRAMS,LearningRecency
-from bpuverify.tage.model.semantic import RecentLearning,TageReference,Write,Entry
+from suites.frontend.bpu.bpu.model.tage.retouch_replacement import PROGRAMS,LearningRecency
+from suites.frontend.bpu.tage.model.semantic import RecentLearning,TageReference,Write,Entry
 
 
 @pytest.mark.parametrize('policy',('learning','insertion'))

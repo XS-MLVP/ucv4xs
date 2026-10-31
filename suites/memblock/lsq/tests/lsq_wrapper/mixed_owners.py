@@ -8,14 +8,14 @@ from collections import Counter
 from dataclasses import replace
 import random
 
-from lsqverify.forward.types import Query, Translation
-from lsqverify.load_queue.types import Bypass, Load
-from lsqverify.lsq_wrapper.types import Address, Bus, Data, Dispatch, Inputs
-from lsqverify.psq.types import Attributes
-from lsqverify.rar.types import Query as RarQuery, Release
-from lsqverify.raw.types import Query as RawQuery, SqPtr
-from lsqverify.replay.types import Cause, Refill, StoreWakeup, TlbHint
-from lsqverify.vlq.types import QueuePtr, Redirect, RobPtr
+from suites.memblock.lsq.forward.types import Query, Translation
+from suites.memblock.lsq.load_queue.types import Bypass, Load
+from suites.memblock.lsq.lsq_wrapper.types import Address, Bus, Data, Dispatch, Inputs
+from suites.memblock.lsq.psq.types import Attributes
+from suites.memblock.lsq.rar.types import Query as RarQuery, Release
+from suites.memblock.lsq.raw.types import Query as RawQuery, SqPtr
+from suites.memblock.lsq.replay.types import Cause, Refill, StoreWakeup, TlbHint
+from suites.memblock.lsq.vlq.types import QueuePtr, Redirect, RobPtr
 from .memory_owners import cached_load
 from .special_owners import SpecialStore
 

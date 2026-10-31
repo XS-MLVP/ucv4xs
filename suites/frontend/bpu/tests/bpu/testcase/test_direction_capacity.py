@@ -1,7 +1,7 @@
 """Full-capacity retouch, not fifth-key overflow or bank/set enumeration."""
 import pytest
-from bpuverify.bpu.case.direction_capacity import check_direction_capacity
-from bpuverify.bpu.coverage.direction_capacity import DirectionCapacityCoverage
+from suites.frontend.bpu.bpu.case.direction_capacity import check_direction_capacity
+from suites.frontend.bpu.bpu.coverage.direction_capacity import DirectionCapacityCoverage
 
 
 @pytest.mark.feature('BPU-INT-087')

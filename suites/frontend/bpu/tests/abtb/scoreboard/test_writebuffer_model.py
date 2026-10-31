@@ -1,9 +1,9 @@
 from copy import deepcopy
 from itertools import permutations
 import pytest
-from bpuverify.abtb.model.state.writebuffer import WriteBufferReference
-from bpuverify.abtb.model.state.writebuffer import CapacityReference
-from bpuverify.abtb.model.state.writebuffer import zero
+from suites.frontend.bpu.abtb.model.state.writebuffer import WriteBufferReference
+from suites.frontend.bpu.abtb.model.state.writebuffer import CapacityReference
+from suites.frontend.bpu.abtb.model.state.writebuffer import zero
 
 
 def request(s, *, target=0x90000):

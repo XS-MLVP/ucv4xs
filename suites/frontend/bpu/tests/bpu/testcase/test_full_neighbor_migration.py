@@ -1,7 +1,7 @@
 """Full retained capacity must not turn a migrated-key hit into replacement."""
 import pytest
-from bpuverify.bpu.case.full_neighbor_migration import check_full_neighbor_migration
-from bpuverify.bpu.coverage.full_neighbor_migration import FullNeighborMigrationCoverage
+from suites.frontend.bpu.bpu.case.full_neighbor_migration import check_full_neighbor_migration
+from suites.frontend.bpu.bpu.coverage.full_neighbor_migration import FullNeighborMigrationCoverage
 
 
 @pytest.mark.feature('BPU-INT-089')

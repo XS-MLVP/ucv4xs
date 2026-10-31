@@ -4,24 +4,27 @@ import importlib
 
 import pytest
 
-from lsqverify.codec_cache import EncoderCache,TARGETS,immutable,install,restore
+from suites.memblock.lsq.codec_cache import EncoderCache,TARGETS,immutable,install,restore
 
 
-@pytest.mark.parametrize("module,name",TARGETS)
+# Parameter IDs are archived case identities, not old package import aliases.
+@pytest.mark.parametrize("module,name",TARGETS,
+    ids=[module.replace('suites.memblock.lsq','lsqverify',1)+'-'+name
+         for module,name in TARGETS])
 def test_pure_encoder_preserves_full_values_order_mutation_and_invalid_shape(module,name):
     provider=importlib.import_module(module)
     function=getattr(provider,name)
-    if module=="lsqverify.replay.codec":
-        from lsqverify.replay.types import Inputs
+    if module=="suites.memblock.lsq.replay.codec":
+        from suites.memblock.lsq.replay.types import Inputs
         packet=Inputs();invalid=replace(packet,enqueues=())
-    elif module=="lsqverify.load_queue.codec":
-        from lsqverify.load_queue.types import Inputs
+    elif module=="suites.memblock.lsq.load_queue.codec":
+        from suites.memblock.lsq.load_queue.types import Inputs
         packet=Inputs();invalid=replace(packet,loads=())
-    elif module=="lsqverify.store_queue.types":
-        from lsqverify.store_queue.types import Inputs
+    elif module=="suites.memblock.lsq.store_queue.types":
+        from suites.memblock.lsq.store_queue.types import Inputs
         packet=Inputs();invalid=replace(packet,addresses=())
     else:
-        from lsqverify.lsq_wrapper.types import Inputs
+        from suites.memblock.lsq.lsq_wrapper.types import Inputs
         packet=Inputs();invalid=replace(packet,loads=())
     cached=EncoderCache(function,capacity=2)
     expected=function(packet)
@@ -44,8 +47,8 @@ def test_pure_encoder_preserves_full_values_order_mutation_and_invalid_shape(mod
 
 
 def test_mutable_input_not_memoized_and_return_change_cannot_contaminate():
-    from lsqverify.load_queue.codec import encode
-    from lsqverify.load_queue.types import Inputs
+    from suites.memblock.lsq.load_queue.codec import encode
+    from suites.memblock.lsq.load_queue.types import Inputs
     packet=replace(Inputs(),loads=list(Inputs().loads))
     cached=EncoderCache(encode)
     first=cached(packet)

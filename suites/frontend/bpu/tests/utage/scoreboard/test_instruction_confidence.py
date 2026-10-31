@@ -3,10 +3,10 @@ from copy import deepcopy
 from types import SimpleNamespace
 import pytest
 from toffee import ScoreboardMismatch
-from bpuverify.utage.model.semantic import UtageReference,Events,Context,Base,Entry,Source,Feedback,Learning
-from bpuverify.utage.model.instruction_confidence import PROGRAMS,RULES,PC
-from bpuverify.utage.checker.instruction_confidence import Checks
-from bpuverify.utage.coverage.instruction_confidence import Coverage
+from suites.frontend.bpu.utage.model.semantic import UtageReference,Events,Context,Base,Entry,Source,Feedback,Learning
+from suites.frontend.bpu.utage.model.instruction_confidence import PROGRAMS,RULES,PC
+from suites.frontend.bpu.utage.checker.instruction_confidence import Checks
+from suites.frontend.bpu.utage.coverage.instruction_confidence import Coverage
 from tests.utage.scoreboard.test_dual_source import feedback
 
 

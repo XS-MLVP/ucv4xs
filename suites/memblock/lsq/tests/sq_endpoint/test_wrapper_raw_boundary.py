@@ -1,14 +1,16 @@
 """Real128 Store flows,56 RAW records,57th Load native capacity feedback."""
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.forward.types import Query, Translation
-from lsqverify.load_queue.types import Load
-from lsqverify.rar.types import Query as RarQuery
-from lsqverify.raw.types import Query as RawQuery
-from lsqverify.replay.types import Cause
-from lsqverify.vlq.types import QueuePtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.forward.types import Query, Translation
+from suites.memblock.lsq.load_queue.types import Load
+from suites.memblock.lsq.rar.types import Query as RarQuery
+from suites.memblock.lsq.raw.types import Query as RawQuery
+from suites.memblock.lsq.replay.types import Cause
+from suites.memblock.lsq.vlq.types import QueuePtr
 from tests.lsq_wrapper.memory_owners import MemoryOwners, StoreOwner, cached_load
 from tests.lsq_wrapper.mixed_owners import rob_pointer
 
@@ -41,8 +43,8 @@ async def test_real128_stores_RAW_full57th_Load_original_slot_all_effects(lsq,la
         rs[lane]=RarQuery(True,u.rob,u.lq,load.paddr,True,False)
         ws[lane]=RawQuery(True,u.rob,u.sq,load.paddr,load.execution.mask,True,u.rvc,u.ftq,u.offset,u.checkpoint)
         await trace.cycle(rar_queries=tuple(rs),raw_queries=tuple(ws))
-        ready=lsq.pre_observed[f"io_ldu_rawNukeQuery_{lane}_req_ready"]
-        assert lsq.pre_observed[f"io_ldu_rarNukeQuery_{lane}_req_ready"] and not lsq.observed[f"io_ldu_rarNukeQuery_{lane}_resp_bits_nuke"]
+        ready=lsq.pre_observed[P.io(f"ldu_rawNukeQuery_{lane}_req_ready")]
+        assert lsq.pre_observed[P.io(f"ldu_rarNukeQuery_{lane}_req_ready")] and not lsq.observed[P.io(f"ldu_rarNukeQuery_{lane}_resp_bits_nuke")]
         assert ready==int(feedback or load is not loads[-1])
         cause=0 if ready else 1<<Cause.RAW_CAPACITY
         q=replace(load.execution,need_replay=bool(cause),causes=cause,replay_feedback=feedback,aligned_type=3,
@@ -58,7 +60,7 @@ async def test_real128_stores_RAW_full57th_Load_original_slot_all_effects(lsq,la
     assert blocked.execution.causes==1<<Cause.RAW_CAPACITY
     for _ in range(8):
         await trace.cycle()
-        lsq.expect({f"io_replay_{b}_valid":0 for b in range(3)},"full RAW and128 unready old Store addresses retain original capacity wait")
+        lsq.expect({P.io(f"replay_{b}_valid"):0 for b in range(3)},"full RAW and128 unready old Store addresses retain original capacity wait")
     await trace.write_all(range(64))
     trace.base=replace(trace.base,pending=stores[64].rob,pending_next=stores[64].rob,sbuffer_ready=(True,True))
     for _ in range(180):
@@ -69,15 +71,15 @@ async def test_real128_stores_RAW_full57th_Load_original_slot_all_effects(lsq,la
     await trace.write_all(range(64,127))
     for _ in range(80):
         await trace.cycle()
-        if any(lsq.observed[f"io_replay_{b}_valid"] for b in range(3)):break
-    valid=any(lsq.observed[f"io_replay_{b}_valid"] for b in range(3))
+        if any(lsq.observed[P.io(f"replay_{b}_valid")] for b in range(3)):break
+    valid=any(lsq.observed[P.io(f"replay_{b}_valid")] for b in range(3))
     assert valid==(wake=="pool_credit"),"actual credit may wake with last Store address still unknown; full tail128 must wait"
     if wake=="address_prefix":await trace.write_all((127,))
     for _ in range(80):
-        if any(lsq.observed[f"io_replay_{b}_valid"] for b in range(3)):break
+        if any(lsq.observed[P.io(f"replay_{b}_valid")] for b in range(3)):break
         await trace.cycle()
-    bank=next(b for b in range(3) if lsq.observed[f"io_replay_{b}_valid"])
-    assert lsq.observed[f"io_replay_{bank}_bits_uop_lqIdx_value"]==56 and trace.sq_head==64
+    bank=next(b for b in range(3) if lsq.observed[P.io(f"replay_{b}_valid")])
+    assert lsq.observed[P.io(f"replay_{bank}_bits_uop_lqIdx_value")]==56 and trace.sq_head==64
     await trace.cycle(replay_ready=tuple(b==bank for b in range(3)))
     if wake=="pool_credit":await trace.write_all((127,))
     await issue(loads[-1],feedback=True)

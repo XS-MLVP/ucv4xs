@@ -5,12 +5,12 @@ from pathlib import Path
 
 import pytest
 
-from bpuverify.bpu.model.ahead_working_set import expected_branch, strong_counter
-from bpuverify.bpu.coverage.working_set_replacement import Coverage
-from bpuverify.bpu.model.working_set_replacement import (
+from suites.frontend.bpu.bpu.model.ahead_working_set import expected_branch, strong_counter
+from suites.frontend.bpu.bpu.coverage.working_set_replacement import Coverage
+from suites.frontend.bpu.bpu.model.working_set_replacement import (
     KINDS, Program, geometry, logical_histories,
 )
-
+from suites.frontend.bpu.models.configuration import ALIGN_HALFWORDS
 
 
 @pytest.mark.parametrize('kinds', KINDS)
@@ -33,7 +33,7 @@ def test_each_declared_edge_and_history_has_a_logical_owner(kinds, cohort):
     assert len(edges) == len({edge.pc for edge in edges}) == 16
     assert tuple(edge.target for edge in edges) == tuple(edge.pc for edge in edges[1:] + edges[:1])
     assert edges[-1].kind == 3
-    assert all(edge.pc <= edge.cfi_pc < edge.pc + 8 for edge in edges)
+    assert all(edge.pc <= edge.cfi_pc < edge.pc + ALIGN_HALFWORDS for edge in edges)
     assert all(logical_histories(program, cohort))
     assert any(edge.kind == 2 for edge in edges) == (kinds == 'mixed')
     assert any(edge.kind == 1 for edge in edges)

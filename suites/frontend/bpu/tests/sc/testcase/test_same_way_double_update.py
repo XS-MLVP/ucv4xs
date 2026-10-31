@@ -1,20 +1,20 @@
 """Two same-way resolved branches advance SC learning in one feedback beat."""
 
 from __future__ import annotations
-from bpuverify.common.model.configuration import *
+from suites.frontend.bpu.models.configuration import *
 
 import pytest
 
-from bpuverify.sc.transaction.types import ScBaseBranch
-from bpuverify.sc.transaction.types import ScBatchTraining
-from bpuverify.sc.transaction.types import ScBranchFeedback
-from bpuverify.sc.transaction.types import ScTraining
-from bpuverify.sc.coverage.catalog import sc_same_way_double_update_coverage_model
-from bpuverify.sc.coverage.catalog import write_sc_same_way_double_update_coverage
-from bpuverify.sc.case.definitions import NOT_TAKEN_ATTEMPTS
-from bpuverify.sc.case.definitions import PC
-from bpuverify.sc.case.definitions import TAGE_COUNTER
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.sc.transaction.types import ScBaseBranch
+from suites.frontend.bpu.sc.transaction.types import ScBatchTraining
+from suites.frontend.bpu.sc.transaction.types import ScBranchFeedback
+from suites.frontend.bpu.sc.transaction.types import ScTraining
+from suites.frontend.bpu.sc.coverage.catalog import sc_same_way_double_update_coverage_model
+from suites.frontend.bpu.sc.coverage.catalog import write_sc_same_way_double_update_coverage
+from suites.frontend.bpu.sc.case.definitions import NOT_TAKEN_ATTEMPTS
+from suites.frontend.bpu.sc.case.definitions import PC
+from suites.frontend.bpu.sc.case.definitions import TAGE_COUNTER
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 POSITIONS = (1, 8)

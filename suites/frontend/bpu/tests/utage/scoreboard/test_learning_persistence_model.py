@@ -3,13 +3,12 @@ from copy import deepcopy
 from dataclasses import replace
 import pytest
 
-from bpuverify.utage.model.semantic import Base, Context, Events, UtageReference
-from bpuverify.utage.case.definitions import SHADOW_CAPACITY
+from suites.frontend.bpu.utage.model.semantic import Base, Context, Events, UtageReference
+from suites.frontend.bpu.utage.case.definitions import SHADOW_CAPACITY
 from tests.utage.scoreboard.test_semantic_model import feedback, learn
-from bpuverify.utage.model.learning_persistence import Program, PROFILES, MODES, PC, RULES
-from bpuverify.utage.model.persistence import PersistenceLedger, Version
-from bpuverify.utage.coverage.learning_persistence import Coverage
-
+from suites.frontend.bpu.utage.model.learning_persistence import Program, PROFILES, MODES, PC, RULES
+from suites.frontend.bpu.utage.model.persistence import PersistenceLedger, Version
+from suites.frontend.bpu.utage.coverage.learning_persistence import Coverage
 
 
 @pytest.mark.parametrize('profile,count', tuple(zip(PROFILES, (SHADOW_CAPACITY, SHADOW_CAPACITY+1, 2*SHADOW_CAPACITY+1))))

@@ -19,16 +19,16 @@ from toffee import Bundle
 from toffee import Execution
 from toffee import XCommClockBackend
 
-from bpuverify.utage.agent.main import UtageAgent
-from bpuverify.utage.coverage.catalog import utage_shadow_persistence_coverage_model
-from bpuverify.utage.coverage.catalog import utage_shadow_ring_coverage_model
-from bpuverify.common.bundle.bindings import PortBinding
-from bpuverify.common.env.dut import initialize_dut_inputs
-from bpuverify.common.monitor.cycle import CycleMonitor
-from bpuverify.common.env.memory_direct import memory_signal
-from bpuverify.common.env.memory_direct import memory_signal_names
-from bpuverify.utage.case.shadow_ring_scenario import check_shadow_eviction
-from bpuverify.utage.case.shadow_ring_scenario import check_shadow_ring_mode
+from suites.frontend.bpu.utage.agent.main import UtageAgent
+from suites.frontend.bpu.utage.coverage.catalog import utage_shadow_persistence_coverage_model
+from suites.frontend.bpu.utage.coverage.catalog import utage_shadow_ring_coverage_model
+from suites.frontend.bpu.ports.bindings import PortBinding
+from suites.frontend.bpu.runtime.dut import initialize_dut_inputs
+from suites.frontend.bpu.monitors.cycle import CycleMonitor
+from suites.frontend.bpu.runtime.memory_direct import memory_signal
+from suites.frontend.bpu.runtime.memory_direct import memory_signal_names
+from suites.frontend.bpu.utage.case.shadow_ring_scenario import check_shadow_eviction
+from suites.frontend.bpu.utage.case.shadow_ring_scenario import check_shadow_ring_mode
 
 
 async def probe(args):

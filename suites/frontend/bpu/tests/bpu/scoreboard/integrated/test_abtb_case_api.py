@@ -5,7 +5,7 @@ import ast
 
 import pytest
 from toffee import ScoreboardMismatch
-from bpuverify.bpu.case.abtb import cases
+from suites.frontend.bpu.bpu.case.abtb import cases
 from tests.bpu.scoreboard.integrated.test_abtb_counter_coverage import full_path_trace
 from tests.bpu.scoreboard.integrated.test_coverage_collection import useful_trace
 
@@ -122,10 +122,10 @@ async def test_partial_way_coverage_cannot_export_either_functional_report(monke
 
 
 def test_scenarios_share_one_full_write_checker_and_observation_lifecycle():
-    from bpuverify.bpu.case.abtb import alias as alias_scenario
-    from bpuverify.bpu.case.abtb import final_not_taken as final_not_taken_scenario
-    from bpuverify.bpu.case.abtb import later_taken as later_taken_scenario
-    from bpuverify.bpu.env.abtb.write import WriteObservation
+    from suites.frontend.bpu.bpu.case.abtb import alias as alias_scenario
+    from suites.frontend.bpu.bpu.case.abtb import final_not_taken as final_not_taken_scenario
+    from suites.frontend.bpu.bpu.case.abtb import later_taken as later_taken_scenario
+    from suites.frontend.bpu.bpu.env.abtb.write import WriteObservation
     assert alias_scenario.PairObservation is final_not_taken_scenario.NegativePairObservation is later_taken_scenario.NegativePairObservation is WriteObservation
     for module in (alias_scenario, final_not_taken_scenario, later_taken_scenario):
         tree = ast.parse(Path(module.__file__).read_text())

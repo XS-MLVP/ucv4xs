@@ -4,9 +4,9 @@ from types import SimpleNamespace as NS
 import pytest
 from toffee import Scoreboard, XEvent, XEventKind, XPhase
 from tests.bpu.scoreboard._conditional_prefix_program import Program as ReferenceProgram
-from bpuverify.bpu.model.conditional_prefix import PROFILES, target_state
-from bpuverify.bpu.coverage.conditional_prefix import Coverage, RULES
-from bpuverify.bpu.checker.conditional_prefix import Checks
+from suites.frontend.bpu.bpu.model.conditional_prefix import PROFILES, target_state
+from suites.frontend.bpu.bpu.coverage.conditional_prefix import Coverage, RULES
+from suites.frontend.bpu.bpu.checker.conditional_prefix import Checks
 
 
 def actual_guard():

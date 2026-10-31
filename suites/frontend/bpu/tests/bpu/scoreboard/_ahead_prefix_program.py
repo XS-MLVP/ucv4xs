@@ -1,12 +1,12 @@
 """Pure event-driven counterpart; never seeds a DUT or a reference from RTL."""
 from dataclasses import replace
 
-from bpuverify.bpu.model.early_direction_sources import EarlyDirectionSources
-from bpuverify.bpu.model.pipeline import Outcome
-from bpuverify.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.early_direction_sources import EarlyDirectionSources
+from suites.frontend.bpu.bpu.model.pipeline import Outcome
+from suites.frontend.bpu.bpu.model.selection import Kind
 from tests.bpu.scoreboard._statistical_joint_program import Program as EventProgram
 from tests.bpu.scoreboard.test_semantic_pipeline import boot
-from bpuverify.bpu.checker.ahead_working_set import (prefix_main_counts as main_counts,
+from suites.frontend.bpu.bpu.checker.ahead_working_set import (prefix_main_counts as main_counts,
     prefix_ahead_view as ahead_view,prefix_consumer_matches as qualified)
 
 

@@ -14,8 +14,11 @@ from __future__ import annotations
 
 import pytest
 
-from dcacheverify.dcache_wrapper.coverage import DcacheWrapperCoverage
-from dcacheverify.dcache_wrapper.env import (
+from suites.memblock.dcache.legacy_pins import P
+from suites.memblock.dcache.execution import step, refresh
+
+from suites.memblock.dcache.dcache_wrapper.coverage import DcacheWrapperCoverage
+from suites.memblock.dcache.dcache_wrapper.env import (
     DcacheWrapperEnv,
     WrapperDutView,
     load_portmap,
@@ -61,7 +64,7 @@ def test_portmap_is_complete_and_one_to_one(dw):
     assert renames["auto_uncache_in_a_valid"] == "auto_cacheCtrlOpt_in_a_valid"
     assert (renames["auto_dcache_spec_fabric_source_out_candidate_0_valid"]
             == "auto_spec_fabric_source_out_candidate_0_valid")
-    assert (portmap["internal_connections"]["io_perf_0_value"]
+    assert (portmap["internal_connections"][P.p_perf_0_value]
             == "_dcache_io_perf_0_value")
     # No wrapper port may be left unconnected: the pin list of the built DUT and
     # the mapping keys must agree.
@@ -137,7 +140,7 @@ def test_speculative_fabric_ports_are_transparent(dw):
     for index in range(3):
         getattr(dw.raw_dut, f"auto_dcache_spec_fabric_source_out_candidate_{index}_ready").Set(1)
     for _ in range(4):
-        dw.dut.Step(1)
+        step(dw)
         dw.refresh()
     for index in range(3):
         assert int(getattr(dw.raw_dut,
@@ -178,13 +181,13 @@ def test_speculative_fabric_ports_are_transparent(dw):
             dw.stop_load(0)
         if candidate:
             break
-        dw.dut.Step(1)
+        step(dw)
     assert candidate is not None, "an unseen load must raise a fabric candidate"
     assert candidate["paddr"] == (base & ~0x3F), candidate
     assert candidate["grow"] in (0, 1, 2), candidate
     assert candidate["channel"] in (0, 1), candidate
     for _ in range(6):
-        dw.dut.Step(1)
+        step(dw)
         dw.refresh()
     if dw.coverage is not None:
         dw.coverage.sample_spec("candidate")
@@ -200,7 +203,7 @@ def test_reset_and_dual_channel_through_wrapper(dw):
     accepted = dw.service_miss(base, data_beats=beats, context="wrapper refill ch0")
     assert accepted["channel"] == 0, accepted
     for _ in range(6):
-        dw.dut.Step(1)
+        step(dw)
         dw.refresh()
     hit = dw.load_once(0, base, base, context="wrapper hit")
     assert hit["miss"] == 0, hit
@@ -219,7 +222,7 @@ def test_reset_and_dual_channel_through_wrapper(dw):
                                context="wrapper refill ch1")
     assert accepted["channel"] == 1, accepted
     for _ in range(6):
-        dw.dut.Step(1)
+        step(dw)
         dw.refresh()
     hit = dw.load_once(0, base1, base1, context="wrapper hit ch1")
     assert hit["miss"] == 0
@@ -237,7 +240,7 @@ def test_perf_outputs_are_two_cycle_delayed(dw):
     request is accepted, and they DO move a few cycles later as the event is
     counted and pushed through the two wrapper flops.
     """
-    perf_pins = [f"io_perf_{index}_value" for index in range(42)]
+    perf_pins = [P.io(f"perf_{index}_value") for index in range(42)]
     start = [int(getattr(dw.raw_dut, name).value) for name in perf_pins]
     assert all(0 <= value < (1 << 32) for value in start), start
     if dw.coverage is not None:
@@ -247,7 +250,7 @@ def test_perf_outputs_are_two_cycle_delayed(dw):
     dw.drive_load(0, base, base)
     dw.refresh()
     assert int(dw.loads[0]["req_ready"].value) == 1
-    dw.dut.Step(1)          # S0 accept
+    step(dw)          # S0 accept
     dw.stop_load(0)
     dw.refresh()
     same_cycle = [int(getattr(dw.raw_dut, name).value) for name in perf_pins]
@@ -255,7 +258,7 @@ def test_perf_outputs_are_two_cycle_delayed(dw):
 
     changed = None
     for cycle in range(10):
-        dw.dut.Step(1)
+        step(dw)
         dw.refresh()
         now = [int(getattr(dw.raw_dut, name).value) for name in perf_pins]
         if now != start:
@@ -271,7 +274,7 @@ def test_store_and_eviction_through_wrapper(dw):
     # Fill four ways of one set with dirty lines, then observe the dirty victim
     # release on the C channel at the wrapper boundary.
     def same_set(start: int, count: int) -> list[int]:
-        from dcacheverify.load_pipe.model import dcache_index
+        from suites.memblock.dcache.load_pipe.model import dcache_index
         want = dcache_index(start)
         found = [start]
         addr = start + 0x40
@@ -292,7 +295,7 @@ def test_store_and_eviction_through_wrapper(dw):
         hit = dw.wait_store_hit(12)
         assert hit["hit"] == 1, (index, hit)
         for _ in range(4):
-            dw.dut.Step(1)
+            step(dw)
             dw.refresh()
         read = dw.load_once(0, addr, addr, context="wrapper dirty check")
         assert (read["data"] & ((1 << 64) - 1)) == value, (index, hex(read["data"]))
@@ -319,7 +322,7 @@ def test_store_and_eviction_through_wrapper(dw):
                             "address": int(channel["a_address"].value)}
         if accepted:
             break
-        dw.dut.Step(1)
+        step(dw)
         dw.refresh()
     assert accepted is not None
     assert accepted["address"] == (victim & ~0x3F)
@@ -342,7 +345,7 @@ def test_store_and_eviction_through_wrapper(dw):
                              int(other["c_data"].value))
                     if entry[:4] not in [item[:4] for item in entries]:
                         entries.append(entry)
-            dw.dut.Step(1)
+            step(dw)
             dw.refresh()
     channel["d_valid"].Set(0)
     for _ in range(8):
@@ -354,7 +357,7 @@ def test_store_and_eviction_through_wrapper(dw):
                          int(other["c_data"].value))
                 if entry[:4] not in [item[:4] for item in entries]:
                     entries.append(entry)
-        dw.dut.Step(1)
+        step(dw)
         dw.refresh()
     dirty = [entry for entry in entries if entry[1] == 7]
     assert dirty, entries
@@ -374,7 +377,7 @@ def test_atomic_and_cmo_through_wrapper(dw):
     dw.load_once(0, base, base, context="wrapper atomic prime")
     dw.service_miss(base, data_beats=beats, context="wrapper atomic prime")
     for _ in range(8):
-        dw.dut.Step(1)
+        step(dw)
         dw.refresh()
     assert dw.issue_atomic(base, base, 4, 0x0123456789ABCDEF, 0xFFFF)
     response = dw.wait_atomic_response(24)
@@ -405,7 +408,7 @@ def test_denied_refill_error_through_wrapper(dw):
                     context="wrapper denied refill")
     seen = False
     for _ in range(12):
-        dw.dut.Step(1)
+        step(dw)
         dw.refresh()
         if dw._val(dw.error["valid"]):
             seen = True
@@ -421,7 +424,7 @@ def test_probe_through_wrapper(dw):
     dw.load_once(0, base, base, context="wrapper probe prime")
     dw.service_miss(base, data_beats=line_words(base), context="wrapper probe prime")
     for _ in range(8):
-        dw.dut.Step(1)
+        step(dw)
         dw.refresh()
     channel = dw.channels[0]
     channel["b_valid"].Set(1)
@@ -429,7 +432,7 @@ def test_probe_through_wrapper(dw):
     channel["b_address"].Set(base)
     response = None
     for _ in range(24):
-        dw.dut.Step(1)
+        step(dw)
         dw.refresh()
         if int(channel["c_valid"].value):
             response = {

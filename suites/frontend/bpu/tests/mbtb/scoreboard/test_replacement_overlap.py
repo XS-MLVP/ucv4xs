@@ -5,9 +5,9 @@ from copy import deepcopy
 import pytest
 from toffee import ScoreboardMismatch
 
-from bpuverify.mbtb.model.replacement_overlap import CASES, PC, ReplacementProgram
-from bpuverify.mbtb.model.replacement import mbtb_replacement_geometry
-from bpuverify.mbtb.checker.replacement_overlap import ReplacementChecks
+from suites.frontend.bpu.mbtb.model.replacement_overlap import CASES, PC, ReplacementProgram
+from suites.frontend.bpu.mbtb.model.replacement import mbtb_replacement_geometry
+from suites.frontend.bpu.mbtb.checker.replacement_overlap import ReplacementChecks
 
 
 class NoCoverage:

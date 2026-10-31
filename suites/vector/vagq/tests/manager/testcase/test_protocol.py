@@ -1,9 +1,9 @@
 """Architectural scenarios only: no raw pins, edge waits, tasks or DUT lifetime."""
 import pytest
 
-from vagqverify.manager.types import Allocation, Beat, Offer
-from vagqverify.manager.model import positions
-from vagqverify.manager.cases import EFFECT_CASES, all_ring_offers, priority_and_wrap, random_controls
+from suites.vector.vagq.manager.types import Allocation, Beat, Offer
+from suites.vector.vagq.manager.model import positions
+from suites.vector.vagq.manager.cases import EFFECT_CASES, all_ring_offers, priority_and_wrap, random_controls
 
 
 async def test_single_request_is_observed_on_its_launch_not_one_edge_late(manager_env):

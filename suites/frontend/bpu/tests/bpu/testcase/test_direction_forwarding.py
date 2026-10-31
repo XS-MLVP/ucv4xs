@@ -1,8 +1,8 @@
 """Independent semantic state proves integrated adjacent dual-owner learning."""
 import pytest
 
-from bpuverify.bpu.case.direction_forwarding import check_direction_forwarding
-from bpuverify.bpu.coverage.direction_forwarding import DirectionForwardingCoverage
+from suites.frontend.bpu.bpu.case.direction_forwarding import check_direction_forwarding
+from suites.frontend.bpu.bpu.coverage.direction_forwarding import DirectionForwardingCoverage
 
 
 @pytest.mark.feature('BPU-INT-085')

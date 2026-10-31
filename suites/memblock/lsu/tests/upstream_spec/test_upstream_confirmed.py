@@ -21,7 +21,7 @@ def load(relative):
 
 # ---------------------------------------------------------------- 6742
 def test_store_fault_tval_uses_the_tlb_masked_fullva(dut_factory):
-    from lsuverify.new_store_unit.env import NewStoreUnitEnv
+    from suites.memblock.lsu.new_store_unit.env import NewStoreUnitEnv
     t = load("tests/new_store_unit/test_new_store_unit.py")
     env = NewStoreUnitEnv(dut_factory("new_store_unit")); env.reset()
     tagged, masked = 0xAB00_0000_8020_0048, 0xFF00_0000_8020_0048
@@ -36,7 +36,7 @@ def test_store_fault_tval_uses_the_tlb_masked_fullva(dut_factory):
 
 # ---------------------------------------------------------------- 6060
 def test_cbo_on_pbmt_nc_is_not_a_store_access_fault(dut_factory):
-    from lsuverify.new_store_unit.env import NewStoreUnitEnv
+    from suites.memblock.lsu.new_store_unit.env import NewStoreUnitEnv
     t = load("tests/new_store_unit/test_new_store_unit.py")
     env = NewStoreUnitEnv(dut_factory("new_store_unit")); env.reset()
     line = 0x8000_2000
@@ -52,7 +52,7 @@ def test_cbo_on_pbmt_nc_is_not_a_store_access_fault(dut_factory):
 
 # ---------------------------------------------------------------- 6154
 def test_redirect_killed_s3_load_has_no_architectural_writeback(dut_factory):
-    from lsuverify.load_s3.env import LoadS3Env
+    from suites.memblock.lsu.load_s3.env import LoadS3Env
     t = load("tests/load_s3/test_load_s3.py")
     env = LoadS3Env(dut_factory("load_s3")); env.reset()
     got = t.beat(env, t.pipe(uop_robIdx_value=30, uop_rfWen=1), "killed s3",
@@ -65,7 +65,7 @@ def test_redirect_killed_s3_load_has_no_architectural_writeback(dut_factory):
 
 # ---------------------------------------------------------------- 5810
 def test_match_invalid_writeback_clears_replay_cause(dut_factory):
-    from lsuverify.load_s3.env import LoadS3Env
+    from suites.memblock.lsu.load_s3.env import LoadS3Env
     t = load("tests/load_s3/test_load_s3.py")
     env = LoadS3Env(dut_factory("load_s3")); env.reset()
     got = t.beat(env, t.pipe(matchInvalid=1, cause_4=1, causeOrR=1), "match invalid cause")
@@ -77,7 +77,7 @@ def test_match_invalid_writeback_clears_replay_cause(dut_factory):
 
 # ---------------------------------------------------------------- 6158
 def test_prefetch_w_requests_write_intent(dut_factory):
-    from lsuverify.load_s0.env import LoadS0Env
+    from suites.memblock.lsu.load_s0.env import LoadS0Env
     t = load("tests/load_s0/test_load_s0.py")
     env = LoadS0Env(dut_factory("load_s0")); env.reset()
     # At this commit prefetch.w is 0x05 (ldType 0010 / write, uopPrefetch bit 0);

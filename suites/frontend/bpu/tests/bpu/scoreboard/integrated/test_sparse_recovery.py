@@ -5,9 +5,9 @@ from types import SimpleNamespace
 import pytest
 from toffee import Scoreboard, ScoreboardMismatch
 
-from bpuverify.bpu.env.bypass.sparse import SparseProgramEnvironment
-from bpuverify.bpu.model.bypass.sparse import recipe
-from bpuverify.bpu.transaction.types import BpuPrediction, BpuMeta, BpuTransaction
+from suites.frontend.bpu.bpu.env.bypass.sparse import SparseProgramEnvironment
+from suites.frontend.bpu.bpu.model.bypass.sparse import recipe
+from suites.frontend.bpu.bpu.transaction.types import BpuPrediction, BpuMeta, BpuTransaction
 
 
 @pytest.mark.parametrize('fault', (None, 'source_A', 'target', 'position', 'branch_type', 'valid'))

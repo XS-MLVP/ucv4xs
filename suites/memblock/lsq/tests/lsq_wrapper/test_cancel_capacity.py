@@ -1,10 +1,12 @@
+
 from dataclasses import replace
 import hashlib
 
-from lsqverify.store_payload import add_digest
-from lsqverify.vlq.types import QueuePtr, RobPtr
-from lsqverify.vsq_cancel_capacity import save
-from lsqverify.vsq_recovery import PublicWindow
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.store_payload import add_digest
+from suites.memblock.lsq.vlq.types import QueuePtr, RobPtr
+from suites.memblock.lsq.vsq_cancel_capacity import save
+from suites.memblock.lsq.vsq_recovery import PublicWindow
 from .memory_owners import StoreOwner, cached_load
 from .recovery_owners import RecoveryOwners
 
@@ -27,7 +29,7 @@ def owner(position, program, generation):
 
 
 def check(pins, lane, store):
-    prefix = f"io_forward_{lane}_s2Resp_"
+    prefix = P.io(f"forward_{lane}_s2Resp_")
     expected = {prefix + "valid": 1, **{prefix + "bits_" + flag: 0 for flag in
                 ("forwardInvalid", "matchInvalid", "addrInvalid_valid", "dataInvalid_valid")}}
     for byte in range(16):

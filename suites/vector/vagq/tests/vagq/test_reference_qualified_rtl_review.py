@@ -12,13 +12,14 @@ from pathlib import Path
 import pytest
 
 from tools.run_vagq_exhaustive import atomic_json, digest
-from vagqverify.maskgen.flow_fixture import active_sites, flow_metadata, wide_flow
-from vagqverify.maskgen.probe import bind_maskgen
-from vagqverify.maskgen.reference import MaskRequest
-from vagqverify.native import open_dut
-from vagqverify.split.model import State
-from vagqverify.split.probe import bind, encode
-from vagqverify.split.types import Beat, Entry
+from suites.vector.vagq.maskgen.flow_fixture import active_sites, flow_metadata, wide_flow
+from suites.vector.vagq.maskgen.probe import bind_maskgen
+from suites.vector.vagq.maskgen.reference import MaskRequest
+from suites.vector.vagq.native import open_dut
+from suites.vector.vagq.split.model import State
+from suites.vector.vagq.split.native import NativeSplit
+from suites.vector.vagq.split.probe import bind, encode
+from suites.vector.vagq.split.types import Beat, Entry
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -41,31 +42,6 @@ def _beat(entry):
     return Beat(entries=(entry,) + (Entry(),) * 7,
         older_matrix=tuple(tuple(i < j for j in range(8)) for i in range(8)),
         lsu_ready=(True, True, True), empty_ready=(True, True))
-
-
-class NativeSplit:
-    def __init__(self, dut):
-        self.dut = dut
-        self.ports, self.sample = bind(dut)
-        self.ports.reset.AsImmWrite()
-        for signal in self.ports.inputs.values():
-            signal.AsImmWrite()
-        self.drive(Beat())
-        self.ports.reset.Set(1)
-        dut.Step(2)
-        self.ports.reset.Set(0)
-        dut.Step(1)
-
-    def drive(self, beat):
-        self.ports.inputs.drive(encode(beat))
-        self.dut.RefreshComb()
-
-    def cycle(self, beat):
-        self.drive(beat)
-        before = self.sample()
-        self.dut.Step(1)
-        after = self.sample()
-        return before, after
 
 
 def _single_request(observation):

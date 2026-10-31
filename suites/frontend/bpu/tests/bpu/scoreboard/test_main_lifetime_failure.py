@@ -5,9 +5,9 @@ import json
 from types import SimpleNamespace as N
 import pytest
 from toffee import ScoreboardMismatch
-from bpuverify.bpu.checker.main_original_order import Checks
-from bpuverify.bpu.model.main_original_order import Program
-from bpuverify.bpu.env.main_original_lifetime import close_pressure
+from suites.frontend.bpu.bpu.checker.main_original_order import Checks
+from suites.frontend.bpu.bpu.model.main_original_order import Program
+from suites.frontend.bpu.bpu.env.main_original_lifetime import close_pressure
 
 
 def checker():
@@ -25,7 +25,6 @@ def row(p,*,wrong=False):
         writes=writes,incoming=[],direction=dict(valid=0,ready=1,bits={}),
         dirty=[[0,0,0,0],[0,0,0,0],[1,0,0,0],[0,0,0,0]],
         queue=dict(enqueue=2,dequeue=0,full=0))
-
 
 
 def test_direct_failure_is_sticky_and_its_first_input_state_is_immutable():

@@ -1,9 +1,9 @@
 """Diagnostic only: observe the inherited MicroRAS enable port, no functional credit."""
 import json
 
-from bpuverify.uras.case.definitions import CALL_A
-from bpuverify.uras.case.definitions import MAIN_TOP
-from bpuverify.uras.transaction.types import UrasCycle
+from suites.frontend.bpu.uras.case.definitions import CALL_A
+from suites.frontend.bpu.uras.case.definitions import MAIN_TOP
+from suites.frontend.bpu.uras.transaction.types import UrasCycle
 
 
 async def test_probe_enable_gate_is_observable(uras_agent, request):

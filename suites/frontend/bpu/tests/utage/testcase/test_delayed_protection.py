@@ -1,11 +1,11 @@
 """The correctness of an original prediction cannot be retroactively changed."""
 import json
 import pytest
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.utage.model.delayed_protection import PROGRAMS
-from bpuverify.utage.coverage.delayed_protection import Coverage
-from bpuverify.utage.case.delayed_protection import run
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.utage.model.delayed_protection import PROGRAMS
+from suites.frontend.bpu.utage.coverage.delayed_protection import Coverage
+from suites.frontend.bpu.utage.case.delayed_protection import run
 
 
 @pytest.mark.feature('BPU-UTAGE-021')

@@ -6,10 +6,10 @@ from types import SimpleNamespace as NS
 import ast
 import pytest
 
-from bpuverify.bpu.checker.dual_retirement import DualRetirementChecks
-from bpuverify.bpu.coverage.dual_retirement import DualRetirementCoverage
-from bpuverify.bpu.model.tage.dual_retirement import PC, PATHS, OUTCOMES, COMMIT_COUNTERS, counters_after_service
-from bpuverify.bpu.model.tage.dual_migration import POSITIONS
+from suites.frontend.bpu.bpu.checker.dual_retirement import DualRetirementChecks
+from suites.frontend.bpu.bpu.coverage.dual_retirement import DualRetirementCoverage
+from suites.frontend.bpu.bpu.model.tage.dual_retirement import PC, PATHS, OUTCOMES, COMMIT_COUNTERS, counters_after_service
+from suites.frontend.bpu.bpu.model.tage.dual_migration import POSITIONS
 from tests.bpu.scoreboard.test_dual_migration import fixture as migration_fixture, source
 from tests.bpu.scoreboard.test_direction_sources import quiet
 from tests.bpu.scoreboard.test_direction_forwarding import resolution
@@ -226,7 +226,7 @@ def test_original_snapshots_and_single_credit_remain_required(fault):
 
 
 def test_case_has_no_private_scheduler_or_raw_signal_operations():
-    for path in ('bpuverify/bpu/case/dual_retirement.py', 'tests/bpu/testcase/test_dual_retirement.py'):
+    for path in ('bpu/case/dual_retirement.py', 'tests/bpu/testcase/test_dual_retirement.py'):
         for node in ast.walk(ast.parse(Path(path).read_text())):
             assert not isinstance(node, (ast.Assert, ast.ClassDef))
             if isinstance(node, ast.Call):

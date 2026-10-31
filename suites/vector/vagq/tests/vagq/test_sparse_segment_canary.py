@@ -6,12 +6,12 @@ import os
 import pytest
 
 from tools.run_vagq_exhaustive import atomic_json
-from vagqverify.native import open_dut
-from vagqverify.vagq.exhaustive import (
+from suites.vector.vagq.native import open_dut
+from suites.vector.vagq.vagq.exhaustive import (
     ShapeSession, U64_MASK, assess_shape_boundaries, build_shape_sequence, run_shape_sequence,
 )
-from vagqverify.vagq.isa_reference import architectural_accesses
-from vagqverify.vagq.scenario_matrix import legal_public_feature_cases
+from suites.vector.vagq.vagq.isa_reference import architectural_accesses
+from suites.vector.vagq.vagq.scenario_matrix import legal_public_feature_cases
 
 
 pytestmark = pytest.mark.vagq_isa_audit

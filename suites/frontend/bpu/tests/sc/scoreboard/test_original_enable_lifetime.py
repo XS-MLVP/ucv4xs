@@ -5,10 +5,10 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.sc.transaction.types import ScPrediction
-from bpuverify.sc.model.eligibility import EligibilityProgram,FAMILIES
-from bpuverify.sc.checker.original_enable import EnableChecks
-from bpuverify.sc.coverage.original_enable import EnableCoverage
+from suites.frontend.bpu.sc.transaction.types import ScPrediction
+from suites.frontend.bpu.sc.model.eligibility import EligibilityProgram,FAMILIES
+from suites.frontend.bpu.sc.checker.original_enable import EnableChecks
+from suites.frontend.bpu.sc.coverage.original_enable import EnableCoverage
 
 pytestmark=pytest.mark.toffee_functional_coverage(False)
 

@@ -1,11 +1,11 @@
 """Ownership intent only; agent drivers launch and monitors associate output."""
 import pytest
 
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.utage.case.read_ownership import check_read_ownership
-from bpuverify.utage.coverage.read_ownership import ReadOwnershipCoverage
-from bpuverify.utage.model.read_ownership import ReadOwnershipProgram
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.utage.case.read_ownership import check_read_ownership
+from suites.frontend.bpu.utage.coverage.read_ownership import ReadOwnershipCoverage
+from suites.frontend.bpu.utage.model.read_ownership import ReadOwnershipProgram
 
 
 @pytest.mark.feature('BPU-UTAGE-006')

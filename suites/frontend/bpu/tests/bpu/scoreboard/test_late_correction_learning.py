@@ -5,11 +5,11 @@ from pathlib import Path
 from types import SimpleNamespace as NS
 import pytest
 from toffee import Scoreboard,XEvent,XPhase,XEventKind
-from bpuverify.bpu.checker.late_correction_learning import Checks,PHASES
-from bpuverify.bpu.checker.early_direction import live_values,fast_values
-from bpuverify.bpu.coverage.late_correction_learning import Coverage
-from bpuverify.bpu.model.late_correction_learning import PROFILES,RULES,program
-from bpuverify.bpu.model.early_opposition import provider
+from suites.frontend.bpu.bpu.checker.late_correction_learning import Checks,PHASES
+from suites.frontend.bpu.bpu.checker.early_direction import live_values,fast_values
+from suites.frontend.bpu.bpu.coverage.late_correction_learning import Coverage
+from suites.frontend.bpu.bpu.model.late_correction_learning import PROFILES,RULES,program
+from suites.frontend.bpu.bpu.model.early_opposition import provider
 from tests.bpu.scoreboard.test_early_late_sources import Program as Foundation
 from tests.bpu.scoreboard.test_early_direction_checking import actual_live,actual_fast
 
@@ -146,7 +146,7 @@ def test_each_human_semantic_obligation_is_required_for_atomic_closure(profile,r
 
 def test_cases_hide_clock_phase_IO_and_parallel_task_plumbing():
     forbidden={'RisingEdge','FallingEdge','ClockCycles','get_','set_','gather','create_task'}
-    for name in ('bpuverify/bpu/case/late_correction_learning.py','tests/bpu/testcase/test_late_correction_learning.py'):
+    for name in ('bpu/case/late_correction_learning.py','tests/bpu/testcase/test_late_correction_learning.py'):
         tree=ast.parse(Path(name).read_text())
         assert not {n.id for n in ast.walk(tree) if isinstance(n,ast.Name)} & forbidden
         assert not {n.attr for n in ast.walk(tree) if isinstance(n,ast.Attribute)} & forbidden

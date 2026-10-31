@@ -2,7 +2,7 @@
 
 from dataclasses import replace
 
-from lsqverify.raw.types import RobPtr
+from suites.memblock.lsq.raw.types import RobPtr
 
 
 async def test_full_width_checkpoint_and_physical_address_payload(raw):

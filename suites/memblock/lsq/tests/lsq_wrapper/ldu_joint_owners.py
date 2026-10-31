@@ -5,12 +5,12 @@ No DUT/reference private reads; all stage transitions inherit the S3 actor.
 """
 from dataclasses import replace
 
-from lsqverify.forward.types import Query
-from lsqverify.load_queue.types import Bypass
-from lsqverify.lsq_wrapper.types import Address, Bus, Data, Dispatch
-from lsqverify.raw.types import SqPtr
-from lsqverify.replay.types import StoreWakeup
-from lsqverify.vlq.types import QueuePtr
+from suites.memblock.lsq.forward.types import Query
+from suites.memblock.lsq.load_queue.types import Bypass
+from suites.memblock.lsq.lsq_wrapper.types import Address, Bus, Data, Dispatch
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.replay.types import StoreWakeup
+from suites.memblock.lsq.vlq.types import QueuePtr
 from .ldu_s3_owners import LduS3MixedOwners
 from .mixed_owners import rob_pointer
 

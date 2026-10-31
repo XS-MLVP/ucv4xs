@@ -7,6 +7,7 @@ explicitly reviewed). ``prepare_rtl.py`` re-verifies every copied byte against
 ``manifest/lsu-rtl.sha256``.
 """
 from __future__ import annotations
+import ucv.runtime as ucv_paths
 
 import hashlib
 import json
@@ -17,7 +18,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from dep_closure import load_index  # noqa: E402
-from duts import DUTS, SOC_RTL  # noqa: E402
+from suites.memblock.lsu.inventory import DUTS  # noqa: E402
+SOC_RTL = ucv_paths.soc_rtl_for(ROOT).resolve()
 
 
 def sha256(path: Path) -> str:

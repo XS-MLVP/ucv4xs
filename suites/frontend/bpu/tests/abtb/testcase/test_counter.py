@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.abtb.checker.assertions import assert_conditional_state
-from bpuverify.abtb.checker.assertions import matching_entry
-from bpuverify.abtb.checker.assertions import train_conditional_direction
-from bpuverify.abtb.checker.assertions import train_taken
-from bpuverify.abtb.case.definitions import CONDITIONAL
-from bpuverify.abtb.case.definitions import CONDITIONAL_NEIGHBOR
-from bpuverify.abtb.case.definitions import conditional_way_vectors
+from suites.frontend.bpu.abtb.checker.assertions import assert_conditional_state
+from suites.frontend.bpu.abtb.checker.assertions import matching_entry
+from suites.frontend.bpu.abtb.checker.assertions import train_conditional_direction
+from suites.frontend.bpu.abtb.checker.assertions import train_taken
+from suites.frontend.bpu.abtb.case.definitions import CONDITIONAL
+from suites.frontend.bpu.abtb.case.definitions import CONDITIONAL_NEIGHBOR
+from suites.frontend.bpu.abtb.case.definitions import conditional_way_vectors
 
 
 @pytest.mark.feature("BPU-ABTB-010")

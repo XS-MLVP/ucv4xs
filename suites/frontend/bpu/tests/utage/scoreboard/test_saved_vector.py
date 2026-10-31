@@ -5,11 +5,12 @@ import json
 from pathlib import Path
 import pytest
 from toffee import ScoreboardMismatch
-from bpuverify.utage.model.saved_vector import PROGRAMS, OBLIGATIONS
-from bpuverify.utage.model.semantic import Base,Context,Events,Feedback,Source,UtageReference
-from bpuverify.utage.transaction.types import UtagePrediction
-from bpuverify.utage.checker.saved_vector import Checks
-from bpuverify.utage.coverage.saved_vector import Coverage
+from suites.frontend.bpu.utage.model.saved_vector import PROGRAMS, OBLIGATIONS
+from suites.frontend.bpu.utage.model.semantic import (Base, Context, Events, Feedback, Source,
+    TRAIN_HISTORY_INDICES, UtageReference)
+from suites.frontend.bpu.utage.transaction.types import UtagePrediction
+from suites.frontend.bpu.utage.checker.saved_vector import Checks
+from suites.frontend.bpu.utage.coverage.saved_vector import Coverage
 
 
 def event(program,read,match=None,*,override=None,feedback=None):
@@ -107,7 +108,7 @@ def test_mixed_age_vector_or_metadata_is_rejected(program,fault):
     elif fault=='provider-swap':
         next(v for v in actual.meta['abtbResult'] if v['valid'])['tableId'] ^= 1
     elif fault=='wrong-read-age':actual.meta['readIndex']=(19,19)
-    elif fault=='wrong-matching-history':actual.meta['foldedPathHistForTrain_hist'][0]['foldedHist'] ^= 1
+    elif fault=='wrong-matching-history':actual.meta['foldedPathHistForTrain_hist'][TRAIN_HISTORY_INDICES[0]]['foldedHist'] ^= 1
     else:actual.meta['abtbResult'][0]['valid']=1
     with pytest.raises(ScoreboardMismatch) as caught:
         Checks(program).vector(program.target,actual,program.target.prepared)

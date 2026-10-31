@@ -1,8 +1,8 @@
 """Integrated capacity is one functional boundary, not a bank/set sweep."""
 import pytest
 
-from bpuverify.bpu.case.micro_capacity import check_micro_capacity
-from bpuverify.bpu.coverage.micro_capacity import MicroCapacityCoverage
+from suites.frontend.bpu.bpu.case.micro_capacity import check_micro_capacity
+from suites.frontend.bpu.bpu.coverage.micro_capacity import MicroCapacityCoverage
 
 
 @pytest.mark.feature('BPU-INT-082')

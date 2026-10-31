@@ -3,11 +3,11 @@ import json
 
 import pytest
 
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.utage.case.learning_retention import check_learning_retention
-from bpuverify.utage.coverage.learning_retention import LearningRetentionCoverage
-from bpuverify.utage.model.working_set import WorkingSetProgram
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.utage.case.learning_retention import check_learning_retention
+from suites.frontend.bpu.utage.coverage.learning_retention import LearningRetentionCoverage
+from suites.frontend.bpu.utage.model.working_set import WorkingSetProgram
 
 
 @pytest.mark.feature('BPU-UTAGE-016')

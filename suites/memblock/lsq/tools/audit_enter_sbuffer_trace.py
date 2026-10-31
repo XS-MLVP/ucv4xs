@@ -151,7 +151,7 @@ def audit(name):
         else:
             shutil.copy2(tool, dest)
         auditors[str(dest.relative_to(run))] = sha(dest)
-    report = {"run": name, "status": "verified_public_fifo_history", "tests": manifest["tests"], "scope": "independent ordered accepted-request ledger, no lsqverify imports or internal register oracle",
+    report = {"run": name, "status": "verified_public_fifo_history", "tests": manifest["tests"], "scope": 'independent ordered accepted-request ledger, no lsqverify imports or internal register oracle',
               "manifest_sha256": sha(run / "execution/manifest.json"), "evidence_check_sha256": sha(run / "evidence-check.json"),
               "snapshot_files": len(source), "totals": {key: sum(row[key] for row in rows) for key in counts},
               "consumed_credit_values": dict(credits), "input_to_output_lane_witnesses": tuples,

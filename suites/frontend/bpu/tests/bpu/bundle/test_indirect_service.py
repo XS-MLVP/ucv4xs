@@ -1,8 +1,8 @@
 """Only real memory-direct fields are bound; no fabricated constant inputs."""
 from types import SimpleNamespace as NS
 import pytest
-from bpuverify.bpu.bundle import indirect_service as module
-from bpuverify.bpu.bundle.values import _plain
+from suites.frontend.bpu.bpu.bundle import indirect_service as module
+from suites.frontend.bpu.bpu.bundle.values import _plain
 
 
 class Signal:

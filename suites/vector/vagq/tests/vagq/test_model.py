@@ -1,8 +1,10 @@
 """Top-level semantic qualification without DUT coverage credit."""
+
 import pytest
 
-from vagqverify.vagq.model import IntegrationModel, _data_size, _slot_element
-from vagqverify.vagq.types import AddrPacket, Beat, DataPacket
+from suites.vector.vagq.legacy_pins import P
+from suites.vector.vagq.vagq.model import IntegrationModel, _data_size, _slot_element
+from suites.vector.vagq.vagq.types import AddrPacket, Beat, DataPacket
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)
 
@@ -51,7 +53,7 @@ def _empty_output(**changes):
                   bits_robIdx_flag=0, bits_robIdx_value=9,
                   bits_isLoad=1, bits_lqIdx_value=34)
     fields.update(changes)
-    return {'io_lsqEmptyReq_0_' + key: value for key, value in fields.items()}
+    return {P.p_lsqEmptyReq_0_ + key: value for key, value in fields.items()}
 
 
 def test_fractional_padding_is_required_cleanup_not_extra_memory():
@@ -88,9 +90,9 @@ def test_checker_still_rejects_duplicate_cleanup():
 
 def test_checker_rejects_a_real_read_from_fractional_padding():
     output = {
-        'io_lduReq_0_valid': 1, 'io_lduReq_0_bits_meta_valid': 1,
-        'io_lduReq_0_bits_meta_entryIdx': 0,
-        'io_lduReq_0_bits_meta_byteOffset': 2,
+        P.p_lduReq_0_valid: 1, P.p_lduReq_0_bits_meta_valid: 1,
+        P.p_lduReq_0_bits_meta_entryIdx: 0,
+        P.p_lduReq_0_bits_meta_byteOffset: 2,
     }
     with pytest.raises(AssertionError, match='non-active byte 2'):
         _fractional_model()._active_event(output, Beat(), 'lduReq', 0)
@@ -101,8 +103,8 @@ def test_checker_rejects_writeback_before_reserved_slots_are_released():
     model.plans[0].acknowledged = 0x3
     with pytest.raises(AssertionError, match='before all required work completed'):
         model.validate({
-            'io_robWriteback_valid': 1, 'io_robWriteback_bits_entryIdx': 0,
-            'io_robWriteback_bits_robIdx_value': 9,
+            P.p_robWriteback_valid: 1, P.p_robWriteback_bits_entryIdx: 0,
+            P.p_robWriteback_bits_robIdx_value: 9,
         }, Beat())
 
 

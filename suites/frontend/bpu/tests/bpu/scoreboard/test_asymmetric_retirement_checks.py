@@ -4,7 +4,7 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.model.tage.asymmetric_retirement import SERVICE_IDENTITIES
+from suites.frontend.bpu.bpu.model.tage.asymmetric_retirement import SERVICE_IDENTITIES
 from tests.bpu.scoreboard.asymmetric_retirement_fixtures import armed, held, packet, released, completed
 
 

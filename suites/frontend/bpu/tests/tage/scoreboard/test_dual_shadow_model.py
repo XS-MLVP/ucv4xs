@@ -3,8 +3,8 @@ from copy import deepcopy
 
 import pytest
 
-from bpuverify.tage.model.dual_shadow import advance_tage_shadow_writes
-from bpuverify.tage.model.shadow import advance_tage_shadow
+from suites.frontend.bpu.tage.model.dual_shadow import advance_tage_shadow_writes
+from suites.frontend.bpu.tage.model.shadow import advance_tage_shadow
 
 
 def resident_banks():

@@ -3,9 +3,9 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.mbtb.agent.main import MbtbAgent
-from bpuverify.mbtb.monitor.counter import MbtbCounterActivityMonitor
-from bpuverify.mbtb.monitor.counter import QUEUE_FIELDS
+from suites.frontend.bpu.mbtb.agent.main import MbtbAgent
+from suites.frontend.bpu.mbtb.monitor.counter import MbtbCounterActivityMonitor
+from suites.frontend.bpu.mbtb.monitor.counter import QUEUE_FIELDS
 from tests.framework.fakes import native_name_dut
 
 

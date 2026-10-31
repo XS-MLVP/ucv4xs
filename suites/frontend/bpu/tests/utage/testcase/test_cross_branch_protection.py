@@ -1,11 +1,11 @@
 """Different matching branches own their delayed correct/agreement/wrong results."""
 import json
 import pytest
-from bpuverify.common.env.artifacts import output_directory
-from bpuverify.common.env.paths import REPO_ROOT
-from bpuverify.utage.model.cross_branch_protection import PROGRAMS
-from bpuverify.utage.coverage.cross_branch_protection import Coverage
-from bpuverify.utage.case.cross_branch_protection import check_cross_branch_protection
+from suites.frontend.bpu.runtime.artifacts import output_directory
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
+from suites.frontend.bpu.utage.model.cross_branch_protection import PROGRAMS
+from suites.frontend.bpu.utage.coverage.cross_branch_protection import Coverage
+from suites.frontend.bpu.utage.case.cross_branch_protection import check_cross_branch_protection
 
 
 @pytest.mark.feature('BPU-UTAGE-021')

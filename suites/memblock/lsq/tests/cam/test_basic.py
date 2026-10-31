@@ -1,5 +1,5 @@
 """First-pass CAM coverage: intentionally only a small portion of one bank."""
-from lsqverify.cam.types import Write
+from suites.memblock.lsq.cam.types import Write
 
 
 async def test_basic_synchronous_write_and_query(cam):

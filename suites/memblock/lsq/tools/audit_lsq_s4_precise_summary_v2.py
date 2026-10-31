@@ -53,7 +53,7 @@ def audit(name):
     cycle=next(n for n in ast.walk(controller) if isinstance(n,ast.AsyncFunctionDef) and n.name=="cycle")
     assert len(cycle.body)==3 and isinstance(cycle.body[1].value,ast.Await) and cycle.body[2].value.func.attr=="observe"
     shared=json.loads((ROOT/"results/lsq-progress-regression-12/source-evidence.json").read_text())["files"]
-    assert all(source[k]==v for k,v in shared.items() if k.startswith("lsqverify/"))
+    assert all(source[k]==v for k,v in shared.items() if k.startswith('lsqverify/'))
     assert not list((run/"cases").rglob("*.jsonl")) and not list((run/"cases").rglob("*.fst"))
     expected={(lane,page,name) for lane in range(3) for page,patterns in((False,(*WORD_PATTERNS,"both_miss")),(True,(*PAGE_PATTERNS,"both_miss"))) for name in patterns}
     totals=Counter();semantic=Counter();seen=set();actual=set();cases=[];native_records=0

@@ -3,11 +3,11 @@ from pathlib import Path
 import ast
 import json
 import pytest
-from bpuverify.bpu.model.joint_originals import Program,PROFILES,RULES
-from bpuverify.bpu.coverage.joint_originals import Coverage
-from bpuverify.sc.model.semantic import ScReference,Events,Context,decide
-from bpuverify.sc.transaction.types import ScHistory,ScBaseBranch,ScBatchTraining,ScBranchFeedback
-from bpuverify.tage.model.semantic import TageReference,Events as TageEvents,Context as TageContext,Feedback,Branch,Hint,coordinate
+from suites.frontend.bpu.bpu.model.joint_originals import Program,PROFILES,RULES
+from suites.frontend.bpu.bpu.coverage.joint_originals import Coverage
+from suites.frontend.bpu.sc.model.semantic import ScReference,Events,Context,decide
+from suites.frontend.bpu.sc.transaction.types import ScHistory,ScBaseBranch,ScBatchTraining,ScBranchFeedback
+from suites.frontend.bpu.tage.model.semantic import TageReference,Events as TageEvents,Context as TageContext,Feedback,Branch,Hint,coordinate
 
 pytestmark=pytest.mark.toffee_functional_coverage(False)
 
@@ -102,7 +102,7 @@ def test_contract_is_human_semantics_and_exactly_matches_the_registered_point():
 
 def test_public_memory_direct_layout_has_every_complete_training_response_word():
     import yaml
-    from bpuverify.bpu.bundle.statistical import TABLES
+    from suites.frontend.bpu.bpu.bundle.statistical import TABLES
     root=Path(__file__).resolve().parents[3]
     layout=yaml.load((root/'dut/bpu/BpuDut_offset.yaml').read_bytes(),Loader=yaml.CSafeLoader)
     names={r['name'] for field in ('variables','signals') for r in layout.get(field,())}
@@ -112,7 +112,7 @@ def test_public_memory_direct_layout_has_every_complete_training_response_word()
 
 
 def test_case_and_bundle_keep_dynamic_and_static_responsibilities_separate():
-    root=Path(__file__).resolve().parents[3]/'bpuverify/bpu'
+    root=Path(__file__).resolve().parents[3]/'bpu'
     case=ast.parse((root/'case/joint_originals.py').read_text())
     names={n.id for n in ast.walk(case) if isinstance(n,ast.Name)}|{n.attr for n in ast.walk(case) if isinstance(n,ast.Attribute)}
     assert not names&{'FallingEdge','RisingEdge','ClockCycles','gather','create_task','sleep','set_','get'}
@@ -121,7 +121,7 @@ def test_case_and_bundle_keep_dynamic_and_static_responsibilities_separate():
 
 
 def test_reused_single_source_setup_cannot_award_two_original_credit():
-    from bpuverify.bpu.checker.joint_originals import Checks
+    from suites.frontend.bpu.bpu.checker.joint_originals import Checks
     c=Checks.__new__(Checks);c.phase='prepare';c.preparation=set();c.coverage=Coverage(PROFILES[0])
     def check(expected,actual,point):assert expected==actual,point
     c.check=check

@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.uras.transaction.types import UrasCycle
-from bpuverify.uras.checker.assertions import pushed
-from bpuverify.uras.case.definitions import CALL_A
-from bpuverify.uras.case.definitions import CALL_B
+from suites.frontend.bpu.uras.transaction.types import UrasCycle
+from suites.frontend.bpu.uras.checker.assertions import pushed
+from suites.frontend.bpu.uras.case.definitions import CALL_A
+from suites.frontend.bpu.uras.case.definitions import CALL_B
 
 
 @pytest.mark.feature("BPU-URAS-003")

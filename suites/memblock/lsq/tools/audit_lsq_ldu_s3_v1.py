@@ -93,7 +93,7 @@ def audit(name):
     old_r,rar_s,rar_n=verify_common(rar_old)
     assert old_m["tests"]=={"PASS":2,"FAIL":6} and old_r["tests"]=={"PASS":15,"FAIL":3}
     for old in(old_s,rar_s):
-        assert all(source[k]==v for k,v in old.items() if k.startswith("lsqverify/")),"shared reference changed"
+        assert all(source[k]==v for k,v in old.items() if k.startswith('lsqverify/')),"shared reference changed"
     frozen=run/"verification-source/tests/lsq_wrapper"
     old_functions={n.name:ast.dump(n,include_attributes=False) for file in("test_ldu_rar_routing.py","test_ldu_rar_capacity.py")
                    for n in ast.parse((frozen/file).read_text()).body if isinstance(n,ast.AsyncFunctionDef)}

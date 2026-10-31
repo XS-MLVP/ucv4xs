@@ -10,13 +10,13 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from lsqverify.forward.types import Query, Translation
-from lsqverify.psq.types import Address, Attributes, Data, SecondPage
-from lsqverify.raw.types import SqPtr
-from lsqverify.store_queue.decode import decode
-from lsqverify.store_queue.types import Inputs, encode
-from lsqverify.vlq.types import Redirect, RobPtr
-from lsqverify.vsq.types import Dispatch
+from suites.memblock.lsq.forward.types import Query, Translation
+from suites.memblock.lsq.psq.types import Address, Attributes, Data, SecondPage
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.store_queue.decode import decode
+from suites.memblock.lsq.store_queue.types import Inputs, encode
+from suites.memblock.lsq.vlq.types import Redirect, RobPtr
+from suites.memblock.lsq.vsq.types import Dispatch
 
 
 def sha(path):
@@ -58,8 +58,8 @@ def main():
             raise AssertionError("invalid actual pin width/domain accepted")
     out = ROOT / "results/sq-codec-static-01"
     out.mkdir(exist_ok=False)
-    files = (Path(__file__), ROOT / "lsqverify/store_queue/types.py", ROOT / "lsqverify/store_queue/decode.py", ROOT / "lsqverify/store_queue/ports.py",
-             ROOT / "lsqverify/psq/types.py", ROOT / "lsqverify/psq/decode.py", ROOT / "lsqverify/vsq/types.py")
+    files = (Path(__file__), ROOT / "store_queue/types.py", ROOT / "store_queue/decode.py", ROOT / "store_queue/ports.py",
+             ROOT / "psq/types.py", ROOT / "psq/decode.py", ROOT / "vsq/types.py")
     hashes = {}
     for path in files:
         dest = out / "source" / path.relative_to(ROOT)

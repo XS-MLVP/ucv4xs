@@ -3,7 +3,7 @@ from copy import deepcopy
 
 import pytest
 
-from bpuverify.mbtb.model.depth import expected_depth_target_state
+from suites.frontend.bpu.mbtb.model.depth import expected_depth_target_state
 from tests.mbtb.scoreboard.test_depth_owner import with_peer
 
 

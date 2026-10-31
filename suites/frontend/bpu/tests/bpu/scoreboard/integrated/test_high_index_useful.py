@@ -4,15 +4,15 @@ from types import SimpleNamespace
 
 import pytest
 from toffee import Scoreboard, ScoreboardMismatch
-from bpuverify.bpu.case.bypass.high_index import HIGH_INDEX_CONTRACTS, coverage_model
-from bpuverify.bpu.coverage.bypass.high_index import collect_updates
-from bpuverify.bpu.env.bypass.program import ProgramEnvironment
-from bpuverify.bpu.env.bypass.sparse import SparseProgramEnvironment
-from bpuverify.bpu.model.bypass.high_index import base_alias, program
-from bpuverify.bpu.model.abtb.alias import physical_index
-from bpuverify.bpu.model.bypass.model import BypassReference
-from bpuverify.bpu.model.bypass.sparse import joint_proof, recipe
-from bpuverify.bpu.transaction.types import BpuMeta, BpuPrediction, BpuTransaction
+from suites.frontend.bpu.bpu.case.bypass.high_index import HIGH_INDEX_CONTRACTS, coverage_model
+from suites.frontend.bpu.bpu.coverage.bypass.high_index import collect_updates
+from suites.frontend.bpu.bpu.env.bypass.program import ProgramEnvironment
+from suites.frontend.bpu.bpu.env.bypass.sparse import SparseProgramEnvironment
+from suites.frontend.bpu.bpu.model.bypass.high_index import base_alias, program
+from suites.frontend.bpu.bpu.model.abtb.alias import physical_index
+from suites.frontend.bpu.bpu.model.bypass.model import BypassReference
+from suites.frontend.bpu.bpu.model.bypass.sparse import joint_proof, recipe
+from suites.frontend.bpu.bpu.transaction.types import BpuMeta, BpuPrediction, BpuTransaction
 from tests.bpu.scoreboard.integrated.test_coverage_collection import inputs
 
 

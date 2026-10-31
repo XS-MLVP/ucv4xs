@@ -9,8 +9,8 @@ import pytest
 import toffee
 import xspcomm
 
-from bpuverify.common.env.runtime import validate_dut_runtime, validate_runtime
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.runtime.runtime import validate_dut_runtime, validate_runtime
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 def test_runtime_uses_the_project_environment_and_native_protocol():
@@ -36,11 +36,11 @@ def test_old_copied_dut_bindings_are_rejected(monkeypatch, method, value):
 
 
 def test_port_bindings_do_not_depend_on_generated_hierarchy_injections():
-    for path in (REPO_ROOT / 'bpuverify').glob('*/bundle/ports.py'):
+    for path in (REPO_ROOT).glob('*/bundle/ports.py'):
         for node in ast.walk(ast.parse(path.read_text())):
             assert not (isinstance(node, ast.Attribute) and node.attr == 'io'
                         and isinstance(node.value, ast.Name) and node.value.id == 'dut'), path
-    source = (REPO_ROOT / 'bpuverify/common/bundle/bindings.py').read_text()
+    source = (REPO_ROOT / 'ports/bindings.py').read_text()
     assert 'dut.signal_tree' not in source
     assert 'Bundle.bind_tree' in source
 

@@ -1,9 +1,9 @@
 """Interior original contribution and original-consistent-but-wrong penalties."""
 import json
 import pytest
-from bpuverify.bpu.model.entry_protection import PROFILES
-from bpuverify.bpu.coverage.entry_protection import Coverage
-from bpuverify.bpu.case.entry_protection import run
+from suites.frontend.bpu.bpu.model.entry_protection import PROFILES
+from suites.frontend.bpu.bpu.coverage.entry_protection import Coverage
+from suites.frontend.bpu.bpu.case.entry_protection import run
 
 
 @pytest.mark.feature('BPU-INT-066')

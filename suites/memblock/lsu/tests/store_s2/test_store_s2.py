@@ -5,9 +5,9 @@ import random
 
 import pytest
 
-from lsuverify.common.robptr import LEVEL_FLUSH, LEVEL_FLUSH_AFTER
-from lsuverify.store_s2.coverage import S2_CASES, StoreS2Coverage
-from lsuverify.store_s2.env import (
+from suites.memblock.lsu.pointers import LEVEL_FLUSH, LEVEL_FLUSH_AFTER
+from suites.memblock.lsu.store_s2.coverage import S2_CASES, StoreS2Coverage
+from suites.memblock.lsu.store_s2.env import (
     PBMT_DEFAULT,
     PBMT_IO,
     PBMT_NC,

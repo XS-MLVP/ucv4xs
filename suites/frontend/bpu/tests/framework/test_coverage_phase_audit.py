@@ -2,9 +2,9 @@ from pathlib import Path
 
 import pytest
 
-from bpuverify.common.coverage.phase_audit import POINTS
-from bpuverify.common.coverage.phase_audit import expected_counts
-from bpuverify.common.coverage.phase_audit import read_counts
+from suites.frontend.bpu.coverage.phase_audit import POINTS
+from suites.frontend.bpu.coverage.phase_audit import expected_counts
+from suites.frontend.bpu.coverage.phase_audit import read_counts
 
 
 @pytest.mark.parametrize("mode,updates,holds", [

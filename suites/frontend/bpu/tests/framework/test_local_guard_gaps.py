@@ -5,15 +5,15 @@ from pathlib import Path
 
 import pytest
 
-from bpuverify.common.coverage.local_guards import ROOT, Source, claim, match_native, native_points
-from bpuverify.sc.coverage.guard_audit import source_claims as sc_claims
-from bpuverify.tage.coverage.coverage_audit import source_claims as tage_claims
+from suites.frontend.bpu.coverage.local_guards import ROOT, Source, claim, match_native, native_points
+from suites.frontend.bpu.sc.coverage.guard_audit import source_claims as sc_claims
+from suites.frontend.bpu.tage.coverage.coverage_audit import source_claims as tage_claims
 from tools.review_guard_gaps import review
 
 
 def report():
     # Permissive synthetic input for source review only, NOT native evidence.
-    file = 'rtl/tage/WriteBuffer.sv'
+    file = 'rtl/tage/WriteBuffer_12.sv'
     size = len((ROOT/file).read_text().splitlines())
     return dict(generated_at='synthetic-unit-fixture-not-verification-evidence',dut={'tage':dict(source_lines=dict(total=size,hit=0),
         uncovered_rtl_source_lines=[dict(file=file,line=line) for line in range(1,size+1)])})
@@ -57,19 +57,19 @@ def test_reviewed_source_claims_require_matching_native_producers(dut,baseline):
 
 
 @pytest.mark.parametrize('dut,file,before,after',(
-    ('sc','WriteBuffer.sv','if (|hitMaskUInt) begin','if (~(|hitMaskUInt)) begin'),
-    ('sc','WriteBuffer.sv',"_GEN_21 = ~(|hitMaskUInt) & victim == 2'h0;","_GEN_21 = victim == 2'h0;"),
-    ('sc','WriteBuffer.sv','entries_0_0_setIdx <= io_write_0_bits_setIdx;','entries_0_1_setIdx <= io_write_0_bits_setIdx;'),
-    ('sc','WriteBuffer.sv','entries_0_0_wayData_0 <= io_write_0_bits_wayData_0;','entries_0_0_wayData_0 <= io_write_1_bits_wayData_0;'),
-    ('sc','WriteBuffer_14.sv','if (|hitMaskUInt) begin','if (~(|hitMaskUInt)) begin'),
-    ('sc','WriteBuffer_14.sv',"_GEN_69 = ~(|hitMaskUInt) & victim == 2'h0;","_GEN_69 = victim == 2'h0;"),
-    ('tage','WriteBuffer.sv','if (|hitMaskUInt_1) begin','if (~(|hitMaskUInt_1)) begin'),
-    ('tage','WriteBuffer.sv','_GEN_55 = (|hitMaskUInt) & ~rowIdx & _GEN_22;','_GEN_55 = ~rowIdx & _GEN_22;'),
-    ('tage','WriteBuffer.sv','if (_GEN_125) begin','if (|hitMaskUInt_1) begin'),
-    ('tage','WriteBuffer.sv','_GEN_51 = ~(|_hitWritten_T_1) | _GEN_41 | ~_GEN_33;','_GEN_51 = ~(|_hitWritten_T_1) | _GEN_41;'),
-    ('tage','WriteBuffer.sv','else if (~(|_hitWritten_T_3) | _GEN_115 | ~_GEN_93) begin','else if (|hitMaskUInt_1) begin'),
-    ('tage','WriteBuffer.sv','else if (_GEN_51) begin','else if (|hitMaskUInt) begin'),
-    ('tage','WriteBuffer.sv','entries_1_0_entry_tag <= io_write_0_bits_entry_tag;','entries_0_0_entry_tag <= io_write_0_bits_entry_tag;'),
+    ('sc','WriteBuffer_54.sv','if (|hitMaskUInt) begin','if (~(|hitMaskUInt)) begin'),
+    ('sc','WriteBuffer_54.sv',"_GEN_21 = ~(|hitMaskUInt) & victim == 2'h0;","_GEN_21 = victim == 2'h0;"),
+    ('sc','WriteBuffer_54.sv','entries_0_0_setIdx <= io_write_0_bits_setIdx;','entries_0_1_setIdx <= io_write_0_bits_setIdx;'),
+    ('sc','WriteBuffer_54.sv','entries_0_0_wayData_0 <= io_write_0_bits_wayData_0;','entries_0_0_wayData_0 <= io_write_1_bits_wayData_0;'),
+    ('sc','WriteBuffer_68.sv','if (|hitMaskUInt) begin','if (~(|hitMaskUInt)) begin'),
+    ('sc','WriteBuffer_68.sv',"_GEN_69 = ~(|hitMaskUInt) & victim == 2'h0;","_GEN_69 = victim == 2'h0;"),
+    ('tage','WriteBuffer_12.sv','if (|hitMaskUInt_1) begin','if (~(|hitMaskUInt_1)) begin'),
+    ('tage','WriteBuffer_12.sv','_GEN_55 = (|hitMaskUInt) & ~rowIdx & _GEN_22;','_GEN_55 = ~rowIdx & _GEN_22;'),
+    ('tage','WriteBuffer_12.sv','if (_GEN_125) begin','if (|hitMaskUInt_1) begin'),
+    ('tage','WriteBuffer_12.sv','_GEN_51 = ~(|_hitWritten_T_1) | _GEN_41 | ~_GEN_33;','_GEN_51 = ~(|_hitWritten_T_1) | _GEN_41;'),
+    ('tage','WriteBuffer_12.sv','else if (~(|_hitWritten_T_3) | _GEN_115 | ~_GEN_93) begin','else if (|hitMaskUInt_1) begin'),
+    ('tage','WriteBuffer_12.sv','else if (_GEN_51) begin','else if (|hitMaskUInt) begin'),
+    ('tage','WriteBuffer_12.sv','entries_1_0_entry_tag <= io_write_0_bits_entry_tag;','entries_0_0_entry_tag <= io_write_0_bits_entry_tag;'),
 ))
 def test_weakened_guards_or_wrong_body_source_are_rejected_without_editing_rtl(dut,file,before,after,monkeypatch):
     path = ROOT/f'rtl/{dut}/{file}'
@@ -120,7 +120,7 @@ def test_native_mapping_checks_all_producers_and_retains_unknown_rows():
 
 
 def test_span_mapping_can_classify_an_else_head_without_confusing_the_covered_anchor():
-    file = 'rtl/tage/WriteBuffer.sv'
+    file = 'rtl/tage/WriteBuffer_12.sv'
     assertions = [claim(file,871,875,849,'else','local-priority-contradiction')]
     native = dict(dut={'tage':dict(source_lines=dict(total=8,hit=3),
         uncovered_rtl_source_lines=[dict(file=file,line=line) for line in range(871,876)])})
@@ -149,7 +149,7 @@ def test_a_guard_closed_before_the_body_is_not_an_enclosing_proof(tmp_path):
 def test_diagnostic_review_is_read_only_and_has_no_implicit_exports(baseline):
     files = list(baseline.rglob('*'))
     files = [path for path in files if path.is_file()]
-    files += [ROOT/name for name in ('rtl/sc/WriteBuffer.sv','rtl/sc/WriteBuffer_14.sv','rtl/tage/WriteBuffer.sv')]
+    files += [ROOT/name for name in ('rtl/sc/WriteBuffer_54.sv','rtl/sc/WriteBuffer_68.sv','rtl/tage/WriteBuffer_12.sv')]
     before = {str(path):sha256(path.read_bytes()).hexdigest() for path in files}
     review(baseline)
     assert {str(path):sha256(path.read_bytes()).hexdigest() for path in files}==before
@@ -168,7 +168,7 @@ def test_deletable_historical_reports_are_not_source_proof_inputs(baseline,monke
 def test_stale_compiled_source_epoch_cannot_support_a_current_claim(baseline):
     path = baseline/'source-epoch.json'
     epoch = json.loads(path.read_text())
-    epoch[str((ROOT/'rtl/sc/WriteBuffer.sv').resolve())] = '0'*64
+    epoch[str((ROOT/'rtl/sc/WriteBuffer_54.sv').resolve())] = '0'*64
     path.write_text(json.dumps(epoch))
     with pytest.raises(AssertionError,match='stale native source'): review(baseline)
 

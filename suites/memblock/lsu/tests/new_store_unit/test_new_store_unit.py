@@ -11,8 +11,8 @@ import random
 
 import pytest
 
-from lsuverify.new_store_unit.coverage import NSU_CASES, NewStoreUnitCoverage
-from lsuverify.new_store_unit.env import (
+from suites.memblock.lsu.new_store_unit.coverage import NSU_CASES, NewStoreUnitCoverage
+from suites.memblock.lsu.new_store_unit.env import (
     NewStoreUnitEnv,
     blank,
     blank_pmp,
@@ -21,8 +21,8 @@ from lsuverify.new_store_unit.env import (
     blank_trigger,
     random_stin,
 )
-from lsuverify.store_s0.env import STIN_FIELDS
-from lsuverify.store_trigger.env import (
+from suites.memblock.lsu.store_s0.env import STIN_FIELDS
+from suites.memblock.lsu.store_trigger.env import (
     ACTION_CODE_BREAKPOINT,
     ACTION_CODE_DEBUG,
     MATCH_EQ,

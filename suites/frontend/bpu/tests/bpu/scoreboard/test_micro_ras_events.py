@@ -2,10 +2,10 @@
 from copy import deepcopy
 import pytest
 from toffee import ScoreboardMismatch, CoverageDatabase
-from bpuverify.bpu.coverage.ras_micro import MicroRasEvents, micro_coverage, RULES
-from bpuverify.bpu.model.ras.micro_events import pending_interaction
-from bpuverify.bpu.checker.ras.micro import MicroRasChecker
-from bpuverify.uras.model.pipeline import empty_state
+from suites.frontend.bpu.bpu.coverage.ras_micro import MicroRasEvents, micro_coverage, RULES
+from suites.frontend.bpu.bpu.model.ras.micro_events import pending_interaction
+from suites.frontend.bpu.bpu.checker.ras.micro import MicroRasChecker
+from suites.frontend.bpu.uras.model.pipeline import empty_state
 from tests.bpu.scoreboard.test_early_ras import inputs
 
 

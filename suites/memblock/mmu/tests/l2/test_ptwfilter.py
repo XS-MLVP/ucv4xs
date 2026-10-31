@@ -3,8 +3,11 @@ from __future__ import annotations
 
 import pytest
 
-from mmuverify.common.runtime import execution
-from mmuverify.l2.ptw import Req
+from suites.memblock.mmu.legacy_pins import P
+from suites.memblock.mmu.execution import execution, sweep_inputs
+
+HPTW_SWEEP_EXCLUDE = {"clock", "reset", P.p_req_valid, P.p_resp_ready}
+from suites.memblock.mmu.l2.ptw import Req
 
 
 def s1_values(vpn: int, tag: int | None = None, asid: int = 0, level: int = 0,
@@ -41,7 +44,7 @@ def s1_values(vpn: int, tag: int | None = None, asid: int = 0, level: int = 0,
 # PTWFIL-01
 async def test_single_request_issue_match_and_release(filter_env):
     env = filter_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_asid(satp=0)
         await env.send(Req(0x10000, 0), "single")
@@ -71,7 +74,7 @@ async def test_single_request_issue_match_and_release(filter_env):
 # PTWFIL-02
 async def test_mismatched_response_does_not_complete_request(filter_env):
     env = filter_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_asid(satp=0)
         await env.send(Req(0x11000, 0))
@@ -93,7 +96,7 @@ async def test_mismatched_response_does_not_complete_request(filter_env):
 # PTWFIL-03
 async def test_duplicate_request_is_merged(filter_env):
     env = filter_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_asid(satp=0)
         await env.send(Req(0x12000, 0), "first")
@@ -117,7 +120,7 @@ async def test_duplicate_request_is_merged(filter_env):
 # PTWFIL-04
 async def test_capacity_eight_and_drain(filter_env):
     env = filter_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_asid(satp=0)
         entries = [Req(0x20000 + index * 8, 0) for index in range(8)]
@@ -154,7 +157,7 @@ async def test_capacity_eight_and_drain(filter_env):
 # PTWFIL-05
 async def test_flush_clears_pending_entries(filter_env):
     env = filter_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_asid(satp=0)
         for index in range(3):
@@ -171,7 +174,7 @@ async def test_flush_clears_pending_entries(filter_env):
 # PTWFIL-06
 async def test_getgpa_flag_is_returned_with_matching_response(filter_env):
     env = filter_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_asid(satp=0)
         await env.send(Req(0x50000, 0, get_gpa=1))
@@ -230,7 +233,7 @@ def staged_values(req: Req, satp: int = 0, vsatp: int = 0, vmid: int = 0) -> dic
 # PTWFIL-07: all four translation-stage classes can be matched end to end.
 async def test_stage_classes_match(filter_env):
     env = filter_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_asid(satp=1, vsatp=2, vmid=3)
         for stage in (0, 1, 2, 3):
@@ -256,7 +259,7 @@ async def test_stage_classes_match(filter_env):
 # key fields (tag/asid/vmid/level/valididx) stay valid while the rest vary.
 async def test_response_payload_extremes(filter_env):
     env = filter_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_asid(satp=0)
         req = Req(0x70000, 0)
@@ -295,24 +298,13 @@ async def test_response_payload_extremes(filter_env):
             await env.edge()
 
 
-def _sweep_filter_inputs(dut, value: int, exclude=("clock", "reset")) -> None:
-    for name, signal in vars(dut).items():
-        if name in exclude:
-            continue
-        if not hasattr(signal, "IsInIO"):
-            continue
-        if signal.IsInIO() and not signal.IsOutIO():
-            width = max(1, int(getattr(signal, "mWidth", 1)))
-            signal.Set(((1 << width) - 1) if value else 0)
-
-
 # PTWFIL-09: every interface and queue-state bit toggles through all-ones and
 # all-zeros fills. Entries are filled without an intermediate flush (so all
 # eight queue slots are written), then flushed before the next endpoint.
 @pytest.mark.structural_stress
 async def test_all_bits_toggle(filter_env):
     env = filter_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         all_ones = (1 << 38) - 1
         for endpoint in (1, 0):
@@ -341,7 +333,7 @@ async def test_all_bits_toggle(filter_env):
                 await env.edge()
         # Fill the response payload registers in both directions.
         for endpoint in (1, 0):
-            _sweep_filter_inputs(env.dut, endpoint)
+            sweep_inputs(env, endpoint, HPTW_SWEEP_EXCLUDE)
             for signal in env.csr.values():
                 signal.Set(0)
             env.sfence.Set(0)
@@ -355,7 +347,7 @@ async def test_all_bits_toggle(filter_env):
             await env.edge()
             env.ptw_resp_valid.Set(0)
             await env.edge()
-        _sweep_filter_inputs(env.dut, 0)
+        sweep_inputs(env, 0, HPTW_SWEEP_EXCLUDE)
         env.ptw_resp_valid.Set(0)
         await env.edge()
         await env.reset()
@@ -369,7 +361,7 @@ async def test_all_bits_toggle(filter_env):
 # suppresses that issue and removes the entry (issue_filtered path).
 async def test_response_suppresses_same_cycle_issue(filter_env):
     env = filter_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_asid(satp=0)
         req = Req(0x90000, 0)
@@ -391,7 +383,7 @@ async def test_response_suppresses_same_cycle_issue(filter_env):
 # PTWFIL-11: each CSR-change source independently flushes pending entries.
 async def test_csr_change_flush_sources(filter_env):
     env = filter_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_asid(satp=0)
         for key in ("satp_changed", "vsatp_changed", "hgatp_changed", "virt_changed"):
@@ -411,7 +403,7 @@ async def test_csr_change_flush_sources(filter_env):
 # and back down as their responses arrive.
 async def test_inflight_counter_eight(filter_env):
     env = filter_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_asid(satp=0)
         reqs = [Req(0xB0000 + index * 8, 0) for index in range(8)]
@@ -438,7 +430,7 @@ async def test_inflight_counter_eight(filter_env):
 # tag_match comparators and vpn registers are toggled in both directions.
 async def test_high_tag_match_directions(filter_env):
     env = filter_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_asid(satp=0)
         for round_index in range(2):
@@ -480,7 +472,7 @@ async def test_high_tag_match_directions(filter_env):
 # matching onlyStage2 response.
 async def test_only_s2_high_tag_match(filter_env):
     env = filter_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.set_asid(satp=0, vsatp=0, vmid=5)
         for round_index in range(2):

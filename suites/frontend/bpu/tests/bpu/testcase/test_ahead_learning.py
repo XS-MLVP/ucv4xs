@@ -1,7 +1,7 @@
 """Independent ahead prediction and source-qualified S3 replay."""
 import pytest
-from bpuverify.bpu.case.ahead_learning import check_ahead_learning
-from bpuverify.bpu.coverage.ahead_learning import AheadLearningCoverage
+from suites.frontend.bpu.bpu.case.ahead_learning import check_ahead_learning
+from suites.frontend.bpu.bpu.coverage.ahead_learning import AheadLearningCoverage
 
 
 @pytest.mark.feature('BPU-INT-015')

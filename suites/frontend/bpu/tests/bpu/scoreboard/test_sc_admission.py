@@ -3,25 +3,25 @@ from copy import deepcopy
 from dataclasses import replace
 import pytest
 
-from bpuverify.bpu.checker.pipeline import environment
-from bpuverify.bpu.checker.statistical import readiness
-from bpuverify.bpu.coverage.sc_admission import Coverage,BurstCoverage,ReadOnlyCoverage
-from bpuverify.bpu.model.pipeline import Outcome,Resolution
-from bpuverify.bpu.model.sc_admission import Program as Layout,PROFILES,RULES,BurstProgram,BURST_PROFILES,BURST_RULES,READ_ONLY_PROFILES
-from bpuverify.bpu.model.selection import Kind
-from bpuverify.bpu.model.statistical_prefix import conditional_outcomes
+from suites.frontend.bpu.bpu.checker.pipeline import environment
+from suites.frontend.bpu.bpu.checker.statistical import readiness
+from suites.frontend.bpu.bpu.coverage.sc_admission import Coverage,BurstCoverage,ReadOnlyCoverage
+from suites.frontend.bpu.bpu.model.pipeline import Outcome,Resolution
+from suites.frontend.bpu.bpu.model.sc_admission import Program as Layout,PROFILES,RULES,BurstProgram,BURST_PROFILES,BURST_RULES,READ_ONLY_PROFILES
+from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.statistical_prefix import conditional_outcomes
 from tests.bpu.scoreboard._statistical_joint_program import Program
 from tests.bpu.scoreboard.test_semantic_pipeline import boot,published,OFF
-from bpuverify.sc.model.semantic import feedback_needs_read
-from bpuverify.bpu.model.sc_admission import ContextBurstLayout,CONTEXT_BURST_PROFILES,CONTEXT_BURST_RULES
-from bpuverify.bpu.coverage.sc_admission import ContextBurstCoverage
+from suites.frontend.bpu.sc.model.semantic import feedback_needs_read
+from suites.frontend.bpu.bpu.model.sc_admission import ContextBurstLayout,CONTEXT_BURST_PROFILES,CONTEXT_BURST_RULES
+from suites.frontend.bpu.bpu.coverage.sc_admission import ContextBurstCoverage
 from tests.bpu.scoreboard._statistical_joint_program import ContextBurstProgram
 
 
 @pytest.mark.parametrize('profile',CONTEXT_BURST_PROFILES)
 def test_distinct_nonzero_old_contexts_keep_qualification_across_adjacent_feedbacks(profile):
-    from bpuverify.sc.model.semantic import Context,decide
-    from bpuverify.bpu.model.pipeline import Redirect
+    from suites.frontend.bpu.sc.model.semantic import Context,decide
+    from suites.frontend.bpu.bpu.model.pipeline import Redirect
     p=ContextBurstProgram(profile)
     originals,controls=p.setup()
     layout=p.layout
@@ -102,7 +102,7 @@ def test_distinct_context_burst_requires_every_lifetime_obligation(missing):
 @pytest.mark.parametrize('bad_direction',(0,1,None,'not-taken'))
 def test_recovery_driver_requires_a_semantic_direction_before_accessing_the_dut(bad_direction):
     import asyncio
-    from bpuverify.bpu.driver.recovery import RecoveryDriver
+    from suites.frontend.bpu.bpu.driver.recovery import RecoveryDriver
     with pytest.raises(ValueError,match='semantic bool'):
         asyncio.run(RecoveryDriver(None,None).send(None,taken=bad_direction))
 
@@ -257,8 +257,8 @@ def test_read_without_write_still_requires_every_actual_admission_and_consumer(m
 @pytest.mark.parametrize('fault',('extra-global-read','missing-path-read','wrong-bank'))
 def test_actual_read_identity_cannot_be_inferred_from_acceptance_alone(fault):
     from types import SimpleNamespace as NS
-    from bpuverify.bpu.checker.sc_admission import Checks
-    from bpuverify.sc.model.semantic import Context,coordinates
+    from suites.frontend.bpu.bpu.checker.sc_admission import Checks
+    from suites.frontend.bpu.sc.model.semantic import Context,coordinates
     layout = Layout(PROFILES[0])
     p = Program(positive=True,early=True)
     *_,source = p.prepare()

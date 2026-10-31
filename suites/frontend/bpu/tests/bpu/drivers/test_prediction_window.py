@@ -4,9 +4,9 @@ import asyncio
 import pytest
 from toffee import Bundle, Execution, MemoryBackend, XPhase, RisingEdge, on, XEvent, XEventKind
 
-from bpuverify.bpu.agent.main import BpuAgent
-from bpuverify.bpu.driver.control import BpuControlDriver, PredictionWindow
-from bpuverify.common.bundle.bindings import PortBinding
+from suites.frontend.bpu.bpu.agent.main import BpuAgent
+from suites.frontend.bpu.bpu.driver.control import BpuControlDriver, PredictionWindow
+from suites.frontend.bpu.ports.bindings import PortBinding
 from tests.framework.fakes import Signal
 
 

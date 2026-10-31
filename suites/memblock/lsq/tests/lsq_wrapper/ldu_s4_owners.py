@@ -5,14 +5,14 @@ stimuli, not native LoadUnit/DCache proof or an actor-computed answer oracle.
 """
 from dataclasses import asdict, dataclass, replace
 
-from lsqverify.forward.types import Query, Translation
-from lsqverify.load_queue.types import Load
-from lsqverify.lsq_wrapper.types import Address, Data, Dispatch, Inputs
-from lsqverify.psq.types import Attributes
-from lsqverify.rar.types import Query as RarQuery
-from lsqverify.raw.types import Query as RawQuery, SqPtr
-from lsqverify.replay.types import Refill
-from lsqverify.vlq.types import QueuePtr, Redirect
+from suites.memblock.lsq.forward.types import Query, Translation
+from suites.memblock.lsq.load_queue.types import Load
+from suites.memblock.lsq.lsq_wrapper.types import Address, Data, Dispatch, Inputs
+from suites.memblock.lsq.psq.types import Attributes
+from suites.memblock.lsq.rar.types import Query as RarQuery
+from suites.memblock.lsq.raw.types import Query as RawQuery, SqPtr
+from suites.memblock.lsq.replay.types import Refill
+from suites.memblock.lsq.vlq.types import QueuePtr, Redirect
 from .memory_owners import StoreOwner, cached_load
 from .mixed_owners import rob_pointer
 

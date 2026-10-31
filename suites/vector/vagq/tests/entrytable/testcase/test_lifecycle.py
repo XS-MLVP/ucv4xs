@@ -1,5 +1,5 @@
 """EntryTable real-DUT lifecycle scenarios driven by semantic packets."""
-from vagqverify.entrytable.types import (
+from suites.vector.vagq.entrytable.types import (
     AddrPacket, Beat, DataPacket, MergeResp, Redirect, SplitReq,
     StateUpdate, StoreUpdate,
 )

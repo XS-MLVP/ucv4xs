@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.ittage.checker.assertions import allocate
-from bpuverify.ittage.case.definitions import PC
+from suites.frontend.bpu.ittage.checker.assertions import allocate
+from suites.frontend.bpu.ittage.case.definitions import PC
 
 
 @pytest.mark.feature("BPU-ITTAGE-004")

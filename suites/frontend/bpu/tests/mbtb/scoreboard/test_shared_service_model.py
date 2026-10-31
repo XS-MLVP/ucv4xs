@@ -1,7 +1,7 @@
 """Capacity-safe concurrent obligations, independent of generated signal code."""
 from dataclasses import replace
 import pytest
-from bpuverify.mbtb.model.semantic import RetainedEntries,Write,Entry,Target
+from suites.frontend.bpu.mbtb.model.semantic import RetainedEntries,Write,Entry,Target
 
 
 @pytest.mark.parametrize('reverse',(False,True))

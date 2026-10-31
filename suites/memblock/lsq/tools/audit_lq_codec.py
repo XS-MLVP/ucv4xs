@@ -10,12 +10,12 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from lsqverify.load_queue.codec import encode, ports
-from lsqverify.load_queue.ports import decode
-from lsqverify.load_queue.types import Bus, Bypass, Inputs, Load
-from lsqverify.raw.types import SqPtr
-from lsqverify.replay.types import Enqueue, Uop
-from lsqverify.vlq.types import Dispatch, QueuePtr, RobPtr
+from suites.memblock.lsq.load_queue.codec import encode, ports
+from suites.memblock.lsq.load_queue.ports import decode
+from suites.memblock.lsq.load_queue.types import Bus, Bypass, Inputs, Load
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.replay.types import Enqueue, Uop
+from suites.memblock.lsq.vlq.types import Dispatch, QueuePtr, RobPtr
 
 
 def sha(path):
@@ -78,7 +78,7 @@ def audit():
     report = dict(status="static_622_input_codec_and_independent_passive_decode_pass", samples=256,
                   inputs=len(spec["input"]), outputs=len(spec["output"]), all_inputs_varied=True, illegal_packets_rejected=rejected,
                   original_top_sha256=build["rtl"]["LoadQueue.sv"], original_closure_files=len(build["rtl"]),
-                  checked_files={str(p.relative_to(ROOT)): sha(p) for p in (Path(__file__), ROOT / "lsqverify/load_queue/types.py", ROOT / "lsqverify/load_queue/codec.py", ROOT / "lsqverify/load_queue/ports.py")},
+                  checked_files={str(p.relative_to(ROOT)): sha(p) for p in (Path(__file__), ROOT / "load_queue/types.py", ROOT / "load_queue/codec.py", ROOT / "load_queue/ports.py")},
                   limits="Adapter widths/serialization only. Random raw encodings are not a legal traffic stream and give no DUT, lifecycle or functional coverage credit. All functional UT uses the real native DUT and managed X Reactor runner.")
     out = ROOT / "results/static/load-queue-codec-v1.json"
     out.parent.mkdir(exist_ok=True)

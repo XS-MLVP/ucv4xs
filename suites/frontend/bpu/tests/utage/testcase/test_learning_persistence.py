@@ -2,9 +2,9 @@
 import json
 import pytest
 
-from bpuverify.utage.model.learning_persistence import Program, PROFILES, MODES
-from bpuverify.utage.coverage.learning_persistence import Coverage
-from bpuverify.utage.case.learning_persistence import run
+from suites.frontend.bpu.utage.model.learning_persistence import Program, PROFILES, MODES
+from suites.frontend.bpu.utage.coverage.learning_persistence import Coverage
+from suites.frontend.bpu.utage.case.learning_persistence import run
 
 
 @pytest.mark.feature('BPU-UTAGE-015')

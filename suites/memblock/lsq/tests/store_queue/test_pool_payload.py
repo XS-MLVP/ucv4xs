@@ -1,6 +1,6 @@
 """Public full-width payload lifetimes through real VSQ + PSQ connections."""
-from lsqverify.store_queue.actor import StoreActor
-from lsqverify.store_payload import parent_pool
+from suites.memblock.lsq.store_queue.actor import StoreActor
+from suites.memblock.lsq.store_payload import parent_pool
 
 
 async def test_all_slots_full_width_high_low_payload_lifetimes(sq, tmp_path):

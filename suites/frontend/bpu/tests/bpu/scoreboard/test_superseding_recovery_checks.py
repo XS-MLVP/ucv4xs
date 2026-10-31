@@ -3,10 +3,10 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.checker.common_query import CommonQueryChecks
-from bpuverify.bpu.checker.superseding_recovery import SupersedingRecoveryChecks
-from bpuverify.bpu.model.common_history import Value
-from bpuverify.bpu.model.superseding_recovery import SupersedingRecoveryProgram, PROFILES
+from suites.frontend.bpu.bpu.checker.common_query import CommonQueryChecks
+from suites.frontend.bpu.bpu.checker.superseding_recovery import SupersedingRecoveryChecks
+from suites.frontend.bpu.bpu.model.common_history import Value
+from suites.frontend.bpu.bpu.model.superseding_recovery import SupersedingRecoveryProgram, PROFILES
 
 
 @pytest.mark.parametrize('profile', PROFILES)

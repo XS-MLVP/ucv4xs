@@ -6,15 +6,15 @@ from types import SimpleNamespace
 import pytest
 from toffee import ScoreboardMismatch
 
-from bpuverify.uras.checker.semantic import UrasSemanticChecker
-from bpuverify.uras.model.semantic import Action, Operation, RasEvents, UrasReference, stack_top
-from bpuverify.uras.transaction.types import UrasResult
-from bpuverify.uras.coverage.semantic import UrasSemanticCoverage, obligations
-from bpuverify.uras.coverage.semantic import HELD_PROFILES, HeldCallCoverage
-from bpuverify.uras.case.semantic import held_call_repair_program
-from bpuverify.uras.checker.semantic import HeldCallRepairChecks
-from bpuverify.uras.agent.main import encode_events
-from bpuverify.uras.monitor.semantic import decode_events
+from suites.frontend.bpu.uras.checker.semantic import UrasSemanticChecker
+from suites.frontend.bpu.uras.model.semantic import Action, Operation, RasEvents, UrasReference, stack_top
+from suites.frontend.bpu.uras.transaction.types import UrasResult
+from suites.frontend.bpu.uras.coverage.semantic import UrasSemanticCoverage, obligations
+from suites.frontend.bpu.uras.coverage.semantic import HELD_PROFILES, HeldCallCoverage
+from suites.frontend.bpu.uras.case.semantic import held_call_repair_program
+from suites.frontend.bpu.uras.checker.semantic import HeldCallRepairChecks
+from suites.frontend.bpu.uras.agent.main import encode_events
+from suites.frontend.bpu.uras.monitor.semantic import decode_events
 
 
 MAIN = 0x40003456

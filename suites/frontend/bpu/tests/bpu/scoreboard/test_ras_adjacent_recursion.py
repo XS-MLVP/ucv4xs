@@ -2,11 +2,11 @@
 from collections import Counter
 import pytest
 from toffee import Scoreboard,ScoreboardMismatch
-from bpuverify.ras.model.model import CommittedStack,advance
-from bpuverify.ras.model.semantic import RasReference,Events,Retirement
-from bpuverify.bpu.model.ras.adjacent_recursion import Program,DEPTHS,RELATIONS,RULES,ROOT_RETURN
-from bpuverify.bpu.coverage.ras_adjacent_recursion import Coverage
-from bpuverify.bpu.checker.ras.layered_recursion import compare_returns
+from suites.frontend.bpu.ras.model.model import CommittedStack,advance
+from suites.frontend.bpu.ras.model.semantic import RasReference,Events,Retirement
+from suites.frontend.bpu.bpu.model.ras.adjacent_recursion import Program,DEPTHS,RELATIONS,RULES,ROOT_RETURN
+from suites.frontend.bpu.bpu.coverage.ras_adjacent_recursion import Coverage
+from suites.frontend.bpu.bpu.checker.ras.layered_recursion import compare_returns
 
 
 @pytest.mark.parametrize('depth',DEPTHS)

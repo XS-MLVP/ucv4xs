@@ -1,8 +1,8 @@
 """Delayed correct learning crosses, holds and leaves confidence boundaries."""
 import pytest
-from bpuverify.bpu.case.confidence_boundary import check_confidence_boundary
-from bpuverify.bpu.coverage.confidence_boundary import ConfidenceBoundaryCoverage
-from bpuverify.bpu.model.tage.confidence_boundary import PROGRAMS
+from suites.frontend.bpu.bpu.case.confidence_boundary import check_confidence_boundary
+from suites.frontend.bpu.bpu.coverage.confidence_boundary import ConfidenceBoundaryCoverage
+from suites.frontend.bpu.bpu.model.tage.confidence_boundary import PROGRAMS
 
 
 @pytest.mark.feature('BPU-INT-086')

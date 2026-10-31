@@ -1,8 +1,8 @@
 """Intentional checker failure must escape Execution and release resources."""
 import pytest
 
-from vagqverify.env import manager_session
-from vagqverify.manager.types import Allocation
+from suites.vector.vagq.env import manager_session
+from suites.vector.vagq.manager.types import Allocation
 
 pytestmark = pytest.mark.toffee_functional_coverage(False)
 

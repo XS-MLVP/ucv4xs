@@ -1,10 +1,12 @@
 """Cases defined by the contract and initial missing-line classification."""
+
 import random
 
 import pytest
 
-from lsqverify.raw.types import SqPtr
-from lsqverify.vlq.types import Redirect, RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.vlq.types import Redirect, RobPtr
 
 
 async def consume_prefix(env, start, end):
@@ -41,7 +43,7 @@ async def test_same_rob_slot_uops_are_precommitted_one_snapshot_at_a_time(vsq):
     for _ in range(12):
         change = await env.cycle(rob_head=RobPtr.encode(10))
         seen.extend(item["end"] for item in change["precommitted"])
-        assert env.observed["io_toPhysicalQueue_retiredPtr_value"] == 0
+        assert env.observed[P.p_toPhysicalQueue_retiredPtr_value] == 0
     assert seen == [1, 3, 4, 6, 7, 9, 10, 12]
     await env.drain(RobPtr.encode(11))
 
@@ -51,11 +53,11 @@ async def test_rob_former_and_latter_have_distinct_precommit_and_retire_boundari
     await env.cycle(env.requests({0: (RobPtr.encode(10, former=True), 1), 1: (RobPtr.encode(10, former=False), 2)}))
     env.arm(("VSQ-PRECOMMIT.slot", "VSQ-PRECOMMIT.payload"))
     await env.idle(4, rob_head=RobPtr.encode(10, former=True))
-    assert env.observed["io_toPhysicalQueue_preCommitPtr_bits_value"] == 1
+    assert env.observed[P.p_toPhysicalQueue_preCommitPtr_bits_value] == 1
     await env.idle(5, rob_head=RobPtr.encode(10, former=False))
-    assert env.observed["io_toPhysicalQueue_preCommitPtr_bits_value"] == 3
-    assert env.observed["io_toPhysicalQueue_headRobIdx_isFormer"] == 0
-    assert env.observed["io_toPhysicalQueue_retiredPtr_value"] == 1
+    assert env.observed[P.p_toPhysicalQueue_preCommitPtr_bits_value] == 3
+    assert env.observed[P.p_toPhysicalQueue_headRobIdx_isFormer] == 0
+    assert env.observed[P.p_toPhysicalQueue_retiredPtr_value] == 1
     await env.drain(RobPtr.encode(11))
 
 
@@ -69,19 +71,19 @@ async def test_precommit_psq_consumption_releases_only_after_complete_interval(v
     # PSQ exposes the moved pointer before its registered consumption-valid.
     # Keep physical pointers monotone even in the valid-gating control.
     await env.cycle(physical_deq=SqPtr.encode(1 if flows == 1 else 0), consumed=False)
-    assert not env.observed["io_empty"] and not env.coverage.completed
+    assert not env.observed[P.p_empty] and not env.coverage.completed
     if flows == 1:
         env.arm("VSQ-RELEASE.pulse", [uid])
     if flows > 1:
         await env.cycle(physical_deq=SqPtr.encode(2), consumed=True)
         await env.idle(3)
-        assert not env.observed["io_empty"]
+        assert not env.observed[P.p_empty]
         env.arm("VSQ-RELEASE.partial", [uid])
     start = 2 if flows > 1 else 0
     for end in range(start + 2, flows + 2, 2):
         await env.cycle(physical_deq=SqPtr.encode(min(end, flows)), consumed=True)
     await env.idle(5)
-    assert env.observed["io_empty"] and uid in env.coverage.completed
+    assert env.observed[P.p_empty] and uid in env.coverage.completed
 
 
 async def test_one_psq_double_consumption_can_release_two_precommitted_uops(vsq):
@@ -91,7 +93,7 @@ async def test_one_psq_double_consumption_can_release_two_precommitted_uops(vsq)
     await env.idle(5, rob_head=RobPtr.encode(10))
     await env.cycle(physical_deq=SqPtr.encode(2), consumed=True)
     await env.idle(5)
-    assert env.observed["io_empty"] and len(env.coverage.completed) == 2
+    assert env.observed[P.p_empty] and len(env.coverage.completed) == 2
 
 
 async def test_rob_retirement_and_psq_release_are_not_counted_twice(vsq):
@@ -102,7 +104,7 @@ async def test_rob_retirement_and_psq_release_are_not_counted_twice(vsq):
     await env.cycle(rob_head=RobPtr.encode(11))
     await env.cycle(physical_deq=SqPtr.encode(2), consumed=True)
     await env.idle(6)
-    assert env.observed["io_toPhysicalQueue_retiredPtr_value"] == 2 and env.observed["io_empty"]
+    assert env.observed[P.p_toPhysicalQueue_retiredPtr_value] == 2 and env.observed[P.p_empty]
 
 
 @pytest.mark.parametrize("kind", ("empty", "none", "all"))
@@ -130,7 +132,7 @@ async def test_release_retired_heads_before_walk_and_hold_redirect_rob_snapshot(
     changes.extend(await env.idle(6, rob_head=RobPtr.encode(15)))
     recovery = [change["recovery"] for change in changes if change["recovery"]]
     assert len(recovery) == 1 and recovery[0]["end"] == 9
-    assert env.observed["io_toPhysicalQueue_retiredPtr_value"] == 5
+    assert env.observed[P.p_toPhysicalQueue_retiredPtr_value] == 5
     await env.cycle(env.requests({7: (22, 1)}))
     env.arm(("VSQ-WALK.release_first", "VSQ-WALK.head_snapshot", "VSQ-REDIRECT.partial"))
     await env.drain(RobPtr.encode(23))
@@ -155,7 +157,7 @@ async def test_redirect_release_walks_after_head_is_consumed(vsq):
         redirect=Redirect(True, RobPtr.encode(10), False),
         rob_head=RobPtr.encode(11),
     )
-    assert env.observed["io_sqRecoverStall"]
+    assert env.observed[P.p_sqRecoverStall]
     changes = await env.idle(8, rob_head=RobPtr.encode(11))
     recoveries = [item["recovery"] for item in changes if item["recovery"]]
     assert len(recoveries) == 1 and recoveries[0]["end"] == 1
@@ -203,7 +205,7 @@ async def test_reset_aborts_old_owners_and_new_uid_retires(vsq, during_recovery)
     if during_recovery:
         await env.cycle(redirect=Redirect(True, RobPtr.encode(0), False))
         await env.idle(1)
-        assert env.observed["io_sqRecoverStall"]
+        assert env.observed[P.p_sqRecoverStall]
     for _ in range(3):
         await env.cycle(reset=True)
     await env.cycle(env.requests({7: (20, 1)}))
@@ -267,6 +269,6 @@ async def test_seeded_dispatch_rob_and_psq_prefixes_fairly_drain(vsq, seed):
         await consume_prefix(env, physical_end, physical_end + epoch_flows)
         physical_end += epoch_flows
         rob_base += count + 1
-    assert not env.model.outstanding and env.observed["io_empty"]
+    assert not env.model.outstanding and env.observed[P.p_empty]
     env.arm("VSQ-CONCURRENT.seeded", uids)
     await env.idle(1)

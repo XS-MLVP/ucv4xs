@@ -59,7 +59,7 @@ def audit():
         by_node={}
         for path in paths:
             item=load(path)
-            assert item["restored_all_aliases"] and item["implementation_SHA256"]==sha256_file(ROOT/"lsqverify/codec_cache.py")
+            assert item["restored_all_aliases"] and item["implementation_SHA256"]==sha256_file(ROOT/"codec_cache.py")
             assert len(item["rows"])==4
             assert all(row["hits"]>0 and row["misses"]>0 and row["retained_values"]<=row["capacity"]==64 for row in item["rows"])
             by_node[item["nodeid"]]=item

@@ -1,5 +1,8 @@
 # TAGE `useAltOnNa` 端点：可达性量化与实测覆盖（2026-10-21 起，2026-10-22 全桶闭合）
 
+> 路径迁移说明（2026-10-31）：本报告仍属于原日期、基线和执行源码；实现文件已迁到工程根。可点击源码链接更新到当前位置，不据此重标历史 PASS/FAIL 或覆盖结论。参见[本轮命名空间迁移](../../../../docs/lessons/suite-namespace-refactor-20261031.md)。
+
+
 > **最终状态（2026-10-22）**：独立 TAGE DUT 的 8 个桶全部有双端点 + 越界钳位证据，
 > `useAltOnNa` 未覆盖 arm 8 → 0（`results/tage-selector-full-20261022-v3`）。
 > 下面第一节起的更正过程保留，供后续避免重复踩坑。
@@ -17,7 +20,7 @@
 > 每笔反馈还把 DUT 的 T3 `index/inc/dec` 逐槽比较。选择器索引为
 > `2*providerTable + altConf`（本例 index 7 = table 3、altConf 1），即本文原先
 > 认为“需要先扩展”的 (table, altConf) 维度在集成参考模型里**已经存在**
-> （`bpuverify/tage/model/semantic.py`：`self.selectors = [16] * 8`）。`pair.py` 的
+> （`suites/frontend/bpu/tage/model/semantic.py`：`self.selectors = [16] * 8`）。`pair.py` 的
 > 两项实现不是集成路径使用的模型。
 >
 > 因此端点不再列为未闭合；`BPU-INT-072` 已加入“越界投票仍产生 inc/dec 而寄存器停在
@@ -93,7 +96,7 @@ val step = Mux(increase, increaseCount - decreaseCount, decreaseCount - increase
    的索引，选择器桶只按 `(table, altConf)` 划分，因此 32 笔反馈可以分布在多个上下文，
    每笔各贡献 ±1；`test_tage_selector.py` 用同一 PC、同一位置、32 笔反馈完成两端，
    其中一半是 `agreement-suppressed`（无投票）。
-2. **模型维度**：集成路径用的不是 `pair.py`。`bpuverify/tage/model/semantic.py` 早已是
+2. **模型维度**：集成路径用的不是 `pair.py`。`suites/frontend/bpu/tage/model/semantic.py` 早已是
    `self.selectors = [16] * 8`、`votes[2 * provider[0] + int(confident)]`，
    即 `(table, altConf)` 八项；本文原文把另一个文件当成了集成模型。
 3. **模型反推**：没有发生。端点阶段每笔反馈的 `index/inc/dec` 都是模型先给出，
@@ -144,13 +147,13 @@ val step = Mux(increase, increaseCount - decreaseCount, decreaseCount - increase
   置信度（table≥1 时 `altConf` 由第二匹配的计数决定，而不是 base）。
 
 **阻塞点**：独立 TAGE 目前**没有 selector 的公开观测**（无 `useAltOnNaVec_*` monitor），
-且 `bpuverify/tage/model/pair.py` 的参考模型只有按 altConf 的两项，不是按
+且 `suites/frontend/bpu/tage/model/pair.py` 的参考模型只有按 altConf 的两项，不是按
 `(table, altConf)` 的八项。要在独立 DUT 上断言端点，需要先补 monitor 与模型维度，
 这属于参考模型能力扩展，不能用实际 DUT 值回填。
 
 ### 集成 BPU（`rtl/bpu/Tage.sv` 的 7 个钳位臂）
 
-集成路径**已有**八项 selector 模型（`bpuverify/tage/model/semantic.py`) 与
+集成路径**已有**八项 selector 模型（`suites/frontend/bpu/tage/model/semantic.py`) 与
 `TageSelectorMonitor`（每帧比较八个寄存器），所以只缺“把 table 0/1/2 的 provider
 造出来”的程序。本轮尝试直接用
 `BpuTraining` + `BpuBatchTraining` 造 table-0 provider，被 MainBTB 位置捕获前提拒绝
@@ -165,9 +168,9 @@ val step = Mux(increase, increaseCount - decreaseCount, decreaseCount - increase
 
 第八节说“独立 TAGE 没有 selector 公开观测”，本轮已补上：
 
-- `bpuverify/tage/monitor/state.py`：`TageSelectorMonitor` 通过 memory-direct 读
+- `suites/frontend/bpu/tage/monitor/state.py`：`TageSelectorMonitor` 通过 memory-direct 读
   8 个 `useAltOnNaVec_N_value`；
-- `bpuverify/tage/agent/main.py`：`sample_selectors()` 为**纯 pull** 采样（无后台订阅）。
+- `suites/frontend/bpu/tage/agent/main.py`：`sample_selectors()` 为**纯 pull** 采样（无后台订阅）。
 
 新增 `tests/tage/testcase/test_selector_buckets.py` 用闭式算术逐步预测投票并对 8 个
 寄存器逐项比较，覆盖 bucket 0（table 0/altConf 0）与 bucket 1（table 0/altConf 1）：

@@ -1,4 +1,5 @@
 """Real S4 generations and an outstanding head Cache job before tail fault."""
+
 from dataclasses import replace
 import json
 from pathlib import Path
@@ -8,6 +9,8 @@ import pytest
 from .ldu_s4_epoch_owners import EpochPreciseS4Program, EPOCH_CASES, MISS_FAULT_CASES, PATTERNS
 from .memory_owners import cached_load
 from .mixed_owners import rob_pointer
+
+from suites.memblock.lsq.legacy_pins import P
 
 
 @pytest.mark.parametrize("page,pattern",MISS_FAULT_CASES)
@@ -40,7 +43,7 @@ async def test_S4_precise_360_programs_actual_all_LQ_SQ_codes_and_UID_generation
                 trace.base=replace(trace.base,pending=rob_pointer(order+1),pending_next=rob_pointer(order+1))
                 for _ in range(20):await trace.cycle()
                 assert all(s["complete"] or s["cancelled"] for s in trace.loads)
-                assert lsq.observed["io_lqEmpty"] and lsq.observed["io_sqEmpty"]
+                assert lsq.observed[P.p_lqEmpty] and lsq.observed[P.p_sqEmpty]
                 result=trace.checker.finish()
                 result.update(native_prefix_records=trace.boot_records,native_prefix_last_tick=trace.boot_tick,native_records_at_end=lsq.journal.records)
                 lq,order,uid=lq+1,order+1,trace.sequence

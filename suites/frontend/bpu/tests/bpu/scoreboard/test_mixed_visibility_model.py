@@ -4,11 +4,11 @@ from dataclasses import replace
 
 import pytest
 
-from bpuverify.bpu.model.pipeline import Redirect
-from bpuverify.bpu.model.tage.asymmetric_retirement import OUTCOMES, PRELUDE_PLAN
-from bpuverify.bpu.model.tage.mixed_visibility import PROGRAMS, PARTIAL_PLAN
-from bpuverify.bpu.model.tage.neighbor_migration import PC, HISTORY_PATHS
-from bpuverify.bpu.model.tage.service import STREAM_PC, learning_inflight, pending_plan
+from suites.frontend.bpu.bpu.model.pipeline import Redirect
+from suites.frontend.bpu.bpu.model.tage.asymmetric_retirement import OUTCOMES, PRELUDE_PLAN
+from suites.frontend.bpu.bpu.model.tage.mixed_visibility import PROGRAMS, PARTIAL_PLAN
+from suites.frontend.bpu.bpu.model.tage.neighbor_migration import PC, HISTORY_PATHS
+from suites.frontend.bpu.bpu.model.tage.service import STREAM_PC, learning_inflight, pending_plan
 from tests.bpu.scoreboard.test_asymmetric_retirement_model import prepare_model, concrete_plan
 from tests.bpu.scoreboard.test_direction_sources import quiet
 from tests.bpu.scoreboard.test_direction_service import via, streaming_query

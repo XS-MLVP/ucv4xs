@@ -3,8 +3,8 @@ from copy import deepcopy
 
 import pytest
 
-from bpuverify.bpu.model.bypass.sparse import recipe, phase_contexts, joint_proof, qualifies_return_request
-from bpuverify.bpu.model.phr.model import folds
+from suites.frontend.bpu.bpu.model.bypass.sparse import recipe, phase_contexts, joint_proof, qualifies_return_request
+from suites.frontend.bpu.bpu.model.phr.model import folds
 
 
 @pytest.mark.parametrize('which', ('old', 'second'))

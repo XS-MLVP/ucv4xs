@@ -5,10 +5,10 @@ from __future__ import annotations
 import pytest
 
 from toffee import TransferState
-from bpuverify.utage.checker.assertions import allocate
-from bpuverify.utage.checker.assertions import require_hit
-from bpuverify.utage.case.definitions import PASSING_PC
-from bpuverify.utage.case.definitions import POSITION
+from suites.frontend.bpu.utage.checker.assertions import allocate
+from suites.frontend.bpu.utage.checker.assertions import require_hit
+from suites.frontend.bpu.utage.case.definitions import PASSING_PC
+from suites.frontend.bpu.utage.case.definitions import POSITION
 
 
 @pytest.mark.feature("BPU-UTAGE-006")

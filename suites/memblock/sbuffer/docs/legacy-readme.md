@@ -2,6 +2,9 @@
 
 # Sbuffer 验证工程
 
+> 路径迁移说明（2026-10-31）：本文记录中的 *verify/common 为当时源码路径；当前实现已迁入 suites.<group>.<suite> 工程根。历史判定、命令与哈希不据此重标；当前映射见仓库 docs/lessons/suite-namespace-refactor-20261031.md。
+
+
 XiangShan `kunminghu-v3 @ 893e1580` 的 Sbuffer 分层 UT。先验证 `SbufferData` 的字节级
 存储/掩码语义，再验证 `Sbuffer` 顶层的入队、写出、排空和转发；每个模块先写人类可读的
 微架构功能点，再开发用例，运行后分析 RTL 行/toggle/branch 覆盖率并逐项定位缺口。

@@ -6,13 +6,13 @@ from types import SimpleNamespace as NS
 
 from toffee import XEvent, XEventKind, XPhase
 
-from bpuverify.bpu.checker.mixed_visibility import MixedVisibilityChecks
-from bpuverify.bpu.coverage.mixed_visibility import MixedVisibilityCoverage
-from bpuverify.bpu.model.pipeline import Redirect
-from bpuverify.bpu.model.tage.asymmetric_retirement import OUTCOMES, PRELUDE_PLAN
-from bpuverify.bpu.model.tage.mixed_visibility import PARTIAL_PLAN, DESTINATIONS, FIRST_SERVICE
-from bpuverify.bpu.model.tage.neighbor_migration import PC, HISTORY_PATHS
-from bpuverify.bpu.model.tage.service import STREAM_PC
+from suites.frontend.bpu.bpu.checker.mixed_visibility import MixedVisibilityChecks
+from suites.frontend.bpu.bpu.coverage.mixed_visibility import MixedVisibilityCoverage
+from suites.frontend.bpu.bpu.model.pipeline import Redirect
+from suites.frontend.bpu.bpu.model.tage.asymmetric_retirement import OUTCOMES, PRELUDE_PLAN
+from suites.frontend.bpu.bpu.model.tage.mixed_visibility import PARTIAL_PLAN, DESTINATIONS, FIRST_SERVICE
+from suites.frontend.bpu.bpu.model.tage.neighbor_migration import PC, HISTORY_PATHS
+from suites.frontend.bpu.bpu.model.tage.service import STREAM_PC
 from tests.bpu.scoreboard.asymmetric_retirement_fixtures import packet as initial_packet
 from tests.bpu.scoreboard.test_direction_sources import quiet
 from tests.bpu.scoreboard.test_direction_service import via, streaming_query

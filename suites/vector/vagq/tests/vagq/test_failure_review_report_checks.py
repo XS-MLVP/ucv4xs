@@ -7,9 +7,9 @@ from ucv.runtime import historical_path
 import pytest
 
 from tools.build_vagq_failure_review_report import source_segment_merge_mask, verify_driven_responses
-from vagqverify.maskgen.reference import MaskRequest, evaluate_protocol
-from vagqverify.vagq.failure_review import analyze_failure
-from vagqverify.vagq.scenario_matrix import legal_public_feature_cases
+from suites.vector.vagq.maskgen.reference import MaskRequest, evaluate_protocol
+from suites.vector.vagq.vagq.failure_review import analyze_failure
+from suites.vector.vagq.vagq.scenario_matrix import legal_public_feature_cases
 
 
 ROOT = Path(__file__).resolve().parents[2]

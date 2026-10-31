@@ -1,8 +1,8 @@
 """Queued old results wait while real younger loop predictions progress."""
 import pytest
-from bpuverify.bpu.model.joint_stream import PROFILES
-from bpuverify.bpu.coverage.joint_stream import Coverage
-from bpuverify.bpu.case.joint_stream import check_joint_stream
+from suites.frontend.bpu.bpu.model.joint_stream import PROFILES
+from suites.frontend.bpu.bpu.coverage.joint_stream import Coverage
+from suites.frontend.bpu.bpu.case.joint_stream import check_joint_stream
 
 
 @pytest.mark.feature('BPU-INT-107')

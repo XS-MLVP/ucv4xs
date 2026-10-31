@@ -1,7 +1,7 @@
 """BitmapCache standalone tests."""
 from __future__ import annotations
 
-from mmuverify.common.runtime import execution
+from suites.memblock.mmu.execution import execution
 
 
 DATA = 0x0102030405060708
@@ -9,7 +9,7 @@ DATA = 0x0102030405060708
 
 async def test_refill_then_hit_selects_byte(bitmapcache_env):
     env = bitmapcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await env.refill_word(0x80000, DATA)
         for index in range(8):
@@ -25,7 +25,7 @@ async def test_refill_then_hit_selects_byte(bitmapcache_env):
 
 async def test_miss_before_refill(bitmapcache_env):
     env = bitmapcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await env.send(0x80000, order=1)
         resp = await env.wait_resp()
@@ -36,7 +36,7 @@ async def test_miss_before_refill(bitmapcache_env):
 
 async def test_two_tags_same_set(bitmapcache_env):
     env = bitmapcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await env.refill_word(0x80000, 0xAAAAAAAAAAAAAAAA)
         await env.refill_word(0x81000, 0x5555555555555555)
@@ -50,7 +50,7 @@ async def test_two_tags_same_set(bitmapcache_env):
 
 async def test_four_ways_and_eviction(bitmapcache_env):
     env = bitmapcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         tags = [0x80000 + index * (1 << 11) for index in range(5)]
         for index, tag in enumerate(tags):
@@ -66,7 +66,7 @@ async def test_four_ways_and_eviction(bitmapcache_env):
 
 async def test_bclear_invalidates(bitmapcache_env):
     env = bitmapcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await env.refill_word(0x80000, DATA)
         await env.send(0x80000)
@@ -82,7 +82,7 @@ async def test_bclear_invalidates(bitmapcache_env):
 
 async def test_sfence_keeps_cache_and_bclear_invalidates(bitmapcache_env):
     env = bitmapcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await env.refill_word(0x80000, DATA)
         for key in ("satp_changed", "vsatp_changed", "hgatp_changed", "virt_changed"):
@@ -113,7 +113,7 @@ async def test_sfence_keeps_cache_and_bclear_invalidates(bitmapcache_env):
 
 async def test_response_backpressure(bitmapcache_env):
     env = bitmapcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await env.refill_word(0x80000, DATA)
         await env.send(0x80000, order=5)
@@ -133,7 +133,7 @@ async def test_response_backpressure(bitmapcache_env):
 
 async def test_all_orders(bitmapcache_env):
     env = bitmapcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         await env.refill_word(0x80000, DATA)
         results = []
@@ -149,7 +149,7 @@ async def test_all_orders(bitmapcache_env):
 
 async def test_data_extremes(bitmapcache_env):
     env = bitmapcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         for endpoint in (1, 0):
             tag = 0x80000 + endpoint * 0x800
@@ -163,7 +163,7 @@ async def test_data_extremes(bitmapcache_env):
 
 async def test_all_sets_and_bytes(bitmapcache_env):
     env = bitmapcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         # Fill one entry in every set (ppn[10:6]) and hit it via each byte lane
         # (ppn[5:3]); the lower 3 bits are ignored by the cache tag.
@@ -185,7 +185,7 @@ async def test_all_sets_and_bytes(bitmapcache_env):
 
 async def test_tag_extremes(bitmapcache_env):
     env = bitmapcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         for tag, data in ((0, 0), ((1 << 36) - 1, (1 << 64) - 1),
                           (0x555555555, 0xAAAAAAAAAAAAAAAA)):
@@ -197,7 +197,7 @@ async def test_tag_extremes(bitmapcache_env):
 
 async def test_all_ways_and_data_patterns(bitmapcache_env):
     env = bitmapcache_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         patterns = [0xFFFFFFFFFFFFFFFF, 0xAAAAAAAAAAAAAAAA,
                     0x5555555555555555, 0]

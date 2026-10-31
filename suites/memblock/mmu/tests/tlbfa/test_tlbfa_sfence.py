@@ -1,8 +1,8 @@
 """TLBFA sfence/hfence semantics."""
 from __future__ import annotations
 
-from mmuverify.common.runtime import execution
-from mmuverify.tlbfa.model import ALL_STAGE, NO_S2, ONLY_S1, ONLY_S2
+from suites.memblock.mmu.execution import execution
+from suites.memblock.mmu.tlbfa.model import ALL_STAGE, NO_S2, ONLY_S1, ONLY_S2
 
 from .common import lookup_vpn, make_refill
 
@@ -14,7 +14,7 @@ def addr_of(tag: int, low: int = 0) -> int:
 # TLBFA-SFENCE-01
 async def test_sfence_all_address_all_asid_clears_no_s2_only(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.program_context(satp_asid=1, vsatp_asid=1, hgatp_vmid=3)
         a = make_refill(NO_S2, 0, 0x20000, 0x100000001, asid=1)
@@ -36,7 +36,7 @@ async def test_sfence_all_address_all_asid_clears_no_s2_only(tlbfa_env):
 # TLBFA-SFENCE-02, TLBFA-SFENCE-04
 async def test_sfence_all_address_specific_asid_preserves_global_and_other_asid(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.program_context(satp_asid=1, vsatp_asid=1, hgatp_vmid=3)
         a = make_refill(NO_S2, 0, 0x21000, 0x100000011, asid=1)
@@ -63,7 +63,7 @@ async def test_sfence_all_address_specific_asid_preserves_global_and_other_asid(
 # TLBFA-SFENCE-03, TLBFA-SFENCE-04
 async def test_sfence_exact_address_specific_asid_and_global_survival(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.program_context(satp_asid=1, vsatp_asid=1, hgatp_vmid=3)
         x, y, z = 0x22000, 0x22100, 0x22200
@@ -101,7 +101,7 @@ async def test_sfence_exact_address_specific_asid_and_global_survival(tlbfa_env)
 # TLBFA-SFENCE-05
 async def test_hfencev_all_clears_current_vmid_stage2(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.program_context(satp_asid=1, vsatp_asid=1, hgatp_vmid=3)
         d1 = make_refill(ONLY_S2, 0, (0x23000 << 3) | 0, 0x100000031, vmid=3)
@@ -124,7 +124,7 @@ async def test_hfencev_all_clears_current_vmid_stage2(tlbfa_env):
 # TLBFA-SFENCE-05
 async def test_hfencev_specific_asid_keeps_other_asid_and_global(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.program_context(satp_asid=1, vsatp_asid=1, hgatp_vmid=3)
         e1 = make_refill(ALL_STAGE, 0, 0x24000, 0x100000041, asid=1, vmid=3)
@@ -144,7 +144,7 @@ async def test_hfencev_specific_asid_keeps_other_asid_and_global(tlbfa_env):
 # TLBFA-SFENCE-06
 async def test_hfenceg_all_and_vmid_selection(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.program_context(satp_asid=1, vsatp_asid=1, hgatp_vmid=3)
         d1 = make_refill(ONLY_S2, 0, (0x25000 << 3) | 0, 0x100000051, vmid=3)
@@ -171,7 +171,7 @@ async def test_hfenceg_all_and_vmid_selection(tlbfa_env):
 # TLBFA-SFENCE-07
 async def test_virtualized_sfence_uses_all_address_stage2_path(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.program_context(satp_asid=1, vsatp_asid=1, hgatp_vmid=3, virt=1)
         d1 = make_refill(ONLY_S2, 0, (0x26000 << 3) | 0, 0x100000061, vmid=3)
@@ -195,7 +195,7 @@ async def test_virtualized_sfence_uses_all_address_stage2_path(tlbfa_env):
 # TLBFA-SFENCE-08
 async def test_bme_address_path_and_cmode_gate(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.program_context(satp_asid=1, vsatp_asid=1, hgatp_vmid=3, bme=1, cmode=0)
         a = make_refill(NO_S2, 0, 0x27000, 0x100000071, asid=1)
@@ -220,7 +220,7 @@ async def test_bme_address_path_and_cmode_gate(tlbfa_env):
 # TLBFA-SFENCE-09, TLBFA-REFILL-04, TLBFA-COMBO-02
 async def test_sfence_has_priority_over_same_cycle_refill(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.program_context(satp_asid=1)
         old = make_refill(NO_S2, 0, 0x28000, 0x100000081, asid=1)
@@ -251,7 +251,7 @@ async def test_sfence_has_priority_over_same_cycle_refill(tlbfa_env):
 # matches the stored tag and the non-global ASID for every translation form.
 async def test_address_specific_sfence_matches_every_translation_stage(tlbfa_env):
     env = tlbfa_env
-    async with execution(env.dut):
+    async with execution(env):
         await env.reset()
         env.program_context(satp_asid=1, vsatp_asid=1, hgatp_vmid=3)
         x = 0x29000

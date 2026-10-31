@@ -2,10 +2,10 @@
 from dataclasses import replace
 import pytest
 
-from bpuverify.ras.model.model import Cell
-from bpuverify.ras.model.model import CommittedStack
-from bpuverify.ras.model.model import Group
-from bpuverify.ras.model.model import advance
+from suites.frontend.bpu.ras.model.model import Cell
+from suites.frontend.bpu.ras.model.model import CommittedStack
+from suites.frontend.bpu.ras.model.model import Group
+from suites.frontend.bpu.ras.model.model import advance
 
 
 @pytest.mark.parametrize('count', range(1, 49))

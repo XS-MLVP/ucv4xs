@@ -1,10 +1,10 @@
 """Independent logical Main state proves arrival order and sibling retention."""
 from copy import deepcopy
 import pytest
-from bpuverify.bpu.model.main_original_order import Program,ORDERS,PHASES,COUNTERS,PC,STREAM_PC,EARLIER,LATER,INITIAL_TARGET,TARGETS,LATER_TARGET,RULES
-from bpuverify.bpu.model.main_sources import source_entries
-from bpuverify.bpu.coverage.main_original_order import Coverage
-from bpuverify.mbtb.model.semantic import MbtbReference,Events,Feedback,Branch,coordinate
+from suites.frontend.bpu.bpu.model.main_original_order import Program,ORDERS,PHASES,COUNTERS,PC,STREAM_PC,EARLIER,LATER,INITIAL_TARGET,TARGETS,LATER_TARGET,RULES
+from suites.frontend.bpu.bpu.model.main_sources import source_entries
+from suites.frontend.bpu.bpu.coverage.main_original_order import Coverage
+from suites.frontend.bpu.mbtb.model.semantic import MbtbReference,Events,Feedback,Branch,coordinate
 
 
 def pending(model):
@@ -93,6 +93,6 @@ def test_physical_position_and_duplicate_witness_are_not_new_semantics():
 
 @pytest.mark.parametrize('capacity',(8,16))
 def test_explicit_source_capacity_is_an_environment_assumption_not_a_signal(capacity):
-    from bpuverify.bpu.checker.bounded_sources import BoundedChecker
+    from suites.frontend.bpu.bpu.checker.bounded_sources import BoundedChecker
     assert BoundedChecker(capacity=capacity).windows.ledger.capacity==capacity
     assert BoundedChecker().windows.ledger.capacity==8

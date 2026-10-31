@@ -1,12 +1,14 @@
 """Real shared-S3 Replay obligations; no fake full/head/uncache-wake inputs."""
+
 from dataclasses import replace
 
 import pytest
 
-from lsqverify.load_queue.actor import LoadActor
-from lsqverify.load_queue.types import Inputs, Load
-from lsqverify.raw.types import SqPtr
-from lsqverify.replay.types import Cause, L2Hint, Refill, StoreWakeup, TlbHint
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.load_queue.actor import LoadActor
+from suites.memblock.lsq.load_queue.types import Inputs, Load
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.replay.types import Cause, L2Hint, Refill, StoreWakeup, TlbHint
 
 
 def replay_load(load, cause, **fields):
@@ -18,7 +20,7 @@ def replay_load(load, cause, **fields):
 async def blocked(actor, cycles=5, controls=None):
     for _ in range(cycles):
         await actor.step(controls or Inputs())
-        assert not any(actor.env.observed[f"io_replay_{bank}_valid"] for bank in range(3))
+        assert not any(actor.env.observed[P.io(f"replay_{bank}_valid")] for bank in range(3))
 
 
 async def wait_issue(actor, uid, controls=None):
@@ -204,7 +206,7 @@ async def test_real_refill_public_history_windows(lq, channel, unaligned, distan
     await actor.execute(uids)
     for _ in range(4):
         await actor.step()
-    visible = any(lq.observed[f"io_replay_{bank}_valid"] for bank in range(3))
+    visible = any(lq.observed[P.io(f"replay_{bank}_valid")] for bank in range(3))
     assert visible == (distance <= (3 if unaligned else 2))
     if not visible:
         await actor.step(Inputs(refills=(Refill(True, 3), Refill(True, 4))))

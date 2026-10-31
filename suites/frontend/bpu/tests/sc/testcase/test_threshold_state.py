@@ -1,14 +1,14 @@
 """SC custom bounds, qualification and aggregate threshold state contracts."""
 import pytest
 
-from bpuverify.sc.coverage.catalog import sc_threshold_bounds_coverage_model
-from bpuverify.sc.coverage.catalog import sc_threshold_qualification_coverage_model
-from bpuverify.sc.coverage.catalog import write_sc_threshold_bounds_coverage
-from bpuverify.sc.coverage.catalog import write_sc_threshold_qualification_coverage
-from bpuverify.sc.case.threshold_scenario import check_single_boundaries
-from bpuverify.sc.case.threshold_scenario import check_multi_boundaries
-from bpuverify.sc.case.threshold_scenario import check_qualification_and_aggregation
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.sc.coverage.catalog import sc_threshold_bounds_coverage_model
+from suites.frontend.bpu.sc.coverage.catalog import sc_threshold_qualification_coverage_model
+from suites.frontend.bpu.sc.coverage.catalog import write_sc_threshold_bounds_coverage
+from suites.frontend.bpu.sc.coverage.catalog import write_sc_threshold_qualification_coverage
+from suites.frontend.bpu.sc.case.threshold_scenario import check_single_boundaries
+from suites.frontend.bpu.sc.case.threshold_scenario import check_multi_boundaries
+from suites.frontend.bpu.sc.case.threshold_scenario import check_qualification_and_aggregation
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature('BPU-SC-021')

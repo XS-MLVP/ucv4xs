@@ -9,12 +9,12 @@ import json
 import pytest
 from toffee import ScoreboardMismatch, TransferState
 
-from bpuverify.utage.checker.read_ownership import ReadOwnershipChecks
-from bpuverify.utage.env.read_ownership import ReadOwnershipEnv
-from bpuverify.utage.model.read_ownership import FeedbackLedger, ReadOwnershipProgram, RETAINED_VERSIONS, RULES
-from bpuverify.utage.model.semantic import Context, Entry, Events, UtageReference, tag
-from bpuverify.utage.monitor.source_ownership import SourceObservation
-from bpuverify.utage.transaction.types import UtageLookup
+from suites.frontend.bpu.utage.checker.read_ownership import ReadOwnershipChecks
+from suites.frontend.bpu.utage.env.read_ownership import ReadOwnershipEnv
+from suites.frontend.bpu.utage.model.read_ownership import FeedbackLedger, ReadOwnershipProgram, RETAINED_VERSIONS, RULES
+from suites.frontend.bpu.utage.model.semantic import Context, Entry, Events, UtageReference, tag
+from suites.frontend.bpu.utage.monitor.source_ownership import SourceObservation
+from suites.frontend.bpu.utage.transaction.types import UtageLookup
 from tests.utage.scoreboard.test_semantic_model import BASES, POSITIONS, feedback, learn, lookup
 from tests.utage.scoreboard.test_source_ownership import CoverageSpy, prediction
 
@@ -199,9 +199,9 @@ def test_complete_checked_group_requires_all_obligations_and_immutable_sources()
 
 
 def test_semantic_program_has_no_native_driver_checker_or_actual_state_imports():
-    tree = ast.parse(Path('bpuverify/utage/model/read_ownership.py').read_text())
+    tree = ast.parse(Path('utage/model/read_ownership.py').read_text())
     assert {n.module for n in ast.walk(tree) if isinstance(n, ast.ImportFrom)} == {
-        'copy', 'dataclasses', 'bpuverify.utage.model.semantic', 'bpuverify.utage.model.source_ownership'}
+        'copy', 'dataclasses', 'suites.frontend.bpu.utage.model.semantic', 'suites.frontend.bpu.utage.model.source_ownership'}
     assert not any(isinstance(n, ast.Import) for n in ast.walk(tree))
 
 
@@ -217,8 +217,8 @@ def test_adopted_definition_has_existing_feature_identity_and_paired_dut_evidenc
 
 
 def test_case_does_not_drive_edges_or_gather_and_source_identity_is_real_transfer_identity():
-    case = Path('bpuverify/utage/case/read_ownership.py').read_text()
-    env = Path('bpuverify/utage/env/read_ownership.py').read_text()
+    case = Path('utage/case/read_ownership.py').read_text()
+    env = Path('utage/env/read_ownership.py').read_text()
     assert not any(name in case+env for name in ('ClockCycles', 'RisingEdge', 'FallingEdge', 'asyncio.gather', '.Set('))
     assert 'transfer.sequence_id' in env and 'self.source_tokens[id(source)]' in env
     assert len(ReadOwnershipEnv.LEARNING_INTERVALS) == 4

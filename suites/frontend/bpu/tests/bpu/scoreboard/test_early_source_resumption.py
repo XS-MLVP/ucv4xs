@@ -5,8 +5,8 @@ from types import SimpleNamespace
 import pytest
 from toffee import ScoreboardMismatch
 
-from bpuverify.bpu.case.early_source import check_resumed_arbitration
-from bpuverify.bpu.transaction.types import BpuPrediction, BpuStage1Source
+from suites.frontend.bpu.bpu.case.early_source import check_resumed_arbitration
+from suites.frontend.bpu.bpu.transaction.types import BpuPrediction, BpuStage1Source
 
 
 def agent_for(ticks, fault=None):

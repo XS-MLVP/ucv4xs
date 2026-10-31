@@ -1,9 +1,9 @@
 """Real owned-source iteration recovery, no register-derived golden values."""
 import pytest
 
-from bpuverify.bpu.case.loop_iteration import check_loop_iteration, check_final_loop_iteration
-from bpuverify.bpu.coverage.loop_iteration import LoopIterationCoverage, FinalIterationCoverage
-from bpuverify.bpu.model.loop_iteration import PROGRAMS
+from suites.frontend.bpu.bpu.case.loop_iteration import check_loop_iteration, check_final_loop_iteration
+from suites.frontend.bpu.bpu.coverage.loop_iteration import LoopIterationCoverage, FinalIterationCoverage
+from suites.frontend.bpu.bpu.model.loop_iteration import PROGRAMS
 
 
 @pytest.mark.feature('BPU-INT-099')

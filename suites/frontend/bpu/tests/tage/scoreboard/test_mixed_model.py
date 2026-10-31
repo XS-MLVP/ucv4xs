@@ -3,8 +3,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from bpuverify.tage.model.mixed import expected_tage_mixed_writes
-from bpuverify.tage.monitor.write import TageWriteActivityMonitor
+from suites.frontend.bpu.tage.model.mixed import expected_tage_mixed_writes
+from suites.frontend.bpu.tage.monitor.write import TageWriteActivityMonitor
 
 
 @pytest.mark.parametrize('pc', (0x40000000, 0x40000020, 0x40000001, 0x40000400))

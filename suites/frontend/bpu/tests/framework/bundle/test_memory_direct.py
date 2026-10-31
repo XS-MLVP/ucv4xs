@@ -7,9 +7,9 @@ from types import SimpleNamespace
 import pytest
 
 import xspcomm as xsp
-from bpuverify.common.env.memory_direct import MemoryDirectSignals
-from bpuverify.common.env.memory_direct import memory_signal
-from bpuverify.common.env.memory_direct import require_memory_direct
+from suites.frontend.bpu.runtime.memory_direct import MemoryDirectSignals
+from suites.frontend.bpu.runtime.memory_direct import memory_signal
+from suites.frontend.bpu.runtime.memory_direct import require_memory_direct
 
 
 def native_dut(tmp_path, *, width=1, stride=1, size=0):

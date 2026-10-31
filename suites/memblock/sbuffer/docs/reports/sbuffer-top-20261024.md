@@ -1,5 +1,8 @@
 # Sbuffer 顶层：入队/写出/排空/转发 UT
 
+> 路径迁移说明（2026-10-31）：本文记录中的 *verify/common 为当时源码路径；当前实现已迁入 suites.<group>.<suite> 工程根。历史判定、命令与哈希不据此重标；当前映射见仓库 docs/lessons/suite-namespace-refactor-20261031.md。
+
+
 ## 1. 结论
 
 真实 `Sbuffer` DUT（内部保留真实 `SbufferData`）完成 **16/16 PASS**，功能覆盖 8 组

@@ -1,7 +1,7 @@
 """Intent wrapper preserves the admitted depth8 bound and never hides failure."""
 import pytest
 from toffee import ScoreboardMismatch
-from bpuverify.bpu.case.ras import cases
+from suites.frontend.bpu.bpu.case.ras import cases
 
 
 def report(kind, count):

@@ -1,9 +1,9 @@
 """An overlapping other-instruction version cannot enter the old counter chain."""
 import json
 import pytest
-from bpuverify.utage.model.instruction_confidence import PROGRAMS
-from bpuverify.utage.coverage.instruction_confidence import Coverage
-from bpuverify.utage.case.instruction_confidence import check_instruction_confidence
+from suites.frontend.bpu.utage.model.instruction_confidence import PROGRAMS
+from suites.frontend.bpu.utage.coverage.instruction_confidence import Coverage
+from suites.frontend.bpu.utage.case.instruction_confidence import check_instruction_confidence
 
 
 @pytest.mark.feature('BPU-UTAGE-014')

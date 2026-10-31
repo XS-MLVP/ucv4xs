@@ -20,10 +20,10 @@ from xml.etree import ElementTree as ET
 from toffee import CoverageDatabase
 from toffee.coverage_report import build_unified_coverage_model, parse_lcov, render_unified_coverage_html
 
-from bpuverify.common.env.process_scope import SCOPES
-from bpuverify.common.pytest.evidence import fingerprint, write_json, worst
-from bpuverify.common.pytest.isolation import selected_ids
-from bpuverify.common.pytest.points import make_report, summary_for, validate_report
+from suites.frontend.bpu.runtime.process_scope import SCOPES
+from suites.frontend.bpu.pytest_plugins.evidence import fingerprint, write_json, worst
+from suites.frontend.bpu.pytest_plugins.isolation import selected_ids
+from suites.frontend.bpu.pytest_plugins.points import make_report, summary_for, validate_report
 from tools.refresh_coverage import ROOT, FLOOR, NAMES, digest, read, source_epoch, write
 from tools.managed_regression import execution_verdicts, snapshot_publications
 
@@ -235,7 +235,7 @@ def run(args):
         code = int(any(status in ('FAIL', 'ERROR', 'XPASS', 'SKIP') for status in tests.values()))
         functional = database.report() if database.groups else None
         if not selection and code == 0:
-            from bpuverify.common.coverage.parallel import validate_parallel_case_coverage
+            from suites.frontend.bpu.coverage.parallel import validate_parallel_case_coverage
             validate_parallel_case_coverage(functional, profile=args.regression_profile)
         features = combine_features(read(ROOT / 'verification_plan.json'), index, feature_reports, tests)
         if not selection and summary_for(features, 'all')['executed'] != len(features['features']):
@@ -243,7 +243,7 @@ def run(args):
         write(execution / 'feature-points.json', features)
         write(execution / 'rtl-coverage-manifest.json', dict(format='bpu-managed-native-manifest', version=1,
               pytest_exitstatus=code, native=native, files=[row['path'] for row in native]))
-        from bpuverify.common.coverage.rtl import build_report
+        from suites.frontend.bpu.coverage.rtl import build_report
         measured = build_report(execution / 'rtl-coverage-manifest.json', output / 'rtl-line-coverage.json')
         if not selection and set(measured['dut']) != set(NAMES):
             raise ValueError('complete regression did not measure all DUTs')

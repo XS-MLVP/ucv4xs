@@ -5,7 +5,7 @@ import ast
 from pathlib import Path
 import pytest
 
-from bpuverify.bpu.model.window_lifetime import WindowLifetimes,LifetimeError,freeze
+from suites.frontend.bpu.bpu.model.window_lifetime import WindowLifetimes,LifetimeError,freeze
 
 META={'history':[0,1],'owner':{'counter':0,'hit':False}}
 PAYLOAD={'branches':[{'position':1,'target':0x40000800,'taken':True}]}
@@ -16,7 +16,7 @@ def accept(model,teaching):return model.accept(teaching,metadata=META,payload=PA
 
 
 def test_model_has_no_hardware_framework_or_predictor_algorithm_import():
-    tree=ast.parse((Path(__file__).resolve().parents[3] / 'bpuverify/bpu/model/window_lifetime.py').read_text())
+    tree=ast.parse((Path(__file__).resolve().parents[3] / 'bpu/model/window_lifetime.py').read_text())
     assert not any(isinstance(n,ast.Import) for n in ast.walk(tree))
     assert {n.module for n in ast.walk(tree) if isinstance(n,ast.ImportFrom)}=={'dataclasses','collections.abc'}
 

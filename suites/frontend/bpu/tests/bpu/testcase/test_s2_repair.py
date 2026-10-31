@@ -4,14 +4,14 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.bpu.transaction.types import BpuRedirect
-from bpuverify.bpu.coverage.catalog import bpu_s2_repair_coverage_model
-from bpuverify.bpu.coverage.catalog import write_bpu_s2_repair_coverage
-from bpuverify.bpu.checker.assertions import train_direct_branch
-from bpuverify.bpu.case.definitions import PC
-from bpuverify.bpu.case.definitions import PREDICTION_LIMIT
-from bpuverify.bpu.case.definitions import TARGET
-from bpuverify.common.env.paths import REPO_ROOT
+from suites.frontend.bpu.bpu.transaction.types import BpuRedirect
+from suites.frontend.bpu.bpu.coverage.catalog import bpu_s2_repair_coverage_model
+from suites.frontend.bpu.bpu.coverage.catalog import write_bpu_s2_repair_coverage
+from suites.frontend.bpu.bpu.checker.assertions import train_direct_branch
+from suites.frontend.bpu.bpu.case.definitions import PC
+from suites.frontend.bpu.bpu.case.definitions import PREDICTION_LIMIT
+from suites.frontend.bpu.bpu.case.definitions import TARGET
+from suites.frontend.bpu.runtime.paths import REPO_ROOT
 
 
 @pytest.mark.feature("BPU-INT-011")

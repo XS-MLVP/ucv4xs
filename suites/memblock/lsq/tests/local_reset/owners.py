@@ -3,11 +3,11 @@ from dataclasses import replace
 import json
 from pathlib import Path
 
-from lsqverify.forward.types import Query, Translation
-from lsqverify.load_queue.types import Bypass, Load
-from lsqverify.lsq_wrapper.types import Bus, Dispatch, Inputs
-from lsqverify.rar.types import Query as RarQuery
-from lsqverify.raw.types import Query as RawQuery
+from suites.memblock.lsq.forward.types import Query, Translation
+from suites.memblock.lsq.load_queue.types import Bypass, Load
+from suites.memblock.lsq.lsq_wrapper.types import Bus, Dispatch, Inputs
+from suites.memblock.lsq.rar.types import Query as RarQuery
+from suites.memblock.lsq.raw.types import Query as RawQuery
 from tests.lsq_wrapper.memory_owners import cached_load
 from tests.lsq_wrapper.mixed_owners import rob_pointer
 from .check import LocalResetCheck

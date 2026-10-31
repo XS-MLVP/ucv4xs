@@ -3,12 +3,12 @@ from dataclasses import replace
 from types import SimpleNamespace as NS
 import pytest
 
-from bpuverify.bpu.model.early_direction_sources import EarlyDirectionSources,EarlySnapshot,context
-from bpuverify.bpu.model.pipeline import Redirect,Resolution,Outcome
-from bpuverify.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.early_direction_sources import EarlyDirectionSources,EarlySnapshot,context
+from suites.frontend.bpu.bpu.model.pipeline import Redirect,Resolution,Outcome
+from suites.frontend.bpu.bpu.model.selection import Kind
 from tests.bpu.scoreboard.test_ahead_sources import ENABLED,quiet,query
 from tests.bpu.scoreboard.test_semantic_pipeline import boot
-from bpuverify.utage.model.semantic import Base,tag
+from suites.frontend.bpu.utage.model.semantic import Base,tag
 
 
 def prepare(pc=0x40000000):

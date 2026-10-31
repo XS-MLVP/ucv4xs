@@ -195,7 +195,7 @@ def root_definitions():
     add('NOT-HEAD-CANCEL-PRODUCER', False, '用例撤销已获不可撤回许可的无异常普通Store',
         '测试令同一无异常scalar Store到ROB头、STA/STD/S2全完成并给出precommit后，又人为flushSelf并把其owner删除。已入EnterSbufferQueue的数据没有redirect撤回协议。正常分支/Load回滚不能撤销最老Store；Store自己的异常/trigger在S2阻止commit，singleStep项根本不发给IQ，含Store的ROB entry禁止IRQ。因而本用例不是合法未提交取消，也不是FIFO漏清bug；StopIteration来自actor删除了仍有副作用义务的owner。',
         '在许可前测试可取消项；已不可撤回的Store必须保留消费义务，不能重用其UID或期待FIFO消失。此裁定仅覆盖该无异常scalar反例，不把它扩大为任意vector/压缩/异常重定向定理。',
-        source('lsqverify/vsq_cancel_capacity.py', 115, 126, 'advance_rob=False', 'head_permit', 'actor.cancel'),
+        source('vsq_cancel_capacity.py', 115, 126, 'advance_rob=False', 'head_permit', 'actor.cancel'),
         source('mem/lsqueue/VirtualStoreQueue.scala', 282, 284, 'isSameSlot(robHeadPtr)'),
         source(sq, 1995, 2007, '!ctrlEntries(ptr).hasException', '!ctrlEntries(ptr).waitStoreS2'),
         source(sq, 727, 735, 'val fromDeqModule', 'val toSbuffer'),
@@ -205,7 +205,7 @@ def root_definitions():
         source('backend/rename/CompressUnit.scala', 233, 235, 'in.valid && !allow'),
         source('backend/rename/CompressUnit.scala', 296, 300, 'entryInterruptSafeByToken'),
         source('backend/rob/Rob.scala', 768, 768, 'deqPtrEntry.interruptSafe'),
-        source('lsqverify/store_queue/actor.py', 330, 340, 'del self.live[self.all[uid].position]'))
+        source('store_queue/actor.py', 330, 340, 'del self.live[self.all[uid].position]'))
     return roots
 
 

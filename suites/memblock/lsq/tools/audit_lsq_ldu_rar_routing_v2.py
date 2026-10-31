@@ -23,7 +23,7 @@ def audit(name):
     prior=ROOT/"results/lsq-ldu-rar-routing-02"
     old_manifest,old_source,old_nodes=verify_common(prior)
     assert old_manifest["tests"]=={"PASS":13,"FAIL":3}
-    assert {k:v for k,v in source.items() if k.startswith("lsqverify/")}=={k:v for k,v in old_source.items() if k.startswith("lsqverify/")}
+    assert {k:v for k,v in source.items() if k.startswith('lsqverify/')}=={k:v for k,v in old_source.items() if k.startswith('lsqverify/')}
     paths,old_paths=paths_by_node(run),paths_by_node(prior)
     assert set(paths)==set(nodes)
     mappings=[]

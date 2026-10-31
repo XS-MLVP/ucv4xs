@@ -8,12 +8,12 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from bpuverify.bpu.checker.ahead_working_set import AheadWorkingSetChecks
-from bpuverify.bpu.coverage.ahead_working_set import AheadWorkingSetCoverage
-from bpuverify.bpu.coverage.cold_source_isolation import ColdSourceCoverage
-from bpuverify.bpu.model.ahead_working_set import BASE, AheadWorkingSetProgram
-from bpuverify.bpu.model.cold_source_isolation import ColdSourceProgram, MODES, SOURCES
-from bpuverify.mbtb.model.semantic import Accepted, Branch, Feedback, MbtbReference, Source
+from suites.frontend.bpu.bpu.checker.ahead_working_set import AheadWorkingSetChecks
+from suites.frontend.bpu.bpu.coverage.ahead_working_set import AheadWorkingSetCoverage
+from suites.frontend.bpu.bpu.coverage.cold_source_isolation import ColdSourceCoverage
+from suites.frontend.bpu.bpu.model.ahead_working_set import BASE, AheadWorkingSetProgram
+from suites.frontend.bpu.bpu.model.cold_source_isolation import ColdSourceProgram, MODES, SOURCES
+from suites.frontend.bpu.mbtb.model.semantic import Accepted, Branch, Feedback, MbtbReference, Source
 
 
 def main_model(*, hit=False, kind=1, counter=2, taken=True, correction=True):
@@ -134,7 +134,7 @@ def test_cold_isolation_launch_credit_requires_actual_disabled_control_after_ini
 
 
 def test_cold_isolation_case_keeps_scheduler_and_signal_operations_out_of_test_logic():
-    tree = ast.parse(Path('bpuverify/bpu/case/cold_source_isolation.py').read_text())
+    tree = ast.parse(Path('bpu/case/cold_source_isolation.py').read_text())
     forbidden = {'RisingEdge','FallingEdge','ClockCycles','gather','create_task','get_','set_'}
     names = {node.id for node in ast.walk(tree) if isinstance(node, ast.Name)}
     names |= {node.attr for node in ast.walk(tree) if isinstance(node, ast.Attribute)}

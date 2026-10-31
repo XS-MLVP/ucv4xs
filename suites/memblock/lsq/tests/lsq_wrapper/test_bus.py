@@ -1,14 +1,16 @@
 """Gap supplement: actual one-sided shared-bus lifecycles before competition."""
+
 from dataclasses import asdict, replace
 
 import pytest
 
-from lsqverify.load_queue.types import Bypass, Load
-from lsqverify.lsq_wrapper.types import Address, Bus, Data, Dispatch, Inputs
-from lsqverify.psq.types import Attributes
-from lsqverify.raw.types import SqPtr
-from lsqverify.replay.types import Enqueue, Uop
-from lsqverify.vlq.types import QueuePtr, RobPtr
+from suites.memblock.lsq.legacy_pins import P
+from suites.memblock.lsq.load_queue.types import Bypass, Load
+from suites.memblock.lsq.lsq_wrapper.types import Address, Bus, Data, Dispatch, Inputs
+from suites.memblock.lsq.psq.types import Attributes
+from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.replay.types import Enqueue, Uop
+from suites.memblock.lsq.vlq.types import QueuePtr, RobPtr
 
 
 class BusTrace:
@@ -27,28 +29,28 @@ class BusTrace:
         packet = packet or self.base
         await self.env.cycle(packet)
         pre, post, tick = self.env.pre_observed, self.env.observed, self.env.last_tick
-        if pre["io_uncache_req_valid"] and packet.bus.ready:
+        if pre[P.p_uncache_req_valid] and packet.bus.ready:
             self.requests += 1
             assert self.requests == 1
-            self.env.expect({"io_uncache_req_bits_cmd": int(not self.to_load), "io_uncache_req_bits_addr": self.address,
-                             "io_uncache_req_bits_vaddr": 0x1080, "io_uncache_req_bits_mask": 255,
-                             "io_uncache_req_bits_nc": int(self.nc), "io_uncache_req_bits_robIdx_value": 0},
+            self.env.expect({P.p_uncache_req_bits_cmd: int(not self.to_load), P.p_uncache_req_bits_addr: self.address,
+                             P.p_uncache_req_bits_vaddr: 0x1080, P.p_uncache_req_bits_mask: 255,
+                             P.p_uncache_req_bits_nc: int(self.nc), P.p_uncache_req_bits_robIdx_value: 0},
                             "original public UID accepted by shared bus", before=True)
             if not self.to_load:
-                self.env.expect({"io_uncache_req_bits_data": self.value}, "original Store bytes on shared bus", before=True)
-            self.env.emit("bus_fire", to_load=self.to_load, nc=self.nc, mid=pre["io_uncache_req_bits_id"])
+                self.env.expect({P.p_uncache_req_bits_data: self.value}, "original Store bytes on shared bus", before=True)
+            self.env.emit("bus_fire", to_load=self.to_load, nc=self.nc, mid=pre[P.p_uncache_req_bits_id])
         if packet.bus.ack:
             self.acks += 1
             assert self.acks == 1 and self.requests == 1
         if packet.bus.response:
             self.responses += 1
             assert self.responses == self.acks == 1
-        if pre["io_mmioStout_valid"] and packet.writeback_ready:
+        if pre[P.p_mmioStout_valid] and packet.writeback_ready:
             self.wb += 1
             assert not self.to_load and not self.nc and self.wb == 1
             self.env.emit("store_writeback", rob=0)
-        assert not any(pre[f"io_sbuffer_req_{lane}_valid"] and packet.sbuffer_ready[lane] for lane in range(2))
-        p = "io_toLsqEnqCtrl_" + ("lqDeq" if self.to_load else "sqDeq")
+        assert not any(pre[P.io(f"sbuffer_req_{lane}_valid")] and packet.sbuffer_ready[lane] for lane in range(2))
+        p = P.p_toLsqEnqCtrl_ + ("lqDeq" if self.to_load else "sqDeq")
         if post[p + "_valid"]:
             self.deq += post[p + "_bits"]
             assert self.deq == 1 and self.responses == 1 if self.to_load or not self.nc else self.deq == 1 and self.acks == 1
@@ -56,14 +58,14 @@ class BusTrace:
 
     async def transfer(self):
         for _ in range(60):
-            if self.env.observed["io_uncache_req_valid"]:
+            if self.env.observed[P.p_uncache_req_valid]:
                 break
             await self.cycle()
-        assert self.env.observed["io_uncache_req_valid"]
-        mid = self.env.observed["io_uncache_req_bits_id"]
+        assert self.env.observed[P.p_uncache_req_valid]
+        mid = self.env.observed[P.p_uncache_req_bits_id]
         for _ in range(3):
             await self.cycle()
-            assert self.env.observed["io_uncache_req_valid"] and self.env.observed["io_uncache_req_bits_id"] == mid
+            assert self.env.observed[P.p_uncache_req_valid] and self.env.observed[P.p_uncache_req_bits_id] == mid
         await self.cycle(self.bus(ready=True))
         await self.cycle(self.bus(ack=True, mid=mid, sid=7))
         for _ in range(3):
@@ -74,12 +76,12 @@ class BusTrace:
         self.base = replace(self.base, pending=RobPtr.encode(1), pending_next=RobPtr.encode(1))
         for _ in range(80):
             await self.cycle()
-            if self.deq == 1 and self.env.observed["io_lqEmpty"] and self.env.observed["io_sqEmpty"]:
+            if self.deq == 1 and self.env.observed[P.p_lqEmpty] and self.env.observed[P.p_sqEmpty]:
                 for _ in range(6):
                     await self.cycle()
                 assert self.requests == self.acks == self.responses == 1
                 assert self.wb == int(not self.to_load and not self.nc)
-                assert not self.env.observed["io_replayAllocate"] and not self.env.observed["io_uncache_req_valid"]
+                assert not self.env.observed[P.p_replayAllocate] and not self.env.observed[P.p_uncache_req_valid]
                 return
         raise AssertionError("real shared bus owner did not complete its original obligations")
 
@@ -97,21 +99,21 @@ async def test_real_load_bus_response_internal_wake_bypass_and_final_s3(lsq, nc,
     await trace.cycle(replace(trace.base, loads=(load, Load(), Load())))
     await trace.transfer()
     for _ in range(60):
-        if lsq.observed["io_replay_0_valid"]:
+        if lsq.observed[P.p_replay_0_valid]:
             break
         await trace.cycle()
-    assert lsq.observed["io_replay_0_valid"]
-    slot = lsq.observed["io_replay_0_bits_replayQueueIdx"]
+    assert lsq.observed[P.p_replay_0_valid]
+    slot = lsq.observed[P.p_replay_0_bits_replayQueueIdx]
     await trace.cycle(replace(trace.base, replay_ready=(True, True, True)))
     queries = (Bypass(), Bypass(), Bypass(True, QueuePtr(), nc, not nc))
     await trace.cycle(replace(trace.base, bypass=queries))
-    lsq.expect({"io_bypass_2_s1Resp_valid": 1, "io_bypass_2_s1Resp_bits_paddr": trace.address,
-                "io_ldExceptionInfo_valid": 1, "io_ldExceptionInfo_bits_vaddr": load.fullva,
-                "io_ldExceptionInfo_bits_exceptionVec_19": int(fault), "io_ldExceptionInfo_bits_exceptionVec_5": int(fault)},
+    lsq.expect({P.p_bypass_2_s1Resp_valid: 1, P.p_bypass_2_s1Resp_bits_paddr: trace.address,
+                P.p_ldExceptionInfo_valid: 1, P.p_ldExceptionInfo_bits_vaddr: load.fullva,
+                P.p_ldExceptionInfo_bits_exceptionVec_19: int(fault), P.p_ldExceptionInfo_bits_exceptionVec_5: int(fault)},
                "same original Load owner address and fault report after shared response")
     await trace.cycle()
-    lsq.expect({"io_bypass_2_s2Resp_valid": 1, "io_bypass_2_s2Resp_bits_data": trace.value * ((1 << 64) + 1),
-                "io_bypass_2_s2Resp_bits_derr": int(fault), "io_bypass_2_s2Resp_bits_nderr": int(fault)},
+    lsq.expect({P.p_bypass_2_s2Resp_valid: 1, P.p_bypass_2_s2Resp_bits_data: trace.value * ((1 << 64) + 1),
+                P.p_bypass_2_s2Resp_bits_derr: int(fault), P.p_bypass_2_s2Resp_bits_nderr: int(fault)},
                "same original shared response bytes/errors at actual s2")
     feedback = replace(load, execution=replace(load.execution, replay_feedback=True, slot=slot, need_replay=False, causes=0))
     await trace.cycle(replace(trace.base, loads=(feedback, Load(), Load())))

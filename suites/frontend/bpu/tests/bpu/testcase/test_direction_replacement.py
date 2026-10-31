@@ -1,7 +1,7 @@
 """Capacity+1 functional boundary, not a physical-coordinate sweep."""
 import pytest
-from bpuverify.bpu.case.direction_replacement import check_direction_replacement
-from bpuverify.bpu.coverage.direction_replacement import DirectionReplacementCoverage
+from suites.frontend.bpu.bpu.case.direction_replacement import check_direction_replacement
+from suites.frontend.bpu.bpu.coverage.direction_replacement import DirectionReplacementCoverage
 
 
 @pytest.mark.feature('BPU-INT-088')

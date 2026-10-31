@@ -8,10 +8,10 @@ from types import SimpleNamespace
 import pytest
 from toffee import CheckContext, ScoreboardMode
 
-from bpuverify.tage.model.semantic import Base, Branch, Context, Entry, Events, Feedback, Frame, Hint, RecentLearning, TageReference, UsefulLearning, UsefulWrite, Write, coordinate, decide, lfsr_next
-from bpuverify.common.model.folded_history import folded_history_values, PHR_FOLD_LAYOUT
-from bpuverify.tage.checker.semantic import TageSemanticChecker
-from bpuverify.tage.transaction.types import TagePrediction, TageLookup
+from suites.frontend.bpu.tage.model.semantic import Base, Branch, Context, Entry, Events, Feedback, Frame, Hint, RecentLearning, TageReference, UsefulLearning, UsefulWrite, Write, coordinate, decide, lfsr_next
+from suites.frontend.bpu.models.folded_history import folded_history_values, PHR_FOLD_LAYOUT
+from suites.frontend.bpu.tage.checker.semantic import TageSemanticChecker
+from suites.frontend.bpu.tage.transaction.types import TagePrediction, TageLookup
 
 PC, POSITION = 0x40000000, 6
 BASES = (Base(True, POSITION, False, False, 1), Base(), Base(), Base())
@@ -42,16 +42,19 @@ def learn(model, request):
 
 
 def test_algorithm_has_no_signal_driver_or_old_partial_model_dependency():
-    tree = ast.parse(Path('bpuverify/tage/model/semantic.py').read_text())
+    tree = ast.parse(Path('tage/model/semantic.py').read_text())
     assert [node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)] == [
-        'dataclasses', 'bpuverify.common.model.configuration', 'copy', 'bpuverify.common.model.folded_history']
+        'dataclasses', 'suites.frontend.bpu.models.configuration', 'copy', 'suites.frontend.bpu.models.folded_history']
     assert not any(isinstance(node, ast.Import) for node in ast.walk(tree))
 
 
 @pytest.mark.parametrize('history', (0, 1, 63, 64, 511, 512, 65535, (1 << 31) - 1))
 def test_history_parity_is_independent_of_driver_chunk_fold(history):
+    from suites.frontend.bpu.tage.model.semantic import VISIBLE_HISTORY_INDICES
     context = Context.from_recent(history)
-    assert context.folds == tuple(row['foldedHist'] for row in folded_history_values(history, len(PHR_FOLD_LAYOUT)))
+    assert context.folds == tuple(
+        row['foldedHist'] if index in VISIBLE_HISTORY_INDICES else 0
+        for index, row in enumerate(folded_history_values(history, len(PHR_FOLD_LAYOUT))))
 
 
 @pytest.mark.parametrize('pc,history,expected', ((PC, 0, (0, 0, 0)), (PC + 3, 0, (3, 0, 0)),

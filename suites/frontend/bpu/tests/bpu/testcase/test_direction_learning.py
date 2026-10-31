@@ -1,8 +1,8 @@
 """Strengthen existing FTQ-learning requirement with an autonomous TAGE oracle."""
 import pytest
 
-from bpuverify.bpu.case.direction_learning import check_direction_learning
-from bpuverify.bpu.coverage.direction_learning import DirectionCoverage
+from suites.frontend.bpu.bpu.case.direction_learning import check_direction_learning
+from suites.frontend.bpu.bpu.coverage.direction_learning import DirectionCoverage
 
 
 @pytest.mark.feature('BPU-INT-004')

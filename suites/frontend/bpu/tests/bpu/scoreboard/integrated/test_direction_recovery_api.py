@@ -4,8 +4,8 @@ import inspect
 import pytest
 from toffee import ScoreboardMismatch
 
-from bpuverify.bpu.case.abtb import recovery_cases
-from bpuverify.bpu.case.abtb.final_not_taken import run_final_not_taken_cycle
+from suites.frontend.bpu.bpu.case.abtb import recovery_cases
+from suites.frontend.bpu.bpu.case.abtb.final_not_taken import run_final_not_taken_cycle
 from tests.bpu.scoreboard.integrated.test_abtb_counter_coverage import full_path_trace
 from tests.bpu.scoreboard.integrated.test_shadow_selection_coverage import selection_trace
 

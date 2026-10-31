@@ -4,11 +4,11 @@ from dataclasses import replace
 import ast
 from pathlib import Path
 import pytest
-from bpuverify.bpu.model.joint_direction_learning import Program,PROFILES,RULES,tage_offer_values
-from bpuverify.bpu.coverage.joint_direction_learning import Coverage
-from bpuverify.tage.model.semantic import TageReference,Events as TageEvents,Feedback,Branch,Hint,Context as TageContext,Write,Entry
-from bpuverify.sc.model.semantic import ScReference,Events,Context,decide
-from bpuverify.sc.transaction.types import ScHistory,ScBaseBranch,ScBatchTraining,ScBranchFeedback
+from suites.frontend.bpu.bpu.model.joint_direction_learning import Program,PROFILES,RULES,tage_offer_values
+from suites.frontend.bpu.bpu.coverage.joint_direction_learning import Coverage
+from suites.frontend.bpu.tage.model.semantic import TageReference,Events as TageEvents,Feedback,Branch,Hint,Context as TageContext,Write,Entry
+from suites.frontend.bpu.sc.model.semantic import ScReference,Events,Context,decide
+from suites.frontend.bpu.sc.transaction.types import ScHistory,ScBaseBranch,ScBatchTraining,ScBranchFeedback
 
 pytestmark=pytest.mark.toffee_functional_coverage(False)
 
@@ -119,7 +119,7 @@ def test_no_table_can_be_silently_omitted_from_actual_offer_comparison(count):
 
 def test_committed_memory_direct_layout_has_every_new_read_only_TAGE_port():
     import yaml
-    from bpuverify.bpu.bundle.tage_semantic import HISTORY_PORTS
+    from suites.frontend.bpu.bpu.bundle.tage_semantic import HISTORY_PORTS
     root=Path(__file__).resolve().parents[3]
     layout=yaml.load((root/'dut/bpu/BpuDut_offset.yaml').read_bytes(),Loader=yaml.CSafeLoader)
     names={r['name'] for field in ('variables','signals') for r in layout.get(field,())}
@@ -154,7 +154,7 @@ def test_completed_program_only_awards_its_own_joint_obligations(profile):
 
 def test_new_case_uses_semantic_operations_not_clock_edges_or_raw_IO():
     import json
-    path=Path(__file__).resolve().parents[3]/'bpuverify/bpu/case/joint_direction_learning.py'
+    path=Path(__file__).resolve().parents[3]/'bpu/case/joint_direction_learning.py'
     tree=ast.parse(path.read_text())
     names={n.id for n in ast.walk(tree) if isinstance(n,ast.Name)}|{n.attr for n in ast.walk(tree) if isinstance(n,ast.Attribute)}
     assert not names&{'FallingEdge','RisingEdge','ClockCycles','gather','create_task','sleep','set_','get'}

@@ -20,8 +20,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from tools.run_vagq_exhaustive import atomic_json, digest
-from vagqverify.maskgen import reference as candidate
-from vagqverify.qualification.rvv_destination import Instruction
+from suites.vector.vagq.maskgen import reference as candidate
+from suites.vector.vagq.qualification.rvv_destination import Instruction
 
 
 EMUL = ((5, Fraction(1, 8)), (6, Fraction(1, 4)), (7, Fraction(1, 2)),
@@ -160,7 +160,7 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     counts, details = qualify(candidate, tuple(configurations()))
     atomic_json(out / 'architectural-checks.json', details)
-    old_path = out.parent / 'before/vagqverify/maskgen/reference.py'
+    old_path = out.parent / 'before/maskgen/reference.py'
     old = load_old(old_path)
     # Fixed architectural witnesses; no DUT samples or generated tables.
     witnesses = ((2, 2, 0, Fraction(1), 3, 4),
@@ -180,8 +180,8 @@ def main():
             expected='ACCEPTED' if expected_legal else 'REJECTED', counts=result))
     assert all(item['result'] == item.get('expected', 'REJECTED') for item in mutations)
     atomic_json(out / 'mutation-results.json', mutations)
-    for name in ('vagqverify/qualification/rvv_destination.py', 'tests/maskgen/test_architectural_qualification.py',
-                 'tools/qualify_maskgen_semantics.py', 'vagqverify/maskgen/reference.py'):
+    for name in ('qualification/rvv_destination.py', 'tests/maskgen/test_architectural_qualification.py',
+                 'tools/qualify_maskgen_semantics.py', 'maskgen/reference.py'):
         target = out / 'sources' / name
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(ROOT / name, target)

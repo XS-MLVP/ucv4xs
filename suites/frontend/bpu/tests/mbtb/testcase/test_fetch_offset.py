@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import pytest
 
-from bpuverify.mbtb.checker.assertions import assert_filtered_raw_hit
-from bpuverify.mbtb.checker.assertions import assert_vector_hit
-from bpuverify.mbtb.checker.assertions import train
-from bpuverify.mbtb.case.definitions import CONDITIONAL
-from bpuverify.mbtb.case.definitions import LATE_START_PC
+from suites.frontend.bpu.mbtb.checker.assertions import assert_filtered_raw_hit
+from suites.frontend.bpu.mbtb.checker.assertions import assert_vector_hit
+from suites.frontend.bpu.mbtb.checker.assertions import train
+from suites.frontend.bpu.mbtb.case.definitions import CONDITIONAL
+from suites.frontend.bpu.mbtb.case.definitions import LATE_START_PC
 
 
 @pytest.mark.feature("BPU-MBTB-009")
