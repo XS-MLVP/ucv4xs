@@ -14,6 +14,9 @@
 - [十工程布局迁移与 Pin Schema，2026-10-31](suite-layout-audit-20261031.md)：IFU/LSQ/LSU/MMU/DCache/Sbuffer/VAGQ 的根 fixture、pin schema、原生访问收口与真实判定。
 - [目录、清理与 Skill 复核，2026-10-31](structure-skill-review-20261031.md)：保留 Python 命名空间的取舍，撤回“端口别名等于事务迁移”的错误标准，清理清单和技能合法性检查。
 - [工程根命名空间重构，2026-10-31](suite-namespace-refactor-20261031.md)：删除十工程 *verify/common 外壳，修复 runner、资源锚点、安装包、反向依赖，逐 nodeid 对账与真实回归结果。
+- [提交后语义修复，2026-11-01](semantic-boundary-repair-20261101.md)：检查点提交/推送、默认多 worker 收集与 cwd、原生别名审计盲区、接受与完成身份的正反对照。
+- [事务边界与已登记漏检修复，2026-11-01](transaction-boundary-repair-20261101.md)：Sbuffer 双 DUT 的框架 Driver/Monitor、零接受/超时、写回 UID 与响应/重试、同字节竞争和 CMO 生产者时序；LSQ 显式 fixture 合同。
+- [全仓事务/迁移适配目标，2026-11-01（进行中）](transaction-goal-20261101.md)：十工程/132 DUT 的完整范围、冻结基线、IFU 逐 DUT 适配与未完成项；不沿用旧目标的过强完成结论。
 - [跨模块假阴性总结，2026-10-26](false-negatives-20261026.md)：案例矩阵、状态快照、诊断树和历史证据；它不是 skill 方法正文。
 
 旧 skill 名称仅保留短导航以兼容已有引用。方法文件可按路径读取，不代表已向工具注册或自动加载。新仓库的维护规则见 [维护与验收](../maintenance.md)。

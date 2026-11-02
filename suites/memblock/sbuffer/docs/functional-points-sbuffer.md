@@ -4,11 +4,13 @@ Sbuffer 是 MemBlock 中位于 StoreQueue 与 DCache 之间的 16 行写合并�
 人类可读的微架构语义，再映射到用例和覆盖 bin。子块 `SbufferData` 的语义见
 [functional-points-sbuffer-data.md](functional-points-sbuffer-data.md)。
 
-源码基线 `kunminghu-v3 @ 893e1580`；RTL 为 `../../soc-split/rtl/Sbuffer.sv` 原样副本。
-Picker 只导出一份 `Sbuffer` DUT（内部保留真实 `SbufferData`），导出参数含
+当前基线为 `public-893e1580b` / DefaultConfig；从完整香山生成 RTL 后提取真实实例闭包，
+由工程 `ucv.json` 声明 Sbuffer/SbufferData top。旧报告的 soc-split 路径仅属于历史证据。
+顶层 `Sbuffer` DUT 内部保留真实 `SbufferData`，工程另有独立 SbufferData DUT；顶层导出参数含
 `--rw mem_direct -w memory-direct.fst -c`；不启用 VPI、不启用 internal-cfg。运行时
-不调用 `SetWaveform`，因此 trace 能力已编译但默认不产生波形；也不写逐周期信号/事务
-dump。
+不调用 `SetWaveform`，但生成 harness 的 `$dumpfile/$dumpvars` 可能产生初始化/运行期
+副作用，因此在执行期临时 cwd 隔离；这不是“已经实测零 dump I/O”的证明。不写逐周期
+信号/事务 dump。
 
 ## 1. 结构与职责
 
@@ -137,10 +139,16 @@ Mux1H。
 - `csrCtrl.sbuffer_timeout` 决定行超时；`force_write` 降低替换阈值。
 - 未初始化/已释放行的 data 不比较；只比较模型中记录为有效的字节。
 - `perf_*` 输出只作活动见证，不作为功能正确性答案。
-- 波形默认关闭；诊断需要时显式传 `waveform_filename` 并单独保存。
+- 不主动请求波形；临时 cwd 隔离生成 harness 的默认副作用，不据此宣称零 dump I/O。
 
 ## 5. 当前状态
 
-- 16 个顶层用例全部 PASS；功能覆盖 8 组 100%；DUT 行 12648/13191（95.88%）、
-  branch 2690/2724（98.8%）、toggle 70275/85706（82.0%）；剩余缺口见 known-issues。
-- 覆盖率分析与补例闭环见 `docs/reports/`。
+- 历史 2026-10-24 的 16 个顶层用例 PASS；当时功能覆盖 8 组 100%、DUT LCOV 行
+  12648/13191（95.88%）、branch 2690/2724（98.8%）、toggle 70275/85706（82.0%）。
+  这些数字保留在原基线/源码/运行，不作为当前充分性或覆盖闭环凭据；历史独立审计还
+  发现零接受、排空超时、同字节竞争等未检问题，见 `docs/reports/`。
+- 2026-11-01 的事务修复将两个 DUT 接入框架 Driver/Monitor；新增 accepted-edge、
+  model-owned UID/尝试、响应关联与 teardown 检查，补合法原生/错误 bench 控制。
+  最新运行、适用合同与未证明范围见
+  [本轮事务修复](../../../../docs/lessons/transaction-boundary-repair-20261101.md)。
+- 同块高槽、顶层 toggle/分支及系统排序/波形 I/O 边界未因此关闭；见 known-issues。

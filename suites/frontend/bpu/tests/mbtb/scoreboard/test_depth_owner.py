@@ -4,7 +4,7 @@ from dataclasses import replace
 
 import pytest
 
-from suites.frontend.bpu.mbtb.model.depth import expected_mbtb_depth_one_states
+from suites.frontend.bpu.mbtb.model.depth import expected_mbtb_depth_one_states,depth_owner_plan
 from tests.mbtb.scoreboard.test_depth_model import prepared
 
 
@@ -37,3 +37,7 @@ def test_an_unmatched_payload_is_not_invented_by_request_way_initialization():
     result = expected_mbtb_depth_one_states(source, 0, 1, (0x4000A340, 0x4010B340), (0, 1))
     assert result[1]['entries'][0] == source[1]['entries'][0]
     assert result[1]['meta_entries'][0][0] == source[1]['meta_entries'][0][0]
+
+
+def test_default_config_input_prefix_keeps_retained_owner_distinct_from_stale_nomination():
+    assert depth_owner_plan()==dict(owner=3,peer=2,stale_nomination=1,depth=1)

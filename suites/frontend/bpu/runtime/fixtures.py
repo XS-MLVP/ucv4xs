@@ -10,6 +10,15 @@ from toffee import XCommClockBackend
 from suites.frontend.bpu.runtime.dut import DutFactory
 
 
+async def close_agent(agent,request,*,checked):
+    if checked:
+        reports=getattr(request.node,'_bpu_body_reports',{})
+        check=not any(reports.get(phase) in {'failed','skipped'} for phase in ('setup','call'))
+        await agent.aclose(check=check)
+    else:
+        await agent.aclose()
+
+
 @pytest.fixture
 def dut_factory(request, tmp_path, monkeypatch):
     # Native $dumpfile is process-cwd relative even when tracing is disabled.
@@ -28,6 +37,7 @@ def agent_fixture(
     agent_type: type[Any],
     *,
     max_batch_ticks: int,
+    checked_close: bool = False,
 ):
     """Create one function-scoped native DUT/Execution/agent fixture."""
 
@@ -43,7 +53,7 @@ def agent_fixture(
                 try:
                     yield agent
                 finally:
-                    await agent.aclose()
+                    await close_agent(agent,request,checked=checked_close)
         finally:
             # Execution releases ownership; its caller owns the backend itself.
             backend.close()

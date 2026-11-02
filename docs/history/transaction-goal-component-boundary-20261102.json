@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "state": "gate-leak-fixed-production-followup-recorded-many-real-couplings-still-open",
+  "scope": "The unchanged ten-suite/132-DUT goal, not a narrower static-cleanup task",
+  "implementation": {
+    "path": "scripts/audit-suite-layout.py",
+    "behavior": "Separate component_accesses/component_level_cases for explicit owner driver/ports/model/monitor/checker/reference/scoreboard and private encoding/timing helpers. Recognizes conventional fixture owners, simple plain owner aliases and constant getattr; does not classify arbitrary returned transactions or standalone independent reference models as the agent's mutable state.",
+    "boundary": "A conservative syntax guard, not full dataflow or semantic certification. Existing pin_fields/signal_operations are unchanged; existing infrastructure/selftest directory filters are not broadened. Missing dynamic aliases must still be audited through actual call chains."
+  },
+  "controls": {
+    "path": "tests/test_suite_layout.py",
+    "red": {"output": "results/ucv-goal-component-gate-red-20261102.xml", "counts": {"FAIL": 10}, "boundary": "Ten synthetic functional bodies using logical driver keys, ports, owner model, private encoding/timing or aliases were incorrectly reported no-static-leak-found. All reach the intended boundary assertion, not setup errors."},
+    "first_green_attempt": {"output": "results/ucv-goal-component-gate-green-20261102.xml", "counts": {"PASS": 45, "FAIL": 1}, "boundary": "New ten negative controls and five positive/alias controls pass, but an existing Sbuffer transaction-only assertion correctly exposes its model-driven functional loop. This is NOT a full green gate."},
+    "root": {"output": "results/ucv-goal-component-gate-root-v1-20261102.xml", "counts": {"PASS": 256, "FAIL": 1}, "remaining_failure": "tests/test_suite_layout.py::test_sbuffer_functional_tests_remain_transaction_only", "boundary": "The actual functional source, not the assertion or its classification, must be corrected after frozen collection receipts are audited. No exclusion or new selftest exemption was used."}
+  },
+  "strict_report": "results/ucv-goal-component-boundary-20261102.json",
+  "owner_infrastructure_counts": {"bpu": 24, "ftq": 4, "icache": 370, "ifu": 0, "dcache": 0, "lsq": 121, "lsu": 0, "mmu": 53, "sbuffer": 1, "vagq": 32},
+  "strict_exit": 1,
+  "examples": [
+    {"path": "suites/frontend/icache/tests/databank/testcase/test_storage.py", "issue": "Direct read/write level set with raw logical dictionaries, private edge timing and manual model.write are still functional coupling, even without io_* or .dut."},
+    {"path": "suites/memblock/sbuffer/tests/sbuffer/test_sbuffer.py", "issue": "test_timeout_writeout_all_lanes uses env.model.lines to decide the response-driving loop. Its four explicit enqueue inputs must determine the promised responses, with bounded waits and independent no-extra/empty tail assertions."},
+    {"path": "suites/frontend/ftq/tests/commit_queue/test_commit_stream.py", "issue": "Direct checker.depth access must be replaced by a real immutable transaction completion receipt, not a renamed checker forwarding shell."}
+  ],
+  "preserved_running_scopes": {
+    "mbtb": {"output": "results/ucv-goal-mbtb-lookup-source-integrated-v3-20261102", "source_sha256": "08a1a07950f8b1287ef15c5ecd9203c73db8c81e8615886101a263735df8775d", "source_files": 2496},
+    "ten_suite_collection": {"output": "results/ucv-goal-collect-mbtb-lookup-source-v3-20261102", "source_sha256": "0078a318118c00ea641132e2c62f1b6f0d0984593b6d1b91c21c5d79e6b7a880", "source_files": 4135},
+    "verification": "Every source file still matched when checked during this work. Actual current receipts exclude root scripts/ and tests/, so the gate change does not change those running scopes. Frozen suite sources were not edited. Await completion notification and full evidence audit, do not extrapolate results."
+  },
+  "runtime_prototypes_only": {
+    "mbtb": {"implementation": "/tmp/opencode/mbtb_disposition_overlay.py", "native": "results/ucv-goal-mbtb-disposition-native-prototype-v5-20261102.xml:15 PASS", "previous_native": "results/ucv-goal-mbtb-disposition-native-prototype-v4-20261102.xml:15 PASS", "original_lifetimes_before_v5_reset_wait_change": "results/ucv-goal-mbtb-disposition-original-lifetimes-prototype-20261102.xml:20 PASS", "semantics": "Typed reset/filter terminal distinct from effective prediction response. Source ledger has separate output sample and actual SDK comparison delivery witnesses; custom expected cannot waive wrong UID/reason/drop-terminal. No SDK modification; compare hook belongs to a domain Scoreboard subclass. A bypassed comparison must fail finish even if SDK says completed. V5 long reset wait wakes on a protocol failure and uses public Scoreboard.drain to observe/propagate it before monitor overflow; wrong UID/reason/drop-terminal controls now await reset directly and receive the identical failure within32ticks, without manually cancelling a background reset or changing SDK counters.", "limits": "Not merged production code or complete MainBTB certification. Filtered preview is not verified metadata ancestry; source/control/lifetime completion still requires final production audit. Earlier v2 negative-control attempts continued the long reset after the deliberate failure and had queue-overflow errors; those XMLs are retained, not counted as hardware bugs or passing controls."},
+    "icache_closed_level": {"implementation": "/tmp/opencode/icache_closed_level_overlay.py", "native": "results/ucv-goal-icache-closed-level-prototype-green-20261102.xml:1 PASS", "semantics": "A closed guard runs before inherited SDK send can claim any released input; not yet merged."},
+    "databank": {"red": "results/ucv-goal-icache-databank-runtime-red-20261102.xml:8 FAIL", "red_boundary": "Two normal-body漏检 controls (default read not checked and wrong original write with no readback), two reset/MBIST ownership controls, three invalid reset counts DID_NOT_RAISE and one float reset TypeError after controls changed. These are framework gaps, not new RTL defects.", "implementation": "/tmp/opencode/icache_databank_observation_overlay.py", "green": "results/ucv-goal-icache-databank-continuous-prototype-v2-20261102.xml:10 PASS", "green_boundary": "Original eight controls plus native same-payload/distinct UID/concurrent-reader serialization and unplanned-read controls. Uses SDK claims/lossless subscriptions and independent input plans before driving. First prototype attempt10 FAIL was its missing DataBankModel geometry constructor, retained without runtime credit.", "limits": "Not merged. MBIST source/storage oracle, all control ABI/ownership, accepted reset/cancel semantics, immutable full ledger and checked fixture close/finish remain incomplete; no full DataBank migration credit."}
+  },
+  "mbist_phase": {"evidence": "results/ucv-goal-icache-databank-bist-phase-v2-20261102.xml:1 PASS", "actual": "Two-level req offers at540/542 produce ack542/544 and first full read word at546 (66 bits including padding bit0). Runtime adaptation must not equate ack with read response or merge held identical payload offers.", "earlier_probe": "v1 FAIL because write supplied addr=0x33 but addr_rd=0. Generated single-port SRAMTemplate_4 drives physical MBIST address from addr_rd; fixing both write address leaves to0x33 makes the phase control valid. This is a probe/contract-scope discovery, not sufficient evidence for a new RTL defect; generic interface prose and actual single-port address contract still need reconciliation. No source field/domain was narrowed to hide it."},
+  "checks": {"skills": "PASS:20 documents and locked framework exports", "assets": "PASS:10 suites/132 DUT/4803 publishable cached+untracked paths at this checkpoint. source_files is not a tracked-only count; later explicit Git cached review is separate.", "diff_check": "PASS"},
+  "production_followup": {
+    "mbtb": "docs/history/transaction-goal-mbtb-disposition-index-20261102.json",
+    "sbuffer": "docs/history/transaction-goal-sbuffer-timeout-source-20261102.json",
+    "icache_closed_send": "docs/history/transaction-goal-icache-level-ownership-20261102.json:closed_send_production_fix",
+    "icache_continuous_storage": "docs/history/transaction-goal-icache-databank-continuous-20261102.json:v4 full401PASS3XFAIL and same-source seed1 directed177PASS1XFAIL audited; original8native red now8PASS. Current v5 full407PASS3XFAIL and same-source DataBank129PASS audited,22native continuous controls include6interleave expansion. DataBank functional owner coupling19 removed without reclassification, ICache351 remain.",
+    "root": "results/ucv-goal-component-gate-root-v2-20261102.xml:257 PASS after fixing the actual Sbuffer source, no assertion/exemption change",
+    "root_continuous_followup": "results/ucv-goal-databank-continuous-root-v2-20261102.xml:266PASS with9new fixture/report discrimination controls; strict transaction gate still exit1, results/ucv-goal-databank-continuous-boundary-v1-20261102.json (ICache351owner/BPU24, other debts retained)",
+    "current_static": "results/ucv-goal-component-boundary-production-v2-20261102.json:FTQ0/Sbuffer0 owner, BPU24/ICache370/LSQ121/MMU53/VAGQ32 remain; old pin/signal debt unchanged. FTQ full905PASS2XFAIL and seed1 directed57PASS subsequently audited, docs/history/transaction-goal-ftq-receipt-boundary-20261102.json.",
+    "collection": "48809 pre-fix ordered cases audited; no current post-fix total invented. All former running scopes above ended before source changes. Former fullMBTB was intentionally interrupted on proven history-scan cost, not completed."
+  },
+  "remaining_at_original_gate_checkpoint": [
+    "Audit completed MainBTB full and ten-suite collection receipts, including all original nodeids/order and true failures, before changing frozen suite sources.",
+    "Merge the verified reset/filter and closed-level guard production fixes with legal and distinguishing negative controls; source-stable native regressions still required.",
+    "Correct Sbuffer's model-driven functional loop, rerun full root regression, and continue the full per-DUT transaction migration rather than weakening or renaming the gate.",
+    "Resolve all reported infrastructure coupling through genuine agent/transaction lifecycles and independent receipts; this report is not a semantic implementation or all-goal completion."
+  ]
+}

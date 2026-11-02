@@ -3,7 +3,12 @@
 按 [退出与残余方法](../../../../skills/design/closure-and-residuals.md) 在交付时逐项
 对账。本文件是**验收合同**，不是结果宣传：结论受基线、参数、观察点与运行范围约束。
 
-## 1. 验收范围
+**2026-11-01更新**：事务适配审计新增真实缺陷R-14（carry被误标cross并错用块1 FTQ），
+当前开放阻塞项为R-13、R-14；详见[缺陷复现](bugs/instr-boundary-carry-ftq-owner.md)及
+[活动事务合同](transaction-adapters.md)。当前框架为仓库锁定的uc-toffee2.1.0，以下
+范围/结果表保留2026-10-30检查点的环境、判定与覆盖边界，不能当作当前源码验收收据。
+
+## 1. 验收范围（2026-10-30历史检查点）
 
 | 项目 | 值 |
 |---|---|
@@ -75,10 +80,12 @@
 | R-11 | `isBackendException` / `hasSatpFlush` 的语义消费 | 当前 DUT 边界外 | IFU 只负责把 block-0 标记挂到第一条指令；IBuffer/后端的 `satpFlushFirstFetchFault` 等消费不在本层 | 逐拍比较 + 三组定向标记用例已通过；消费逻辑见 `ibuffer/Bundles.scala:150` | 由 IBuffer/后端承接；“后端异常 + 跨页异常同拍”组合仍可补 | 否 | 转发已验证，消费未验证 |
 | R-12 | `toIBuffer.pc/isLastInFtqEntry/prevIBufEnqPtr` 未导出 | 观察点缺失 | 无法直接比较，只能间接覆盖 | 同 §1/§5 | 需要导出点时补直接观察；当前用 foldpc/指令字/ftqPtr 间接覆盖 | 否 | 间接覆盖，明确不称直接验证 |
 | R-13 | `FrontendTrigger` 只比较 `tdata2[49:0]`，而 CSR `tdata2` 是 `RW(63,0)` 的 64 位字段 | **真实 RTL 缺陷（`confirmed-rtl`）** | tdata2 高位被写入却被忽略：EQ/GE 产生虚假 breakpoint/debug，LT 漏命中；只影响 tdata2 ≥ 2^50 的配置 | 复现与根因见 [FrontendTrigger tdata2 宽度](bugs/frontend-trigger-tdata2-width.md)；`test_tdata2_above_the_address_space_cannot_equal_a_fetch_pc`、`test_tdata2_above_the_address_space_is_greater_for_less_than` 两条 FAIL；EQ 在 `tdata2=2^50+pc` 时 lane 10 命中，LT 在 `tdata2=2^50` 时 36 lane 全不命中 | 修复方向二选一：(a) 比较全 64 位（PC 零扩展）；(b) CSR 把 tdata2 高位做成 WARL 只读 0，并在合同中声明只比较低 50 位；修复后重跑两条用例 | **是** | RISC-V Sdtrig 语义 + `Tdata2Bundle.ALL = RW(63,0)`；模型原先把 tdata2 掩码到 50 位，已改为全宽以暴露差异 |
+| R-14（2026-11-01新增） | carry首槽误标cross，使用块1 FTQ身份 | **真实RTL缺陷** | 正常invalidTaken恢复后指令字/PC/endOffset正确但FTQ归属错误 | [正常/错误高半字对照](bugs/instr-boundary-carry-ftq-owner.md)，原600窗口有5个反例 | 只允许真实起始cross；复核carry重建后归属，重跑leaf/原随机/顶层反例 | **是** | 独立指令起始语义 + 真实两取指恢复；不以修改oracle或扩大XFAIL关闭 |
 
-“不适用”与“成本声明”不等于已验证。本轮唯一**阻塞**项是 R-13（`blocking=true`,
+“不适用”与“成本声明”不等于已验证。2026-10-30检查点唯一**阻塞**项是 R-13（`blocking=true`,
 `acceptance=open`）；R-08 是限定声明范围的**披露**项（`accepted-limited`），它不阻塞
 本层判定，但阻塞“IFU 已完整交接 51 位 PC”这一更强的结论。
+2026-11-01新增R-14后，当前阻塞集合为R-13/R-14，旧检查点结果不重标。
 
 ### 观察点精度扫描（按 [观察点精度方法](../../../../skills/design/observation-precision.md)）
 

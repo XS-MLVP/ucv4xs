@@ -15,6 +15,10 @@
 
 当前优先交付结构整合版，以目录、配置、隔离入口、资产边界和编排层检查作为阶段门槛；已知 FAIL/XFAIL/SKIP 和未完成的 BPU 适配保留在 [阶段状态](status.md)，不阻塞结构版提交。`v0.1.0-structure` 只标识这一阶段，不能作为完整迁移或硬件验收标签。
 
+多人或AI接续开发以 [协作目录约定](../CONTRIBUTING.md) 为统一入口，阶段交接见
+[2026-11-02 检查点](collaboration-checkpoint-20261102.md)。发布前审查 Git 实际跟踪及拟新增
+文件，不把整个工作目录压包；commit/tag 应由实际发布操作确定，文档不预先编造版本哈希。
+
 后续完整迁移与重建验收凭据应同时关联当前验证源码提交、运行报告哈希、完整工具版本、RTL/native 哈希、已登记失败及差异分析。只有证据齐备后才建立验收标签。常规代码测试：
 
 ```sh
@@ -51,6 +55,13 @@ P.p_* / P.io(...) 别名仍是 pin-level，不能用隐藏端口字面量替代�
 2026-10-31 清理了 22 个松散仿真文件和 596 个缓存目录，297830621 字节，见
 [删除清单](history/storage-reclamation-20261031.json)。此前过宽的迁移结论及修正见
 [结构与 skill 复核](lessons/structure-skill-review-20261031.md)。
+
+2026-11-01 补充：旧 pin expressions 不计 raw_dut 或信号字典 .Set 等访问，不能据其
+零命中声称 Sbuffer 已完成事务适配。审计现以 signal_operations 另列这些表达式，七个
+工程仍需继续收口。另：原生 scratch cwd 在执行期 fixture 中切换，不在
+pytest_configure 改控制进程 cwd；默认无显式选择的单/多 worker 收集必须有回归，
+防止启动 worker 后从临时目录收集到零项。见
+[本轮语义修复](lessons/semantic-boundary-repair-20261101.md)。
 
 ## 残余登记进入运行报告
 

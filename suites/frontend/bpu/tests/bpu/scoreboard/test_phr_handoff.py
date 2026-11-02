@@ -11,12 +11,16 @@ async def test_coherent_phr_scope_restores_normal_transactions(bpu_agent, body_f
     checker = BpuPhrChecker(scope=dict(body_failure=body_failure))
     sentinel = AssertionError('deliberate scope body failure')
     try:
-        async with bpu_agent.observe_phr(checker):
+        async with bpu_agent.observe_phr(checker) as observation:
             await bpu_agent.reset(PC)
             coherent = await bpu_agent.next_transaction(start_pc=PC)
-            assert coherent.meta.perf.start_pc == PC
+            assert coherent.prediction.start_pc == PC
+            assert coherent.meta.perf is None and coherent.prediction.target is None
+            assert coherent.uid is not None and coherent.epoch is not None
             if body_failure:
                 raise sentinel
+            await bpu_agent.set_ready(prediction=False, meta=True)
+            await observation.drain()
     except AssertionError as error:
         assert body_failure and error is sentinel
     else:
@@ -24,8 +28,9 @@ async def test_coherent_phr_scope_restores_normal_transactions(bpu_agent, body_f
     # A new epoch exercises the newly created ordinary monitors rather than
     # reading buffered observations from the previous coherent scope.
     await bpu_agent.reset(PC)
+    await bpu_agent.set_ready(prediction=True, meta=True)
     ordinary = await bpu_agent.next_transaction(start_pc=PC)
-    assert ordinary.meta.perf.start_pc == ordinary.prediction.start_pc == PC
+    assert ordinary.prediction.start_pc == PC and ordinary.meta.perf is None
     assert ordinary.prediction.taken == coherent.prediction.taken == 0
     assert ordinary.meta_tick > coherent.meta_tick
     assert checker.summary()['checks']['failed'] == 0

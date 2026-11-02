@@ -13,8 +13,8 @@ from suites.memblock.lsq.replay.types import Cause
 @pytest.mark.parametrize("distance",(127,128))
 @pytest.mark.parametrize("lane",range(3))
 @pytest.mark.parametrize("wake",("pool_credit","address_prefix"))
-async def test_RAW_capacity_original_slot_waits_full_boundary_and_accepts_either_real_source(replay,start,distance,lane,wake):
-    env=replay
+async def test_RAW_capacity_original_slot_waits_full_boundary_and_accepts_either_real_source(sq_replay,start,distance,lane,wake):
+    env=sq_replay
     end=start+distance
     req=env.request(Cause.RAW_CAPACITY,rob=20,lq=10,sq=end,tag=85)
     await env.cycle({lane:req},raw_full=True,address_ready=SqPtr.encode(start),dequeue=SqPtr.encode(start),upper=SqPtr.encode(start+64))

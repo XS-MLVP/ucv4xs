@@ -141,12 +141,13 @@ def test_residuals_are_registered_outside_the_pass_fail_statuses():
         for found in RESIDUAL_ID.findall(trace["residual"]):
             assert found in ids, (feature["id"], found)
 
-    # The one blocking residual is the tdata2 width defect; its point is the
-    # failing one.  Keeping the mapping explicit stops a FAIL from being
+    # Both confirmed defects have an explicit point mapping. This stops FAILs
+    # from being
     # "explained away" by an unrelated residual.
     blocking = [row for row in residuals if row["blocking"]]
-    assert [row["id"] for row in blocking] == ["R-13"], blocking
+    assert [row["id"] for row in blocking] == ["R-13", "R-14"], blocking
     assert "IFU-TR-002" in blocking[0]["features"]
+    assert set(blocking[1]["features"]) == {"IFU-IB-005", "IFU-TOP-005", "IFU-TOP-011"}
 
 
 @pytest.mark.feature("IFU-ENV-003")

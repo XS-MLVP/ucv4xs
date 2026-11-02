@@ -12,7 +12,7 @@ def expected_mbtb_feedback(transaction, *, branch_count=8):
     # The whole-chip training port carries the four trainable MainBTB ways
     # per alignment; the VictimBTB snapshot is a prediction-only output and
     # has no metadata leaf to drive.
-    return {'ready':1,'pc':transaction.pc,'next_pc':(transaction.pc//ALIGN_HALFWORDS+1)*ALIGN_HALFWORDS,
+    return {'ready':1,'pc':transaction.pc,'next_pc':((transaction.pc//ALIGN_HALFWORDS+1)*ALIGN_HALFWORDS)%(1<<49),
             'meta_entries':tuple(tuple(deepcopy(entry) for entry in bank[:MAIN_WAYS])
                                  for bank in transaction.meta_entries),
             'resolved':tuple(None if branch is None else {

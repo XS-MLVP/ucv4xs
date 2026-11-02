@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "scope": "DefaultConfig MainBTB cleanup, complete four-way observations, input-planned ownership and three stale pure-control groups; not whole MainBTB/BPU acceptance",
+  "state": "cleanup-integrated-v3-audited-other-mainbtb-transaction-work-remains",
+  "baseline": {
+    "output": "results/ucv-goal-mbtb-before-transactions-20261102",
+    "counts": {"PASS": 2257, "FAIL": 229},
+    "native": {"PASS": 101, "FAIL": 24},
+    "pure": {"PASS": 2156, "FAIL": 205},
+    "source_sha256": "69771d1a331c40b9c4cccfbc0cd254b12d55065e8178b875af8eddfc7a75b2b1",
+    "source_stable": true,
+    "source_files_matched_before_implementation": true,
+    "pure_failures": {"entry_keys_model": 192, "cleanup_model": 9, "depth_model": 4},
+    "native_failures": {"cleanup_overlap": 12, "depth_owner": 1, "semantic_reference": 3, "shared_service": 4, "full_capacity_learning": 4},
+    "boundary": "This actual current baseline replaces neither the historical 86/39 native report nor any other DUT evidence; all FAILs retained without xfail or case removal."
+  },
+  "discriminating_red": {
+    "output": "results/ucv-goal-mbtb-four-way-cleanup-red-20261102.xml",
+    "counts": {"FAIL": 2},
+    "sha256": "594182ef90f51a310ae5313bcc7aeeeefb6274a941f338c59b859288a29c5dd2",
+    "causes": ["expected ports/before/after describe only two physical ways", "normalizer discards a legal two-active-port collision unless all four ways write"],
+    "green_same_probe": {"output": "results/ucv-goal-mbtb-four-way-cleanup-green-20261102.xml", "counts": {"PASS": 2}},
+    "boundary": "Pure observer/model controls, not native hardware or RTL mutation credit."
+  },
+  "changes": {
+    "owner_plan": "cleanup_way_plan uses two reset MbtbFourWayLru cells for declared input rows. Original/displacer allocate way3, replayed cold correction/extra allocate way2, keep2/clear3. Public metadata must match this plan, never select expected owners.",
+    "complete_geometry": "Four physical ways, four retained slots each. Keep every valid write and foreign-bank effect; inactive write payload is not fabricated as zero. A collision needs at least two active ports for observation, not all ways active.",
+    "zero_tag_stimulus": "The old 0x40000000 halfword PC base made tag=0 labels actually tag32768. The preparation now uses the raw-halfword 16-bit-tag period 1<<31 and independently checks the declared tag. All twelve original depth/dirty/identity programs and assertions remain, but physical input bytes intentionally change.",
+    "position_scope": "The same-align program with one later neighbor accepts positions0..14 for the actual sixteen-halfword alignment, rather than the stale0..6 MiniConfig window.",
+    "clear_attribute": "Explicit all-zero destination invalidation clears MainBtbEntry attribute as well as valid/tag/position/target. The old snapshot oracle retained branchType3 on the cleared Main way; now fixed-zero attribute has a pure assertion, not an ignored comparison.",
+    "pure_control_repairs": ["cleanup calls supply explicit keep/clear/neighbor ownership to the current signature", "entry-key tests no longer set both start-PC alignment and CFI-position alignment, which double-rotated the expected physical bank", "depth controls match the precise distinct-way rejection and cover all four owners/request-way pairs"],
+    "coverage_receipt": "Require full four-way schema and exactly two active writes, while keeping all prior effects/reference/metadata/consumer gates. New agreeing-but-invalid two-way and third-active-port receipts must still fail."
+  },
+  "v1": {
+    "output": "results/ucv-goal-mbtb-cleanup-four-way-v1-20261102",
+    "counts": {"PASS": 21, "FAIL": 12},
+    "source_sha256": "8b3348dbdb505f6c02feb2e7f11aa8fe2999282e463dbcbbb4d67bcf9f2b72eb",
+    "source_stable": true,
+    "first_cause": "All twelve native cases pass the full four-way collision/shadow checks and fail only cleaned.meta_entries[0][3].attribute.branchType expected3/actual0. Preserve this FAIL receipt; subsequent fix uses explicit zero-clear contract."
+  },
+  "v2": {
+    "output": "results/ucv-goal-mbtb-cleanup-models-v2-20261102",
+    "counts": {"PASS": 544, "FAIL": 12},
+    "source_sha256": "cd9e528e63bc838707ecdcb4e93c00698f455f53a5e09a5bb667f242b4900d18",
+    "source_stable": true,
+    "first_cause": "All native payload/shadow/readback/immutable-source/independent-reference obligations pass. Only Coverage.finish still asserts len(actual_dual.ports)==2. Replace with actual four-way schema plus exactly-two-active requirement, not removal of the guard."
+  },
+  "integrated_v3": {
+    "output": "results/ucv-goal-mbtb-cleanup-integrated-v3-20261102",
+    "counts": {"PASS": 2539, "FAIL": 12},
+    "native": {"PASS": 113, "FAIL": 12},
+    "pure": {"PASS": 2426},
+    "source_sha256": "0525f9fd75c4c8dd4b517727eba0f334efd2b0c7ee3270b11bd2fa928f28e807",
+    "source_stable": true,
+    "source_files_matched_at_audit_before_followup_changes": true,
+    "baseline_cases_preserved": 2486,
+    "removed": [],
+    "verdict_changes": {"FAIL_to_PASS": 217},
+    "new_selftests": {"PASS": 65},
+    "cleanup_native_cases": {"PASS": 12},
+    "audit": "results/ucv-goal-mbtb-cleanup-receipt-audit-v3-20261102.json",
+    "native_inputs": 125,
+    "artifacts_hash_checked": 3,
+    "build_files_hash_checked": 6,
+    "processor_hash_checked": true,
+    "native_build_unchanged": true,
+    "coverage_artifacts_complete": true,
+    "cleanup_complete": true,
+    "boundary": "Complete artifacts are not functional closure. Raw native inputs were cleaned by the runner. Later MBTB changes have a different source identity."
+  },
+  "rejected_hypothesis": {
+    "output": "results/ucv-goal-mbtb-retained-preparation-20261102.xml",
+    "counts": {"FAIL": 2},
+    "meaning": "The exploration incorrectly predicted four serial displacers were necessary to recycle a completed original shadow. These failures reject that hypothesis; do not call it an RTL/model bug or add unnecessary preparation traffic.",
+    "corrected_source_contract_controls": {"output": "results/ucv-goal-mbtb-retained-lifetimes-20261102.xml", "counts": {"PASS": 3}},
+    "basis": "WriteBuffer gives first non-dirty rank priority. A clean completed shadow can be reused immediately; four-dirty reservation and full-row eviction are separate contracts."
+  },
+  "required_remaining": [
+    "Audit the later complete MainBTB transaction regression; v3 closes only the cleanup subchain and stale pure controls, not the whole module.",
+    "Shared-service and depth/semantic followups are recorded in transaction-goal-mbtb-transactions-20261102.json. Keep genuine captured metadata, capacity-safe dual service, complete-field controls and remaining ordinary functional FAILs.",
+    "Audit remaining MainBTB transaction lifetimes and all other BPU/ICache, MemBlock/VAGQ and final all-repository obligations."
+  ]
+}

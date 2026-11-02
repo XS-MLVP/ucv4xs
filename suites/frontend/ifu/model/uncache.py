@@ -35,7 +35,18 @@ SEND = "send"
 WAIT_RESP = "wait_response"
 
 
-@dataclass
+def _unsigned(value, width, name):
+    if not isinstance(value, int) or not 0 <= value < (1 << width):
+        raise ValueError(f'{name} must be an unsigned {width}-bit integer')
+
+
+def _address(value, name):
+    _unsigned(value, 48, name)
+    if value & 1:
+        raise ValueError(f'{name} must be a 2-byte aligned byte address')
+
+
+@dataclass(frozen=True)
 class Inputs:
     flush: int = 0
     req_valid: int = 0
@@ -52,8 +63,19 @@ class Inputs:
     from_denied: int = 0
     from_need_resend: int = 0
 
+    def __post_init__(self):
+        for name in ('flush', 'req_valid', 'req_is_mmio', 'is_first_instr', 'ifu_stall',
+                     'empty_after', 'to_ready', 'from_valid', 'from_corrupt',
+                     'from_denied', 'from_need_resend'):
+            _unsigned(getattr(self, name), 1, name)
+        _address(self.req_paddr, 'req_paddr')
+        _unsigned(self.req_pbmt, 2, 'req_pbmt')
+        _unsigned(self.from_data, 32, 'from_data')
+        if self.from_valid and self.from_denied and not self.from_corrupt:
+            raise ValueError('a denied bus response must also be corrupt')
 
-@dataclass
+
+@dataclass(frozen=True)
 class Outputs:
     req_ready: int
     resp_valid: int
@@ -64,6 +86,14 @@ class Outputs:
     to_paddr: int
     to_mem_back_mm: int
     to_mem_page_nc: int
+
+    def __post_init__(self):
+        for name in ('req_ready', 'resp_valid', 'resp_need_resend', 'to_valid',
+                     'to_mem_back_mm', 'to_mem_page_nc'):
+            _unsigned(getattr(self, name), 1, name)
+        _address(self.to_paddr, 'to_paddr')
+        _unsigned(self.resp_data, 32, 'resp_data')
+        _unsigned(self.resp_exception, 3, 'resp_exception')
 
 
 class UncacheModel:

@@ -176,13 +176,13 @@ async def test_top_level_branch_slot_and_source_priority_sweep(ftq_agent):
                             mispredict=0, flag=flag,
                             target=0x9300_0000 + (branch_slot - 1) * 0x100)))
                 await agent.drive_ifu_redirect(IfuRedirect(
-                    index, flag=flag, pc=pc, offset=branch_slot,
+                    index, flag=flag, pc=2 * pc, offset=branch_slot,
                     target=target, branch_type=1, ras_action=0, can_train=1))
                 await agent.step(1)
                 await agent.resolve_release()
             else:
                 await agent.drive_ifu_redirect(IfuRedirect(
-                    index, flag=flag, pc=pc, offset=0, target=target,
+                    index, flag=flag, pc=2 * pc, offset=0, target=target,
                     branch_type=1, ras_action=0, can_train=1))
                 await agent.step(1)
             await agent.finish_ifu_redirect()
@@ -262,7 +262,7 @@ async def test_ifu_resolve_hits_resident_entry_in_every_physical_slot(ftq_agent)
         # until both reports occupy the same entry.
         await agent.resolve_hold([resolve(slot, pc=pc, offset=1, mispredict=0)])
         await agent.drive_ifu_redirect(IfuRedirect(
-            slot, pc=pc, offset=2, target=0x8000_9000,
+            slot, pc=2 * pc, offset=2, target=0x8000_9000,
             branch_type=1, ras_action=0, can_train=1))
         await agent.step(1)
         await agent.resolve_release()
@@ -275,6 +275,7 @@ async def test_ifu_resolve_hits_resident_entry_in_every_physical_slot(ftq_agent)
         assert training is not None, slot
         positions = [branch.position for branch in training.branches]
         assert positions == [1, 2], (slot, positions)
+    await agent.drain_training()
 
 
 @pytest.mark.feature("FTQ-TOP-015")
@@ -301,6 +302,7 @@ async def test_same_cycle_same_index_lanes_merge_in_program_order(ftq_agent):
     assert [branch.position for branch in training.branches] == [0, 1, 2]
     assert [branch.target for branch in training.branches] == [
         0x9400_0000 + lane * 0x100 for lane in range(3)]
+    await agent.drain_training()
 
 
 @pytest.mark.feature("FTQ-TOP-015")

@@ -21,7 +21,6 @@ import random
 
 import pytest
 
-from suites.frontend.ifu.case_loader import load_case_module
 from suites.frontend.ifu.model import cenc
 from suites.frontend.ifu.model import pred_checker as pred_model
 from suites.frontend.ifu.model.boundary import BoundaryInput
@@ -47,45 +46,48 @@ def wrong_expand(word: int) -> Expansion:
 
 
 @pytest.mark.feature("IFU-ENV-002")
-def test_rvc_model_and_dut_reject_a_missing_register_remap(rvc_expander):
-    cases = load_case_module("tests/rvc_expander/test_rvc_expander.py", "cases_oracle_rvc")
+async def test_rvc_model_and_dut_reject_a_missing_register_remap(rvc_expander):
+    from suites.frontend.ifu.rvc_expander.checker import check_decoding
+    from suites.frontend.ifu.rvc_expander.types import DecodeRequest
     for word in (cenc.c_addi(10, 1), cenc.c_lw(8, 9, 0), cenc.c_slli(15, 3)):
         correct = expand(word)
         wrong = wrong_expand(word)
         assert correct.bits != wrong.bits, f"{word:#06x} no longer discriminates"
-        cases.check(rvc_expander, word, correct)  # DUT follows the correct model
+        request = DecodeRequest(word)
+        observed = (await rvc_expander.decode(request)).result
+        check_decoding(request, observed, correct)  # DUT follows the correct model
         with pytest.raises(AssertionError):
-            cases.check(rvc_expander, word, wrong)  # and rejects the wrong algorithm
+            check_decoding(request, observed, wrong)  # rejects the wrong algorithm
 
 
 @pytest.mark.feature("IFU-ENV-002")
-def test_boundary_model_and_dut_reject_one_instr_per_slot(instr_boundary):
-    cases = load_case_module("tests/instr_boundary/test_instr_boundary.py", "cases_oracle_ib")
+async def test_boundary_model_and_dut_reject_one_instr_per_slot(instr_boundary):
+    from dataclasses import replace
+    from suites.frontend.ifu.instr_boundary.checker import check_boundary
     wrong_starts = [True] * SLOTS  # every slot would be an instruction start
     for rvc in (0, 0b0101010101010101):
-        scene = cases.window(size0=32, taken=(0, 31), rvc=rvc, total_end=31)
+        scene = BoundaryInput(32, 0, 31, 0, rvc, 0, 0, 31)
         correct = boundary_starts(scene)
         assert correct != wrong_starts
         expected = boundary_predict(scene)
         # Build a wrong snapshot by trusting the "every slot starts" algorithm
         # for validity only; the DUT must disagree.
-        observed = cases.observe(instr_boundary)
-        bad = dict(observed)
-        bad["valid"] = tuple(int(value) for value in wrong_starts)
+        observed = (await instr_boundary.analyze(scene)).result
+        check_boundary(scene, observed)
+        bad = replace(observed, valid=tuple(int(value) for value in wrong_starts))
         with pytest.raises(AssertionError):
-            cases.check(instr_boundary, scene, observed=bad)
+            check_boundary(scene, bad)
         # Slot 1 starts an instruction exactly when slot 0 is compressed.
         assert expected.valid[1] == (1 if rvc & 1 else 0)
 
 
 @pytest.mark.feature("IFU-ENV-002")
-def test_pred_checker_model_and_dut_reject_accept_all_taken(pred_checker):
-    cases = load_case_module("tests/pred_checker/test_pred_checker.py", "cases_oracle_pc")
-    scene = cases.request(
-        cases.base_instruction(0, 0x1000),
-        cases.base_instruction(1, 0x1004, branch_type=pred_model.DIRECT, is_pred_taken=0),
-        cases.base_instruction(2, 0x1008),
-    )
+async def test_pred_checker_model_and_dut_reject_accept_all_taken(pred_checker):
+    from dataclasses import replace
+    from suites.frontend.ifu.pred_checker.checker import check_prediction
+    scene = pred_model.Request(instrs=(pred_model.Instr(valid=1, pc=0x1000),
+        pred_model.Instr(valid=1, pc=0x1004, branch_type=pred_model.DIRECT),
+        pred_model.Instr(valid=1, pc=0x1008)) + (pred_model.Instr(),) * (pred_model.SLOTS - 3))
     strict = pred_model.predict(scene)
     assert strict.redirect.valid == 1 and strict.fault_class == "jalFault"
     # A model that only enforces "taken implies control flow" but never checks
@@ -98,27 +100,30 @@ def test_pred_checker_model_and_dut_reject_accept_all_taken(pred_checker):
         for instruction in scene.instrs
     ])
     assert pred_model.predict(permissive).redirect.valid == 0
-    cases.check(pred_checker, scene)  # the DUT follows the strict contract
-    stage1, stage2 = cases.observe(pred_checker)
-    bad = dict(stage2)
-    bad["valid"] = 0  # what the permissive model would conclude
+    observed = await pred_checker.cycle(scene)  # DUT follows the strict contract
+    check_prediction(observed, strict, observed.previous_redirect)
+    bad = replace(strict, redirect=pred_model.predict(permissive).redirect)
     with pytest.raises(AssertionError):
-        cases.check(pred_checker, scene, observed=(stage1, bad))
+        check_prediction(observed, bad, observed.previous_redirect)
 
 
 @pytest.mark.feature("IFU-ENV-002")
-def test_uncache_model_and_dut_reject_wait_for_all_uncached(uncache_unit):
-    cases = load_case_module("tests/uncache_unit/test_uncache_unit.py", "cases_oracle_uc")
-    model = cases.start(uncache_unit)
-    out = cases.cycle(uncache_unit, model, cases.Inputs(req_valid=1, req_pbmt=cases.NC))
-    assert out["req_ready"] == 1
-    assert model.phase == cases.SEND, "an NC read must not wait for older commits"
+async def test_uncache_model_and_dut_reject_wait_for_all_uncached(uncache_unit):
+    from dataclasses import replace
+    from suites.frontend.ifu.model.uncache import Inputs, NC, Outputs, SEND
+    from suites.frontend.ifu.uncache_unit.checker import check_outputs
+    from suites.frontend.ifu.uncache_unit.types import BusReply
+    accepted = await uncache_unit.cycle(Inputs(req_valid=1, req_pbmt=NC, to_ready=0))
+    assert accepted.before.req_ready == 1
+    assert uncache_unit.status.phase == SEND, 'an NC read must not wait for older commits'
     # A model that waits for NC would still be in WAIT_COMMIT and would expect
     # no launch; check that the DUT's next-cycle snapshot contradicts it.
-    wrong = dict(cases.expected_dict(model.outputs(cases.Inputs(to_ready=1))))
-    wrong["to_valid"] = 0
+    expected = Outputs(0, 0, 0, 0, 0, 1, 0, 1, 1)
+    issued = await uncache_unit.cycle(Inputs(to_ready=1))
+    check_outputs(issued.before, expected, phase='legal-immediate-NC')
     with pytest.raises(AssertionError):
-        cases.cycle(uncache_unit, model, cases.Inputs(to_ready=1), expected_override=wrong)
+        check_outputs(issued.before, expected, expected=replace(expected, to_valid=0), phase='wrong-wait-all')
+    await uncache_unit.reply(accepted.events.accepted_uid, BusReply(1))
 
 
 @pytest.mark.feature("IFU-ENV-002")

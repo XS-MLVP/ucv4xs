@@ -1,0 +1,1045 @@
+{
+  "schema": 1,
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "module": "ifu/uncache_unit",
+  "artifact_base": "suites/frontend/ifu",
+  "scope": "Uncache module adapter verified; IFU6/7, whole repository goal remains active. No hardware or coverage sign-off. R-13/R-14 FAILs and carry UNCERTAIN remain.",
+  "before": {
+    "output": "results/ucv-goal-ifu-trigger-verified-20261101",
+    "counts": {
+      "PASS": 387,
+      "FAIL": 5,
+      "UNCERTAIN": 1
+    },
+    "source_sha256": "37cba60e3c252b781c19c5854af690c92583eb90b531f6cb366c40bb9587c410",
+    "frozen_files": {
+      "model/uncache.py": "8c06111503fd02495338b58262f025fa2dde9bc48ff7dd9ddcd9a91be1c0efe3",
+      "tests/uncache_unit/test_uncache_unit.py": "8a5d56572c7bd622e20813ed54a2c7ece9ca761ede2cfdc0acd5cf68d89f47e7",
+      "tests/framework/test_checker_discrimination.py": "a3e81625c788d2222b266a3b6beeb637ea67bef757349c3a474e92bef9b73b7a",
+      "tests/framework/test_oracle_independence.py": "a7d8269cc0b4de94185db0dabd9b6fd0fcc3f9f242bdce933d82eee37008df63",
+      "fixtures.py": "dccc12355aaa1a3d72693e32b427521fadea3b6f73d888b5071f320c1b396338",
+      "verification_plan.json": "889bf3da95ed34dd246a1df8b0aa134819f5effcc6bb15529bd99a94b9c405a4"
+    },
+    "reproducible_original_files_git_ref": "0017350",
+    "git_file_hashes_match_freeze": {
+      "model/uncache.py": "8c06111503fd02495338b58262f025fa2dde9bc48ff7dd9ddcd9a91be1c0efe3",
+      "tests/uncache_unit/test_uncache_unit.py": "8a5d56572c7bd622e20813ed54a2c7ece9ca761ede2cfdc0acd5cf68d89f47e7"
+    }
+  },
+  "producer_contract_source_files": {
+    "src/main/scala/xiangshan/frontend/PrunedAddr.scala": "c9b3d71a59bd489aa79cdc93055544f6769b8c1996431f8cbb0428b88b76ec7e",
+    "src/main/scala/xiangshan/frontend/Bundles.scala": "6f1ed7a4ce14126ed81c912eb72026625c11c36fba3cc936b0c623f5abf8a94b",
+    "src/main/scala/xiangshan/frontend/ifu/Ifu.scala": "3f4516b615002cf1669a6f3305d1faeb28b1a5c5f6389e1ce4e473a1fee3de0e",
+    "src/main/scala/xiangshan/frontend/ifu/IfuUncacheUnit.scala": "d86d169c56f23a41bad34e2cac45b0be51adebce10a2e1fc0c761ddcd732c3f4",
+    "src/main/scala/xiangshan/frontend/instruncache/InstrUncacheImp.scala": "3a66fb8b4d9de43edc1268405339656c791aec0201e6acb585a3f07bc9e23a59",
+    "src/main/scala/xiangshan/frontend/instruncache/InstrUncacheEntry.scala": "c596a8484e50d7b0480feb2a458decd56f5d3df7fab0965ba3b456d7a345b7d2",
+    "src/main/scala/xiangshan/cache/mmu/MMUBundle.scala": "a82831ddc85be5d0f5f52875443bc049e3c49cddef39cd8b7ba7efc7e19112c9"
+  },
+  "generator_equivalence": {
+    "output": "results/ucv-goal-uncache-stimulus-20261101/generator-equivalence.json",
+    "sha256": "ca93579ebcf26c9271881c3540a5e1af5207170eed981ee5d2e80b766c6095f6",
+    "scope": "Pure planned producer-body equivalence, not native sampling or hardware credit.",
+    "original_test_bodies": 11,
+    "primary_requests": 767,
+    "original700_preserved": true,
+    "ordered_physical_inputs_unchanged": true,
+    "oracle_class_normalized_ast_unchanged": true,
+    "address_normalization": "Old raw47-bit coordinates become48-bit aligned byte addresses; ports alone shift to/from47 wires.",
+    "auxiliary_scope": "New explicit cancels reconcile original partial scenarios; resets preserve UID history. These controls are additional and are not included in primary-stimulus equivalence.",
+    "tests": [
+      {
+        "nodeid": "tests/uncache_unit/test_uncache_unit.py::test_bus_status_becomes_instruction_exception_and_one_pulse",
+        "primary_requests": 15,
+        "ordered_physical_inputs_unchanged": true,
+        "primary_input_sha256": "7021e91f7662f9a0804e0e4ec6769cc83e76780e48ccef3bb7c0a43b3deb92f4",
+        "added_explicit_controls": [
+          {
+            "operation": "reset",
+            "reason": "next independent exception propagation port scenario"
+          },
+          {
+            "operation": "reset",
+            "reason": "next independent exception propagation port scenario"
+          },
+          {
+            "operation": "reset",
+            "reason": "next independent exception propagation port scenario"
+          }
+        ]
+      },
+      {
+        "nodeid": "tests/uncache_unit/test_uncache_unit.py::test_completion_is_back_to_back_usable",
+        "primary_requests": 5,
+        "ordered_physical_inputs_unchanged": true,
+        "primary_input_sha256": "9bb02cb026c993c0d44e5fa9950cefcd9c8d94c8cf944c9dc0b4f35c0af9050c",
+        "added_explicit_controls": [
+          {
+            "operation": "explicit_cancel",
+            "reason": "back-to-back readiness scenario ends after second issue"
+          }
+        ]
+      },
+      {
+        "nodeid": "tests/uncache_unit/test_uncache_unit.py::test_flush_aborts_every_phase_and_discards_late_response",
+        "primary_requests": 10,
+        "ordered_physical_inputs_unchanged": true,
+        "primary_input_sha256": "396b0373171ba1843e3ca0df4c2ff29402824426945cb743d9aea53c56fef55c",
+        "added_explicit_controls": [
+          {
+            "operation": "reset",
+            "reason": null
+          },
+          {
+            "operation": "reset",
+            "reason": null
+          },
+          {
+            "operation": "reset",
+            "reason": null
+          }
+        ]
+      },
+      {
+        "nodeid": "tests/uncache_unit/test_uncache_unit.py::test_flush_clears_a_completion_pulse",
+        "primary_requests": 5,
+        "ordered_physical_inputs_unchanged": true,
+        "primary_input_sha256": "82b3f9541712769f570a76fa2430d2f26e6afd2d7eaea46980d18a96bbdab196",
+        "added_explicit_controls": []
+      },
+      {
+        "nodeid": "tests/uncache_unit/test_uncache_unit.py::test_idle_accept_then_send_non_idempotent_type_attributes",
+        "primary_requests": 2,
+        "ordered_physical_inputs_unchanged": true,
+        "primary_input_sha256": "8523e4fcec668e1b24471d9cc210f1dc83fca98b422e0578e380a44c511cc2fa",
+        "added_explicit_controls": [
+          {
+            "operation": "explicit_cancel",
+            "reason": "scenario verifies capture/issue, not a supplied response"
+          }
+        ]
+      },
+      {
+        "nodeid": "tests/uncache_unit/test_uncache_unit.py::test_non_idempotent_accesses_wait_for_commit",
+        "primary_requests": 15,
+        "ordered_physical_inputs_unchanged": true,
+        "primary_input_sha256": "61623326d7d85f0833d2e9f8aa609839bb4403ee54a75ef97820534c93fe97b3",
+        "added_explicit_controls": [
+          {
+            "operation": "reset",
+            "reason": "next independent memory-type wait scenario"
+          },
+          {
+            "operation": "reset",
+            "reason": "next independent memory-type wait scenario"
+          },
+          {
+            "operation": "reset",
+            "reason": "next independent memory-type wait scenario"
+          },
+          {
+            "operation": "explicit_cancel",
+            "reason": "wait-release scenario ends before supplying bus data"
+          }
+        ]
+      },
+      {
+        "nodeid": "tests/uncache_unit/test_uncache_unit.py::test_ordinary_non_cacheable_pages_do_not_wait",
+        "primary_requests": 2,
+        "ordered_physical_inputs_unchanged": true,
+        "primary_input_sha256": "8c4a5775f42d225d967917f38ab70cf2f86d0f15375cef56027cbc5b06077c8f",
+        "added_explicit_controls": [
+          {
+            "operation": "reset",
+            "reason": "next independent immediate-issue port scenario"
+          },
+          {
+            "operation": "reset",
+            "reason": "next independent immediate-issue port scenario"
+          },
+          {
+            "operation": "explicit_cancel",
+            "reason": "immediate phase scenario does not supply a response"
+          }
+        ]
+      },
+      {
+        "nodeid": "tests/uncache_unit/test_uncache_unit.py::test_random_sequences_match_the_model",
+        "primary_requests": 700,
+        "ordered_physical_inputs_unchanged": true,
+        "primary_input_sha256": "dd7ccdce390741747b49975c6267006eac850d0a85abc98ebe5a1b42eb11c061",
+        "added_explicit_controls": [
+          {
+            "operation": "explicit_cancel",
+            "reason": "finite700 port-pressure run explicitly abandons its final request"
+          }
+        ]
+      },
+      {
+        "nodeid": "tests/uncache_unit/test_uncache_unit.py::test_request_is_held_until_the_bus_accepts",
+        "primary_requests": 7,
+        "ordered_physical_inputs_unchanged": true,
+        "primary_input_sha256": "c4b7074aaf562d54603fbf170f7fa85088a42719bd12bc8fb131873c7d5e46d6",
+        "added_explicit_controls": [
+          {
+            "operation": "explicit_cancel",
+            "reason": "hold/issue-only scenario has no peer response"
+          }
+        ]
+      },
+      {
+        "nodeid": "tests/uncache_unit/test_uncache_unit.py::test_requests_are_ignored_while_busy",
+        "primary_requests": 4,
+        "ordered_physical_inputs_unchanged": true,
+        "primary_input_sha256": "03b9cec42745af456797c4fb9372535ff14939a0afd0aabcaaeef70bfd1c8ac2",
+        "added_explicit_controls": [
+          {
+            "operation": "explicit_cancel",
+            "reason": "busy-port pressure does not promise a completed read"
+          }
+        ]
+      },
+      {
+        "nodeid": "tests/uncache_unit/test_uncache_unit.py::test_response_in_idle_is_ignored",
+        "primary_requests": 2,
+        "ordered_physical_inputs_unchanged": true,
+        "primary_input_sha256": "45825e8461fdc577c4ba86cc1a4c97eec25cb77919cd23a9edba08960a63da51",
+        "added_explicit_controls": []
+      }
+    ]
+  },
+  "delta": {
+    "before_count": 393,
+    "after_count": 484,
+    "removed": [],
+    "changed": {},
+    "added": {
+      "ifu::tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[flush-2]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[req_valid--1]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[req_is_mmio-0]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[is_first_instr-1.0]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[ifu_stall-2]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[empty_after--1]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[to_ready-2]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[from_valid-2]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[from_corrupt--1]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[from_denied-2]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[from_need_resend-1.0]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[req_paddr--2]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[req_paddr-1]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[req_paddr-281474976710656]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[req_paddr-0.0]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[req_pbmt--1]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[req_pbmt-4]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[from_data--1]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[from_data-4294967296]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_nested_transactions_and_valid_reply_relationship_are_strict": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_address_units_and_upper_bit_are_preserved_only_in_ports": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_complete_typed_outputs_cannot_be_replaced_with_missing_or_invalid_values[req_ready-2]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_complete_typed_outputs_cannot_be_replaced_with_missing_or_invalid_values[resp_data-4294967296]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_complete_typed_outputs_cannot_be_replaced_with_missing_or_invalid_values[resp_exception-8]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_complete_typed_outputs_cannot_be_replaced_with_missing_or_invalid_values[to_paddr-1]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_missing_ports_are_not_zero_defaults[reset]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_missing_ports_are_not_zero_defaults[io_req_bits_paddr_addr]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_missing_ports_are_not_zero_defaults[io_fromUncache_resp_valid]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_missing_ports_are_not_zero_defaults[io_resp_bits_uncacheData]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_missing_ports_are_not_zero_defaults[io_toUncache_req_bits_memPageTypeNC]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_changed_width_is_a_migration_error[io_req_bits_paddr_addr-48]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_changed_width_is_a_migration_error[io_toUncache_req_bits_addr_addr-46]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_changed_width_is_a_migration_error[io_resp_bits_uncacheData-31]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_changed_width_is_a_migration_error[io_req_bits_pbmt-3]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_changed_width_is_a_migration_error[clock-2]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_wrong_direction_extra_inputs_and_changed_pruned_ready_fail": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_second_writer_fails_and_owner_can_still_finish_a_real_read": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_unreachable_request_types_are_explicit_port_pressure_not_silently_dropped[0-0]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_unreachable_request_types_are_explicit_port_pressure_not_silently_dropped[3-0]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_unreachable_request_types_are_explicit_port_pressure_not_silently_dropped[3-1]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_unknown_duplicate_early_and_boolean_reply_uids_are_rejected": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_cancelled_uid_cannot_be_invented_for_unissued_work_or_aliased_to_a_new_waiting_read": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_old_characterized_request_is_not_promoted_to_producer_provenance": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_tagless_producer_input_cannot_infer_its_own_uid_from_live_state": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_invalid_peer_resend_relationship_is_rejected_before_starting_read[16384-reply0]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_invalid_peer_resend_relationship_is_rejected_before_starting_read[20478-reply1]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_invalid_peer_resend_relationship_is_rejected_before_starting_read[20478-reply2]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_invalid_peer_resend_relationship_is_rejected_before_starting_read[20478-reply3]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_valid_payload_comparisons_cannot_be_hidden_by_observed_or_override_valid": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_only_contractually_invalid_payload_is_ignored_and_zero_reset_is_separate": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_reset_retains_uid_history_and_requires_a_reason_for_active_work": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_task_handoffs_do_not_advance_or_cross_associate_phase_samples": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_concurrent_requests_are_rejected_without_reusing_uid_slots": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_closed_phase_monitor_cannot_return_a_passing_cycle[before]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_closed_phase_monitor_cannot_return_a_passing_cycle[after]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_stale_tick_is_rejected_even_for_the_same_value[before]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_stale_tick_is_rejected_even_for_the_same_value[after]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_missing_snapshot_is_not_a_passing_idle_cycle[before]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_missing_snapshot_is_not_a_passing_idle_cycle[after]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_stale_payload_cannot_replace_the_current_bus_phase[before]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_stale_payload_cannot_replace_the_current_bus_phase[after]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_finish_cannot_invent_replies_or_reset_outstanding_work[waiting]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_finish_cannot_invent_replies_or_reset_outstanding_work[send]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_finish_cannot_invent_replies_or_reset_outstanding_work[issued]": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_promised_read_with_too_small_budget_fails_not_zero_acceptance_success": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_zero_acceptance_fault_is_rejected_by_the_actual_read_chain": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_hiding_final_completion_is_rejected_at_its_actual_response": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_finish_detects_a_repeated_completion_instead_of_closing_the_monitor": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_reset_assertion_failure_is_sticky_after_capture_is_restored": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_cancelled_cycle_cannot_be_swallowed_and_then_finished": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_swallowed_compare_error_cannot_be_erased_by_restoring_capture": "PASS",
+      "ifu::tests/framework/test_uncache_agent.py::test_invalid_work_and_budgets_do_not_advance_slots_and_finish_is_strict": "PASS",
+      "ifu::tests/uncache_unit/test_uncache_unit.py::test_complete_producer_reads_match_identity_address_and_type[0-1]": "PASS",
+      "ifu::tests/uncache_unit/test_uncache_unit.py::test_complete_producer_reads_match_identity_address_and_type[0-2]": "PASS",
+      "ifu::tests/uncache_unit/test_uncache_unit.py::test_complete_producer_reads_match_identity_address_and_type[1-0]": "PASS",
+      "ifu::tests/uncache_unit/test_uncache_unit.py::test_complete_producer_reads_match_identity_address_and_type[1-1]": "PASS",
+      "ifu::tests/uncache_unit/test_uncache_unit.py::test_complete_producer_reads_match_identity_address_and_type[1-2]": "PASS",
+      "ifu::tests/uncache_unit/test_uncache_unit.py::test_legal_peer_error_replies_complete_once[reply0-0]": "PASS",
+      "ifu::tests/uncache_unit/test_uncache_unit.py::test_legal_peer_error_replies_complete_once[reply1-5]": "PASS",
+      "ifu::tests/uncache_unit/test_uncache_unit.py::test_legal_peer_error_replies_complete_once[reply2-3]": "PASS",
+      "ifu::tests/uncache_unit/test_uncache_unit.py::test_real_cross_page_reply_rule_and_highest_physical_address[12286-275-1]": "PASS",
+      "ifu::tests/uncache_unit/test_uncache_unit.py::test_real_cross_page_reply_rule_and_highest_physical_address[12286-1-0]": "PASS",
+      "ifu::tests/uncache_unit/test_uncache_unit.py::test_real_cross_page_reply_rule_and_highest_physical_address[12284-275-0]": "PASS",
+      "ifu::tests/uncache_unit/test_uncache_unit.py::test_real_cross_page_reply_rule_and_highest_physical_address[281474976710654-275-1]": "PASS",
+      "ifu::tests/uncache_unit/test_uncache_unit.py::test_completion_pulse_and_next_acceptance_have_distinct_uids": "PASS",
+      "ifu::tests/uncache_unit/test_uncache_unit.py::test_cancelled_issued_uid_can_arrive_late_without_completing_a_new_unissued_read": "PASS",
+      "ifu::tests/uncache_unit/test_uncache_unit.py::test_same_edge_flush_fire_is_recorded_but_does_not_create_a_live_request": "PASS",
+      "ifu::tests/uncache_unit/test_uncache_unit.py::test_legal_mmio_waits_then_issues_exactly_once_after_backpressure_and_ifu_stall": "PASS",
+      "ifu::tests/uncache_unit/test_uncache_unit.py::test_explicit_cancel_then_same_address_new_uid_has_no_old_completion[waiting]": "PASS",
+      "ifu::tests/uncache_unit/test_uncache_unit.py::test_explicit_cancel_then_same_address_new_uid_has_no_old_completion[send]": "PASS",
+      "ifu::tests/uncache_unit/test_uncache_unit.py::test_explicit_cancel_then_same_address_new_uid_has_no_old_completion[issued]": "PASS"
+    },
+    "initial147_changed": {
+      "ifu::tests/instr_boundary/test_instr_boundary.py::test_random_windows_match_the_model": {
+        "before": "PASS",
+        "after": "FAIL"
+      }
+    }
+  },
+  "runs": [
+    {
+      "output": "results/ucv-goal-ifu-uncache-probe-20261101",
+      "note": "First bounded port/producer probe before full controls.",
+      "counts": {
+        "PASS": 27
+      },
+      "hardware_verdict": "INCOMPLETE",
+      "migration_acceptance": "NOT_CERTIFIED",
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS",
+        "Open blocking residual R-14 (ifu): 只允许本窗口真实起始指令标记cross-block，并检查carry重建后的FTQ/redirect归属；修复后leaf、原600随机及顶层恢复反例均须通过"
+      ],
+      "source_sha256": "17af4d3ada0e0f341bcea7ca0b27dd25b87aa326402bdc23e6144f2ace84d126",
+      "source_stable": true,
+      "source_matched_at_audit": false,
+      "seed": 1,
+      "workers": 2,
+      "run_sha256": "b20681d4c7321900aff9b28c5dbab666a4cfb12869da4e60ffbe2f82b2032512",
+      "summary_sha256": "3aefe9158f718be92e0b0cc1021f8ba8a51604c32a18a03b4a170e9c9f740f7a",
+      "manifest_sha256": "b43bc878973075dd0f0926df2c9a81b1e6574acc8ca03ed2fa485d848eb7260f",
+      "manifest_state": "committed",
+      "coverage_complete": true
+    },
+    {
+      "output": "results/ucv-goal-ifu-uncache-controls-20261101",
+      "note": "First70 selftests pass; final explicit-UID and duplicate-tail controls not yet added.",
+      "counts": {
+        "PASS": 102
+      },
+      "hardware_verdict": "INCOMPLETE",
+      "migration_acceptance": "NOT_CERTIFIED",
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS",
+        "Open blocking residual R-14 (ifu): 只允许本窗口真实起始指令标记cross-block，并检查carry重建后的FTQ/redirect归属；修复后leaf、原600随机及顶层恢复反例均须通过"
+      ],
+      "source_sha256": "91659d457c736f6e6438d5b2ea0fb2ba2ca334e19f4e15ac1a65ea2ea51a2430",
+      "source_stable": true,
+      "source_matched_at_audit": false,
+      "seed": 1,
+      "workers": 2,
+      "run_sha256": "e78e026cf5c0da8d06f20f959e2f1882ab1f87d603e124a7c51caf976c374d2d",
+      "summary_sha256": "5fb755d1071a0ecfe969d2ab2e545caa99f7c938e745fdeecd272341d430d9a2",
+      "manifest_sha256": "b40be144e39554e30fde5bc7659c19b4c4c0ac26d8d4814ac1e82be2af850c83",
+      "manifest_state": "committed",
+      "coverage_complete": true
+    },
+    {
+      "output": "results/ucv-goal-ifu-uncache-integrated-20261101",
+      "note": "Final full IFU484 cases; original393 unchanged,91new PASS.",
+      "counts": {
+        "PASS": 478,
+        "FAIL": 5,
+        "UNCERTAIN": 1
+      },
+      "hardware_verdict": "FAIL",
+      "migration_acceptance": "NOT_CERTIFIED",
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS",
+        "Open blocking residual R-14 (ifu): 只允许本窗口真实起始指令标记cross-block，并检查carry重建后的FTQ/redirect归属；修复后leaf、原600随机及顶层恢复反例均须通过"
+      ],
+      "source_sha256": "82363ac66cb498a715c16161eaf751dc9f1ecaf9cabdd6c5cedb0e7b2935ca8d",
+      "source_stable": true,
+      "source_matched_at_audit": true,
+      "seed": 1,
+      "workers": 2,
+      "run_sha256": "0e98500aa32d800567f86e8ca167fbd9d8c93fddc31205c844794e8b25409848",
+      "summary_sha256": "17b7bb12f34c725752d90e78c6646b66e386a061ee830c7595ef64c90f8ae94e",
+      "manifest_sha256": "5706716ae64bb4f866388b58ccfa02b5cc68b3b44ad0e363050c50c53f1ccdbc",
+      "manifest_state": "committed",
+      "coverage_complete": true
+    },
+    {
+      "output": "results/ucv-goal-ifu-uncache-seed2-20261101",
+      "note": "Final native seed2 single-worker selection104 PASS, including72new selftests.",
+      "counts": {
+        "PASS": 104
+      },
+      "hardware_verdict": "INCOMPLETE",
+      "migration_acceptance": "NOT_CERTIFIED",
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS",
+        "Open blocking residual R-14 (ifu): 只允许本窗口真实起始指令标记cross-block，并检查carry重建后的FTQ/redirect归属；修复后leaf、原600随机及顶层恢复反例均须通过"
+      ],
+      "source_sha256": "82363ac66cb498a715c16161eaf751dc9f1ecaf9cabdd6c5cedb0e7b2935ca8d",
+      "source_stable": true,
+      "source_matched_at_audit": true,
+      "seed": 2,
+      "workers": 1,
+      "run_sha256": "31b4d7b9fa1d807b54c7ffa040e7dd1bc8766b6ea8a130fee5a542d841e19e7b",
+      "summary_sha256": "e1ea7d4e2537f82c1ca6266ec6cb1a56b92478a3582589465836c65f78419a11",
+      "manifest_sha256": "d78960571b4d79a747fd71f044e2c5a8e2b1fca3cb3515863bc0f9311cbde9ef",
+      "manifest_state": "committed",
+      "coverage_complete": true
+    }
+  ],
+  "collection": {
+    "output": "results/ucv-goal-collect-uncache-20261101",
+    "total": 46220,
+    "initial_total": 45883,
+    "all10_tasks_exit0": true,
+    "original_order_preserved": true,
+    "suites": [
+      {
+        "suite": "bpu",
+        "before": 41031,
+        "after": 41031,
+        "original_order_preserved": true,
+        "cases_sha256": "4404b682527051864ac3fe36ed4f8244db97afdd49f9e0062e7ffbfd787bf8b8",
+        "added": []
+      },
+      {
+        "suite": "sbuffer",
+        "before": 66,
+        "after": 66,
+        "original_order_preserved": true,
+        "cases_sha256": "66817de51668f783e73b2f475896fbda8ddc9420d9c83b561e5534e72e81834d",
+        "added": []
+      },
+      {
+        "suite": "ftq",
+        "before": 111,
+        "after": 111,
+        "original_order_preserved": true,
+        "cases_sha256": "48f274b38e92d4f9712e1a0757d9595c240afe9fc3b114179979ef20edd3d69a",
+        "added": []
+      },
+      {
+        "suite": "dcache",
+        "before": 232,
+        "after": 232,
+        "original_order_preserved": true,
+        "cases_sha256": "1df0492eed7ab40c3e091cba44e2ef5db0af1cbf9c562bda1716c9d55051cadf",
+        "added": []
+      },
+      {
+        "suite": "ifu",
+        "before": 147,
+        "after": 484,
+        "original_order_preserved": true,
+        "cases_sha256": "a892fe04baac53307e56caf0cf0a12ccb16bfaf1b71070ec057e6e68c2c8ff6d",
+        "added": [
+          "tests/framework/test_boundary_agent.py::test_request_domain_cannot_rely_on_native_truncation[block0_size-0]",
+          "tests/framework/test_boundary_agent.py::test_request_domain_cannot_rely_on_native_truncation[block0_size-33]",
+          "tests/framework/test_boundary_agent.py::test_request_domain_cannot_rely_on_native_truncation[block0_size-1.0]",
+          "tests/framework/test_boundary_agent.py::test_request_domain_cannot_rely_on_native_truncation[taken_valid-2]",
+          "tests/framework/test_boundary_agent.py::test_request_domain_cannot_rely_on_native_truncation[block1_valid--1]",
+          "tests/framework/test_boundary_agent.py::test_request_domain_cannot_rely_on_native_truncation[first_instr_is_half_rvi-1]",
+          "tests/framework/test_boundary_agent.py::test_request_domain_cannot_rely_on_native_truncation[taken_offset--1]",
+          "tests/framework/test_boundary_agent.py::test_request_domain_cannot_rely_on_native_truncation[taken_offset-32]",
+          "tests/framework/test_boundary_agent.py::test_request_domain_cannot_rely_on_native_truncation[total_end_pos-32]",
+          "tests/framework/test_boundary_agent.py::test_request_domain_cannot_rely_on_native_truncation[maybe_rvc--1]",
+          "tests/framework/test_boundary_agent.py::test_request_domain_cannot_rely_on_native_truncation[maybe_rvc-4294967296]",
+          "tests/framework/test_boundary_agent.py::test_request_domain_cannot_rely_on_native_truncation[block_sel--1]",
+          "tests/framework/test_boundary_agent.py::test_request_domain_cannot_rely_on_native_truncation[block_sel-4294967296]",
+          "tests/framework/test_boundary_agent.py::test_block_coordinates_and_taken_position_must_describe_the_producer[updates0]",
+          "tests/framework/test_boundary_agent.py::test_block_coordinates_and_taken_position_must_describe_the_producer[updates1]",
+          "tests/framework/test_boundary_agent.py::test_block_coordinates_and_taken_position_must_describe_the_producer[updates2]",
+          "tests/framework/test_boundary_agent.py::test_index_vector_has_no_silent_empty_default_or_overflow[indices0]",
+          "tests/framework/test_boundary_agent.py::test_index_vector_has_no_silent_empty_default_or_overflow[indices1]",
+          "tests/framework/test_boundary_agent.py::test_index_vector_has_no_silent_empty_default_or_overflow[indices2]",
+          "tests/framework/test_boundary_agent.py::test_index_vector_has_no_silent_empty_default_or_overflow[indices3]",
+          "tests/framework/test_boundary_agent.py::test_index_vector_has_no_silent_empty_default_or_overflow[indices4]",
+          "tests/framework/test_boundary_agent.py::test_request_snapshots_mutable_lists_and_unknown_keys_fail",
+          "tests/framework/test_boundary_agent.py::test_incomplete_or_invalid_output_snapshots_fail_before_comparison[valid-value0]",
+          "tests/framework/test_boundary_agent.py::test_incomplete_or_invalid_output_snapshots_fail_before_comparison[index-value1]",
+          "tests/framework/test_boundary_agent.py::test_incomplete_or_invalid_output_snapshots_fail_before_comparison[is_rvc-value2]",
+          "tests/framework/test_boundary_agent.py::test_incomplete_or_invalid_output_snapshots_fail_before_comparison[first_end_is_half_rvi-2]",
+          "tests/framework/test_boundary_agent.py::test_required_ports_are_never_zero_defaults[io_req_ifuData_index_31]",
+          "tests/framework/test_boundary_agent.py::test_required_ports_are_never_zero_defaults[io_req_totalEndPos]",
+          "tests/framework/test_boundary_agent.py::test_required_ports_are_never_zero_defaults[io_resp_rawInstrVec_0_endOffset]",
+          "tests/framework/test_boundary_agent.py::test_required_ports_are_never_zero_defaults[io_resp_totalEndIsHalfRvi]",
+          "tests/framework/test_boundary_agent.py::test_changed_width_requires_explicit_migration[io_req_fetchBlock_0_size-5]",
+          "tests/framework/test_boundary_agent.py::test_changed_width_requires_explicit_migration[io_req_ifuData_maybeRvcMap-31]",
+          "tests/framework/test_boundary_agent.py::test_changed_width_requires_explicit_migration[io_resp_rawInstrVec_0_index-6]",
+          "tests/framework/test_boundary_agent.py::test_changed_width_requires_explicit_migration[io_resp_firstEndIsHalfRvi-2]",
+          "tests/framework/test_boundary_agent.py::test_wrong_direction_or_unowned_inputs_are_binding_errors",
+          "tests/framework/test_boundary_agent.py::test_competing_writer_is_rejected_and_legal_followup_still_works",
+          "tests/framework/test_boundary_agent.py::test_only_unconsumed_invalid_metadata_is_ignored",
+          "tests/framework/test_boundary_agent.py::test_carry_end_offset_override_cannot_hide_other_carry_metadata",
+          "tests/framework/test_boundary_agent.py::test_legacy_rtl_shaped_carry_model_is_rejected_by_the_independent_contract",
+          "tests/framework/test_boundary_agent.py::test_expected_override_and_observed_valid_cannot_expand_the_metadata_mask",
+          "tests/framework/test_boundary_agent.py::test_every_consumed_field_and_pruned_constant_is_checked",
+          "tests/framework/test_boundary_agent.py::test_task_handoffs_keep_exact_identity_and_frozen_snapshots",
+          "tests/framework/test_boundary_agent.py::test_concurrent_operations_cannot_cross_associate_samples",
+          "tests/framework/test_boundary_agent.py::test_closed_monitor_cannot_produce_a_passing_window",
+          "tests/framework/test_boundary_agent.py::test_stale_tick_is_not_accepted_even_with_identical_payload",
+          "tests/framework/test_boundary_agent.py::test_stale_payload_cannot_replace_the_current_window",
+          "tests/framework/test_boundary_agent.py::test_missing_snapshot_is_not_a_passing_empty_window",
+          "tests/framework/test_boundary_agent.py::test_whole_finite_batch_is_checked_despite_multiple_payload_failures",
+          "tests/framework/test_boundary_agent.py::test_batch_does_not_downgrade_transport_failure_to_a_dut_comparison",
+          "tests/framework/test_boundary_agent.py::test_finish_checks_idle_instead_of_discarding_the_last_payload",
+          "tests/framework/test_boundary_agent.py::test_cancelled_or_swallowed_failure_cannot_finish_cleanly",
+          "tests/framework/test_boundary_agent.py::test_restoring_monitor_after_swallowed_failure_is_not_success",
+          "tests/framework/test_boundary_agent.py::test_lifecycle_and_rejected_work_do_not_advance_slots",
+          "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[icache_miss]",
+          "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[itlb_miss]",
+          "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[backend_redirect]",
+          "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[control_flow_redirect]",
+          "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[memory_violation_redirect]",
+          "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[tage_miss]",
+          "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[ittage_miss]",
+          "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[ras_miss]",
+          "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[ifu_wb_redirect]",
+          "tests/framework/test_perf_agent.py::test_ftq_reason_domain_cannot_silently_discard_unsupported_bits[-1]",
+          "tests/framework/test_perf_agent.py::test_ftq_reason_domain_cannot_silently_discard_unsupported_bits[1]",
+          "tests/framework/test_perf_agent.py::test_ftq_reason_domain_cannot_silently_discard_unsupported_bits[16]",
+          "tests/framework/test_perf_agent.py::test_ftq_reason_domain_cannot_silently_discard_unsupported_bits[37778931862957161709568]",
+          "tests/framework/test_perf_agent.py::test_semantic_request_is_frozen_and_unknown_fields_fail",
+          "tests/framework/test_perf_agent.py::test_missing_port_is_a_binding_failure_not_a_zero_observation",
+          "tests/framework/test_perf_agent.py::test_second_driver_cannot_claim_the_agent_inputs",
+          "tests/framework/test_perf_agent.py::test_stopped_monitor_cannot_make_the_agent_pass",
+          "tests/framework/test_perf_agent.py::test_missing_last_reason_is_detected_by_finish",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[valid-2]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[is_rvc--1]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[is_pred_taken-1]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[invalid_taken-2]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[block_sel-2]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[is_cross_block-2]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[end_offset-32]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[end_offset--1]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[branch_type-4]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[branch_type--1]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[ras_action-4]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[pc-1]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[pc--2]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[pc-2251799813685248]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[jump_offset-1]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[jump_offset--1125899906842626]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[jump_offset-2251799813685248]",
+          "tests/framework/test_pred_agent.py::test_request_must_name_the_entire_window[0]",
+          "tests/framework/test_pred_agent.py::test_request_must_name_the_entire_window[35]",
+          "tests/framework/test_pred_agent.py::test_request_must_name_the_entire_window[37]",
+          "tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[34-instruction0]",
+          "tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[35-instruction1]",
+          "tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[35-instruction2]",
+          "tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[35-instruction3]",
+          "tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[35-instruction4]",
+          "tests/framework/test_pred_agent.py::test_requests_detach_mutable_producer_lists_and_freeze_nested_instructions",
+          "tests/framework/test_pred_agent.py::test_unknown_keys_and_untyped_instruction_payloads_fail",
+          "tests/framework/test_pred_agent.py::test_driver_control_domain_is_strict[reset-2]",
+          "tests/framework/test_pred_agent.py::test_driver_control_domain_is_strict[padding_pc-1]",
+          "tests/framework/test_pred_agent.py::test_driver_control_domain_is_strict[padding_pc-2251799813685248]",
+          "tests/framework/test_pred_agent.py::test_missing_input_or_output_is_a_binding_error[io_req_bits_instrVec_0_valid]",
+          "tests/framework/test_pred_agent.py::test_missing_input_or_output_is_a_binding_error[io_resp_stage2Out_checkerRedirect_bits_target_addr]",
+          "tests/framework/test_pred_agent.py::test_changed_address_width_requires_a_real_migration[io_req_bits_instrPcVec_0_addr-49]",
+          "tests/framework/test_pred_agent.py::test_changed_address_width_requires_a_real_migration[io_resp_stage2Out_checkerRedirect_bits_target_addr-51]",
+          "tests/framework/test_pred_agent.py::test_wrong_direction_or_unowned_input_is_not_accepted",
+          "tests/framework/test_pred_agent.py::test_second_writer_is_rejected_without_disturbing_the_agent",
+          "tests/framework/test_pred_agent.py::test_every_valid_redirect_field_is_compared",
+          "tests/framework/test_pred_agent.py::test_task_handoffs_do_not_pre_sample_an_unsupplied_slot",
+          "tests/framework/test_pred_agent.py::test_concurrent_cycles_cannot_misassociate_phase_samples",
+          "tests/framework/test_pred_agent.py::test_stopping_either_monitor_cannot_pass[_before]",
+          "tests/framework/test_pred_agent.py::test_stopping_either_monitor_cannot_pass[_after]",
+          "tests/framework/test_pred_agent.py::test_last_redirect_cannot_disappear_without_a_following_request",
+          "tests/framework/test_pred_agent.py::test_corrupt_combinational_truncation_is_detected",
+          "tests/framework/test_pred_agent.py::test_stale_previous_payload_cannot_stand_in_for_a_new_response",
+          "tests/framework/test_pred_agent.py::test_old_phase_tick_is_rejected_even_with_the_right_payload",
+          "tests/framework/test_pred_agent.py::test_finish_detects_a_repeated_final_redirect",
+          "tests/framework/test_pred_agent.py::test_cancelled_input_cannot_be_reported_as_a_clean_finished_stream",
+          "tests/framework/test_pred_agent.py::test_swallowed_reset_failure_cannot_finish_cleanly",
+          "tests/framework/test_pred_agent.py::test_lifecycle_and_rejected_untyped_work_do_not_advance_slots",
+          "tests/framework/test_rvc_agent.py::test_word_domain_cannot_rely_on_native_truncation[-1]",
+          "tests/framework/test_rvc_agent.py::test_word_domain_cannot_rely_on_native_truncation[4294967296]",
+          "tests/framework/test_rvc_agent.py::test_word_domain_cannot_rely_on_native_truncation[3.0]",
+          "tests/framework/test_rvc_agent.py::test_word_domain_cannot_rely_on_native_truncation[3]",
+          "tests/framework/test_rvc_agent.py::test_fs_control_requires_a_boolean_encoding[-1]",
+          "tests/framework/test_rvc_agent.py::test_fs_control_requires_a_boolean_encoding[2]",
+          "tests/framework/test_rvc_agent.py::test_fs_control_requires_a_boolean_encoding[1.0]",
+          "tests/framework/test_rvc_agent.py::test_fs_control_requires_a_boolean_encoding[0]",
+          "tests/framework/test_rvc_agent.py::test_unknown_fields_and_mutating_a_request_are_rejected",
+          "tests/framework/test_rvc_agent.py::test_missing_ports_are_not_silent_defaults[io_in]",
+          "tests/framework/test_rvc_agent.py::test_missing_ports_are_not_silent_defaults[io_fsIsOff]",
+          "tests/framework/test_rvc_agent.py::test_missing_ports_are_not_silent_defaults[io_out_bits]",
+          "tests/framework/test_rvc_agent.py::test_missing_ports_are_not_silent_defaults[io_ill]",
+          "tests/framework/test_rvc_agent.py::test_changed_width_requires_an_explicit_migration[io_in-31]",
+          "tests/framework/test_rvc_agent.py::test_changed_width_requires_an_explicit_migration[io_fsIsOff-2]",
+          "tests/framework/test_rvc_agent.py::test_changed_width_requires_an_explicit_migration[io_out_bits-31]",
+          "tests/framework/test_rvc_agent.py::test_changed_width_requires_an_explicit_migration[io_ill-2]",
+          "tests/framework/test_rvc_agent.py::test_wrong_direction_is_a_binding_failure[io_in-io_out_bits]",
+          "tests/framework/test_rvc_agent.py::test_wrong_direction_is_a_binding_failure[io_ill-io_fsIsOff]",
+          "tests/framework/test_rvc_agent.py::test_unowned_inputs_cannot_appear_without_a_contract_change[new_input]",
+          "tests/framework/test_rvc_agent.py::test_unowned_inputs_cannot_appear_without_a_contract_change[clock]",
+          "tests/framework/test_rvc_agent.py::test_unowned_inputs_cannot_appear_without_a_contract_change[reset]",
+          "tests/framework/test_rvc_agent.py::test_competing_driver_is_rejected_without_corrupting_the_next_decode",
+          "tests/framework/test_rvc_agent.py::test_hint_override_cannot_hide_a_defined_wrong_instruction_word",
+          "tests/framework/test_rvc_agent.py::test_contractually_unspecified_bits_remain_legal_but_ill_is_always_checked",
+          "tests/framework/test_rvc_agent.py::test_expected_domain_and_missing_snapshot_are_not_coerced_to_valid_values",
+          "tests/framework/test_rvc_agent.py::test_task_handoffs_preserve_slot_identity_and_snapshots",
+          "tests/framework/test_rvc_agent.py::test_concurrent_decodes_cannot_cross_associate_observations",
+          "tests/framework/test_rvc_agent.py::test_closed_monitor_cannot_report_a_passing_decode",
+          "tests/framework/test_rvc_agent.py::test_corrupted_final_observation_fails_at_that_decode[bits]",
+          "tests/framework/test_rvc_agent.py::test_corrupted_final_observation_fails_at_that_decode[ill]",
+          "tests/framework/test_rvc_agent.py::test_stale_tick_is_rejected_even_when_the_result_is_identical",
+          "tests/framework/test_rvc_agent.py::test_stale_payload_cannot_replace_the_current_instruction",
+          "tests/framework/test_rvc_agent.py::test_a_missing_capture_is_not_a_passing_zero_result",
+          "tests/framework/test_rvc_agent.py::test_finish_checks_the_withdrawn_idle_frame",
+          "tests/framework/test_rvc_agent.py::test_cancelled_evaluation_cannot_finish_cleanly",
+          "tests/framework/test_rvc_agent.py::test_swallowing_a_compare_failure_cannot_erase_it",
+          "tests/framework/test_rvc_agent.py::test_bad_work_does_not_advance_and_finish_is_strict",
+          "tests/framework/test_trigger_agent.py::test_trigger_values_are_validated_without_native_coercion[match_type--1]",
+          "tests/framework/test_trigger_agent.py::test_trigger_values_are_validated_without_native_coercion[match_type-4]",
+          "tests/framework/test_trigger_agent.py::test_trigger_values_are_validated_without_native_coercion[match_type-1.0]",
+          "tests/framework/test_trigger_agent.py::test_trigger_values_are_validated_without_native_coercion[action--1]",
+          "tests/framework/test_trigger_agent.py::test_trigger_values_are_validated_without_native_coercion[action-16]",
+          "tests/framework/test_trigger_agent.py::test_trigger_values_are_validated_without_native_coercion[tdata2--1]",
+          "tests/framework/test_trigger_agent.py::test_trigger_values_are_validated_without_native_coercion[tdata2-18446744073709551616]",
+          "tests/framework/test_trigger_agent.py::test_trigger_values_are_validated_without_native_coercion[select-2]",
+          "tests/framework/test_trigger_agent.py::test_trigger_values_are_validated_without_native_coercion[chain--1]",
+          "tests/framework/test_trigger_agent.py::test_trigger_values_are_validated_without_native_coercion[timing-1]",
+          "tests/framework/test_trigger_agent.py::test_trigger_values_are_validated_without_native_coercion[timing-1.0]",
+          "tests/framework/test_trigger_agent.py::test_configuration_update_requires_a_real_index_and_payload[updates0-ValueError]",
+          "tests/framework/test_trigger_agent.py::test_configuration_update_requires_a_real_index_and_payload[updates1-ValueError]",
+          "tests/framework/test_trigger_agent.py::test_configuration_update_requires_a_real_index_and_payload[updates2-ValueError]",
+          "tests/framework/test_trigger_agent.py::test_configuration_update_requires_a_real_index_and_payload[updates3-ValueError]",
+          "tests/framework/test_trigger_agent.py::test_configuration_update_requires_a_real_index_and_payload[updates4-ValueError]",
+          "tests/framework/test_trigger_agent.py::test_configuration_update_requires_a_real_index_and_payload[updates5-TypeError]",
+          "tests/framework/test_trigger_agent.py::test_live_controls_and_complete_pc_vector_have_strict_domains[updates0]",
+          "tests/framework/test_trigger_agent.py::test_live_controls_and_complete_pc_vector_have_strict_domains[updates1]",
+          "tests/framework/test_trigger_agent.py::test_live_controls_and_complete_pc_vector_have_strict_domains[updates2]",
+          "tests/framework/test_trigger_agent.py::test_live_controls_and_complete_pc_vector_have_strict_domains[updates3]",
+          "tests/framework/test_trigger_agent.py::test_live_controls_and_complete_pc_vector_have_strict_domains[updates4]",
+          "tests/framework/test_trigger_agent.py::test_live_controls_and_complete_pc_vector_have_strict_domains[updates5]",
+          "tests/framework/test_trigger_agent.py::test_live_controls_and_complete_pc_vector_have_strict_domains[updates6]",
+          "tests/framework/test_trigger_agent.py::test_live_controls_and_complete_pc_vector_have_strict_domains[updates7]",
+          "tests/framework/test_trigger_agent.py::test_live_controls_and_complete_pc_vector_have_strict_domains[updates8]",
+          "tests/framework/test_trigger_agent.py::test_live_controls_and_complete_pc_vector_have_strict_domains[updates9]",
+          "tests/framework/test_trigger_agent.py::test_live_controls_and_complete_pc_vector_have_strict_domains[updates10]",
+          "tests/framework/test_trigger_agent.py::test_live_controls_and_complete_pc_vector_have_strict_domains[updates11]",
+          "tests/framework/test_trigger_agent.py::test_unknown_keys_and_mutable_input_aliases_cannot_bypass_the_boundary",
+          "tests/framework/test_trigger_agent.py::test_pc_window_overflow_and_alignment_are_not_masked",
+          "tests/framework/test_trigger_agent.py::test_width_and_units_do_not_truncate_tdata2_or_shift_the_semantic_pc",
+          "tests/framework/test_trigger_agent.py::test_incomplete_or_invalid_action_snapshots_are_rejected[values0]",
+          "tests/framework/test_trigger_agent.py::test_incomplete_or_invalid_action_snapshots_are_rejected[values1]",
+          "tests/framework/test_trigger_agent.py::test_incomplete_or_invalid_action_snapshots_are_rejected[values2]",
+          "tests/framework/test_trigger_agent.py::test_incomplete_or_invalid_action_snapshots_are_rejected[values3]",
+          "tests/framework/test_trigger_agent.py::test_required_ports_are_not_defaulted[reset]",
+          "tests/framework/test_trigger_agent.py::test_required_ports_are_not_defaulted[io_pc_35_addr]",
+          "tests/framework/test_trigger_agent.py::test_required_ports_are_not_defaulted[io_frontendTrigger_tUpdate_bits_tdata_tdata2]",
+          "tests/framework/test_trigger_agent.py::test_required_ports_are_not_defaulted[io_triggered_35]",
+          "tests/framework/test_trigger_agent.py::test_changed_native_width_is_a_migration_error[io_pc_0_addr-50]",
+          "tests/framework/test_trigger_agent.py::test_changed_native_width_is_a_migration_error[io_triggered_0-3]",
+          "tests/framework/test_trigger_agent.py::test_changed_native_width_is_a_migration_error[io_frontendTrigger_tUpdate_bits_tdata_tdata2-50]",
+          "tests/framework/test_trigger_agent.py::test_changed_native_width_is_a_migration_error[clock-2]",
+          "tests/framework/test_trigger_agent.py::test_direction_and_unowned_inputs_are_not_hidden[reset-io_frontendTrigger_debugMode]",
+          "tests/framework/test_trigger_agent.py::test_direction_and_unowned_inputs_are_not_hidden[io_triggered_0-io_frontendTrigger_tUpdate_bits_tdata_action]",
+          "tests/framework/test_trigger_agent.py::test_csr_domain_rejects_reserved_values_but_port_characterization_remains_explicit[0-fields0]",
+          "tests/framework/test_trigger_agent.py::test_csr_domain_rejects_reserved_values_but_port_characterization_remains_explicit[0-fields1]",
+          "tests/framework/test_trigger_agent.py::test_csr_domain_rejects_reserved_values_but_port_characterization_remains_explicit[0-fields2]",
+          "tests/framework/test_trigger_agent.py::test_csr_domain_rejects_reserved_values_but_port_characterization_remains_explicit[0-fields3]",
+          "tests/framework/test_trigger_agent.py::test_adjacent_chain_history_cannot_masquerade_as_a_legal_csr_sequence",
+          "tests/framework/test_trigger_agent.py::test_competing_driver_fails_without_corrupting_the_owner",
+          "tests/framework/test_trigger_agent.py::test_both_phase_comparisons_check_every_lane",
+          "tests/framework/test_trigger_agent.py::test_old_none_action_reset_oracle_is_rejected_by_a_fixed_zero_reset_answer",
+          "tests/framework/test_trigger_agent.py::test_truncated_tdata2_oracle_cannot_accept_the_architecturally_wrong_hit",
+          "tests/framework/test_trigger_agent.py::test_task_handoffs_preserve_phase_identity_and_frozen_observations",
+          "tests/framework/test_trigger_agent.py::test_concurrent_cycles_cannot_cross_associate_inputs",
+          "tests/framework/test_trigger_agent.py::test_closed_phase_monitor_cannot_pass[before]",
+          "tests/framework/test_trigger_agent.py::test_closed_phase_monitor_cannot_pass[after]",
+          "tests/framework/test_trigger_agent.py::test_stale_phase_tick_is_rejected_even_for_an_identical_action[before]",
+          "tests/framework/test_trigger_agent.py::test_stale_phase_tick_is_rejected_even_for_an_identical_action[after]",
+          "tests/framework/test_trigger_agent.py::test_missing_phase_payload_is_not_a_passing_empty_action[before]",
+          "tests/framework/test_trigger_agent.py::test_missing_phase_payload_is_not_a_passing_empty_action[after]",
+          "tests/framework/test_trigger_agent.py::test_stale_payload_cannot_replace_the_current_pc_comparison[before]",
+          "tests/framework/test_trigger_agent.py::test_stale_payload_cannot_replace_the_current_pc_comparison[after]",
+          "tests/framework/test_trigger_agent.py::test_finish_checks_final_configuration_and_then_disabled_quiet",
+          "tests/framework/test_trigger_agent.py::test_reset_error_is_sticky_even_after_the_monitor_is_restored",
+          "tests/framework/test_trigger_agent.py::test_cancelled_cycle_cannot_be_swallowed_then_finished",
+          "tests/framework/test_trigger_agent.py::test_restoring_capture_after_swallowed_failure_does_not_erase_the_slot",
+          "tests/framework/test_trigger_agent.py::test_rejected_work_and_reset_budgets_do_not_advance_the_clock",
+          "tests/framework/test_trigger_agent.py::test_lifecycle_cannot_submit_before_start_or_restart_after_finish",
+          "tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[flush-2]",
+          "tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[req_valid--1]",
+          "tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[req_is_mmio-0]",
+          "tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[is_first_instr-1.0]",
+          "tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[ifu_stall-2]",
+          "tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[empty_after--1]",
+          "tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[to_ready-2]",
+          "tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[from_valid-2]",
+          "tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[from_corrupt--1]",
+          "tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[from_denied-2]",
+          "tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[from_need_resend-1.0]",
+          "tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[req_paddr--2]",
+          "tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[req_paddr-1]",
+          "tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[req_paddr-281474976710656]",
+          "tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[req_paddr-0.0]",
+          "tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[req_pbmt--1]",
+          "tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[req_pbmt-4]",
+          "tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[from_data--1]",
+          "tests/framework/test_uncache_agent.py::test_input_fields_do_not_use_native_truncation_or_coercion[from_data-4294967296]",
+          "tests/framework/test_uncache_agent.py::test_nested_transactions_and_valid_reply_relationship_are_strict",
+          "tests/framework/test_uncache_agent.py::test_address_units_and_upper_bit_are_preserved_only_in_ports",
+          "tests/framework/test_uncache_agent.py::test_complete_typed_outputs_cannot_be_replaced_with_missing_or_invalid_values[req_ready-2]",
+          "tests/framework/test_uncache_agent.py::test_complete_typed_outputs_cannot_be_replaced_with_missing_or_invalid_values[resp_data-4294967296]",
+          "tests/framework/test_uncache_agent.py::test_complete_typed_outputs_cannot_be_replaced_with_missing_or_invalid_values[resp_exception-8]",
+          "tests/framework/test_uncache_agent.py::test_complete_typed_outputs_cannot_be_replaced_with_missing_or_invalid_values[to_paddr-1]",
+          "tests/framework/test_uncache_agent.py::test_missing_ports_are_not_zero_defaults[reset]",
+          "tests/framework/test_uncache_agent.py::test_missing_ports_are_not_zero_defaults[io_req_bits_paddr_addr]",
+          "tests/framework/test_uncache_agent.py::test_missing_ports_are_not_zero_defaults[io_fromUncache_resp_valid]",
+          "tests/framework/test_uncache_agent.py::test_missing_ports_are_not_zero_defaults[io_resp_bits_uncacheData]",
+          "tests/framework/test_uncache_agent.py::test_missing_ports_are_not_zero_defaults[io_toUncache_req_bits_memPageTypeNC]",
+          "tests/framework/test_uncache_agent.py::test_changed_width_is_a_migration_error[io_req_bits_paddr_addr-48]",
+          "tests/framework/test_uncache_agent.py::test_changed_width_is_a_migration_error[io_toUncache_req_bits_addr_addr-46]",
+          "tests/framework/test_uncache_agent.py::test_changed_width_is_a_migration_error[io_resp_bits_uncacheData-31]",
+          "tests/framework/test_uncache_agent.py::test_changed_width_is_a_migration_error[io_req_bits_pbmt-3]",
+          "tests/framework/test_uncache_agent.py::test_changed_width_is_a_migration_error[clock-2]",
+          "tests/framework/test_uncache_agent.py::test_wrong_direction_extra_inputs_and_changed_pruned_ready_fail",
+          "tests/framework/test_uncache_agent.py::test_second_writer_fails_and_owner_can_still_finish_a_real_read",
+          "tests/framework/test_uncache_agent.py::test_unreachable_request_types_are_explicit_port_pressure_not_silently_dropped[0-0]",
+          "tests/framework/test_uncache_agent.py::test_unreachable_request_types_are_explicit_port_pressure_not_silently_dropped[3-0]",
+          "tests/framework/test_uncache_agent.py::test_unreachable_request_types_are_explicit_port_pressure_not_silently_dropped[3-1]",
+          "tests/framework/test_uncache_agent.py::test_unknown_duplicate_early_and_boolean_reply_uids_are_rejected",
+          "tests/framework/test_uncache_agent.py::test_cancelled_uid_cannot_be_invented_for_unissued_work_or_aliased_to_a_new_waiting_read",
+          "tests/framework/test_uncache_agent.py::test_old_characterized_request_is_not_promoted_to_producer_provenance",
+          "tests/framework/test_uncache_agent.py::test_tagless_producer_input_cannot_infer_its_own_uid_from_live_state",
+          "tests/framework/test_uncache_agent.py::test_invalid_peer_resend_relationship_is_rejected_before_starting_read[16384-reply0]",
+          "tests/framework/test_uncache_agent.py::test_invalid_peer_resend_relationship_is_rejected_before_starting_read[20478-reply1]",
+          "tests/framework/test_uncache_agent.py::test_invalid_peer_resend_relationship_is_rejected_before_starting_read[20478-reply2]",
+          "tests/framework/test_uncache_agent.py::test_invalid_peer_resend_relationship_is_rejected_before_starting_read[20478-reply3]",
+          "tests/framework/test_uncache_agent.py::test_valid_payload_comparisons_cannot_be_hidden_by_observed_or_override_valid",
+          "tests/framework/test_uncache_agent.py::test_only_contractually_invalid_payload_is_ignored_and_zero_reset_is_separate",
+          "tests/framework/test_uncache_agent.py::test_reset_retains_uid_history_and_requires_a_reason_for_active_work",
+          "tests/framework/test_uncache_agent.py::test_task_handoffs_do_not_advance_or_cross_associate_phase_samples",
+          "tests/framework/test_uncache_agent.py::test_concurrent_requests_are_rejected_without_reusing_uid_slots",
+          "tests/framework/test_uncache_agent.py::test_closed_phase_monitor_cannot_return_a_passing_cycle[before]",
+          "tests/framework/test_uncache_agent.py::test_closed_phase_monitor_cannot_return_a_passing_cycle[after]",
+          "tests/framework/test_uncache_agent.py::test_stale_tick_is_rejected_even_for_the_same_value[before]",
+          "tests/framework/test_uncache_agent.py::test_stale_tick_is_rejected_even_for_the_same_value[after]",
+          "tests/framework/test_uncache_agent.py::test_missing_snapshot_is_not_a_passing_idle_cycle[before]",
+          "tests/framework/test_uncache_agent.py::test_missing_snapshot_is_not_a_passing_idle_cycle[after]",
+          "tests/framework/test_uncache_agent.py::test_stale_payload_cannot_replace_the_current_bus_phase[before]",
+          "tests/framework/test_uncache_agent.py::test_stale_payload_cannot_replace_the_current_bus_phase[after]",
+          "tests/framework/test_uncache_agent.py::test_finish_cannot_invent_replies_or_reset_outstanding_work[waiting]",
+          "tests/framework/test_uncache_agent.py::test_finish_cannot_invent_replies_or_reset_outstanding_work[send]",
+          "tests/framework/test_uncache_agent.py::test_finish_cannot_invent_replies_or_reset_outstanding_work[issued]",
+          "tests/framework/test_uncache_agent.py::test_promised_read_with_too_small_budget_fails_not_zero_acceptance_success",
+          "tests/framework/test_uncache_agent.py::test_zero_acceptance_fault_is_rejected_by_the_actual_read_chain",
+          "tests/framework/test_uncache_agent.py::test_hiding_final_completion_is_rejected_at_its_actual_response",
+          "tests/framework/test_uncache_agent.py::test_finish_detects_a_repeated_completion_instead_of_closing_the_monitor",
+          "tests/framework/test_uncache_agent.py::test_reset_assertion_failure_is_sticky_after_capture_is_restored",
+          "tests/framework/test_uncache_agent.py::test_cancelled_cycle_cannot_be_swallowed_and_then_finished",
+          "tests/framework/test_uncache_agent.py::test_swallowed_compare_error_cannot_be_erased_by_restoring_capture",
+          "tests/framework/test_uncache_agent.py::test_invalid_work_and_budgets_do_not_advance_slots_and_finish_is_strict",
+          "tests/frontend_trigger/test_frontend_trigger.py::test_config_and_enable_are_checked_before_and_after_the_same_edge",
+          "tests/frontend_trigger/test_frontend_trigger.py::test_reset_configuration_is_zero_including_the_action_field",
+          "tests/frontend_trigger/test_frontend_trigger.py::test_debug_and_breakpoint_permission_are_live_not_delayed",
+          "tests/frontend_trigger/test_frontend_trigger.py::test_lane_pcs_need_not_form_a_dense_consecutive_sequence",
+          "tests/frontend_trigger/test_frontend_trigger.py::test_last_slot_chain_bit_is_csr_reachable_but_has_no_successor",
+          "tests/ifu/test_ifu_fetch.py::test_recovered_half_instruction_keeps_its_completing_ftq_block[normal-upper-half]",
+          "tests/ifu/test_ifu_fetch.py::test_recovered_half_instruction_keeps_its_completing_ftq_block[upper-half-low11]",
+          "tests/instr_boundary/test_instr_boundary.py::test_raw_continuation_map_is_legal_and_keeps_real_instruction_coordinates",
+          "tests/instr_boundary/test_instr_boundary.py::test_compressed_coordinate_sweep_checks_every_slot",
+          "tests/instr_boundary/test_instr_boundary.py::test_carried_upper_half_cannot_acquire_block_one_ownership[normal-upper-half]",
+          "tests/instr_boundary/test_instr_boundary.py::test_carried_upper_half_cannot_acquire_block_one_ownership[upper-half-low11]",
+          "tests/instr_boundary/test_instr_boundary.py::test_arbitrary_raw_halfword_maps_keep_instruction_semantics",
+          "tests/pred_checker/test_pred_checker.py::test_inactive_payload_is_combinational_but_cannot_redirect",
+          "tests/pred_checker/test_pred_checker.py::test_identical_adjacent_requests_have_distinct_response_slots",
+          "tests/pred_checker/test_pred_checker.py::test_reset_clears_redirect_before_a_new_fault",
+          "tests/rvc_expander/test_rvc_expander.py::test_next_halfword_does_not_change_a_compressed_instruction",
+          "tests/rvc_expander/test_rvc_expander.py::test_same_instruction_uses_the_current_fs_state",
+          "tests/uncache_unit/test_uncache_unit.py::test_complete_producer_reads_match_identity_address_and_type[0-1]",
+          "tests/uncache_unit/test_uncache_unit.py::test_complete_producer_reads_match_identity_address_and_type[0-2]",
+          "tests/uncache_unit/test_uncache_unit.py::test_complete_producer_reads_match_identity_address_and_type[1-0]",
+          "tests/uncache_unit/test_uncache_unit.py::test_complete_producer_reads_match_identity_address_and_type[1-1]",
+          "tests/uncache_unit/test_uncache_unit.py::test_complete_producer_reads_match_identity_address_and_type[1-2]",
+          "tests/uncache_unit/test_uncache_unit.py::test_legal_peer_error_replies_complete_once[reply0-0]",
+          "tests/uncache_unit/test_uncache_unit.py::test_legal_peer_error_replies_complete_once[reply1-5]",
+          "tests/uncache_unit/test_uncache_unit.py::test_legal_peer_error_replies_complete_once[reply2-3]",
+          "tests/uncache_unit/test_uncache_unit.py::test_real_cross_page_reply_rule_and_highest_physical_address[12286-275-1]",
+          "tests/uncache_unit/test_uncache_unit.py::test_real_cross_page_reply_rule_and_highest_physical_address[12286-1-0]",
+          "tests/uncache_unit/test_uncache_unit.py::test_real_cross_page_reply_rule_and_highest_physical_address[12284-275-0]",
+          "tests/uncache_unit/test_uncache_unit.py::test_real_cross_page_reply_rule_and_highest_physical_address[281474976710654-275-1]",
+          "tests/uncache_unit/test_uncache_unit.py::test_completion_pulse_and_next_acceptance_have_distinct_uids",
+          "tests/uncache_unit/test_uncache_unit.py::test_cancelled_issued_uid_can_arrive_late_without_completing_a_new_unissued_read",
+          "tests/uncache_unit/test_uncache_unit.py::test_same_edge_flush_fire_is_recorded_but_does_not_create_a_live_request",
+          "tests/uncache_unit/test_uncache_unit.py::test_legal_mmio_waits_then_issues_exactly_once_after_backpressure_and_ifu_stall",
+          "tests/uncache_unit/test_uncache_unit.py::test_explicit_cancel_then_same_address_new_uid_has_no_old_completion[waiting]",
+          "tests/uncache_unit/test_uncache_unit.py::test_explicit_cancel_then_same_address_new_uid_has_no_old_completion[send]",
+          "tests/uncache_unit/test_uncache_unit.py::test_explicit_cancel_then_same_address_new_uid_has_no_old_completion[issued]"
+        ]
+      },
+      {
+        "suite": "icache",
+        "before": 294,
+        "after": 294,
+        "original_order_preserved": true,
+        "cases_sha256": "51fe274100f160928a607b94d3c1fab7a2de64110f6ddb1d0420825fc73fb1c4",
+        "added": []
+      },
+      {
+        "suite": "lsu",
+        "before": 543,
+        "after": 543,
+        "original_order_preserved": true,
+        "cases_sha256": "6e7aeef1ffbc09e964c176b1bb94b8deba1c974aaa649b910009a1eef6c590fc",
+        "added": []
+      },
+      {
+        "suite": "mmu",
+        "before": 417,
+        "after": 417,
+        "original_order_preserved": true,
+        "cases_sha256": "865c92178a138ad3d02910e0c8895c2c6711f4b4cddb2051aee7ef57bdd2f642",
+        "added": []
+      },
+      {
+        "suite": "lsq",
+        "before": 2575,
+        "after": 2575,
+        "original_order_preserved": true,
+        "cases_sha256": "30e5bcbd0d47f95d68e0fa95ef33df94f3b143a643e5ce089ea7ea61e04bd09d",
+        "added": []
+      },
+      {
+        "suite": "vagq",
+        "before": 467,
+        "after": 467,
+        "original_order_preserved": true,
+        "cases_sha256": "409e1ff0e17f671a76b59836d61684719ae5b9dbe916fdcc924b1253ff24b256",
+        "added": []
+      }
+    ],
+    "note": "Total CLI exit1 preserves R-13/R-14 open residuals, not collection failure."
+  },
+  "checks": [
+    {
+      "name": "root-tests",
+      "exit": 0,
+      "sha256": "0a82a315caecff440bfa4fef59ca25bfd1500ec1d9fab01278e6a5744921b34c",
+      "tail": [
+        "........................................................................ [ 57%]",
+        "......................................................                   [100%]",
+        "126 passed in 62.93s (0:01:02)"
+      ]
+    },
+    {
+      "name": "layout",
+      "exit": 0,
+      "sha256": "b6aae5b9d4b0df6156bf4ef0e4ba013622c672bed0b50c0eb538ffde5e9f64d7",
+      "tail": [
+        "| lsu | 23 | 4 | 0 | 0 | 0 | 140 | 0 | yes | needs-adapter | ok |",
+        "| mmu | 23 | 52 | 0 | 0 | 0 | 29 | 382 | yes | needs-adapter | ok |",
+        "| sbuffer | 3 | 7 | 0 | 0 | 0 | 0 | 0 | yes | no-static-leak-found | ok |",
+        "| vagq | 54 | 14 | 0 | 0 | 0 | 179 | 9 | yes | needs-adapter | ok |"
+      ]
+    },
+    {
+      "name": "transaction",
+      "exit": 1,
+      "sha256": "c99f0ac83cc40e1b1bfdec3f77e92041db73264b3a246fd50426a811f27b986b",
+      "tail": [
+        "| lsu | 23 | 4 | 0 | 0 | 0 | 140 | 0 | yes | needs-adapter | 140 pin-level expressions require transaction adapters |",
+        "| mmu | 23 | 52 | 0 | 0 | 0 | 29 | 382 | yes | needs-adapter | 29 pin-level expressions require transaction adapters; 382 signal operations/native handles require transaction adapters |",
+        "| sbuffer | 3 | 7 | 0 | 0 | 0 | 0 | 0 | yes | no-static-leak-found | ok |",
+        "| vagq | 54 | 14 | 0 | 0 | 0 | 179 | 9 | yes | needs-adapter | 179 pin-level expressions require transaction adapters; 9 signal operations/native handles require transaction adapters |"
+      ]
+    },
+    {
+      "name": "skills",
+      "exit": 0,
+      "sha256": "e2ca572f1c1ac985d863422272810240f7825dd1da13a6cf826c0e8d2d828fd4",
+      "tail": [
+        "    \"API presence is not behavioral certification.\",",
+        "    \"Link fragments and methodological correctness need review.\"",
+        "  ]",
+        "}"
+      ]
+    },
+    {
+      "name": "assets",
+      "exit": 0,
+      "sha256": "37458db10066d45304979520a074fca87e5e83a157cbebc2aa6ae251f71a1c59",
+      "tail": [
+        "  \"duts\": 132,",
+        "  \"historical_evidence_entries\": 134685,",
+        "  \"errors\": []",
+        "}"
+      ]
+    },
+    {
+      "name": "pip-check",
+      "exit": 0,
+      "sha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09",
+      "tail": [
+        "No broken requirements found."
+      ]
+    },
+    {
+      "name": "diff",
+      "exit": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tail": []
+    }
+  ],
+  "native_build_audit": {
+    "output": "results/ucv-goal-uncache-checks-20261101/native-build-audit.json",
+    "sha256": "97c87ea3e67a424d73f91f8e822ec833e22a325fcdd5412888bfd2d66e2451bc",
+    "rows": [
+      {
+        "dut": "perf_analysis",
+        "cache_key": "c87d52be3b129f8321ec8e4027e96eebb7989321f922d2f5935e59fb14d5d48a",
+        "receipt_sha256": "6ffb68fa767b0e52126cde361423d41375aeb8289ebdd33a40931d1916b7ee26",
+        "manifest_build_id": "021cc86d014db9eabf8f948bbdd4dea8732361897ba3ea6172529e9c00adacb7",
+        "current_native_files_match": true,
+        "unchanged_since_initial_inventory": true
+      },
+      {
+        "dut": "instr_boundary",
+        "cache_key": "bc9daf14b3466a7eaa994d0bfc12c6d6c7cd1c7d3370cb9cd1e699eda1752f07",
+        "receipt_sha256": "800d14b50a0381671b2ddc4d2b6f57d045fdf34870f86afe6bff8a57158a7285",
+        "manifest_build_id": "0d6b317b43d03ce39bec40055475c63b91e0f497d621d2bfb0f54ffe81869463",
+        "current_native_files_match": true,
+        "unchanged_since_initial_inventory": true
+      },
+      {
+        "dut": "rvc_expander",
+        "cache_key": "0542feb1acd20b383ff7e979bfbbdb211eb1cda5e258791d84b294a5277d0b4f",
+        "receipt_sha256": "9888dc26c1207b423052d4daac803ec927eb3cdd0caec213ff378ed54e371be0",
+        "manifest_build_id": "41b9f00f162593500f0163543c5f1fd2827bd2513d416e1a576e5ce42ce1df75",
+        "current_native_files_match": true,
+        "unchanged_since_initial_inventory": true
+      },
+      {
+        "dut": "uncache_unit",
+        "cache_key": "7db11b5d74890fbf832023cdb61cbd13a783120f075a624ecf7041e407eda63f",
+        "receipt_sha256": "2240a8f558b1373177c6da053ecd59a1228efed029e22ef436e78498e16e6f8b",
+        "manifest_build_id": "4dbb1fff9cd1825dbad9edf92fdbf92bb5393d95568ed90f58bbfc37811bb3bb",
+        "current_native_files_match": true,
+        "unchanged_since_initial_inventory": true
+      },
+      {
+        "dut": "pred_checker",
+        "cache_key": "55f8213a715b4b9761ffa022d1174ba2e725410311af81edc5f26c13d2ae6e95",
+        "receipt_sha256": "4b639f99b8536aa8165b1a1e1a5095bf2e5b3809bfda32b38240b47d03aef848",
+        "manifest_build_id": "966f41fce03a978af6cba8f5c95348f0746028c3060c372867958ef67bff3bf8",
+        "current_native_files_match": true,
+        "unchanged_since_initial_inventory": true
+      },
+      {
+        "dut": "ifu",
+        "cache_key": "2710a07c8b5285ee019b1f56aa4c08f92b71a717abc6712a7cb0a3c52ebf740e",
+        "receipt_sha256": "87477f8c6776a214f8dfe9eacb869016548b1830e395ae25aca9ffee6ac56205",
+        "manifest_build_id": "c7be6ebbc84ce2daffd77148d3e70141fc9b63d7fd6ae8a4ce637c21e624735c",
+        "current_native_files_match": true,
+        "unchanged_since_initial_inventory": true
+      },
+      {
+        "dut": "frontend_trigger",
+        "cache_key": "d9d23aeb35307210163763d0d1f9a2027bbda2b4de9513a3814c3cf67acc7b81",
+        "receipt_sha256": "29835cf9155ed93cc513ab7da000ffedd21db971663e500d964d5d854e9363d8",
+        "manifest_build_id": "e6380c0358e045107e926fa52fac94fcbe1d73f829829ee7fc4c3fd3e21c8b58",
+        "current_native_files_match": true,
+        "unchanged_since_initial_inventory": true
+      }
+    ],
+    "note": "Compared actual native artifact build maps with previous full manifest, hashed every current native input file, and matched all7 build.json SHA256 to initial inventory. Tool-lock equality alone is not this proof."
+  },
+  "contracts": {
+    "address": "48-bit aligned byte physical address, only ports shift to47 halfword wires; old raw inputs explicitly <<1 without dropping high/odd raw values.",
+    "producer": "MMIO/NC/IO; denied implies corrupt; needResend only clean nonRVC at page-final halfword; all normal replies require an explicit issued environment UID.",
+    "tagless_limit": "UID is input-established environment metadata, not a native tag. Known cancelled/issued replies outside a new WaitResp may be ignored; ambiguous stale reply during another WaitResp must be filtered by real peer and rejected at normal admission. Leaf controls are not complete external InstrUncache/TileLink/global-flush verification.",
+    "qualification": "Read/write valids always compared; payload mask from independent expected valid, never observed valid or altered expected override. Reset fixed-zero state separately checked.",
+    "ledger": "fire=accepted+flush-on-fire; accepted=completed+cancelled+active. Completion counted from verified post-edge pulse, not model counter; reset retains UID history and increments epoch.",
+    "finish": "No automatic flush/reset/reply. Only caller-explicit cancellation ends pending work; finite read watchdog and two checked quiet slots, sticky failure/cancellation/reset errors."
+  },
+  "observed_original700": {
+    "scope": "Actual managed original random test checks sampled events after all700 frames, before its extra explicit final cancellation; immutable before/after checks run every frame.",
+    "req_fires": 94,
+    "accepted": 89,
+    "completed": 75,
+    "cancelled": 13,
+    "flushed_on_accept": 5,
+    "active": 1,
+    "final_phase": "send",
+    "counter_assertion_nodeid": "tests/uncache_unit/test_uncache_unit.py::test_random_sequences_match_the_model",
+    "extra_cancellation": "finite700 port-pressure run explicitly abandons its final request"
+  },
+  "request_to_artifact": [
+    {
+      "requirement": "Strict semantic API and complete binding",
+      "artifacts": [
+        "model/uncache.py",
+        "uncache_unit/types.py",
+        "uncache_unit/ports.py",
+        "fixtures.py"
+      ],
+      "evidence": "Frozen inputs/output/request/reply/UID records; all15 nonclock inputs and9 outputs, width/direction/ownership set, pruned response-ready1."
+    },
+    {
+      "requirement": "Framework ownership and immutable correct-phase sampling",
+      "artifacts": [
+        "drivers/explicit_slots.py",
+        "uncache_unit/agent.py",
+        "uncache_unit/checker.py"
+      ],
+      "evidence": "Unique single-cycleDriver,2losslessMonitors for pre-edge fires/post-edge pulse, same-edge/+2tick relation, independent valid masks; no copied clock/queue implementation."
+    },
+    {
+      "requirement": "Input identity, acceptance/issue/completion/cancel and bounded finish",
+      "artifacts": [
+        "uncache_unit/ledger.py",
+        "uncache_unit/agent.py"
+      ],
+      "evidence": "Explicit reply UID/epoch, physical fire separate from cancelled-on-fire effects, one issue for held payload, one completion pulse, retained reset history; finish cannot clear debt."
+    },
+    {
+      "requirement": "Preserve valid domain and old pressure, add discriminating controls",
+      "artifacts": [
+        "uncache_unit/stimulus.py",
+        "tests/uncache_unit/test_uncache_unit.py",
+        "tests/framework/test_uncache_agent.py",
+        "tests/framework/test_checker_discrimination.py",
+        "tests/framework/test_oracle_independence.py"
+      ],
+      "evidence": "19new functional cases/72selftests pass; old11 bodies767 primary inputs identical incl700random. Producer and port-characterization scopes explicit. Zeroacceptance, finalpulse loss/repeat, stale UID/tick/payload, closedmonitor and outstanding finish failures demonstrated; Python injection is not RTL mutation."
+    },
+    {
+      "requirement": "Machine evidence and current contracts",
+      "artifacts": [
+        "verification_plan.json",
+        "docs/transaction-adapters.md",
+        "docs/functional-points.md",
+        "docs/observation-coverage.md",
+        "tools/audit_uncache_stimulus.py",
+        "../../../tests/test_suite_layout.py"
+      ],
+      "evidence": "Current full/seed2 sources stable and match, original393 verdicts unchanged,104 seed2 PASS, root126 PASS; full repository transaction gate still fails and remaining work is explicit."
+    }
+  ],
+  "remaining": "IFU Ifu top-level; BPU/FTQ/ICache configuration and lifecycle audit; all remaining MemBlock/VAGQ adapters, final repository gates/regressions/wheel/assets/docs remain mandatory. No commit/push or native rebuild performed."
+}

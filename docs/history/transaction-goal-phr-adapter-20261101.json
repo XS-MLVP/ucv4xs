@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "scope": "Integrated BPU PHR adaptation and FTQ/ICache native seed forwarding; not complete BPU/frontend/repository acceptance",
+  "handoff_source_sha256": "712d376b3218c6de47e828fa806d44a4c3d8b1b4a3705de0bee6ccd1169ada36",
+  "handoff_source_files_match_at_audit": true,
+  "source_boundary": "PHR runs matched all recorded source files before subsequent autonomous-pipeline work. These historical receipts are not silently re-labelled with later BPU source hashes.",
+  "runs": [
+    {
+      "output": "results/ucv-goal-bpu-phr-current-verified-20261101",
+      "counts": {"PASS": 16},
+      "seed": 1,
+      "workers": 3,
+      "source_stable": true,
+      "run_sha256": "3a1f4a7f9e673f32fdaa08aa2f602738b93478bc8dad0f82ffa7434230613b25",
+      "summary_sha256": "8c8b2f8c6a686d8c650634b0b8168dbe26b1e0756746524a2a57092f12fe211e",
+      "selection": ["tests/framework/test_phr_runtime_obligations.py", "tests/bpu/scoreboard/test_phr_handoff.py", "tests/bpu/testcase/test_phr.py"],
+      "credit": "10 original functional parameters, 2 coherent-monitor handoff controls and 4 real-native framework controls; not 16 hardware functional points",
+      "manifest_sha256": "1c88b52826ac131045096fc9e48517c9901ef78386f8f6c8035ec124e48ff71b",
+      "manifest_state": "committed",
+      "coverage_complete": true,
+      "gaps": []
+    },
+    {
+      "output": "results/ucv-goal-bpu-phr-seed2-verified-20261101",
+      "counts": {"PASS": 16},
+      "seed": 2,
+      "workers": 2,
+      "source_stable": true,
+      "run_sha256": "43172822ca9db18c96055434fe428373e2671fdb6fc0bdf68a9a92216dd8f080",
+      "summary_sha256": "d63416bdefa92c3873d81dac4c8b3628ea11ae65e9ce422e7ac7c993702d3b44",
+      "same_selection_as_seed1": true,
+      "manifest_sha256": "57ba0737740875ffbd18591d0b4ec1d56110bc8645826536060fca40b5312c65",
+      "manifest_state": "committed",
+      "coverage_complete": true,
+      "gaps": []
+    },
+    {
+      "output": "results/ucv-goal-bpu-phr-current-pure-20261101",
+      "counts": {"PASS": 2128},
+      "seed": 1,
+      "workers": 1,
+      "source_stable": true,
+      "run_sha256": "d9a8faefe5aa059e16d70eb8de995267e8392e05a02141122cf41484369ed68a",
+      "summary_sha256": "357a86cca1f4467fe382234e9664a22b8f4a0b3a0d760548d29fcc7a9304a201",
+      "selection": ["tests/framework/test_phr_value_only_contract.py", "tests/framework/test_integrated_port_contract.py", "tests/framework/test_semantic_gap_review.py", "tests/bpu/scoreboard/test_phr_api.py", "tests/bpu/scoreboard/test_sc_bounds.py", "tests/bpu/scoreboard/test_training_alignment_geometry.py", "tests/bpu/scoreboard/test_feedback_gate.py"],
+      "credit": "Python model, schema, encoding and checker controls; no DUT functional or RTL mutation credit",
+      "gaps": []
+    }
+  ],
+  "requirements_to_artifacts": [
+    {"requirement": "Actual physical value-only pointer, no fabricated flag or public target/perf", "implementation": ["suites/frontend/bpu/bpu/bundle/ports.py", "suites/frontend/bpu/bpu/monitor/phr/observation.py", "suites/frontend/bpu/bpu/model/phr/model.py"], "controls": "test_phr_value_only_contract.py: every physical pointer, changed field/width/direction, flag rejection; test_phr_handoff.py: target/perf remain None"},
+    {"requirement": "Input-established UID/epoch, coherent fire/flush ownership and exact terminal receipts", "implementation": ["suites/frontend/bpu/bpu/checker/phr/association.py", "suites/frontend/bpu/bpu/checker/phr/checking.py"], "controls": "equal-payload distinct UIDs, wrong pointer/low/PC or missing S3 valid, reset terminal paths, unknown completion UID"},
+    {"requirement": "Stop new acceptance and explicitly drain; no monitor closure/reset/response clearing of debt", "implementation": ["suites/frontend/bpu/bpu/env/phr/observation.py"], "controls": "test_phr_runtime_obligations.py: live scope, stopped monitor, swallowed mismatch, real reset completion/cancellation; cleanup errors remain independent"},
+    {"requirement": "Only declared output-to-input projection; strict physical domain before driving", "implementation": ["suites/frontend/bpu/bpu/transaction/types.py", "suites/frontend/bpu/bpu/driver/encoding.py"], "controls": "only ras.topRetAddr_addr removed; unknown fields not filtered; pointer 532..1023, bool/float and low-bit overflow rejected"},
+    {"requirement": "DefaultConfig real training copy geometry without losing MainBTB successor", "implementation": ["suites/frontend/bpu/bpu/bundle/ports.py", "suites/frontend/bpu/bpu/driver/encoding.py", "suites/frontend/bpu/bpu/model/sc/model.py"], "controls": "strict (1,1,2) copy shape; all784 legal alignment cases; missing Main successor and invented copies rejected"},
+    {"requirement": "Actual configured recovery/wrap program", "implementation": ["suites/frontend/bpu/bpu/case/phr_recovery.py", "suites/frontend/bpu/bpu/case/phr_taken_wrap.py", "suites/frontend/bpu/bpu/coverage/phr/supplemental.py"], "controls": "two complete even-pointer physical orbits at532 cells, NT/T, flowing/backpressure, S2/S3 direction and physical0-to530 wrap; lap is program history, not hardware flag"}
+  ],
+  "independent_oracle_audit": {
+    "unchanged_normalized_AST_from_HEAD": ["fold", "folds", "path_hash", "physical_read", "logical", "advance"],
+    "changes": "subtract/reset explicitly support value-only physical pointers while retaining full-flag arithmetic as a separate pure model domain; no live state is used to repair expected cells/folds",
+    "limits": "Given actual parent-to-PHR input-stream state/recovery checking; internal target is not an independently validated public BPU prediction target. Not full FTQ source eligibility or odd-pointer reachability."
+  },
+  "native_audit": {
+    "cache_key": "cc1bfd9f36573f239ef559906015057f815bfde34d124f3a1ed854718aaf886b",
+    "build_json_sha256": "72f1c42c4acc2996a128d30ce505766acb988b8db4c705204823fb311f0b2080",
+    "signals_json_sha256": "77c3de88d7a0df171e7268d50d3c9970c8dda3602362c5009462065e4c929fe7",
+    "rehashed_RTL_inputs": 128,
+    "rehashed_native_outputs": 5,
+    "hash_mismatches": [],
+    "smoke": "PASS in existing build receipt; no RTL/native rebuild in this work",
+    "coverage_boundary": "Committed manifests certify artifact completion only, not functional coverage closure. Raw coverage inputs may be cleaned by the recorded framework retention policy."
+  },
+  "intermediate_results_preserved": [
+    {"output": "results/ucv-goal-bpu-phr-boundary-review-20261101", "counts": {"PASS": 42, "FAIL": 1}, "first_failure": "DCE phrPtr_flag binding"},
+    {"output": "results/ucv-goal-bpu-phr-value-only-first-20261101", "counts": {"PASS": 1122, "FAIL": 10}, "first_failure": "output-only RAS topRetAddr_addr re-driven into recovery input"},
+    {"output": "results/ucv-goal-bpu-phr-native-v2-20261101", "counts": {"PASS": 4, "FAIL": 8}, "first_failure": "training start PC copies still(2,2,2), actual(1,1,2)"},
+    {"output": "results/ucv-goal-bpu-phr-training-v3-20261101", "counts": {"PASS": 8}},
+    {"output": "results/ucv-goal-bpu-phr-lifecycle-final-20261101", "counts": {"PASS": 14, "FAIL": 2}, "first_failure": "selftest mistakenly writes immutable tuple; reset selftest wrongly assumes all pre-call pending inputs are cancelled rather than possibly completing before the actual reset edge"}
+  ],
+  "native_seed_forwarding": {
+    "fixes": ["suites/frontend/ftq/harness.py", "suites/frontend/icache/runtime/dut.py"],
+    "constructor_controls": "tests/test_frontend_runtime_seed.py: pre-fix5 FAIL/1 PASS; after forwarding root suite132 PASS",
+    "ftq": {"output": "results/ucv-goal-ftq-native-seed2-verified-20261101", "counts": {"PASS": 109, "XFAIL": 2}, "source_sha256": "87b7e690d2afe062dcba3faab2448f1d4189c27393813f0a0337f66ea0c510b3", "run_sha256": "f578856c8c0602733e8067abf55f0f3b0c3ada7613dd5a3bdc4f77290cade4b4", "summary_sha256": "0d975a649ea0278270f539e7b9aedff7bf3d57c0226bc6d68ee799e59384fb14", "previous_selected_cases_removed_or_changed": [], "added": "test_plan_audit:1 PASS", "selection": "entire suite"},
+    "icache": {"output": "results/ucv-goal-icache-native-seed2-verified-20261101", "counts": {"PASS": 44, "XFAIL": 1}, "source_sha256": "0e2c3574b25e26b887b7f7884d79008c9972e29fd5899db2e28fea7e7287d6ec", "run_sha256": "ffb4ea08c44dbbd321c5b5ac95d66f9558ca386e35d633229931d2ad2c997736", "summary_sha256": "13e912e609ddb2e30d28346349216022c1cc00b481466819684541a317181a31", "previous_selected_cases_removed_or_changed": [], "selection": "same45 lifecycle/backpressure/flush parameters, not whole ICache"},
+    "historical_boundary": "CLI seed labels in earlier receipts do not prove that FTQ used a native seed or ICache used anything other than1. Newly found analogous MemBlock default-seed forwarding gaps remain explicit required tasks."
+  },
+  "collection": "docs/history/transaction-goal-collect-phr-current-20261101.json",
+  "required_remaining": ["BPU autonomous pipeline and target/perf-sensitive consumers", "original-short/long-priority and positive-protection initialization", "MBTB four-way ownership/writeback and duplicate cleanup", "FTQ/ICache per-DUT semantic audit", "all MemBlock/VAGQ migration and final repository gates/regressions/package/assets"]
+}

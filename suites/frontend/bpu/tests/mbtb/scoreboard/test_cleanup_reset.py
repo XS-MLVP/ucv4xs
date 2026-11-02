@@ -125,7 +125,8 @@ def test_cached_only_control_cannot_hide_an_already_accepted_cleanup(fault):
 def prediction(branch,*,counter):
     entries=[MbtbEntry(0,0,0,0,0,0) for _ in range(10)]
     entries[1]=MbtbEntry(1,int(counter>=2),branch.target,branch.position,branch.kind,0)
-    meta=[[dict(rawHit=0,position=0,attribute=dict(branchType=0,rasAction=0),counter_value=0) for _ in range(2)] for _ in range(2)]
+    meta=[[dict(rawHit=0,position=0,counter_value=0,
+        **({'attribute':dict(branchType=0,rasAction=0)} if way<4 else {})) for way in range(5)] for _ in range(2)]
     meta[0][1]=dict(rawHit=1,position=branch.position,attribute=dict(branchType=branch.kind,rasAction=0),counter_value=counter)
     return MbtbPrediction(tuple(entries),meta)
 
@@ -139,8 +140,10 @@ def test_new_epoch_consumer_cannot_accept_old_or_corrupted_instruction(fault):
     elif fault=='old-target':value=replace(value,entries=(value.entries[0],replace(value.entries[1],target=program.old.target),*value.entries[2:]))
     elif fault=='old-kind':value=replace(value,entries=(value.entries[0],replace(value.entries[1],branch_type=program.old.kind),*value.entries[2:]))
     elif fault=='wrong-direction':value=replace(value,entries=(value.entries[0],replace(value.entries[1],taken=1),*value.entries[2:]))
-    elif fault=='counter':value.meta_entries[0][1]['counter_value']=0
-    else:value.meta_entries[0][1]['rawHit']=0
+    else:
+        meta=deepcopy(value.meta_entries)
+        meta[0][1]['counter_value' if fault=='counter' else 'rawHit']=0
+        value=replace(value,meta_entries=meta)
     with pytest.raises(ScoreboardMismatch):Checks(program).resident(value,program.new,counter=1)
 
 
@@ -151,12 +154,13 @@ def test_duplicate_precondition_requires_two_distinct_complete_original_records(
     second=prediction(program.changed,counter=2)
     entries=list(first.entries)
     entries[0]=second.entries[1]
-    first.meta_entries[0][0]=deepcopy(first.meta_entries[0][1])
+    meta=[list(row) for row in deepcopy(first.meta_entries)]
+    meta[0][0]=deepcopy(meta[0][1])
     if fault=='one-survivor':entries[0]=replace(entries[0],valid=0)
     elif fault=='identical-targets':entries[0]=replace(entries[0],target=program.old.target)
     elif fault=='wrong-position':entries[0]=replace(entries[0],position=3)
-    else:first.meta_entries[0][0]['position']=3
-    with pytest.raises(ScoreboardMismatch):Checks(program).duplicate(replace(first,entries=tuple(entries)))
+    else:meta[0][0]['position']=3
+    with pytest.raises(ScoreboardMismatch):Checks(program).duplicate(replace(first,entries=tuple(entries),meta_entries=meta))
 
 
 @pytest.mark.parametrize('profile',PROFILES)

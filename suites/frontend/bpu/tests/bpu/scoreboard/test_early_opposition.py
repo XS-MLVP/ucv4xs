@@ -9,6 +9,7 @@ from suites.frontend.bpu.bpu.coverage.early_opposition import EarlyOppositionCov
 from suites.frontend.bpu.bpu.model.early_opposition import provider,ahead_owner,main_counter,is_opposed,stable_negative,steady_history,loop_history,FALLBACK
 from suites.frontend.bpu.bpu.model.pipeline import Redirect
 from suites.frontend.bpu.bpu.model.selection import Kind
+from suites.frontend.bpu.bpu.model.entry_protection import INITIALIZATION_ROUNDS, INITIALIZATION_REQUESTS_PER_ROUND
 from tests.bpu.scoreboard.test_early_direction_checking import Program as LearningProgram,actual_live,actual_fast
 
 
@@ -59,6 +60,54 @@ class Program(LearningProgram):
     def enable(self,value):
         self.event=replace(self.event,enabled=(False,value,True,False,False,False,False))
         self.quiet()
+
+    def one_original(self,*,recover=None):
+        idle=self.quiet()
+        if recover is not None:
+            self.step(replace(idle,redirect=Redirect(recover.token.history,(self.pc//16)*16+self.fallback_position,self.pc,True)))
+        for _ in range(32):
+            cycle=self.step()
+            if cycle.fires[1] and not cycle.flushes[0] and cycle.tokens[0].pc==self.pc:
+                sequence=cycle.tokens[0].sequence
+                accepted=self.tick
+                break
+        else:
+            raise AssertionError('single owned program input did not accept')
+        source=None
+        for _ in range(128):
+            cycle=self.step(idle)
+            if cycle.metadata is not None and cycle.metadata.sequence==sequence:
+                source=self.receipt(cycle.metadata)
+                source.prediction_tick=accepted
+            if self.model.stages[1:]==(None,None) and not self.model.sources.main_pending():
+                break
+        else:
+            raise AssertionError('single owned program input did not drain')
+        assert source is not None
+        self.quiet()
+        return source
+
+    def bounded_opposed(self):
+        source=self.prepared()
+        self.enable(True)
+        for _ in range(8):
+            source=self.one_original(recover=source)
+            source=self.one_original()
+            if is_opposed(self.model.sources,source.token):
+                return source
+        raise AssertionError('bounded owned opposition did not become qualified')
+
+    def learned_short(self):
+        self.enable(False)
+        self.resolve(self.original,2,Kind.CONDITIONAL,False,'not-taken')
+        source=self.query(self.original)
+        self.resolve(source,FALLBACK,Kind.DIRECT,True,'fallback')
+        source=self.until(source,lambda token:steady_history(token,FALLBACK))
+        self.enable(True)
+        for _ in range(INITIALIZATION_ROUNDS):
+            for index in range(INITIALIZATION_REQUESTS_PER_ROUND):
+                source=self.one_original(recover=source if index==0 else None)
+        return source
 
     def until(self,source,predicate,*,settle=True):
         idle=self.quiet();self.step(replace(idle,redirect=Redirect(source.token.history,(self.pc//16)*16+FALLBACK,self.pc,True)))

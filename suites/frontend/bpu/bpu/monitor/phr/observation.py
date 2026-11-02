@@ -28,7 +28,7 @@ class BpuPhrMonitor(CycleMonitor):
             return value
 
         def pointer(base):
-            return Bundle(flag=signal(base + '_flag'), value=signal(base + '_value'))
+            return Bundle(value=signal(base + '_value'))
 
         def metadata(base):
             return Bundle(pointer=pointer(base + '_phrPtr'), low=signal(base + '_phrLowBits'))

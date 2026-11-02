@@ -4,15 +4,27 @@
 
 当前版本是**结构整合版**：十个工程、132 个 DUT 已接入统一构建与运行链路。BPU 对完整 DefaultConfig RTL 的模型和用例适配、完整生产回归及空缓存全链路验收仍在推进。实际 FAIL、XFAIL、SKIP 和证据边界见 [阶段状态](docs/status.md)；结构标签不代表硬件验收通过。
 
+准备参与开发或使用 AI 修改本仓库，请先读 [协作开发与目录约定](CONTRIBUTING.md)。
+[2026-11-02 协作检查点](docs/collaboration-checkpoint-20261102.md)列出本轮交接范围与待办；
+阶段收尾不等于全仓事务适配或硬件验收完成。
+
 ## 工程与基线
 
-| 分组 | 工程 | DUT 数 | 初始有效基线 |
+| 分组 | 工程 | DUT 数 | 当前有效基线 |
 |---|---|---:|---|
-| frontend | BPU / ICache / FTQ / IFU | 10 / 11 / 3 / 7 | public-893e1580b |
-| memblock | LSQ / DCache / MMU / Sbuffer / LSU | 38 / 13 / 17 / 2 / 19 | public-893e1580b |
+| frontend | BPU / ICache / FTQ / IFU | 10 / 11 / 3 / 7 | public-a0c2a26cb |
+| memblock | LSQ / DCache / MMU / Sbuffer / LSU | 38 / 13 / 17 / 2 / 19 | public-a0c2a26cb |
 | vector | VAGQ | 12 | internal-d4566d58a，外部源码接入 |
 
-`public` 集合包含九个公开工程；`full` 另外包含 VAGQ。公开根基线固定为 `893e1580b705d81f113c30c7a05734e09a08050e`，VAGQ 工程显式覆盖为 internal `d4566d58a5ace1f6a5df4409b37a84b971f48e43`。
+`public` 集合包含九个公开工程；`full` 另外包含 VAGQ。公开根基线固定为
+`a0c2a26cbe3c862175174bad03a1a23c406315ed`，对应2026-11-02核对的上游
+`kunminghu-v3` 分支头；保存完整commit，不自动漂移跟随分支。VAGQ工程继续显式覆盖
+internal `d4566d58a5ace1f6a5df4409b37a84b971f48e43`。
+
+此次只更新基线配置和默认路径解析，**尚未针对新基线生成RTL、构建/冒烟或执行功能回归**。
+旧 `public-893e1580b` 清单与其历史结果保留，不能把此前PASS/FAIL重标到新基线；后续先
+执行下方 `prepare` / `build`，旧native链接会被运行前校验拒绝。见
+[本次更新记录](docs/history/baseline-kunminghu-v3-20261102.json)。
 
 所有工程使用 **DefaultConfig**。基线按“根 → 硬件分组 → 工程”继承，最近的显式完整命名基线优先；一个工程的所有 DUT 共用基线。源码 commit、递归子模块、生成参数、工具版本和设计补丁均进入版本清单。
 
@@ -110,6 +122,7 @@ ucv4xs/
 ## 文档、经验与开发
 
 - [AGENTS.md](AGENTS.md)：修改本仓库时遵循的结构、基线和验证约定。
+- [CONTRIBUTING.md](CONTRIBUTING.md)：人工与 AI 共用的目录、命名、分工、检查和交接模板。
 - [项目工作流 skill](skills/ucv4xs-workflow/SKILL.md)：基线变更、构建、回归及新增工程的操作入口。
 - [skill 索引](skills/README.md) 与 [经验总入口](docs/lessons/README.md)：保留原案例、误报漏检复盘与防复发手册。
 - [维护与验收](docs/maintenance.md)、[阶段状态](docs/status.md)：当前工作边界、真实判定和未完成事项。

@@ -14,7 +14,8 @@ def ready(program):
 
 
 def receipt():
-    dual=dict(ports=[dict(write_valid=1,key='neighbor'),dict(write_valid=1,key='duplicate')],foreign_writes=[])
+    dual=dict(ports=[dict(write_valid=0),dict(write_valid=0),
+                     dict(write_valid=1,key='neighbor'),dict(write_valid=1,key='duplicate')],foreign_writes=[])
     return dict(expected_dual=deepcopy(dual),actual_dual=dual,
         expected_feedback={'complete':'accepted'},actual_feedback={'complete':'accepted'},
         original_metadata_unchanged=True,independent_reference_checks=12,independent_reference_failures=0,
@@ -59,4 +60,14 @@ def test_all_consumer_phases_are_required(count):
     p=SEMANTIC_PROGRAMS[0];c=Coverage(p)
     for phase in PHASES[:count]:c.sample(dict(p.sample(),phase=phase))
     with pytest.raises(AssertionError):c.finish(receipt())
+    assert c.groups['checked'].coverage==0
+
+
+@pytest.mark.parametrize('fault', ('two-way-schema', 'third-active-port'))
+def test_agreeing_but_malformed_receipts_cannot_claim_complete_four_way_effects(fault):
+    c=ready(SEMANTIC_PROGRAMS[0]);r=receipt()
+    if fault=='two-way-schema':r['actual_dual']['ports']=r['actual_dual']['ports'][2:]
+    else:r['actual_dual']['ports'][0]['write_valid']=1
+    r['expected_dual']=deepcopy(r['actual_dual'])
+    with pytest.raises(AssertionError):c.finish(r)
     assert c.groups['checked'].coverage==0

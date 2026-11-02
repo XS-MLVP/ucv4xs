@@ -17,7 +17,8 @@ from tests.lsq_wrapper.mixed_owners import rob_pointer
 
 @pytest.mark.parametrize("lane",range(3))
 @pytest.mark.parametrize("wake",("pool_credit","address_prefix"))
-async def test_real128_stores_RAW_full57th_Load_original_slot_all_effects(lsq,lane,wake):
+async def test_real128_stores_RAW_full57th_Load_original_slot_all_effects(sq_lsq,lane,wake):
+    lsq=sq_lsq
     trace=MemoryOwners(lsq)
     start=16
     trace.base=replace(trace.base,pending=rob_pointer(start),pending_next=rob_pointer(start))

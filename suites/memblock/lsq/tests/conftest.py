@@ -67,7 +67,7 @@ from suites.memblock.lsq.fail_review.fixtures import review_dut
 from suites.memblock.lsq.forward.fixtures import forward
 from suites.memblock.lsq.load_queue.fixtures import lq
 from suites.memblock.lsq.local_reset.fixtures import local_reset_lsq
-from suites.memblock.lsq.lsq_wrapper.fixtures import lsq_probe, wrapper_lsq
+from suites.memblock.lsq.lsq_wrapper.fixtures import lsq_probe, wrapper_lsq as lsq
 from suites.memblock.lsq.psq.fixtures import psq, psq_full
 from suites.memblock.lsq.sq_endpoint.fixtures import sq_lsq, sq_raw, sq_replay
 from suites.memblock.lsq.store_queue.fixtures import sq
@@ -210,7 +210,7 @@ async def rar(request, dut_factory):
 
 
 @pytest.fixture
-async def root_raw(request, dut_factory):
+async def raw(request, dut_factory):
     key = "load_queue_raw"
     spec = SPECS[key]
     dut = dut_factory.create(key)
@@ -296,7 +296,7 @@ async def load_uncache(request, dut_factory):
 
 
 @pytest.fixture
-async def root_replay(request, dut_factory):
+async def replay(request, dut_factory):
     dut = dut_factory.create("load_queue_replay")
     ports = ReplayPorts(dut)
     driver = ReplayDriver(ports)
@@ -356,33 +356,3 @@ async def unalign(request, dut_factory):
                     yield env
     finally:
         backend.close()
-
-def _test_path(request):
-    return request.node.path.as_posix()
-
-
-@pytest.fixture
-def raw(request):
-    """Route the public RAW fixture to the directory-specific implementation."""
-    if "/sq_endpoint/" in _test_path(request):
-        return request.getfixturevalue("sq_raw")
-    return request.getfixturevalue("root_raw")
-
-
-@pytest.fixture
-def replay(request):
-    """Route the public replay fixture to the directory-specific implementation."""
-    if "/sq_endpoint/" in _test_path(request):
-        return request.getfixturevalue("sq_replay")
-    return request.getfixturevalue("root_replay")
-
-
-@pytest.fixture
-def lsq(request):
-    """Route the whole-LSQ fixture used by wrapper/probe directories."""
-    path = _test_path(request)
-    if "/local_reset/" in path:
-        return request.getfixturevalue("local_reset_lsq")
-    if "/sq_endpoint/" in path:
-        return request.getfixturevalue("sq_lsq")
-    return request.getfixturevalue("wrapper_lsq")

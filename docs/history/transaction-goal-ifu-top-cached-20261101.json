@@ -1,0 +1,143 @@
+{
+  "schema": 1,
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "module": "ifu/ifu-cached-chain",
+  "status": "implemented and tested cached integration checkpoint; complete top-level adaptation remains pending",
+  "artifact_base": "suites/frontend/ifu",
+  "baseline": "results/ucv-goal-ifu-perf-revisit-integrated-20261101",
+  "full_output": "results/ucv-goal-ifu-top-cached-integrated-20261101",
+  "full_audit": "results/ucv-goal-ifu-top-cached-integrated-20261101/audit.json",
+  "coverage_boundary": "committed manifest and coverage_complete prove artifact delivery only; not functionality, hardware mutation, producer reachability or coverage closure",
+  "migration": {
+    "original_fetch_case_bodies": 49,
+    "cached_case_bodies_migrated": 40,
+    "cached_parametrized_variants": 41,
+    "uncached_case_bodies_remaining": 9,
+    "cached_guard_migrated": true,
+    "uncached_guard_remaining": true,
+    "original_nodeids_removed": [],
+    "original499_verdict_changes": {},
+    "new_functional_cases": 4,
+    "new_selftests": 72,
+    "all76_new_cases": "PASS",
+    "fixtures": "Explicit ifu_agent/ifu_agent_factory for migrated callers; old ifu fixture only retained for remaining uncached scenarios, not path-based dispatch."
+  },
+  "runs": [
+    {
+      "output": "results/ucv-goal-ifu-top-cached-integrated-20261101",
+      "counts": {"PASS": 569, "FAIL": 5, "UNCERTAIN": 1},
+      "seed": 1,
+      "workers": 4,
+      "source_sha256": "fe630c1d58a9cd384f4d83daee57974312dd21628bc29bbc1d348bd5e9817b8c",
+      "source_before_after_stable_and_current_at_audit": true,
+      "run_sha256": "77773039df46764da43818d313054d69a19907de2dd7207902228ac5b1943494",
+      "summary_sha256": "d38511b7a33c374eca3015bec118305ac06eab118b0881e159ea48d431c60456",
+      "manifest_sha256": "4d4fdf9cf1c142b9f3d6b2882cda5ef22b42665a157b626d3b9033810f598025",
+      "manifest_state": "committed",
+      "coverage_complete": true,
+      "hardware_verdict": "FAIL",
+      "migration_acceptance": "NOT_CERTIFIED"
+    },
+    {
+      "output": "results/ucv-goal-ifu-top-cached-seed2-20261101",
+      "counts": {"PASS": 128, "FAIL": 1, "UNCERTAIN": 1},
+      "seed": 2,
+      "workers": 1,
+      "source_sha256": "fe630c1d58a9cd384f4d83daee57974312dd21628bc29bbc1d348bd5e9817b8c",
+      "source_before_after_stable_and_current_at_audit": true,
+      "run_sha256": "3148f3db676b44ba6e2a6ec0c242f1c4db4a047f8393c013ed318a62e519c2d4",
+      "summary_sha256": "043c728ffad804a5302c9a90b39ae8b0b7f543ee0d6e3a360e2453249c88a683",
+      "manifest_sha256": "6c7e1e6b83ce4d5b04adc77f7ba80c1f74c3fcd4b40fbcd571766b052995ba15",
+      "note": "Top-level functional selection plus72 new selftests and existing top checker/pruned controls; sole FAIL is retained R-14."
+    }
+  ],
+  "requirements_to_evidence": [
+    {
+      "requirement": "strict frozen semantic fields, units and complete native interface",
+      "implementation": ["ifu/types.py", "ifu/ports.py", "model/fetch.py"],
+      "evidence": "80 nonclock inputs and405 outputs bound with exact direction/width/set checks; tests/framework/test_ifu_agent.py covers schema/unknown types, missing ports, changed widths/directions, extra ports, pruned lane35 and frozen nested data."
+    },
+    {
+      "requirement": "one writer and continuously sampled correct phase",
+      "implementation": ["drivers/explicit_slots.py", "ifu/agent.py"],
+      "evidence": "Shared real framework Driver with exclusive ownership and two lossless monitors. Controls reject a second writer, either closed/missing monitor, stale tick/payload, repeated/hidden output, task handoff and concurrent operations."
+    },
+    {
+      "requirement": "input UID, effective acceptance, stage association and legal cancellation",
+      "implementation": ["ifu/agent.py"],
+      "evidence": "Records include offered/not-accepted/fire/cancelled-on-fire/pending/completed/cancelled and epoch; s1/s2/writeback use input-established IDs. tests/ifu/test_ifu_transactions.py covers two-window overlap, GPA idempotent held writes, backend flush of both stages/same-slot fire, and redirect cancellation of a younger stage but not its own held beat."
+    },
+    {
+      "requirement": "independent comparison and no first-result short circuit",
+      "implementation": ["ifu/checker.py", "ifu/agent.py"],
+      "evidence": "All expected valid events checked at DriveStable and RisingEdge. Same production fetch chain rejects duplicate beat/redirect, hidden required completion, zero acceptance, wrong payload and altered expected oracle. Original R-14 still fails on FTQ32 vs33, not timing/setup error."
+    },
+    {
+      "requirement": "bounded completion, carry identity and sticky failure",
+      "implementation": ["ifu/agent.py", "fixtures.py"],
+      "evidence": "Fetch watchdog plus4 checked tail slots, finish8 slots without automatic flush/reset, pending-half rejection, explicit reasoned cancellation/reset, and Python cancellation/swallowed comparison/reset errors remain unreconciled. Same-slot cancelled promised fetch fails after one physical fire rather than reusing its UID."
+    }
+  ],
+  "independent_oracle_normalized_ast_unchanged": {
+    "model/fetch.py::branch_info": "14d9954b68724200834dad2c3e10a93d8f09454073ea9199a961a25a5a4553b7",
+    "model/fetch.py::build_window": "9ee309c7ed23e21b9571564758094422ac35e52efee14cbe844a1b3401557b0a",
+    "model/fetch.py::aligned_lanes": "4c44c49718f4413973b0c837d9396429e2353275219ce4376b8d42ce322c3771"
+  },
+  "checker_projection_contracts": [
+    "invalidTaken low half is not a complete valid/enqueue instruction; preserve the independent redirect answer",
+    "folded memory-predictor PC excludes GuardedPc overflow bookkeeping; R-08 redirect truncation remains an environment-domain limitation",
+    "prevInstrCount advertises the next s1 speculative count when advancing; otherwise the held/current count",
+    "metadata mask comes from independent valid lanes; padding constants always checked; GPA wen is valid-qualified, not ready-qualified"
+  ],
+  "planned_stimulus_differential": {
+    "tool": "tools/audit_cached_stimulus.py",
+    "artifact": "results/ucv-goal-ifu-top-cached-integrated-20261101/planned-stimulus-differential.json",
+    "sha256": "c24fce5b2e5cda9de1fdaec0de04ab58ecd2932fd1e133fcb240b15c951a9d4c",
+    "case_bodies": 40,
+    "variants": 41,
+    "windows": 373,
+    "equal_except_explicit_illegal_flag_normalization": true,
+    "flag_normalized_windows": 34,
+    "flag_normalized_bodies": 6,
+    "note": "Pure planned-window generation, not actual native trace. Four manual one-window bodies stop at their first runtime operation. Original five full32 random windows retained; pure helpers have identical normalized AST."
+  },
+  "scalar_flag_diagnostic": {
+    "artifact": "results/ucv-goal-ifu-top-cached-integrated-20261101/scalar-flag-diagnostic.json",
+    "scope": "Illegal native wrapper encoding characterization with frozen old helper, not legal RTL functionality",
+    "observed": "logical width1/native mWidth0; writing2/3 yields observed FTQ flags2/3 and old checker PASS",
+    "repair": "Explicit low-bit0/1 in the six old bodies; new constructor rejects2/3. No claim that these illegal original physical integers were preserved."
+  },
+  "native": {
+    "all7_build_receipts_equal_to_baseline": true,
+    "all7_manifest_build_ids_and_actual_files_match_baseline": true,
+    "actual_files_verified": 42,
+    "RTL_or_native_rebuilt": false
+  },
+  "collection": {
+    "output": "results/ucv-goal-collect-ifu-top-cached-20261101",
+    "audit": "results/ucv-goal-collect-ifu-top-cached-20261101/audit.json",
+    "field": "nonempty collected list, not empty collect-only execution cases",
+    "total": 46311,
+    "initial_total": 45883,
+    "previous_total": 46235,
+    "initial_and_previous_order_preserved_for_all10": true,
+    "all10_tasks_exit0": true,
+    "aggregate_exit_note": "exit1 preserves existing IFU blocking residuals, not collection failure"
+  },
+  "checks": {
+    "root_tests": "126 PASS",
+    "structure": "PASS",
+    "skills_and_framework": "PASS",
+    "tracked_assets": "PASS:10 suites/132 DUT",
+    "pip_check": "PASS",
+    "git_diff_check": "PASS",
+    "strict_transaction_boundary": "exit1 retained: IFU184 pin expressions, other unadapted suites remain",
+    "source_tree_simulation_artifacts": "none"
+  },
+  "remaining_mandatory_work": [
+    "Migrate9 top-level uncache bodies and uncached guard, preserve original characterizations, explicit raw PA normalization, issued UID/reply/flush and needResend/carry composition; remove the remaining old helpers only after actual callers migrate.",
+    "Complete top-level producer-versus-port characterization classification and true FTQ size/age/unique-live-identity audit;13 performance outputs are sampled but have no new independent per-event comparison credit.",
+    "Complete the whole Ifu adapter audit and required regression/differential evidence before closing ifu-adapters.",
+    "BPU/FTQ/ICache configuration/lifecycle review, all MemBlock/VAGQ remaining adaptation and final repository gates/regressions/package/asset/evidence audit remain mandatory."
+  ]
+}

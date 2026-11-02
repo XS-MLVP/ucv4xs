@@ -20,6 +20,12 @@ class Program(WindowProgram, PositiveProgram):
     def make_checks(self, pc, tag_class):
         return EarlyPositiveProtectionChecks(EarlyPositiveProtectionCoverage(), self.mode, pc)
 
+    def opposed(self,*,settle=True):
+        return self.bounded_opposed()
+
+    def learned(self):
+        return self.learned_short()
+
     def base_bias(self, source, taken):
         checks = self.checks
         before = resident(self.model.sources, checks.identity.key), checks.ledger.protection
@@ -251,3 +257,29 @@ def test_semantic_case_has_no_edges_raw_pin_writes_or_task_join_details():
     forbidden = {'ClockCycles','RisingEdge','FallingEdge','gather','create_task','set_','get_'}
     assert not {n.id for n in ast.walk(tree) if isinstance(n, ast.Name)} & forbidden
     assert not {n.attr for n in ast.walk(tree) if isinstance(n, ast.Attribute)} & forbidden
+
+
+def test_current_positive_paths_keep_the_same_short_but_distinct_long_read_histories():
+    from suites.frontend.bpu.bpu.model.path_history import path_contribution, SHIFT
+    histories=[]
+    for path in OLDER_PATHS:
+        history=0
+        for position in path:
+            history=((history<<SHIFT)^path_contribution(0x40000000+position,0x40000000))%512
+        histories.append(history)
+    # Fixed independent answers for the5/9-bit contract, not sampled tags or
+    # table contents. The old single-fallback suffix addressed protected352.
+    assert histories==[160,96] and {history%32 for history in histories}=={0}
+
+
+async def test_old_legal_positive_prefix_cannot_claim_an_ineligible_new_long_allocation():
+    p=Program('lower-recover');source=p.seed()
+    source=p.steer(source,0)
+    old_paths=((2,)*5,(2,2,2,FALLBACK,2))
+    for path in old_paths:
+        source=p.original_taken(source,older=path)
+    assert set(p.checks.confirmed)=={'reach-lower','lower-hold'}
+    assert not p.checks.parallel_confirmed
+    with pytest.raises(AssertionError,match='new longer record was actually confirmed'):
+        p.original_taken(source,older=old_paths[1],longer=True)
+    assert p.checks.boundaries.groups['checked'].coverage==0

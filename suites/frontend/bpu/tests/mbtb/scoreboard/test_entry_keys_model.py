@@ -28,8 +28,10 @@ PAIRS = (("fit_overflow", (0, 1), (0, 1)),
 @pytest.mark.parametrize("pair,deltas,carries", PAIRS)
 def test_two_key_reference_keeps_target_identity_and_order(align, bank, way, mode, reverse, pair, deltas, carries):
     # Two real keys in the same internal bank but distinct 256-set rows.
-    pcs = (0x40010000 + (31 << 8) + (bank << 5) + (align << 4),
-           0x40010000 + (32 << 8) + (bank << 5) + (align << 4))
+    # Position bit4 selects the second align window. The start descriptor
+    # must not also be rotated by align bit4, which would cancel that choice.
+    pcs = (0x40010000 + (31 << 8) + (bank << 5),
+           0x40010000 + (32 << 8) + (bank << 5))
     targets = mbtb_entry_key_targets(pcs, (0x40009000, 0x40009100), pair)
     assert targets == tuple((1024 + delta) * SPAN + lower
                             for delta, lower in zip(deltas, (0xA000, 0xB100), strict=True))

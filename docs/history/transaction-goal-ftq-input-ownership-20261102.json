@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "scope": "FTQ/ResolveQueue/CommitQueue strict input domains, immutable metadata, atomic writes and claim rejection; partial adaptation, not completion of the three DUTs",
+  "contract": "suites/frontend/ftq/docs/transaction-adaptation.md",
+  "red": [
+    {"output": "results/ucv-goal-ftq-commit-input-red-20261102", "counts": {"FAIL": 13, "PASS": 1}, "source_stable": true, "run_sha256": "607a405cbcd7830e8e5fef978a92e96fed5c0d4e7551ce2b6643a7d4cf548dc1", "summary_sha256": "fd0533f810c2046c835e8bc29020079ada530992871d7ed385a2a2fedc98d83c", "failure": "CallRet accepted lossy/out-of-domain values and unvalidated objects; the complete legal domain control passed"},
+    {"output": "results/ucv-goal-ftq-input-atomicity-red-20261102", "counts": {"FAIL": 33, "PASS": 1}, "source_stable": true, "run_sha256": "0e135b6a7f27e318a9a536a60a375aae3f1065cb43bad7c722d83142d413ce88", "summary_sha256": "57cc9bb8edc077dd9d27f9663fa6522d78e55afcec1603f20b853c2c1f5ce7e0", "failure": "Scalar bool/float coercion, caller-owned mutable Meta.fields and partial valid writes on late field rejection; legal full-width group passed"},
+    {"output": "results/ucv-goal-ftq-ownership-red-20261102", "counts": {"FAIL": 2, "PASS": 1}, "source_stable": true, "selection": "test_input_atomicity.py -k claim", "run_sha256": "4c19ef1fcfc4f5f897b5be0fc99530b405f32c6d8b8c2f7dd3e4ded81ec79ad6", "summary_sha256": "d7496e137b8f0414a7c0ecee350707e3265ed0a771dabba4cd72cbb87e034c0a", "failure": "A rejected group leaked its earlier free-pin claim; duplicate logical input aliases were accepted; disjoint equal labels remained legal"},
+    {"output": "results/ucv-goal-ftq-ownership-label-red-20261102", "counts": {"FAIL": 1}, "source_stable": true, "selection": "test_equal_driver_labels_cannot_hide_a_second_physical_owner", "run_sha256": "6586d4f239a940811068ac6292a77635e79f3949a1673f2468a4cfa2b99ed8e6", "summary_sha256": "1c8eece7436dbd23aa2714d16c00d2bf788715d85a006c5f262fd6935e327e86", "failure": "Second owner of the same physical input was accepted when its label equalled the first driver's label"}
+  ],
+  "verified": {
+    "output": "results/ucv-goal-ftq-atomic-ownership-verified-20261102",
+    "counts": {"PASS": 166, "XFAIL": 2},
+    "seed": 2,
+    "workers": 2,
+    "selection": [],
+    "source_sha256": "461cc9f4c11112886f007cb2705806b0bfc2a8c435d21aaa4e2a0c5b1697c5eb",
+    "source_stable": true,
+    "source_files_match_at_audit": true,
+    "run_sha256": "a4123b71d6786c18b8ca7584ceeb546ef366c844dbcc597e78aab7f8e32e4fe4",
+    "summary_sha256": "baea08b175bffb071f5ce826d6d650e149dccd6fd0e0647a43816e86bf2831fe",
+    "baseline": "results/ucv-goal-ftq-native-seed2-verified-20261101",
+    "original_nodeids": 111,
+    "original_nodeids_removed_or_changed": [],
+    "added_selftests": 57,
+    "new_hardware_functional_points": 0,
+    "gaps": []
+  },
+  "implementation": [
+    "CallRet rejects anything other than exact6-bit pointer and2-bit integer RAS action; all256 combinations remain legal. CommitQueue and FTQ encoders reject unvalidated duck-typed payloads. submit validates before mutating the FIFO oracle or starting a driver.",
+    "Prediction pointers, Meta/redirect identities, resolve fields and consumer controls reject implicit bool/float coercion. Meta.fields copies the caller's mapping and exposes a read-only snapshot.",
+    "Pins.set validates every key, input direction, exact integer and actual width before any Set. Late unknown field or overflow cannot leave valid asserted.",
+    "Dut.claim_many validates a whole claim first. Equal component labels do not excuse a second physical owner; duplicate aliases and conflict do not leave partial new claims. This is still a registry, not SDK Driver or complete runtime lifetime certification."
+  ],
+  "physical_schema_audit": {
+    "ftq_signals_sha256": "fb1c0af8cd475357676dcb70ee2b14f20d3c157f5027a2c3882d8d69a700f27c",
+    "commit_queue_signals_sha256": "d9a6d2ffd033dbdf38ff2ffd360a42745e643b498aff4e15d42d90283aa4013f",
+    "resolve_queue_signals_sha256": "2374da65357b8357b9ef9360029773326f7f53f0975b83b36f5e1533af2ab51a",
+    "address_boundary": "Existing ResolveReport pc/target values are49-bit halfword Pc.addr coordinates; BPU prediction startPc uses50-bit GuardedPc.addr. Backend/IFU redirect pc/target are full byte-address UInts. Current input numbers are preserved, not implicitly re-scaled. Resolve's50th raw bit is now rejected instead of silently truncated.",
+    "no_RTL_or_native_rebuild": true,
+    "limit": "This field check is not independent certification of every generated width, producer reachability or complete FTQ epoch/age semantics. Those remain required."
+  },
+  "root_tests": {"output": "results/ucv-goal-root-owner-checkpoint-20261102.xml", "sha256": "ee8b20c88df7df9a8904ba0cf9d80c99bb6aeaaea0520df50fc25ce0f160b7ab", "counts": {"PASS": 230}},
+  "required_remaining": [
+    "Replace hand-written driver/edge transport with the applicable Toffee Driver/Monitor components and audit full expected port schema for all3 DUTs",
+    "Dut.edge(cycles) currently invokes EdgeMonitor.observe only once after the wait; implement actual per-cycle lossless immutable multi-channel sampling at protocol-correct phases",
+    "Input-established UID/epoch, accepted/response/filtered/cancelled/retry obligations and bounded explicit finish; aclose monitor.clear is not completion",
+    "Retain ResolveQueue2 capacity XFAIL and all real hardware results; qualify lifecycle and observer-disappearance controls before signing any DUT complete"
+  ]
+}

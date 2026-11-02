@@ -7,6 +7,8 @@ from types import SimpleNamespace as NS
 import pytest
 from suites.frontend.bpu.bpu.model.short_revisit import PROFILES,program,rules
 from suites.frontend.bpu.bpu.model.early_opposition import provider
+from suites.frontend.bpu.utage.model.semantic import HISTORIES
+from suites.frontend.bpu.bpu.model.path_history import SHIFT
 from suites.frontend.bpu.bpu.model.pipeline import Redirect
 from suites.frontend.bpu.bpu.checker.short_revisit import Checks
 from suites.frontend.bpu.bpu.coverage.short_revisit import Coverage
@@ -39,6 +41,37 @@ class Program(ProtectionProgram):
         raise AssertionError('declared original consumer did not become qualified')
     def prepare_revisit(self):
         source=self.prepared_reward(); return self.contradict(source)
+    def contradict(self,source):
+        self.actual_fallback=True
+        source=self.prepare_wrong_base(source)
+        source=self.steer(source,3)
+        for _ in range((max(HISTORIES)+SHIFT-1)//SHIFT):
+            source=self.query(source)
+        self.enable(True);self.quiet()
+        self.checks.before_flowing_recovery(source)
+        self.checks.open_wrong()
+        self.step(replace(self.event,redirect=Redirect(source.token.history,self.checks.program.fallback_pc,self.pc,True)))
+        for _ in range(64):
+            self.step()
+            if self.checks.selected_wrong is not None:
+                break
+        else:
+            raise AssertionError('named wrong short input was not accepted')
+        selected=self.checks.selected_wrong
+        result=None
+        for _ in range(64):
+            cycle=self.step(replace(self.event,prediction_ready=False))
+            if cycle.metadata is not None and cycle.metadata.sequence==selected.sequence:
+                result=self.receipt(cycle.metadata)
+                result.prediction_tick=self.checks.selected_wrong_tick
+            if (self.model.stages[1:]==(None,None) and not self.model.sources.main_pending()
+                    and self.checks.pending_loss is None and self.checks.pending_long is None):
+                break
+        else:
+            raise AssertionError('named wrong short and long allocation did not drain')
+        assert result is not None
+        self.checks.wrong_receipt(result)
+        return result
     def consume_long(self):
         c=self.checks; allocation=c.allocation_for_wrong()
         def match(token):
@@ -140,6 +173,36 @@ def test_older_paths_have_distinct_long_read_contexts_but_same_short_identity(en
     assert len({p.checks.path[-1]['history']%4096 for p in programs})==2
     assert len({p.checks.short['read_indices'][1] for p in programs})==2
     assert len({tuple(p.checks.short['provider'][k] for k in ('table','index','tag','counter')) for p in programs})==1
+
+
+@pytest.mark.parametrize('profile',PROFILES)
+def test_current_tag_checkpoint_may_alias_but_the_owned_index_read_ancestry_must_not(profile):
+    p=Program(profile);p.complete();c=p.checks
+    # This legal input program disproves the old assumption that the current
+    # S1 tag checkpoint must also be the older S0 index owner. No actual table
+    # or expected counter is patched to make this pass.
+    assert c.short['history']%512==c.wrong_source.token.history.history%512
+    assert c.short['read_history']%32==c.short['previous_read_history']%32
+    assert c.short['read_history']%512!=c.short['previous_read_history']%512
+    c.finish_opposition(p.named)
+
+
+@pytest.mark.parametrize('profile',PROFILES)
+@pytest.mark.parametrize('fault',('equal-copied-ancestor','wrong-read-index'))
+def test_short_consumer_cannot_take_credit_from_a_rebound_or_wrong_index_ancestor(profile,fault):
+    p=Program(profile);p.complete();c=p.checks
+    if fault=='equal-copied-ancestor':
+        tick,checkpoint,ready=c.last_redirect
+        c.last_redirect=tick,replace(checkpoint),ready
+    else:
+        saved=p.model.sources.short_snapshot(c.short_source.token)
+        frame=saved.prediction.frame
+        changed=(frame.read.indices[0],frame.read.indices[1]^1)
+        p.model.sources.short_reads[saved.owner.sequence]=replace(saved,
+            prediction=replace(saved.prediction,frame=replace(frame,read=replace(frame.read,indices=changed))))
+    with pytest.raises(AssertionError):
+        c.short_consumer(c.short_source)
+    assert c.coverage.groups['checked'].coverage==0
 
 
 def test_case_hides_io_edges_and_task_scheduling():

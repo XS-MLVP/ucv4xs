@@ -10,6 +10,7 @@ from suites.frontend.bpu.bpu.bundle.tage_semantic import HISTORY_PORTS
 from suites.frontend.bpu.bpu.bundle.tage_semantic import META_FIELDS
 from suites.frontend.bpu.bpu.bundle.ahead import ahead_bundle
 from suites.frontend.bpu.bpu.bundle.early_direction import early_direction_bundle
+from suites.frontend.bpu.ports.bindings import ConstantLeaf
 
 
 def pipeline_binding(agent,*,with_tage=False,with_ahead=False,with_early_direction=False,with_ittage=False,with_sc=False,with_ras=False):
@@ -28,12 +29,13 @@ def pipeline_binding(agent,*,with_tage=False,with_ahead=False,with_early_directi
                 counter=signal(f'ras.RasStack.commitStack_{slot}_ctr')) for slot in range(8))),
             micro=Bundle(usable=signal('uras.io_specOut_isCanUse'),target=signal('uras.io_specOut_retTarget_addr')))
     def metadata(base):
-        return Bundle(phrPtr=Bundle(flag=signal(base + 'phrPtr_flag'), value=signal(base + 'phrPtr_value')),
+        return Bundle(phrPtr=Bundle(value=signal(base + 'phrPtr_value')),
                       phrLowBits=signal(base + 'phrLowBits'))
     def main_metadata(base):
         return tuple(tuple(Bundle(**{key:signal(f'{base}entries_{align}_{way}_'+field)
-            for key,field in (('hit','rawHit'),('position','position'),('kind','attribute_branchType'),
-                ('action','attribute_rasAction'),('counter','counter_value'))}) for way in range(2)) for align in range(2))
+            for key,field in (('hit','rawHit'),('position','position'),('counter','counter_value')) +
+                ((('kind','attribute_branchType'),('action','attribute_rasAction')) if way < MAIN_WAYS else ())})
+            for way in range(MAIN_WAYS+1)) for align in range(2))
     tage_metadata = lambda base:tuple(Bundle(**{field:signal(f'{base}entries_{slot}_{field}')
         for field in META_FIELDS}) for slot in range(RESULT_SLOTS))
     def ittage_metadata(base):
@@ -63,7 +65,7 @@ def pipeline_binding(agent,*,with_tage=False,with_ahead=False,with_early_directi
         **(dict(commit=Bundle(action=signal('io_fromFtq_commit_bits_attribute_rasAction'),
             branch_type=signal('io_fromFtq_commit_bits_attribute_branchType'),
             meta=ras_metadata('io_fromFtq_commit_bits_meta_ras_'))) if with_ras else {}),
-        prediction_ready=signal('io_toFtq_prediction_ready'), metadata_ready=signal('io_toFtq_meta_ready'),
+        prediction_ready=signal('io_toFtq_prediction_ready'), metadata_ready=ConstantLeaf(1),
         enabled=tuple(signal(f'io_ctrl_{name}Enable') for name in ENABLES),
         initialization=tuple(signal(f'{name}.io_sramResetDone') for name in ('abtb','utage','mbtb','tage','sc','ittage')),
         redirect=Bundle(valid=signal('io_fromFtq_redirect_valid'),
@@ -84,23 +86,27 @@ def pipeline_binding(agent,*,with_tage=False,with_ahead=False,with_early_directi
         initialized=signal('sramResetDone'),
         enabled=tuple(signal(f'csrCtrl_delay.REG_1_{name}Enable') for name in ENABLES),
         lookup_folds=tuple(signal(f'phr.io_s0_foldedPhr_hist_{index}_foldedHist') for index in HISTORY_PORTS),
-        choices=tuple(Bundle(taken=signal('s1_prediction_taken' if stage == 1 else f's{stage}_taken'),
-            target=signal(f's{stage}_prediction_target_addr'), position=signal(f's{stage}_prediction_cfiPosition'),
-            kind=signal(f's{stage}_prediction_attribute_branchType'), action=signal(f's{stage}_prediction_attribute_rasAction'))
+         choices=tuple(Bundle(taken=signal('s1_prediction_taken' if stage == 1 else f's{stage}_taken'),
+             target=signal(f's{stage}_prediction_target_addr'), position=signal(f's{stage}_prediction_cfiPosition'),
+             # Whole-chip trace aliases the S2 attributes to their real
+             # CommonHR/MicroRAS consumers (Bpu.scala:216/600).
+             kind=signal('commonHR.io_s2Update_prediction_attribute_branchType' if stage == 2
+                         else f's{stage}_prediction_attribute_branchType'),
+             action=signal('uras.io_s2OverrideData_bits_attribute_rasAction' if stage == 2
+                           else f's{stage}_prediction_attribute_rasAction'))
             for stage in (1,2,3)),
         repair2=signal('s2_override'), repair3=signal('s3_override'),
         prediction=Bundle(valid=signal('io_toFtq_prediction_valid'),
-            pc=signal('io_toFtq_prediction_bits_startPc_addr'), target=signal('io_toFtq_prediction_bits_target_addr'),
+            pc=signal('io_toFtq_prediction_bits_startPc_addr'),
             taken=signal('io_toFtq_prediction_bits_taken'), position=signal('io_toFtq_prediction_bits_endPosition'),
             repair2=signal('io_toFtq_prediction_bits_s2Override'), repair3=signal('io_toFtq_prediction_bits_s3Override')),
-        metadata=Bundle(valid=signal('io_toFtq_meta_valid'), pc=signal('io_toFtq_perfMeta_startPc_addr'),
+        metadata=Bundle(valid=signal('io_toFtq_meta_valid'),
             history=metadata('io_toFtq_meta_bits_redirectMeta_phr_'),
             main=main_metadata('io_toFtq_meta_bits_resolveMeta_mbtb_'),
             **(dict(tage=tage_metadata('io_toFtq_meta_bits_resolveMeta_tage_')) if with_tage else {}),
             **(dict(ittage=ittage_metadata('io_toFtq_meta_bits_resolveMeta_ittage_')) if with_ittage else {}),
             **(dict(sc=metadata_bundle(signal,'io_toFtq_meta_bits_resolveMeta_sc_'),
-                common=history_bundle(signal,'io_toFtq_meta_bits_resolveMeta_commonHR_')) if with_sc else {}),
-            **(dict(source=signal('io_toFtq_perfMeta_bpSource_s1Source')) if with_ahead else {})),
+                 common=history_bundle(signal,'io_toFtq_meta_bits_resolveMeta_commonHR_')) if with_sc else {})),
         **(dict(return_stack=return_stack(),ras_metadata=Bundle(
             redirect=ras_metadata('io_toFtq_meta_bits_redirectMeta_ras_',redirect=True),
             commit=ras_metadata('io_toFtq_meta_bits_commitMeta_ras_'))) if with_ras else {}),

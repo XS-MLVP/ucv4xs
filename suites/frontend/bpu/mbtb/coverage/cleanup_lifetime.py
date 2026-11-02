@@ -3,6 +3,7 @@ from copy import deepcopy
 from toffee import Bin,CoverGroupDef,CoverPointDef,Scoreboard
 from suites.frontend.bpu.mbtb.coverage.catalog import mbtb_cleanup_overlap_coverage_model
 from suites.frontend.bpu.mbtb.model.cleanup_programs import SEMANTIC_PROGRAMS,RULES
+from suites.frontend.bpu.models.configuration import MAIN_WAYS
 
 PHASES=('prepared','overlapped','revisited')
 PHASE_RULES=(RULES[:1],RULES[1:4],RULES[4:])
@@ -36,7 +37,9 @@ class Coverage:
         board=Scoreboard('mbtb.cleanup-complete-interference')
         board.check(expected=receipt['expected_dual'],actual=receipt['actual_dual'])
         board.check(expected=receipt['expected_feedback'],actual=receipt['actual_feedback'])
-        assert len(receipt['actual_dual']['ports'])==2 and not receipt['actual_dual']['foreign_writes']
+        ports=receipt['actual_dual']['ports']
+        assert len(ports)==MAIN_WAYS and sum(bool(port['write_valid']) for port in ports)==2
+        assert not receipt['actual_dual']['foreign_writes']
         for rule in RULES:self.groups['checked'].sample(dict(obligation=self.program.label+'.'+rule))
         self.closed=True
         return dict(program=self.program.state(),completed_obligations=list(RULES),physical_schema_unchanged=True,**deepcopy(receipt))

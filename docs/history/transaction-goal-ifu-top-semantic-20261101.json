@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "module": "ifu-top-final-semantic-adapter-audit",
+  "status": "IFU top-level adapter scope complete; hardware residuals and out-of-scope consumer limits remain open",
+  "implementation": {
+    "baseline": "results/ucv-goal-ifu-top-uncache-integrated-20261101",
+    "current": "results/ucv-goal-ifu-semantic-integrated-20261101",
+    "source_sha256": "47242ca8fa03b360e5639d70016bc5034f4bc97ca268930ffca29fc47cfdc281",
+    "old_cases": 643,
+    "current_cases": 725,
+    "added_cases": 82,
+    "added_verdicts": {"PASS": 82},
+    "removed_cases": [],
+    "changed_verdicts": {},
+    "fetch_input_contract": "FetchRequest validates the supplied raw halfword stream independently of build_window/Boundary/DUT observations, then binds instruction count, start/width, PC, slot, block, cross, end, prediction, FTQ, raw/output word, ISA class, RAS, jump offset, truncation and half/count markers. Carry high-half identity additionally requires an input-established prior UID and low half in IfuAgent.",
+    "event_contract": "The13 Ifu.perfEvents are modeled as Boolean event classifications from accepted fetch metadata and actual IBuffer fire, with ICachePerfInfo single/double-line hit/miss truth table and the public HasPerfEvents two-register latency. All13 fields are checked in both continuous DriveStable and RisingEdge snapshots.",
+    "lifecycle_contract": "Offer, physical fire, same-slot cancellation, stage movement, child uncache acceptance, actual bus issue, explicit peer reply, enqueue, redirect, resend, cancel and finish tail remain separate input-UID records. Same-slot bus/reply plus redirect, live FTQ age, carry cancellation, no-issue/no-reply watchdog, duplicate/missing channel and swallowed-error controls use the production agent.",
+    "provenance": "FetchRequest is port-characterization; ProducerFetchRequest adds audited DefaultConfig extent/page/FTQ successor/translation-offset/age constraints. Input and peer source are carried separately and cannot promote a port-only carry or fake resend.",
+    "static_audit": "IFU feature call chains contain zero pin expressions, signal operations or native access files under the strict transaction-boundary audit; this is not used as the only semantic evidence.",
+    "build": "No RTL/native rebuild. Existing seven cache build receipts, build IDs and actual native inputs remain unchanged and match the previous checkpoint."
+  },
+  "runs": {
+    "seed1": {
+      "output": "results/ucv-goal-ifu-semantic-integrated-20261101",
+      "counts": {"PASS": 719, "FAIL": 5, "UNCERTAIN": 1},
+      "source_stable": true,
+      "run_sha256": "a0f0f3592130ff953493643271353976e70ff1e7762cc29b2e0319aa71672a2e",
+      "summary_sha256": "e7133050e669fe9ca65790a61acaaba632633dd5d61fae759ac1be5e3f0253b4",
+      "manifest_sha256": "12ef8fd917abcb6836531b8627c6c2abc99d818195f989af096f68ff80437bbe",
+      "coverage_complete": true,
+      "hardware_status": "FAIL"
+    },
+    "seed2": {
+      "output": "results/ucv-goal-ifu-semantic-seed2-verified-20261101",
+      "counts": {"PASS": 278, "FAIL": 1, "UNCERTAIN": 1},
+      "selection": "tests/ifu plus IFU framework agent/producer/input/event controls, checker and pruned controls",
+      "source_stable": true,
+      "run_sha256": "46d93191fe7ad3b06563747942da452a386842541fb1464fcc2eba6b00ead282",
+      "summary_sha256": "36f4cfffbb2b7c7cb744d8561acc4b90c146a4e0b0cd7737f71e9d0b3fd5b621",
+      "manifest_sha256": "f9e3c7704757ac9e596cd1864e7a4f36a51309af61b5d6b36e0ff08e007bac6a",
+      "coverage_complete": true,
+      "hardware_status": "FAIL",
+      "failure": "tests/ifu/test_ifu_fetch.py::test_recovered_half_instruction_keeps_its_completing_ftq_block[upper-half-low11] (retained R-14 port-domain counterexample)"
+    }
+  },
+  "residuals": [
+    "R-13: two real FrontendTrigger tdata2 high-bit hardware failures remain.",
+    "R-14: three real InstrBoundary/IFU port-domain FTQ ownership failures remain; stricter producer controls pass and the old full-producer reachability claim is withdrawn.",
+    "R-09: one carry position/class coverage UNCERTAIN remains; no automatic XFAIL or completion invention.",
+    "IFU-R-08/R-11/R-12 observation/consumer boundaries remain explicitly out of the top-level adapter's complete architectural claim."
+  ],
+  "delivery_audit": {
+    "date": "2026-11-01",
+    "source_files_match_current_ifu_scope": true,
+    "build_maps_equal_previous_uncache_checkpoint": true,
+    "build_receipts_rehashed": 7,
+    "unique_native_build_files_rehashed": 42,
+    "seed1_artifacts_rehashed": 15,
+    "seed2_artifacts_rehashed": 3,
+    "seed1_worker_native_inputs": 481,
+    "seed2_worker_native_inputs": 202,
+    "worker_native_input_retention": "Both manifests record keep_coverage_inputs=false and cleanup_complete=true; merged artifacts are available, raw coverage inputs are not promised as retained evidence.",
+    "mismatches": []
+  },
+  "next_scope": "BPU/FTQ/ICache configuration, producer/lifecycle and existing zero-static-leak call-chain review; then MemBlock/VAGQ and final whole-repository gates."
+}

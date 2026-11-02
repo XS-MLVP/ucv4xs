@@ -10,12 +10,56 @@ from suites.frontend.bpu.bpu.monitor.early_aging import EarlyAgingDiagnostics
 
 
 class EarlyPositiveProtectionProgram(EarlyProtectionProgram):
+    def __init__(self,*args):
+        super().__init__(*args)
+        self.seed_preparation=[]
+
+    def seed_precondition(self,name):
+        checks=self.checker.coverage
+        self.seed_preparation.append(dict(phase=name,short_seeds=[dict(key=key,
+            owner=seed.owner.sequence,allocated=seed.entry,
+            resident=resident(self.checker.model.sources,key),
+            useful=self.checker.model.sources.short.useful[key[0]].get(key[1],0))
+            for key,seed in checks.seeds.items() if key[0]==0]))
+
+    async def strong_negative(self,source):
+        return await self.bounded_strong_negative(source)
+
+    async def positive_base(self,source,protected):
+        await self.pause()
+        await self.agent.configure_predictors(abtb=True,settle=True)
+        # The primer's real Main-taken read must remain the index ancestor of
+        # the fallback-tag query. Serial pulse cleanup before ready discards
+        # that window and allocates a different T record, later saturated by
+        # the loop. Match the declared program with the existing owned drivers.
+        await self.recovery.send(source,position=(self.pc//16)*16+FALLBACK-self.pc,branch_type=2)
+        def positive(token):
+            sources=self.checker.model.sources
+            owner=ahead_owner(sources,token)
+            frame=sources.short_snapshot(token).prediction.frame
+            return (main_counter(token)==3 and steady_history(token,2) and owner is not None and owner[1]==3
+                and frame is not None and frame.read.indices[protected[0]]!=protected[1])
+        return await self.consume('owned_positive_base_with_exact_recovery_read_ancestor',positive)
+
+    async def opposed(self,source,checks):
+        # Preserve the independently allocated weak T seed during the negative
+        # proof; a continuous S3 search admits younger NT errors before ready
+        # closes, silently destroying the required T4/protection1 precondition.
+        self.seed_precondition('before-negative-proof')
+        result=await self.bounded_opposition(source,checks)
+        self.seed_precondition('after-negative-proof')
+        return result
+
     async def negative_base(self, source):
+        self.seed_precondition('before-negative-base')
+        await self.pause()
         await self.agent.configure_predictors(abtb=True, settle=True)
-        await self.restart(source)
-        return await self.consume('owned_negative_base_history', lambda token:
+        await self.recovery.send(source,position=(self.pc//16)*16+FALLBACK-self.pc,branch_type=2)
+        result=await self.consume('owned_negative_base_history', lambda token:
             steady_history(token, FALLBACK) and (owner := ahead_owner(self.checker.model.sources, token)) is not None
             and owner[1] == 0)
+        self.seed_precondition('after-negative-base')
+        return result
 
     async def base_bias(self, source, *, taken):
         checks = self.checker.coverage

@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "state": "historical-domains-first-response-reset-checkpoints-current-continuous-followup-available",
+  "current_followup": "docs/history/transaction-goal-icache-databank-continuous-20261102.json:production continuous input/response/MBIST storage ancestry, SDK all-input ownership and checked finish now full407PASS3XFAIL/seed1DataBank129PASS audited, original8runtime red8PASS. NonzeroDFT semantics/wholeICache/all-goal still open; all source hashes/results in this earlier record keep their original boundary.",
+  "dut": "ICacheDataBank",
+  "baseline": "public-893e1580b / DefaultConfig",
+  "contract": "suites/frontend/icache/docs/databank-transaction-adaptation.md",
+  "requirements": [
+    {"id": "strict-input-domain", "implementation": "BankRead/BankWrite constructors and agent read/write pre-drive checks", "evidence": "Original21 probes nowPASS; added agent pre-drive controls pass without native/drivers installed; zero waymask/full64bit legal control retained"},
+    {"id": "fixed-native-geometry", "implementation": "DataBankAgent rejects any sets/ways except integer256/4 before binding", "evidence": "Four negative geometry controlsPASS; pure model remains parameterized"},
+    {"id": "immutable-complete-output", "implementation": "BankReadData validates all four64bit data/1bit code lanes and freezes detached tuples; read_entries uses it", "evidence": "Container alias and incomplete/negative/overwide response controlsPASS"},
+    {"id": "actual-phase-and-uid", "status": "pending", "reason": "First-response selection is fixed with native distinguishing evidence, but continuous per-edge/UID/accept/response/reset/MBIST linkage is not yet implemented"},
+    {"id": "ownership-and-finish", "status": "pending", "reason": "Current LevelDriver/reset/MBIST/control ownership, functional raw driver/model access, bounded finish and cleanup semantics still require migration"}
+  ],
+  "domain_checkpoint_files_sha256": {
+    "suites/frontend/icache/databank/transaction/types.py": "7cfce39fb8d943a2dc584959d8b7da4424be0390e93e8a31f27ddb22b5bc126f",
+    "suites/frontend/icache/databank/agent/main.py": "906c6f8ba97cdd5afdd7a2b852976c6ebef7c1ca8629ed2387f9d8e44fa8006b",
+    "suites/frontend/icache/tests/databank/scoreboard/test_transaction_contract.py": "931cd5fd2b3ae0fadc9858889610e80ccb0c5b4445aa8b01d77db39ebb5b46ef"
+  },
+  "red": {"path": "results/ucv-goal-icache-databank-domains-red-20261102.xml", "sha256": "9e26128693cfebb0d69447b9c0ca0340f221b32eaf5e2b1cde43eb720668204e", "counts": {"FAIL": 19, "PASS": 2}, "boundary": "Pure actual transaction constructors;19 failures at intended domain/alias assertions, not setup errors"},
+  "green": {"path": "results/ucv-goal-icache-databank-domains-green-20261102.xml", "sha256": "1af8c02c9b0e479c384e6ebc922931fc2eb0d9de162284a10041bdab08fa799b", "counts": {"PASS": 48}, "repository_selftests": 27, "original_external_probes": 21},
+  "isolation": "Edited only ICache while two BPU runs retained their own frozen source scope; no concurrent all-repository source receipt was attributed to these later edits",
+  "native_domain_checkpoint": {"output": "results/ucv-goal-icache-databank-domain-native-v1-20261102", "seed": 2, "counts": {"PASS": 40}, "source_sha256": "c15fea6801e843987d92f6c14cc88459c3ff8eba11c344234e6e52ff09218100", "audit": "results/ucv-goal-icache-databank-domain-native-audit-v1-20261102.json", "native_inputs": 13, "original_native_verdicts_unchanged": true, "new_pure_selftests": 27, "removed": []},
+  "reset_boundary": {
+    "implementation": "DataBankAgent owns reset through existing SDK ResetDriver; exact positive integer validation precedes idle/control effects. The original asserted cycles plus two release edges remain unchanged. Agent cannot restart after cleanup releases persistent source ownership.",
+    "original_controls": "results/ucv-goal-icache-databank-reset-original-green-20261102.xml:5 PASS/3 deselected. Same reset-ownership and four invalid reset controls from original8 native red now pass. Other three default-read/wrong-write/MBIST ownership controls remain pending, not hidden or claimed fixed.",
+    "new_controls": "tests/databank/scoreboard/test_reset_boundary.py:9 native selftests, including cycles1/4/9 exact timing and real post-sweep zeros, conflicting reset owner, pre-effect rejection and close/replacement/no-restart control",
+    "source_sha256": "0d84614408dc445b00ebf2f46e0ad9768db0fa1a000b450f119f91be31c18562",
+    "runs": [
+      {"output": "results/ucv-goal-icache-databank-reset-owner-v1-20261102", "seed": 2, "counts": {"PASS": 58}, "audit": "results/ucv-goal-icache-databank-reset-owner-audit-v1-20261102.json"},
+      {"output": "results/ucv-goal-icache-databank-reset-owner-seed1-v1-20261102", "seed": 1, "counts": {"PASS": 58}, "audit": "results/ucv-goal-icache-databank-reset-owner-seed1-audit-v1-20261102.json"}
+    ],
+    "verified": "Each source stable and every file matched at audit,31 native inputs/6 build files each, all artifact/build/processor hashes checked, builds unchanged. Original49 selected DataBank nodeids/verdicts and relative order retained,9 selftests addedPASS;27 remain pure controls. Runner budget kept at4: this one-worker seed2 run used blocking FTQ suite lock before starting, not completion polling.",
+    "limits": "This is a reset boundary checkpoint, not full DataBank runtime migration. MBIST source/storage oracle, full remaining control ownership, continuous sampling/UID, arbitrary input encoding checks, reset/cancel and strict finish/fixture report semantics still require work. Previous327PASS3XFAIL full ICache belongs to pre-reset a1c25a... source, not to this new whole-ICache source."
+  },
+  "first_response": {
+    "native_red": "results/ucv-goal-icache-databank-response-red-20261102.xml:1 FAIL/1 PASS. First response bitflip did not raise because the old reader waited for a later matching value. Different-set native phase probe passed and observed valid at536 and the new complete response at538.",
+    "implementation": "read() uses the documented SRAMTemplate latency-one boundary after existing rise-write launch, samples once, and never reads model values to choose a response. Existing timing/activation otherwise unchanged; continuous monitor/lifetime adaptation remains pending.",
+    "original_probe_green": "results/ucv-goal-icache-databank-response-green-20261102.xml:2 PASS",
+    "runs": [
+      {"output": "results/ucv-goal-icache-databank-first-response-v2-20261102", "seed": 2, "counts": {"PASS": 43}, "audit": "results/ucv-goal-icache-databank-first-response-audit-v2-20261102.json"},
+      {"output": "results/ucv-goal-icache-databank-first-response-seed1-v2-20261102", "seed": 1, "counts": {"PASS": 43}, "audit": "results/ucv-goal-icache-databank-first-response-seed1-audit-v2-20261102.json"}
+    ],
+    "source_sha256": "039192e01de19c493a80e4fadb930820bf2b348c025cf6da3545d15a0ff059f5",
+    "source_stable_and_matches_at_audit": true,
+    "native_inputs_each": 16,
+    "build_files_each": 6,
+    "artifact_build_processor_hashes_checked": true,
+    "native_build_unchanged": true,
+    "changes_from_domain_checkpoint": "No removed nodeid or verdict change;3 native selftests addedPASS. Original13 functional/BIST/random cases retainedPASS; other27 pure controlsPASS. Coverage artifact completeness is not coverage closure."
+  },
+  "whole_goal": "Active, frontend-reviewed in_progress; all other ICache/BPU and MemBlock/VAGQ/final acceptance scopes preserved"
+}

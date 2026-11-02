@@ -18,13 +18,14 @@ still has an outstanding miss, because that sequence is the open RTL defect
 `test_two_partial_stores_same_missing_line_merge_data`).  Everything else,
 including dirty eviction, is covered by the directed tests; this generator uses
 one line per set so its model does not need a PLRU.  A `handled=0` response is
-retried like the LSU would replay it, and the L2 side is kept ready (`ack_ready`)
-so writebacks always drain.
+retried like the LSU would replay it. L2 service windows drain complete releases
+and return source-matched acknowledgements; idle D.valid is always zero.
 """
 
 from __future__ import annotations
 
 from suites.memblock.dcache.execution import step
+from .tilelink import CAssembler, CBeat, check_release_data
 
 import random
 
@@ -79,89 +80,80 @@ def expected_line(model: dict, block: int) -> bytearray:
 
 
 def ack_ready(dc) -> None:
-    """Make the L2 side permanently ready: accept every C beat and ack the D release.
+    """Legacy name: leave L2 responses idle between monitored service windows.
 
-    A real L2 drains writebacks as soon as they appear, so the DCache never holds
-    a WritebackQueue entry open (which would block later misses to that block).
-    ReleaseAck has opcode 6, whose bit0 is 0, so MissQueue GrantData logic ignores
-    it; GrantData beats from `service_miss` temporarily override these pins.
+    ReleaseAck is a transaction, not a ready signal. No D.valid may be offered
+    until a complete C Release has actually been accepted. Hold C backpressure
+    outside pump() so direct legacy Step calls cannot consume an unrecorded beat.
     """
     for channel in dc.channels:
-        channel["c_ready"].Set(1)
-        channel["d_valid"].Set(1)
-        channel["d_opcode"].Set(6)      # ReleaseAck
-        channel["d_size"].Set(6)
-        channel["d_source"].Set(0)
-        channel["d_sink"].Set(0)
-        channel["d_denied"].Set(0)
-        channel["d_corrupt"].Set(0)
-        channel["d_data"].Set(0)
+        channel["a_ready"].Set(0)
+        channel["c_ready"].Set(0)
+        for field in ("valid","opcode","size","source","sink","denied","corrupt","data"):
+            channel["d_"+field].Set(0)
 
 
 def pump(dc, model: dict, cycles: int = 4) -> None:
-    """Drain C-channel releases, check them, and absorb dirty data into the model.
-
-    The D channel is kept acked continuously (see `ack_ready`), which mirrors an
-    always-ready L2 and prevents WritebackQueue entries from blocking later
-    misses to the same block.
-    """
-    for _ in range(cycles):
+    """Observe complete C transfers and acknowledge each exact source once."""
+    if cycles<0:
+        raise ValueError('negative L2 pump budget')
+    assembler=model.setdefault('c_assembler',CAssembler())
+    acks=model.setdefault('release_acks',[[],[]])
+    try:
+        for tick in range(cycles+64):
+            for index,ch in enumerate(dc.channels):
+                ch['a_ready'].Set(0)
+                ch['c_ready'].Set(1)
+                source,size=acks[index][0] if acks[index] else (0,0)
+                fields=dict(valid=int(bool(acks[index])),opcode=6,size=size,source=source,
+                            sink=0,denied=0,corrupt=0,data=0)
+                for field,value in fields.items():
+                    ch['d_'+field].Set(value)
+            dc.refresh()
+            d_fires=[index for index,ch in enumerate(dc.channels)
+                     if dc._val(ch['d_valid']) and dc._val(ch['d_ready'])]
+            c_fires=[CBeat(index,*(dc._val(ch['c_'+field]) for field in
+                       ('opcode','param','size','source','address','data')))
+                     for index,ch in enumerate(dc.channels)
+                     if dc._val(ch['c_valid']) and dc._val(ch['c_ready'])]
+            step(dc)
+            dc.refresh()
+            for index in d_fires:
+                acks[index].pop(0)
+            for beat in c_fires:
+                count=len(assembler.messages)
+                assembler.accept(beat)
+                for message in assembler.messages[count:]:
+                    header=message.header
+                    assert header.opcode in (6,7), ('unsolicited probe response',message)
+                    block=block_of(header.address)
+                    line=expected_line(model,block)
+                    if header.opcode==7:
+                        check_release_data(message,address=block,line=int.from_bytes(line,'little'))
+                    else:
+                        assert not model['pending'].get(block), ('clean Release with pending stores',block)
+                    # Sequence disambiguates legal reuse of the same source/address.
+                    key=(header.channel,len(model['releases']),header.address,header.source)
+                    model['releases'][key]={'opcode':header.opcode,'beats':message.data,'absorbed':True}
+                    model['l2'][block]=line
+                    model['pending'].pop(block,None)
+                    model['retired'].add(block)
+                    acks[header.channel].append((header.source,header.size))
+            if tick+1>=cycles and not any(acks) and not assembler.pending:
+                return
+        raise AssertionError('L2 pump has incomplete Release/ReleaseAck obligations')
+    finally:
         ack_ready(dc)
-        dc.refresh()
-        for index, channel in enumerate(dc.channels):
-            if not dc._val(channel["c_valid"]):
-                continue
-            opcode = dc._val(channel["c_opcode"])
-            address = dc._val(channel["c_address"])
-            source = dc._val(channel["c_source"])
-            key = (index, source, address)
-            entry = model["releases"].setdefault(
-                key, {"opcode": opcode, "beats": [], "absorbed": False})
-            assert entry["opcode"] == opcode
-            if len(entry["beats"]) < 2:
-                entry["beats"].append(dc._val(channel["c_data"]))
-        for key, entry in model["releases"].items():
-            if entry["absorbed"]:
-                continue
-            needed = 2 if entry["opcode"] == 7 else 1
-            if len(entry["beats"]) < needed:
-                continue
-            block = block_of(key[2])
-            line = expected_line(model, block)
-            if entry["opcode"] == 7:
-                assert entry["beats"][0] == int.from_bytes(line[:32], "little"), (
-                    "release beat0 mismatch", hex(block), hex(entry["beats"][0]),
-                    line[:32].hex())
-                assert entry["beats"][1] == int.from_bytes(line[32:], "little"), (
-                    "release beat1 mismatch", hex(block), hex(entry["beats"][1]),
-                    line[32:].hex())
-            else:
-                assert not model["pending"].get(block), (
-                    "clean Release for a line with pending store bytes",
-                    hex(block), entry["opcode"])
-            model["l2"][block] = line
-            model["pending"].pop(block, None)
-            model["retired"].add(block)
-            entry["absorbed"] = True
-        step(dc)
-        dc.refresh()
 
 
 def service(dc, model: dict, block: int, context: str, limit: int = 20) -> bool:
     """Answer one Acquire for `block` with the model's L2 content."""
-    line = expected_line(model, block)
-    call = model["pending"].get(block, {})
-    # The DCache applies the store bytes itself, so the refill must carry the
-    # unmodified L2 line.  Temporarily hide the pending bytes.
-    model["pending"].pop(block, None)
+    # The DCache applies pending stores itself. Do not fold the golden store
+    # bytes into the L2 response: that can make a broken DUT pass by coincidence.
+    line = model["l2"].setdefault(block,shadow_line(block))
     try:
         dc.service_miss(block, data_beats=line_beats(bytes(line)), context=context)
     finally:
-        if call:
-            model["pending"][block] = call
-        # `service_miss` leaves D idle; restore the always-ready ReleaseAck so a
-        # writeback that appears a few cycles later is acknowledged instead of
-        # holding its WritebackQueue entry (which would block that block forever).
         ack_ready(dc)
     return True
 

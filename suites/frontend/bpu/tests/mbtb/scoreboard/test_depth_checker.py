@@ -43,13 +43,13 @@ def test_every_visible_neighbor_field_is_still_compared(field):
 def test_all_hit_metadata_is_checked_even_when_public_prediction_is_filtered(filtered, field):
     wanted = with_peer(0, filtered=filtered)[1]
     actual = prediction(wanted)
-    meta = actual.meta_entries[0][0]
+    metadata=deepcopy(actual.meta_entries);meta = metadata[0][0]
     if field in ('branchType', 'rasAction'):
         meta['attribute'][field] ^= 1
     else:
         meta[field] ^= 1
     with pytest.raises(AssertionError, match='mbtb.depth-defined-consumer'):
-        defined_depth_check(wanted)(actual)
+        defined_depth_check(wanted)(replace(actual,meta_entries=metadata))
 
 
 @pytest.mark.parametrize('which', ('prediction-valid', 'raw-hit'))
@@ -59,7 +59,8 @@ def test_unmatched_slot_cannot_silently_acquire_validity_or_training_permission(
     if which == 'prediction-valid':
         actual = replace(actual, entries=(replace(actual.entries[0], valid=1), *actual.entries[1:]))
     else:
-        actual.meta_entries[0][0]['rawHit'] = 1
+        metadata=deepcopy(actual.meta_entries);metadata[0][0]['rawHit'] = 1
+        actual=replace(actual,meta_entries=metadata)
     with pytest.raises(AssertionError):
         defined_depth_check(wanted)(actual)
 
@@ -82,7 +83,8 @@ def test_filtered_payload_may_change_but_its_counter_remains_a_defined_source():
     actual = replace(actual, entries=(replace(actual.entries[0], target=0x1234, taken=1), *actual.entries[1:]))
     check = defined_depth_check(wanted)
     check(actual)
-    actual.meta_entries[0][0]['counter_value'] = 2
+    metadata=deepcopy(actual.meta_entries);metadata[0][0]['counter_value'] = 2
+    actual=replace(actual,meta_entries=metadata)
     with pytest.raises(AssertionError):
         check(actual)
 

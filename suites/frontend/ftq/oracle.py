@@ -17,6 +17,14 @@ class CallRet:
     ptr: int
     ras: int
 
+    def __post_init__(self) -> None:
+        # The public FTQ pointer value is six bits; RAS action is its complete
+        # two-bit semantic enum, including NONE(0) and POP_PUSH(3).
+        for name, limit in (('ptr', 64), ('ras', 4)):
+            value = getattr(self, name)
+            if type(value) is not int or not 0 <= value < limit:
+                raise ValueError(f'CallRet.{name} must be an integer in 0..{limit-1}')
+
 
 class CallRetFifo:
     """Selective FIFO with a 64-entry storage and an 8-entry reserve."""

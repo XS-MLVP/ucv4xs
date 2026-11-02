@@ -74,8 +74,8 @@ def test_full_SC_total_observation_budget_is_not_bypassed_by_ring_eviction():
 
 def phr_reset_row():
     parent={f'{stage}_{field}':0 for stage in ('s1','s2','s3') for field in ('valid','pc','taken','target')}
-    return dict(reset=1,boundary=boundary(),state=deepcopy(BpuPhrReference().state),pipeline={},parent=parent,
-        phr_meta=dict(pointer=dict(flag=0,value=0),low=0),public_meta=dict(valid=0),
+    return dict(reset=1,boundary=boundary(),state=deepcopy(BpuPhrReference(pointer_flags=False).state),pipeline={},parent=parent,
+        phr_meta=dict(pointer=dict(value=0),low=0),public_meta=dict(valid=0),
         public_redirect=dict(valid=0),public_prediction=dict(valid=0))
 
 
@@ -189,4 +189,3 @@ def test_fresh_public_SC_oracle_uses_full_signed_reference_not_observed_decision
         ref.memories[f'{table}_bank0'][index]=[encoded]*count
     actual=public_decisions(ref,pc,plan['positions'],((0,0,5),(1,0,4)),[INITIAL]*8,common)
     assert actual==(expected,expected)
-

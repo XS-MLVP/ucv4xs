@@ -1,0 +1,181 @@
+{
+  "schema": 1,
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "module": "ifu/perf_analysis",
+  "goal_status": "active; other IFU and all required suite audits remain",
+  "delta": {
+    "old_count": 147,
+    "new_count": 165,
+    "old_counts": {
+      "PASS": 144,
+      "FAIL": 2,
+      "UNCERTAIN": 1
+    },
+    "new_counts": {
+      "PASS": 162,
+      "FAIL": 2,
+      "UNCERTAIN": 1
+    },
+    "removed": [],
+    "changed": {},
+    "added": {
+      "ifu::tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[ifu_wb_redirect]": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_ftq_reason_domain_cannot_silently_discard_unsupported_bits[-1]": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_ftq_reason_domain_cannot_silently_discard_unsupported_bits[1]": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_ftq_reason_domain_cannot_silently_discard_unsupported_bits[16]": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_ftq_reason_domain_cannot_silently_discard_unsupported_bits[37778931862957161709568]": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_semantic_request_is_frozen_and_unknown_fields_fail": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_missing_port_is_a_binding_failure_not_a_zero_observation": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_second_driver_cannot_claim_the_agent_inputs": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_stopped_monitor_cannot_make_the_agent_pass": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_missing_last_reason_is_detected_by_finish": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[icache_miss]": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[itlb_miss]": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[backend_redirect]": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[control_flow_redirect]": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[memory_violation_redirect]": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[tage_miss]": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[ittage_miss]": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[ras_miss]": "PASS"
+    },
+    "build_receipts_unchanged": true,
+    "source_stable": true
+  },
+  "checks": [
+    {
+      "name": "root-tests",
+      "exit": 0,
+      "sha256": "0f4a76084d9b9b6a33ac1ebf960d1b7ce1d035fd56b77e5e989a82b0f16a3611",
+      "tail": [
+        "........................................................................ [ 66%]",
+        ".....................................                                    [100%]",
+        "109 passed in 61.97s (0:01:01)"
+      ]
+    },
+    {
+      "name": "layout",
+      "exit": 0,
+      "sha256": "a187399b8411e4dbae3df25c448a12dfa544243202774e1ba0697dd2b958b3e2",
+      "tail": [
+        "| lsu | 23 | 4 | 0 | 0 | 0 | 140 | 0 | yes | needs-adapter | ok |",
+        "| mmu | 23 | 52 | 0 | 0 | 0 | 29 | 382 | yes | needs-adapter | ok |",
+        "| sbuffer | 3 | 7 | 0 | 0 | 0 | 0 | 0 | yes | no-static-leak-found | ok |",
+        "| vagq | 54 | 14 | 0 | 0 | 0 | 179 | 9 | yes | needs-adapter | ok |"
+      ]
+    },
+    {
+      "name": "transaction",
+      "exit": 1,
+      "sha256": "bd4f6dc242041e87402eb9cb92084f4cbd184693e2b4d5acd4b2847dca3091c4",
+      "tail": [
+        "| lsu | 23 | 4 | 0 | 0 | 0 | 140 | 0 | yes | needs-adapter | 140 pin-level expressions require transaction adapters |",
+        "| mmu | 23 | 52 | 0 | 0 | 0 | 29 | 382 | yes | needs-adapter | 29 pin-level expressions require transaction adapters; 382 signal operations/native handles require transaction adapters |",
+        "| sbuffer | 3 | 7 | 0 | 0 | 0 | 0 | 0 | yes | no-static-leak-found | ok |",
+        "| vagq | 54 | 14 | 0 | 0 | 0 | 179 | 9 | yes | needs-adapter | 179 pin-level expressions require transaction adapters; 9 signal operations/native handles require transaction adapters |"
+      ]
+    },
+    {
+      "name": "skills",
+      "exit": 0,
+      "sha256": "e2ca572f1c1ac985d863422272810240f7825dd1da13a6cf826c0e8d2d828fd4",
+      "tail": [
+        "    \"API presence is not behavioral certification.\",",
+        "    \"Link fragments and methodological correctness need review.\"",
+        "  ]",
+        "}"
+      ]
+    },
+    {
+      "name": "assets",
+      "exit": 0,
+      "sha256": "d5e771d325d24feea8408d5050c4f239079441c615f916d6bf030d2733bcf923",
+      "tail": [
+        "  \"duts\": 132,",
+        "  \"historical_evidence_entries\": 134685,",
+        "  \"errors\": []",
+        "}"
+      ]
+    },
+    {
+      "name": "diff",
+      "exit": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tail": []
+    }
+  ],
+  "runs": [
+    {
+      "output": "results/ucv-goal-ifu-before-20261101",
+      "counts": {
+        "PASS": 144,
+        "FAIL": 2,
+        "UNCERTAIN": 1
+      },
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS"
+      ],
+      "hardware_verdict": "FAIL",
+      "source_stable": true,
+      "source_sha256": "d21d25c2e0ce0a512cfa3430dd623e4f92490b2c40f445ea6d254ad1b842f07d",
+      "run_sha256": "99b79b1a07f4575ce27d36fcb7220078212d17f7abae18602ddb436a7cde6362",
+      "summary_sha256": "5947eece267a441bc2ec0b1ed1d39a4f3fa0c75e9ecd4a9d9ea46c802f8d02c1",
+      "manifest_sha256": "704a2b119b6e2befd96701bafed01cb90640e185f05246d58adee095c0b717aa",
+      "manifest_state": "committed",
+      "coverage_complete": true
+    },
+    {
+      "output": "results/ucv-goal-ifu-perf-probe-20261101",
+      "counts": {
+        "PASS": 10
+      },
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS"
+      ],
+      "hardware_verdict": "INCOMPLETE",
+      "source_stable": true,
+      "source_sha256": "4480be0c9120942ee3f064b8576815aed25e2e5b27051768e7a17f83c18a03fd",
+      "run_sha256": "c722119fd21113ecfd489c3d277fa94d1b7806fafa269f635bc85a67d9ab3f0f",
+      "summary_sha256": "dd36dc52c935dd85ac1f61c468458a87c9d2cbd431ffa51d00193bed21b7dec0",
+      "manifest_sha256": "c03aa426bd0db3697d3659edf12be91e1f90316a50d19de21da79eeeefadbbce",
+      "manifest_state": "committed",
+      "coverage_complete": true
+    },
+    {
+      "output": "results/ucv-goal-ifu-perf-controls-20261101",
+      "counts": {
+        "PASS": 28
+      },
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS"
+      ],
+      "hardware_verdict": "INCOMPLETE",
+      "source_stable": true,
+      "source_sha256": "a4871b99145e434e62c5ae51f37431021d79fdffa44bb9c3a6511566b19cd62b",
+      "run_sha256": "2d66d1de79e38dc80e25a9cdd777271e6a630b15e11f27d4b55adc07053518a7",
+      "summary_sha256": "b19035cec565b061fb460338daec16c95cd5edd805d23fcdf893ab76f08d4e1f",
+      "manifest_sha256": "c19ef0e86bbd1ade34f8509d155e0e18d18b7f4ab9c143abc23d4dee290f84fc",
+      "manifest_state": "committed",
+      "coverage_complete": true
+    },
+    {
+      "output": "results/ucv-goal-ifu-perf-integrated-20261101",
+      "counts": {
+        "PASS": 162,
+        "FAIL": 2,
+        "UNCERTAIN": 1
+      },
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS"
+      ],
+      "hardware_verdict": "FAIL",
+      "source_stable": true,
+      "source_sha256": "a4871b99145e434e62c5ae51f37431021d79fdffa44bb9c3a6511566b19cd62b",
+      "run_sha256": "27831803ac8e098beb6b36db0efaf12c4d9acb7b35d0b02296ba131e42b9311c",
+      "summary_sha256": "4ce24a12fa2256418f10cf24b51283f3a87b4a374e42b5edc7af7d5613b72698",
+      "manifest_sha256": "3c238c23d65cd262a9ffa0e8d120b584c2018c4fb8b34e16d7fcc8007d6f5be0",
+      "manifest_state": "committed",
+      "coverage_complete": true
+    }
+  ],
+  "document_link_errors": []
+}

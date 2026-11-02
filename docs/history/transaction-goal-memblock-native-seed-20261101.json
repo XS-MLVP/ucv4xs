@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "scope": "DCache/LSU/MMU/Sbuffer native seed forwarding across51 loader keys; not completion of these suites' transaction adapters",
+  "constructor_controls": {
+    "output": "results/ucv-goal-memblock-seed-controls-20261101",
+    "receipt_sha256": "364ab48667adebfa947393bcfd73de8ba911d7c44478ee735d7d8b87a8c29f55",
+    "red": {"FAIL": 83},
+    "verified": {"PASS": 83},
+    "full_root": {"PASS": 215},
+    "loader_keys": {"dcache": 13, "lsu": 19, "mmu": 17, "sbuffer": 2},
+    "test": "tests/test_memblock_runtime_seed.py",
+    "credit": "Constructor/argument validation without loading native DUT libraries; no hardware functional credit"
+  },
+  "contract": {
+    "default_resolution": "At every construction, never import-time default capture",
+    "priority": ["explicit seed parameter", "UCV_SEED", "legacy SUITE_VERILATOR_SEED only without UCV_SEED", "1"],
+    "explicit_domain": "Exact Python integer0..4294967295; bool, float, string and out-of-range values rejected before native construction",
+    "legacy_environment_cannot_override_cli_receipt": true,
+    "input_stimulus_seed_and_native_seed_are_distinct": true
+  },
+  "runs": [
+    {
+      "output": "results/ucv-goal-sbuffer-native-seed2-verified-20261101",
+      "counts": {"PASS": 66},
+      "seed": 2,
+      "workers": 2,
+      "selection": [],
+      "source_stable": true,
+      "source_files_match_at_audit": true,
+      "source_sha256": "b4f121d81d974d51c9467525ec2f22a67d022d16af6060e3a94540a0ee673beb",
+      "run_sha256": "14731c3a01cb6b8da4abb9d471371843feddaf4372028b15b651c67a7ab45316",
+      "summary_sha256": "a898cfbde51046d256323910fe90b2bd2ec1e180a7c2ca1e0dcdb2d3594792db",
+      "baseline": "results/ucv-sbuffer-boundary-closed-20261101",
+      "removed_or_added_nodeids": [],
+      "verdict_changes": [],
+      "gaps": []
+    },
+    {
+      "output": "results/ucv-goal-dcache-native-seed2-verified-20261101",
+      "counts": {"PASS": 229, "XFAIL": 3},
+      "seed": 2,
+      "workers": 2,
+      "selection": [],
+      "source_stable": true,
+      "source_files_match_at_audit": true,
+      "source_sha256": "7d74c287eee43bf13d69f6bb9165b5f8da47db9a22fabc5fb53b9c9ebf7e531e",
+      "run_sha256": "8a6afe9630fcf2118e9fd55794a8ec2e0590c67cb4bf24722e56cb71791ee01a",
+      "summary_sha256": "bed7d3c7e276430abc8c69db7b4cdd47c4af71087cce5100ddec59187fcd169f",
+      "baseline": "results/ucv-dcache-semantic-verified-20261101",
+      "removed_or_added_nodeids": [],
+      "verdict_changes": [],
+      "gaps": []
+    },
+    {
+      "output": "results/ucv-goal-mmu-native-seed2-verified-20261101",
+      "counts": {"PASS": 417},
+      "seed": 2,
+      "workers": 2,
+      "selection": [],
+      "source_stable": true,
+      "source_files_match_at_audit": true,
+      "source_sha256": "f456005b5a09f307c92b0b1b9621085df31f1284d58bb4966996c1965801a9e8",
+      "run_sha256": "8b0fc5dc7ce90515653906602c1a3c4038dedee5d47ca2855a9eaea04063b88c",
+      "summary_sha256": "614bd2d613e80c8264b73b4ebb4fd205683ba6959821d9f351230fc6835d7840",
+      "baseline": "results/ucv-mmu-semantic-final-20261101",
+      "removed_or_added_nodeids": [],
+      "verdict_changes": [],
+      "gaps": []
+    },
+    {
+      "output": "results/ucv-goal-lsu-native-seed2-verified-20261101",
+      "counts": {"PASS": 536, "FAIL": 7},
+      "seed": 2,
+      "workers": 2,
+      "selection": [],
+      "source_stable": true,
+      "source_files_match_at_audit": true,
+      "source_sha256": "a502fb9fb3f411c87839734c1ae3eb7290304c2007f3ceddc0ba686f073586e0",
+      "run_sha256": "2fc435d26da2d9b4836be7942ccdf2db179bb83777329b244ae74604a8369795",
+      "summary_sha256": "553b0970258f80c950f9a03694c604efac42f1b6c14de1f54071b712d0c7150d",
+      "baseline": "results/ucv-lsu-delay-integrated-20261101",
+      "removed_or_added_nodeids": [],
+      "verdict_changes": [],
+      "retained_failures": ["test_hw_pf_miss_event_counts_a_real_cache_miss[1]", "test_store_fault_tval_uses_the_tlb_masked_fullva", "test_cbo_on_pbmt_nc_is_not_a_store_access_fault", "test_redirect_killed_s3_load_has_no_architectural_writeback", "test_match_invalid_writeback_clears_replay_cause", "test_prefetch_w_requests_write_intent", "test_std_out_of_range_counter_is_not_inverted"],
+      "gaps": []
+    }
+  ],
+  "historical_correction": "Prior CLI seed2 labels did not prove different native register seeds. Old functional verdicts and receipts remain unchanged; these new runs supply actual seed2 evidence after the constructor fix.",
+  "required_remaining": [
+    "All original DCache/LSQ/LSU/MMU/Sbuffer per-DUT transaction/schema/sampling/ownership/finish obligations remain in the active plan",
+    "Legacy direct suite tools/run.py provenance writers in DCache/LSU/MMU still report only legacy environment seeds; audit and align them with the new loader precedence before treating those direct-run receipts as current seed evidence",
+    "Repository-wide final gates, unified-public applicable regression and package/asset/document audit"
+  ]
+}

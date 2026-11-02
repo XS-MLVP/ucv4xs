@@ -16,12 +16,12 @@ from suites.frontend.icache.metabank.model.bank import MetaWay
 @pytest.mark.feature("ICACHE-METABANK-009")
 async def test_every_way_of_every_set_is_set_and_cleared(metabank_agent):
     agent = metabank_agent
-    for set_index in range(agent.model.sets):
-        for way in range(agent.model.ways):
+    for set_index in range(agent.geometry.sets):
+        for way in range(agent.geometry.ways):
             await agent.write(set_index, 1 << way,
                               phy_tag=0x4000 + set_index,
                               code=(set_index ^ way) & 1)
-    for set_index in range(agent.model.sets):
+    for set_index in range(agent.geometry.sets):
         entries = await agent.check_read(set_index)
         assert [entry.valid for entry in entries] == [1, 1, 1, 1], (
             f"set {set_index} did not mark every written way valid")
@@ -31,7 +31,7 @@ async def test_every_way_of_every_set_is_set_and_cleared(metabank_agent):
                 f"set {set_index} way {way} lost its entry")
 
     await agent.flush_all()
-    for set_index in range(agent.model.sets):
+    for set_index in range(agent.geometry.sets):
         entries = await agent.check_read(set_index)
         assert [entry.valid for entry in entries] == [0, 0, 0, 0], (
             f"set {set_index} kept a valid way after flushAll")

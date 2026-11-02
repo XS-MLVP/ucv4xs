@@ -6,8 +6,10 @@ def metadata_values(expected,actual):
         for key in expected}
 
 
-def live_values(sources,enabled,actual):
+def live_values(sources,enabled,actual,*,base_strong=True):
     wanted=sources.ahead.values(enabled);observed={}
+    if not base_strong:
+        wanted={key:value for key,value in wanted.items() if not key.endswith('.strong')}
     for key,value in tuple(wanted.items()):
         if '.' not in key:
             observed[key]=actual['meta']['valid'] if key=='meta_valid' else actual['meta'][key]

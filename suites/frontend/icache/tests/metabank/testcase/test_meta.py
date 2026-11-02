@@ -6,6 +6,7 @@ import pytest
 
 from suites.frontend.icache.metabank.model.bank import MetaEntry
 from suites.frontend.icache.metabank.model.bank import MetaWay
+from suites.frontend.icache.metabank.transaction.types import MetaBankCycle, MetaBankWrite
 
 
 @pytest.mark.feature("ICACHE-METABANK-001")
@@ -67,15 +68,11 @@ async def test_metadata_and_code_are_stored_verbatim(metabank_agent):
 async def test_read_ready_drops_while_a_write_is_offered(metabank_agent):
     agent = metabank_agent
     await agent.write(0x30, 0b0001, phy_tag=0x1)
-    agent.start_write(0x31, 0b0001, phy_tag=0x2)
-    try:
-        await agent._edge()
-        assert agent.read_ready() == 0, "a write in flight must block the read port"
-        assert agent.write_ready() == 1
-    finally:
-        agent.stop_write()
-        await agent._edge()
-    await agent.wait_for(lambda: agent.read_ready() == 1, what="read ready to return")
+    offered = await agent.cycle(MetaBankCycle(write=MetaBankWrite(0x31, 0b0001, 0x2)))
+    assert offered.read_ready == 0, "a write in flight must block the read port"
+    assert offered.write_ready == 1
+    await agent.cycle()
+    await agent.wait_ready()
 
 
 @pytest.mark.feature("ICACHE-METABANK-007")
@@ -86,10 +83,10 @@ async def test_every_set_index_is_writable_and_readable(metabank_agent):
     would silently drop refills for part of the set space.
     """
     agent = metabank_agent
-    for set_index in range(agent.model.sets):
+    for set_index in range(agent.geometry.sets):
         await agent.write(set_index, 0b0001, phy_tag=0x2000 + set_index,
                           code=set_index & 1)
-    for set_index in range(agent.model.sets):
+    for set_index in range(agent.geometry.sets):
         entries = (await agent.check_read(set_index))
         assert entries[0] == MetaWay(1, MetaEntry(0x2000 + set_index, 0, set_index & 1)), (
             f"set {set_index} lost its refill")
@@ -101,13 +98,12 @@ async def test_every_set_index_is_writable_and_readable(metabank_agent):
 async def test_reset_invalidates_every_set(metabank_agent):
     """Reset clears the validity array and the tag storage."""
     agent = metabank_agent
-    for set_index in range(agent.model.sets):
+    for set_index in range(agent.geometry.sets):
         await agent.write(set_index, 0b1111, phy_tag=0x3000 + set_index,
                           maybe_rvc_map=0x1234_5678, code=1)
     await agent.reset()
-    await agent.wait_for(lambda: agent.write_ready() == 1,
-                         what="the reset sweep to finish")
-    for set_index in range(agent.model.sets):
+    await agent.wait_ready()
+    for set_index in range(agent.geometry.sets):
         entries = await agent.check_read(set_index)
         assert [entry.valid for entry in entries] == [0, 0, 0, 0], (
             f"set {set_index} kept a valid way after reset")
@@ -125,14 +121,9 @@ async def test_flush_all_wins_over_a_write_in_the_same_cycle(metabank_agent):
     agent = metabank_agent
     await agent.write(0x20, 0b0001, phy_tag=0x111)
     # Present a write and the full invalidate on the same edge.
-    agent.start_write(0x21, 0b0001, phy_tag=0x222)
-    agent.flush_driver.set({"flushAll": 1})
-    await agent._edge()
-    agent.stop_write()
-    agent.flush_driver.set({"flushAll": 0})
-    agent.model.flush_all()
-    await agent._edge()
-    await agent._edge()
+    await agent.cycle(MetaBankCycle(write=MetaBankWrite(0x21, 0b0001, 0x222), flush_all=1))
+    await agent.cycle()
+    await agent.cycle()
 
     entries = await agent.check_read(0x20)
     assert all(entry.valid == 0 for entry in entries), (
@@ -159,16 +150,13 @@ async def test_read_is_blocked_while_the_full_invalidate_is_asserted(metabank_ag
     agent = metabank_agent
     await agent.write(0x22, 0b0001, phy_tag=0x444)
 
-    agent.flush_driver.set({"flushAll": 1})
-    await agent._edge()
-    assert agent.read_ready() == 0, (
+    first = await agent.cycle(MetaBankCycle(flush_all=1))
+    assert first.read_ready == 0, (
         "a read must not be accepted while flushAll is asserted")
-    await agent._edge()
-    assert agent.read_ready() == 0
-    agent.flush_driver.set({"flushAll": 0})
-    agent.model.flush_all()
-    await agent._edge()
-    assert agent.read_ready() == 1, "the read port must reopen after the flush"
+    second = await agent.cycle(MetaBankCycle(flush_all=1))
+    assert second.read_ready == 0
+    released = await agent.cycle()
+    assert released.read_ready == 1, "the read port must reopen after the flush"
 
     entries = await agent.check_read(0x22)
     assert all(entry.valid == 0 for entry in entries)

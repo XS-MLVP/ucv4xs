@@ -16,6 +16,7 @@ import shlex
 import subprocess
 import tempfile
 import sys
+from suites.memblock.lsu.native import native_seed
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCK = __import__("ucv.runtime", fromlist=["toolchain"]).toolchain()
@@ -34,6 +35,8 @@ def main() -> None:
     output = (ROOT / "results" / args.name).resolve()
     if output.exists():
         raise SystemExit(f"output already exists: {output}")
+    seed = native_seed()
+    env = dict(os.environ, UCV_SEED=str(seed))
     removed = []
     for name in ("memory-direct.fst", "memory-direct.vcd"):
         stale = ROOT / name
@@ -52,7 +55,6 @@ def main() -> None:
         # Stage outside output: toffee requires a fresh output directory.
         console_path = Path(temp) / "console.log"
         junit_path = Path(temp) / "junit.xml"
-        env = dict(os.environ)
         env["PYTEST_ADDOPTS"] = (env.get("PYTEST_ADDOPTS", "") +
                                   " --junitxml=" + str(junit_path)).strip()
         with console_path.open("w") as console:
@@ -86,7 +88,7 @@ def main() -> None:
                     source.read_bytes()).hexdigest()
         (output / "run-provenance.json").write_text(json.dumps({
             "schema_version": 1, "command": command,
-            "verilator_seed": int(os.environ.get("LSU_VERILATOR_SEED", "1")),
+            "verilator_seed": seed,
             "sources_sha256": fingerprint,
             "console_sha256": hashlib.sha256(console_path.read_bytes()).hexdigest(),
             "returncode": proc.returncode,

@@ -50,10 +50,5 @@ class FtqChecker:
     def training_mask_ok(training: TrainingEntry) -> bool:
         """No predictor update may follow the first mispredicted branch."""
 
-        seen_mispredict = False
-        for branch in training.branches:
-            if seen_mispredict:
-                return False
-            if branch.mispredict:
-                seen_mispredict = True
-        return True
+        first = min((branch.position for branch in training.branches if branch.mispredict), default=32)
+        return all(branch.position <= first for branch in training.branches)

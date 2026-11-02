@@ -7,6 +7,7 @@ import random
 import pytest
 
 from tests.resolve_queue.support import report
+from suites.frontend.ftq.resolve_queue.checker.model import ResolveChecker
 
 pytestmark = [pytest.mark.feature("FTQ-RQ-002"),
               pytest.mark.feature("FTQ-RQ-003")]
@@ -27,7 +28,9 @@ def _spec(rng: random.Random) -> dict[str, int]:
 
 async def test_random_ownership_sequence_matches_merge_oracle(resolve_queue_agent):
     agent = resolve_queue_agent
-    checker = agent.checker
+    # This scenario's oracle owns only its independently planned input history.
+    # It must not mutate or borrow the runtime agent's checker state.
+    checker = ResolveChecker()
     rng = random.Random(0x5EED)
     await agent.ready(False)
 

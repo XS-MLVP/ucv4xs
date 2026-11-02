@@ -1,11 +1,14 @@
 """Public input event decoding and output observation; no SRAM-to-golden path."""
 import asyncio
 from contextlib import suppress
+from dataclasses import replace
 
 from toffee import Bundle, DriveStable, RisingEdge, on
 
 from suites.frontend.bpu.mbtb.model.semantic import WAYS, Branch, Events, Feedback, Source
 from suites.frontend.bpu.mbtb.monitor.decode import _decode
+from suites.frontend.bpu.mbtb.bundle.values import _plain
+from suites.frontend.bpu.mbtb.driver.feedback import observed_mbtb_feedback
 
 
 def decode_feedback(train):
@@ -37,7 +40,7 @@ def decode_events(sample):
 
 
 class MbtbSemanticMonitor:
-    def __init__(self, dut, ports):
+    def __init__(self, dut, ports,*,training_inputs=None,lookup_inputs=None):
         self.clock = ports.lookup.clock
         self.inputs = Bundle(reset=dut.reset, enabled=ports.control.bits.enable,
             ready=ports.status.bits.reset_done, lookup=ports.lookup.bits,
@@ -46,18 +49,46 @@ class MbtbSemanticMonitor:
         self.launched = Events(enabled=False, ready=False)
         self.execution = None
         self.subscriptions = []
+        self.training_inputs=training_inputs
+        self.lookup_inputs=lookup_inputs
 
     def start(self, execution, checker):
         self.execution = execution
+        previous_wire=None
+        preedge_ready=False
 
         def inputs(event):
-            launched = decode_events(self.inputs())
+            nonlocal preedge_ready
+            # Readiness is a DUT output and must be its pre-edge value. Driven
+            # inputs are captured at the actual rising edge below: cancellation
+            # after this preview can still withdraw an unaccepted valid beat.
+            preedge_ready=bool(self.inputs().ready.as_int())
+            if self.training_inputs is not None and checker.failure is None:
+                try:
+                    prior=self.launched
+                    # The saved actual rising-edge input is consumed one
+                    # half-tick later; this model phase is not its offer time.
+                    self.training_inputs.observe(event.tick-1,reset=prior.reset,
+                        ready=prior.ready,enabled=prior.enabled,feedback=previous_wire)
+                except Exception as error:checker.failure=error
+            if self.lookup_inputs is not None and checker.failure is None:
+                try:self.lookup_inputs.observe(event.tick-1,self.launched)
+                except Exception as error:checker.failure=error
             checker.capture_input(event, self.launched)
-            self.launched = launched
 
         def outputs(event):
+            nonlocal previous_wire
+            actual_inputs=self.inputs()
+            launched=replace(decode_events(actual_inputs),ready=preedge_ready)
+            wire=(observed_mbtb_feedback(dict(ready=1,bits=_plain(actual_inputs.train)))
+                  if actual_inputs.train_valid.as_int() else None)
             row = self.outputs()
             checker.capture_output(event, _decode(row.prediction), enabled=bool(row.enabled.as_int()))
+            if self.lookup_inputs is not None and checker.failure is None:
+                try:self.lookup_inputs.observe_output(event.tick)
+                except Exception as error:checker.failure=error
+            self.launched=launched
+            previous_wire=wire
 
         async def delivered(_):
             pass

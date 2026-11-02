@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "output": "results/ucv-goal-collect-frontend-boundary-20261101",
+  "source_sha256": "69c12326dd27e147e2b0d5a9b6b6841ab8c82490729b2ea9971a8c54e2749834",
+  "run_sha256": "3daba31f5434904d70508278f77d16f87489596f2aff593495be79df4500529a",
+  "source_stable": true,
+  "source_files_match_at_audit": true,
+  "collection_tasks": 10,
+  "all_collection_tasks_exit_zero": true,
+  "total": 46495,
+  "initial_baseline": "results/ucv-goal-collect-before-20261101",
+  "initial_total": 45883,
+  "previous_baseline": "results/ucv-goal-collect-ifu-top-uncache-20261101",
+  "previous_total": 46379,
+  "removed_nodeids": [],
+  "initial_and_previous_relative_order_preserved_per_suite": true,
+  "suites": {
+    "bpu": {"initial": 41031, "previous": 41031, "current": 41065, "added_since_previous": 34},
+    "ftq": {"initial": 111, "previous": 111, "current": 111, "added_since_previous": 0},
+    "ifu": {"initial": 147, "previous": 643, "current": 725, "added_since_previous": 82},
+    "icache": {"initial": 294, "previous": 294, "current": 294, "added_since_previous": 0},
+    "dcache": {"initial": 232, "previous": 232, "current": 232, "added_since_previous": 0},
+    "lsq": {"initial": 2575, "previous": 2575, "current": 2575, "added_since_previous": 0},
+    "sbuffer": {"initial": 66, "previous": 66, "current": 66, "added_since_previous": 0},
+    "mmu": {"initial": 417, "previous": 417, "current": 417, "added_since_previous": 0},
+    "lsu": {"initial": 543, "previous": 543, "current": 543, "added_since_previous": 0},
+    "vagq": {"initial": 467, "previous": 467, "current": 467, "added_since_previous": 0}
+  },
+  "verdict_boundary": "Collect-only is not hardware execution. The overall CLI exit1 comes from the open IFU R-13/R-14 residual register; all ten actual collection tasks exited0. Full includes internal VAGQ and is intentionally a mixed-baseline inventory, not unified public acceptance."
+}

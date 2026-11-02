@@ -5,6 +5,258 @@
 
 仓库名称为 `ucv4xs`，定位是基于 UnityChip 的香山单元测试；命令与 Python 导入名保持 `ucv`。
 
+**后续默认基线更新（2026-11-02）**：按用户要求，将九个公开工程的根默认改为
+`public-a0c2a26cb`，固定上游`kunminghu-v3`当次最新
+`a0c2a26cbe3c862175174bad03a1a23c406315ed`；76条递归gitlink已核对，只有
+`difftest`/`XSCache`相对旧基线变化。DefaultConfig与工具/生成参数保持，VAGQ internal
+覆盖及旧`public-893e1580b`完整清单不变。本次未生成新RTL或构建/冒烟/功能回归，
+下文协作检查点及所有旧PASS/FAIL仍归其原基线与源码，**不代表新默认已验证**。
+配置继承/缓存分离检查通过，公共路径API默认已改为跟随根配置；新增两个反证修前FAIL、
+修后随完整根测试 **268 PASS**。这些根自检不计新RTL构建或功能验收。
+新缓存身份与旧版不同，旧native链接保持原状且会被运行前校验拒绝；后续需先
+`ucv prepare public --require-unified-baseline`和`ucv build public --require-unified-baseline`。
+已暂停的事务适配整体目标未恢复；见[基线记录](history/baseline-kunminghu-v3-20261102.json)。
+
+**协作发布收尾（2026-11-02，按用户要求结束本轮连续推进）**：本阶段交付目录和接续
+规则，不标全仓适配完成；整体未完成范围保留，收尾后暂停。统一协作入口为
+[CONTRIBUTING.md](../CONTRIBUTING.md)，按工程/DUT分工、沿用既有命名空间/fixture/布局，
+不为各AI新建外壳或批量搬目录。完整交接见[协作检查点](collaboration-checkpoint-20261102.md)。
+
+当前根 **266 PASS**；ICache source`b48dc54b...`完整seed2 **567 PASS/3 XFAIL**，同源码
+DataBank+MetaBank seed1/2各 **305 PASS**，原412项保留且判定不变、158新项均PASS。
+新增MetaBank严格ABI/事务、SDK所有权、双相持续采样、tag/valid双来源与checked finish；
+两SRAM DUT共享严格非零控制，修正释放预览相位、逐row reset清扫和停止consumer假收尾。
+当前ICache owner访问351→327，其他DUT仍需适配；模拟宏不适用控制不冒称硅片DFT验收。
+
+MainBTB source`606640...`完整 **2854 PASS/9 FAIL**、同源码seed1定向 **136 PASS/9 FAIL**，
+源码/构建/产物已审计；九条FAIL实际恢复原semantic/shared-service比较，不再被次生缺
+sample错误遮盖。十工程结构门禁和Skill能力检查通过，严格事务门禁仍真实exit1。
+最新十工程collection **49078项**，source`602ea9a6...`前后稳定且4159文件逐hash匹配，
+十任务exit0；初始45883及上一48809项无删除、逐工程相对顺序保持。collect-only不算
+硬件PASS，CLI1仍保留IFU登记残余；不重标旧collection数字。
+捕获本检查点时尚未创建新commit/tag/推送，HEAD当时为`0017350...`；该旧提交不包含上述
+后续内容。用户随后已授权将阶段检查点、协作约定及新基线更新一并提交并推送；实际共享
+版本以Git历史/远端main为准，不能只把旧HEAD交给协作者。以下历史检查点数值保留原义。
+
+**最新检查点（2026-11-02，整体仍进行中）**：新owner基础设施门禁揭露的Sbuffer模型
+驱动排空已修：保持原四笔入队/响应并加强无额外请求尾部，同源码seed1/2完整均
+**66 PASS**，原66项判定保持。根从原257 PASS随DataBank报告桥接控制扩展，当前完整
+**266 PASS**，含9条真正的fixture/report边界控制，没有改门禁断言或加豁免。Skill20篇/
+锁定框架能力、资产10工程132 DUT/4820拟发布路径及diff检查通过；资产数字含cached与
+untracked，不冒充纯tracked文件数。
+FTQ四处运行时checker耦合已改为既有UID审计收据和独立场景oracle，当前完整已审计
+**905 PASS/2 XFAIL**、同源码seed1定向**57 PASS**；原907项及顺序/判定保持，见
+[收据边界证据](history/transaction-goal-ftq-receipt-boundary-20261102.json)。
+当前严格静态报告FTQ/Sbuffer均0 owner访问，BPU24、ICache351和MemBlock/VAGQ其他
+债务仍在，不能据局部清零签核。
+
+MainBTB reset/disable typed终态、实际SDK比较交付及按UID/时窗索引已生产接入。定向
+**2737 PASS/5既有FAIL**（native75/5、pure2662），sourceff41f...稳定且源码/产物/build
+核验，所选旧项无删除/判定变化，新73自检PASS。旧完整08a1a...最后shadow矩阵因每沿
+全历史扫描持续变慢而定向SIGINT中断，nativeexit130/manifest仍running，没有完整信用。
+旧1000/16000历史、同200空沿访问40万/640万行；新索引均0，不删除历史。同源码完整
+**2853 PASS/9 FAIL**（native159/9、pure2694）、seed1选测124 PASS已审计，但七处原始
+语义错误被后续缺sample见证的次生错误遮盖；新red确认后已修原错误优先传播，纯11控制
+PASS。新source606640...完整BPU回归已启动，继续审计诊断而非只比较FAIL数；只冻结BPU
+范围，不用全仓待锁collection阻止独立工程推进。见
+[终态/索引证据](history/transaction-goal-mbtb-disposition-index-20261102.json)和
+[Sbuffer来源修复](history/transaction-goal-sbuffer-timeout-source-20261102.json)。
+
+最新**已审计**十工程collection为**48809项**，source0078a318...稳定且逐文件匹配，十
+收集任务exit0；初始45883及上一48673均无删除/相对顺序变化。该总数早于本次终态/
+索引/closed-send/reset控制，不能外推新总数或当硬件PASS。ICache closed-send已生产修复，
+完整**327 PASS/3 XFAIL**、同源码seed1选测**103 PASS/1 XFAIL**，原项判定保持、新1
+native自检PASS；随后DataBank reset接入SDK唯一所有权/严格预拒绝，同源码seed1/2各
+**58 PASS**（31native输入/27纯控制），新增9自检PASS、原reset相关5red同探针修后PASS。
+之后DataBank持续lossless双相frame/逐输入UID/raw66存储来源/默认自动读检查和严格fixture
+finish已生产接入，不再由功能体手改model或直接driver。v4完整ICache **401 PASS/3 XFAIL**、
+同源码seed1选测 **177 PASS/1 XFAIL**，source6a5d865...稳定且源码/构建/产物审计，旧330项
+及相对顺序/判定保持、新74 selftest PASS；原8条runtime red同探针修后8 PASS。v5另补6条
+跨MBIST/功能/reset控制，定向22 native PASS，当前source4003a071...完整已审计
+**407 PASS/3 XFAIL**、同源码seed1 DataBank **129 PASS**（53 native用例/76纯控制、55
+native实例），旧项/判定保持。非零DFT控制语义、进一步
+组合生命周期和其他DUT/所有其余工程仍必需。详见
+[DataBank持续账本](history/transaction-goal-icache-databank-continuous-20261102.json)。
+v5后又补首沿前read/reset取消控制，证实旧finish会先推进4/2tick执行取消计划才失败；
+现生产在任何drain tick前拒绝未发射计划/reset日程，定向24 native PASS，当前完整v6
+source11cbc636...已审计 **409 PASS/3 XFAIL**、同源码seed1 DataBank **131 PASS**，旧
+330/410项及顺序/判定保持；55 native用例/76纯控制、57 native实例，全部产物/build hash
+核验，native未重建。前述407/3保留前一源码含义，不与当前结果拼接。
+以下按先后保留此前检查点的各自源码和结论边界。
+
+**此前检查点（2026-11-02）**：IFU七DUT当前适配保持完成；BPU共享
+pipeline/PHR/short/positive检查点686 PASS及seed2 12 PASS。FTQ两个leaf现已完成当前
+事务迁移；Ftq顶层callret/commit子链检查点完整**410 PASS/2 XFAIL**，同源码seed1
+定向146 PASS、根**242 PASS**；之后其余五通道已接自动比较、输入UID/仲裁/重试和本地
+有界收尾，最终v4完整**905 PASS/2 XFAIL**，前412项判定保持，新495项均selftest。v3的
+903 PASS/1 FAIL/2 XFAIL唯一FAIL是旧自检固定通道数9，现改为完整固定10通道集合；
+最终同源码seed1定向**122 PASS**、Ftq收集907项，当前三个FTQ DUT的事务适配范围已核验。
+整体前端/全仓目标继续，不能由此关闭；
+MBTB/其他BPU、ICache及MemBlock/VAGQ和最终验收仍必需。全仓最新完整collection
+**48673项**（MBTB事务v5检查点；后续训练账本新增项尚未计入），初始45883及前48424无
+删除/相对顺序保持，十任务exit0；CLI1仍是IFU残余登记，见
+[收集对账](history/transaction-goal-collect-mbtb-transactions-20261102.json)。详细
+证据见[ResolveQueue检查点](history/transaction-goal-ftq-resolve-transactions-20261102.json)与
+[Ftq整槽检查点](history/transaction-goal-ftq-top-slots-20261102.json)。随后新red控制确认
+PredictionSpec/allocate计划和直接预览metadata不可变性仍有缺口，继续修复，不重标旧结果。
+这些输入/快照问题已在后续源码修复，原8条red探针修后PASS；新完整373 PASS/1 FAIL/2 XFAIL
+和seed1 138 PASS/1 FAIL的唯一错误来自新增控制在redirect后未重新分配就写meta，现补
+合法前置而不放宽PNR不变量。额外三个native commit观察注入均证实仍缺自动比较，正接入
+输入UID/FIFO与metadata来源、完成/取消账本及有界自主消费尾部。meta无复位store在reset
+有效沿仍可写的边界也已由red/green及原生控制核验，commit子链410/2与seed1 146保持原
+356项判定、新56项均selftest；其余五通道auto-compare red均保留为真实未完成项，见
+[顶层commit实施证据](history/transaction-goal-ftq-top-commit-20261102.json)；不据此签核整个Ftq。
+后续首版五通道完整418 PASS/4 FAIL/11 ERROR/2 XFAIL保留原记录，差异为same-flag位宽
+回绕、旧IFU字节/半字PC混用及原功能体未消费训练。现保留first-owner oracle，显式转换
+三个IFU PC并在5个原功能体末尾追加排空；7个原文件AST除此保持。完整字段/元数据来源、
+receiver分义务、request重试及禁止自动清债的边界见
+[当前组合合同](../suites/frontend/ftq/docs/transaction-adaptation.md#五通道组合检查当前实现)。
+7个覆盖产物/235个原生输入/18个构建文件哈希核验，构建未变；额外5条严格
+ScoreboardMismatch原生探针通过，排除了训练收尾的通用AssertionError假救活。中间判定、
+源码及最终待办见[五通道机器记录](history/transaction-goal-ftq-top-frontend-20261102.json)。
+MBTB当前基线为2257 PASS/229 FAIL（native101/24、pure2156/205）。两条纯red证实旧
+cleanup仅2-way预期且漏掉4-way中只有两路有效的观察；现四路输入LRU计划、完整4×4
+shadow、真正zero-tag输入、clear属性及三组纯适配已修。v2的544纯检查通过；后续guard
+改为完整4路且恰2路有效后，完整v3为**2539 PASS/12 FAIL**，12个cleanup原生场景通过。
+shared-service/owner和严格域、嵌套快照、固定ABI、有界finish继续适配：seed2定向
+**2599 PASS/5 FAIL**，后续seed1定向**88 PASS/5 FAIL**；来源/产物/构建逐项核验，真实
+反例不豁免。两次定向源码因新增高guard消费者不同，不冒称同源码双seed。随后完整MBTB
+事务v5已审计为**2723 PASS/11 FAIL**（native121/11、pure2602），其中两条是排空时多走
+一沿引入的适配回归，不当作硬件缺陷；其余九条真实功能反例保留。后续生产训练账本按
+发射前UID核对完整wire，区分实际接受/disabled过滤/reset取消/未发射取消和精确终态；
+实际RisingEdge采样代替可撤回的DriveStable预览，修复取消后的幻影接受。定向v2为
+**2643 PASS/5 FAIL**，44项新增自检PASS、两条排空FAIL→PASS，所选原项无删除。
+根回归再次**242 PASS**；当前训练账本源码完整v4已核验**2780 PASS/9 FAIL**
+（native137/9、pure2643），原2734项无删除、两条排空适配FAIL→PASS，新55自检PASS，
+源码9f6825...稳定且审计匹配、146native输入/产物/构建hash核验。同源码seed1定向已审计
+90 PASS；前一个完整尝试因外层600秒超时而中止，不给完整结果信用。后续lookup输入UID/
+S0/S1/S2/SDKlaunch与实际tick/响应frame owner和metadata祖先已接入：来源定向v2为
+2686 PASS/5既有FAIL，后续修复replacement场景把改写expected当source的刺激漏洞。
+当前08a1a...源码seed1定向**105 PASS**（51native/54pure），来源/产物/构建已核验；
+完整MBTB及新十工程collection仍待通知/审计，不拼造最新总数。中途disable和已接受响应
+句柄的reset终态已有两条native red，仍需修复，不将正确拒绝stale frame误当该合法控制
+场景已完整适配。其余API/生命周期仍必需；不将静态零命中或旧0 setup ERROR当迁移完成，见
+[事务证据](history/transaction-goal-mbtb-transactions-20261102.json)及
+[训练输入证据](history/transaction-goal-mbtb-training-inputs-20261102.json)。
+最新lookup/来源与剩余reset/filter反证见
+[机器记录](history/transaction-goal-mbtb-lookup-source-20261102.json)。
+
+ICache同时补DataBank严格域/完整深只读快照及首响应取样，不再按expected payload选择
+后来的响应；同源码seed1/2各43 PASS。共享LevelDriver的71处构造位置接入SDK输入claim，
+完整ICache**326 PASS/3 XFAIL**、同源码seed1选测**102 PASS/1 XFAIL**；原294项无删除/
+判定变化，新35项selftest PASS，全部11DUT的66个构建文件与覆盖产物hash核验。零沿set
+不是接受；新发现已close后的send会先重新claim再抛closed，保留native red待补，其他
+reset/MBIST所有权、持续采样、UID和finish仍必需。见
+[DataBank证据](history/transaction-goal-icache-databank-domains-20261102.json)及
+[level所有权证据](history/transaction-goal-icache-level-ownership-20261102.json)。
+
+后续严格门禁补查owner的driver/ports/model/monitor和私有编码/边沿访问；旧pin/signal
+计数未改。10个修前错误清零控制已在预期断言red，修后拒绝与合法对照通过，但新报告仍有
+BPU24、FTQ4、ICache370、LSQ121、MMU53、Sbuffer1、VAGQ32处基础设施访问。当前根
+回归真实为**256 PASS/1 FAIL**：Sbuffer旧功能用例用`env.model.lines`决定排空，必须修
+功能来源，不能删除该门禁断言；不能继续引用此前242 PASS作为新门禁源码全绿证据。
+工程源码在完整MBTB/十工程collection期间仍冻结；reset/filter原生15控制及原20生命周期
+用例已在外部原型通过，closed-level guard原型1 PASS，DataBank连续输入/响应原型10
+PASS，但均未合入生产，不给迁移完成信用。新增八条DataBank原生反证与实际MBIST
+ack/完整66-bit响应相位同列待修合同，详见
+[新门禁/原型机器记录](history/transaction-goal-component-boundary-20261102.json)。
+以下旧检查点的数值及源码哈希按各自运行保留，不冒称对应当前完整源码。
+
+**2026-11-01 新全仓适配目标（进行中）**：按用户 /goal 创建独立活动目标，覆盖十工程
+132 DUT 的全部框架事务/迁移适配，不继承旧目标的过强 complete 结论。初始收集45883项；
+已完成 IFU 七个DUT（包括Ifu顶层）的当前框架事务适配、严格合法域、
+分阶段采样/身份和有界收尾；修复fixture切换时组合旧样本及native seed固定为1的问题。
+最新完整 IFU 为 **719 PASS / 5 FAIL / 1 UNCERTAIN**：保留R-13两条FAIL及R-14的三条端口
+合同反例。R-14原生产可达论证因短non-taken窗口不符合真实FTQ规则而撤回；严格生产者
+对照均正常，不能把真实native端口FAIL自动称生产缺陷。相对上一uncache检查点的643项，
+新增82项全部PASS、原判定逐条不变；新增内容补齐raw字节与派生描述对账、13个性能事件
+两级延迟比较、同拍/年龄/取消/尾部控制。真实seed2定向为278 PASS/1 FAIL/1 UNCERTAIN；
+根126 PASS，IFU静态事务泄漏为0。最新十工程collection46495项，初始45883项及上一46379项
+均无删除、相对顺序保持；十任务exit0，CLI仍因IFU残余登记exit1，不当作硬件通过。
+RVC原28331笔输入及顺序不变（含28000次随机比较），InstrBoundary原600样本及顺序不变，
+补真实raw半字map并按消费者有效域比较。FrontendTrigger原798笔计划激励（含180随机）
+及顺序不变，CSR合法域与端口域压力分开，补零复位action和双阶段检查。Uncache原767笔
+主激励（含700随机）的实际端口值/顺序不变，补48位字节地址、真实fire/UID/完成/取消与
+禁止自动清债的收尾。Ifu顶层全部49个原功能体及两个guard已接入同一事务链，补逐UID
+uncache issue/reply/resend/取消与全通道尾部检查，旧raw helper和fixture已移除；IFU静态
+引脚/信号表达式现为0。ProducerFetchRequest按真实extent/页/FTQ后继/翻译偏移准入，
+原端口压力不晋升producer credit；carry模型按完整ISA与完成槽taken修正，旧错误答案对照
+被拒绝。旧flag2/3显式改为合法低位编码，不冒称全部物理激励保持；纯计划对账缓存373窗口、
+uncache53请求/18回复。顶层最终语义审计已完成当前适配范围（包括派生指令metadata与实际
+raw字节一致性、性能事件和生命周期）；其他前端工程及最终全仓验收继续，不能据静态清零
+称全部适配完成。见
+[活动目标实现记录](lessons/transaction-goal-20261101.md)。
+PerfAnalysis另以真实red控制复核并补齐吞错后finish假成功：新增15自检、严格端口/Frame、
+共享显式槽和粘滞失败，旧模型/功能文件字节不变；此前“已适配”不等于该新控制当时已覆盖。
+
+前端复核继续：PHR的532-cell/33-fold/value-only适配已由同一源码真实seed1/2各16 PASS、
+纯检查2128 PASS核验，补输入UID/fire/flush和精确终态账本、显式收尾、RAS输出字段投影
+及真实训练PC`(1,1,2)`几何。内部PHR输入target不算已DCE的公开BPU target证据。
+FTQ未传seed和ICache固定seed1也已修复：真实seed2完整FTQ109 PASS/2 XFAIL、ICache相同
+生命周期选测44 PASS/1 XFAIL。MemBlock共51个加载入口的83个构造器控制修前全FAIL、
+修后全PASS；另15个legacy直接运行provenance控制通过，根现230 PASS。修后真实seed2完整Sbuffer66 PASS、DCache229 PASS/3 XFAIL、
+MMU417 PASS、LSU536 PASS/7 FAIL，逐nodeid判定均保持。独立pipeline的两个原生功能和
+四个entry保护功能也已通过当前投影；其他短/长来源和positive程序仍未完成。
+最新十工程collection47627项，初始45883及
+前47592项无删除、相对顺序保持。BPU其他DCE消费者、短/长来源原生程序、MBTB
+四路写回及前端逐DUT语义义务仍未完成，不能借PHR局部通过签核整体；见
+[PHR与seed证据](history/transaction-goal-phr-adapter-20261101.json)及
+[前端早期复核记录](history/transaction-goal-frontend-review-20261101.json)。
+
+**2026-11-01 后续事务修复**：Sbuffer/SbufferData 两个 DUT 已接入框架单周期 Driver 与
+lossless SamplingMonitor，修复零接受/排空超时的假成功、写回 UID/尝试与响应关联、
+offered/accepted 区别和相同数据不同历史的 retry。此前两次CLI seed运行均 **66 PASS**，原 31
+项判定不变；新增 7 个正常原生功能用例和 28 个自检。最新根测试 **108 PASS**；Sbuffer
+严格事务边界审计通过，全仓仍有六工程待适配，不据此签核全部语义/覆盖。LSQ 已将
+路径依赖的 fixture 模型选择改为显式合同，定向前后均为 324 PASS / 16 FAIL，逐条判定
+不变。LSU StoreDelay 接入框架并补字段/尾拍检查，定向为 28 PASS；最新 LSU 完整回归为
+536 PASS / 7 FAIL，原 529 项与历史完整集逐条判定不变，新 14 个自检通过。
+所有后续修复仍未再次提交/推送，
+最终差分与限制见[事务边界修复](lessons/transaction-boundary-repair-20261101.md)。
+后续核验发现MemBlock原生默认入口未转发`UCV_SEED`；旧66项功能判定不改写成真实
+双seed证据。四工程当前已逐次转发并补真正seed2回归，详见
+[原生seed证据](history/transaction-goal-memblock-native-seed-20261101.json)。这些配置项的
+修复不关闭各工程事务迁移；直接运行的legacy provenance writer现已同步同一seed解析、
+启动前冻结和子进程参数，13/14/7项新原生选测判定保持，见
+[seed收据修复](history/transaction-goal-memblock-seed-provenance-20261101.json)。
+
+**2026-11-02 前端继续复核**：FTQ三个DUT补严格输入域、只读metadata、整组写入与claim
+的原子拒绝，同名driver不能重占同一物理输入。修后真实seed2完整**166 PASS/2 XFAIL**，
+原111项nodeid及判定保持，新增57项均为自检、不是新增硬件点，根**230 PASS**。其手动
+driver、只在`edge(cycles)`返回时观察一次以及`aclose`清记录等仍是真实待迁移项；不据
+绿色或静态零泄漏签核三个DUT。见[FTQ当前证据](history/transaction-goal-ftq-input-ownership-20261102.json)。
+
+BPU短表/positive准备流与真实恢复读祖先修复后，合并共享调用链为**686 PASS**
+（33 native/653纯检查），真实seed2的entry/short/positive共**12 PASS**；两批源码相同且
+稳定、构建未改、产物哈希核验。保留原NT1/长T4/同owner和positive T4/protection1要求，
+不是按live表状态挑期望。仍不关闭其他BPU、MBTB、FTQ/ICache及全仓范围，见
+[源码/生命周期证据](history/transaction-goal-source-lifecycle-20261102.json)。
+相同检查点十工程collection为**47686项**，原45883及前47627均无删除、相对顺序保持；
+十任务exit0，CLI exit1仍是IFU残余登记。后续CommitQueue迁移不沿用这份源码身份，见
+[收集对账](history/transaction-goal-collect-source-lifecycle-20261102.json)。
+
+CommitQueue现已完成当前事务迁移：SDK Driver、双阶段lossless采样、输入UID终态账本、
+真实异步reset及有界idle尾部。该源码下完整FTQ为**210 PASS/2 XFAIL**，旧168项判定不变；
+同源码seed1定向**53 PASS**，根**240 PASS**。新增44项均为自检，不计新硬件功能点。
+ResolveQueue/Ftq顶层的同类采样/身份/收尾仍继续迁移，详见
+[CommitQueue证据](history/transaction-goal-ftq-commit-transactions-20261102.json)。
+
+随后补齐ResolveQueue/Ftq的框架持续双阶段全通道观察与嵌套只读快照、逐拍tick及早关/
+取消守卫。当前完整FTQ为**228 PASS/2 XFAIL**，前212项判定保持，新18项自检；同源码
+seed1生命周期选测**71 PASS**、根**242 PASS**。十工程collection**47748项**，初始45883
+和前47686无删除/顺序保持，十任务exit0。两DUT的driver/完整schema/协议UID与事务收尾
+仍继续迁移，不以采样帧数代替事务完成，见
+[持续采样证据](history/transaction-goal-ftq-cycle-sampling-20261102.json)。
+
+**2026-11-01 检查点与后续语义修复**：先提交并推送 `0017350` 到 origin/main，远端
+哈希已核对。随后修复 DCache 默认多 worker 的零收集、L2 沿前握手/完整双 beat、
+随机流的无来源 ReleaseAck 和 golden store 数据泄漏，以及 MMU PTW 的接受/完成身份。
+最终 DCache 为 **229 PASS / 3 XFAIL**，MMU **417 PASS**；原 213/408 项逐条判定不变，
+新增 19/9 项通过。根测试 **102 PASS**。扩展审计揭露 Sbuffer 等信号操作盲区，当前七
+工程仍有事务边界技术债，不能据此宣称全部语义或架构迁移完成。后续修复目前尚未再次
+提交/推送；过程中的 FAIL/INCOMPLETE 与最终证据分别保留，见
+[提交后语义修复](lessons/semantic-boundary-repair-20261101.md)。
+
 **2026-10-31 工程根命名空间更新**：十工程实现已直接迁入 suites.<group>.<suite>，
 移除重复 *verify/common 包装；runner、插件、ROOT、工具、安装元数据、文档和 skill
 一起调整。45806 个有序收集 nodeid 与迁移前完全一致，根测试 96 PASS，结构与资产/skill

@@ -10,10 +10,12 @@ async def test_control_driver_tracks_global_enable_and_ready(bpu_agent):
     assert disabled.ubtb_enable.as_int() == 0
     assert disabled.tage_enable.as_int() == 0
     assert disabled.ras_enable.as_int() == 0
-    await bpu_agent.set_ready(prediction=False, meta=False)
+    with pytest.raises(ValueError, match="metadata is valid-only"):
+        await bpu_agent.set_ready(prediction=False, meta=False)
+    await bpu_agent.set_ready(prediction=False, meta=True)
     stalled = bpu_agent.ports.control.bits.sample()
     assert stalled.prediction_ready.as_int() == 0
-    assert stalled.meta_ready.as_int() == 0
+    assert 'meta_ready' not in stalled
 
 
 async def test_control_driver_can_gate_early_predictors_independently(bpu_agent):

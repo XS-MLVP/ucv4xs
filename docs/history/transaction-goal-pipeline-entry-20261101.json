@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "scope": "Integrated BPU autonomous pipeline ABI/ownership and original-short program migration; partial checkpoint, not frontend or complete BPU acceptance",
+  "contract": "suites/frontend/bpu/docs/pipeline-transaction-contract.md",
+  "native_checkpoint": {
+    "output": "results/ucv-goal-bpu-pipeline-entry-integrated-20261101",
+    "overall_counts": {"PASS": 575, "FAIL": 59},
+    "source_sha256": "7220b4817f77956652e2242314482dc822f5521842f7261c03a13f1b82352416",
+    "source_stable": true,
+    "run_sha256": "567498d0e20508daff5061380333e2a82fa30b03390877c44b49c846b497f9a3",
+    "summary_sha256": "2c91f9658b03ab9e94d332ff76e033ef8543e6f9aa8c03b6f2435c6be5a241e5",
+    "native_scope": {"PASS": 25},
+    "native_composition": {"original_PHR_parameters": 10, "original_entry_protection_parameters": 4, "original_autonomous_pipeline_cases": 2, "real_native_handoff_and_framework_controls": 9},
+    "pure_failures_at_this_checkpoint": {"short_revisit": 38, "early_positive_protection": 6, "old_flag_redirect_selftests": 15},
+    "credit_boundary": "25 native PASS are not25 hardware functional points. BPU-INT-066 also includes the separate long-priority/short-revisit requirements; entry parameters alone do not close that point.",
+    "gaps": []
+  },
+  "redirect_selftest_migration": {
+    "output": "results/ucv-goal-bpu-redirect-projection-verified-20261101",
+    "counts": {"PASS": 336},
+    "source_sha256": "03fd4e5e7c92778bb989f997f190cf78bc362a62013b9e05c5ebd7c6754f415d",
+    "source_stable": true,
+    "run_sha256": "b1ba7f3ac36b3ab6d7508787deb420c89aa13bdcdbd700b13b96b12bc27f6468",
+    "summary_sha256": "89213bea9909b6671f79f8547eda2a147f8e39dc3cfa588408dc50c8abbc9533",
+    "repair": "All15 old pure redirect controls use the actual value-only ABI and explicit projection. The production payload still rejects fabricated flags; abstract full-pointer arithmetic remains a separate declared domain. Ambiguous encoded history and unplanned production ownership are separately rejected.",
+    "source_boundary": "Subsequent short-revisit edits change the broad suite source identity; this receipt is retained with its original hash."
+  },
+  "requirements_to_artifacts": [
+    {"requirement": "Honest declared physical projection, no synthesized absent output/input", "implementation": ["suites/frontend/bpu/bpu/model/projection.py", "suites/frontend/bpu/bpu/bundle/pipeline.py", "suites/frontend/bpu/bpu/bundle/ahead.py", "suites/frontend/bpu/bpu/bundle/early_direction.py"], "controls": "test_pipeline_projection.py: retained-field corruption, internal target still checked, fake public target/perf/flag rejected"},
+    {"requirement": "Actual external input acceptance and independent semantic state", "implementation": ["suites/frontend/bpu/bpu/env/pipeline.py", "suites/frontend/bpu/bpu/checker/pipeline.py"], "controls": "DriveStable frozen full feedback beat and next rising association; exact preplanned original source before redirect/training; no live table or actual selector result feeds the autonomous oracle"},
+    {"requirement": "Real stage attributes and current geometry", "implementation": ["suites/frontend/bpu/bpu/bundle/pipeline.py", "suites/frontend/bpu/bpu/checker/pipeline.py", "suites/frontend/bpu/bpu/checker/early_direction.py"], "controls": "4 Main ways plus victim with genuinely absent victim attributes;20 retained lookup folds,4 MicroTAGE train folds, DCE baseStrong; S2 attributes use actual CommonHR/MicroRAS consumers, never the old S1 prediction alias"},
+    {"requirement": "Explicit drain, sticky failures, observer disappearance cannot clear obligations", "implementation": ["suites/frontend/bpu/bpu/case/pipeline.py", "suites/frontend/bpu/bpu/checker/pipeline.py", "suites/frontend/bpu/bpu/monitor/admission_window.py"], "controls": "test_pipeline_native_obligations.py: internal-target corruption in the real case, stopped observer with actual planned recovery, equal metadata without a preplanned owner; all3 PASS"},
+    {"requirement": "Original short stays table0, not a relabelled long provider", "implementation": ["suites/frontend/bpu/bpu/model/entry_protection.py", "suites/frontend/bpu/bpu/env/entry_protection.py", "suites/frontend/bpu/bpu/case/early_direction.py"], "controls": "109 entry pure controls and4 real entry parameters PASS; includes frozen old continuous initialization rejected at the unchanged table0 assertion. Main-only steady history, existing concurrent RecoveryDriver and actual monitor-terminated one-input windows establish the precondition."}
+  ],
+  "short_revisit_followup": {
+    "independent_findings": [
+      "A wrong NT original must own BOTH its actual short penalty and new long allocation; younger accepted originals cannot be used to substitute the named owner.",
+      "Configured histories5/9 plus the two path hashes' first different bit4 require a short common suffix that retains the long READ distinction; the previous three-edge suffix erased it.",
+      "The owned S0 index-read ancestor and current S1/tag checkpoint are distinct. Two current checkpoints may have the same nine low bits while their independently programmed index ancestors differ. The new checker proves exact ancestor identity plus independently computed indices and low5/high9 history properties, not a payload-chosen source."
+    ],
+    "first": {
+      "output": "results/ucv-goal-bpu-short-read-ancestry-first-20261101",
+      "counts": {"PASS": 268, "FAIL": 4},
+      "pure_composition": {"original_short_controls": 159, "entry_controls": 109},
+      "source_sha256": "56c16e27a7da1e5b7c19eb7816e928a724f65c1c0dd507b20cdcbb0155615359",
+      "source_stable": true,
+      "run_sha256": "42bb663f7f42116959909c824a0031b6cc57df3bd39920e979fd667d0bd518f5",
+      "summary_sha256": "0f608adb6183bda66b132899ad593774c9a24bb03218cc669b94b1a6fb0818f5"
+    },
+    "additional_controls": {
+      "output": "results/ucv-goal-bpu-short-read-ancestry-v2-20261101",
+      "counts": {"PASS": 171, "FAIL": 4},
+      "source_sha256": "dee067af6457110b31a86970def8c34e110b444540cd29f15c878d3ab3a27757",
+      "source_stable": true,
+      "run_sha256": "e6a6514a081beb5b8ba45b6d288fa1a12e7b3c3ce4fe5bbd66301a19f672865c",
+      "summary_sha256": "a10e136d1039729a790062e1788b9a4a5b6448985670180931973d8f4def0079",
+      "new_controls": "4 legal same-tag/different-owned-read programs and8 copied-ancestor/wrong-index corruption controls; Python checker controls, not RTL mutation"
+    },
+    "native_remaining": "All4 real short-revisit parameters still fail before the named wrong source accepts. The full autonomous/PHR comparison has not shown an RTL mismatch. An NT0 precondition assertion plus bounded first/last candidate diagnostics is being verified in results/ucv-goal-bpu-pipeline-remaining-audit-20261101. Do not claim this scenario complete or relabel these timeouts as new hardware defects.",
+    "unchanged_strict_effects": "Original table0 counter0 penalty must produce retained NT1; its own eligible long table1 allocation must initialize T4; exact named long and short consumers and immutable original metadata remain mandatory."
+  },
+  "collection": "docs/history/transaction-goal-collect-pipeline-entry-20261101.json",
+  "root_tests": {"PASS": 215},
+  "required_remaining": ["Finish native short-revisit and positive original-short protection programs", "Audit MBTB four-way ownership/writeback/duplicate cleanup and other BPU consumers", "Complete FTQ/ICache per-DUT semantic audit", "Continue all MemBlock/VAGQ transaction adapters and legacy direct-tool provenance", "Final repository-wide gates, applicable regressions, current documentation/package/assets"]
+}

@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "scope": "Resolve the remaining legacy DCache/LSU/MMU direct-run seed provenance gap; not suite transaction acceptance",
+  "failure": "The native loader honored UCV_SEED=7 but tools/run.py recorded legacy SUITE_VERILATOR_SEED=19. Invalid default seeds were not rejected before launching the child.",
+  "implementation": {
+    "shared_decision_within_each_suite": "native.native_seed() is the same resolver used by _argv and the direct-run writer; explicit seed > UCV_SEED > legacy environment >1, exact integer domain retained",
+    "frozen_before_launch": "Resolve and validate once before side effects, pass the resolved value as UCV_SEED in child env, and write that saved value into the receipt. Later parent environment changes cannot re-label it.",
+    "files": [
+      "suites/memblock/dcache/native.py", "suites/memblock/dcache/tools/run.py",
+      "suites/memblock/lsu/native.py", "suites/memblock/lsu/tools/run.py",
+      "suites/memblock/mmu/native.py", "suites/memblock/mmu/tools/run.py"
+    ],
+    "no_RTL_or_native_rebuild": true
+  },
+  "controls": {
+    "test": "tests/test_memblock_runner_provenance.py",
+    "red": {"output": "results/ucv-goal-memblock-runner-provenance-red-20261101.xml", "sha256": "4736676f09fb51febd2fa2030d8fd5d29bf9075d381635223534ee269b4f9d3c", "counts": {"FAIL": 12}, "boundary": "Three exact CLI-over-legacy receipt mismatches; six missing explicit child seed freezes; three invalid seeds failed downstream rather than at pre-launch validation. Not12 hardware failures."},
+    "verified": {"output": "results/ucv-goal-memblock-runner-provenance-verified-20261101.xml", "sha256": "4268da7477b9b9dfc5c1a57ef1062a86581a625afda9e04c8e06541154f02d6f", "counts": {"PASS": 98}, "composition": "83 original loader controls plus15 direct-run controls, including3 new parent-environment-change controls"},
+    "full_root": {"output": "results/ucv-goal-root-provenance-20261101.xml", "sha256": "64bc2695fadeeef718b16e5bb295ddbffbff90806364a0bceb417ff42978cc1d", "counts": {"PASS": 230}},
+    "limits": "The direct-run tests stub process/native-package creation. They exercise the actual writer and loader argv but do not claim end-to-end direct-run native execution. The Toffee run CLI options were independently checked against the installed --help."
+  },
+  "current_native_smokes": [
+    {"output": "results/ucv-goal-dcache-seed-provenance-smoke-20261101", "counts": {"PASS": 13}, "selection": "tests/ctrl_unit/test_ctrl_unit.py", "seed": 2, "workers": 1, "source_sha256": "1d341553d39ac1ffc90520d1c0a8279287e34da5732cae5e75c08876754bbb33", "source_stable": true, "source_files_match_at_audit": true, "run_sha256": "8470d7a5b71bc4e0b58a27503f38de1fa368d1ddbbc1ee78e8b5108a491d9d6e", "summary_sha256": "c1613fc53a083ceb2ea24bac72cbcc9b7889a260937529d168aaf1d8aaacbafd", "changes_from_previous_full_seed2_selected_cases": [], "gaps": []},
+    {"output": "results/ucv-goal-lsu-seed-provenance-smoke-20261101", "counts": {"PASS": 14}, "selection": "tests/store_delay/test_store_delay.py", "seed": 2, "workers": 1, "source_sha256": "c844eca9172a5093964349c27dab5c0d3be8e0da6f873b733505a41f36fd4434", "source_stable": true, "source_files_match_at_audit": true, "run_sha256": "28be519511617ddda2f1663d6a0049e3804276ea9b552e924229fd134def185a", "summary_sha256": "4da3b4686a2ab63551ff3c9a4301e2697192374758e8ccab977e47a7aa3426cc", "changes_from_previous_full_seed2_selected_cases": [], "gaps": []},
+    {"output": "results/ucv-goal-mmu-seed-provenance-smoke-20261101", "counts": {"PASS": 7}, "selection": "tests/l2/test_ptwrepeater.py", "seed": 2, "workers": 1, "source_sha256": "edc68bab4a8e67e73e5f4ac0b3962915b0f6ca34bbe202d69a63716b5b7e6d76", "source_stable": true, "source_files_match_at_audit": true, "run_sha256": "cb3c02e3bcb1d05c615d86ca1593d0b9d500c5c586272e7668eed27c162b4a42", "summary_sha256": "f4094cf83ab87212048811a546f1b2afe953d5fddfeed3e655f9abaecfa60dca", "changes_from_previous_full_seed2_selected_cases": [], "gaps": []}
+  ],
+  "previous_full_runs": "docs/history/transaction-goal-memblock-native-seed-20261101.json",
+  "evidence_boundary": "Earlier full native seed2 receipts keep their original suite source hashes; helper extraction and writer changes do not retroactively change those receipts. No full-suite rerun is claimed here. All original per-DUT transaction migration obligations, existing LSU7 FAIL, DCache3 XFAIL and other hardware outcomes remain open or preserved as applicable."
+}

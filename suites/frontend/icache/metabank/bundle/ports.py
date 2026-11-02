@@ -16,28 +16,6 @@ from suites.frontend.icache.ports.bindings import PortBinding
 from suites.frontend.icache.ports.bindings import bind_bundle
 
 
-def _flat_leaf_names(dut: Any, root: str) -> list[str]:
-    """Flatten one signals.json subtree into the generator's leaf names."""
-    import json
-    from pathlib import Path
-    import sys
-
-    module = sys.modules[type(dut).__module__]
-    schema = json.loads(Path(module.__file__).with_name("signals.json").read_text())
-    names: list[str] = []
-
-    def walk(node: dict, prefix: str) -> None:
-        for key, value in node.items():
-            flat = f"{prefix}_{key}"
-            if isinstance(value, dict) and value.get("_"):
-                names.append(flat)
-            elif isinstance(value, dict):
-                walk(value, flat)
-
-    walk(schema[root], root)
-    return names
-
-
 @dataclass(frozen=True, slots=True)
 class MetaBankPorts:
     read: PortBinding
@@ -46,7 +24,9 @@ class MetaBankPorts:
     write_ready: PortBinding
     flush_all: PortBinding
     response: Any
-    idle_leaves: tuple[Any, ...]
+    mbist: PortBinding
+    mbist_response: PortBinding
+    sram_control: PortBinding
 
     @classmethod
     def bind(cls, dut: Any) -> "MetaBankPorts":
@@ -74,10 +54,14 @@ class MetaBankPorts:
             flush_all=PortBinding(dut.clock, Bundle(flushAll=io.flushAll),
                                   "metabank.flushAll"),
             response=io.read.resp_entries,
-            # The SRAM wrappers' BIST bore inputs contain Vec indices, which a
-            # Bundle cannot name; they are all held low, so they are collected
-            # as flat leaves instead of a structured binding.
-            idle_leaves=tuple(
-                getattr(dut, name) for name in _flat_leaf_names(dut, "sigFromSrams_bore")
-            ),
+            mbist=PortBinding(dut.clock, Bundle(**{name: getattr(dut, 'boreChildrenBd_bore_' + name)
+                for name in ('req', 'all', 'array', 'readen', 'writeen', 'be', 'addr', 'addr_rd', 'indata')}),
+                'metabank.mbist'),
+            mbist_response=PortBinding(dut.clock, Bundle(ack=dut.boreChildrenBd_bore_ack,
+                outdata=dut.boreChildrenBd_bore_outdata), 'metabank.mbist.response'),
+            sram_control=PortBinding(dut.clock, Bundle(ways=tuple(Bundle(**{
+                name: getattr(dut, 'sigFromSrams_bore' + (f'_{group}' if group else '') + '_' + leaf)
+                for name, leaf in dict(hold='ram_hold', bypass='ram_bypass', bp_clken='ram_bp_clken',
+                    aux_clk='ram_aux_clk', aux_ckbp='ram_aux_ckbp', mcp_hold='ram_mcp_hold', cgen='cgen').items()})
+                for group in range(2))), 'metabank.sram-control'),
         )

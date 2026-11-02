@@ -33,7 +33,19 @@ ACTION_DEBUG = 1
 ACTION_NONE = 15
 
 
-@dataclass
+def _unsigned(value, width, name):
+    if not isinstance(value, int) or not 0 <= value < (1 << width):
+        raise ValueError(f'{name} must be an unsigned {width}-bit integer')
+
+
+def consecutive_pcs(base):
+    _unsigned(base, 50, 'PC base')
+    if base & 1 or base + 2 * (LANES - 1) > PC_MASK:
+        raise ValueError('PC window must be aligned and fit the 50-bit address space')
+    return tuple(base + 2 * lane for lane in range(LANES))
+
+
+@dataclass(frozen=True)
 class Trigger:
     match_type: int = 0
     select: int = 0
@@ -42,21 +54,56 @@ class Trigger:
     chain: int = 0
     tdata2: int = 0
 
+    def __post_init__(self):
+        _unsigned(self.match_type, 2, 'match_type')
+        _unsigned(self.action, 4, 'action')
+        _unsigned(self.tdata2, 64, 'tdata2')
+        for name in ('select', 'chain', 'timing'):
+            _unsigned(getattr(self, name), 1, name)
+        if self.timing != 0:
+            raise ValueError('CSR fixes timing to before-execution; no timing input exists')
 
-@dataclass
+
+@dataclass(frozen=True)
 class Update:
     valid: int = 0
     index: int = 0
     trigger: Trigger | None = None
 
+    def __post_init__(self):
+        _unsigned(self.valid, 1, 'update.valid')
+        _unsigned(self.index, 2, 'update.index')
+        if self.trigger is not None and not isinstance(self.trigger, Trigger):
+            raise TypeError('update.trigger must be a Trigger')
+        if self.valid and self.trigger is None:
+            raise ValueError('a valid configuration update requires its trigger payload')
 
-@dataclass
+
+@dataclass(frozen=True)
 class Inputs:
-    update: Update
-    enable: tuple[int, int, int, int]
-    debug_mode: int
-    can_raise_breakpoint: int
-    pcs: tuple[int, ...]
+    update: Update = Update()
+    enable: tuple[int, int, int, int] = (0, 0, 0, 0)
+    debug_mode: int = 0
+    can_raise_breakpoint: int = 1
+    pcs: tuple[int, ...] = tuple(2 * lane for lane in range(LANES))
+
+    def __post_init__(self):
+        if not isinstance(self.update, Update):
+            raise TypeError('inputs.update must be an Update')
+        if not isinstance(self.enable, (list, tuple)) or len(self.enable) != TRIGGERS:
+            raise ValueError('enable must contain exactly four entries')
+        for value in self.enable:
+            _unsigned(value, 1, 'enable entry')
+        for name in ('debug_mode', 'can_raise_breakpoint'):
+            _unsigned(getattr(self, name), 1, name)
+        if not isinstance(self.pcs, (list, tuple)) or len(self.pcs) != LANES:
+            raise ValueError('pcs must contain exactly36 byte addresses')
+        for value in self.pcs:
+            _unsigned(value, 50, 'lane PC')
+            if value & 1:
+                raise ValueError('lane PC must be 2-byte aligned')
+        object.__setattr__(self, 'enable', tuple(self.enable))
+        object.__setattr__(self, 'pcs', tuple(self.pcs))
 
 
 def compare(data: int, tdata2: int, match_type: int) -> bool:
@@ -103,7 +150,9 @@ def can_fire(hit: list[bool], timing: list[int], chain: list[int]) -> list[bool]
 
 class TriggerModel:
     def __init__(self) -> None:
-        self.triggers = [Trigger() for _ in range(TRIGGERS)]
+        # The reset contract is all-zero configuration, not action=None(15).
+        # Even before any update, enabling EQ against PC0 can raise breakpoint.
+        self.triggers = [Trigger(action=ACTION_BREAKPOINT) for _ in range(TRIGGERS)]
         self.enable = [0, 0, 0, 0]
 
     def lane_actions(self, inputs: Inputs, pcs: tuple[int, ...] | None = None) -> list[int]:

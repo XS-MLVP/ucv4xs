@@ -10,6 +10,9 @@ from suites.frontend.bpu.bpu.model.selection import Kind, StackAction
 from suites.frontend.bpu.bpu.bundle.tage_semantic import HISTORY_PORTS
 from suites.frontend.bpu.bpu.checker.ahead import live_values,fast_values
 from suites.frontend.bpu.bpu.checker.early_direction import live_values as early_live_values,fast_values as early_fast_values
+from suites.frontend.bpu.bpu.model.projection import ABSTRACT_PIPELINE, INTEGRATED_PIPELINE
+from suites.frontend.bpu.bpu.transaction.types import redirect_metadata
+from suites.frontend.bpu.bpu.monitor.admission_window import AdmissionWindow
 
 # The AheadBTB module contract services buffered writes in an eight-cycle quiet
 # window.  A duplicate copy may remain visible under sustained reads, but a copy
@@ -17,7 +20,7 @@ from suites.frontend.bpu.bpu.checker.early_direction import live_values as early
 DUPLICATE_ALLOWANCE_LIMIT = 64
 
 
-def environment(row, model, *, origin=None,redirect_origin=None,commit_origin=None):
+def environment(row, model, *, origin=None,redirect_origin=None,commit_origin=None,projection=ABSTRACT_PIPELINE):
     owned_ras = getattr(model.sources,'has_own_ras',False)
     if not row['reset'] and row['commit_valid'] and not owned_ras:
         raise NotImplementedError('FTQ commit requires the composed RAS source-bank adapter')
@@ -31,7 +34,7 @@ def environment(row, model, *, origin=None,redirect_origin=None,commit_origin=No
         request = row['redirect']
         if owned_ras and redirect_origin is None:
             raise ValueError('return-stack recovery requires the exact planned public original')
-        checkpoint=model.checkpoint_for(request['history']) if redirect_origin is None else redirect_origin.history
+        checkpoint=model.checkpoint_for(request['history'],pointer_flags=projection.pointer_flag) if redirect_origin is None else redirect_origin.history
         kind = request.get('kind')
         redirect = Redirect(checkpoint, request['pc'], request['target'], bool(request['taken']),
             None if kind is None else Kind(kind),StackAction(request.get('action',0)))
@@ -39,7 +42,8 @@ def environment(row, model, *, origin=None,redirect_origin=None,commit_origin=No
     if not row['reset'] and row.get('training_accepted',bool(training['valid'] and training['ready'])):
         if getattr(model.sources,'requires_explicit_origin',False) and origin is None:
             raise ValueError('learned MainBTB requires an explicitly associated published origin')
-        source = model.checkpoint_for(training['history'], source_pc=training['pc']) if origin is None else origin.history
+        source = model.checkpoint_for(training['history'], source_pc=training['pc'],
+            pointer_flags=projection.pointer_flag) if origin is None else origin.history
         branches = tuple(None if not branch['valid'] else Outcome(branch['position'], branch['target'],
             Kind(branch['kind']), bool(branch['taken']), StackAction(branch['action']), bool(branch['mispredict']))
             for branch in training['branches'])
@@ -168,7 +172,7 @@ def buffered_duplicate_allowances(model, expected, actual, observed):
     return allowances
 
 
-def compared_values(model, cycle, observed, events):
+def compared_values(model, cycle, observed, events, *, projection=ABSTRACT_PIPELINE):
     expected = dict(valids=tuple(int(token is not None) for token in cycle.tokens), fires=tuple(map(int,cycle.fires)),
         flushes=tuple(map(int,cycle.flushes)), repair2=int(cycle.middle_repair), repair3=int(cycle.final_repair),
         initialized=int(model.initialized), prediction_valid=int(cycle.presented is not None),
@@ -186,14 +190,21 @@ def compared_values(model, cycle, observed, events):
         expected['enabled'], actual['enabled'] = tuple(map(int,cycle.enabled)), tuple(observed['enabled'])
     if cycle.presented is not None:
         token, choice = cycle.presented
-        expected['prediction'] = dict(pc=token.pc,target=choice.branch.target,taken=int(choice.branch.taken),
+        expected['prediction'] = dict(pc=token.pc,taken=int(choice.branch.taken),
             position=choice.branch.position,repair2=int(cycle.middle_repair),repair3=int(cycle.final_repair))
+        if projection.prediction_target:
+            expected['prediction']['target'] = choice.branch.target
         actual['prediction'] = {key:observed['prediction'][key] for key in expected['prediction']}
+        if set(observed['prediction']) != {'valid', *expected['prediction']}:
+            raise ValueError('semantic pipeline prediction fields changed from the declared ABI')
     if cycle.metadata is not None:
-        expected['metadata'] = dict(pc=cycle.metadata.pc, history=cycle.metadata.history.metadata())
+        expected['metadata'] = dict(history=projection.history(cycle.metadata.history))
+        if projection.perf_pc:
+            expected['metadata']['pc'] = cycle.metadata.pc
         actual['metadata'] = {key:observed['metadata'][key] for key in expected['metadata']}
         if getattr(model.sources,'requires_explicit_origin',False):
-            expected['main_metadata'],actual['main_metadata'] = main_metadata_values(cycle.metadata.lookup,observed['metadata']['main'])
+            expected['main_metadata'],actual['main_metadata'] = main_metadata_values(cycle.metadata.lookup,
+                observed['metadata']['main'],projection=projection)
         if getattr(model.sources,'has_own_tage',False):
             expected['tage_metadata'],actual['tage_metadata'] = tage_metadata_values(model.sources,cycle.metadata,observed['metadata']['tage'])
         if getattr(model.sources,'has_own_ittage',False):
@@ -203,15 +214,17 @@ def compared_values(model, cycle, observed, events):
             from suites.frontend.bpu.bpu.checker.statistical import history_values, metadata_values
             expected['common_metadata'],actual['common_metadata']=history_values(model.sources,cycle.metadata,observed['metadata']['common'])
             expected['sc_metadata'],actual['sc_metadata']=metadata_values(model.sources,cycle.metadata,observed['metadata']['sc'])
-        if getattr(model.sources,'has_own_ahead',False):
+        if getattr(model.sources,'has_own_ahead',False) and projection.early_source:
             expected['early_source']={'micro':0,'ahead':1,'ahead-direction':3,'fallthrough':4}[cycle.metadata.early.source]
             actual['early_source']=observed['metadata']['source']
     if getattr(model.sources,'has_own_ahead',False):
-        expected['ahead'],actual['ahead']=live_values(model.sources,cycle.enabled[1],observed['ahead'])
+        expected['ahead'],actual['ahead']=live_values(model.sources,cycle.enabled[1],observed['ahead'],
+                                                     base_strong=projection.base_strong)
         expected['fast_ahead'],actual['fast_ahead']=fast_values(model.sources,cycle,observed['ahead']['fast'])
     if getattr(model.sources,'has_own_utage',False):
-        expected['early_direction'],actual['early_direction']=early_live_values(model.sources,cycle.enabled[1],observed['early_direction'])
-        expected['fast_early_direction'],actual['fast_early_direction']=early_fast_values(model.sources,cycle,observed['early_direction']['fast'])
+        early_projection=dict(base_strong=projection.base_strong,dense_training_folds=projection.dense_training_folds)
+        expected['early_direction'],actual['early_direction']=early_live_values(model.sources,cycle.enabled[1],observed['early_direction'],**early_projection)
+        expected['fast_early_direction'],actual['fast_early_direction']=early_fast_values(model.sources,cycle,observed['early_direction']['fast'],**early_projection)
     if getattr(model.sources,'has_own_sc',False):
         from suites.frontend.bpu.bpu.checker.statistical import live_values as statistical_live_values
         expected['statistical'],actual['statistical']=statistical_live_values(model.sources,events,cycle,observed['statistical'])
@@ -264,7 +277,7 @@ def _watch_duplicate_reads(checker, tick, expected, actual):
             dict(tick=tick, expected=value, actual=seen.get(f'{way}.valid')))
 
 
-def main_metadata_values(frame,actual):
+def main_metadata_values(frame,actual,*,projection=ABSTRACT_PIPELINE):
     from suites.frontend.bpu.bpu.model.main_sources import source_entries
     from suites.frontend.bpu.models.configuration import MAIN_WAYS
     sources = source_entries(frame) if frame is not None else None
@@ -275,16 +288,21 @@ def main_metadata_values(frame,actual):
             source = None if sources is None else sources[alignment][way]
             fields = dict(hit=int(source is not None and source.hit))
             if fields['hit']:
-                fields.update(position=source.position,kind=source.kind,action=source.action,counter=source.counter)
+                fields.update(position=source.position,counter=source.counter)
+                if projection == ABSTRACT_PIPELINE or way < MAIN_WAYS:
+                    fields.update(kind=source.kind,action=source.action)
             for field,value in fields.items():
                 key = f'{alignment}.{way}.{field}'
                 expected[key],observed[key] = value,actual[alignment][way][field]
     return expected,observed
 
 
-def public_main_metadata(value):
-    return tuple(tuple(dict(hit=entry['rawHit'],position=entry['position'],kind=entry['attribute']['branchType'],
-        action=entry['attribute']['rasAction'],counter=entry['counter_value']) for entry in row) for row in value)
+def public_main_metadata(value,*,projection=ABSTRACT_PIPELINE):
+    from suites.frontend.bpu.models.configuration import MAIN_WAYS
+    return tuple(tuple(dict(hit=entry['rawHit'],position=entry['position'],counter=entry['counter_value'],
+        **(dict(kind=entry['attribute']['branchType'],action=entry['attribute']['rasAction'])
+           if projection == ABSTRACT_PIPELINE or way < MAIN_WAYS else {}))
+        for way,entry in enumerate(row)) for row in value)
 
 
 def tage_metadata_values(sources,token,actual):
@@ -302,6 +320,7 @@ def ittage_metadata_values(sources,token,actual,*,service_enabled=None):
 class PipelineChecker:
     def __init__(self, coverage=None, *, sources=None):
         self.model = PipelineReference(MicroOnlySources() if sources is None else sources)
+        self.projection = ABSTRACT_PIPELINE
         self.board = Scoreboard('bpu.owned-pipeline')
         self.initialized = False
         self.failure = self.last_cycle = self.last_events = None
@@ -326,6 +345,7 @@ class PipelineChecker:
         self.source_resolutions = {}
         self.sc_previous_cycle=None
         self.sc_numeric_checked={}
+        self.admission = AdmissionWindow()
 
     def raise_failure(self):
         if self.failure is not None:
@@ -343,13 +363,15 @@ class PipelineChecker:
             origin = redirect_origin = commit_origin = None
             inputs = row['inputs']
             if (not inputs['reset'] and inputs.get('training_accepted',bool(inputs['training']['valid'] and inputs['training']['ready']))
-                    and getattr(self.model.sources,'requires_explicit_origin',False)):
+                    and (self.projection == INTEGRATED_PIPELINE or getattr(self.model.sources,'requires_explicit_origin',False))):
                 origin = self._accepted_origin(inputs['training'],event)
-            if not inputs['reset'] and inputs['redirect']['valid'] and self.redirect_plans:
+            if (not inputs['reset'] and inputs['redirect']['valid']
+                    and (self.redirect_plans or self.projection == INTEGRATED_PIPELINE)):
                 redirect_origin=self._accepted_redirect_origin(inputs['redirect'],event)
             if not inputs['reset'] and inputs['commit_valid'] and getattr(self.model.sources,'has_own_ras',False):
                 commit_origin=self._accepted_commit_origin(inputs['commit'],event)
-            events = environment(inputs, self.model,origin=origin,redirect_origin=redirect_origin,commit_origin=commit_origin)
+            events = environment(inputs, self.model,origin=origin,redirect_origin=redirect_origin,
+                                 commit_origin=commit_origin,projection=self.projection)
             if events.reset:
                 self.model.advance(events)
                 self.last_resolution = None
@@ -374,7 +396,8 @@ class PipelineChecker:
                 row,events,cycle,self.model,self.phase,self.last_events)
             if candidates is not None:
                 self.coverage.reached(event.tick,*candidates)
-            expected, actual, allowances = compared_values(self.model, cycle, row['observed'], events)
+            expected, actual, allowances = compared_values(self.model, cycle, row['observed'], events,
+                                                           projection=self.projection)
             if allowances:
                 self.counts['abtb-buffered-duplicate-cycles'] += 1
                 self.counts['abtb-buffered-duplicate-ways'] += len(allowances)
@@ -451,11 +474,9 @@ class PipelineChecker:
                 self.coverage.checked(event.tick,*candidates)
             self.last_tick, self.last_cycle, self.last_events = event.tick, cycle, events
             self.sc_previous_cycle=cycle
-            if (getattr(self.model.sources,'requires_explicit_origin',False)
-                    and cycle.fires[1] and not cycle.flushes[0]):
+            if cycle.fires[1] and not cycle.flushes[0]:
                 self.s1_accepts[cycle.tokens[0].sequence] = event.tick
-            if (getattr(self.model.sources,'requires_explicit_origin',False)
-                    and cycle.metadata is not None and events.redirect is None):
+            if cycle.metadata is not None and events.redirect is None:
                 self.source_receipts[event.tick] = cycle.metadata
             if getattr(self.model.sources,'requires_explicit_origin',False):
                 for token,stage,repair in ((cycle.tokens[1],2,cycle.middle_repair),(cycle.tokens[2],3,cycle.final_repair)):
@@ -466,6 +487,7 @@ class PipelineChecker:
             self.counts['cycles'] += 1
             self.counts['metadata'] += int(cycle.metadata is not None)
             self.counts['metadata-unready'] += int(cycle.metadata is not None and not events.metadata_ready)
+            self.counts['metadata-without-prediction-acceptance'] += int(cycle.metadata is not None and not events.prediction_ready)
             self.counts['held'] += int(cycle.presented is not None and not events.prediction_ready)
             self.counts['redirect-held'] += int(events.redirect is not None and not events.prediction_ready and cycle.fires[0])
             self.counts['middle-repair'] += int(cycle.middle_repair)
@@ -482,6 +504,9 @@ class PipelineChecker:
                 if origin is not None:
                     self.source_resolutions.setdefault(origin.sequence,[]).append(self.last_resolution)
                     self.feedback_plans.popleft()
+            # Existing driver windows close only after this exact source's
+            # complete physical comparison, never on a model-only candidate.
+            self.admission.capture(event,cycle)
         except Exception as error:
             self.failure = error
 
@@ -495,6 +520,13 @@ class PipelineChecker:
             raise AssertionError('planned owned redirect was not accepted')
         if self.commit_plans:
             raise AssertionError('planned owned commit was not accepted')
+        if self.admission.current is not None:
+            raise AssertionError('declared S1 admission window was not delivered')
+        if self.projection == INTEGRATED_PIPELINE:
+            pending = (self.model.sources.main_pending() if getattr(self.model.sources,'requires_explicit_origin',False)
+                       else self.model.sources.micro.learning is not None)
+            if self.model.stages[1:] != (None, None) or pending:
+                raise AssertionError('semantic pipeline has undrained accepted sources or learning')
 
     def source_token(self,source):
         """Associate one coherent receipt to an already predicted exact owner."""
@@ -505,14 +537,18 @@ class PipelineChecker:
             token = self.source_receipts.get(source.meta_tick)
             self.board.check(expected=True,actual=token is not None,context=context)
             self.board.check(expected=True,actual=self.model.published.get(token.sequence) is token,context=context)
-            self.board.check(expected=(self.s1_accepts.get(token.sequence),token.pc,token.pc,token.history.metadata()),
-                actual=(source.prediction_tick,source.prediction.start_pc,source.meta.perf.start_pc,source.meta.redirect['phr']),context=context)
+            self.board.check(expected=(self.s1_accepts.get(token.sequence),token.pc,self.projection.history(token.history)),
+                actual=(source.prediction_tick,source.prediction.start_pc,source.meta.redirect['phr']),context=context)
+            self.board.check(expected=token.pc if self.projection.perf_pc else None,
+                actual=source.meta.perf.start_pc if source.meta.perf is not None else None,context=context)
             branch = token.early.branch
-            self.board.check(expected=(branch.target,int(branch.taken),branch.position,0,0),
+            self.board.check(expected=(branch.target if self.projection.prediction_target else None,int(branch.taken),branch.position,0,0),
                 actual=(source.prediction.target,source.prediction.taken,source.prediction.position,
                     source.prediction.s2_override,source.prediction.s3_override),context=context)
-            expected,actual = main_metadata_values(token.lookup,public_main_metadata(source.meta.resolve['mbtb_entries']))
-            self.board.check(expected=expected,actual=actual,context=context)
+            if getattr(self.model.sources,'requires_explicit_origin',False):
+                expected,actual = main_metadata_values(token.lookup,public_main_metadata(source.meta.resolve['mbtb_entries'],
+                    projection=self.projection),projection=self.projection)
+                self.board.check(expected=expected,actual=actual,context=context)
             if getattr(self.model.sources,'has_own_tage',False):
                 expected,actual = tage_metadata_values(self.model.sources,token,source.meta.resolve['tage_entries'])
                 self.board.check(expected=expected,actual=actual,context=context)
@@ -551,8 +587,9 @@ class PipelineChecker:
         token,transaction = self.feedback_plans[0]
         self.board.check(expected=(token.pc,transaction.resolve_meta['phr']),
             actual=(training['pc'],training['history']),context=context)
-        expected,actual = main_metadata_values(token.lookup,training['main'])
-        self.board.check(expected=expected,actual=actual,context=context)
+        if getattr(self.model.sources,'requires_explicit_origin',False):
+            expected,actual = main_metadata_values(token.lookup,training['main'],projection=self.projection)
+            self.board.check(expected=expected,actual=actual,context=context)
         if getattr(self.model.sources,'has_own_tage',False):
             expected,actual = tage_metadata_values(self.model.sources,token,training['tage'])
             self.board.check(expected=expected,actual=actual,context=context)
@@ -584,7 +621,9 @@ class PipelineChecker:
         token=self.source_token(source)
         try:
             payload=transaction.payload()
-            self.board.check(expected=source.meta.redirect,actual=payload['meta'],
+            expected_meta = (source.meta.redirect if self.projection == ABSTRACT_PIPELINE
+                             else redirect_metadata(source.meta.redirect))
+            self.board.check(expected=expected_meta,actual=payload['meta'],
                 context=CheckContext(self.board.name,ScoreboardMode.DIRECT,sequence_id=source.meta_tick,
                     request=dict(point='original redirect metadata passed unmodified',source=source)))
             self.redirect_plans.append((token,deepcopy(payload)))
@@ -597,7 +636,7 @@ class PipelineChecker:
         token,payload=self.redirect_plans[0]
         self.board.check(expected=True,actual=self.model.published.get(token.sequence) is token,context=context)
         expected=dict(pc=payload['cfi_pc'],target=payload['target'],taken=payload['taken'],
-            kind=payload['branch_type'],action=payload['ras_action'],history=token.history.metadata())
+            kind=payload['branch_type'],action=payload['ras_action'],history=self.projection.history(token.history))
         self.board.check(expected=expected,actual={key:actual[key] for key in expected},context=context)
         if getattr(self.model.sources,'has_own_ras',False):
             self.board.check(expected=self.model.sources.return_snapshot(token).redirect_metadata(),actual=actual['ras'],context=context)

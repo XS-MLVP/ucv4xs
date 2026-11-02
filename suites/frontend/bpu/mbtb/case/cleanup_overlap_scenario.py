@@ -11,6 +11,8 @@ from suites.frontend.bpu.mbtb.model.cleanup import expected_mbtb_cleanup_states
 from suites.frontend.bpu.mbtb.model.cleanup import expected_mbtb_cleanup_dual
 from suites.frontend.bpu.mbtb.model.cleanup import mbtb_entry_slot
 from suites.frontend.bpu.mbtb.model.cleanup import observed_mbtb_cleanup_dual
+from suites.frontend.bpu.mbtb.model.cleanup import cleanup_way_plan
+from suites.frontend.bpu.mbtb.model.semantic import tag as input_tag
 from suites.frontend.bpu.mbtb.driver.feedback import expected_mbtb_feedback
 from suites.frontend.bpu.mbtb.driver.feedback import observed_mbtb_feedback
 from suites.frontend.bpu.mbtb.checker.assertions import assert_miss
@@ -34,14 +36,18 @@ async def check_case(agent, coverage, align, bank, depth, shadow_state, key, *, 
     await agent.reset()
     tag, position = KEYS[key] if key_fields is None else key_fields
     if (type(tag) is not int or not 0 <= tag < 65536 or
-            type(position) is not int or not 0 <= position < 7):
+            type(position) is not int or not 0 <= position < ALIGN_HALFWORDS - 1):
         raise ValueError('cleanup program requires a tag and a position with one later neighbor')
     # DefaultConfig address fields: align=PC[4], internal bank=PC[6:5],
     # set=PC[14:7], tag=PC[30:15].  A fetch start is 32-byte aligned, and the
     # CFI position's bit4 selects the opposite align bank, so both alignment
     # replicas keep a zero start-PC align bit and use position 16+p.
-    original = BranchVector(0x40000000 + (tag << 15) + (bank << 5),
-                            0x40002340, position + 16 * align, 3)
+    # Raw halfword PC tag bits are [30:15]. Use the next tag period as
+    # region base, so the declared zero-tag case really has physical tag 0.
+    original = BranchVector(0x80000000 + (tag << 15) + (bank << 5),
+                            0x80002340, position + ALIGN_HALFWORDS * align, 3)
+    assert input_tag(original.pc) == tag, 'cleanup input plan does not realize its declared tag'
+    owners = cleanup_way_plan()
     # One set stride in the same internal bank, used to recycle the target
     # set's write-buffer shadow before the cold correction allocates it again.
     displacer = replace(original, pc=original.pc + 0x80, target=original.target + 0x1020)
@@ -67,7 +73,7 @@ async def check_case(agent, coverage, align, bank, depth, shadow_state, key, *, 
             assert_vector_hit(first, original)
             base = align * (MAIN_WAYS + 1)
             original_way = matching_way(first, original)
-            assert base <= original_way < base + MAIN_WAYS
+            assert original_way == base + owners['original']
             other_before = await agent.predict(displacer.pc)
             assert_vector_hit(other_before, displacer)
             if depth == 1:
@@ -81,9 +87,10 @@ async def check_case(agent, coverage, align, bank, depth, shadow_state, key, *, 
                 for transfer in lookups:
                     await transfer
                 other_before = await agent.predict(displacer.pc)
-                # Retained ownership is indexed by the physical way the public
-                # prediction actually reports, not by a fixed old-geometry slot.
-                retained_owner = matching_way(other_before, extra) - align * (MAIN_WAYS + 1)
+                # The input LRU plan chooses the retained owner; public metadata
+                # must agree and is never used to rename the expected owner.
+                retained_owner = owners['extra']
+                assert matching_way(other_before, extra) == base + retained_owner
                 agent.entry_scoreboard.check(expected=mbtb_entry_slot(extra),
                     actual=shadows[-1].value['banks'][align][(original.pc >> 5) & (MAIN_BANKS - 1)][retained_owner][1],
                     context=CheckContext(scoreboard='mbtb.cleanup_depth', mode=ScoreboardMode.DIRECT,
@@ -93,14 +100,16 @@ async def check_case(agent, coverage, align, bank, depth, shadow_state, key, *, 
                 await agent.train_burst((feedback(changed, second_cold.meta_entries),))
             assert_vector_hit(other_before, extra)
             extra_way = matching_way(other_before, extra)
-            assert base <= extra_way < base + MAIN_WAYS and extra_way != original_way
+            assert extra_way == base + owners['extra'] and extra_way != original_way
             duplicate = await agent.predict(original.pc)
             active = [(index, entry.target) for index, entry in enumerate(duplicate.entries)
                       if base <= index < base + MAIN_WAYS and entry.valid]
             assert sorted(target for _, target in active) == sorted([changed.target, original.target])
             duplicate_ways = [index - base for index, _ in active]
             keep_way, clear_way = min(duplicate_ways), max(duplicate_ways)
-            neighbor_way = matching_way(other_before, extra) - base
+            assert (keep_way, clear_way) == (owners['keep'], owners['clear'])
+            keep_way, clear_way = owners['keep'], owners['clear']
+            neighbor_way = owners['extra']
             wanted = expected_mbtb_cleanup_states(snapshot(duplicate), snapshot(other_before),
                 original.pc, align, keep_way, clear_way, neighbor_way, updated.target)
             wanted_dual = expected_mbtb_cleanup_dual(original, changed, extra, updated, depth, shadow_state)

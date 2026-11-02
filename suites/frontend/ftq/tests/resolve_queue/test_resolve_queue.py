@@ -26,6 +26,7 @@ async def test_new_index_creates_one_owned_entry_and_holds_under_backpressure(re
     for _ in range(3):
         await agent.step(1)
         assert head(agent) == (5, 0, 0x8000_1000)
+    await agent.drain_all()
 
 
 @pytest.mark.feature("FTQ-RQ-002")
@@ -44,6 +45,7 @@ async def test_same_index_lanes_merge_and_advance_enqueue_by_unique_entries(reso
 
     drained = await agent.drain()
     assert (drained.index, positions(agent)) == (7, [4])
+    await agent.drain_all()
 
 
 @pytest.mark.feature("FTQ-RQ-003")
@@ -72,6 +74,7 @@ async def test_ifu_resolve_is_an_independent_always_accepted_source(resolve_queu
     assert (training.index, training.flag) == (4, 0)
     branch = training.branches[0]
     assert (branch.branch_type, branch.ras_action) == (3, 1)
+    await agent.drain_all()
 
 
 @pytest.mark.feature("FTQ-RQ-005")
@@ -83,6 +86,7 @@ async def test_backend_correct_direct_and_return_resolves_do_not_allocate(resolv
     assert agent.training() is None
     await agent.resolve([report(12, branch_type=1, mispredict=1, ras_action=0)])
     assert head(agent) == (12, 0, 0x8000_1000)
+    await agent.drain_all()
 
 
 @pytest.mark.feature("FTQ-RQ-006")
@@ -135,6 +139,7 @@ async def test_bpu_enqueue_at_resident_index_invalidates_stale_speculation(resol
     # A different enqueue pointer is not an ownership collision.
     await agent.bpu_enqueue(6)
     assert head(agent) == (5, 0, 0x8000_1000)
+    await agent.drain_all()
 
 
 @pytest.mark.feature("FTQ-RQ-009")
@@ -166,3 +171,4 @@ async def test_reset_discards_pending_resolution_and_reinitializes(resolve_queue
 
     await agent.resolve([report(2)])
     assert head(agent) == (2, 0, 0x8000_1000)
+    await agent.drain_all()

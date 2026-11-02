@@ -36,7 +36,7 @@ BTB_MISS = 12
 FTQ_BITS = (2, 3, 5, 6, 7, 8, 9)
 
 
-@dataclass
+@dataclass(frozen=True)
 class Inputs:
     ftq_bits: int = 0
     icache_miss: int = 0
@@ -48,6 +48,17 @@ class Inputs:
     ittage_miss: int = 0
     ras_miss: int = 0
     ifu_wb_redirect: int = 0
+
+    def __post_init__(self):
+        supported = sum(1 << bit for bit in FTQ_BITS)
+        if not isinstance(self.ftq_bits, int) or self.ftq_bits < 0 or self.ftq_bits & ~supported:
+            raise ValueError('FTQ reasons contain unsupported or negative bits')
+        for name in ('icache_miss', 'itlb_miss', 'backend_redirect', 'control_flow_redirect',
+                     'memory_violation_redirect', 'tage_miss', 'ittage_miss', 'ras_miss',
+                     'ifu_wb_redirect'):
+            value = getattr(self, name)
+            if not isinstance(value, int) or value not in (0, 1):
+                raise ValueError(f'{name} must be a boolean reason/control')
 
 
 class PerfModel:

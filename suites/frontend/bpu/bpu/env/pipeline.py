@@ -9,6 +9,7 @@ from suites.frontend.bpu.bpu.bundle.values import _plain
 from suites.frontend.bpu.bpu.checker.pipeline import PipelineChecker
 from suites.frontend.bpu.runtime.plain_sampler import compile_plain
 from suites.frontend.bpu.runtime.wait import wait_condition
+from suites.frontend.bpu.bpu.model.projection import INTEGRATED_PIPELINE
 
 
 class PipelineObservation:
@@ -22,6 +23,7 @@ class PipelineObservation:
         self.reset_subscription = None
         self.consumed_reset = None
         self.training_accepted = None
+        self.training_preedge = None
         self.training_reads = None
         self.common=None
         self.common_history_binding_factory=common_history_binding_factory
@@ -32,6 +34,9 @@ class PipelineObservation:
             self.common=factory(self.checker,observe_state=common_history_state)
 
     async def __aenter__(self):
+        if self.agent.ports.prediction_target_observable or self.agent.ports.meta_perf_observable:
+            raise ValueError('semantic pipeline requires review for the changed public BPU projection')
+        self.checker.projection = INTEGRATED_PIPELINE
         options = dict(with_sc=True) if getattr(self.checker.model.sources,'has_own_sc',False) else {}
         if getattr(self.checker.model.sources,'has_own_ras',False):
             options['with_ras'] = True
@@ -48,8 +53,10 @@ class PipelineObservation:
         def capture(event):
             sampled=sampler()
             row=sampled if self.common is None else sampled['pipeline']
-            if getattr(self.checker.model.sources,'has_own_tage',False) or getattr(self.checker.model.sources,'has_own_ittage',False):
-                row['inputs']['consumed_reset'] = self.consumed_reset
+            row['inputs']['consumed_reset'] = self.consumed_reset
+            row['inputs']['training_accepted'] = self.training_accepted
+            if self.training_accepted:
+                row['inputs']['training'] = self.training_preedge
             if options:
                 row['inputs']['training_accepted'] = self.training_accepted
                 row['observed']['statistical']['accepted_reads'] = self.training_reads
@@ -57,22 +64,21 @@ class PipelineObservation:
             if self.common is not None:self.common.capture_state(event,sampled['common'])
         async def delivered(_):
             pass
-        if getattr(self.checker.model.sources,'has_own_tage',False) or getattr(self.checker.model.sources,'has_own_ittage',False):
-            reset_sampler = Bundle(reset=binding.bits.inputs.reset,
-                **(dict(training_valid=binding.bits.inputs.training.valid,
-                    training_ready=binding.bits.inputs.training.ready,
-                    training_reads=binding.bits.observed.statistical.reads) if options else {})).compile_sampler()
-            def consumed_reset(_):
-                before = reset_sampler()
-                self.consumed_reset = bool(before.reset.as_int())
-                if options:
-                    # The public producer samples at DriveStable. A Rise-mode
-                    # control can change combinational ready *after* the edge;
-                    # that is not another acceptance of a held transaction.
-                    self.training_accepted = bool(before.training_valid.as_int() and before.training_ready.as_int())
-                    self.training_reads = _plain(before.training_reads)
-            self.reset_subscription = self.agent._execution.subscribe(on(DriveStable(binding.clock),
-                capture=consumed_reset,delivery='lossless',capacity=64)(delivered).bind())
+        reset_sampler = compile_plain(Bundle(reset=binding.bits.inputs.reset,
+            training=binding.bits.inputs.training,
+            **(dict(training_reads=binding.bits.observed.statistical.reads) if options else {})))
+        def consumed_reset(_):
+            before = reset_sampler()
+            self.consumed_reset = bool(before['reset'])
+            # All external feedback uses the producer's actual pre-edge beat.
+            # Rise-mode cleanup can change valid after the native edge; it
+            # must not remove or create an independently owned acceptance.
+            self.training_preedge = before['training']
+            self.training_accepted = bool(before['training']['valid'] and before['training']['ready'])
+            if options:
+                self.training_reads = before['training_reads']
+        self.reset_subscription = self.agent._execution.subscribe(on(DriveStable(binding.clock),
+            capture=consumed_reset,delivery='lossless',capacity=64)(delivered).bind())
         self.subscription = self.agent._execution.subscribe(on(RisingEdge(binding.clock), capture=capture,
             delivery='lossless',capacity=64)(delivered).bind())
         return self

@@ -21,6 +21,7 @@ from suites.frontend.bpu.bpu.case.scenarios import prepare_two_tage_providers
 from suites.frontend.bpu.bpu.case.scenarios import train_sc_feedback_with_tage_held
 from suites.frontend.bpu.bpu.checker.phr.checking import BpuPhrChecker
 from suites.frontend.bpu.bpu.model.phr.model import subtract
+from suites.frontend.bpu.models.configuration import POSITIONS
 from suites.frontend.bpu.bpu.coverage.phr.supplemental import DIRECTION_PHASES as PHASES
 from suites.frontend.bpu.bpu.coverage.phr.supplemental import bpu_phr_direction_repair_coverage_model as coverage_model
 from suites.frontend.bpu.bpu.coverage.phr.supplemental import write_bpu_phr_direction_repair_coverage as write_coverage
@@ -108,8 +109,8 @@ async def check_override(agent, output, *, stage, mode='flowing'):
                 row = checker.records[index]
                 request = row['boundary'][stage]
                 if request['valid'] and request['start_pc'] == PC and not request['prediction']['taken']:
-                    # The full independent checker already checked all 52 cells,
-                    # all 76 fold registers, pending state and causal metadata.
+                    # The full checker already compared the configured physical
+                    # ring/fold registers, pending state and causal metadata.
                     next_row = checker.records[index + 1]
                     check(checker, subtract(request['meta']['pointer'], 2), row['state']['pointer'],
                         phase='speculative-taken-pointer-before-repair', stage=stage, mode=mode, tick=row['tick'])
@@ -119,7 +120,9 @@ async def check_override(agent, output, *, stage, mode='flowing'):
                         {key: next_row['state']['pending'][key] for key in ('valid', 'taken', 'low')},
                         phase='not-taken-pending-restoration', stage=stage, tick=row['tick'])
                     public = row['public_prediction']
-                    check(checker, dict(start_pc=PC, target=PC + 16, taken=0, position=15,
+                    check(checker, PC + POSITIONS, request['prediction']['target'],
+                        phase='PHR-input-not-taken-target', stage=stage, tick=row['tick'])
+                    check(checker, dict(start_pc=PC, taken=0, position=POSITIONS - 1,
                         s2_override=int(stage == 's2'), s3_override=int(stage == 's3')),
                         public['bits'], phase='public-not-taken-correction', stage=stage, mode=mode, tick=row['tick'])
                     check(checker, int(mode == 'flowing'), public['ready'],

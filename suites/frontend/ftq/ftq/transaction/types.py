@@ -5,15 +5,22 @@ from __future__ import annotations
 from dataclasses import dataclass
 from dataclasses import field
 from typing import Mapping
+from types import MappingProxyType
+from collections.abc import Mapping as MappingABC
 
 from suites.frontend.ftq.resolve_queue.transaction.types import Branch
 
 ADDRESS_LIMIT = 1 << 50
 
 
-def _address(name: str, value: int) -> None:
-    if type(value) is not int or not 0 <= value < ADDRESS_LIMIT:
-        raise ValueError(f"{name}={value!r} outside the 50-bit virtual address domain")
+def _address(name: str, value: int, *, bits=50) -> None:
+    if type(value) is not int or not 0 <= value < (1 << bits):
+        raise ValueError(f'{name}={value!r} outside the {bits}-bit address domain')
+
+
+def _identity(index: int, flag: int) -> None:
+    if type(index) is not int or type(flag) is not int or not 0 <= index < 64 or flag not in (0, 1):
+        raise ValueError(f'illegal FTQ identity: {flag!r}:{index!r}')
 
 
 @dataclass(frozen=True, slots=True)
@@ -39,8 +46,11 @@ class Prediction:
             if type(value) is not int or not 0 <= value <= limit:
                 raise ValueError(f"{name}={value!r} outside 0..{limit}")
         for name, pointer in (("s2_ptr", self.s2_ptr), ("s3_ptr", self.s3_ptr)):
-            if pointer is not None and not 0 <= pointer < 64:
+            if pointer is not None and (type(pointer) is not int or not 0 <= pointer < 64):
                 raise ValueError(f"{name}={pointer!r} outside 0..63")
+        for stage in ('s2', 's3'):
+            if getattr(self, stage + '_override') and getattr(self, stage + '_ptr') is None:
+                raise ValueError(f'{stage} override requires its input-established pointer')
 
 
 @dataclass(frozen=True, slots=True)
@@ -52,11 +62,13 @@ class Meta:
     fields: Mapping[str, int] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
-        if not 0 <= self.index < 64 or self.flag not in (0, 1):
-            raise ValueError(f"illegal FTQ identity: {self.flag}:{self.index}")
+        _identity(self.index, self.flag)
+        if not isinstance(self.fields, MappingABC):
+            raise ValueError('metadata payload must be a field mapping')
         for key, value in self.fields.items():
-            if type(value) is not int or value < 0:
+            if type(key) is not str or type(value) is not int or value < 0:
                 raise ValueError(f"meta field {key}={value!r} must be nonnegative")
+        object.__setattr__(self, 'fields', MappingProxyType(dict(self.fields)))
 
 
 @dataclass(frozen=True, slots=True)
@@ -79,10 +91,9 @@ class BackendRedirect:
     debug_memvio: int = 0
 
     def __post_init__(self) -> None:
-        if not 0 <= self.index < 64 or self.flag not in (0, 1):
-            raise ValueError(f"illegal FTQ identity: {self.flag}:{self.index}")
+        _identity(self.index, self.flag)
         _address("pc", self.pc)
-        _address("target", self.target)
+        _address('target', self.target, bits=51)
         limits = {"offset": 31, "is_rvc": 1, "taken": 1, "level": 1,
                   "branch_type": 3, "ras_action": 3, "ipf": 1, "igpf": 1,
                   "iaf": 1, "satp_flush": 1, "debug_ctrl": 1, "debug_memvio": 1}
@@ -108,10 +119,9 @@ class IfuRedirect:
     can_train: int = 1
 
     def __post_init__(self) -> None:
-        if not 0 <= self.index < 64 or self.flag not in (0, 1):
-            raise ValueError(f"illegal FTQ identity: {self.flag}:{self.index}")
+        _identity(self.index, self.flag)
         _address("pc", self.pc)
-        _address("target", self.target)
+        _address('target', self.target, bits=51)
         for name, limit in (("offset", 31), ("is_rvc", 1), ("taken", 1),
                             ("branch_type", 3), ("ras_action", 3),
                             ("can_train", 1)):
@@ -126,6 +136,12 @@ class Consumers:
     mainpipe: int = 0
     train: int = 0
     real_two_fetch: int = 0
+
+    def __post_init__(self) -> None:
+        for name in ('prefetch', 'mainpipe', 'train', 'real_two_fetch'):
+            value = getattr(self, name)
+            if type(value) is not int or value not in (0, 1):
+                raise ValueError(f'{name} must be an integer bit')
 
 
 @dataclass(frozen=True, slots=True)
@@ -144,6 +160,29 @@ class Pointers:
 
 
 @dataclass(frozen=True, slots=True)
+class PrefetchLane:
+    start: int
+    next_line: int
+    set0: int
+    set1: int
+    cross_line: bool
+    owner: Owner
+
+
+@dataclass(frozen=True, slots=True)
+class FetchLane:
+    addr0: int
+    addr1: int
+    set0: int
+    set1: int
+    taken: int
+    end_position: int
+    bank0: int
+    bank1: int
+    owner: Owner
+
+
+@dataclass(frozen=True, slots=True)
 class PrefetchRequest:
     valid: bool
     start: int
@@ -157,6 +196,7 @@ class PrefetchRequest:
     case: int
     req1_start: int
     req1_index: int
+    lanes: tuple[PrefetchLane, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -175,6 +215,7 @@ class FetchRequest:
     backend_exception: bool
     satp_flush: bool
     req1_index: int
+    lanes: tuple[FetchLane, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -185,6 +226,13 @@ class TrainingEntry:
     meta_phr: int
     meta_ghr: int
     meta_common_valid: int
+    branch_mask: int = 0
+    metadata: Mapping[str, int] = field(default_factory=dict)
+
+    def __post_init__(self):
+        object.__setattr__(self, 'metadata', MappingProxyType(dict(self.metadata)))
+        object.__setattr__(self, 'start_pc_vec', tuple(self.start_pc_vec))
+        object.__setattr__(self, 'branches', tuple(self.branches))
 
 
 @dataclass(frozen=True, slots=True)
@@ -195,6 +243,13 @@ class PredictionSpec:
     taken: int = 1
     end_position: int = 3
     meta: Mapping[str, int] = field(default_factory=dict)
+
+    def __post_init__(self):
+        from suites.frontend.ftq.ftq.bundle.abi import validate_metadata
+        Prediction(self.start_pc, taken=self.taken, end_position=self.end_position)
+        metadata = Meta(0, fields=self.meta).fields
+        validate_metadata(metadata)
+        object.__setattr__(self, 'meta', metadata)
 
 
 @dataclass(frozen=True, slots=True)
@@ -222,6 +277,10 @@ class RedirectEvent:
     ras_action: int
     meta_phr: int
     meta_ghr: int
+    metadata: Mapping[str, int] = field(default_factory=dict)
+
+    def __post_init__(self):
+        object.__setattr__(self, 'metadata', MappingProxyType(dict(self.metadata)))
 
 
 @dataclass(frozen=True, slots=True)
@@ -235,6 +294,8 @@ class FlushEvent:
     redirect_flush: bool
     to_ifu_redirect: bool
     ifu_s3_flush: bool
+    ifu_s3_flag: int = 0
+    ifu_s3_value: int = 0
 
 
 @dataclass(frozen=True, slots=True)
@@ -260,3 +321,5 @@ class BackendWrite:
     wen: bool
     index: int
     start_pc: int
+    ready: bool = False
+    bpu: Owner = Owner(0, 0)

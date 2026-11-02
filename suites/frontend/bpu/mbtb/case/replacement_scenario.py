@@ -54,6 +54,13 @@ async def allocate(agent, model, vector):
     return after
 
 
+async def checked_feedback_source(agent,pc,wanted):
+    """The expected profile is an oracle, never an invented producer input."""
+    source=await agent.predict(pc)
+    frozen_check(wanted)(source)
+    return source
+
+
 async def check_case(agent, coverage, index, align, upper, mode):
     if mode not in TOUCH_MODES:
         raise ValueError('unknown replacement touch mode')
@@ -85,10 +92,11 @@ async def check_case(agent, coverage, index, align, upper, mode):
     # a counter change or an already-MRU no-op.
     for peer in reversed(tuple(way for way in range(4) if way != touch_way)):
         entry = states[alias.pc]['entries'][align * 5 + peer]
+        source=await checked_feedback_source(agent,alias.pc,states[alias.pc])
         expected = expected_mbtb_replacement_feedback(states[alias.pc], align, peer, taken=1)
         model.feedback(alias.pc, entry.position, peer, taken=1)
         await agent.train(MbtbTraining(alias.pc, entry.target, 1, entry.position, 1,
-                                      deepcopy(states[alias.pc]['meta_entries']), mispredict=0))
+                                      source.meta_entries, mispredict=0))
         states[alias.pc] = expected
     await read_profiles(agent, vectors, states)
     before_victim = model.victim(alias.pc, alias.position)
@@ -99,12 +107,13 @@ async def check_case(agent, coverage, index, align, upper, mode):
         await agent.predict(alias.pc)
     else:
         taken = int(mode != 'not_taken')
+        source=await checked_feedback_source(agent,alias.pc,states[alias.pc])
         wanted_touch = expected_mbtb_replacement_feedback(states[alias.pc], align, touch_way, taken=taken)
         model.feedback(touched.pc, touched.position, touch_way, taken=taken)
         # A weak-positive conditional predicts taken: actual NT is a real
         # misprediction, while a correct taken feedback has mispredict=0.
         await agent.train(MbtbTraining(touched.pc, touched.target, taken, touched.position, 1,
-                                      deepcopy(states[alias.pc]['meta_entries']), mispredict=1 - taken))
+                                      source.meta_entries, mispredict=1 - taken))
         states[alias.pc] = wanted_touch
     after_victim = model.victim(alias.pc, alias.position)
     assert (before_victim != after_victim) == (mode in ('taken_way0', 'taken_way1'))

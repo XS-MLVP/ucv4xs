@@ -6,26 +6,11 @@ import random
 
 import pytest
 
-from suites.frontend.ifu.legacy_pins import P
 from suites.frontend.ifu.model import cenc
 from suites.frontend.ifu.model import isa
 from suites.frontend.ifu.model.rvc import Expansion
 from suites.frontend.ifu.model.rvc import expand
-
-
-def observe(harness, word: int, fs_is_off: int = 0) -> tuple[int, int]:
-    harness.set(io_in=word, io_fsIsOff=fs_is_off)
-    harness.settle()
-    return harness.read(P.p_out_bits), harness.read(P.p_ill)
-
-
-def check(harness, word: int, expected: Expansion, *, fs_is_off: int = 0) -> None:
-    bits, ill = observe(harness, word, fs_is_off)
-    assert ill == int(expected.ill), (
-        f"{word:#06x}: ill {ill} != {int(expected.ill)} ({expected.form})")
-    if not expected.ill and not expected.hint:
-        assert bits == expected.bits, (
-            f"{word:#06x} ({expected.form}): expansion {bits:#010x} != {expected.bits:#010x}")
+from suites.frontend.ifu.rvc_expander.types import DecodeRequest
 
 
 # ---------------------------------------------------------------------------
@@ -108,59 +93,59 @@ ZCB_CASES = [
 ]
 
 
-def _check_table(harness, table):
+async def _check_table(agent, table):
     for word, expected_bits, label in table:
         expected = Expansion(expected_bits, False, form=label)
-        check(harness, word, expected)
+        await agent.decode(DecodeRequest(word), expected=expected)
 
 
 @pytest.mark.feature("IFU-RVC-002")
-def test_integer_forms(rvc_expander):
-    _check_table(rvc_expander, INTEGER_CASES)
+async def test_integer_forms(rvc_expander):
+    await _check_table(rvc_expander, INTEGER_CASES)
 
 
 @pytest.mark.feature("IFU-RVC-003")
-def test_memory_forms(rvc_expander):
-    _check_table(rvc_expander, MEMORY_CASES)
+async def test_memory_forms(rvc_expander):
+    await _check_table(rvc_expander, MEMORY_CASES)
 
 
 @pytest.mark.feature("IFU-RVC-004")
-def test_control_forms(rvc_expander):
-    _check_table(rvc_expander, CONTROL_CASES)
+async def test_control_forms(rvc_expander):
+    await _check_table(rvc_expander, CONTROL_CASES)
 
 
 @pytest.mark.feature("IFU-RVC-008")
-def test_zcb_forms(rvc_expander):
-    _check_table(rvc_expander, ZCB_CASES)
+async def test_zcb_forms(rvc_expander):
+    await _check_table(rvc_expander, ZCB_CASES)
 
 
 @pytest.mark.feature("IFU-RVC-001")
-def test_full_width_passthrough(rvc_expander):
+async def test_full_width_passthrough(rvc_expander):
     words = [isa.addi(1, 2, 3), isa.jal(1, 16), isa.load_bytes(3, 5, 6, 8),
              isa.store_bytes(2, 7, 8, 12), isa.ebreak(), 0xFFFFFFFF, 0x00000003]
     for word in words:
         for fs in (0, 1):
-            bits, ill = observe(rvc_expander, word, fs)
-            assert (bits, ill) == (word, 0)
+            observed = await rvc_expander.decode(DecodeRequest(word, fs))
+            assert (observed.result.bits, observed.result.ill) == (word, False)
 
 
 # ---------------------------------------------------------------------------
 # Floating point and FS state
 # ---------------------------------------------------------------------------
 @pytest.mark.feature("IFU-RVC-005")
-def test_float_forms_follow_fs_state(rvc_expander):
+async def test_float_forms_follow_fs_state(rvc_expander):
     fp_words = [cenc.c_fld(10, 11, 8), cenc.c_fsd(10, 11, 8),
                 cenc.c_fldsp(10, 8), cenc.c_fsdsp(10, 8)]
     for word in fp_words:
         expected = expand(word, fs_is_off=False)
         assert not expected.ill
-        check(rvc_expander, word, expected, fs_is_off=0)
-        bits, ill = observe(rvc_expander, word, 1)
-        assert ill == 1, f"{word:#06x}: FP form must be illegal when FS is off"
+        await rvc_expander.decode(DecodeRequest(word, 0), expected=expected)
+        observed = await rvc_expander.decode(DecodeRequest(word, 1))
+        assert observed.result.ill, f"{word:#06x}: FP form must be illegal when FS is off"
     # Integer compressed forms do not depend on FS.
     for word, _, _ in INTEGER_CASES + ZCB_CASES:
-        check(rvc_expander, word, expand(word, fs_is_off=False), fs_is_off=0)
-        check(rvc_expander, word, expand(word, fs_is_off=True), fs_is_off=1)
+        await rvc_expander.decode(DecodeRequest(word, 0), expected=expand(word, fs_is_off=False))
+        await rvc_expander.decode(DecodeRequest(word, 1), expected=expand(word, fs_is_off=True))
 
 
 # ---------------------------------------------------------------------------
@@ -185,16 +170,15 @@ RESERVED = {
 
 
 @pytest.mark.feature("IFU-RVC-006")
-def test_reserved_encodings_are_illegal(rvc_expander):
+async def test_reserved_encodings_are_illegal(rvc_expander):
     for word, label in RESERVED.items():
         fs = 1 if "FS off" in label else 0
-        bits, ill = observe(rvc_expander, word, fs)
-        assert ill == 1, f"{label} ({word:#06x}) must be illegal"
-        del bits
+        observed = await rvc_expander.decode(DecodeRequest(word, fs))
+        assert observed.result.ill, f"{label} ({word:#06x}) must be illegal"
     # A stack load with rd=x0 selects the reserved load opcode; return to a
     # legal stack load and back so the selector's low bits toggle both ways.
     for word in (cenc.c_lwsp(10, 4), 0x4002, cenc.c_lwsp(11, 8), 0x6002):
-        observe(rvc_expander, word)
+        await rvc_expander.decode(DecodeRequest(word))
 
 
 HINTS = [
@@ -211,13 +195,12 @@ HINTS = [
 
 
 @pytest.mark.feature("IFU-RVC-007")
-def test_hint_encodings_remain_legal(rvc_expander):
+async def test_hint_encodings_remain_legal(rvc_expander):
     for word in HINTS:
         expected = expand(word)
         assert not expected.ill and expected.hint, f"{word:#06x} is not a hint in the model"
-        bits, ill = observe(rvc_expander, word)
-        assert ill == 0, f"hint {word:#06x} must not raise an illegal instruction"
-        del bits
+        observed = await rvc_expander.decode(DecodeRequest(word))
+        assert not observed.result.ill, f"hint {word:#06x} must not raise an illegal instruction"
 
 
 # ---------------------------------------------------------------------------
@@ -228,34 +211,56 @@ def test_hint_encodings_remain_legal(rvc_expander):
 @pytest.mark.feature("IFU-RVC-004")
 @pytest.mark.feature("IFU-RVC-006")
 @pytest.mark.feature("IFU-RVC-008")
-def test_random_compressed_words_match_the_model(rvc_expander):
+async def test_random_compressed_words_match_the_model(rvc_expander):
     rng = random.Random(0x1F0)
     for _ in range(12000):
         word = rng.getrandbits(16)
         for fs in (0, 1):
-            check(rvc_expander, word, expand(word, fs_is_off=bool(fs)), fs_is_off=fs)
+            await rvc_expander.decode(DecodeRequest(word, fs))
 
 
 @pytest.mark.feature("IFU-RVC-001")
-def test_random_full_width_words_match_the_model(rvc_expander):
+async def test_random_full_width_words_match_the_model(rvc_expander):
     rng = random.Random(0x2F0)
     for _ in range(2000):
         word = (rng.getrandbits(30) << 2) | 3
         for fs in (0, 1):
-            assert observe(rvc_expander, word, fs) == (word, 0)
+            observed = await rvc_expander.decode(DecodeRequest(word, fs))
+            assert (observed.result.bits, observed.result.ill) == (word, False)
 
 
 @pytest.mark.feature("IFU-RVC-009")
-def test_expansion_is_stateless(rvc_expander):
+async def test_expansion_is_stateless(rvc_expander):
     rng = random.Random(0x3F0)
     words = [rng.getrandbits(16) for _ in range(32)]
-    first = {(word, fs): observe(rvc_expander, word, fs) for word in words for fs in (0, 1)}
+    first = {(word, fs): (await rvc_expander.decode(DecodeRequest(word, fs))).result
+             for word in words for fs in (0, 1)}
     rng.shuffle(words)
     for word in words:
         for fs in (1, 0):
-            assert observe(rvc_expander, word, fs) == first[(word, fs)]
+            assert (await rvc_expander.decode(DecodeRequest(word, fs))).result == first[(word, fs)]
     # Interleave marked illegal and valid words; a sticky illegal latch would
     # be visible here even if the decoder itself were combinational.
     for word in words[:8]:
-        observe(rvc_expander, 0x0000)
-        assert observe(rvc_expander, word, 0) == first[(word, 0)]
+        await rvc_expander.decode(DecodeRequest(0x0000))
+        assert (await rvc_expander.decode(DecodeRequest(word, 0))).result == first[(word, 0)]
+
+
+@pytest.mark.feature("IFU-RVC-002")
+@pytest.mark.feature("IFU-RVC-009")
+async def test_next_halfword_does_not_change_a_compressed_instruction(rvc_expander):
+    compressed = cenc.c_addi(10, 1)
+    for next_halfword in (0x0000, 0xFFFF, 0xDEAD, 0x1234):
+        observed = await rvc_expander.decode(DecodeRequest(compressed | (next_halfword << 16)))
+        assert observed.result.bits == isa.addi(10, 10, 1) and not observed.result.ill
+
+
+@pytest.mark.feature("IFU-RVC-005")
+@pytest.mark.feature("IFU-RVC-009")
+async def test_same_instruction_uses_the_current_fs_state(rvc_expander):
+    word = cenc.c_fld(10, 11, 8)
+    snapshots = [await rvc_expander.decode(DecodeRequest(word, fs)) for fs in (0, 1, 1, 0)]
+    assert [item.result.ill for item in snapshots] == [False, True, True, False]
+    assert snapshots[0].result.bits == snapshots[-1].result.bits == isa.fp_load_bytes(3, 10, 11, 8)
+    assert all(b.sequence == a.sequence + 1 and b.sample_tick == a.sample_tick + 2
+               for a, b in zip(snapshots, snapshots[1:]))

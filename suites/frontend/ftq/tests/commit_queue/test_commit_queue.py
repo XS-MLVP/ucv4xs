@@ -49,7 +49,7 @@ async def test_simultaneous_enqueue_and_dequeue_preserve_fifo_without_bypass(com
     observed = [await agent.submit(cycle) for cycle in stream]
     assert observed == [CallRet(20, 2), CallRet(21, 2), CallRet(22, 1), CallRet(23, 3)]
     assert await agent.submit(rows()) is None
-    assert agent.checker.depth == 0
+    assert agent.receipt()['pending'] == ()
 
 
 @pytest.mark.feature("FTQ-CQ-004")
@@ -68,7 +68,7 @@ async def test_capacity_guard_never_overwrites_queued_call_returns(commit_queue_
         observed = await agent.submit(rows())
         if observed is None:
             break
-    assert agent.checker.depth == 0
+    assert agent.receipt()['pending'] == ()
 
 
 @pytest.mark.feature("FTQ-CQ-005")

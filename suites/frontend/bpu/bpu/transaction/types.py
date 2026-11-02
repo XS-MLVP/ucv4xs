@@ -6,12 +6,54 @@ from dataclasses import dataclass
 from dataclasses import field
 from enum import IntEnum
 from typing import Any
+from collections.abc import Mapping
+from suites.frontend.bpu.models.configuration import PHR_STORAGE_BITS
+
+
+def validate_phr_metadata(meta):
+    """Reject invalid physical PHR values before a driver can assert valid.
+
+    Aggregate completeness remains checked by the real Bundle binding. Scalar
+    API/encoding selftests may supply an empty metadata object without driving
+    hardware; a provided PHR object must always use the current strict domain.
+    """
+    if isinstance(meta, Mapping) and 'phr' in meta:
+        phr = meta['phr']
+        if (not isinstance(phr, Mapping) or set(phr) != {'phrPtr', 'phrLowBits'}
+                or not isinstance(phr['phrPtr'], Mapping) or set(phr['phrPtr']) != {'value'}):
+            raise ValueError('PHR metadata requires value-only phrPtr and phrLowBits')
+        value, low = phr['phrPtr']['value'], phr['phrLowBits']
+        if type(value) is not int or not 0 <= value < PHR_STORAGE_BITS:
+            raise ValueError(f'PHR pointer value must be an integer in 0..{PHR_STORAGE_BITS - 1}')
+        if type(low) is not int or not 0 <= low < 1 << 13:
+            raise ValueError('PHR low bits must be an unsigned 13-bit integer')
+
+
+def redirect_metadata(meta):
+    """Project the one declared output-only RAS field, not arbitrary extras.
+
+    The real published redirectMeta has ras.topRetAddr_addr; the actual FTQ
+    recovery input does not. Keep this explicit asymmetry out of pin drivers.
+    """
+    validate_phr_metadata(meta)
+    result = deepcopy(meta)
+    if isinstance(result, Mapping) and isinstance(result.get('ras'), Mapping):
+        ras = result['ras']
+        if 'topRetAddr_addr' in ras:
+            value = ras['topRetAddr_addr']
+            if type(value) is not int or not 0 <= value < 1 << 50:
+                raise ValueError('RAS output-only top return address must be an unsigned 50-bit integer')
+            del ras['topRetAddr_addr']
+    return result
 
 
 @dataclass(frozen=True, slots=True)
 class BpuPrediction:
     start_pc: int
-    target: int
+    # The integrated DefaultConfig Bpu export may DCE this field because FTQ
+    # consumes only taken/endPosition.  ``None`` is an explicit observation
+    # boundary; component DUTs with a public target keep an integer here.
+    target: int | None
     taken: int
     position: int
     s2_override: int
@@ -41,7 +83,7 @@ class BpuPerf:
 class BpuMeta:
     resolve: Any
     redirect: Any
-    perf: BpuPerf
+    perf: BpuPerf | None
 
 
 @dataclass(frozen=True, slots=True)
@@ -88,6 +130,10 @@ class BpuTransaction:
     meta_tick: int
     prediction: BpuPrediction
     meta: BpuMeta
+    # Environment receipt identity at the PHR S1 input boundary, NOT an RTL tag.
+    # Ordinary public-stream transactions have no such coherent receipt.
+    uid: int | None = None
+    epoch: int | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -151,5 +197,5 @@ class BpuRedirect:
             cfi_pc = self.pc & ((1 << 49) - 1)
         elif type(cfi_pc) is not int or not 0 <= cfi_pc < 1 << 49:
             raise ValueError("cfi_pc must be an unsigned 49-bit integer")
-        return dict(meta=deepcopy(self.meta), cfi_pc=cfi_pc, target=self.pc,
+        return dict(meta=redirect_metadata(self.meta), cfi_pc=cfi_pc, target=self.pc,
                     taken=self.taken, branch_type=self.branch_type, ras_action=self.ras_action)

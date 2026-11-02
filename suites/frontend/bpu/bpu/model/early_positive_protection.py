@@ -12,10 +12,12 @@ EDGES = dict(STRENGTH_EDGES, **{
                          ('T-correction-restores-protection', 'reward', 0, 1)),
 })
 
-# Both paths finish with the same recent taken history. Their older outcomes
-# differ so an already protected long record cannot masquerade as a new one.
+# Both paths finish with the same recent taken history. Two earlier fallback
+# edges retain a distinct9-bit index-read ancestor on the current5/9 geometry,
+# rather than reusing the protected long row from the generic preparation.
+# Keep the old one-fallback program in the frozen negative control.
 OLDER_PATHS = ((CONDITIONAL,) * 5,
-               (CONDITIONAL, CONDITIONAL, CONDITIONAL, FALLBACK, CONDITIONAL))
+               (CONDITIONAL, CONDITIONAL, FALLBACK, FALLBACK, CONDITIONAL))
 
 EXTRA = ('confirmed-T-seed', 'neutral-direction-strength', 'short-not-long-provider',
          'actual-acceptance-window')

@@ -1644,7 +1644,7 @@
    "id": "BPU-INT-076",
    "component": "Bpu",
    "title": "独立窗口寿命在背压和真实恢复后仍正确呈现与结束",
-   "description": "冷态拥有的流水窗口遇到prediction/metadata ready低，并由真实检查点恢复替代年轻窗口。 占用、推进、冲刷、PC及历史由独立token拥有，实际stage线只作比较输出。 背压/恢复后正确替代和推进，metadata即使ready低仍按valid-only呈现，九组lookup fold及checkpoint正确。 reset自主流水/历史、逐拍完整呈现与实际metadata及下一周期取消效果比较。 被取消年轻窗口不得泄漏，旧已发布来源不被重同步或从实际stage播种。 初始化服务为声明输入的冷态和页边界profile；guard、CommonHR/RAS及完整FTQ epoch未自主完成。",
+    "description": "冷态拥有的流水窗口遇到prediction背压，并由真实检查点恢复替代年轻窗口。 占用、推进、冲刷、PC及历史由独立token拥有，实际stage线只作比较输出。 背压/恢复后正确替代和推进，较老metadata在prediction停止接受时仍按valid-only呈现；当前没有metadata ready输入，不能伪造驱动。 当前20组lookup fold及value-only checkpoint逐拍比较，内部三阶段target与自主模型比较，公开target/perf PC已DCE不计观察信用。 被取消年轻窗口不得泄漏，旧已发布来源不被重同步或从实际stage播种。 初始化服务为声明输入的冷态和页边界profile；guard、CommonHR/RAS及完整FTQ epoch未自主完成。",
    "metadata": {
     "domain": "hardware",
     "priority": "P0",
@@ -1652,17 +1652,18 @@
     "test_area": "tests/bpu/testcase",
     "semantic_review": {
      "previous_title": "Owned pipeline tokens survive backpressure, valid-only metadata and genuine checkpoint recovery",
-     "scenario_detail": "A self-clocked semantic pipeline derives occupancy, fires, squash, PCs and histories from reset/environment controls and owned source-bank predictions; actual stage wires are comparison outputs only. Check all public presentations, S3 metadata PC/checkpoint and nine lookup folds. In a cold-table profile drain older tokens under prediction/metadata ready low, replace the held younger request by a genuine external redirect to a page-boundary fetch, then reopen and receive paired production metadata while metadata ready remains low. The BPU metadata port specializes the public SDK fire trigger to valid-only without changing physical bindings or timestamp conventions. Separate five reached/checked rules, deferring replacement credit to the exact following cycle. No observed predictor state seeds, native writes or bank/set enumeration. Startup takes component initialization status as an explicit service input; full all-predictor learned composition, guarded addresses, CommonHR/RAS metadata and complete FTQ epoch ownership remain unfinished.",
+      "previous_configuration_scenario_detail": "A self-clocked semantic pipeline derives occupancy, fires, squash, PCs and histories from reset/environment controls and owned source-bank predictions; actual stage wires are comparison outputs only. Check all public presentations, S3 metadata PC/checkpoint and nine lookup folds. In a cold-table profile drain older tokens under prediction/metadata ready low, replace the held younger request by a genuine external redirect to a page-boundary fetch, then reopen and receive paired production metadata while metadata ready remains low. The BPU metadata port specializes the public SDK fire trigger to valid-only without changing physical bindings or timestamp conventions. Separate five reached/checked rules, deferring replacement credit to the exact following cycle. No observed predictor state seeds, native writes or bank/set enumeration. Startup takes component initialization status as an explicit service input; full all-predictor learned composition, guarded addresses, CommonHR/RAS metadata and complete FTQ epoch ownership remain unfinished.",
+      "scenario_detail": "Current DefaultConfig keeps prediction ready but no metadata ready, public target or perf echo. Stop prediction acceptance while older owned S3 metadata retires valid-only; replace the held younger request with an exactly planned real-source redirect and reopen. Compare autonomous three-stage choices (including internal targets),20 retained lookup folds, all public prediction fields and value-only checkpoint. Input plans bind already-published source identities before driving; PHR fire/flush receipts and exact accepting ticks associate output without invented tags/echoes. Explicitly stop and drain at finish. Five rules remain; metadata-valid-only now witnesses S3 under actual prediction backpressure, not a fabricated pin. Full all-predictor composition/FTQ eligibility remains outside this profile.",
      "adopted_integrated_review": "docs/bpu-integrated-functional-definition-review-20261016.md",
-     "evidence_limits": "五事件组不是全预测器学习组合证明，metadata ready低不能被错误建模为阻塞S3。",
+      "evidence_limits": "五事件组不是全预测器学习组合证明；metadata ready已DCE、不伪造input。内部target比较不算已DCE公开target的观察，S3来源由真实接受tick/fire/flush关联而非perf echo。",
      "previous_coverage_not_new_proof": true
     },
     "definition_source": "docs/bpu-integrated-functional-definition-review-20261016.md (BPU-INT-076)"
    },
    "contract": {
-    "event": "冷态拥有的流水窗口遇到prediction/metadata ready低，并由真实检查点恢复替代年轻窗口。",
+     "event": "冷态拥有的流水窗口遇到prediction ready低，并由真实检查点恢复替代年轻窗口；metadata没有ready输入。",
     "owner": "占用、推进、冲刷、PC及历史由独立token拥有，实际stage线只作比较输出。",
-    "effect": "背压/恢复后正确替代和推进，metadata即使ready低仍按valid-only呈现，九组lookup fold及checkpoint正确。",
+     "effect": "背压/恢复后正确替代和推进，metadata在prediction停止接受时仍valid-only呈现，20组lookup fold及value-only checkpoint正确。",
     "observation": "reset自主流水/历史、逐拍完整呈现与实际metadata及下一周期取消效果比较。",
     "preservation": "被取消年轻窗口不得泄漏，旧已发布来源不被重同步或从实际stage播种。",
     "scope": "初始化服务为声明输入的冷态和页边界profile；guard、CommonHR/RAS及完整FTQ epoch未自主完成。"
@@ -1691,7 +1692,7 @@
    "id": "BPU-INT-077",
    "component": "Bpu",
    "title": "较老中级纠正取消独立已预测的年轻早级路径",
-   "description": "Micro正常学习后预测两个早级候选，较老token在中级得到不同正确结果。 中级纠正拥有较老token与检查点，年轻候选虽已被预测仍属于被取消路径。 正确PC/方向/目标纠正并回退历史，最终metadata属于存活较老原窗口。 自主Micro与token/历史从reset推进，逐拍全阶段选择、九fold及下一周期取消比较。 年轻请求不借较老metadata完成，错误实际值不得重同步参考。 Micro学习、其他表冷/关闭的声明profile；不支持学习必须显式拒绝而非当作miss。",
+    "description": "Micro正常学习后预测两个早级候选，较老token在中级得到不同正确结果。 中级纠正拥有较老token与检查点，年轻候选虽已被预测仍属于被取消路径。 正确PC/方向/内部目标纠正并回退历史，最终metadata属于存活较老原窗口；公开target/perf已DCE不补造。 自主Micro与token/历史从reset推进，逐拍全阶段选择、当前20组lookup fold及下一周期取消比较，真实训练沿前接受及收尾分别对账。 年轻请求不借较老metadata完成，错误实际值不得重同步参考。 Micro学习、其他表冷/关闭的声明profile；不支持学习必须显式拒绝而非当作miss。",
    "metadata": {
     "domain": "hardware",
     "priority": "P0",
@@ -1699,7 +1700,8 @@
     "test_area": "tests/bpu/testcase",
     "semantic_review": {
      "previous_title": "Independently learned early predictions yield to the correct older middle-stage repair",
-     "scenario_detail": "Use normal genuine FTQ feedback to train two MicroBTB entries in an independently owned UbtbReference, with other learned predictors disabled. The autonomous pipeline predicts both early candidates, middle NT correction, younger-token squash, corrected next PC and checkpoint rewind; compare actual S1/S2/S3 choice payloads and nine history folds every cycle. Require the original corrected token to retire with its own metadata/history, not the discarded younger request's context. Separate five reached/checked rules, deferring squash credit to the following cycle. The source-bank adapter rejects other enabled predictor learning rather than treating trained tables as misses. This qualifies the cycle engine and MicroBTB composition profile, not a complete BPU oracle, all native line closure or a full-program FTQ proof.",
+      "previous_configuration_scenario_detail": "Use normal genuine FTQ feedback to train two MicroBTB entries in an independently owned UbtbReference, with other learned predictors disabled. The autonomous pipeline predicts both early candidates, middle NT correction, younger-token squash, corrected next PC and checkpoint rewind; compare actual S1/S2/S3 choice payloads and nine history folds every cycle. Require the original corrected token to retire with its own metadata/history, not the discarded younger request's context. Separate five reached/checked rules, deferring squash credit to the following cycle. The source-bank adapter rejects other enabled predictor learning rather than treating trained tables as misses. This qualifies the cycle engine and MicroBTB composition profile, not a complete BPU oracle, all native line closure or a full-program FTQ proof.",
+      "scenario_detail": "Retain both genuine mispredicted-branch feedbacks and active-stream learning to train independent MicroBTB entries. Bind each feedback/recovery to its exact previously published owner before driving; observe actual pre-edge acceptance rather than Rise-mode valid cleanup. Compare autonomous S1/S2/S3 choices,20 lookup folds, retained public fields and value-only history through older middle repair, younger squash and exact corrected S3. No public target/perf or pointer flag is synthesized. Explicit stop/drain closes all accepted work. This remains the Micro-only profile, not a full learned BPU/FTQ oracle.",
      "adopted_integrated_review": "docs/bpu-integrated-functional-definition-review-20261016.md",
      "evidence_limits": "循环引擎和Micro组合合格不等于所有预测器/全FTQ证明；前轮地址单位缺陷仍需修复复用链。",
      "previous_coverage_not_new_proof": true
@@ -1720,7 +1722,7 @@
     "event": "Micro正常学习后预测两个早级候选，较老token在中级得到不同正确结果。",
     "owner": "中级纠正拥有较老token与检查点，年轻候选虽已被预测仍属于被取消路径。",
     "effect": "正确PC/方向/目标纠正并回退历史，最终metadata属于存活较老原窗口。",
-    "observation": "自主Micro与token/历史从reset推进，逐拍全阶段选择、九fold及下一周期取消比较。",
+     "observation": "自主Micro与token/历史从reset推进，逐拍全阶段选择、当前20组lookup fold及下一周期取消比较；公开DCE字段不补造。",
     "preservation": "年轻请求不借较老metadata完成，错误实际值不得重同步参考。",
     "scope": "Micro学习、其他表冷/关闭的声明profile；不支持学习必须显式拒绝而非当作miss。"
    },
@@ -15609,7 +15611,8 @@
     ],
     "semantic_review": {
      "previous_title": "Captured-metadata PHR recovery across the reset-reachable even-pointer orbit",
-     "scenario_detail": "After an enabled cold-start lookup, recover using genuinely observed, causally associated S3 metadata. For each flowing and backpressured cadence exercise both pointer flags, all 26 even pointer values, and taken/not-taken with distinct branch PC and recovery target. Compare all 52 physical history cells, all 76 folded-history registers, pointer/flag, pending state, and public metadata every cycle using an independent model. Keep all 52 pointer values in the coverage cross: the 208 unqualified odd-pointer bins across both cadences remain zero, not waived; this requirement does not prove global FTQ metadata parity.",
+      "previous_configuration_scenario_detail": "After an enabled cold-start lookup, recover using genuinely observed, causally associated S3 metadata. For each flowing and backpressured cadence exercise both pointer flags, all 26 even pointer values, and taken/not-taken with distinct branch PC and recovery target. Compare all 52 physical history cells, all 76 folded-history registers, pointer/flag, pending state, and public metadata every cycle using an independent model. Keep all 52 pointer values in the coverage cross: the 208 unqualified odd-pointer bins across both cadences remain zero, not waived; this requirement does not prove global FTQ metadata parity.",
+      "scenario_detail": "Current DefaultConfig has532 physical cells and33 folded histories in four register groups. Flowing/backpressured recovery uses causally associated actual S3 metadata and distinct branch PC/recovery target for both NT/T outcomes over two complete even-pointer orbits. Compare value-only physical pointer, every cell/fold, pending state and public PHR metadata. Track input UID/epoch through real fire/flush, not PC/data matching. Pointer flag, public prediction target and perf echo are DCE'd and are never fabricated; coverage lap is an input-program count, not a hardware flag. Odd-pointer and full-FTQ source eligibility remain unproved.",
      "adopted_gap_owner_review": "docs/bpu-gap-owner-functional-review-20261016.md",
      "evidence_limits": "PHR输入切点独立于实际存储状态，但不是整个预测方向的自主参考；物理指针全遍历不是独立语义要求。",
      "previous_coverage_not_new_proof": true
@@ -15725,7 +15728,7 @@
    "id": "BPU-INT-035",
    "component": "Bpu",
    "title": "中级否定早期taken时，恢复原分支历史并消除错误路径影响",
-   "description": "早期预测已推测taken，正常学习的中级结果对同一来源纠正为not-taken。 纠正属于原早级分支及其原历史，不能关联到后来的同PC请求。 恢复原历史并形成正确not-taken后续状态，公开fallthrough和分支位置正确。 真实中级纠正、推进/冲刷及原token相互对应，比较全部历史状态与随后晚级metadata。 实际纠正当拍即使下游背压，已接纳老token仍保留，不使用更晚的无关停顿冒充并发。 真实MainBTB/micro预测分歧、流动与背压场景；不是任意预测器组合或FTQ证明。",
+    "description": "早期预测已推测taken，正常学习的中级结果对同一来源纠正为not-taken。 纠正属于原早级分支及其原历史，不能关联到后来的同PC请求。 恢复原历史并形成正确not-taken后续状态，实际PHR输入的fallthrough目标及保留的公开taken/分支位置正确；公开target已DCE。 真实中级纠正、推进/冲刷及原token相互对应，比较全部历史状态与随后晚级metadata。 实际纠正当拍即使下游背压，已接纳老token仍保留，不使用更晚的无关停顿冒充并发。 真实MainBTB/micro预测分歧、流动与背压场景；不是任意预测器组合或FTQ证明。",
    "metadata": {
     "domain": "hardware",
     "priority": "P1",
@@ -15736,7 +15739,8 @@
     ],
     "semantic_review": {
      "previous_title": "Valid S2 not-taken correction restores speculative taken PHR history",
-     "scenario_detail": "Train a genuine conditional MainBTB entry, then resolve not-taken while MicroBTB still predicts taken. In flowing and backpressured traffic require a valid S2 not-taken correction with the exact public fallthrough target/position. Associate the original S1 token through actual fire/flush controls; compare restoration of its historical pointer and low bits, pending not-taken state, all physical cells and fold registers. Require prediction.ready low at the actual correction in the backpressured case, while the older accepted token still reaches S3 metadata.",
+      "previous_configuration_scenario_detail": "Train a genuine conditional MainBTB entry, then resolve not-taken while MicroBTB still predicts taken. In flowing and backpressured traffic require a valid S2 not-taken correction with the exact public fallthrough target/position. Associate the original S1 token through actual fire/flush controls; compare restoration of its historical pointer and low bits, pending not-taken state, all physical cells and fold registers. Require prediction.ready low at the actual correction in the backpressured case, while the older accepted token still reaches S3 metadata.",
+      "scenario_detail": "Train a genuine conditional MainBTB entry and resolve NT while MicroBTB still predicts taken. Require the real S2 NT correction in both cadences. Check the declared DefaultConfig fallthrough target at the actual PHR input and taken/position/override on the retained public output; do not claim a DCE'd public target. Fire/flush preserves the input UID through historical value-only pointer/low restoration, pending NT update, all532 cells,132 fold registers and S3 metadata. Backpressure must coincide with the actual correction.",
      "adopted_gap_owner_review": "docs/bpu-gap-owner-functional-review-20261016.md",
      "evidence_limits": "实际纠正是输入资格，PHR参考负责其历史效果；不能反过来用PHR一致性证明方向预测本身正确。",
      "previous_coverage_not_new_proof": true
@@ -15749,7 +15753,7 @@
    "contract": {
     "event": "早期预测已推测taken，正常学习的中级结果对同一来源纠正为not-taken。",
     "owner": "纠正属于原早级分支及其原历史，不能关联到后来的同PC请求。",
-    "effect": "恢复原历史并形成正确not-taken后续状态，公开fallthrough和分支位置正确。",
+     "effect": "恢复原历史并形成正确not-taken后续状态，真实PHR输入的fallthrough目标及公开taken/分支位置正确；公开target已DCE，不计该字段的公开比较信用。",
     "observation": "真实中级纠正、推进/冲刷及原token相互对应，比较全部历史状态与随后晚级metadata。",
     "preservation": "实际纠正当拍即使下游背压，已接纳老token仍保留，不使用更晚的无关停顿冒充并发。",
     "scope": "真实MainBTB/micro预测分歧、流动与背压场景；不是任意预测器组合或FTQ证明。"
@@ -15827,7 +15831,7 @@
    "id": "BPU-INT-037",
    "component": "Bpu",
    "title": "中级taken纠正在历史环边界仍保留分支与路径身份",
-   "description": "中级对历史指针处于起始边界的原分支给出真实taken纠正。 边界翻转属于该原检查点及taken分支，不属于另一个恢复来源。 历史指针正确跨环并改变代际标志，taken路径与待决更新均正确。 从真实零历史来源构造边界，核实实际taken纠正、目标/位置及全部历史和折叠状态。 不捏造指针或metadata；其他存活路径及原来源快照不被年轻请求替代。 reset可达零边界的中级taken内层跨环，流动/背压；不是not-taken外层分支或奇数轨道证明。",
+    "description": "中级对历史指针处于起始边界的原分支给出真实taken纠正。 跨环属于该原检查点及taken分支，不属于另一个恢复来源。 当前DefaultConfig的物理指针0正确跨到530，taken路径与待决更新均正确；flag已DCE，不声称观测了硬件代际标志。 从真实零历史来源构造边界，核实PHR输入的taken纠正目标、公开taken/位置及全部历史和折叠状态。 不捏造指针或metadata；其他存活路径及原来源快照不被年轻请求替代。 reset可达零边界的中级taken内层跨环，流动/背压；不是not-taken外层分支或奇数轨道证明。",
    "metadata": {
     "domain": "hardware",
     "priority": "P1",
@@ -15838,9 +15842,10 @@
     ],
     "semantic_review": {
      "previous_title": "Valid S2 taken correction wraps historical pointer zero and flips its flag",
-     "scenario_detail": "Capture genuine initial history-zero S3 metadata from one block and use a conditional not-taken last-halfword recovery to its next block. With early predictors disabled, train a taken MainBTB destination entry. In flowing and backpressured cadences require a valid S2 taken correction whose own historical pointer is zero; verify pointer 0/flag0 becomes 50/flag1, exact public target/position, pending update, all physical history cells and all fold registers. This targets the inner taken wrap arm, not the outer not-taken arm, and does not fabricate internal state or metadata.",
+      "previous_configuration_scenario_detail": "Capture genuine initial history-zero S3 metadata from one block and use a conditional not-taken last-halfword recovery to its next block. With early predictors disabled, train a taken MainBTB destination entry. In flowing and backpressured cadences require a valid S2 taken correction whose own historical pointer is zero; verify pointer 0/flag0 becomes 50/flag1, exact public target/position, pending update, all physical history cells and all fold registers. This targets the inner taken wrap arm, not the outer not-taken arm, and does not fabricate internal state or metadata.",
+      "scenario_detail": "Use a genuine initial history-zero S3 source and an NT last-halfword recovery to the real DefaultConfig successor block. Train the MainBTB destination, disable early predictors and require a valid S2 taken correction with historical pointer0. Check physical0-to530 wrap, the PHR-input target, retained public position/taken/override, pending update, all532 cells and132 fold registers in both cadences. There is no observed pointer flag, public target or perf echo in this export; input UID/epoch is a separate environment identity.",
      "adopted_gap_owner_review": "docs/bpu-gap-owner-functional-review-20261016.md",
-     "evidence_limits": "0到50及flag翻转是本配置的观察参数，不按每个物理指针复制功能ID。",
+      "evidence_limits": "旧0到50及flag描述属于此前配置；当前物理环0到530，flag已DCE、不得合成。内部PHR输入target不等于公开BPU target证据；不按物理指针复制功能ID。",
      "previous_coverage_not_new_proof": true
     },
     "definition_source": "docs/bpu-gap-owner-functional-review-20261016.md (BPU-INT-037)",
@@ -15851,7 +15856,7 @@
    "contract": {
     "event": "中级对历史指针处于起始边界的原分支给出真实taken纠正。",
     "owner": "边界翻转属于该原检查点及taken分支，不属于另一个恢复来源。",
-    "effect": "历史指针正确跨环并改变代际标志，taken路径与待决更新均正确。",
+     "effect": "当前物理指针0正确跨环到530，taken路径与待决更新均正确；flag已DCE，不计硬件flag翻转信用。",
     "observation": "从真实零历史来源构造边界，核实实际taken纠正、目标/位置及全部历史和折叠状态。",
     "preservation": "不捏造指针或metadata；其他存活路径及原来源快照不被年轻请求替代。",
     "scope": "reset可达零边界的中级taken内层跨环，流动/背压；不是not-taken外层分支或奇数轨道证明。"
@@ -15889,7 +15894,8 @@
     ],
     "semantic_review": {
      "previous_title": "Valid S3 SC taken correction wraps historical pointer zero and flips its flag",
-     "scenario_detail": "Preserve a genuine pointer-zero recovery context while allocating two negative TAGE providers at the next block. Train SC taken with TAGE held and require the earlier provider counter 2, valid SC taken use and above-threshold metadata. In flowing and backpressured cadences require the real S3 taken correction at historical pointer zero and compare flag flip, pointer 50, pending state, all 52 physical cells, all 76 folds, exact public correction, and fire/flush-based causal metadata. Keep all unresolved FTQ parity and unreachable-line classifications separate from this qualified even-pointer witness.",
+      "previous_configuration_scenario_detail": "Preserve a genuine pointer-zero recovery context while allocating two negative TAGE providers at the next block. Train SC taken with TAGE held and require the earlier provider counter 2, valid SC taken use and above-threshold metadata. In flowing and backpressured cadences require the real S3 taken correction at historical pointer zero and compare flag flip, pointer 50, pending state, all 52 physical cells, all 76 folds, exact public correction, and fire/flush-based causal metadata. Keep all unresolved FTQ parity and unreachable-line classifications separate from this qualified even-pointer witness.",
+      "scenario_detail": "Preserve a genuine pointer-zero source at the real successor block, allocate two negative TAGE providers, then train SC taken with TAGE held. Require provider counter2, real SC taken use and threshold qualification. In both cadences verify the actual S3 taken correction, physical pointer0-to530 wrap, pending state, all532 cells/132 folds, PHR-input target, retained public fields and input-UID fire/flush lineage. Pointer flag/public target/perf echo are absent, not synthesized. Full FTQ lifetime/parity remains unproved.",
      "adopted_gap_owner_review": "docs/bpu-gap-owner-functional-review-20261016.md",
      "evidence_limits": "必须区分S2与S3真实来源；同样的最终指针值不能单独证明正确纠正年龄。",
      "previous_coverage_not_new_proof": true
@@ -17550,7 +17556,8 @@
     "protection_boundary_scope": "docs/bpu-early-protection-boundaries-20261017.md和docs/bpu-short-protection-20261017.md证明NT长／短记录，docs/bpu-positive-protection-20261017.md证明T短记录四场景。T长记录先采用docs/bpu-long-positive-protection-20261017.md的分配初值、原长重访和失败计数要求；旧T短边界／单次长T奖励不授予通过，不替代原组件程序，完整FTQ仍另列。",
     "neutral_boundary_scope": "docs/bpu-neutral-recovery-contract.json：两个集成短来源语义闭环，独立阶段/来源配对而非bank/set遍历；不能用UT自由索引证据、同PC其他来源或准备指导替代，不预先认定515个低区原生缺口全由此造成。",
     "interior_entry_protection_scope": "docs/bpu-entry-protection-contract.json：两个块内入口分别证明原贡献奖励及原一致但错误后的惩罚。实际新路径原件拥有读取和匹配祖先，准确命名原S3、学习效果、下一实际状态和后续完整Main预测。不以方向计数改变代替usefulness变化，不授予错误后的短方向重访或长项持久消费者通过。",
-    "short_revisit_scope": "docs/bpu-short-revisit-contract.json：用原读取祖先消费错误短项伴随的新长T4，再用较老条件/后继两条路径接相同最近后继边，真实消费原短NT1。原读索引和匹配tag分别拥有祖先；两项都匹配时不关闭长表，准备不写内部状态；原分配实际确认、完整路径checkpoint及两个新消费者原子闭环，不外推全FTQ或全部物理副本。",
+     "short_revisit_scope": "docs/bpu-short-revisit-contract.json：用原读取祖先消费错误短项伴随的新长T4，再用较老条件/后继两条路径接相同最近后继边，真实消费原短NT1。原读索引和匹配tag分别拥有祖先；两项都匹配时不关闭长表，准备不写内部状态；原分配实际确认、完整路径checkpoint及两个新消费者原子闭环，不外推全FTQ或全部物理副本。",
+     "defaultconfig_transaction_adapter_scope": "当前5/9历史的entry/short-revisit及T短保护专属primer以Main-only合法fallback历史、5轮逐笔排空建立NT0，generic长来源程序不改。返回opposition同样按真实S1接受关闭年轻流，并在需要一致但错误的原件前显式建立NT base，不借S3搜索晚返回带来的额外学习。T短种子仍须正常分配T4/protection1及确切owner/下一实际确认；Main-taken的索引读祖先与fallback的tag checkpoint由现有RecoveryDriver并发恢复/ready保留，不等pulse cleanup后才开ready。short-revisit保留同原件NT1/T4效果与两个消费者；positive older路径由独立输入hash得到读历史160/96，旧合法160/352不冒领新长资格。公开DCE target/perf/flag不补造。这些声明不授予其他T长、中性恢复、原高索引程序或全FTQ通过，当前合同见docs/pipeline-transaction-contract.md。",
     "behavior_contract_refs": [
      "docs/functional-events.json#behavior_contracts/path-experience"
     ]

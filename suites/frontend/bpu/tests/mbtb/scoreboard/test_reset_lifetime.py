@@ -91,10 +91,12 @@ def test_checked_credit_requires_every_obligation_and_is_granted_once(profile):
 
 def prediction(branch=None, *, counter=2):
     entries = [MbtbEntry(0, 0, 0, 0, 0, 0) for _ in range(10)]
-    meta = [[dict(rawHit=0, position=0, counter_value=0) for _ in range(5)] for _ in range(2)]
+    meta = [[dict(rawHit=0, position=0, counter_value=0,
+        **({'attribute':dict(branchType=0,rasAction=0)} if way<4 else {})) for way in range(5)] for _ in range(2)]
     if branch is not None:
         entries[0] = MbtbEntry(1, int(counter >= 2), branch.target, branch.position, branch.kind, 0)
-        meta[0][0] = dict(rawHit=1, position=branch.position, counter_value=counter)
+        meta[0][0] = dict(rawHit=1, position=branch.position, counter_value=counter,
+            attribute=dict(branchType=branch.kind,rasAction=0))
     return MbtbPrediction(tuple(entries), meta)
 
 
@@ -115,7 +117,8 @@ def test_new_consumer_rejects_old_lifetime_and_corrupted_branch_fields(fault):
     result = prediction(branch)
     entries = list(result.entries)
     if fault == 'counter':
-        result.meta_entries[0][0]['counter_value'] = 0
+        meta=deepcopy(result.meta_entries);meta[0][0]['counter_value'] = 0
+        result=replace(result,meta_entries=meta)
     elif fault == 'missing':
         entries[0] = replace(entries[0], valid=0)
     elif fault == 'duplicate':

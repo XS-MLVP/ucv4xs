@@ -13,8 +13,7 @@ import pytest
 @pytest.mark.feature("ICACHE-METABANK-008")
 async def test_bist_port_reaches_the_tag_array(metabank_agent):
     agent = metabank_agent
-    await agent.wait_for(lambda: agent.write_ready() == 1,
-                         what="the macro reset sweep")
+    await agent.wait_ready()
     addr = 0x2D
     word = 0x1_2345_6789_ABCD_EF01 & ((1 << 138) - 1)
     ack, _ = await agent.bist_command(
@@ -35,8 +34,7 @@ async def test_bist_broadcast_selects_the_banks_macro(metabank_agent):
     explicit array select; the value is read back through the test port.
     """
     agent = metabank_agent
-    await agent.wait_for(lambda: agent.write_ready() == 1,
-                         what="the macro reset sweep")
+    await agent.wait_ready()
     addr = 0x11
     word = 0x0_1357_9BDF_2468_ACE0_1234_5678_9ABC & ((1 << 138) - 1)
     ack, _ = await agent.bist_command(
@@ -58,8 +56,7 @@ async def test_bist_broadcast_then_specific_select_clears_the_broadcast(metabank
     command would hit every array.
     """
     agent = metabank_agent
-    await agent.wait_for(lambda: agent.write_ready() == 1,
-                         what="the macro reset sweep")
+    await agent.wait_ready()
     ack, _ = await agent.bist_command(all_arrays=1, readen=0, writeen=1,
                                       be=0b11, addr=0x20, addr_rd=0x20,
                                       indata=0x1234)

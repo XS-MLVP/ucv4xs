@@ -22,3 +22,14 @@
 合法 fixture 可通过准入并到达目标状态；错误编码/未知键能在约定边界被发现。要求最终接受的用例在零接受时失败；允许拒绝的用例则验证拒绝条件和副作用，不机械要求接受。
 
 案例：[十二类踩坑 P01](../../docs/lessons/rtl-verification-soundness-20261026.md)。配套：[checker 与完成性](checker-and-runtime.md)。
+生产者合法域和叶子端口压力可使用显式不同入口，但后者不能豁免宽度/所有权/采样/oracle，
+也不能冒称CSR可达。反向还要保留合法边界对照，防止准入过严（例如最后一个trigger的chain
+位并非被CSR强制0），见[IFU触发器合同](../../suites/frontend/ifu/docs/transaction-adapters.md#producer与端口域压力不能混为一谈)。
+只检查size/mask的最大值并不能证明生产可达：non-taken长度也可能有完整fall-through的
+等式约束。应从实际选择该字段的producer分支逐项推导，并用合法历史和原端口压力对照；
+见[IFU生产者反证与carry模型修复](../../suites/frontend/ifu/docs/bugs/instr-boundary-carry-ftq-owner.md#后续生产者复核原可达性论证不充分)。
+该案例收紧了原可达性结论但保留旧FAIL；后续producer类型也不能把之前端口域的carry
+或fake reply晋升为完整生产历史，来源须随数据和身份跨事务传播。
+事务若同时携带原始字节和派生oracle描述，必须逐项绑定两者；不能仅校验字段各自位宽。
+应从实际待驱动字节独立步进起始、宽度、PC/身份及计数，再校验冗余描述；跨事务carry的
+低半还须绑定前一个实际输入UID。见[IFU输入描述对账](../../suites/frontend/ifu/docs/observation-coverage.md#3-完成性--账本)。

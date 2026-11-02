@@ -1,5 +1,10 @@
 # FrontendTrigger 忽略 tdata2 高 14 位（R-13）
 
+**2026-11-01适配复验**：已迁入严格不可变事务/独占Driver/沿前后双采样，完整64位输入
+和独立比较不变；两条反例仍为FAIL，现可在第一笔配置更新沿后立即检出。最终完整IFU
+为387 PASS/5 FAIL/1 UNCERTAIN（其中另3 FAIL是新R-14），native seed2定向同样保留这
+两条FAIL。下文历史收据不改写，最新证据见[活动事务合同](../transaction-adapters.md)。
+
 ## 现象
 
 `tdata2` 由 CSR 以 `Tdata2Bundle.ALL = RW(63,0)` 暴露为 64 位可写字段，但

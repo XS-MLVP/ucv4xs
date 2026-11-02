@@ -24,6 +24,7 @@ def prediction(program, stage, owner):
                             attribute=dict(branchType=kind, rasAction=action))
     for slot, hit in enumerate(program.raw_hits(stage, owner)):
         meta[slot//5][slot%5]["rawHit"] = hit
+    for row in meta:row[4].pop('attribute')
     return MbtbPrediction(tuple(entries), meta)
 
 
@@ -95,13 +96,14 @@ def test_two_new_hits_are_insufficient_when_a_complete_branch_field_is_wrong(fau
     c = checker(); p = c.program; owner = p.sequence[0]
     result = prediction(p, 'pair', owner); entries = list(result.entries)
     way = next(i for i, e in enumerate(entries) if e.valid)
-    if fault == 'counter': result.meta_entries[way//5][way%5]['counter_value'] = 1
+    meta=deepcopy(result.meta_entries)
+    if fault == 'counter': meta[way//5][way%5]['counter_value'] = 1
     elif fault == 'way': entries[(way//5)*5+(way%5+1)%4], entries[way] = entries[way], entries[(way//5)*5+(way%5+1)%4]
     elif fault == 'lost-entry': entries[way] = replace(entries[way], valid=0)
     else:
         attribute = dict(kind='branch_type', action='ras_action').get(fault, fault)
         entries[way] = replace(entries[way], **{attribute: getattr(entries[way], attribute) ^ 1})
-    result = replace(result, entries=tuple(entries))
+    result = replace(result, entries=tuple(entries),meta_entries=meta)
     before = deepcopy(p.state())
     with pytest.raises(ScoreboardMismatch) as error:
         c.response('pair', owner, transfer(p, owner), result)
@@ -112,7 +114,8 @@ def test_two_new_hits_are_insufficient_when_a_complete_branch_field_is_wrong(fau
 @pytest.mark.parametrize('stage,owner', (('pair', 'old-a'), ('target-probe', 'new-a'), ('neighbor-probe', 'neighbor-b')))
 def test_evicted_identity_cannot_keep_a_visible_or_filtered_raw_hit(stage, owner):
     c = checker(); p = c.program; result = prediction(p, stage, owner)
-    result.meta_entries[0][0]['rawHit'] = 1
+    meta=deepcopy(result.meta_entries);meta[0][0]['rawHit'] = 1
+    result=replace(result,meta_entries=meta)
     with pytest.raises(ScoreboardMismatch): c.response(stage, owner, transfer(p, owner), result)
 
 
@@ -125,7 +128,9 @@ def test_source_capture_requires_two_distinct_owned_completed_overlapping_cold_q
     elif fault == 'no-overlap': ts[1].accepted_event.tick = ts[0].completed_event.tick
     elif fault == 'unfinished': ts[1].state = TransferState.PENDING
     elif fault == 'missing-result': results = results[:1]
-    else: results[1].meta_entries[0][0]['rawHit'] = 1
+    else:
+        meta=deepcopy(results[1].meta_entries);meta[0][0]['rawHit']=1
+        results=(results[0],replace(results[1],meta_entries=meta))
     with pytest.raises(ScoreboardMismatch): c.sources(tuple(ts), results)
     assert 'original-overlapping-cold-sources' not in c.completed and c.coverage.groups['checked'].coverage == 0
 
@@ -149,7 +154,11 @@ def test_incomplete_or_mutated_program_cannot_receive_checked_credit(fault):
     with pytest.raises(ScoreboardMismatch):
         if fault == 'old-consumer': c.response('pair', owner, transfer(p, owner, 100), result, after=100)
         elif fault == 'modified-snapshot':
-            result.meta_entries[0][1]['counter_value'] ^= 1
+            # Normal callers cannot mutate a captured result. Deliberately
+            # bypass the frozen dataclass only in this checker corruption test.
+            with pytest.raises(TypeError):result.meta_entries[0][1]['counter_value'] ^= 1
+            meta=deepcopy(result.meta_entries);meta[0][1]['counter_value']^=1
+            object.__setattr__(result,'meta_entries',replace(result,meta_entries=meta).meta_entries)
             c.finish()
         else: c.finish()
     assert c.coverage.groups['checked'].coverage == 0
@@ -158,8 +167,9 @@ def test_incomplete_or_mutated_program_cannot_receive_checked_credit(fault):
 def test_public_feedback_comparison_preserves_both_windows_all_source_fields_and_all_branch_fields():
     p = FullCapacityProgram('forward'); result = prediction(p, 'pair', 'new-a')
     tx = MbtbBatchTraining(p.branches['new-a'].pc, result.meta_entries, (MbtbBranchFeedback(0x40009000, 1, 1, 1, 0, 1),))
-    sources = tuple(tuple(Source(bool(s['rawHit']), s['position'], s['attribute']['branchType'],
-        s['attribute']['rasAction'], s['counter_value']) for s in row) for row in result.meta_entries)
+    sources = tuple(tuple(Source(bool(s['rawHit']), s['position'],
+        s['attribute']['branchType'] if way<4 else 0,s['attribute']['rasAction'] if way<4 else 0,
+        s['counter_value']) for way,s in enumerate(row)) for row in result.meta_entries)
     pcs = (tx.pc, (tx.pc // 16 + 1) * 16)
     fb = Feedback(pcs, sources, (Branch(0x40009000, True, 1, 1, 0, True),))
     assert planned_payload(tx) == observed_payload(fb)

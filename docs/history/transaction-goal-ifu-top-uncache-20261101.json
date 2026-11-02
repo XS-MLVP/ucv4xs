@@ -1,0 +1,153 @@
+{
+  "schema": 1,
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "module": "ifu/ifu-uncached-composition-and-producer-review",
+  "status": "implemented and verified integration checkpoint; top-level final semantic audit and all other goal phases remain mandatory",
+  "artifact_base": "suites/frontend/ifu",
+  "baseline": "results/ucv-goal-ifu-top-cached-integrated-20261101",
+  "frozen_before": "results/ucv-goal-ifu-top-uncache-before-20261101",
+  "implementation": {
+    "original_fetch_bodies": 49,
+    "newly_migrated_uncached_bodies": 9,
+    "both_guard_cases_migrated": true,
+    "all_original_cases_retained": true,
+    "legacy_pin_helpers_and_raw_fixture_removed_after_callers_migrated": true,
+    "same_single_driver_and_two_continuous_lossless_monitors": true,
+    "ports": {"nonclock_inputs": 80, "outputs": 405},
+    "protocol_oracle": "Unmodified independent model/uncache.py::UncacheModel, composed with input-established stage history and independent byte-stream/ISA answers; no internal DUT signals or data-derived reply UID.",
+    "ledger": "Input offer/fire/cancelled-on-fire/pending/completed/cancelled/resend, child acceptance, actual bus issue, explicit reply UID, one enqueue/redirect and per-event accounting. Reset/flush preserve cancelled history. Live s1/s2/writeback FTQ identities cannot be reused. Finish does not supply replies/flush/reset.",
+    "provenance": "FetchRequest is strict port characterization; ProducerFetchRequest adds audited DefaultConfig FTQ/ICache field relationships. Peer source is separate and propagated through carry along with input source; neither can be promoted by a producer-typed continuation.",
+    "limitations": "Producer field admission is not integrated BPU training/PNR/translation/commit proof. Tagless replies require actual peer filtering across a new waiting generation. Performance telemetry is sampled but has no new independent per-event comparison credit."
+  },
+  "delta": {
+    "before_cases": 575,
+    "after_cases": 643,
+    "removed": [],
+    "changed_verdicts": {},
+    "added": 68,
+    "added_functional": 19,
+    "added_selftests": 49,
+    "all_added": "PASS",
+    "full_per_case_delta": "results/ucv-goal-ifu-top-uncache-integrated-20261101/audit.json"
+  },
+  "runs": [
+    {
+      "output": "results/ucv-goal-ifu-top-uncache-integrated-20261101",
+      "counts": {"PASS": 637, "FAIL": 5, "UNCERTAIN": 1},
+      "seed": 1,
+      "workers": 4,
+      "source_sha256": "3455e1c15d9a80f569a3bc3645546ce7c732a35d487d4acea9e3a25f0edb95d7",
+      "source_stable_and_current_at_audit": true,
+      "run_sha256": "3e512056825a8aa3e8841392268da2701d148e01ce2dd5c51ae9bffc66f348ae",
+      "summary_sha256": "46d3d19b0874c0dd72af9390784b8e1fbdf8968a9c491af56e2d396845761d16",
+      "manifest_sha256": "c61d25b89abd6e2616df4fdc941e032ce990b3e13374c94875e121f199fbe922",
+      "manifest_state": "committed",
+      "coverage_complete": true,
+      "hardware_verdict": "FAIL",
+      "migration_acceptance": "NOT_CERTIFIED"
+    },
+    {
+      "output": "results/ucv-goal-ifu-top-uncache-seed2-20261101",
+      "counts": {"PASS": 196, "FAIL": 1, "UNCERTAIN": 1},
+      "seed": 2,
+      "workers": 1,
+      "source_sha256": "3455e1c15d9a80f569a3bc3645546ce7c732a35d487d4acea9e3a25f0edb95d7",
+      "source_stable_and_current_at_audit": true,
+      "run_sha256": "83a2954cd2adb638bdae04bec2c4aee2b0b56fa8de7473f3954a4e26005bc5d4",
+      "summary_sha256": "5021a07bb2dcb9dcbd04811752b004ca59bdc1ed62474cd14049af2aa036c161",
+      "manifest_sha256": "49d5e452b7d3d4ea098bd5eb6e452e59fff107d7a4f379e106b9760666e3da97",
+      "note": "All top functional cases plus cached/uncached/producer-domain selftests and existing checker/pruned controls; sole FAIL is retained R-14 port-domain ownership case."
+    }
+  ],
+  "requirements_to_evidence": [
+    {
+      "requirement": "All original uncached functional callers must use semantic transactions, not helpers moved elsewhere",
+      "artifacts": ["tests/ifu/test_ifu_fetch.py", "tests/ifu/test_ifu_guard_handoff.py", "fixtures.py", "ifu/agent.py", "ifu/types.py"],
+      "evidence": "9 previously raw bodies and the uncached guard now use send_uncached/reply/collect/read_uncached. All49 original names preserved; old helper functions and raw fixture are absent. Strict layout audit finds0 IFU native/pin/signal feature leaks without new exemptions."
+    },
+    {
+      "requirement": "Explicit issued UID, peer constraints and full-channel sampling including tails",
+      "artifacts": ["ifu/agent.py", "ifu/checker.py", "tests/framework/test_ifu_uncache_agent.py"],
+      "evidence": "Normal read observes child acceptance<bus issue<reply<beat ticks. Both phase monitors reject missing/repeated bus/beat/redirect, wrong bus payload, wrong ISA expected word, old/unknown/early/boolean/duplicate reply IDs and ambiguous cancelled UID while a new read waits. Same legal call chain is used by controls; injections are Python-only, not hardware mutations."
+    },
+    {
+      "requirement": "Peer-valid reads and bounded non-automatic completion/cancellation/carry",
+      "artifacts": ["tests/ifu/test_ifu_uncache_transactions.py", "tests/framework/test_ifu_uncache_agent.py", "ifu/agent.py"],
+      "evidence": "Five legal memory types, byte-address upper bit, clean/HWE/AF priority, real page-final resend to noncontiguous physical page, bus backpressure, actual older-instruction drain, cancelled/late/new generation and cached-to-uncached carry pass. Unfinished accepted/send/wait-response work, no issue/no reply, incomplete resend and swallowed comparison failures cannot finish cleanly."
+    },
+    {
+      "requirement": "Production domain cannot be inferred from plausible payload or only a size upper bound",
+      "artifacts": ["ifu/types.py", "tests/ifu/test_ifu_producer_transactions.py", "tests/framework/test_ifu_producer_domain.py", "docs/bugs/instr-boundary-carry-ftq-owner.md"],
+      "evidence": "ProducerFetchRequest checks full non-taken fall-through, taken extent, page clamp, same-page dual fetch, successor FTQ with flag wrap, translated offset, reserved PBMT and backend/satp conflict. Boundary legal controls and explicit rejections pass; generic port requests retain port provenance through carry."
+    }
+  ],
+  "R14_production_claim_correction": {
+    "supersedes_claim_not_historical_verdicts": [
+      "docs/history/transaction-goal-instr-boundary-20261101.json",
+      "docs/history/transaction-goal-ifu-top-cached-20261101.json"
+    ],
+    "source_basis": "Bpu.scala325-329/367 chooses FallThroughPredictor for non-taken; FallThroughPredictor.scala64-95 defines min(align32(start)+64,nextPage); FtqFetchReq.size=(endPosition+1)-start[4:1].",
+    "old_gap": "Original R-14 first window block1 and resumed block0 were one-halfword non-taken blocks: within an upper bound but shorter than the actual fall-through extent. Their full-producer reachability was not established.",
+    "native_diagnostic": "results/ucv-goal-ifu-top-uncache-ledger-20261101/producer-carry-diagnostic.json",
+    "native_diagnostic_result": "With first sizes1/17 taken1/0 and resume1/3 taken1/1, rs1=0 and6 both preserve FTQ(0,32) and redirect to0x1040; no same production defect demonstrated.",
+    "current_agent_controls": "tests/ifu/test_ifu_producer_transactions.py::test_real_ftq_extent_and_taken_carry_completion_keep_block_zero_identity (both variants PASS)",
+    "retained_results": "All3 existing R-14 FAILs remain FAIL as port-contract counterexamples, R-13 two FAILs and R-09 UNCERTAIN remain. No deleted node, enlarged XFAIL, changed old byte stream or wrong FTQ oracle. Same R-14 error is not currently proven producer-reachable."
+  },
+  "carry_oracle_repair": {
+    "file": "model/fetch.py::build_window",
+    "reason": "A fully assembled prior instruction inherits a taken prediction at its completing block0 slot0 and ISA attributes from its complete saved word, not hardcoded pred_taken0/NONE.",
+    "normalized_ast_before": "9ee309c7ed23e21b9571564758094422ac35e52efee14cbe844a1b3401557b0a",
+    "normalized_ast_after": "9c5b807c2b297192b713c4820ca68cb5944fe9ab74f0619887c269bda764d4bd",
+    "aligned_lanes_ast_unchanged": "4c44c49718f4413973b0c837d9396429e2353275219ce4376b8d42ce322c3771",
+    "branch_info_ast_unchanged": "14d9954b68724200834dad2c3e10a93d8f09454073ea9199a961a25a5a4553b7",
+    "controls": "Native strict-producer recovery passes; freezing old missing-prediction answer on the same observed Enqueue fails. Pure ADDI/conditional/return carry checks establish full-word attributes independently of DUT outputs."
+  },
+  "planned_stimulus_differentials": {
+    "uncached": {
+      "tool": "tools/audit_top_uncache_stimulus.py",
+      "artifact": "results/ucv-goal-ifu-top-uncache-integrated-20261101/uncached-planned-stimulus.json",
+      "case_bodies": 9,
+      "requests_including_cached_prehistories": 53,
+      "peer_replies": 18,
+      "equal": true,
+      "normalization": "Only raw Window.paddr0 -> explicit physical byte address <<1; all other windows and four reply fields/order identical."
+    },
+    "cached": {
+      "tool": "tools/audit_cached_stimulus.py",
+      "artifact": "results/ucv-goal-ifu-top-uncache-integrated-20261101/cached-planned-stimulus.json",
+      "case_bodies": 40,
+      "variants": 41,
+      "planned_windows": 373,
+      "equal_except_prior_explicit_flag2_3_normalization": true
+    },
+    "scope_limit": "Pure scenario generation using model-backed stand-ins, NOT native pin/cycle traces, acceptance or checker-independence evidence. Four cached manual bodies stop at their first runtime operation; actual managed regressions/negative controls separately cover timing."
+  },
+  "native": {
+    "all7_cache_build_receipts_match_previous": true,
+    "all7_manifest_build_ids_and42_actual_native_inputs_match_previous": true,
+    "RTL_or_native_rebuilt": false,
+    "details": "results/ucv-goal-ifu-top-uncache-integrated-20261101/audit.json"
+  },
+  "collection": {
+    "output": "results/ucv-goal-collect-ifu-top-uncache-20261101",
+    "audit": "results/ucv-goal-collect-ifu-top-uncache-20261101/audit.json",
+    "total": 46379,
+    "initial_total": 45883,
+    "previous_total": 46311,
+    "all10_collection_tasks_exit0": true,
+    "all_initial_and_previous_node_order_preserved": true,
+    "aggregate_exit_note": "ucv exit1 preserves IFU open blocking residuals, not collection failure"
+  },
+  "checks": {
+    "root_tests": "126 PASS",
+    "layout": "IFU0 feature pin/signal/native leaks; strict repository transaction gate remains exit1 for other5 unadapted suites",
+    "skill_and_framework": "PASS",
+    "tracked_assets": "PASS10 suites/132 DUT",
+    "artifact_boundary": "committed manifest and coverage_complete are delivery completeness, not functional/production/coverage sign-off"
+  },
+  "remaining_mandatory_work": [
+    "Complete top-level semantic final audit, including consistency of submitted derived instruction metadata with driven raw bytes; do not close ifu-adapters merely because all callers migrated or static leaks became zero.",
+    "13 performance outputs have strict binding and immutable sampling but no independent per-event comparison credit; document the telemetry boundary separately from functional completeness.",
+    "Audit BPU/FTQ/ICache configuration/lifecycle and all MemBlock/VAGQ remaining adaptation; final repository gates/regressions/current wheel/assets/evidence audit remain mandatory."
+  ]
+}

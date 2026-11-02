@@ -1,0 +1,121 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "state": "production-disposition-index-and-primary-diagnostics-verified-collaboration-handoff",
+  "requirements": [
+    {"id": "effective-result-versus-protocol-terminal", "implementation": "MbtbLookupDisposition and MbtbPredictionScoreboard; SDK retains association and handle lifecycle", "evidence": "Accepted reset and S0/S1 disable return an exact UID/epoch/reason terminal, response_tick=None. A result already produced before reset/disable remains a genuine prediction. Disabled S0 has disabled-filtered rather than a fabricated response."},
+    {"id": "actual-comparison-delivery", "implementation": "LookupInput.sample_tick and delivery_tick are separate; only a successful domain Scoreboard comparison records delivery", "evidence": "Bypassing check makes SDK COMPLETED but strict finish fails. lookup_deliveries separates effective responses, checked SDK results and non-response terminals. Input-only samples are not invented SDK handles."},
+    {"id": "custom-expected-not-a-waiver", "implementation": "Domain check validates mandatory terminal identity or checks the exact accepted SDK snapshot with the independent model before the custom predicate", "evidence": "Wrong terminal UID/reason, replacing a terminal by stale preview, and corrupting a SDK snapshot despite correct raw native output all fail; valid callbacks run only for effective responses."},
+    {"id": "bounded-control-failure", "implementation": "Reset wait wakes on actual protocol failure and observes/propagates it through public Scoreboard.drain", "evidence": "Wrong-terminal controls await reset directly, receive the identical failure as the original handle within32ticks, and do not continue to monitor overflow, cancel a reset waiter to hide it or edit SDK private counters."},
+    {"id": "indexed-clock-work", "implementation": "_due by exact tick, _awaiting_result active UID set and _result_uids/_disposition_uids source indices; training tracks current accepted UIDs", "evidence": "Completed lookup/training history and metadata catalog are retained; no history deletion. Pure controls reject history scans at idle output/reset and require indexed old-source lookup. Missing output boundaries and reset of current work remain distinguishing checks."}
+  ],
+  "long_run_interruption": {
+    "output": "results/ucv-goal-mbtb-lookup-source-integrated-v3-20261102",
+    "source_sha256": "08a1a07950f8b1287ef15c5ecd9203c73db8c81e8615886101a263735df8775d",
+    "record": "results/ucv-goal-mbtb-lookup-source-interruption-v3-20261102.json",
+    "actual": "After40min, final native shadow matrix remained active and used CPU; its cwd identified test_captured_cold_rewrites_keep_original_shadow_owner_during_replacement. Full collection was waiting for the run lock. Only the identified session-owned process group1234820 was sentSIGINT after exact command/group/source checks.",
+    "result": "bpu-mbtb ERROR/exit130, parent KeyboardInterrupt. Final root run.json isERROR and does retain completed_at plus matching source_after=08a1a... from its finally block, but only the purePASS task is recorded, no full summary exists and native manifest remains the uncommitted state=running. That stale manifest is not an active-process claim. Partial source/receipts/failures retained, no final hardware/coverage completeness credit.",
+    "probe_red": "results/ucv-goal-mbtb-lookup-history-red-recovered-20261102.json",
+    "guard_red": "results/ucv-goal-mbtb-lookup-index-red-20261102.xml:2 FAIL/1 PASS. Idle-output and reset explicitly traversed completed history; source control initially permitted getters and passed but the work counter showed its full scan.",
+    "probe_red_counts": "200 idle edges with1000/16000 completed rows visited400000/6400000 old rows; each reset visited1000/16000.",
+    "green": "results/ucv-goal-mbtb-lookup-history-green-v1-20261102.json:both sizes perform0 old-history visits and0 reset-history visits, command exit0. Timing roughly0.00066s per200 synthetic idle edges is diagnostic only, not native performance/functional credit.",
+    "probe_artifact_correction": "A green rerun accidentally reused the original probe's hardcoded red JSON destination before failing its old-red assertion. That old JSON is not usable as a red raw artifact. The contemporaneous original shell stdout was retained and recovered verbatim with its sha256 in the red-recovered record; no rerun/fabricated old data. Probe now requires a new output argument and refuses overwrite. The accidental green/red-assertion exit1 is retained in shell output."
+  },
+  "production_directed": {
+    "output": "results/ucv-goal-mbtb-disposition-index-v1-20261102",
+    "source_sha256": "ff41f114111ddddc08d02ca672d8d4e6393003a06a6be0dabc53c4f73da767a0",
+    "counts": {"PASS": 2737, "FAIL": 5},
+    "native": {"PASS": 75, "FAIL": 5},
+    "pure": {"PASS": 2662},
+    "native_inputs": 80,
+    "build_files_checked": 6,
+    "audit": "results/ucv-goal-mbtb-disposition-index-audit-v1-20261102.json",
+    "source_stable_and_files_matched_at_audit": true,
+    "artifacts_build_and_processor_hashes_checked": true,
+    "builds_unchanged": true,
+    "removed": [],
+    "old_selected_verdict_changes": {},
+    "new_selftest_PASS_from_training_v4_selection": 73,
+    "retained_FAIL": "Two shared-service old-miss, foreign-tag same-position counter, joint zero-tag/position cleanup and old-cold second-depth counter. Four full-capacity nativeFAIL were not selected and are not assumed resolved. No added XFAIL.",
+    "earlier_direct_pytest_attempt": "results/ucv-goal-mbtb-disposition-index-pure-v1-20261102.xml:2661 PASS/1 FAIL/1 ERROR. --noconftest at repository cwd lacked native mbtb_agent for a native pipeline test inside scoreboard/ and broke a legacy cwd-relative AST read. Not implementation/RTL failures; normal ucv partitioned run above executes both correctly."
+  },
+  "collection_before_these_production_changes": {
+    "output": "results/ucv-goal-collect-mbtb-lookup-source-v3-20261102",
+    "audit": "results/ucv-goal-collect-mbtb-lookup-source-audit-v3-20261102.json",
+    "total": 48809,
+    "source_sha256": "0078a318118c00ea641132e2c62f1b6f0d0984593b6d1b91c21c5d79e6b7a880",
+    "all_ten_tasks_exit0": true,
+    "source_stable_and_matches_at_audit": true,
+    "initial45883_and_previous48673_retained_in_relative_order": true,
+    "new_since48673": {"bpu": 101, "icache": 35},
+    "boundary": "Collect-only, not hardware PASS or unified public hardware acceptance. This total predates the later disposition/index/reset controls; no new post-change total is invented."
+  },
+  "production_full": {
+    "output": "results/ucv-goal-mbtb-disposition-index-integrated-v2-20261102",
+    "source_sha256": "ff41f114111ddddc08d02ca672d8d4e6393003a06a6be0dabc53c4f73da767a0",
+    "counts": {"PASS": 2853, "FAIL": 9},
+    "native": {"PASS": 159, "FAIL": 9},
+    "pure": {"PASS": 2694},
+    "audit": "results/ucv-goal-mbtb-disposition-index-integrated-audit-v2-20261102.json",
+    "native_inputs": 168,
+    "build_files_checked": 6,
+    "source_stable_and_current_files_matched_at_audit": true,
+    "artifact_and_build_and_processor_hashes_match": true,
+    "native_builds_unchanged": true,
+    "manifests_committed_coverage_complete_cleanup_complete": true,
+    "old_nodeids_and_per_partition_relative_order_retained": true,
+    "old_verdict_changes": {},
+    "new_PASS": 73,
+    "diagnostic_limit": "Matching nine FAIL verdicts was not sufficient audit. Seven cases report a new missing lookup sample witness after the independent semantic checker had already failed and stopped further bookkeeping; two shared-service cases retain their direct write comparison. The consequent witness error must not mask the primary semantic error. No claim that all nine current diagnostics are already correctly attributed; followup below is required.",
+    "native_duration_seconds": 1709.98,
+    "coverage_boundary": "Complete artifact receipts, not functional/RTL coverage closure. Raw coverage inputs were cleaned by the runner and are not claimed available."
+  },
+  "same_source_seed1": {
+    "output": "results/ucv-goal-mbtb-disposition-index-seed1-v2-20261102",
+    "counts": {"PASS": 124},
+    "native": {"PASS": 55},
+    "pure": {"PASS": 69},
+    "source_sha256": "ff41f114111ddddc08d02ca672d8d4e6393003a06a6be0dabc53c4f73da767a0",
+    "audit": "results/ucv-goal-mbtb-disposition-index-seed1-audit-v2-20261102.json",
+    "verified": "Source stable/files matched at audit,55 native inputs/6 build files plus all artifact/processor hashes; native builds unchanged, no selected verdict changes or removed old nodeid. Explicit selection CLI order differs from full-suite order and is not claimed an ordered full-collection comparison."
+  },
+  "primary_failure_followup": {
+    "red": "results/ucv-goal-mbtb-original-failure-red-20261102.xml:1 FAIL/10 deselected. Failure identity assertion proved a new consequent ScoreboardMismatch replaced the original semantic AssertionError, not a setup or RTL red.",
+    "fix": "MbtbPredictionScoreboard.check first calls the public reference.raise_failure before demanding later sample/delivery bookkeeping. A real prior semantic failure propagates as the same object; when no prior error exists all mandatory identity/terminal/comparison witnesses remain enforced.",
+    "pure_green": "results/ucv-goal-mbtb-original-failure-green-20261102.xml:11 PASS. Direct --noconftest configuration gives two known feature-option warnings, not suppressed comparisons or native functional credit.",
+    "current_source_sha256": "606640f86555fe7a05f83c5399f10a85cb3ccb08107c75657189ab592fd9f399",
+    "current_frozen_files": 2499,
+    "full": {
+      "output": "results/ucv-goal-mbtb-primary-error-integrated-v3-20261102",
+      "counts": {"PASS": 2854, "FAIL": 9},
+      "native": {"PASS": 159, "FAIL": 9},
+      "pure": {"PASS": 2695},
+      "native_inputs": 168,
+      "build_files_checked": 6,
+      "audit": "results/ucv-goal-mbtb-primary-error-integrated-audit-v3-20261102.json",
+      "run_sha256": "57e9559d4be58831244394c1199de176b9a9ccbe581e96b4d0c9840d02c28ac5",
+      "summary_sha256": "82473ee33bfdf31a9baebd4b3fd1dc1bd375915773c55b5a73e115d369caec33",
+      "old_cases_and_verdicts_retained": true,
+      "new_selftest_PASS": 1
+    },
+    "same_source_seed1": {
+      "output": "results/ucv-goal-mbtb-primary-error-seed1-v3-20261102",
+      "counts": {"PASS": 136, "FAIL": 9},
+      "native": {"PASS": 66, "FAIL": 9},
+      "pure": {"PASS": 70},
+      "native_inputs": 75,
+      "build_files_checked": 6,
+      "audit": "results/ucv-goal-mbtb-primary-error-seed1-audit-v3-20261102.json"
+    },
+    "verified": "Both runs have stable source_after=606640..., all2499recorded files matched at audit, committed manifests/coverage_complete/cleanup_complete, artifact/build/processor hashes checked and native builds unchanged. Nine FAIL nodeids are identical. Actual log diagnostics are7mbtb.semantic-reference and2mbtb.shared-service-no-loss, so no consequent missing-sample error is credited as a correct primary diagnostic merely from matching counts.",
+    "diagnostics_audit": "results/ucv-collaboration-checkpoint-mbtb-diagnostics-20261102.json"
+  },
+  "pending_current_full": null,
+  "source_freeze": "The full and seed1 runs have completed and were audited. No active MainBTB job or continuing source freeze remains for these runs.",
+  "limits": [
+    "Typed preview is not verified metadata ancestry, and SDK completed includes protocol terminal delivery. The independent actual response and delivery witnesses must remain distinct.",
+    "Stage/control ownership, remaining MainBTB API/scheduler interleavings and all other BPU DUTs still require review. This is not MainBTB/BPU/all-goal signoff.",
+    "The primary-error full result and same-source second-seed selection are verified, not a full BPU/all-goal signoff. Further MainBTB API/scheduler combinations and all other BPU DUTs remain open. Native manifests and coverage artifact integrity are not coverage closure; user requested a collaboration checkpoint rather than completing the full goal."
+  ]
+}

@@ -6,7 +6,8 @@
 - DUT：`ResolveQueue`、`CommitQueue`、`Ftq`（`Ftq` 真实实例化前两者）。
 - 不在本工程内：`EntryQueue`、`CfiQueue`、`MetaQueue`、`SpeculationQueue` 当前未被 `Ftq`
   实例化，不纳入 DUT 闭包。
-- 单位/地址：50 位虚拟地址；32B cache line；64B fetch block；FTQ 64 项；ResolveQueue 16 项、
+- 单位/地址：50-bit字节VAddr、51-bit字节GuardedVAddr；公开`Pc.addr`为49-bit半字，
+  `GuardedPc.addr`为50-bit半字（含guard）。64B cache line、64B fetch block、32B half-align；FTQ 64 项；ResolveQueue 16 项、
   保留 4；CommitQueue 64 项、保留 8；PrefetchDepth 32；BpTrainStallLimit 8；
   `ResolveEntryBranchNumber=8`；DefaultConfig 的 `NumBtbResultEntries=10`。
 
@@ -23,13 +24,13 @@
 | RQ-007 重定向冲刷 | `backendRedirect` 合同 | 只冲刷比新指针更年轻的 entry | 训练序列中不再出现被冲刷条目 | BPU 训练 | 已执行 |
 | RQ-008 BPU 新入队冲突 | `bpuEnqueue` 合同 | 同 `value` 的旧推测失效，可重新建立 | 训练序列与重新入队 | BPU 训练 | 已执行 |
 | RQ-009 保留区 | `ResolveQueueSize-4` | 12 条后可排空，新条目丢弃且不污染已接纳序列 | 队列训练序列 | BPU 训练 | 已执行 |
-| RQ-010 复位 | 同步复位合同 | 丢弃所有未完成所有权 | `bpuTrain.valid=0`，之后可重新接纳 | BPU 训练 | 已执行 |
+| RQ-010 复位 | 当前导出闭包异步复位合同 | 丢弃所有未完成所有权，第一受检reset阶段已无队首 | `bpuTrain.valid=0`，之后可重新接纳 | BPU 训练 | 已执行 |
 | RQ-011 超容量丢弃 | 本表 RQ-002 + 10 位置 BPU meta | 第 9 条/同拍超量不得改写已记录分支 | 8 个槽的既有 payload | BPU 训练 | **真实 RTL 缺陷，strict XFAIL**，见 `bugs/resolve-queue-branch-overflow.md` |
 | CQ-001 只接纳 RAS 动作 | `BranchAttribute.RasAction` | `None` 不占槽，Pop/Push/PopAndPush 进入 | `bpuTrain.valid` | BPU commit 训练 | 已执行 |
 | CQ-002 多 lane 保序 | CommitWidth=8 | 同拍有效 lane 按程序顺序入队，队首 FIFO 输出 | `bpuTrain.bits` | BPU commit 训练 | 已执行 |
 | CQ-003 同拍入/出队 | FIFO 合同 | 新条目排队尾，队首不被旁路/覆盖 | 队首序列 | BPU commit 训练 | 已执行 |
 | CQ-004 保留区 | `CommitQueueSize-8` | 到门限后整组拒绝，排空后恢复 | 无覆盖、FIFO 不丢 | BPU commit 训练 | 已执行 |
-| CQ-005 复位 | 同步复位合同 | 清空所有排队动作 | `bpuTrain.valid=0` | BPU commit 训练 | 已执行 |
+| CQ-005 复位 | 当前导出闭包异步复位合同 | 清空所有排队动作，第一受检reset阶段已无队首 | `bpuTrain.valid=0` | BPU commit 训练 | 已执行 |
 | TOP-001 复位空闲 | `Ftq.scala` | 五个所有权指针归零，所有输出空闲 | `bpu/pf/fetch/commit/pnr`，输出 valid | ICache/IFU/BPU/后端 | 已执行 |
 | TOP-002 预测准入 | BPU prediction 合同 | `ready` 时接纳一个 entry，写回后端 PC | `toBackend.wen/startPc`，entryQueue | ICache/后端 | 已执行 |
 | TOP-003 三类背压 | FTQ 满、PrefetchDepth、训练 stall | 三个条件独立关闭 `prediction.ready`，释放后恢复 | `prediction.ready`，topdown reasons | BPU | 已执行 |
@@ -51,17 +52,26 @@
 
 ## 合法输入域与生产者约束
 
-- BPU prediction：只在 `prediction.ready=1` 时由生产者提交；`startPc` 50 位、`endPosition` 0..31、
-  override 指针与 `s2FtqPtr/s3FtqPtr` 同源。测试中的 `allocate()` 按该握手逐条接纳，并在
+- BPU prediction：普通预测按`valid && ready`接纳；s2/s3 override可忽略ready，但生效写入
+  仍受redirect优先级门控。`startPc`是50-bit半字GuardedPc.addr、`endPosition` 0..31，
+  override指针必须显式提供并与` s2FtqPtr/s3FtqPtr`同源。测试中的 `allocate()` 按普通握手逐条接纳，并在
   需要 32 条以上时打开 ICache 消费者以保持 PrefetchDepth。
 - BPU meta：只对已接纳 entry 写；`pnr ≤ bpu` 由外部不变量监视器每拍检查。测试不再对未预测的
   索引单独写 meta。
-- 后端 resolve：`branchType` 0..3、`rasAction` 0..3、offset 0..31；正确 direct/return 被消费
-  方过滤。FTQ 顶层测试先用 `allocate()` 建立 entry，再送对应索引的 resolve。
+- 后端 resolve：`branchType` 0..3、`rasAction` 0..3、offset 0..31；pc/target为49-bit半字
+  `Pc.addr`；正确direct/return被消费方过滤。生产者路径应先分配对应entry；旧顶层
+  `test_resolve_at_the_training_head_delays_its_own_dequeue`没有先分配，是明确端口/队首时序
+  压力，不能把全部旧测试一概说成完整producer可达，也不删除该原断言。
 - 重定向：`level` 0/1，`offset` 0..31，`ftqIdx` 0..63；异常最多一个（IPF/GPF/AF 互斥）。
+  pc为50-bit字节，target为51-bit guarded字节。redirect取消后若重新写meta，必须先由
+  新prediction建立新所有权；不能让新PNR越过仍回卷的bpuPtr。
 - commit：退休指针单调；测试覆盖重复指针追赶和跨 lap。
 - 越域压力不冒充功能反例：构建器在写入原生 pin 前拒绝非法编码；对未定义 payload（无效分支槽）
   不比较数据，只比较 valid 和有效槽字段。
+
+以上“已执行”列仍指原功能点的检查，不证明当前全事务迁移完成。固定全ABI、整槽输入
+及已完成leaf协议的证据和顶层剩余UID/完成/取消/收尾义务，以
+[事务迁移复核](transaction-adaptation.md)为准；完整采样不等于每字段已独立比较。
 
 ## 观察点与边界缺口
 

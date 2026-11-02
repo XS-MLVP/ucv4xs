@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import pytest
 
-from suites.frontend.ifu.case_loader import load_case_module
 from suites.frontend.ifu.model.boundary import BoundaryInput
 from suites.frontend.ifu.model.boundary import SLOTS
 from suites.frontend.ifu.model.boundary import predict
@@ -28,15 +27,22 @@ LANES = 36
 
 
 @pytest.mark.feature("IFU-ENV-001")
-def test_harness_refuses_to_treat_a_real_port_as_pruned(instr_boundary):
-    with pytest.raises(AssertionError, match="exists"):
-        instr_boundary.read_pruned("io_resp_firstEndIsHalfRvi", 0)
-    with pytest.raises(AssertionError, match="exists"):
-        instr_boundary.set_pruned(io_req_firstInstrIsHalfRvi=0)
+def test_harness_refuses_to_treat_a_real_port_as_pruned(instr_boundary_factory, monkeypatch):
+    from suites.frontend.ifu.instr_boundary.ports import BoundaryPorts
+    agent = instr_boundary_factory()
+    with monkeypatch.context() as patch:
+        patch.setitem(vars(agent.dut), 'io_resp_rawInstrVec_31_isCrossBlockInstr',
+                      agent.dut.io_resp_firstEndIsHalfRvi)
+        with pytest.raises(ValueError, match='proven pruned constant now exists'):
+            BoundaryPorts(agent.dut)
+    with monkeypatch.context() as patch:
+        patch.delattr(agent.dut, 'io_resp_firstEndIsHalfRvi')
+        with pytest.raises(AttributeError):
+            BoundaryPorts(agent.dut)
 
 
 @pytest.mark.feature("IFU-ENV-001")
-def test_slot31_cross_block_is_structurally_zero(instr_boundary):
+async def test_slot31_cross_block_is_structurally_zero(instr_boundary):
     """The model excludes the last slot from the cross-block case.
 
     A crossing needs a full-width instruction at the last slot of a valid
@@ -62,12 +68,12 @@ def test_slot31_cross_block_is_structurally_zero(instr_boundary):
             )
             values.add(predict(window).is_cross_block[SLOTS - 1])
     assert values == {0}
-    assert instr_boundary.read_pruned(
-        "io_resp_rawInstrVec_31_isCrossBlockInstr", 0) == 0
+    assert instr_boundary.interface.cross_block_slots == SLOTS - 1
+    assert (await instr_boundary.analyze(window)).result.is_cross_block[-1] == 0
 
 
 @pytest.mark.feature("IFU-ENV-001")
-def test_lane34_cross_block_is_structurally_zero(pred_checker):
+async def test_lane34_cross_block_is_structurally_zero(pred_checker):
     """Lane 34 can only hold instruction index 31, which never crosses a block.
 
     A crossing instruction is a full-width instruction starting in the last
@@ -84,30 +90,37 @@ def test_lane34_cross_block_is_structurally_zero(pred_checker):
     assert lanes[34].is_cross_block == 0
 
     with_rvi = compressed[:30] + [(addi(5, 0, 1), 0)]
-    crossing = []
+    crossing, tail_crossing = [], []
     for split in range(1, 32):
         window = build_window(with_rvi, 0x2000 + split * 0x100, split=split)
         _, _, _, _, lanes = aligned_lanes(window, 3)
         crossing.append(int(lanes[33].is_cross_block))
+        tail_crossing.append(int(lanes[34].is_cross_block))
     assert max(crossing) == 1, "lane 33 must be able to carry a crossing instruction"
-    assert all(value == 0 for value in crossing[:1]) or True
-    # Driving it is impossible; declaring the constant keeps the audit explicit.
-    pred_checker.set_pruned(io_req_bits_instrVec_34_isCrossBlockInstr=0)
-    assert pred_checker.pruned_claims()[
-        ("io_req_bits_instrVec_34_isCrossBlockInstr", 0)] == 1
+    assert set(tail_crossing) == {0}
+    # The ports layer verifies the pruned constant's absence and the Request
+    # constructor rejects a nonzero tail marker, instead of silently dropping it.
+    assert pred_checker.interface.cross_block_lanes == 34
+    from suites.frontend.ifu.model.pred_checker import Request
+    from suites.frontend.ifu.model.isa import jal
+    window = build_window(compressed[:30] + [(jal(1, 8), 0)], 0x8000, split=31)
+    _, _, _, _, lanes = aligned_lanes(window, 3)
+    observed = await pred_checker.cycle(Request(instrs=lanes))
+    assert observed.redirect.valid == 1 and observed.redirect.is_cross_block == 1
+    assert observed.redirect.target == 0x8044  # fault at lane33, byte PC 0x803c + 8
 
 
 @pytest.mark.feature("IFU-ENV-001")
-def test_padding_lane35_cannot_enqueue(ifu):
+async def test_padding_lane35_cannot_enqueue(ifu_agent):
     """The IFU ties the 36th enqueue lane to zero, so its predTaken leaf is gone."""
 
     from suites.frontend.ifu.model.isa import jal
 
-    cases = load_case_module("tests/ifu/test_ifu_fetch.py", "ifu_fetch_cases_pruned")
-    ifu.reset_once()
+    from suites.frontend.ifu.ifu.types import FetchRequest
     window = build_window([(jal(1, 0x20), 0), (addi(2, 3, 4), 0)], 0x1000, ftq0=(0, 1))
-    beat, redirect = cases.fetch(ifu, window)
+    result = await ifu_agent.fetch(FetchRequest(window))
+    beat, redirect = result.beat, result.redirect
     assert beat is not None and redirect is not None
-    assert (beat["enq"] >> (LANES - 1)) & 1 == 0
-    assert beat["instrs"][LANES - 1] == 0
-    assert ifu.read_pruned("io_toIBuffer_bits_instrEndOffset_35_predTaken", 0) == 0
+    assert (beat.enq >> (LANES - 1)) & 1 == 0
+    assert beat.instrs[LANES - 1] == 0
+    assert ifu_agent.interface.padding_pred_taken == 0

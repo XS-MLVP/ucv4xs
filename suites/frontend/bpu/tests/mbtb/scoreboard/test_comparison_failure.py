@@ -5,6 +5,7 @@ import pytest
 
 from suites.frontend.bpu.mbtb.agent.main import MbtbAgent
 from suites.frontend.bpu.mbtb.checker.semantic import MbtbSemanticChecker
+from suites.frontend.bpu.mbtb.checker.lookup_inputs import LookupInputs
 
 
 def test_independent_failure_precedes_custom_comparison_and_is_not_raised_twice():
@@ -12,7 +13,7 @@ def test_independent_failure_precedes_custom_comparison_and_is_not_raised_twice(
     first = AssertionError('first independent discrepancy')
     reference.failure = first
     calls = []
-    agent = SimpleNamespace(reference=reference)
+    agent = SimpleNamespace(reference=reference,lookup_inputs=LookupInputs())
     with pytest.raises(AssertionError) as caught:
         MbtbAgent._compare_prediction(agent, lambda actual: calls.append(actual), 'actual')
     assert caught.value is first
@@ -24,7 +25,7 @@ def test_independent_failure_precedes_custom_comparison_and_is_not_raised_twice(
 
 
 def test_custom_comparison_still_reports_its_own_failure_when_no_model_error_exists():
-    agent = SimpleNamespace(reference=MbtbSemanticChecker())
+    agent = SimpleNamespace(reference=MbtbSemanticChecker(),lookup_inputs=LookupInputs())
     second = AssertionError('custom consumer discrepancy')
 
     def custom(actual):
@@ -38,7 +39,7 @@ def test_custom_comparison_still_reports_its_own_failure_when_no_model_error_exi
 
 
 def test_concrete_and_callable_expectations_both_keep_normal_comparison():
-    agent = SimpleNamespace(reference=MbtbSemanticChecker())
+    agent = SimpleNamespace(reference=MbtbSemanticChecker(),lookup_inputs=LookupInputs())
     MbtbAgent._compare_prediction(agent, dict(valid=1), dict(valid=1))
     MbtbAgent._compare_prediction(agent, lambda actual: actual['valid'] == 1, dict(valid=1))
     with pytest.raises(AssertionError):

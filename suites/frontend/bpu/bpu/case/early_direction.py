@@ -19,6 +19,11 @@ async def discover_negative_path(env,checks):
     checks.accepted(cold,event,'cold')
     original=await env.seed_ahead(cold)
     checks.ahead_consumer(original)
+    if getattr(checks,'requires_short_initialization',False):
+        # Original-short obligations need a short-only learning precondition,
+        # not the generic continuous program whose stale no-hit S3s can also
+        # allocate table1 on DefaultConfig's5/9 histories.
+        await env.prepare_short_initialization()
     event=await env.resolve(original,BpuBranchFeedback(env.conditional_position,pc,1,taken=0,mispredict=1),retire=False)
     checks.accepted(original,event,'not-taken')
     # A later branch is a discovery from a NEW source, not an invented record
@@ -26,6 +31,13 @@ async def discover_negative_path(env,checks):
     fallback=await env.query(original)
     event=await env.resolve(fallback,BpuBranchFeedback(env.fallback_position,pc,2,taken=1,mispredict=1),retire=False)
     checks.accepted(fallback,event,'fallback')
-    consumer=await env.consume_negative(fallback)
-    checks.negative_consumer(consumer)
+    consumer=(await env.initialize_short_negative(fallback)
+              if getattr(checks,'requires_short_initialization',False)
+              else await env.consume_negative(fallback))
+    try:
+        checks.negative_consumer(consumer)
+    except Exception as error:
+        if getattr(checks,'requires_short_initialization',False):
+            error.add_note('Short initialization input receipts (model state, not RTL oracle): '+repr(env.initialization))
+        raise
     return consumer

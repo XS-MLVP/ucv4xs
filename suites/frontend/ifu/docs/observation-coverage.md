@@ -4,7 +4,12 @@
 “需求 → 驱动字段 → 观测字段 → 比较器 → nodeid”表，并显式列出**不比较**的字段及
 原因。缺字段必须报错，不用默认 0 掩盖；不比较项不能算已检查。
 
-## 1. 顶层 `Ifu` 的入队拍（`tests/ifu/test_ifu_fetch.py`）
+## 1. 顶层 `Ifu`（当前同一事务agent，2026-11-01）
+
+下列比较均在`ifu/agent.py`的连续DriveStable/RisingEdge快照执行；功能用例只组织语义
+事务。`ifu/checker.py::{check_enqueue,check_uncached_enqueue}`替代旧`check_beat`，后者
+已删除。字段掩码来自独立输入答案，不从DUT的valid倒推。表中逐lane均指独立期望的
+有效lane，padding另有常量合同。
 
 驱动：`fromICache.req`（startVAddr/尺寸/数据/压缩图/范围/异常元数据/ftqIdx）、
 `toIBuffer.ready`、`ibufferEmpty`、`backendEmpty`、`toUncache.req.ready`、
@@ -12,23 +17,23 @@
 
 | 观测字段 | 比较规则 | 比较器 | 不比较的理由 |
 |---|---|---|---|
-| `toIBuffer.bits.valid` | 逐 lane 位精确比较 | `check_beat` valid mask | — |
-| `toIBuffer.bits.enqEnable` | 逐 lane 位精确比较（预测截断后） | `check_beat` enq | — |
-| `toIBuffer.bits.instrs[i]` | 逐 lane 精确（非法压缩保留原字） | `check_beat` instrs | lane 35 恒 0，端口叶子被删，按 pruned 常量声明 |
-| `toIBuffer.bits.isRvc[i]` | 逐 lane 精确 | `check_beat` is_rvc | — |
-| `toIBuffer.bits.foldpc[i]` | 逐 lane 精确（XORFold(pc>>1, 10)） | `check_beat` foldpc | — |
-| `toIBuffer.bits.ftqPtr[i]` | 逐 lane 精确（跨块/块 1 取第二块） | `check_beat` ftq | — |
-| `toIBuffer.bits.instrEndOffset[i].offset` | 逐 lane 精确（含 5 位回绕） | `check_beat` end_off | — |
-| `instrEndOffset[i].predTaken` | 逐 lane 精确 | `check_beat` pred | lane35 的 `predTaken` 叶被删除（padding lane 恒 0） |
-| `toIBuffer.bits.prevInstrCount` | 精确（异常窗口取 limit，否则 spec count） | `check_beat` prev_count | — |
-| `toIBuffer.bits.exceptionType` | 精确（ICache 异常优先于 RVC 非法） | `check_beat` exception_type | — |
-| `toIBuffer.bits.exceptionMask` | 精确 bitmask | `check_beat` exception_mask | — |
-| `exceptionCrossPage` | 精确 | `check_beat` exception_cross | 仅在异常窗口构造，非异常窗口恒 0 也一并比较 |
-| `isBackendException` / `hasSatpFlush` | 逐拍与输入 `icacheMeta(0)` 的两个标记比较（block-0 语义：挂到第一条指令） | `check_beat` 每拍比较 + `test_backend_exception_and_satp_flush_markers_reach_the_first_instruction` 三种组合 | 标记的语义消费（`satpFlushFirstFetchFault`）在 IBuffer/后端，本 DUT 不定义 → 残余 R-11 剩余部分 |
-| `toIBuffer.bits.triggered[i]` | 逐 lane 动作精确 | `check_beat` trigger_actions | 未配置时全部为 15，也参与比较 |
-| `toFtq.wbRedirect.*` | valid/ftq/pc/target/taken/offset/isRVC/attribute/canTrain | `check_redirect` | `pc` 的 guard 位受端口宽度限制（`IFU-ENV-005`） |
-| `toBackend.gpAddrMem.*` | wen/gpaddr/waddr/vs 精确 | `check_beat` gp_* | 仅 GPF 场景比较 |
-| `toUncache.req.*` | valid/addr/memBackTypeMM/memPageTypeNC | 非缓存用例内断言 | — |
+| `toIBuffer.bits.valid` | 逐lane位精确比较 | `check_enqueue/check_uncached_enqueue` | — |
+| `toIBuffer.bits.enqEnable` | 逐lane位精确比较（预测截断后） | 同上 | — |
+| `toIBuffer.bits.instrs[i]` | 逐lane精确（非法压缩保留原字） | 同上 | 无效lane数据不消费；lane35的instrs实际存在且按恒0额外比较，不是pruned端口 |
+| `toIBuffer.bits.isRvc[i]` | 逐lane精确 | 同上 | — |
+| `toIBuffer.bits.foldpc[i]` | 逐lane精确（50位虚拟字节PC去bit0后XORFold10） | 同上 | guard位不是虚拟地址的一部分；不能因此豁免redirect的R-08 |
+| `toIBuffer.bits.ftqPtr[i]` | 逐lane精确（跨块/块1取第二块，carry完成槽按块0） | 同上 | — |
+| `toIBuffer.bits.instrEndOffset[i].offset` | 逐lane精确（含5位回绕） | 同上 | — |
+| `instrEndOffset[i].predTaken` | 逐lane精确 | 同上 | 只有lane35的predTaken叶被删除，显式证明恒0 |
+| `toIBuffer.bits.prevInstrCount` | 当前/下一流水窗口按s1_moves选择；uncache为1 | `IfuAgent._check_phase` + 两enqueue比较器 | 不是无条件当前窗口计数 |
+| `toIBuffer.bits.exceptionType/Mask/CrossPage` | 精确异常类别/bitmask/跨页，非异常值也比较 | 两enqueue比较器 | — |
+| `isBackendException` / `hasSatpFlush` | 与输入icacheMeta(0)标记精确比较 | 两enqueue比较器及原三种组合功能用例 | 标记的消费在IBuffer/后端，不给跨DUT语义credit（R-11） |
+| `toIBuffer.bits.triggered[i]` | 按旧/新配置与live门控、输入PC的逐lane动作 | `TriggerModel.lane_actions` + 两enqueue比较器 | 未配置时也比较动作15 |
+| `toFtq.wbRedirect.*` | valid/ftq/pc/target/taken/offset/isRVC/attribute/canTrain | `IfuAgent._check_phase`、`expected_redirect/uncached_redirect` | pc的guard位受端口宽度限制（R-08） |
+| `toBackend.gpAddrMem.*` | wen存在性总比较，有效时gpaddr/waddr/vs精确；ready0重复同址写合法 | `check_gpa` + agent | wen0的payload不消费，不比较 |
+| `toUncache.req.*` | valid存在性总比较、有效时全部属性/字节PA；fire另按ready计数 | `UncacheModel` + agent Scoreboard | valid0时payload不消费 |
+| `toIBuffer.bits.topdownInfo` | 全76位沿前/后持续比较 | `PerfModel.output` + agent | — |
+| `io_perf[0..12].value` | 13个命名事件、实际fire和接受时cache metadata，公开两级寄存延迟 | `model/fetch_events.py` + agent两阶段Scoreboard；8种固定truth table、26个字段/阶段错误控制 | 两级无reset初值只在最初实际边沿填满前未知；非累计计数器 |
 
 **不比较的字段（明确记录）**：
 
@@ -38,7 +43,6 @@
 | `toIBuffer.bits.isLastInFtqEntry[i]` | 端口未导出 | FTQ 边界标记未直接验证；残余 R-12 |
 | `toIBuffer.bits.prevIBufEnqPtr` | 端口未导出 | 写指针初值未直接验证；通过后续对齐行为间接覆盖 |
 | `toIBuffer.bits.debug_seqNum[i]` | 仅性能调试元数据 | 架构语义无关 |
-| `toIBuffer.bits.topdownInfo` | 由 PerfAnalysis 单独 DUT 验证 | 顶层不重复断言；理由位组合残余见 R-07 |
 | `toFtq.wbRedirect.bits.pc` 的 guard 位 | 本基线端口 50 位 | 见 `IFU-ENV-005` / R-08 |
 
 ## 2. 子模块观测
@@ -46,35 +50,38 @@
 | DUT | 观测字段 | 比较规则 | 不比较 |
 |---|---|---|---|
 | `RvcExpander` | `io_out_bits`、`io_ill` | 定义编码逐位；hint 只比较合法性 | hint 的规范形式（允许规范化） |
-| `InstrBoundary` | valid/isRvc/cross/end mask/start-end offset/blockSel/index/first&total half | 逐槽精确比较 | 槽 31 cross（端口删除，模型证明恒 0） |
+| `InstrBoundary` | valid/isRvc/cross/end mask/start-end offset/blockSel/index/first&total half | valid/end mask/首尾half总比较；metadata按独立期望valid逐槽比较；carry cross仍受检 | 无效槽metadata不被compact消费；carry首槽endOffset被后级重写0；槽31 cross是已证明pruned0，不是缺省值（2026-11-01合同复核，R-14） |
 | `PredChecker` | stage1 fixedInstrValid（35 lane）、stage2 重定向全字段 | 逐 lane/逐字段精确 | lane34 cross（端口删除，模型证明恒 0） |
-| `IfuUncacheUnit` | req_ready、resp 四字段、toUncache 属性 | 每拍全字段精确比较 | `toUncache` 属性在 `to_valid=0` 时不比较（合同只在其有效时定义） |
-| `FrontendTrigger` | `io_triggered[i]`、`tdata2` 比较 | 36 lane 全比较；`tdata2` 是 64 位字段 | `tdata2` 比较只用低 50 位（R-13，两条 FAIL）；timing 无端口 |
+| `IfuUncacheUnit` | 沿前/后req_ready、resp四字段、toUncache属性，完整9字段快照 | 三个ready/valid总比较，payload按独立expected valid逐值比较；reset另比固定零状态 | valid0总线/响应payload未被消费；不依DUT valid或override缩窄mask。pruned fromUncache.ready显式1 |
+| `FrontendTrigger` | 沿前/后`io_triggered[i]`、`tdata2` 比较 | 两阶段全部36 lane；tdata2完整64位；旧/新配置与当前live门控独立 | RTL低50位截断是R-13两条FAIL，不是checker豁免；timing固定0无端口 |
 | `IfuPerfAnalysis` | `io_topdownOut.topdown.reasons[*]` | 76 位全比较 | 无端口理由位恒 0（结构上限） |
 
 ## 3. 完成性 / 账本
 
 | 对象 | 账本 | 检查 |
 |---|---|---|
-| `IfuUncacheUnit` | `accepted` / `completed` / `aborted` / in-flight | 随机 700 拍后断言 `accepted - completed - aborted == in_flight`（单槽，0 或 1）且 `completed + aborted <= accepted`；`test_random_sequences_match_the_model` |
-| `Ifu` 取指 | accepted 请求 → 恰好一个 beat 或（被 flush 丢弃） | 每个用例在 `fetch()` 中断言请求被接受；beat/redirect 在有限拍内出现，否则失败（watchdog 30 拍） |
+| `IfuUncacheUnit` | 输入UID/epoch，offered cycles、req_fire、flush-on-fire、accepted、issued、observed completed、cancelled、active | `fire=accepted+flush-on-fire`；`accepted=completed+cancelled+active`；700帧实际fire94/生效89/完成75/取消13/同拍flush5，最后1笔显式取消。reset保留历史；finish不自动清债 |
+| `Ifu` 取指 | offer/physical fire/同拍取消/有效进入、stage1/2/writeback、beat/redirect/uncache子接受/issue/reply/resend/取消按输入UID记录 | `_audit`逐事件与记录守恒；高层API默认24拍预算，低层cycle不虚构进展；完成后4槽尾部，finish默认8槽且禁止补响应/flush/reset清债；未退休FTQ身份禁止重用，producer还检查半环内年龄 |
+| `Ifu` carry | 原低半/PC/UID、输入与peer来源跨请求保留，完成或明确取消 | reset/cancel/backend redirect保留不可变取消原因/原身份；声明的高半必须匹配实际字节且低半与原输入历史一致，未完成不能finish |
+| `Ifu` 冗余描述 | 驱动raw半字 → 新起始/完整字/PC/FTQ/预测/ISA/计数与half标志 | `ifu/input_contract.py`从字节步进，独立于generator/Boundary.predict及DUT输出；19字段/4计数/序列错误控制、1200窗口及手写固定答案 |
 | `IfuUncacheUnit` 脉冲 | 每次完成恰好 1 拍 resp_valid | 完成用例逐拍检查“下一拍归零”；随机序列与模型逐拍对齐 |
 
 ## 4. 采样约定
 
-- 写入/采样沿：DUT 输入为上升沿写入；`step()` 后采样为边沿后状态；组合 DUT 用
-  `settle()`（无时钟单元推进一个时间步以记录 toggle）。
-- 同拍多通道：`Ifu` 的 beat 与 redirect 在同一快照读取，各自独立比较，不用
-  `if/continue` 串行分支。
-- 复位：harness 先清所有输入再拉复位，避免释放沿接受残留请求；构造时关闭
-  Verilator 寄存器随机化。
-- 不做固定延迟假设：`fetch()` 只在“ready 且 valid”时推进，beat/redirect 用事件
-  观察而非固定拍数；接受等待与 beat 等待各有上限，超限由用例的 `assert beat is not
-  None` 失败，不能静默通过。
+七DUT均使用框架Driver/lossless Monitor。RVC/InstrBoundary无硬件时钟，native XClock
+仅推进组合评估；PredChecker、Trigger、Uncache和Ifu按各自合同分别检查沿前/沿后；
+PerfAnalysis检查三级理由传播。公开`Execution.paused`仅在调用间暂停仿真时间，不关闭
+monitor。具体规则见[事务适配合同](transaction-adapters.md)。
+
+- 同拍全部通道冻结采样后再统一更新账本，尾部也持续检查，不用`if/continue`漏通道。
+- reset有固定零状态答案；原生寄存器随机化关闭不等于功能reset。取消在途义务必须给原因。
+- 驱动槽完成不等于DUT接受。高层fetch/read/collect按实际事件完成，预算耗尽失败；
+  finish不替caller回报完成，也不把停monitor当安静证明。
 - 宽度断言用 schema 的 `High/Low`，不用 Picker 的 `mWidth`：1 位标量在
   `signals.json` 里记作 `High=-1, Low=0`，`mWidth` 返回 0，但端口存在且可正常读写
   （例如 `instrEndOffset[*].predTaken` 实测能读到 1）。把 `mWidth==0` 当作“端口不存在”
-  会误判成 pruned；`read_pruned` 因此只用属性是否存在来判断，不用宽度。
+  会误判成pruned。绑定验证属性存在、方向、完整集合与`max(1,mWidth)`的实际宽度，
+  自检使缺端口/错误宽度/额外端口/第二writer均失败。
 - 判定不依赖 RTL 内嵌 assert：所有结论来自外部比较器；生成 RTL 中的 Chisel assert
   保留，但未作为证据来源（其启用与否随构建参数变化）。
 
@@ -96,3 +103,9 @@
   EQ/GE 会把 `2^50+pc` 误判为 `pc`，LT 会把 `tdata2=2^50` 判成没有匹配。两条定向下
   文 `test_tdata2_above_the_address_space_*` 当前 FAIL；模型已从“复制 RTL 的 50 位
   掩码”改为全 64 位比较，避免 oracle 自证。
+
+- **R-14（2026-11-01新增，已收紧范围）**：端口域carry高半槽被误标cross，完整指令
+  会错用块1 FTQ身份；实际native端口历史与leaf对照已复现，但原短non-taken块不符合
+  真实FTQ fall-through长度，撤回此前生产可达论证。严格producer尺寸/taken控制均正常。
+  旧模型缺少“真实起始”条件，与RTL同错，
+  原600随机有5个未检出反例。见[carry归属缺陷](bugs/instr-boundary-carry-ftq-owner.md)。

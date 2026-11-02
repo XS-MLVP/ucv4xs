@@ -72,10 +72,10 @@ split/taken/块归属”600 例，加 split 1..30 全扫。残余：极端压缩
 | 类 | 合法前提 | 合并/拆分理由 | 正确 vs 错误 | 落点 |
 |---|---|---|---|---|
 | EQ/GE/LT | 支持的 match 类型 | 必须按关系拆开（边界行为不同） | 关系正确 vs 只用 EQ | `test_equal_match_raises_configured_action`、`test_greater_equal_and_less_than_compare_the_whole_address` |
-| 不支持 match | 1/4/5… | 必须与支持类拆开：不得命中 | 不命中 vs 误命中 | 随机配置（`match_type=1`） |
-| 门控 | enable/select/debug | 三个门控必须分别拆开（清/恢复时机不同） | 不命中 vs 泄漏命中 | `test_enable_select_and_debug_mode_gate_matching` |
+| 不支持 match | 当前2位端口中的1，CSR会WARL为EQ；4/5超宽由fixture拒绝 | 作为显式端口characterization与CSR合法类拆开 | 端口1不命中 vs 误命中；不冒称CSR可达 | 原180随机配置（`match_type=1`）与严格准入自检 |
+| 门控 | enable/debug合法；select1是CSR不可达的显式端口压力 | 三个门控必须分别拆开（清/恢复时机不同） | 不命中 vs 泄漏命中 | `test_enable_select_and_debug_mode_gate_matching`；新双阶段与live门控对照 |
 | 配置更新 | tUpdate 指定索引 | 必须逐索引：副本独立 | 只改目标 trigger vs 泄漏 | `test_update_targets_only_the_selected_index`、逐副本扫描 |
-| 链 | 成对链 | 必须与无链拆开 | 终端动作 vs 链首自己开火 | `test_pairwise_chain_arms_the_next_trigger` |
+| 链 | 不得有相邻chain1；末槽chain1可达但无后继 | 必须与无链/端口非法长链拆开 | 终端动作 vs 链首自己开火 | 原成对链、新末槽链合法对照；相邻链producer拒绝/characterize执行 |
 | 动作优先级 | debug/breakpoint/none | 必须拆开优先级 | debug > bp > none vs 反序 | `test_breakpoint_requires_permission_and_debug_wins` |
 | 逐 lane | 单 lane 命中 | 必须逐 lane（物理副本） | 仅目标 lane vs 串扰 | `test_action_resolution_at_every_lane` |
 | tdata2 超出实现地址空间 | `tdata2` 是 64 位 CSR 可写值 | 必须与“窗口内地址”拆开：高位是否参与比较决定 EQ/GE/LT 的答案 | 全宽：`2^50+pc` 不命中、`tdata2=2^50` 时 LT 全命中；RTL 截断：前者命中、后者全不命中 | `test_tdata2_above_the_address_space_cannot_equal_a_fetch_pc`、`test_tdata2_above_the_address_space_is_greater_for_less_than`（当前 **FAIL**，R-13） |
@@ -83,6 +83,9 @@ split/taken/块归属”600 例，加 split 1..30 全扫。残余：极端压缩
 抽样策略：每 trigger 副本单独配置一次、动作逐 36 lane 扫描、128 字节边界扫描
 （比较器低/高半 carry），再 180 步随机配置/使能/调试态。残余：timing 由 CSR 固定为
 before-execution，接口无 timing 端口，链的 timing 相同条件不可独立验证。
+2026-11-01迁移保留原798笔计划激励与180随机；保留编码/不支持action/select的结论仅是
+叶子端口characterization。零复位action、两相邻阶段、非密集PC和末槽chain合法域另有
+新增功能对照，详见[事务合同](transaction-adapters.md#frontendtrigger-配置与live比较合同)。
 
 ## IfuPerfAnalysis（输入：理由快照 + 注释事件）
 

@@ -166,7 +166,7 @@ class PipelineReference:
         self.published = {}
         self.cycles = 0
 
-    def checkpoint_for(self, metadata, *, source_pc=None):
+    def checkpoint_for(self, metadata, *, source_pc=None, pointer_flags=True):
         """Associate external encoding to owned, previously presented history.
 
         Equal encodings are not enough if complete logical histories differ.
@@ -174,8 +174,15 @@ class PipelineReference:
         future complete FTQ owner/epoch adapter); never repair golden using
         the externally supplied low bits.
         """
+        if type(pointer_flags) is not bool:
+            raise ValueError('history lookup requires an explicit pointer contract')
+        def encoding(checkpoint):
+            result=checkpoint.metadata()
+            if not pointer_flags:
+                del result['phrPtr']['flag']
+            return result
         matches = [token.history for token in self.published.values()
-                   if token.history.metadata() == metadata and (source_pc is None or token.pc == source_pc)]
+                   if encoding(token.history) == metadata and (source_pc is None or token.pc == source_pc)]
         if not matches:
             raise ValueError('BPU metadata has no owned published source')
         if len({(item.history, item.taken_edges % PHR_STORAGE_BITS) for item in matches}) != 1:

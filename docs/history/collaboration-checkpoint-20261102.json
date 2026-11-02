@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "kind": "collaboration-phase-checkpoint-not-complete-transaction-or-hardware-release",
+  "user_request": "End the current phase to prepare a version other contributors, including AI users, can work on with consistent directories.",
+  "scope": {"suites": 10, "duts": 132, "overall_transaction_goal_complete": false},
+  "publication": {
+    "state": "working-tree-checkpoint-prepared-no-new-commit-tag-release-or-push",
+    "state_scope": "Historical state at checkpoint capture, before the subsequent user-authorized commit-and-push operation. Actual publication revision is recorded by Git history and origin/main, not this old snapshot HEAD.",
+    "head_at_checkpoint": "001735033979f52712808b25280efc262a48654f",
+    "head_is_not_the_new_release": true,
+    "directory_contract": "CONTRIBUTING.md",
+    "agent_entry": "AGENTS.md",
+    "human_handoff": "docs/collaboration-checkpoint-20261102.md",
+    "required_before_sharing": "Review the intended tracked/new source files, create the actual release commit/tag as authorized, then give contributors that exact revision; do not distribute the entire working directory or only the old HEAD."
+  },
+  "goal_handoff": {
+    "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+    "requested_action": "Pause after phase wrap-up; retain complete original scope and unfinished required work, not complete or unmet.",
+    "unfinished_scope": "Other BPU/ICache DUTs and remaining API/scheduler review, MemBlock/VAGQ transaction adaptation and final whole-goal semantic acceptance. Detailed paths and Sbuffer swallowed-error risk are retained in the human handoff."
+  },
+  "root_tests": {"output": "results/ucv-collaboration-checkpoint-root-20261102.xml", "counts": {"PASS": 266}},
+  "icache": {
+    "source_sha256": "b48dc54b08a3febfc7d0ba54f867e6a95efe15e1689d04419fcaa8f8a473d4b2",
+    "full_seed2": {
+      "output": "results/ucv-collaboration-checkpoint-icache-full-20261102",
+      "counts": {"PASS": 567, "XFAIL": 3},
+      "native_instances": 387,
+      "build_files_checked": 66,
+      "run_sha256": "52ff788aa7b81b63a5ba6db598fbc281ed4a96f7c6e37fd7d15ae2f4b3f6fed5",
+      "summary_sha256": "3564ac39478c69c856e0eb0b1198eea39500b5cfd4d18d6a003527a102cdeba3",
+      "audit": "results/ucv-collaboration-checkpoint-icache-full-audit-20261102.json"
+    },
+    "databank_metabank_seed2": {"output": "results/ucv-collaboration-checkpoint-sram-20261102", "counts": {"PASS": 305}, "native_instances": 131, "build_files_checked": 12, "audit": "results/ucv-collaboration-checkpoint-sram-audit-20261102.json"},
+    "databank_metabank_seed1": {"output": "results/ucv-collaboration-checkpoint-sram-seed1-20261102", "counts": {"PASS": 305}, "native_instances": 131, "build_files_checked": 12, "audit": "results/ucv-collaboration-checkpoint-sram-seed1-audit-20261102.json"},
+    "source_stable_files_and_artifact_processor_build_hashes_verified": true,
+    "native_builds_unchanged": true,
+    "old_full412_cases_order_and_verdicts_retained": true,
+    "new_selftest_PASS_from_old_full": 158,
+    "new_XFAIL": 0,
+    "order_audit": "results/ucv-collaboration-checkpoint-icache-order-audit-20261102.json",
+    "details": "docs/history/transaction-goal-icache-metabank-dft-20261102.json"
+  },
+  "mainbtb": {
+    "source_sha256": "606640f86555fe7a05f83c5399f10a85cb3ccb08107c75657189ab592fd9f399",
+    "full_seed2": {"output": "results/ucv-goal-mbtb-primary-error-integrated-v3-20261102", "counts": {"PASS": 2854, "FAIL": 9}},
+    "directed_seed1": {"output": "results/ucv-goal-mbtb-primary-error-seed1-v3-20261102", "counts": {"PASS": 136, "FAIL": 9}},
+    "actual_primary_failures": {"mbtb.semantic-reference": 7, "mbtb.shared-service-no-loss": 2},
+    "diagnostics_audit": "results/ucv-collaboration-checkpoint-mbtb-diagnostics-20261102.json",
+    "details": "docs/history/transaction-goal-mbtb-disposition-index-20261102.json"
+  },
+  "collection": {
+    "output": "results/ucv-collaboration-checkpoint-collect-20261102",
+    "audit": "results/ucv-collaboration-checkpoint-collect-audit-20261102.json",
+    "source_sha256": "602ea9a65abfb545b9aceec8329c844f91513289768fabeca0c2739c0f0662d1",
+    "source_files_checked": 4159,
+    "total": 49078,
+    "suites": {"bpu": 42576, "ftq": 907, "icache": 570, "ifu": 725, "dcache": 232, "lsq": 2575, "lsu": 543, "mmu": 417, "sbuffer": 66, "vagq": 467},
+    "all_ten_task_exit_codes": 0,
+    "cli_exit_code": 1,
+    "cli_reason": "IFU registered blocking residual retained; not a collection-task failure.",
+    "source_stable_and_files_match_at_audit": true,
+    "initial45883_and_previous48809_retained_in_per_suite_relative_order": true,
+    "run_sha256": "47dc9d552d30eea8822a9e58564a251fec0556ef974e93b5706a570eba0c7b90",
+    "summary_sha256": "48e0329e48d47f46e4245a6bf3c2781f70154f18484189c3d16b66dd3c18f6cf",
+    "boundary": "Collect-only. NOT_RUN is not hardware PASS; full includes external internal VAGQ and is not a unified public hardware regression."
+  },
+  "structural_checks": {
+    "layout": "results/ucv-collaboration-checkpoint-layout-20261102.json",
+    "layout_strict_exit_code": 0,
+    "skill_and_locked_framework_capability_exit_code": 0,
+    "skill_documents": 20,
+    "transaction_boundary": "results/ucv-collaboration-checkpoint-boundary-20261102.json",
+    "transaction_boundary_exit_code": 1,
+    "remaining_owner_accesses": {"bpu": 24, "icache": 327, "lsq": 121, "mmu": 53, "vagq": 32},
+    "remaining_pin_expressions": {"dcache": 2, "lsq": 1057, "lsu": 140, "mmu": 29, "vagq": 179},
+    "remaining_signal_operations": {"dcache": 87, "lsq": 1, "mmu": 382, "vagq": 9},
+    "final_asset_audit": "results/ucv-collaboration-checkpoint-assets-20261102.json",
+    "publication_path_link_json_audit": "results/ucv-collaboration-checkpoint-publication-audit-20261102.json",
+    "boundary": "Directory/fixture wiring and absence of syntax leaks are distinct from transaction semantics, independent oracle correctness and hardware acceptance."
+  },
+  "preserved_nonpassing_scope": [
+    "IFU R-13 twoFAIL, R-14 threeFAIL, R-09 UNCERTAIN remain at their documented producer/port-domain boundaries.",
+    "FTQ ResolveQueue two strict capacity XFAIL remain.",
+    "Nine current MainBTB functional counter/shared-service/full-capacity counterexamples remain.",
+    "Three existing ICache XFAIL and existing MemBlock non-PASS remain; no new waiver or deletion was used for the checkpoint."
+  ],
+  "evidence_distribution_boundary": "Full native results and coverage artifacts are in ignored local results/ and are not published in Git by this change. Git carries concise history indexes/contracts and the frozen receipt hashes. Coverage completeness does not establish coverage closure or continued availability of runner-cleaned raw inputs."
+}

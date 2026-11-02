@@ -13,3 +13,7 @@ async def test_prediction_and_meta_monitors_decode_domain_objects(bpu_agent):
     assert isinstance(meta, BpuMeta)
     assert isinstance(meta.resolve, dict)
     assert isinstance(meta.redirect, dict)
+    assert prediction.target is None
+    assert meta.perf is None
+    assert not bpu_agent.ports.prediction_target_observable
+    assert not bpu_agent.ports.meta_perf_observable

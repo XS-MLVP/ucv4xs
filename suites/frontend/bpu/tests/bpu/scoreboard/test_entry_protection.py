@@ -3,8 +3,8 @@ from dataclasses import replace
 from pathlib import Path
 import ast
 import pytest
-from suites.frontend.bpu.bpu.model.entry_protection import PROFILES,program,rules
-from suites.frontend.bpu.bpu.model.early_opposition import provider,main_counter
+from suites.frontend.bpu.bpu.model.entry_protection import PROFILES,program,rules,INITIALIZATION_REQUESTS_PER_ROUND
+from suites.frontend.bpu.bpu.model.early_opposition import provider,main_counter,steady_history,FALLBACK,ahead_owner
 from suites.frontend.bpu.bpu.model.pipeline import Redirect
 from suites.frontend.bpu.bpu.checker.entry_protection import Checks
 from suites.frontend.bpu.bpu.coverage.entry_protection import Coverage
@@ -17,6 +17,11 @@ class Program(SourceProgram):
         self.profile=profile; self.actual_fallback=False
         super().__init__(program(profile).pc)
     def make_checks(self,pc,tag_class): return Checks(Coverage(self.profile),self.profile)
+    def learned(self):
+        return self.learned_short()
+
+    def opposed(self,*,settle=True):
+        return self.bounded_opposed()
     def step(self,event=None,*,mutate=None):
         if self.actual_fallback and event is not None and event.redirect is not None:
             event=replace(event,redirect=replace(event.redirect,cfi_pc=self.checks.program.fallback_pc))
@@ -29,8 +34,17 @@ class Program(SourceProgram):
     def prepared_reward(self):
         source=self.opposed(); self.checks.opposed_consumer(source); self.quiet()
         self.checks.reward_receipt(source); return source
+    def prepare_wrong_base(self,source):
+        for _ in range(4):
+            for index in range(INITIALIZATION_REQUESTS_PER_ROUND):
+                source=self.one_original(recover=source if index==0 else None)
+            owner=ahead_owner(self.model.sources,source.token)
+            if main_counter(source.token)==0 and steady_history(source.token,FALLBACK) and owner is not None and owner[1]==0:
+                return source
+        raise AssertionError('bounded wrong-original preparation did not establish its independent NT base')
     def contradict(self,source):
-        self.actual_fallback=True; source=self.steer(source,3); source=self.query(source); self.enable(True)
+        self.actual_fallback=True; source=self.prepare_wrong_base(source)
+        source=self.steer(source,3); source=self.query(source); self.enable(True)
         self.quiet()
         self.checks.before_flowing_recovery(source)
         self.step(replace(self.event,redirect=Redirect(source.token.history,self.checks.program.fallback_pc,self.pc,True)))
@@ -61,6 +75,27 @@ def test_complete_interior_original_protection_has_real_source_effect_and_next_a
         assert not c.wrong['provider']['base'] and c.wrong['provider']['counter']<4
         assert loss['written_tick']+2==loss['actual_confirmation_tick']
     assert c.final['prediction_tick']>c.reward['actual_confirmation_tick']
+
+
+@pytest.mark.parametrize('profile',PROFILES)
+def test_defaultconfig_short_initialization_preserves_the_exact_short_only_owner(profile):
+    p=Program(profile)
+    source=p.learned()
+    value=provider(p.model.sources,source.token)
+    assert (value.table,value.position,value.counter)==(0,2,0)
+    assert not p.model.sources.short.memory[1] and not p.model.sources.short.updates[1].recent
+    assert not p.model.sources.short.offered and not p.model.sources.short.learning
+
+
+@pytest.mark.parametrize('profile',PROFILES)
+def test_old_continuous_initialization_is_not_reclassified_as_original_short(profile):
+    p=Program(profile)
+    # Freeze the old legal input program, not a fake provider or a transplanted
+    # table. The generic program still learns a long provider under5/9; the
+    # strict original-short assertion MUST distinguish it after migration.
+    p.learned=lambda:SourceProgram.learned(p)
+    with pytest.raises(AssertionError,match='interior short original'):
+        p.strong()
 
 
 @pytest.mark.parametrize('profile',PROFILES)

@@ -20,3 +20,4 @@ async def test_commit_observations_are_live_and_comparable(commit_queue_agent):
         assert agent.training() == CallRet(9, 1)
     with pytest.raises(AssertionError):
         assert agent.training() == CallRet(10, 2)
+    await agent.release()

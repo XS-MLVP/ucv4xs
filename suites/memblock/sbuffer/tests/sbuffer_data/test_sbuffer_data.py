@@ -11,7 +11,7 @@ import random
 import pytest
 
 from suites.memblock.sbuffer.execution import execution
-from suites.memblock.sbuffer.sbuffer_data.env import Op
+from suites.memblock.sbuffer.sbuffer_data.transactions import Op
 from suites.memblock.sbuffer.sbuffer_data.model import WriteRequest
 
 

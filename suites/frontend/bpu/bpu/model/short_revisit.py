@@ -18,7 +18,12 @@ class Program:
     @property
     def pc(self): return self.entry.pc
     @property
-    def positions(self): return (self.older,)+(FALLBACK,)*((HISTORIES[0]+SHIFT-1)//SHIFT)
+    def positions(self):
+        # These two branch hashes first differ at bit4. One shift pushes that
+        # distinction above the5-bit short view but retains it within the9-bit
+        # long READ ancestry. A whole5-bit zero-padding suffix would erase the
+        # very older distinction this program is required to test.
+        return (self.older,)+(FALLBACK,)*((HISTORIES[0]-4+SHIFT-1)//SHIFT)
 
 
 PROGRAMS=tuple(Program(entry,older) for entry in ENTRIES for older in (2,FALLBACK))

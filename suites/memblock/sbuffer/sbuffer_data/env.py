@@ -7,30 +7,15 @@ becomes visible at the following rising edge. The helper therefore checks
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
+from contextlib import asynccontextmanager
+from dataclasses import replace
 
-from toffee import RisingEdge
+from toffee import RisingEdge, SamplingMonitor, SyncSingleCycleDriver
 
 from .coverage import SbufferDataCoverage
-from .model import BYTES, LANES, LINES, SbufferDataModel, WriteRequest
-
-
-@dataclass(frozen=True)
-class Op:
-    """One cycle of public stimulus.
-
-    ``ports`` selects which write ports carry ``writes`` (default: 0, 1, ...).
-    """
-
-    writes: tuple[WriteRequest, ...] = ()
-    flush: int | None = None
-    ports: tuple[int, ...] | None = None
-
-    def active(self):
-        ports = self.ports if self.ports is not None else tuple(range(len(self.writes)))
-        if len(ports) != len(self.writes):
-            raise ValueError("ports and writes length differ")
-        return list(zip(ports, self.writes, strict=True))
+from .model import LANES, LINES, SbufferDataModel, WriteRequest
+from .ports import SbufferDataPorts
+from .transactions import Frame, Op
 
 
 class SbufferDataEnv:
@@ -38,55 +23,54 @@ class SbufferDataEnv:
         self.dut = dut
         self.coverage = coverage
         self.model = SbufferDataModel()
-        self.mask_sigs = [
-            [
-                [getattr(dut, f"io_maskOut_{line}_{lane}_{byte}") for byte in range(BYTES)]
-                for lane in range(LANES)
-            ]
-            for line in range(LINES)
-        ]
-        self.data_sigs = [
-            [
-                [getattr(dut, f"io_dataOut_{line}_{lane}_{byte}") for byte in range(BYTES)]
-                for lane in range(LANES)
-            ]
-            for line in range(LINES)
-        ]
-        self.write_pins = [
-            {
-                "valid": getattr(dut, f"io_writeReq_{port}_valid"),
-                "wvec": getattr(dut, f"io_writeReq_{port}_bits_wvec"),
-                "mask": getattr(dut, f"io_writeReq_{port}_bits_mask"),
-                "data": getattr(dut, f"io_writeReq_{port}_bits_data"),
-                "vword": getattr(dut, f"io_writeReq_{port}_bits_vwordOffset"),
-                "wline": getattr(dut, f"io_writeReq_{port}_bits_wline"),
-            }
-            for port in range(2)
-        ]
-        self.flush_pins = {
-            "valid": getattr(dut, "io_maskFlushReq_0_valid"),
-            "wvec": getattr(dut, "io_maskFlushReq_0_bits_wvec"),
-        }
+        self._ports = SbufferDataPorts(dut)
+        self._driver = SyncSingleCycleDriver(dut.clock, self._ports.bits,
+            idle=self._ports.encode(Frame()), encoder=self._ports.encode, name='sbuffer_data.inputs')
+        self._monitor = None
+        self._snapshot = None
+        self._frame = Frame()
+        self._pipeline_active = False
+        self._last_tick = None
         self.transactions = 0
         self.checked_edges = 0
 
     # ------------------------------------------------------------------ clock
-    async def _edge(self) -> None:
-        await RisingEdge(self.dut.clock)
+    @asynccontextmanager
+    async def managed(self, execution):
+        if self._monitor is not None:
+            raise RuntimeError('SbufferData environment already running')
+        monitor = SamplingMonitor(RisingEdge(self.dut.clock), capture=self._ports.capture)
+        async with self._driver, monitor.start(execution):
+            self._monitor = monitor
+            try:
+                yield
+                assert not self._pipeline_active, 'SbufferData has an uncommitted input stage'
+                if self._last_tick is not None:
+                    assert execution.backend.tick == self._last_tick, 'unconsumed SbufferData clock work'
+            finally:
+                self._monitor = None
+
+    async def _edge(self, *, reset=False) -> None:
+        if self._monitor is None:
+            raise RuntimeError('SbufferData transactions require execution(env)')
+        frame = replace(self._frame, reset=reset)
+        edge = await self._driver.send(frame)
+        observation = await self._monitor.recv()
+        assert observation.event.tick == edge.tick, 'stale SbufferData output snapshot'
+        self._last_tick = edge.tick
+        self._snapshot = observation.value
+        self._pipeline_active = not reset and bool(
+            (frame.op.writes and frame.writes_valid) or (frame.op.flush is not None and frame.flush_valid))
+        self._frame = Frame()
 
     # ------------------------------------------------------------------ reads
     def read_masks(self, lines=None) -> dict[int, tuple[int, ...]]:
         selected = range(LINES) if lines is None else lines
         result = {}
         for line in selected:
-            values = []
-            for lane in range(LANES):
-                value = 0
-                for byte, signal in enumerate(self.mask_sigs[line][lane]):
-                    if int(signal.value):
-                        value |= 1 << byte
-                values.append(value)
-            result[line] = tuple(values)
+            if self._snapshot is None:
+                raise RuntimeError('SbufferData has no sampled observation yet')
+            result[line] = self._snapshot.masks[line]
         return result
 
     # ------------------------------------------------------------------ check
@@ -108,11 +92,10 @@ class SbufferDataEnv:
                 if not known:
                     continue
                 expected_data = self.model.data[line][lane]
-                for byte, signal in enumerate(self.data_sigs[line][lane]):
+                for byte, got in enumerate(self._snapshot.data[line][lane]):
                     if not (known >> byte) & 1:
                         continue
                     want = expected_data[byte]
-                    got = int(signal.value) & 0xFF
                     if got != want:
                         raise AssertionError(
                             f"{context}: data mismatch line={line} lane={lane} byte={byte} "
@@ -122,26 +105,12 @@ class SbufferDataEnv:
 
     # ------------------------------------------------------------------ drive
     def _drive_op(self, op: Op) -> None:
-        for port in range(2):
-            self.write_pins[port]["valid"].Set(0)
-        for port, req in op.active():
-            pins = self.write_pins[port]
-            pins["valid"].Set(1)
-            pins["wvec"].Set(req.wvec)
-            pins["mask"].Set(req.mask)
-            pins["data"].Set(req.data)
-            pins["vword"].Set(req.vword_offset)
-            pins["wline"].Set(1 if req.wline else 0)
-        if op.flush is None:
-            self.flush_pins["valid"].Set(0)
-        else:
-            self.flush_pins["wvec"].Set(op.flush)
-            self.flush_pins["valid"].Set(1)
+        frame = Frame(op)
+        self._ports.encode(frame)
+        self._frame = frame
 
     def _clear_pins(self) -> None:
-        for pins in self.write_pins:
-            pins["valid"].Set(0)
-        self.flush_pins["valid"].Set(0)
+        self._frame = Frame()
 
     def _commit(self, op: Op, context: str, lines=None) -> None:
         self.model.apply(op.writes, op.flush)
@@ -152,11 +121,9 @@ class SbufferDataEnv:
 
     # ------------------------------------------------------------------ cases
     async def reset(self, context: str = "reset_idle") -> None:
-        self.dut.reset.Set(1)
-        await self._edge()
-        await self._edge()
+        await self._edge(reset=True)
+        await self._edge(reset=True)
         self.model.reset()
-        self.dut.reset.Set(0)
         await self._edge()
         self.check("after reset")
         if self.coverage is not None:
@@ -174,6 +141,8 @@ class SbufferDataEnv:
             raise ValueError("burst requires at least one op")
         if lines_per_op is not None and len(lines_per_op) != len(ops):
             raise ValueError("lines_per_op length differs from ops")
+        for op in ops:
+            self._ports.encode(Frame(op))
         self._drive_op(ops[0])
         for index, op in enumerate(ops):
             await self._edge()  # capture of op[index]; commit of op[index - 1]
@@ -197,7 +166,7 @@ class SbufferDataEnv:
 
     async def invalid_write(self, req: WriteRequest) -> None:
         self._drive_op(Op((req,), None))
-        self.write_pins[0]["valid"].Set(0)  # payload present, valid low
+        self._frame = replace(self._frame, writes_valid=False)
         await self._edge()
         self.check("invalid write capture")
         await self._edge()
@@ -205,8 +174,7 @@ class SbufferDataEnv:
         self._clear_pins()
 
     async def invalid_flush(self, wvec: int) -> None:
-        self.flush_pins["wvec"].Set(wvec)
-        self.flush_pins["valid"].Set(0)
+        self._frame = Frame(Op(flush=wvec), flush_valid=False)
         await self._edge()
         await self._edge()
         self.check("invalid flush")
@@ -216,25 +184,21 @@ class SbufferDataEnv:
         self._drive_op(Op((req,), None))
         await self._edge()  # capture in s1
         self.check("pending write capture")
-        self.dut.reset.Set(1)
         self._clear_pins()
-        await self._edge()  # s2 would commit here, reset cancels it
+        await self._edge(reset=True)  # s2 would commit here, reset cancels it
         self.model.reset()
-        await self._edge()
-        self.dut.reset.Set(0)
+        await self._edge(reset=True)
         await self._edge()
         self.check("after reset cancels pending write")
         if self.coverage is not None:
             self.coverage.sample_reset("reset_pending_write")
 
     async def reset_with_flush(self, wvec: int) -> None:
-        self.flush_pins["wvec"].Set(wvec)
-        self.flush_pins["valid"].Set(1)
-        self.dut.reset.Set(1)
-        await self._edge()
-        await self._edge()
+        self._frame = Frame(Op(flush=wvec))
+        await self._edge(reset=True)
+        self._frame = Frame(Op(flush=wvec))
+        await self._edge(reset=True)
         self.model.reset()
-        self.dut.reset.Set(0)
         self._clear_pins()
         await self._edge()
         self.check("after reset with flush")

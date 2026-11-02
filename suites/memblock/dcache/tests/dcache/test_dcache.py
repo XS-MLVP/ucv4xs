@@ -7,6 +7,7 @@ from suites.memblock.dcache.execution import step, refresh
 
 from suites.memblock.dcache.dcache.coverage import DCacheCoverage
 from suites.memblock.dcache.dcache.env import DcacheEnv
+from suites.memblock.dcache.dcache.tilelink import check_release_data
 
 
 @pytest.fixture
@@ -478,73 +479,6 @@ def _same_set_addresses(start: int, count: int) -> list[int]:
     return found
 
 
-def _service_miss_capture_c(dc, expected_addr: int, beats: list[int],
-                            context: str) -> dict:
-    """Answer one Acquire while recording C-channel writebacks."""
-    for channel in dc.channels:
-        channel["a_ready"].Set(1)
-        channel["c_ready"].Set(1)
-    entries = []
-    accepted = None
-    for _ in range(32):
-        for index, channel in enumerate(dc.channels):
-            if int(channel["c_valid"].value):
-                entry = (index, int(channel["c_opcode"].value),
-                         int(channel["c_param"].value),
-                         int(channel["c_address"].value),
-                         int(channel["c_data"].value))
-                if entry[:4] not in [item[:4] for item in entries]:
-                    entries.append(entry)
-            if int(channel["a_valid"].value) and int(channel["a_ready"].value):
-                accepted = {
-                    "channel": index,
-                    "opcode": int(channel["a_opcode"].value),
-                    "size": int(channel["a_size"].value),
-                    "source": int(channel["a_source"].value),
-                    "address": int(channel["a_address"].value),
-                }
-        if accepted is not None:
-            break
-        step(dc)
-        dc.refresh()
-    assert accepted is not None, f"{context}: no Acquire observed"
-    assert accepted["address"] == expected_addr, (context, accepted)
-    channel = dc.channels[accepted["channel"]]
-    for beat in range(2):
-        channel["d_valid"].Set(1)
-        channel["d_opcode"].Set(5)
-        channel["d_size"].Set(6)
-        channel["d_source"].Set(accepted["source"])
-        channel["d_sink"].Set(0)
-        channel["d_denied"].Set(0)
-        channel["d_corrupt"].Set(0)
-        channel["d_data"].Set(beats[beat])
-        for _ in range(3):
-            for index, other in enumerate(dc.channels):
-                if int(other["c_valid"].value):
-                    entry = (index, int(other["c_opcode"].value),
-                             int(other["c_param"].value),
-                             int(other["c_address"].value),
-                             int(other["c_data"].value))
-                    if entry[:4] not in [item[:4] for item in entries]:
-                        entries.append(entry)
-            step(dc)
-            dc.refresh()
-    channel["d_valid"].Set(0)
-    for _ in range(10):
-        for index, other in enumerate(dc.channels):
-            if int(other["c_valid"].value):
-                entry = (index, int(other["c_opcode"].value),
-                         int(other["c_param"].value),
-                         int(other["c_address"].value),
-                         int(other["c_data"].value))
-                if entry[:4] not in [item[:4] for item in entries]:
-                    entries.append(entry)
-        step(dc)
-        dc.refresh()
-    return {"accepted": accepted, "c": entries}
-
-
 def test_dirty_eviction_releases_line(dc):
     addrs = _same_set_addresses(0x1000, 5)
     values = {}
@@ -570,17 +504,17 @@ def test_dirty_eviction_releases_line(dc):
     cold = dc.load_once(0, victim_addr, victim_addr, context="evicting load")
     assert cold["miss"] == 1
 
-    result = _service_miss_capture_c(dc, victim_addr, line_words(victim_addr),
-                                     "dirty eviction")
-    assert result["accepted"]["opcode"] == 6  # AcquireBlock
-    releases = [entry for entry in result["c"] if entry[1] in (6, 7)]
-    assert releases, result["c"]
-    dirty = [entry for entry in releases if entry[1] == 7]  # ReleaseData
-    assert dirty, releases
-    index, opcode, param, addr, data = dirty[0]
+    result = dc.refill_with_releases(victim_addr,data_beats=line_words(victim_addr),
+                                    context="dirty eviction")
+    assert result.acquire.opcode == 6  # AcquireBlock
+    dirty = [message for message in result.releases if message.header.opcode == 7]
+    assert len(dirty)==1, result.releases
+    release=dirty[0]
+    addr=release.header.address
     assert addr in addrs[:4], (hex(addr), [hex(a) for a in addrs[:4]])
-    assert param == 1, param  # TtoN
-    assert (data & ((1 << 64) - 1)) == values[addr], hex(data)
+    assert release.header.param == 1  # TtoN
+    # Full-line stores zero every other byte, including the second C beat.
+    check_release_data(release,address=addr,line=values[addr])
     if dc.coverage is not None:
         dc.coverage.sample_eviction(dirty=True, release_data=True)
 
@@ -603,14 +537,14 @@ def test_clean_eviction_releases_without_data(dc):
     victim_addr = addrs[4]
     cold = dc.load_once(0, victim_addr, victim_addr, context="clean evicting load")
     assert cold["miss"] == 1
-    result = _service_miss_capture_c(dc, victim_addr, line_words(victim_addr),
-                                     "clean eviction")
-    releases = [entry for entry in result["c"] if entry[1] in (6, 7)]
-    assert releases, result["c"]
-    index, opcode, param, addr, data = releases[0]
-    assert opcode == 6, releases  # Release, no data
-    assert addr in addrs[:4]
-    assert (data >> 64) == 0, hex(data)
+    result = dc.refill_with_releases(victim_addr,data_beats=line_words(victim_addr),
+                                    context="clean eviction")
+    releases = [message for message in result.releases if message.header.opcode in (6,7)]
+    assert len(releases)==1, result.releases
+    release=releases[0]
+    assert release.header.opcode==6, release  # Release, no data
+    assert release.header.address in addrs[:4]
+    assert release.data==()  # No-data C payload is not a functional expectation.
     if dc.coverage is not None:
         dc.coverage.sample_eviction(dirty=False, release_data=False)
 
@@ -777,11 +711,11 @@ def test_denied_refill_error_paddr_is_vaddr_low_bits(dc):
 def test_constrained_random_load_store_traffic(dc):
     """Mixed load/store/eviction traffic against an L2 shadow model.
 
-    See `tests/dcache/random_traffic.py` for the model.  Every load is compared
+    See `dcache/traffic.py` for the model.  Every load is compared
     against the model line (including pending store bytes), and every dirty
     eviction is checked on the C channel before being absorbed into the model.
     """
-    from tests.dcache.random_traffic import ack_ready, run_random
+    from suites.memblock.dcache.dcache.traffic import ack_ready, run_random
 
     ack_ready(dc)
     stats = run_random(dc, seed=1, operations=36)

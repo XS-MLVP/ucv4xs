@@ -12,7 +12,7 @@ from suites.frontend.bpu.mbtb.case.semantic import branch_state
 from suites.frontend.bpu.mbtb.checker.assertions import assert_miss
 from suites.frontend.bpu.mbtb.checker.depth import defined_depth_check
 from suites.frontend.bpu.mbtb.driver.feedback import expected_mbtb_feedback, observed_mbtb_feedback
-from suites.frontend.bpu.mbtb.model.depth import expected_depth_target_state
+from suites.frontend.bpu.mbtb.model.depth import expected_depth_target_state,depth_owner_plan
 from suites.frontend.bpu.mbtb.model.entry_keys import entry_key_coordinate
 from suites.frontend.bpu.mbtb.model.entry_keys import entry_key_tag
 from suites.frontend.bpu.mbtb.model.entry_keys import expected_mbtb_entry_keys_activity
@@ -49,6 +49,7 @@ async def check_depth_owner(agent, coverage, *, stale):
     second = replace(first, pc=first.pc + 0x80, target=first.target + 0x100)
     peer = BranchVector(second.pc, second.target + 0x400, 0, 1)
     changed = replace(second, target=second.target + 0x100)
+    owners=depth_owner_plan()
     board = Scoreboard('mbtb.second-depth-owner')
     context = CheckContext(board.name, ScoreboardMode.DIRECT,
         request=dict(first=first, second=second, peer=peer, new_target=changed.target, stale=stale))
@@ -70,7 +71,7 @@ async def check_depth_owner(agent, coverage, *, stale):
             # Both keys land in way 3 of one internal bank; the second entry
             # write retires four entry-write ticks after the first because a
             # single write-buffer port serializes them.
-            expected = expected_mbtb_entry_keys_activity((first.pc, second.pc), 1, 3,
+            expected = expected_mbtb_entry_keys_activity((first.pc, second.pc), 1, owners['owner'],
                 (first.target, second.target), 'blocked', reads=reads,
                 writeback_offsets=(2, 8))
             await agent.train_entry_during_predictions_checked(
@@ -80,9 +81,8 @@ async def check_depth_owner(agent, coverage, *, stale):
         # Add and age a genuine earlier conditional while retaining the
         # indirect record at the second shadow depth in the other owner.
         current = await agent.predict(second.pc)
-        # Capture the real owner way from the prepared public prediction; the
-        # DefaultConfig replacer order differs from the old fixed policy.
-        owner = branch_state(current, 1, 3)[0]
+        # Public metadata must confirm the independent input-prefix plan.
+        owner = owners['owner']
         check((owner, second.target, 1, 2), branch_state(current, 1, 3))
         await agent.train(MbtbTraining(peer.pc, peer.target, 1, 0, 1, current.meta_entries))
         for _ in range(2):
@@ -97,7 +97,7 @@ async def check_depth_owner(agent, coverage, *, stale):
         )))
         before = [snapshot(await agent.predict(vector.pc)) for vector in (first, second)]
         current = await agent.predict(second.pc)
-        peer_way = branch_state(current, 0, 1)[0]
+        peer_way = owners['peer']
         check((peer_way, peer.target, 0, 0), branch_state(current, 0, 1))
         check((owner, second.target, 1, 2), branch_state(current, 1, 3))
         check(slot_for(first), shadows[-1].value['banks'][0][bank][owner][0])
@@ -112,7 +112,7 @@ async def check_depth_owner(agent, coverage, *, stale):
         frozen_metadata = deepcopy(request.meta_entries)
         intended = expected_mbtb_feedback(request, branch_count=len(agent.ports.training.bits.branches))
         expected_payload = {key: value for key, value in slot_for(changed).items() if key not in ('valid', 'dirty')}
-        expected_offer = (0 if stale else owner, expected_payload)
+        expected_offer = (owners['stale_nomination'] if stale else owner, expected_payload)
         rule = 'stale-source-depth-owner-with-negative-peer' if stale else 'fresh-source-depth-owner-control'
         failure = None
         async with agent.observe_entry_activity() as trace:
@@ -136,15 +136,12 @@ async def check_depth_owner(agent, coverage, *, stale):
         check([(owner, expected_payload)], services)
         check(original, cold[1].meta_entries)
         check(frozen_metadata, request.meta_entries)
-        if not stale:
-            check(slot_for(first), shadows[-1].value['banks'][0][bank][owner][0])
-            check(slot_for(changed), shadows[-1].value['banks'][0][bank][owner][1])
-            expected_states = expected_depth_target_state(before, 0, owner, changed.target)
-        else:
-            # A stale source must not create the new depth record at all: the
-            # retained depth still describes the original prepared entry.
-            check(slot_for(first), shadows[-1].value['banks'][0][bank][owner][0])
-            expected_states = before
+        # Either provenance updates the existing second-depth record. A stale
+        # nomination is not permission to keep the old target or create a new
+        # owner; the earlier negative peer remains untouched in both programs.
+        check(slot_for(first), shadows[-1].value['banks'][0][bank][owner][0])
+        check(slot_for(changed), shadows[-1].value['banks'][0][bank][owner][1])
+        expected_states = expected_depth_target_state(before, 0, owner, changed.target)
         for vector, expected in zip((first, second), expected_states, strict=True):
             agent.submit_predict(vector.pc, expected=defined_depth_check(expected))
         await agent.drain_predictions()

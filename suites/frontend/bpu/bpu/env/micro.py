@@ -25,7 +25,9 @@ class MicroProgram:
 
     async def capture(self,pc,verify):
         await self.pause()
-        boundary = await self.agent.redirect(BpuRedirect(pc,self.anchor.meta.redirect,cfi_pc=self.pc+4))
+        request=BpuRedirect(pc,self.anchor.meta.redirect,cfi_pc=self.pc+4)
+        self.checker.plan_redirect(self.anchor,request)
+        boundary = await self.agent.redirect(request)
         await self.agent.set_ready(prediction=True,meta=True)
         source = await self.agent.next_transaction(start_pc=pc,after_tick=boundary)
         verify(source)

@@ -7,7 +7,8 @@ from suites.memblock.lsq.vlq.types import RobPtr
 @pytest.mark.parametrize("start",(0,63,255))
 @pytest.mark.parametrize("distance",(127,128))
 @pytest.mark.parametrize("lane",range(3))
-async def test_RAW_exclusive_tail_retains_until_address_prefix_and_then_no_stale_identity(raw,start,distance,lane):
+async def test_RAW_exclusive_tail_retains_until_address_prefix_and_then_no_stale_identity(sq_raw,start,distance,lane):
+    raw=sq_raw  # Explicit exclusive-tail model; independent of this file's path.
     await raw.advance_head(start)
     end=start+distance
     query=raw.request(end,0xA10000,rob=RobPtr.encode(20),tag=85)
@@ -22,7 +23,8 @@ async def test_RAW_exclusive_tail_retains_until_address_prefix_and_then_no_stale
 
 
 @pytest.mark.parametrize("lane",range(3))
-async def test_RAW_full56_exact128_release_and_new_original_generation_every_record(raw,lane):
+async def test_RAW_full56_exact128_release_and_new_original_generation_every_record(sq_raw,lane):
+    raw=sq_raw
     async def fill_and_check(end,base,pa):
         queries=[raw.request(end,pa+16*i,rob=RobPtr.encode(base+i),tag=64+i) for i in range(56)]
         for query in queries:await raw.cycle({lane:query})

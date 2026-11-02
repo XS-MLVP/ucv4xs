@@ -25,9 +25,15 @@ def folds(history):
 
 def subtract(pointer, amount):
     value = pointer['value']
-    if value not in range(LENGTH) or pointer['flag'] not in (0, 1):
+    if (set(pointer) not in ({'value'}, {'value', 'flag'})
+            or type(value) is not int or value not in range(LENGTH)
+            or ('flag' in pointer and (type(pointer['flag']) is not int or pointer['flag'] not in (0, 1)))
+            or type(amount) is not int or not 0 <= amount <= LENGTH):
         raise ValueError(f'invalid PHR pointer {pointer!r}')
-    return dict(value=(value - amount) % LENGTH, flag=pointer['flag'] ^ int(value < amount))
+    result = dict(value=(value - amount) % LENGTH)
+    if 'flag' in pointer:
+        result['flag'] = pointer['flag'] ^ int(value < amount)
+    return result
 
 
 def path_hash(pc, target):
@@ -35,14 +41,21 @@ def path_hash(pc, target):
 
 
 class BpuPhrReference:
-    def __init__(self):
+    def __init__(self, *, pointer_flags=True):
+        # The flag arithmetic remains useful in pure circular-pointer tests.
+        # The integrated DefaultConfig ABI only exposes/consumes the value;
+        # select that physical contract explicitly, never invent an observed flag.
+        if type(pointer_flags) is not bool:
+            raise ValueError('pointer_flags must explicitly select a pointer contract')
+        self.pointer_flags = pointer_flags
         self.reset()
 
     def reset(self):
-        self.meta2 = dict(pointer=dict(flag=0, value=0), low=0)
+        pointer = dict(flag=0, value=0) if self.pointer_flags else dict(value=0)
+        self.meta2 = dict(pointer=deepcopy(pointer), low=0)
         self.meta3 = deepcopy(self.meta2)
-        self.state = dict(cells=[0] * LENGTH, pointer=dict(flag=0, value=0),
-            s1_pointer=dict(flag=0, value=0), pending=dict(valid=0, taken=0, low=0, shift=0),
+        self.state = dict(cells=[0] * LENGTH, pointer=deepcopy(pointer),
+            s1_pointer=deepcopy(pointer), pending=dict(valid=0, taken=0, low=0, shift=0),
             fold0_reg=[0] * len(LAYOUT), fold1=[0] * len(LAYOUT), fold2=[0] * len(LAYOUT), fold3=[0] * len(LAYOUT))
 
     def physical_read(self, pointer):

@@ -2,29 +2,42 @@
 
 基于 Picker 与 toffee 的 IFU 单元验证：七个 DUT，按实际层次自底向上组织。
 
-**当前判定**（`results/20261030T-uncertain-uc-toffee`）：144 PASS / 2 FAIL / 1 UNCERTAIN。
+**本工程事务适配已移交（2026-11-01）**：七个DUT已完成当前框架事务边界；Ifu顶层全部49个
+旧功能体及两个guard已接入同一事务链，旧引脚helper/fixture已移除。最终语义审计补齐raw
+字节/派生描述绑定、13个性能事件的两级延迟比较及生命周期控制。独立 oracle、两阶段/组合采样、严格合法域、根 fixture 和
+正反对照见 [事务适配状态](docs/transaction-adapters.md)。最新收据与逐条判定差分见
+[全仓活动目标记录](../../../docs/lessons/transaction-goal-20261101.md)，不据局部迁移签核全部范围。
+最新完整回归为719 PASS / 5 FAIL / 1 UNCERTAIN，相对上一643项新增82项全部PASS、原判定逐条
+不变；真实seed2顶层定向为278 PASS / 1 FAIL / 1 UNCERTAIN。这不是硬件功能或覆盖闭环；保留
+[R-14 carry FTQ归属缺陷](docs/bugs/instr-boundary-carry-ftq-owner.md)，原600随机窗口的一条
+假PASS已转为端口合同FAIL，另有leaf/顶层成对复现。R-14此前“已证明生产可达”的表述已按
+真实FTQ fall-through反证撤回，严格生产者对照均正常；详见缺陷文档。R-13、R-14均开放，
+不删除反例或扩大XFAIL。
+
+**2026-10-30 历史判定**（`results/20261030T-uncertain-uc-toffee`）：144 PASS / 2 FAIL / 1 UNCERTAIN。
 硬件功能点 53/55 PASS + 1 FAIL + 1 UNCERTAIN —— `IFU-TR-002` 保留两条真实 FAIL：`FrontendTrigger` 只比较
 `tdata2[49:0]`，而 CSR 把 `tdata2` 暴露为 `RW(63,0)`；`tdata2 ≥ 2^50` 时 EQ/GE
 会在真实 PC 上误命中、LT 全不命中。失败不登记 XFAIL，复现与根因见
 [docs/bugs/frontend-trigger-tdata2-width.md](docs/bugs/frontend-trigger-tdata2-width.md)，
 修复方向与残余 R-13 见 [docs/exit-criteria.md](docs/exit-criteria.md)。验证环境功能点 5/5 通过。
-本轮 Toffee 原生状态、退出码及同轮证据见
+当时 Toffee 原生状态、退出码及同轮证据见
 [UNCERTAIN 迁移核验](docs/uncertain-migration-20261030.md)；旧运行
 `results/20261030T022604Z-107cb685` 的 1 INCOMPLETE 保留为历史，不改写旧收据。
 
 ```sh
 .venv/bin/ucv build ifu --jobs 8
-.venv/bin/ucv run ifu --workers 1
-.venv-uc-toffee/bin/python -m pytest -q suites/frontend/ifu/tests   # 本地开发环境直接调试
+.venv/bin/ucv run ifu --workers 1 --require-unified-baseline
+.venv/bin/python -m pytest -q suites/frontend/ifu/tests   # 直接调试，不替代受管运行凭据
 ```
 
 从仓库根目录运行。RTL、原生包和运行结果不进入 Git；`ucv.json` 声明真实 top 与
 Python 导出名，基线从根 `public-893e1580b` 继承，所有 DUT 来自同一份完整
 DefaultConfig 香山 RTL 的实例闭包。
 
-UNCERTAIN 能力目前来自本地 `uc-toffee` 开发版。`ucv run` 通过
-`.ucv/local.json` 选择 `.venv-uc-toffee`，旧 `.venv` 和已构建 DUT 不替换；安装身份和
-源码哈希单独进入运行凭据，见[本地环境配置](../../../docs/local-configuration.md#本地-toffee-开发环境)。
+当前使用仓库锁定的 `uc-toffee==2.1.0` 和 `.venv/`，UNCERTAIN 是框架原生能力。
+上面的2026-10-30历史运行使用独立本地开发版；其环境身份与源码收据保持历史含义，见
+[本地环境配置](../../../docs/local-configuration.md#本地-toffee-开发环境)，不宣称已用历史
+环境或历史 wheel 认证当前源码。
 
 ## 层次与验证顺序
 
@@ -50,6 +63,11 @@ UNCERTAIN 能力目前来自本地 `uc-toffee` 开发版。`ucv run` 通过
   `trigger.py` 定义 Sdtrig 匹配/链/动作优先级，`perf.py` 定义 top-down 理由流水，
   `fetch.py` 把取指窗口组装为 IBuffer 写入拍并复用上述模型。
 - `harness.py`：Picker DUT 装载与时钟/复位约定；fixtures.py 提供根 fixture 工厂。
+- `perf_analysis/`、`pred_checker/`、`rvc_expander/`、`instr_boundary/`、`frontend_trigger/`、`uncache_unit/`：已迁移的 DUT 专属 agent/ports/checker与协议账本；
+  [当前分层与时序合同](docs/transaction-adapters.md) 明确仍未迁移的范围。
+- `ifu/`：顶层缓存/uncache事务链，80输入/405输出严格绑定、UID/阶段/peer关联、持续双阶段
+  采样与有界收尾；显式producer类型不把原端口压力晋升生产credit。纯生成器差分与R-14
+  证据边界纠正见[本轮机器记录](../../../docs/history/transaction-goal-ifu-top-uncache-20261101.json)。
 - `legacy_pins.py`：临时物理名兼容字段，仍计事务边界技术债，不是新的事务 API。
 - `pytest_plugin.py`：把 `@pytest.mark.feature` 汇总为功能点报告。
 - `tests/<dut>/`：按功能点组织的用例；`tests/ifu/` 覆盖顶层组合。
@@ -67,7 +85,7 @@ UNCERTAIN 能力目前来自本地 `uc-toffee` 开发版。`ucv run` 通过
 - `docs/upstream-review-20261029.md`：基线之后上游 IFU 改动的有界复核；当前记录
   `b716aade` 的 guard-bit 修复不在本地，并以 `IFU-ENV-005` 探测该交接面限制。
 - `docs/exit-criteria.md`：交付前逐项对账的退出合同——必验项、残余登记
-  （R-01..R-13）、观察点精度扫描、允许的范围排除与结论边界。残余同时以机器可读
+  （R-01..R-14）、观察点精度扫描、允许的范围排除与结论边界。残余同时以机器可读
   形式存在于 `verification_plan.json` 的 `residuals`，插件校验结构、写入功能点报告，
   并在“有 blocking 残余却全 PASS”时报一致性错误；运行摘要 `summary.md` 会列出
   Residual register，只读摘要也能看到未证明范围。

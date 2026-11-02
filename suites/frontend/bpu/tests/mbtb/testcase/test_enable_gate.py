@@ -16,9 +16,10 @@ from suites.frontend.bpu.mbtb.case.enable_scenarios import observe_training_gate
 async def test_disable_holds_lookup_pipeline_until_reenabled(mbtb_agent):
     observed = await observe_lookup_gate(mbtb_agent)
     assert_miss(observed.held)
-    assert observed.disabled == observed.held, observed
+    assert observed.disabled.reason == 'disabled-filtered'
+    assert observed.disabled.preview == observed.held, observed
     assert not any(
-        item["rawHit"] for bank in observed.disabled.meta_entries for item in bank
+        item["rawHit"] for bank in observed.disabled.preview.meta_entries for item in bank
     ), observed
     assert_vector_hit(observed.restored, DIRECT)
 

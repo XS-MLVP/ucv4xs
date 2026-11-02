@@ -58,7 +58,8 @@ def test_counter_request_expectations_are_not_shared_with_writebacks():
 def prepared_states():
     return [{"entries": tuple(MbtbEntry(1, 1, 0x1000 + key * 0x100 + way, way, 1, 0)
                               for way in range(10)),
-             "meta_entries": tuple(tuple({"rawHit": 1, "counter_value": 2, "position": align * 5 + way}
+             "meta_entries": tuple(tuple({"rawHit": 1, "counter_value": 2, "position": align * 5 + way,
+                                          **({'attribute':dict(branchType=1,rasAction=0)} if way<4 else {})}
                                           for way in range(5)) for align in range(2))}
             for key in range(4)]
 
@@ -103,7 +104,10 @@ def test_feedback_reference_preserves_sparse_slots_and_freezes_metadata():
                                        "branch_type": 1, "ras_action": 0, "mispredict": 1}
     assert expected["resolved"][1] is None and expected["resolved"][2]["ras_action"] == 2
     assert expected["resolved"][3:] == (None,) * 5
-    transaction.meta_entries[0][0]["counter_value"] = 0
+    with pytest.raises(TypeError):transaction.meta_entries[0][0]["counter_value"] = 0
+    edited=deepcopy(transaction.meta_entries);edited[0][0]["counter_value"]=0
+    changed=replace(transaction,meta_entries=edited)
+    assert changed.meta_entries[0][0]['counter_value']==0
     assert expected["meta_entries"][0][0]["counter_value"] == 2
 
 

@@ -24,6 +24,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from suites.memblock.mmu.native import native_seed
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCK = __import__("ucv.runtime", fromlist=["toolchain"]).toolchain()
@@ -51,6 +52,8 @@ def main() -> None:
     output = (ROOT / "results" / args.name).resolve()
     if output.exists():
         raise SystemExit(f"output already exists: {output}")
+    seed = native_seed()
+    env = dict(os.environ, UCV_SEED=str(seed))
     before_sources = verification_sources()
     removed_stale = []
     for name in ("memory-direct.fst", "memory-direct.vcd"):
@@ -68,7 +71,7 @@ def main() -> None:
     ]
 
     with tempfile.TemporaryDirectory(prefix="mmu-run-", dir=None) as temp:
-        proc = subprocess.run(command, cwd=temp, env=dict(os.environ), timeout=1800)
+        proc = subprocess.run(command, cwd=temp, env=env, timeout=1800)
         for name in ("memory-direct.fst", "memory-direct.vcd"):
             stray = Path(temp) / name
             if stray.exists():
@@ -101,7 +104,7 @@ def main() -> None:
     output.mkdir(parents=True, exist_ok=True)
     sources = verification_sources()
     (output / "verification-sources.json").write_text(json.dumps({
-        "seed": int(os.environ.get("MMU_VERILATOR_SEED", "1")),
+        "seed": seed,
         "sources": sources, "command": command,
         "sources_before": before_sources,
         "stable_during_run": before_sources == sources,

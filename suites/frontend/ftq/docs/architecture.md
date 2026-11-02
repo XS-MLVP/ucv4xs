@@ -2,6 +2,15 @@
 
 ## 分层
 
+**当前复核边界（2026-11-02）**：下表是层次职责，不等于现有代码已满足全部职责。
+ResolveQueue/Ftq已补框架逐拍双阶段全通道观察，两个leaf（CommitQueue、ResolveQueue）
+也已接SDK Driver和UID终态检查。Ftq顶层现已改为SDK唯一整槽输入，保留全部输出的双阶段
+不可变观察；`aclose`不再清view冒充完成，但完整协议UID/完成性仍是真实迁移缺口。
+顶层正在接入callret/commit输入UID及metadata来源的双阶段自动检查和有界自主消费尾部，
+但尚无完整顶层有界协议收尾；持续采样或leaf信用不等于顶层完成。
+逐字段输入域/原子拒绝的修复、地址坐标及未完成采样/身份/收尾见
+[事务迁移复核](transaction-adaptation.md)。不得据测试无引脚字面量或旧绿色回归签核。
+
 | 层 | 职责 | 不允许做的事 |
 |---|---|---|
 | `harness` | 装载原生 DUT、维护执行上下文、登记引脚所有权、每拍检查指针安全网 | 提供功能判断；功能判断属于 checker |
@@ -23,6 +32,11 @@ fixture 边界立即失败。
 | `CommitQueueAgent` | `CallRet` | 8 条 commit lane | `bpuTrain` 队首 |
 | `FtqAgent` | `Prediction`、`Meta`、`BackendRedirect`、`IfuRedirect`、`ResolveReport`、`CallRet`、`Consumers` | prediction/meta/重定向/resolve/commit/ahead/consumer ready | prefetch、fetch、training、commit、redirect、flush、topdown、backend write、指针不变量 |
 
+顶层`FtqInput`冻结整拍各源，`ftq/bundle/abi.py`是独立DefaultConfig全叶合同，
+`bundle/slots.py`统一编码433个非clock输入，`driver/slots.py`用SDK SyncDriver唯一拥有
+这些输入。逻辑producer API不再各自claim并写引脚；共享s3指针由完整slot的一致性检查
+处理。旧`drivers/signal.py`当前无活动agent调用，不赋予它新迁移信用。
+
 ## 时序约定
 
 - `predict()` / `override()`：拉高请求一拍，撤销全部 prediction 引脚，再走一拍。
@@ -35,11 +49,22 @@ fixture 边界立即失败。
 - `allocate()`：按 prediction → s3 meta 的顺序产生合法所有权；需要 32 条以上时同时打开
   ICache 消费者以维持 PrefetchDepth。
 - `Consumers` 更新是合并语义：只改调用中出现的通道，未出现的保持原值。
+- 所有槽整组校验后才驱动；包括stream后组的坏lane也在首个edge前拒绝。`offer/drive_*`
+  是组合staging，不产生接受收据；`step(N)`逐沿记录实际input plan/event，不折叠相同payload。
+- staging和send不能并发占用输入。并发拒绝应先检查busy，不能把合法在途工作错叫未对账
+  失败；被中断或真正比较失败则必须粘滞，正常finish不能清除。
 
 ## 观察点
 
 - 公开输出经 monitor 解码为 `TrainingEntry`、`CommitEvent`、`RedirectEvent`、
   `PrefetchRequest`、`FetchRequest`、`FlushEvent`、`Topdown`、`BackendWrite`。
+- Training/Redirect保留完整实际公开metadata，Training另含真实8-bit branch mask；
+  Prefetch/Fetch保留两lane全部字段，包含vSetIdx、bank mask和flag/value。未定义或未选择
+  payload没有功能credit；完整解码本身也不是完整独立比较。
+- TOP-014的独立FIFO/metadata组合检查位于`ftq/checker/commit.py`，原输入序列而非公开
+  返回metadata选择完成UID。原生未初始化store不填0，缺来源单列unknown_metadata；
+  完成/过滤/guard拒绝/reset取消/pending分别对账。其有界idle尾部不授权自动补其他功能
+  输入，也不使尚未接入的训练/重试等协议自动获得完成信用。
 - 所有权指针与 entry/meta 数组通过内部信号读取，只用于身份、不变量和存储证据；
   payload 期望来自 transaction 参数或独立 oracle。
 - 生成闭包中没有 `$fatal`；`harness` 的每拍安全网和 FTQ agent 的 `InvariantMonitor`
@@ -51,7 +76,7 @@ fixture 边界立即失败。
 `tests/checkers/` 标 `selftest`，不计硬件功能 credit：
 
 - oracle 对错序、错 payload、错误冲刷范围的拒绝；
-- 合法域拒绝（50 位地址、offset 0..31、异常互斥、lane 范围）；
+- 合法域拒绝（按通道的49-bit Pc/50-bit GuardedPc或byte地址、offset 0..31、异常互斥、lane 范围）；
 - 活观察负对照：同一读取路径必须对错误 PC/指针/commit payload 报错；
 - `tests/test_plan_audit.py` 校验功能点与用例双向可追溯。
 

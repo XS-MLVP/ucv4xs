@@ -16,7 +16,7 @@ BYTES = 16
 LANE_MASK = LANES - 1
 
 
-@dataclass
+@dataclass(frozen=True)
 class Enq:
     ptag: int
     vtag: int
@@ -51,6 +51,7 @@ class Line:
     data: list[list[int]] = field(default_factory=lambda: [[0] * BYTES for _ in range(LANES)])
     inflight: bool = False
     timeout: bool = False
+    uid: int = -1
 
     def line_mask(self) -> int:
         return sum(self.mask[lane] << (16 * lane) for lane in range(LANES))
@@ -78,6 +79,7 @@ class SbufferModel:
     def __init__(self) -> None:
         self.lines: list[Line] = []
         self.uarch_drain = False
+        self._next_uid = 0
 
     def reset(self) -> None:
         self.lines.clear()
@@ -109,7 +111,8 @@ class SbufferModel:
             if created is not None:
                 created.apply(req, update_vtag=True)
                 continue
-            line = Line(ptag=req.ptag, vtag=req.vtag)
+            line = Line(ptag=req.ptag, vtag=req.vtag, uid=self._next_uid)
+            self._next_uid += 1
             line.apply(req)
             self.lines.append(line)
             created_this_cycle[req.ptag] = line

@@ -26,7 +26,10 @@ def test_actual_driver_and_independent_reference_use_real_ftq_geometry(case):
     tx = BpuBatchTraining(case.pc, {'actual_source_marker': 17},
         (BpuBranchFeedback(case.position, case.target, 1),))
     _encode_training(bits, tx)
-    expected = [[{'addr': value} for value in case.logical_start_pcs] for _ in range(3)]
+    # The first two consumers only retain the head; MainBTB's third copy still
+    # needs both real logical windows, including the aligned successor.
+    head, successor = case.logical_start_pcs
+    expected = [[{'addr': head}], [{'addr': head}], [{'addr': head}, {'addr': successor}]]
     assert canonical(bits.value['start_pcs']) == expected
     assert encoded_payload(canonical(asdict(tx)))['start_pcs'] == expected
     assert bits.value['meta'] == tx.resolve_meta

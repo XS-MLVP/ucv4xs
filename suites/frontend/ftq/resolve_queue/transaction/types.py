@@ -7,7 +7,12 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True, slots=True)
 class ResolveReport:
-    """One branch resolution addressed to an FTQ entry."""
+    """One resolution; pc/target are 49-bit halfword Pc.addr coordinates.
+
+    Backend/IFU redirects use full byte addresses instead. This existing leaf
+    API preserves its raw Pc coordinates; it does not silently drop a 50th bit
+    or claim that an unshifted byte address was converted by the driver.
+    """
 
     index: int
     pc: int
@@ -20,16 +25,12 @@ class ResolveReport:
     flag: int = 0
 
     def __post_init__(self) -> None:
-        if not 0 <= self.index < 64 or self.flag not in (0, 1):
-            raise ValueError(f"illegal FTQ identity: {self.flag}:{self.index}")
-        if not 0 <= self.pc < (1 << 50) or not 0 <= self.target < (1 << 50):
-            raise ValueError("address outside the 50-bit virtual domain")
-        if not 0 <= self.offset < 32:
-            raise ValueError(f"offset {self.offset} outside 0..31")
-        if self.taken not in (0, 1) or self.mispredict not in (0, 1):
-            raise ValueError("taken/mispredict must be a single bit")
-        if not 0 <= self.branch_type < 4 or not 0 <= self.ras_action < 4:
-            raise ValueError("branch type/ras action outside the 2-bit domain")
+        limits = dict(index=64, flag=2, pc=1 << 49, target=1 << 49,
+                      offset=32, taken=2, mispredict=2, branch_type=4, ras_action=4)
+        for name, limit in limits.items():
+            value = getattr(self, name)
+            if type(value) is not int or not 0 <= value < limit:
+                raise ValueError(f'{name} must be an integer in 0..{limit-1}')
 
 
 @dataclass(frozen=True, slots=True)
@@ -50,6 +51,13 @@ class Training:
     flag: int
     start_pc: int
     branches: tuple[Branch, ...]
+    valid_mask: int = -1
+
+    def __post_init__(self):
+        # Models with a compact semantic branch tuple expect the admitted
+        # prefix. The native decoder always supplies the real per-slot mask.
+        if self.valid_mask == -1:
+            object.__setattr__(self, 'valid_mask', (1 << len(self.branches)) - 1)
 
 
 @dataclass(frozen=True, slots=True)

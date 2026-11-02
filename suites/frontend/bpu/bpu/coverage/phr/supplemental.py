@@ -7,16 +7,17 @@ from toffee import CoverGroupDef
 from toffee import CoverPointDef
 from toffee import CoverageDatabase
 from toffee import CrossDef
+from suites.frontend.bpu.models.configuration import PHR_STORAGE_BITS
 
 
 def bpu_phr_recovery_coverage_model(mode):
     if mode not in ('flowing', 'backpressured'):
         raise ValueError('unknown recovery cadence')
-    axes = dict(flag=(0, 1), pointer=range(52), taken=(0, 1))
+    axes = dict(lap=(0, 1), pointer=range(PHR_STORAGE_BITS), taken=(0, 1))
     points = tuple(CoverPointDef(name, {str(value): Bin.values(value) for value in values})
         for name, values in axes.items())
     return CoverGroupDef('bpu_phr_recovery', points,
-        crosses=(CrossDef('all_dimensions', tuple(axes), max_auto_bins=208),)
+        crosses=(CrossDef('all_dimensions', tuple(axes), max_auto_bins=PHR_STORAGE_BITS * 4),)
         ).instantiate('kunminghu_v3.bpu.phr_recovery.' + mode)
 
 
@@ -51,7 +52,7 @@ from toffee import CoverGroupDef
 from toffee import CoverPointDef
 from toffee import CoverageDatabase
 
-WRAP_PHASES = ('valid_taken_pointer_zero', 'pointer_wrap_and_flag_flip',
+WRAP_PHASES = ('valid_taken_pointer_zero', 'physical_pointer_wrap',
     'all_physical_cells', 'all_fold_registers', 'causal_metadata', 'public_correction')
 
 

@@ -12,7 +12,7 @@ from suites.frontend.bpu.bpu.checker.phr.association import BpuPhrAssociation
 
 
 def test_legacy_redirect_and_metadata_are_preserved_without_aliasing():
-    meta = {'phr': {'phrPtr': {'flag': 1, 'value': 50}, 'phrLowBits': 3}}
+    meta = {'phr': {'phrPtr': {'value': 530}, 'phrLowBits': 3}}
     payload = BpuRedirect(0x40000800, meta).payload()
     assert payload == dict(target=0x40000800, cfi_pc=0x40000800,
                           taken=1, branch_type=2, ras_action=0, meta=meta)

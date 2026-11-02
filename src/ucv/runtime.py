@@ -17,15 +17,19 @@ def tool_path(name):
     if name=='python':return Project(root).runtime_python()
     return root/'.tools/bin'/name
 
-def source_path(baseline='public-893e1580b'):
+def source_path(baseline=None):
     from .sources import source_key
     project=Project()
+    if baseline is None:
+        baseline=project.config['baseline']
     return project.root/'.cache/sources'/source_key(project.baseline(baseline))
 
-def soc_rtl(baseline='public-893e1580b'):
+def soc_rtl(baseline=None):
     from .common import digest
     from .sources import generation_spec
     project=Project()
+    if baseline is None:
+        baseline=project.config['baseline']
     spec=generation_spec(project.baseline(baseline))
     return project.root/'.cache/generated'/digest(spec)/'rtl'
 

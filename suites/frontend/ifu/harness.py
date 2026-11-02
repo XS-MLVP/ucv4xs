@@ -19,6 +19,8 @@ import sys
 from pathlib import Path
 from typing import Any, Mapping
 
+from ucv.runtime import native_seed
+
 SUITE_ROOT = _SUITE_ROOT
 DUT_ROOT = SUITE_ROOT / "dut"
 
@@ -53,7 +55,7 @@ def load_class(name: str) -> type:
 class DutHarness:
     """One Picker DUT plus deterministic input/clock/sampling conventions."""
 
-    def __init__(self, name: str, *, seed: int = 1) -> None:
+    def __init__(self, name: str, *, seed: int | None = None) -> None:
         self.name = name
         cls = load_class(name)
         self.module = sys.modules[cls.__module__]
@@ -63,7 +65,8 @@ class DutHarness:
         # time zero.  Otherwise the generated initial block can still apply
         # random values on the first active cycle (after reset is released),
         # making an FSM's state nondeterministic despite an explicit reset.
-        arguments = [name, f"+verilator+seed+{seed}", "+verilator+rand+reset+0"]
+        arguments = [name, native_seed() if seed is None else f"+verilator+seed+{seed}",
+                     "+verilator+rand+reset+0"]
         self.dut = cls(self.module.xsp.StringVector(arguments), coverage_filename="")
         self.clocked = "clock" in vars(self.dut)
         if self.clocked:

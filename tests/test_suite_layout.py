@@ -38,9 +38,135 @@ def test_audit_separates_structure_from_transaction_boundary(suite):
     assert row['pin_fields'] == sum(
         fields['literal'] + fields['keyword'] + fields['alias']
         for fields in row['pin_level_cases'])
-    expected = 'needs-adapter' if row['pin_fields'] else 'no-static-leak-found'
+    coupling=bool(row['pin_fields'] or row['signal_operations'] or row['component_accesses'])
+    expected = 'needs-adapter' if coupling else 'no-static-leak-found'
     assert row['transaction_boundary'] == expected
-    assert bool(AUDIT.violations(row, require_transaction_boundary=True)) == bool(row['pin_fields'])
+    assert bool(AUDIT.violations(row, require_transaction_boundary=True)) == coupling
+
+
+def test_raw_handles_and_signal_dictionaries_cannot_evade_transaction_audit(tmp_path):
+    path=tmp_path/'test_example.py'
+    path.write_text('''def test_example(env):
+    env.channels[0]['d_valid'].Set(1)
+    return env.raw_dut.xport.GetKeys()
+''')
+    hits=AUDIT.signal_accesses(path)
+    assert {(hit['kind'],hit['expression']) for hit in hits}=={
+        ('signal-operation',"env.channels[0]['d_valid'].Set"),
+        ('signal-operation','env.raw_dut.xport.GetKeys'),
+        ('native-handle','env.raw_dut'),('native-handle','env.raw_dut.xport')}
+
+
+def test_transaction_audit_does_not_misclassify_a_plain_response_value(tmp_path):
+    path=tmp_path/'test_example.py'
+    path.write_text('def test_example(agent):\n    assert agent.response.value == 7\n')
+    assert AUDIT.signal_accesses(path)==[]
+
+
+@pytest.mark.parametrize('body', [
+    "agent.read_driver.set({'valid': 1})",
+    "agent.write_driver.send({'valid': 1})",
+    "agent.ports.read.bits.sample()",
+    "agent.model.write(3, 15, 7)",
+    "agent.model.sets",
+    "agent.prediction_monitor.sample_at(event)",
+    "agent._encode_read(3)",
+    "agent._edge()",
+    "other = cache_agent; other.flush_driver.set({'flush': 1})",
+    "writer = env.read_driver; writer.set({'valid': 1})",
+])
+def test_functional_component_bypass_is_not_a_clean_transaction_boundary(tmp_path, monkeypatch, body):
+    """Renaming pins to logical keys or reaching the model is not migration."""
+    suite=tmp_path/'suites'/'frontend'/'example'
+    tests=suite/'tests'
+    tests.mkdir(parents=True)
+    (suite/'__init__.py').write_text('')
+    (suite/'pytest.ini').write_text('[pytest]\nmarkers =\n    selftest: framework controls\n')
+    (tests/'conftest.py').write_text('cache_agent = agent_fixture()\n')
+    (tests/'test_feature.py').write_text('def test_feature(agent, cache_agent, env, event):\n    '+body+'\n')
+    monkeypatch.setattr(AUDIT, 'ROOT', tmp_path)
+    row=AUDIT.audit('example',suite,suite,tests)
+    assert AUDIT.violations(row)==[]
+    assert row['pin_fields']==row['signal_operations']==0
+    assert row['transaction_boundary']=='needs-adapter'
+    assert AUDIT.violations(row,require_transaction_boundary=True)
+
+
+@pytest.mark.parametrize('body',[
+    'actual = agent.response.value',
+    'response = agent.read(3); response.model',
+    'reference = ReferenceModel(); reference.write(3, 15, 7)',
+    "description = 'agent.ports io_documentation_only'",
+])
+def test_owner_component_guard_keeps_transactions_and_independent_oracles_legal(tmp_path,body):
+    path=tmp_path/'test_legal.py'
+    path.write_text('def test_feature(agent):\n    '+body+'\n')
+    assert AUDIT.component_accesses(path)==[]
+
+
+def test_owner_component_guard_sees_constant_getattr_and_aliases_without_counting_prose(tmp_path):
+    path=tmp_path/'test_example.py'
+    path.write_text('''"""agent.ports is prohibited, but this is prose."""
+def test_feature(cache_agent):
+    alias = cache_agent
+    getattr(alias, 'read_driver').set({'valid': 1})
+''')
+    assert AUDIT.component_accesses(path)==[dict(line=4,kind='owner-component',
+        expression="getattr(alias, 'read_driver')")]
+
+
+def test_sbuffer_functional_tests_remain_transaction_only():
+    row = next(row for row in audit_rows() if row['suite'] == 'sbuffer')
+    assert AUDIT.violations(row, require_transaction_boundary=True) == []
+
+
+def test_store_delay_case_cannot_bypass_its_transaction_runtime():
+    path = ROOT / 'suites/memblock/lsu/tests/store_delay/test_store_delay.py'
+    assert AUDIT.signal_accesses(path) == []
+    assert AUDIT.native_access(path) == []
+    assert not any(AUDIT.pin_accesses(path).values())
+
+
+def test_ifu_perf_analysis_case_uses_only_semantic_transactions():
+    path = ROOT / 'suites/frontend/ifu/tests/perf_analysis/test_perf_analysis.py'
+    assert AUDIT.signal_accesses(path) == []
+    assert AUDIT.native_access(path) == []
+    assert not any(AUDIT.pin_accesses(path).values())
+
+
+def test_ifu_pred_checker_case_uses_only_semantic_transactions():
+    path = ROOT / 'suites/frontend/ifu/tests/pred_checker/test_pred_checker.py'
+    assert AUDIT.signal_accesses(path) == []
+    assert AUDIT.native_access(path) == []
+    assert not any(AUDIT.pin_accesses(path).values())
+
+
+def test_ifu_rvc_expander_case_uses_only_semantic_transactions():
+    path = ROOT / 'suites/frontend/ifu/tests/rvc_expander/test_rvc_expander.py'
+    assert AUDIT.signal_accesses(path) == []
+    assert AUDIT.native_access(path) == []
+    assert not any(AUDIT.pin_accesses(path).values())
+
+
+def test_ifu_instr_boundary_case_uses_only_semantic_transactions():
+    path = ROOT / 'suites/frontend/ifu/tests/instr_boundary/test_instr_boundary.py'
+    assert AUDIT.signal_accesses(path) == []
+    assert AUDIT.native_access(path) == []
+    assert not any(AUDIT.pin_accesses(path).values())
+
+
+def test_ifu_frontend_trigger_case_uses_only_semantic_transactions():
+    path = ROOT / 'suites/frontend/ifu/tests/frontend_trigger/test_frontend_trigger.py'
+    assert AUDIT.signal_accesses(path) == []
+    assert AUDIT.native_access(path) == []
+    assert not any(AUDIT.pin_accesses(path).values())
+
+
+def test_ifu_uncache_case_uses_only_semantic_transactions():
+    path = ROOT / 'suites/frontend/ifu/tests/uncache_unit/test_uncache_unit.py'
+    assert AUDIT.signal_accesses(path) == []
+    assert AUDIT.native_access(path) == []
+    assert not any(AUDIT.pin_accesses(path).values())
 
 
 def test_selftest_marker_is_registered_by_every_suite():

@@ -27,11 +27,11 @@ pytest_plugins = ('suites.frontend.icache.pytest_plugins.runtime', 'suites.front
                   'ucv.pytest_selftest')
 
 dataarray_agent = agent_fixture("dataarray", DataArrayAgent, max_batch_ticks=64)
-databank_agent = agent_fixture("databank", DataBankAgent, max_batch_ticks=64)
+databank_agent = agent_fixture("databank", DataBankAgent, max_batch_ticks=64, checked=True)
 icache_agent = agent_fixture("icache", ICacheAgent, max_batch_ticks=64)
 mainpipe_agent = agent_fixture("mainpipe", MainPipeAgent, max_batch_ticks=64)
 metaarray_agent = agent_fixture("metaarray", MetaArrayAgent, max_batch_ticks=64)
-metabank_agent = agent_fixture("metabank", MetaBankAgent, max_batch_ticks=64)
+metabank_agent = agent_fixture("metabank", MetaBankAgent, max_batch_ticks=64, checked=True)
 missunit_agent = agent_fixture("missunit", MissUnitAgent, max_batch_ticks=64)
 mshr_agent = agent_fixture("mshr", MshrAgent, max_batch_ticks=64)
 prefetchpipe_agent = agent_fixture("prefetchpipe", PrefetchPipeAgent, max_batch_ticks=64)

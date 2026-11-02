@@ -63,7 +63,9 @@ def prediction(p):
     entries = [MbtbEntry(0, 0, 0, 0, 0, 0) for _ in range(10)]
     for slot, b in zip((0, 5), p.old[:2], strict=True):
         entries[slot] = MbtbEntry(1, 1, b.target, b.position, b.kind, b.action)
-    return MbtbPrediction(tuple(entries), [[dict(rawHit=0) for _ in range(5)] for _ in range(2)])
+    return MbtbPrediction(tuple(entries), [[dict(rawHit=0,position=0,counter_value=0,
+        **({'attribute':dict(branchType=0,rasAction=0)} if way<4 else {}))
+        for way in range(5)] for _ in range(2)])
 
 @pytest.mark.parametrize('dut', DUTS)
 @pytest.mark.parametrize('fault', ('target', 'position', 'kind', 'action', 'taken', 'missing'))

@@ -16,7 +16,6 @@ import xspcomm as xsp
 from toffee import as_xdata
 
 ROOT = _SUITE_ROOT
-DEFAULT_SEED = int(os.environ.get("LSU_VERILATOR_SEED", "1"))
 
 from suites.memblock.lsu.inventory import DUTS, dut_dir, export_name
 
@@ -40,11 +39,20 @@ def _load_package(directory: Path, alias: str):
     return module
 
 
-def _argv(seed: int):
-    return xsp.StringVector(["lsu-ut", f"+verilator+seed+{seed}"])
+def native_seed(seed: int | None = None) -> int:
+    """Resolve the default identically for native construction and receipts."""
+    if seed is None:
+        seed = int(os.environ.get("UCV_SEED", os.environ.get("LSU_VERILATOR_SEED", "1")))
+    if type(seed) is not int or not 0 <= seed <= 4294967295:
+        raise ValueError("native seed must be an integer in 0..4294967295")
+    return seed
 
 
-def load_dut(key: str, seed: int = DEFAULT_SEED):
+def _argv(seed: int | None):
+    return xsp.StringVector(["lsu-ut", f"+verilator+seed+{native_seed(seed)}"])
+
+
+def load_dut(key: str, seed: int | None = None):
     if key not in DUTS:
         raise KeyError(f"unknown DUT key {key!r}; known: {sorted(DUTS)}")
     override = os.environ.get(f"LSU_DUT_DIR_{key.upper()}")

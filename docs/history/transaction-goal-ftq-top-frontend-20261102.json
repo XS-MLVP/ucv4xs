@@ -1,0 +1,169 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "scope": "Ftq remaining five automatic comparison paths and input-owned local lifecycles; not whole-repository acceptance",
+  "state": "ftq-current-transaction-adaptation-verified-other-projects-required",
+  "completion_boundary": "The old nine-channel selftest is now an exact ten-channel-set assertion. Collected wrong-payload controls require ScoreboardMismatch, and a new native control distinguishes no-reset redirect transport from resettable IFU resolve. Final-source full 905 PASS/2 XFAIL, seed1 122 PASS and Ftq collection907 are verified. Unaccepted backpressured offers are not accepted/completed work; an FTQ handoff is not an ICache response or full-machine retirement. This closes the current Ftq transaction adaptation scope, not its known RTL capacity defects, coverage closure or the active all-repository goal.",
+  "verified_v4": {
+    "output": "results/ucv-goal-ftq-frontend-integrated-v4-20261102",
+    "counts": {"PASS": 905, "XFAIL": 2},
+    "seed": 2,
+    "workers": 2,
+    "source_sha256": "0964e566ea1ebf75d6a648545c25bd2a2b9c4053b0ba6a35711a61a88786e4e4",
+    "source_stable": true,
+    "source_files_match_at_audit": true,
+    "run_sha256": "f865d7dd962a1e77507cb4e488d8543dc575011588343bdd66485c04abf49d49",
+    "summary_sha256": "fd8716263cb4abcf2c8a26fc6dea617040727def9a73a13cd22063d3d34ce480",
+    "previous_412_nodeids_removed_or_changed": [],
+    "new_selftests": 495,
+    "artifacts_checked": 7,
+    "native_inputs": 236,
+    "build_files_checked": 18,
+    "native_build_receipts_unchanged": true,
+    "manifest_state": "committed",
+    "coverage_complete": true,
+    "cleanup_complete": true,
+    "keep_coverage_inputs": false,
+    "gaps": [],
+    "boundary": "Full original functional call chains and the strict native comparison controls pass on the same final runtime. ResolveQueue capacity XFAILs remain strict; coverage integrity is not coverage closure."
+  },
+  "seed1_v4": {
+    "output": "results/ucv-goal-ftq-frontend-seed1-v4-20261102",
+    "counts": {"PASS": 122},
+    "seed": 1,
+    "workers": 1,
+    "source_sha256": "0964e566ea1ebf75d6a648545c25bd2a2b9c4053b0ba6a35711a61a88786e4e4",
+    "source_stable": true,
+    "source_files_match_at_audit": true,
+    "run_sha256": "2fc5d470c113cb9a026a46b65b48041bb1d19a6280c702ce01e38dfbd9751760",
+    "summary_sha256": "04cb26d13f36518bab81db7921784240b25e46b9f9f4a404f9c86cd189aa001d",
+    "artifacts_checked": 5,
+    "native_inputs": 91,
+    "native_build_receipts_unchanged": true,
+    "manifest_state": "committed",
+    "coverage_complete": true,
+    "gaps": []
+  },
+  "final_receipt_audit": {
+    "path": "results/ucv-goal-ftq-frontend-receipt-audit-v4-final-20261102.log",
+    "sha256": "c344e41a53d87601bed1e8c2d6613ab8a65b536837a2a5b422425515764c6674",
+    "boundary": "All listed final-source artifacts, native build files and coverage processor hashes checked. No native rebuild and no raw coverage-input retention; integrity is not coverage closure."
+  },
+  "collection": {
+    "full_v3_output": "results/ucv-goal-collect-ftq-frontend-v3-20261102",
+    "full_v3_total": 48424,
+    "full_v3_source_sha256": "c5908c7af974be6bea2d58b7241a054bf32b0f92996668064b3f56345efef662",
+    "full_v3_source_stable": true,
+    "full_v3_all_ten_collection_tasks_exit_zero": true,
+    "initial_45883_and_previous_47930_removed_or_order_changed": [],
+    "reconciliation": "results/ucv-goal-collect-ftq-frontend-v3-reconciliation-20261102.json",
+    "reconciliation_sha256": "b55bda7251dc72f1a59ae3bad6fa5bb0dbe4c9f1ccfee6b92706af2b9dcd7205",
+    "ftq_final_output": "results/ucv-goal-collect-ftq-frontend-v4-20261102",
+    "ftq_final_count": 907,
+    "ftq_final_source_sha256": "0964e566ea1ebf75d6a648545c25bd2a2b9c4053b0ba6a35711a61a88786e4e4",
+    "ftq_final_source_stable_and_current_match": true,
+    "ftq_previous_906_removed_or_order_changed": [],
+    "ftq_added": "test_reset_cancels_ifu_resolve_but_checks_old_nonreset_redirect_transport",
+    "boundary": "Full v3 collection includes internal VAGQ and is not unified-public hardware acceptance. Final v4 collection is Ftq only; do not invent a new full all-repository source hash or count after later BPU edits. CLI exit1 for collect-only also reflects its NOT_RUN hardware verdict (cli.py), while every collection task itself exits0."
+  },
+  "intermediate_v3": {
+    "output": "results/ucv-goal-ftq-frontend-integrated-v3-20261102",
+    "counts": {"PASS": 903, "FAIL": 1, "XFAIL": 2},
+    "source_sha256": "188ac50c2b170f680e26fd2753d255e673c4547a26ef8925213e31a0e0acee2c",
+    "source_stable": true,
+    "source_files_match_at_audit": true,
+    "run_sha256": "4b7c983f4070b2ea6d21a7d607c37606d682ff7c34d955d0db90a1e166acf4ae",
+    "summary_sha256": "0ad9d8324a327e9a5b981c4616760020f4ea1adfd9c93164a93b73e053024a97",
+    "artifacts_checked": 7,
+    "native_inputs": 235,
+    "build_files_checked": 18,
+    "native_build_receipts_unchanged": true,
+    "manifest_state": "committed",
+    "coverage_complete": true,
+    "cleanup_complete": true,
+    "keep_coverage_inputs": false,
+    "gaps": [],
+    "remaining_failure": "tests/checkers/test_cycle_sampling.py::test_all_ftq_channels_share_one_phase_and_cannot_overwrite_each_other: expected len(before)==len(after)==9, actual 10 after adding the complete owner channel. Update to an explicit complete channel set, not a weakened count-only assertion.",
+    "boundary": "Artifact integrity is verified, not coverage closure. Existing ResolveQueue capacity XFAILs remain strict and unchanged. Original functional call chains pass on this runtime snapshot; the remaining FAIL is not silently relabeled PASS."
+  },
+  "seed1_v3": {
+    "output": "results/ucv-goal-ftq-frontend-seed1-v3-20261102",
+    "counts": {"PASS": 103},
+    "source_sha256": "188ac50c2b170f680e26fd2753d255e673c4547a26ef8925213e31a0e0acee2c",
+    "source_stable": true,
+    "selection": "Original top core/edges/integration and frontend lifecycle/transaction controls",
+    "boundary": "Same native runtime and source as v3; does not include the failing old cycle-channel-count selftest."
+  },
+  "new_controls_v3": {
+    "output": "results/ucv-goal-ftq-frontend-controls-v3-20261102",
+    "counts": {"PASS": 494},
+    "source_sha256": "188ac50c2b170f680e26fd2753d255e673c4547a26ef8925213e31a0e0acee2c",
+    "source_stable": true,
+    "fields": "447 pure fixed-vector/field-mutation controls, including two legal vectors; not RTL mutation coverage",
+    "lifecycle": "Prediction offer/hold/withdraw/install, request handoff subsets/override revision roots/retries/reset cancellation, backend-vs-IFU redirect and independent registered resolve, old/new input metadata ancestors, ROB targets, sticky audit errors and second quiet tail",
+    "native_specific_failure_probe": {
+      "output": "results/ucv-goal-ftq-specific-failures-v3-20261102",
+      "counts": {"PASS": 5},
+      "source_sha256": "188ac50c2b170f680e26fd2753d255e673c4547a26ef8925213e31a0e0acee2c",
+      "exception": "toffee.ScoreboardMismatch matching ftq.frontend-transactions mismatch",
+      "boundary": "Confirms each automatic comparison rejects its wrong public payload, not an unrelated generic AssertionError from unfinished training at teardown. Strong exception typing still needs to be applied to the corresponding collected controls."
+    }
+  },
+  "body_and_artifact_audits": {
+    "receipt_audit": "results/ucv-goal-ftq-frontend-receipt-audit-v3-20261102.log",
+    "receipt_audit_sha256": "ca3a595e8d710c17386a4ef7aef9e8bfaf6b43f0e66db96b594f880023d33dee",
+    "original_body_audit": "results/ucv-goal-ftq-original-body-audit-20261102.json",
+    "original_body_audit_sha256": "f8cce8cce703b7e0aebd86ec592f518b9460d0663f404d53a65d203742e0c403",
+    "original_files": 7,
+    "normalizations": {"appended_explicit_training_drains": 5, "ifu_byte_pc_equals_two_times_backend_halfword_pc": 3},
+    "original_AST_otherwise_preserved": true,
+    "boundary": "No claim of byte-identical physical stimulus: three IFU construction sites intentionally correct the channel coordinate. All original reports/lane/slot loops and assertions remain. No fixture-invented ready/reset/ROB commit or hidden debt clearing."
+  },
+  "intermediate_v1": {
+    "output": "results/ucv-goal-ftq-frontend-composition-v1-20261102",
+    "counts": {"PASS": 418, "FAIL": 4, "ERROR": 11, "XFAIL": 2},
+    "source_sha256": "685256e65450f126587430f6383d581150ebc4b73d08b2160e27b906f42d34d2",
+    "source_stable": true,
+    "causes": [
+      "Two commit port-pressure cases expose six-bit same-flag distance subtraction before seven-bit mux extension; the first composition incorrectly used modulo128 for all cases. Producer ordering and backwards port characterization remain distinct.",
+      "Two IFU/backend merge cases used the same numeric PC for byte and halfword channels, violating same-start ownership. Keep first-owner oracle and explicitly convert the three IFU inputs, never select last-source PC to match RTL.",
+      "Eleven genuine teardown errors from five original bodies leaving accepted training reports backpressured. Append explicit drain only after original assertions."
+    ]
+  },
+  "directed_v2": {
+    "output": "results/ucv-goal-ftq-frontend-composition-directed-v2-20261102",
+    "counts": {"PASS": 73},
+    "source_sha256": "dbb8d7c247a56ab483aa397ed52b7dc89de2d6c4e59a4bc2cfe19ab85454349e",
+    "source_stable": true,
+    "boundary": "Earlier directed source, before adding complete field/lifecycle selftests. Not relabeled as current complete execution."
+  },
+  "root_tests": {
+    "output": "results/ucv-goal-ftq-frontend-root-v3-20261102.xml",
+    "counts": {"PASS": 242},
+    "sha256": "7e917dc8c3025200becbadd606d75684e1592e1cfda92bd060489a3a6cc13f46"
+  },
+  "requirement_mapping": {
+    "strict_schema_and_unique_sdk_driver": "ftq/bundle/abi.py, slots.py and ftq/driver/slots.py; prior verified full-input controls retained",
+    "immutable_lossless_phase_sampling": "harness.py and monitors/cycle.py; all channels before/after one real input event, no time advances between explicit slots",
+    "input_owned_prediction_and_request_attempts": "ftq/checker/frontend.py and handoffs.py; tests/checkers/test_ftq_frontend_lifecycle.py",
+    "redirect_arbitration_and_independent_ifu_resolve": "ftq/checker/redirect.py, training.py; native registered-IFU-vs-backend control",
+    "metadata_ancestry": "frontend meta_uids, receiver response_meta/target_meta_uid and TrainingPath response_meta/cache_handoffs",
+    "full_meaningful_field_comparison": "tests/checkers/test_ftq_frontend_fields.py and frontend_vectors.py; known complete metadata and active request lanes",
+    "bounded_local_finish_and_sticky_errors": "agent/main.py::finish/drain_training and frontend.py::audit/quiet; no ready or functional producer invented at finish",
+    "contract_and_scope": "suites/frontend/ftq/docs/transaction-adaptation.md#五通道组合检查当前实现"
+  },
+  "mbtb_prework": {
+    "native_before_output": "results/ucv-goal-mbtb-before-transactions-20261102",
+    "native_before_counts": {"PASS": 2257, "FAIL": 229},
+    "four_way_cleanup_red": {"output": "results/ucv-goal-mbtb-four-way-cleanup-red-20261102.xml", "counts": {"FAIL": 2}, "sha256": "594182ef90f51a310ae5313bcc7aeeeefb6274a941f338c59b859288a29c5dd2"},
+    "red_causes": ["expected cleanup ports/before/after still describe only two ways", "normalizer loses a legal two-active-port event because it requires all four write_valid bits"],
+    "rejected_preparation_hypothesis": {"output": "results/ucv-goal-mbtb-retained-preparation-20261102.xml", "counts": {"FAIL": 2}, "sha256": "ae62f1d9cadcae4d1f3ed82813b11471ce0f60508ac31a1001b389163e373643", "boundary": "The exploratory claim that four serial displacers are needed is false: a completed clean rank is reusable immediately. These failures reject the hypothesis, not the RTL/model."},
+    "separate_clean_and_dirty_lifetimes": {"output": "results/ucv-goal-mbtb-retained-lifetimes-20261102.xml", "counts": {"PASS": 3}, "sha256": "16179e53ff96061960a1ffa497a3ca3a40b39f5371909e31db3f46d8f36790ef", "boundary": "Pure model/source contract controls only. WriteBuffer chooses first non-dirty rank before replacement; depth-four reservation matters for simultaneous dirty work, not four completed serial writes."},
+    "state": "At the prework snapshot no MBTB implementation had changed. Subsequent four-way cleanup/owner and pure-control repairs, intermediate failures and pending complete integration are recorded in docs/history/transaction-goal-mbtb-cleanup-20261102.json; remaining MainBTB scenarios are still required."
+  },
+  "remaining_required": [
+    "Finish MBTB and other BPU/ICache transaction/configuration audits and repairs.",
+    "Complete DCache/LSQ/LSU/MMU/Sbuffer and external-internal VAGQ transaction migration, then final all-repository gates, unified-public baseline and evidence/package acceptance."
+  ]
+}

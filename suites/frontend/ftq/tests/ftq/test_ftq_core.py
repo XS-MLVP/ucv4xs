@@ -294,6 +294,7 @@ async def test_ifu_return_redirect_uses_redirect_meta_return_address(ftq_agent):
     assert event.target == 0x8000_5500
     assert (event.taken, event.branch_type) == (1, 3)
     assert agent.pointers().bpu.value == 3
+    await agent.drain_training()
 
 
 @pytest.mark.feature("FTQ-TOP-011")

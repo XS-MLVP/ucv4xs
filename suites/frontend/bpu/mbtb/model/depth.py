@@ -8,6 +8,19 @@ already-checked public profiles; it is not the autonomous MainBTB reference.
 from suites.frontend.bpu.models.configuration import *
 from copy import deepcopy
 from dataclasses import replace
+from suites.frontend.bpu.mbtb.model.replacement import MbtbFourWayLru
+
+
+def depth_owner_plan():
+    """Two distinct input rows, then peer allocation and taken-owner touch."""
+    first,second=MbtbFourWayLru(),MbtbFourWayLru()
+    owner,other_owner=first.allocate(),second.allocate()
+    assert owner==other_owner
+    peer=second.allocate()
+    # Two not-taken peer updates do not change LRU. The final correct feedback
+    # touches only the later taken indirect, never the earlier negative peer.
+    second.touch(owner)
+    return dict(owner=owner,peer=peer,stale_nomination=second.victim,depth=1)
 
 
 def expected_depth_target_state(prepared, align, owner, target):

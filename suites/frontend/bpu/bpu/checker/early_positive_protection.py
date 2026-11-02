@@ -16,6 +16,7 @@ from suites.frontend.bpu.bpu.model.early_protection import Identity, ProtectionL
 
 
 class EarlyPositiveProtectionChecks(EarlyShortProtectionChecks, EarlyPositiveChecks):
+    requires_short_initialization = True
     edge_definitions = EDGES
     preparation_coverage = EarlyPositiveCoverage
     record_taken = True

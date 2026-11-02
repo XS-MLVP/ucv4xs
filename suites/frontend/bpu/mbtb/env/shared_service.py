@@ -7,13 +7,17 @@ from suites.frontend.bpu.mbtb.case.cleanup_overlap_scenario import feedback
 from suites.frontend.bpu.mbtb.case.resident_scenario import snapshot
 from suites.frontend.bpu.mbtb.checker.assertions import assert_miss,assert_vector_hit,matching_way
 from suites.frontend.bpu.mbtb.transaction.types import MbtbBatchTraining,MbtbBranchFeedback
+from suites.frontend.bpu.mbtb.model.shared_service import shared_service_addresses
+from suites.frontend.bpu.mbtb.model.semantic import coordinate,tag
 
 
 @asynccontextmanager
 async def shared_service_program(agent,program):
     await agent.reset()
-    first=BranchVector(0x40000020+(program.tag<<11),0x40002340,5,3)
-    neighbor=replace(first,pc=first.pc+64,target=first.target+0x1020)
+    owners=program.owners
+    pc,neighbor_pc,target=shared_service_addresses(program.tag)
+    first=BranchVector(pc,target,5,3)
+    neighbor=replace(first,pc=neighbor_pc,target=first.target+0x1020)
     extra=replace(neighbor,position=6,target=neighbor.target+0x200)
     corrected=replace(first,target=first.target+0x400)
     sources=[];captures=[]
@@ -32,7 +36,8 @@ async def shared_service_program(agent,program):
         await agent.train_batch(feedback(corrected,replay.meta_entries))
         before_neighbor=await agent.predict(neighbor.pc)
         assert_vector_hit(before_neighbor,neighbor);assert_vector_hit(before_neighbor,extra)
-        assert matching_way(before_neighbor,neighbor)==1 and matching_way(before_neighbor,extra)==0
+        assert matching_way(before_neighbor,neighbor)==owners.original
+        assert matching_way(before_neighbor,extra)==owners.extra
         # A real correct-taken access makes the old miss nominate the peer.
         # No entry correction occurs, so the already served neighbor retains
         # its own logical owner in the independent model and the DUT.
@@ -40,21 +45,23 @@ async def shared_service_program(agent,program):
             await agent.train_batch(MbtbBatchTraining(neighbor.pc,deepcopy(before_neighbor.meta_entries),(
                 MbtbBranchFeedback(neighbor.target,1,neighbor.position,3,mispredict=0),)))
         duplicate=await agent.predict(first.pc)
-        assert [(e.position,e.target) for e in duplicate.entries if e.valid]==[(5,corrected.target),(5,first.target)]
+        assert [(i,e.position,e.target) for i,e in enumerate(duplicate.entries) if e.valid]==[
+            (owners.keep,5,corrected.target),(owners.clear,5,first.target)]
         selected=neighbor if program.shared else extra
         updated=replace(selected,target=selected.target+0x800)
         metadata=old_neighbor.meta_entries if program.shared else before_neighbor.meta_entries
         transaction=feedback(updated,metadata)
-        cache=agent.reference.model.entries[0,0]
-        expected_key=('branch',(neighbor.pc>>5)&63,(neighbor.pc>>11)&65535,selected.position)
+        align,bank,row=coordinate(neighbor.pc)
+        cache=agent.reference.model.entries[align,bank]
+        expected_key=('branch',row,tag(neighbor.pc),selected.position)
         retained=cache.records.get(expected_key)
         if program.shared:
-            assert retained is not None and retained.write.way==1
+            assert retained is not None and retained.write.way==owners.correction and retained.rank==0
             assert retained.sequence not in cache.outstanding
         assert not cache.outstanding
         yield dict(first=first,neighbor=neighbor,extra=extra,updated=updated,
             duplicate=duplicate,before_neighbor=before_neighbor,transaction=transaction,
             originals=originals,sources=tuple(sources),source_captures=captures,
-            retained_before=dict(owner=retained.write.way if retained is not None else 0,
+            retained_before=dict(owner=retained.write.way if retained is not None else None,
                 rank=retained.rank if retained is not None else None,record_exists=retained is not None,pending=False),
-            expected_key=expected_key,capacity_before=2)
+            expected_key=expected_key,capacity_before=owners.capacity)

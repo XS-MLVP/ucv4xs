@@ -15,7 +15,7 @@ def ahead_bundle(parent_signal):
             ('kind','attribute_branchType'),('action','attribute_rasAction'))}) for way in range(4))
     micro=tuple(Bundle(valid=signal(f'io_toMicroTage_result_{way}_valid'),**{
         key:signal(f'io_toMicroTage_result_{way}_bits_'+field) for key,field in (
-            ('taken','taken'),('kind','attribute_branchType'),('strong','isStrongBias'))}) for way in range(4))
+            ('taken','taken'),('kind','attribute_branchType'))}) for way in range(4))
     fast=Bundle(valid=signal('io_fastTrain_valid'),meta=meta('io_fastTrain_bits_abtbMeta'),**{
         key:signal('io_fastTrain_bits_'+field) for key,field in (
             ('pc','startPc_addr'),('target','branch_target_addr'),('taken','branch_taken'),

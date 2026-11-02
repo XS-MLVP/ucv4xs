@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "output": "results/ucv-goal-collect-mbtb-transactions-v5-20261102",
+  "source_sha256": "87ac9b3373a80e8f8e7ffd5de1c9a9eb980614cfa76ae0e83c60d2aba8e2d3f1",
+  "source_stable": true,
+  "source_files_matched_at_audit_before_training_ledger_changes": true,
+  "task_exit_codes": {"bpu": 0, "ftq": 0, "icache": 0, "ifu": 0, "lsq": 0, "dcache": 0, "sbuffer": 0, "mmu": 0, "lsu": 0, "vagq": 0},
+  "collected": {"bpu": 42447, "ftq": 907, "icache": 294, "ifu": 725, "lsq": 2575, "dcache": 232, "sbuffer": 66, "mmu": 417, "lsu": 543, "vagq": 467},
+  "total": 48673,
+  "comparisons": [
+    {"baseline": "results/ucv-goal-collect-before-20261101", "baseline_total": 45883, "added": 2790, "removed": [], "per_suite_relative_order_preserved": true},
+    {"baseline": "results/ucv-goal-collect-ftq-frontend-v3-20261102", "baseline_total": 48424, "added": 249, "removed": [], "per_suite_relative_order_preserved": true}
+  ],
+  "method": "BPU ordered nodeids from frozen bpu-partition.json; other nine from cases/<suite>/cases.json collected arrays. Checked exact retention and filtered subsequence equality, source stability and every source file before implementation continued.",
+  "cli_exit": 1,
+  "boundary": "Collect-only is NOT_RUN, not hardware PASS; CLI exit1 does not undo the ten successful collections. Full includes external VAGQ internal baseline, not unified public hardware acceptance. Later training-ledger/phase controls are not in this collection; do not invent a new total."
+}

@@ -42,10 +42,29 @@ class BpuPhrObservation:
         return self
 
     async def __aexit__(self, exc_type, exc, traceback):
-        await self.aclose()
+        finish_error = None
+        if exc_type is None:
+            try:
+                self.checker.raise_failure()
+                # Closing a monitor discards its queue; it cannot pay a live
+                # input lease. The scenario must stop younger input and drain.
+                if getattr(self.agent, '_prediction_ready', 0):
+                    raise RuntimeError('PHR finish requires stopped prediction acceptance and an explicit drain')
+                self.checker.finish()
+            except BaseException as error:
+                finish_error = error
+        try:
+            await self.aclose()
+        except BaseException as cleanup_error:
+            if finish_error is not None and finish_error is not cleanup_error:
+                raise BaseExceptionGroup('PHR finish and independent cleanup failed',
+                                         [finish_error, cleanup_error])
+            raise
         # A failed body already carries the foreground error. Do not raise the
         # same latched mismatch again during teardown.
         if exc_type is None:
+            if finish_error is not None:
+                raise finish_error
             self.checker.raise_failure()
 
     async def aclose(self, *, resume_streams=True):

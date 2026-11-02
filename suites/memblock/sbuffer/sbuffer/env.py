@@ -6,22 +6,17 @@ payload, so PLRU slot choice is not asserted while payload correctness is.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
+from contextlib import asynccontextmanager
+from dataclasses import replace
 
-from toffee import RisingEdge
+from toffee import DriveStable, SamplingMonitor
 
 from .coverage import SbufferCoverage
-from .model import BYTES, LANES, LINES, Enq, Line, SbufferModel, LANE_MASK
-
-
-@dataclass
-class ReqSnap:
-    id: int
-    addr: int
-    vaddr: int
-    mask: int
-    data: int
-    line: Line | None = None
+from .checker import WritebackLedger
+from .driver import SbufferDriver
+from .model import LANES, Enq, SbufferModel, LANE_MASK
+from .ports import SbufferPorts
+from .transactions import Controls, Cycle, Writeback
 
 
 class SbufferEnv:
@@ -29,136 +24,122 @@ class SbufferEnv:
         self.dut = dut
         self.coverage = coverage
         self.model = SbufferModel()
-        self.in_enqueue = [getattr(dut, f"io_in_req_{i}_valid") for i in range(2)]
-        self.in_ready = [getattr(dut, f"io_in_req_{i}_ready") for i in range(2)]
-        self.in_pins = [
-            dict(
-                vaddr=getattr(dut, f"io_in_req_{i}_bits_vaddr"),
-                data=getattr(dut, f"io_in_req_{i}_bits_data"),
-                mask=getattr(dut, f"io_in_req_{i}_bits_mask"),
-                addr=getattr(dut, f"io_in_req_{i}_bits_addr"),
-                wline=getattr(dut, f"io_in_req_{i}_bits_wline"),
-            )
-            for i in range(2)
-        ]
-        self.req_valid = getattr(dut, "io_dcache_req_valid")
-        self.req_ready = getattr(dut, "io_dcache_req_ready")
-        self.req_bits = dict(
-            id=getattr(dut, "io_dcache_req_bits_id"),
-            addr=getattr(dut, "io_dcache_req_bits_addr"),
-            vaddr=getattr(dut, "io_dcache_req_bits_vaddr"),
-            mask=getattr(dut, "io_dcache_req_bits_mask"),
-            data=getattr(dut, "io_dcache_req_bits_data"),
-        )
-        self.hit_valid = getattr(dut, "io_dcache_main_pipe_hit_resp_valid")
-        self.hit_id = getattr(dut, "io_dcache_main_pipe_hit_resp_bits_id")
-        self.replay_valid = getattr(dut, "io_dcache_replay_resp_valid")
-        self.replay_id = getattr(dut, "io_dcache_replay_resp_bits_id")
-        self.sbempty = getattr(dut, "io_sbempty")
-        self.sbfull = getattr(dut, "io_sbFull")
-        self.flush_valid = getattr(dut, "io_flush_valid")
-        self.flush_is_cmo = getattr(dut, "io_flush_isCmo")
-        self.flush_empty = getattr(dut, "io_flush_empty")
-        self.sqempty = getattr(dut, "io_sqempty")
-        self.mshr_empty = getattr(dut, "io_mshr_store_empty")
-        self.force_write = getattr(dut, "io_force_write")
-        self.timeout = getattr(dut, "io_csrCtrl_sbuffer_timeout")
-        self.fwd = [
-            dict(
-                s0_valid=getattr(dut, f"io_forward_{lane}_s0Req_valid"),
-                s0_vaddr=getattr(dut, f"io_forward_{lane}_s0Req_bits_vaddr"),
-                s1_paddr=getattr(dut, f"io_forward_{lane}_s1Req_paddr"),
-                s1_kill=getattr(dut, f"io_forward_{lane}_s1Kill"),
-                s2_valid=getattr(dut, f"io_forward_{lane}_s2Resp_valid"),
-                s2_invalid=getattr(dut, f"io_forward_{lane}_s2Resp_bits_matchInvalid"),
-                s2_mask=[getattr(dut, f"io_forward_{lane}_s2Resp_bits_forwardMask_{bit}") for bit in range(16)],
-                s2_data=[getattr(dut, f"io_forward_{lane}_s2Resp_bits_forwardData_{byte}") for byte in range(16)],
-            )
-            for lane in range(3)
-        ]
+        self.ledger = WritebackLedger(self.model)
+        self._ports = SbufferPorts(dut)
+        self._driver = SbufferDriver(self._ports)
+        self._controls = Controls()
+        self._monitor = None
+        self._busy = False
         self.tick = 0
 
     # ------------------------------------------------------------------ basics
-    async def edge(self) -> None:
-        await RisingEdge(self.dut.clock)
-        self.tick += 1
+    @asynccontextmanager
+    async def managed(self, execution):
+        """One owner, lossless stable snapshots, strict accepted-work teardown.
 
-    def read(self, signal) -> int:
-        return int(signal.value)
+        Resident lines are allowed for forwarding/capacity-only tests. Accepted
+        DCache writes and replay retries must complete or be explicitly reset.
+        """
+        if self._monitor is not None:
+            raise RuntimeError('Sbuffer environment already running')
+        monitor = SamplingMonitor(DriveStable(self.dut.clock), capture=self._ports.capture)
+        async with self._driver, monitor.start(execution):
+            self._monitor = monitor
+            try:
+                yield
+                if self.tick:
+                    assert execution.backend.tick == self._last_tick, 'unconsumed clock work outside Sbuffer driver'
+                self.ledger.finish()
+            finally:
+                self._monitor = None
+
+    def configure(self, *, timeout_cycles=None, force_write=None):
+        changes = {}
+        if timeout_cycles is not None:
+            changes['timeout'] = timeout_cycles
+        if force_write is not None:
+            changes['force_write'] = force_write
+        controls = replace(self._controls, **changes)
+        self._ports.encode(Cycle(controls=controls))
+        self._controls = controls
+
+    def set_store_path(self, *, sq_empty=None, misses_empty=None):
+        changes = {}
+        if sq_empty is not None:
+            changes['sq_empty'] = sq_empty
+        if misses_empty is not None:
+            changes['misses_empty'] = misses_empty
+        controls = replace(self._controls, **changes)
+        self._ports.encode(Cycle(controls=controls))
+        self._controls = controls
+
+    def status(self):
+        return self._ports.status()
+
+    async def _cycle(self, **fields):
+        if self._monitor is None:
+            raise RuntimeError('Sbuffer transactions require execution(env)')
+        if self._busy:
+            raise RuntimeError('concurrent Sbuffer cycle calls are not supported')
+        command = Cycle(controls=self._controls, **fields)
+        self._ports.encode(command)
+        self._busy = True
+        try:
+            edge = await self._driver.send(command)
+            transfer = await self._monitor.recv()
+            observed = transfer.value
+            assert transfer.event.tick + 1 == edge.tick, 'missing or stale pre-edge snapshot'
+            assert bool(observed.reset) == bool(command.reset)
+            assert tuple((port, req) for port, req, _ in observed.enqueues) == command.enqueues, (
+                'enqueue binding/encoding mismatch', command, observed)
+            assert (observed.hit, observed.replay) == (command.hit, command.replay), (
+                'response binding/encoding mismatch', command, observed)
+            self.tick += 1
+            self._last_tick = edge.tick
+            # All channels come from the same stable snapshot, confirmed by its
+            # rising edge. No API branch is allowed to skip simultaneous work.
+            accepted = self.ledger.observe(observed, edge.tick)
+            return observed, accepted
+        finally:
+            self._busy = False
+
+    async def edge(self) -> None:
+        await self._cycle()
 
     async def settle(self, cycles: int = 2) -> None:
         for _ in range(cycles):
             await self.edge()
 
     async def reset(self, context: str = "idle") -> None:
-        self.dut.reset.Set(1)
+        await self._cycle(reset=True)
+        await self._cycle(reset=True)
         await self.edge()
-        self.dut.reset.Set(1)
-        await self.edge()
-        self.model.reset()
-        self.dut.reset.Set(0)
-        await self.edge()
-        assert self.read(self.sbempty) == 1, "sbempty must be 1 after reset"
-        assert self.read(self.sbfull) == 0, "sbFull must be 0 after reset"
-        assert self.read(self.req_valid) == 0, "no dcache request after reset"
+        status = self.status()
+        assert status.empty, "sbempty must be 1 after reset"
+        assert not status.full, "sbFull must be 0 after reset"
+        assert not status.request_pending, "no dcache request after reset"
         if self.coverage is not None:
             self.coverage.sample_reset(context)
 
     # ------------------------------------------------------------------ enqueue
-    def _predict_ready(self, reqs: list[Enq]) -> list[int]:
-        if self.model.uarch_drain:
-            return [0] * len(reqs)
-        readys = []
-        lines = len(self.model.lines)
-        for index, req in enumerate(reqs):
-            merge = self.model.can_merge(req.ptag)
-            if index == 0:
-                can = merge or lines < LINES
-            else:
-                same_fresh_slot = (
-                    req.ptag == reqs[0].ptag
-                    and not self.model.can_merge(reqs[0].ptag)
-                    and readys[0] == 1
-                )
-                can = merge or same_fresh_slot or lines + index < LINES
-            readys.append(1 if can else 0)
-        return readys
-
     async def enqueue(
         self, reqs: list[Enq], expect_ready=None, note: str = "", ports=None
-    ) -> list[int]:
+    ) -> dict[int, int]:
         if len(reqs) > 2:
             raise ValueError("Sbuffer has two enqueue ports")
         if ports is None:
             ports = tuple(range(len(reqs)))
         if len(ports) != len(reqs):
             raise ValueError("ports and enqueue requests length differ")
-        before = len(self.model.lines)
         targets = [self.model.active_same_tag(req.ptag) for req in reqs]
-        for port in range(2):
-            self.in_enqueue[port].Set(0)
-        for port, req in zip(ports, reqs):
-            self.in_enqueue[port].Set(1)
-            self.in_pins[port]["vaddr"].Set(req.vaddr)
-            self.in_pins[port]["addr"].Set(req.addr)
-            self.in_pins[port]["mask"].Set(req.mask)
-            self.in_pins[port]["data"].Set(req.data)
-            self.in_pins[port]["wline"].Set(1 if req.wline else 0)
-        self.dut.RefreshComb()
-        actual = {port: self.read(self.in_ready[port]) for port in range(2)}
+        wanted = list(expect_ready) if expect_ready is not None else [1] * len(reqs)
+        if len(wanted) != len(reqs) or any(value not in (0, 1) for value in wanted):
+            raise ValueError('expect_ready must specify one boolean per offered request')
+        observed, _ = await self._cycle(enqueues=tuple(zip(ports, reqs)))
+        actual = {port: int(ready) for port, _, ready in observed.enqueues}
         accepted = [req for port, req in zip(ports, reqs) if actual[port]]
-        if expect_ready is not None:
-            wanted = list(expect_ready)
-            observed = [actual[port] for port in ports]
-            assert observed == wanted, f"{note}: ready {observed} != expected {wanted}"
-        else:
-            for port, req in zip(ports, reqs):
-                if req.ptag in {line.ptag for line in self.model.lines if not line.inflight}:
-                    assert actual[port] == 1, f"{note}: merge on port {port} must be ready"
-        await self.edge()
-        for port in range(2):
-            self.in_enqueue[port].Set(0)
-        self.model.enqueue(accepted)
+        assert [actual[port] for port in ports] == wanted, (
+            f'{note}: ready {[actual[port] for port in ports]} != expected {wanted}')
 
         if self.coverage is not None:
             if not accepted:
@@ -171,7 +152,7 @@ class SbufferEnv:
                 self.coverage.sample_capacity("not_full")
             else:
                 req = accepted[0]
-                target = targets[0]
+                target = targets[reqs.index(req)]
                 if target is None:
                     kind = "new_line"
                 elif target.vtag == req.vtag:
@@ -189,116 +170,55 @@ class SbufferEnv:
         return actual
 
     # ------------------------------------------------------------------ requests
-    def read_req(self) -> ReqSnap:
-        return ReqSnap(
-            id=self.read(self.req_bits["id"]),
-            addr=self.read(self.req_bits["addr"]),
-            vaddr=self.read(self.req_bits["vaddr"]),
-            mask=self.read(self.req_bits["mask"]),
-            data=self.read(self.req_bits["data"]),
-        )
-
-    def _matches(self, snap: ReqSnap) -> list[Line]:
-        ptag = snap.addr >> 6
-        vtag = snap.vaddr >> 6
-        matches = []
-        for line in self.model.lines:
-            if line.ptag != ptag or line.vtag != vtag or line.line_mask() != snap.mask:
-                continue
-            ok = True
-            for lane in range(LANES):
-                for byte in range(BYTES):
-                    if not (snap.mask >> (16 * lane + byte)) & 1:
-                        continue
-                    got = (snap.data >> (8 * (16 * lane + byte))) & 0xFF
-                    if line.data[lane][byte] != got:
-                        ok = False
-                        break
-                if not ok:
-                    break
-            if ok:
-                matches.append(line)
-        return matches
-
-    def verify_req(self, snap: ReqSnap, note: str = "") -> Line:
-        assert 0 <= snap.id < LINES, f"{note}: request id {snap.id} outside 16 lines"
-        matches = self._matches(snap)
-        assert len(matches) == 1, (
-            f"{note}: request payload (ptag={snap.addr >> 6}, vtag={snap.vaddr >> 6}, "
-            f"mask={snap.mask:#018x}) matched {len(matches)} live lines"
-        )
-        line = matches[0]
-        assert not line.inflight, f"{note}: request selected an already inflight line"
-        inflight_tags = {item.ptag for item in self.model.lines if item.inflight}
-        assert line.ptag not in inflight_tags, f"{note}: same block still inflight"
-        snap.line = line
-        return line
+    def read_req(self) -> Writeback:
+        self.dut.RefreshComb()
+        request = self._ports.request()
+        assert request is not None, 'no currently offered writeback'
+        return self.ledger.inspect(request)
 
     async def wait_req(
         self, note: str = "", max_cycles: int = 40, allow_inflight: bool = False
-    ) -> ReqSnap:
+    ) -> Writeback:
         for _ in range(max_cycles):
             await self.edge()
-            if self.read(self.req_valid):
+            if self.status().request_pending:
                 snap = self.read_req()
-                if allow_inflight:
-                    matches = self._matches(snap)
-                    assert len(matches) == 1, f"{note}: request payload matched {len(matches)} lines"
-                    snap.line = matches[0]
-                else:
-                    self.verify_req(snap, note)
                 return snap
         raise TimeoutError(f"{note}: no dcache request within {max_cycles} cycles")
 
     async def no_req_for(self, cycles: int, note: str = "") -> None:
         for _ in range(cycles):
             await self.edge()
-            assert self.read(self.req_valid) == 0, f"{note}: unexpected dcache request"
+            assert not self.status().request_pending, f"{note}: unexpected dcache request"
 
-    async def accept(self, snap: ReqSnap, reason: str) -> None:
-        self.req_ready.Set(1)
-        await self.edge()
-        self.req_ready.Set(0)
-        self.model.mark_inflight(snap.line)
+    async def accept(self, snap: Writeback, reason: str) -> Writeback:
+        _, accepted = await self._cycle(accept_request=True)
+        assert accepted is not None, 'writeback was not valid at its accepting edge'
+        assert accepted == snap, ('stale offered writeback handle at acceptance', snap, accepted)
         if self.coverage is not None:
             lanes = [lane for lane in range(LANES) if (snap.mask >> (16 * lane)) & 0xFFFF]
             self.coverage.sample_request(reason, lanes or [0])
+        return accepted
 
-    async def hit(self, snap: ReqSnap) -> None:
-        self.hit_id.Set(snap.id)
-        self.hit_valid.Set(1)
-        await self.edge()
-        self.hit_valid.Set(0)
-        self.model.on_hit(snap.line)
+    async def hit(self, snap: Writeback) -> None:
+        self.ledger.require_pending(snap)
+        await self._cycle(hit=snap.id)
 
-    async def replay(self, snap: ReqSnap) -> None:
-        self.replay_id.Set(snap.id)
-        self.replay_valid.Set(1)
-        await self.edge()
-        self.replay_valid.Set(0)
-        self.model.on_replay(snap.line)
+    async def replay(self, snap: Writeback) -> None:
+        self.ledger.require_pending(snap)
+        await self._cycle(replay=snap.id)
         if self.coverage is not None:
             self.coverage.sample_replay("replay_resp")
 
     # ------------------------------------------------------------------ forward
-    async def forward(self, load_lane: int, vaddr: int, paddr: int, kill: bool = False) -> dict:
-        pins = self.fwd[load_lane]
-        pins["s0_vaddr"].Set(vaddr)
-        pins["s0_valid"].Set(1)
-        await self.edge()
-        pins["s0_valid"].Set(0)
-        pins["s1_paddr"].Set(paddr)
-        pins["s1_kill"].Set(1 if kill else 0)
-        await self.edge()
-        pins["s1_kill"].Set(0)
-        assert self.read(pins["s2_valid"]) == 1, "forward response valid must be one cycle after s1"
-        mask = 0
-        data = []
-        for byte in range(16):
-            bit = self.read(pins["s2_mask"][byte]) & 1
-            mask |= bit << byte
-            data.append(self.read(pins["s2_data"][byte]) & 0xFF)
-        invalid = self.read(pins["s2_invalid"]) & 1
+    async def forward(self, load_lane: int, vaddr: int, paddr: int, kill: bool = False):
+        # Validate both stages before driving either one.
+        self._ports.encode(Cycle(controls=self._controls, forward_s0=(load_lane, vaddr),
+                                 forward_s1=(load_lane, paddr, kill)))
+        await self._cycle(forward_s0=(load_lane, vaddr))
+        await self._cycle(forward_s1=(load_lane, paddr, kill))
+        response = self._ports.forward(load_lane)
+        mask, data, invalid = response.mask, response.data, response.invalid
         expected_mask, expected_data, mismatch = self.model.forward(vaddr, paddr)
         lane = (paddr >> 4) & LANE_MASK
         if kill:
@@ -330,75 +250,65 @@ class SbufferEnv:
                 result = "mismatch_vtag"
             elif expected_mask == 0:
                 result = "no_match"
-            elif active and inflight:
+            elif active and inflight and any(
+                newer.mask[lane] & older.mask[lane]
+                for newer in self.model.lines if newer.vtag == vaddr >> 6 and not newer.inflight
+                for older in self.model.lines if older.vtag == vaddr >> 6 and older.inflight
+            ):
                 result = "active_over_inflight"
             elif active:
                 result = "active"
             else:
                 result = "inflight"
             self.coverage.sample_forward(result, load_lane, lane)
-        return dict(mask=mask, data=data, invalid=invalid, expected_mask=expected_mask)
+        return response
 
     # ------------------------------------------------------------------ flush/drain
     async def start_flush(self, cmo: bool = False, sqempty: int = 1, mshr: int = 1) -> None:
-        self.sqempty.Set(sqempty)
-        self.mshr_empty.Set(mshr)
-        self.flush_is_cmo.Set(1 if cmo else 0)
-        self.flush_valid.Set(1)
+        self.set_store_path(sq_empty=sqempty, misses_empty=mshr)
+        self._controls = replace(self._controls, flush=True, cmo=cmo)
         await self.edge()
 
-    async def drain_requests(self, reason: str, max_cycles: int = 200, require_increasing: bool = True) -> list[ReqSnap]:
+    async def end_flush(self):
+        self._controls = replace(self._controls, flush=False, cmo=False)
+        await self.edge()
+
+    async def drain_requests(self, reason: str, max_cycles: int = 200, require_increasing: bool = True) -> list[Writeback]:
+        if max_cycles < 1:
+            raise ValueError('drain requires a positive cycle budget')
         drained = []
         last_id = -1
-        for _ in range(max_cycles):
+        deadline = self.tick + max_cycles
+        while self.tick < deadline and self.model.lines:
             await self.edge()
-            if self.read(self.req_valid):
+            if self.status().request_pending:
                 snap = self.read_req()
-                self.verify_req(snap, reason)
                 if require_increasing:
                     assert snap.id > last_id, f"{reason}: drain ids not increasing: {snap.id} after {last_id}"
                     last_id = snap.id
                 await self.accept(snap, reason)
                 await self.hit(snap)
                 drained.append(snap)
-                continue
-            if not self.model.lines:
-                break
+        if self.model.lines:
+            raise TimeoutError(f'{reason}: drain budget exhausted with {len(self.model.lines)} live lines')
+        self.ledger.finish()
         return drained
 
     async def flush_and_finish(
         self, cmo: bool = False, sqempty: int = 1, mshr: int = 1, expect_empty: bool = True
-    ) -> list[ReqSnap]:
+    ) -> list[Writeback]:
         await self.start_flush(cmo=cmo, sqempty=sqempty, mshr=mshr)
         drained = await self.drain_requests("drain_flush")
         await self.settle(3)
-        if self.coverage is not None:
-            self.coverage.sample_flush(
-                "cmo" if cmo else "normal",
-                "cmo_ignores_sq" if cmo else "normal_after_all",
-            )
         if expect_empty:
-            assert self.read(self.flush_empty) == 1, "flush.empty must be 1 after drain"
-        self.flush_valid.Set(0)
-        await self.edge()
+            assert self.status().flush_complete, "flush.empty must be 1 after drain"
+        if self.coverage is not None and self.status().flush_complete:
+            self.coverage.sample_flush("cmo" if cmo else "normal", "normal_after_all")
+        await self.end_flush()
         return drained
 
-    async def drain_uarch(self) -> list[ReqSnap]:
-        drained = []
-        last_id = -1
-        for _ in range(100):
-            await self.edge()
-            if self.read(self.req_valid):
-                snap = self.read_req()
-                self.verify_req(snap, "drain_uarch")
-                assert snap.id > last_id, "uarch drain ids must increase"
-                last_id = snap.id
-                await self.accept(snap, "drain_uarch")
-                await self.hit(snap)
-                drained.append(snap)
-                continue
-            if not self.model.lines:
-                break
+    async def drain_uarch(self) -> list[Writeback]:
+        drained = await self.drain_requests('drain_uarch', max_cycles=100)
         await self.settle(3)
         if self.coverage is not None:
             self.coverage.sample_flush("uarch", "normal_after_all")

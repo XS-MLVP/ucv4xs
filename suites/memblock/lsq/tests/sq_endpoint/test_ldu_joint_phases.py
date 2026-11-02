@@ -7,7 +7,8 @@ from tests.lsq_wrapper.ldu_joint_owners import LduJointOwners
 @pytest.mark.parametrize("seed", (0x7310, 0x7311))
 @pytest.mark.parametrize("recovery", ("none", "redirect", "common_reset"))
 @pytest.mark.parametrize("response_period", (1, 8))
-async def test_source_LDU_joint_capacity_transfer_original_UIDs_three_epochs_and_serial_CBO(lsq, seed, recovery, response_period):
+async def test_source_LDU_joint_capacity_transfer_original_UIDs_three_epochs_and_serial_CBO(sq_lsq, seed, recovery, response_period):
+    lsq = sq_lsq
     trace = LduJointOwners(lsq, seed, response_period=response_period)
     old = []
     if recovery != "none":

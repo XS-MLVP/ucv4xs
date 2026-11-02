@@ -316,6 +316,7 @@ async def test_redirect_at_the_training_index_keeps_that_entry_trainable(ftq_age
     training = agent.training()
     assert training is not None
     assert [branch.position for branch in training.branches] == [1]
+    await agent.drain_training()
 
 
 @pytest.mark.feature("FTQ-TOP-015")
@@ -404,3 +405,4 @@ async def test_first_mispredict_mask_covers_every_branch_slot(ftq_agent, mispred
     positions = [branch.position for branch in training.branches]
     assert positions == list(range(mispredict_slot + 1)), positions
     agent.assert_training_mask()
+    await agent.drain_training()

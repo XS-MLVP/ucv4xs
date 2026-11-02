@@ -8,6 +8,7 @@ from typing import Any
 
 from toffee import as_xdata
 from toffee.signals import signal_identity
+from ucv.runtime import native_seed
 
 from suites.frontend.icache.runtime.memory_direct import require_memory_direct
 from suites.frontend.icache.runtime.runtime import validate_dut_runtime
@@ -19,7 +20,6 @@ from suites.frontend.icache.coverage.native import native_coverage_path
 
 ROOT = _SUITE_ROOT
 RTL_COVERAGE_FILES: set[Path] = set()
-VERILATOR_SEED = 1
 
 
 def initialize_dut_inputs(dut: Any) -> None:
@@ -68,7 +68,7 @@ class DutFactory:
         # picker enables random initialization of Verilator registers. A
         # nonzero plusarg fixes that randomness per DUT instance, so testcase
         # order cannot silently change uncovered RTL counter-clone results.
-        args = module.xsp.StringVector([name, f"+verilator+seed+{VERILATOR_SEED}"])
+        args = module.xsp.StringVector([name, native_seed()])
         dut = cls(args, coverage_filename=str(coverage_path) if coverage_path is not None else '')
         try:
             view = require_memory_direct(dut)

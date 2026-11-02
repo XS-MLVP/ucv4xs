@@ -21,12 +21,13 @@ from suites.frontend.bpu.bpu.checker.assertions import tage_meta_for_position
 from suites.frontend.bpu.bpu.checker.assertions import sc_meta_for_position
 from suites.frontend.bpu.bpu.case.phr_direction_repair import check
 from suites.frontend.bpu.bpu.model.phr.model import subtract
+from suites.frontend.bpu.models.configuration import POSITIONS, PHR_STORAGE_BITS
 from suites.frontend.bpu.bpu.coverage.phr.supplemental import WRAP_PHASES as PHASES
 from suites.frontend.bpu.bpu.coverage.phr.supplemental import bpu_phr_taken_wrap_coverage_model as coverage_model
 from suites.frontend.bpu.bpu.coverage.phr.supplemental import write_bpu_phr_taken_wrap_coverage as write_coverage
 
 ORIGIN = 0x40000800
-DESTINATION = ORIGIN + 16
+DESTINATION = ORIGIN + POSITIONS
 POSITION = 4
 LATER_POSITION = 6
 TARGET = DESTINATION + 0x200
@@ -35,7 +36,7 @@ LATER_TARGET = DESTINATION + 0x300
 
 async def revisit(agent, observation, anchor, *, mode='flowing', arm=False):
     accepted_tick = await agent.redirect(BpuRedirect(DESTINATION, anchor,
-        cfi_pc=ORIGIN + 15, taken=0, branch_type=1))
+        cfi_pc=ORIGIN + POSITIONS - 1, taken=0, branch_type=1))
     if arm:
         observation.checker.wrap_window_active = True
     if mode == 'backpressured':
@@ -46,7 +47,7 @@ async def revisit(agent, observation, anchor, *, mode='flowing', arm=False):
 async def prepare(agent, observation, checker, stage):
     await agent.reset(ORIGIN)
     origin = await agent.next_transaction(start_pc=ORIGIN)
-    check(checker, dict(phrPtr=dict(flag=0, value=0), phrLowBits=0),
+    check(checker, dict(phrPtr=dict(value=0), phrLowBits=0),
         origin.meta.redirect['phr'], phase='genuine-initial-pointer-zero')
     await agent.configure_predictors(ubtb=False, abtb=False,
         tage=(stage == 's3'), sc=False, ittage=False, ras=False, settle=True)
@@ -112,13 +113,15 @@ async def check_taken_wrap(agent, output, *, stage, mode='flowing'):
                 request = row['boundary'][stage]
                 if request['valid'] and request['start_pc'] == DESTINATION and request['prediction']['taken']:
                     next_row = checker.records[index + 1]
-                    check(checker, dict(flag=0, value=0), request['meta']['pointer'],
+                    check(checker, dict(value=0), request['meta']['pointer'],
                         phase='required-real-taken-wrap-input', stage=stage, tick=row['tick'])
-                    check(checker, dict(flag=1, value=50), next_row['state']['pointer'],
+                    check(checker, dict(value=PHR_STORAGE_BITS - 2), next_row['state']['pointer'],
                         phase='taken-wrap-result', stage=stage, tick=row['tick'])
                     check(checker, subtract(request['meta']['pointer'], 2), next_row['state']['pointer'],
                         phase='taken-wrap-independent-circular-arithmetic', stage=stage, tick=row['tick'])
-                    check(checker, dict(start_pc=DESTINATION, target=TARGET, taken=1, position=POSITION,
+                    check(checker, TARGET, request['prediction']['target'],
+                        phase='taken-wrap-PHR-input-target', stage=stage, tick=row['tick'])
+                    check(checker, dict(start_pc=DESTINATION, taken=1, position=POSITION,
                         s2_override=int(stage == 's2'), s3_override=int(stage == 's3')),
                         row['public_prediction']['bits'], phase='taken-wrap-public-correction', stage=stage)
                     check(checker, int(mode == 'flowing'), row['public_prediction']['ready'],

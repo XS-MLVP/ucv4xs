@@ -8,6 +8,7 @@ from toffee import ScoreboardMode
 
 from suites.frontend.bpu.bpu.model.phr.model import path_hash
 from suites.frontend.bpu.bpu.model.phr.model import subtract
+from suites.frontend.bpu.bpu.model.phr.model import LENGTH
 from suites.frontend.bpu.bpu.checker.phr.checking import BpuPhrChecker
 from suites.frontend.bpu.bpu.transaction.types import BpuRedirect
 from suites.frontend.bpu.bpu.coverage.phr.supplemental import bpu_phr_recovery_coverage_model as coverage_model
@@ -16,10 +17,10 @@ from suites.frontend.bpu.bpu.coverage.phr.supplemental import write_bpu_phr_reco
 PC = 0x40000800
 
 
-async def check_recovery(agent, output, *, mode, steps=52):
+async def check_recovery(agent, output, *, mode, steps=LENGTH):
     if mode not in ('flowing', 'backpressured'):
         raise ValueError('unknown recovery cadence')
-    checker = BpuPhrChecker(scope=dict(mode=mode, steps=steps))
+    checker = BpuPhrChecker(scope=dict(mode=mode, steps=steps), record_limit=16)
     observation = agent.observe_phr(checker)
     coverage = coverage_model(mode)
     observations, routes = [], set()
@@ -59,15 +60,17 @@ async def check_recovery(agent, output, *, mode, steps=52):
                         sequence_id=len(observations), request=dict(mode=mode, step=step,
                             taken=taken, cfi_pc=cfi_pc, target=target, meta=anchor))
                     checker.scoreboard.check(expected=wanted, actual=actual, context=context)
-                    coverage.sample(dict(flag=previous['phrPtr']['flag'], pointer=previous['phrPtr']['value'], taken=taken))
-                    routes.add((mode, previous['phrPtr']['flag'], previous['phrPtr']['value'], taken))
+                    # The integrated pointer flag is DCE'd. The lap is our
+                    # declared input-program history, not an observed RTL flag.
+                    coverage.sample(dict(lap=step // (LENGTH // 2), pointer=previous['phrPtr']['value'], taken=taken))
+                    routes.add((mode, previous['phrPtr']['value'], taken))
                     observations.append(dict(step=step, taken=taken, request=dict(cfi_pc=cfi_pc,
                         target=target, meta=anchor), expected_next=wanted, actual_next=deepcopy(actual)))
             await agent.set_ready(prediction=False, meta=True)
             await observation.drain()
             summary = checker.summary()
-            if steps == 52:
-                required = {(mode, flag, value, taken) for flag in (0, 1) for value in range(0, 52, 2) for taken in (0, 1)}
+            if steps == LENGTH:
+                required = {(mode, value, taken) for value in range(0, LENGTH, 2) for taken in (0, 1)}
                 checker.scoreboard.check(expected=sorted(required), actual=sorted(routes), context=context)
             return summary
     except BaseException as error:
@@ -76,6 +79,6 @@ async def check_recovery(agent, output, *, mode, steps=52):
     finally:
         write_coverage(coverage, Path(output), mode)
         path = Path(output) / 'results/bpu' / ('phr-recovery-' + mode + '.json')
-        dump_trace(path, dict(mode=mode, steps=steps, trace=checker.records,
+        dump_trace(path, dict(mode=mode, steps=steps, trace=list(checker.records),
             observations=observations, accepted=observation.accepted, routes=sorted(routes),
             failure=failure, summary=None if failure else checker.summary(), formal_credit=False))

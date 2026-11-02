@@ -4,8 +4,8 @@
 功能点先用人类可读的微架构语义描述“这块硬件保证什么”，再映射到测试用例与覆盖 bin；
 枚举值只作为语义的边界情况出现，不单独构成功能点。
 
-源码基线：`kunminghu-v3 @ 893e1580`（`../../XiangShan`），RTL 取自
-`../../soc-split/rtl/`，哈希见 `manifest/sbuffer-rtl.sha256`。
+当前基线：`public-893e1580b` / DefaultConfig，由完整香山生成后提取真实 DUT 实例闭包。
+top 与导出名见工程 `ucv.json`；旧 soc-split 路径/哈希只作为当时历史报告的来源。
 
 ## 1. 层次与职责
 
@@ -66,8 +66,8 @@ store 数据可被写到多个同名行”的硬件语义，不是简单的位�
 ### SBD-WRITE-07 双端口同拍写入
 两个写端口同一拍可以各自写入。不同行、不同 lane、同一 lane 内不重叠字节互不破坏；
 同一字节被两个端口同时写时，1 号端口的数据/mask 覆盖 0 号端口（生成 RTL 的赋值顺序）。
-该重叠属于模块级优先级，父块正常使用不会制造重叠写，测试只记录这一行为，不把它当作
-父块合法并发域。
+该优先级也用于父块同拍提交两个重叠 store 的顺序：后端口的字节覆盖前端口；不能仅因
+“同字节竞争”就标成越域。顶层 `test_dual_port_enqueue` 对该正常序列另有独立常量检查。
 **观察**：分别检查四种组合的完整 mask 和字节数据。
 
 ### SBD-WRITE-08 写入累积
@@ -108,17 +108,17 @@ mask 保持 1，其余字节清 0，数据保留；清理和写作用于不同�
 | 功能点 | 用例 | 功能覆盖点 |
 |---|---|---|
 | SBD-WRITE-01/06 | `test_single_byte_each_lane` | `write_shape=single_byte`、`byte_lane`、`write_line_slot`、`lane_slot` |
-| SBD-WRITE-02 | `test_wline_broadcast` | `write_shape=wline_zero/wline_payload`、`lane_slot`、`write_line_slot` |
-| SBD-WRITE-03 | `test_vword_offset_alias_high_bits` | `offset_alias=high_bits_ignored`、`lane_slot` |
+| SBD-WRITE-02 | `test_wline_broadcasts_payload_to_whole_line` | `write_shape=wline_zero/wline_payload`、`lane_slot`、`write_line_slot` |
+| SBD-WRITE-03 | `test_vword_offset_selects_low_two_bits_only` | `offset_alias=high_bits_ignored`、`lane_slot` |
 | SBD-WRITE-04 | `test_wvec_multi_line_broadcast` | `write_line_slot`、`line_x_lane` |
-| SBD-WRITE-05 | `test_invalid_write_does_nothing` | `write_shape`（不采样）、`idle_context` |
+| SBD-WRITE-05 | `test_invalid_requests_do_nothing` | `write_shape`（不采样）、`idle_context` |
 | SBD-WRITE-07 | `test_dual_port_combinations` | `port_usage`（5 个 bin） |
-| SBD-WRITE-08 | `test_back_to_back_accumulate`、`test_all_lines_all_lanes` | `line_x_lane`、`write_line_slot`、`lane_slot` |
-| SBD-FLUSH-01/02 | `test_flush_single_multi_all` | `flush_extent`、`flush_line_slot` |
+| SBD-WRITE-08 | `test_back_to_back_writes_accumulate`、`test_exhaustive_cell_and_port_sweep` | `line_x_lane`、`write_line_slot`、`lane_slot` |
+| SBD-FLUSH-01/02 | `test_flush_single_two_many_all` | `flush_extent`、`flush_line_slot` |
 | SBD-FLUSH-03 | `test_flush_and_write_same_cycle` | `flush_concurrency=same_line/other_line` |
-| SBD-FLUSH-04 | `test_invalid_flush_does_nothing` | `flush_concurrency=flush_only` |
-| SBD-RESET-01 | `test_reset_clears_and_cancels_pending` | `reset_context`（3 个 bin） |
-| SBD-STABLE-01 | `test_idle_stability` | `idle_context`（3 个 bin） |
+| SBD-FLUSH-04 | `test_invalid_requests_do_nothing` | `flush_concurrency=flush_only` |
+| SBD-RESET-01 | `test_reset_contexts` | `reset_context`（3 个 bin） |
+| SBD-STABLE-01 | `test_reset_initializes_masks_and_idle_is_stable` | `idle_context`（3 个 bin） |
 | 合法随机组合 | `test_random_legal_traffic` | 交叉覆盖、补充随机边界 |
 
 覆盖点只在实际比较成功后采样；驱动但未检查的事件不计数。覆盖分母保留全部已定义 bin，
@@ -127,7 +127,7 @@ mask 保持 1，其余字节清 0，数据保留；清理和写作用于不同�
 ## 4. 合法输入域与 don't-care
 
 - 写请求的 `wvec` 在当前父块中 one-hot；模块级允许多行，按功能点 04 验证。
-- 双端口同一字节重叠只作为模块级优先级记录；父块不应产生。
+- 双端口重叠按提交端口顺序应用，后端口覆盖前端口；父层也验证这一合法控制。
 - `dataOut` 在未写过的字节上是未初始化值；只比较模型标记为“已知”的字节。
 - 复位期间不驱动新事务（除专门的复位用例）。
 - `vwordOffset[43:2]` 对 SbufferData 是 don't-care；低 2 位决定 lane。
@@ -135,8 +135,10 @@ mask 保持 1，其余字节清 0，数据保留；清理和写作用于不同�
 
 ## 5. 当前状态
 
-- 已完成：源码/RTL 层次核对、RTL 复制与 SHA-256、Picker DUT 导出、原生冒烟走时钟。
-- 已完成：15 个功能用例全部 PASS；功能覆盖 4 组 100%；DUT LCOV 8518/8518、toggle
-  70684/70684、branch 2115/2116（唯一缺口为时间零 `initial` 的 else）。
-- 已完成：Sbuffer 顶层功能点与用例，见 [functional-points-sbuffer.md](functional-points-sbuffer.md)。
-- 复现与证据见 [SbufferData 报告](reports/sbuffer-data-20261024.md)。
+- 历史 2026-10-24：15 个功能用例 PASS；当时功能覆盖 4 组 100%、DUT LCOV 8518/8518、
+  toggle 70684/70684、branch 2115/2116。数字仍属于原日期和工具/源码，不迁标到新运行。
+- 2026-11-01：原 15 项保留，驱动与快照已接入框架模板；与顶层一起在两个 seed 下完成
+  回归，包含非法命令、数据不可变性和 ownership 自检，但不把自检计为硬件功能覆盖。
+  见[事务修复记录](../../../../docs/lessons/transaction-boundary-repair-20261101.md)。
+- 顶层功能点见 [functional-points-sbuffer.md](functional-points-sbuffer.md)，历史覆盖证据见
+  [SbufferData 报告](reports/sbuffer-data-20261024.md)。

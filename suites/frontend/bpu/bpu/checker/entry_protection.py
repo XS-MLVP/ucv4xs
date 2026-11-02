@@ -6,6 +6,8 @@ from suites.frontend.bpu.bpu.model.early_opposition import provider,main_counter
 
 
 class Checks(EarlyOppositionChecks):
+    requires_short_initialization = True
+
     def before_flowing_recovery(self,source):
         """Optional original-source association before driver admission."""
         return None

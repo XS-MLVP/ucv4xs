@@ -8,8 +8,20 @@ import pytest
 from suites.frontend.bpu.bpu.checker.pipeline import environment
 from suites.frontend.bpu.bpu.model.pipeline import Redirect
 from suites.frontend.bpu.bpu.transaction.types import BpuRedirect
-from tests.bpu.scoreboard.test_main_ownership import ready,input_bits
+from suites.frontend.bpu.bpu.model.projection import INTEGRATED_PIPELINE
+from tests.bpu.scoreboard.test_main_ownership import ready as abstract_ready,input_bits
 from tests.bpu.scoreboard.test_pipeline_checking import fixture_row
+
+
+def ready():
+    checker,event,source,training=abstract_ready()
+    checker.projection=INTEGRATED_PIPELINE
+    token=checker.source_receipts[source.meta_tick]
+    source.prediction.target=None
+    source.meta.perf=None
+    source.meta.redirect['phr']=INTEGRATED_PIPELINE.history(token.history)
+    source.meta.resolve['phr']=INTEGRATED_PIPELINE.history(token.history)
+    return checker,event,source,training
 
 
 def request(source,*,target=None):
@@ -116,12 +128,14 @@ def test_numeric_history_alias_requires_an_explicit_owner_not_latest_or_oldest_g
     checker.model.published[alias.sequence]=alias
     row=redirect_row(checker,event,source,tx)
     with pytest.raises(ValueError,match='aliases different history owners'):
-        environment(row['inputs'],checker.model)
+        environment(row['inputs'],checker.model,projection=INTEGRATED_PIPELINE)
     if explicit:
         checker.plan_redirect(source,tx);capture(checker,row)
         assert checker.last_events.redirect.source is token.history
         assert checker.last_events.redirect.source is not checkpoint and not checker.redirect_plans
     else:
         before=owned_state(checker)
-        with pytest.raises(ValueError,match='aliases different history owners'):capture(checker,row)
+        # Current production capture rejects an unplanned owner even before
+        # attempting the separately-tested ambiguous encoding lookup above.
+        with pytest.raises(AssertionError,match='planned redirect'):capture(checker,row)
         assert owned_state(checker)==before

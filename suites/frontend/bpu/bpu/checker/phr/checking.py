@@ -6,7 +6,7 @@ from dataclasses import asdict
 from toffee import CheckContext
 from toffee import Scoreboard
 from toffee import ScoreboardMode
-from suites.frontend.bpu.bpu.model.phr.model import BpuPhrReference
+from suites.frontend.bpu.bpu.model.phr.model import BpuPhrReference, LENGTH, LAYOUT
 from suites.frontend.bpu.bpu.checker.phr.association import BpuPhrAssociation
 
 
@@ -15,7 +15,7 @@ class BpuPhrChecker:
         if record_limit is not None and (type(record_limit) is not int or record_limit < 2):
             raise ValueError('PHR record_limit must retain at least two frames')
         self.scope = scope
-        self.reference = BpuPhrReference()
+        self.reference = BpuPhrReference(pointer_flags=False)
         self.scoreboard = Scoreboard('bpu.phr_state')
         self.planned = deque()
         self.records = [] if record_limit is None else deque(maxlen=record_limit)
@@ -65,12 +65,15 @@ class BpuPhrChecker:
             self.reference.reset()
             self.initialized = True
             return
-        self.association.observe(row, event.tick, check)
+        if row['reset']:
+            self.reference.reset()
         check(self.reference.state, row['state'])
-        self.cells += 52
-        self.folds += 19 * 4
+        self.cells += LENGTH
+        self.folds += len(LAYOUT) * 4
         logical = self.reference.logical()
         check(dict(pointer=self.reference.state['s1_pointer'], low=logical & 8191), row['phr_meta'])
+        # Only save lineage after the independent physical/history comparisons.
+        self.association.observe(row, event.tick, check)
         if row['public_meta']['valid']:
             meta = self.reference.meta3
             check(dict(phrPtr=meta['pointer'], phrLowBits=meta['low']), row['public_meta']['phr'])
@@ -88,7 +91,7 @@ class BpuPhrChecker:
             prediction = row['boundary'][selected]['prediction']
             check(1, row['public_prediction']['valid'])
             check(dict(start_pc=row['parent'][selected + '_pc'],
-                    target=prediction['target'], taken=prediction['taken'],
+                    taken=prediction['taken'],
                     position=prediction['position'],
                     s2_override=row['boundary']['s2']['valid'],
                     s3_override=row['boundary']['s3']['valid']),
@@ -105,10 +108,17 @@ class BpuPhrChecker:
             self.accepted += 1
         self.reference.advance(row['boundary'], row['reset'])
 
+    def finish(self):
+        self.raise_failure()
+        self.check(0, len(self.planned), phase='all_planned_recoveries_accepted')
+        self.association.finish(lambda expected, actual: self.check(expected, actual, phase='PHR_finish_ledger'))
+
     def summary(self):
         self.raise_failure()
         if self.planned:
             raise AssertionError(f'unaccepted recoveries: {list(self.planned)!r}')
         return dict(cycles=self.observed_cycles, accepted=self.accepted, cells_compared=self.cells,
-            fold_registers_compared=self.folds, associated=self.association.emitted,
-            flushed=self.association.flushed, checks=asdict(self.scoreboard.status))
+             fold_registers_compared=self.folds, associated=self.association.emitted,
+             flushed=self.association.flushed, phr_inputs=self.association.accepted,
+             suppressed=self.association.suppressed, outstanding=len(self.association.pending),
+             checks=asdict(self.scoreboard.status))

@@ -1,0 +1,108 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "scope": "ResolveQueue strict ABI, SDK full-slot driver, automatic atomic merge/consume/cancel checks and input UID closure; Ftq top-level protocol migration remains required",
+  "contract": "suites/frontend/ftq/docs/transaction-adaptation.md#resolvequeue-协议迁移当前实现",
+  "verified": {
+    "output": "results/ucv-goal-ftq-resolve-transactions-v4-20261102",
+    "counts": {"PASS": 285, "XFAIL": 2},
+    "seed": 2,
+    "workers": 2,
+    "selection": [],
+    "source_sha256": "854d02ef8b43cb0de170f48f2c4955930142504193383fa033638b69475c04ef",
+    "source_stable": true,
+    "source_files_match_at_audit": true,
+    "run_sha256": "11616e64ecff3e9823bfa1f6fbc759415e9f4feb16ff6488d8536d1dc17c7dc7",
+    "summary_sha256": "8bf948b6088921ca024a4cf4636ac83d4436e102aee290d8b4ea1df173c10617",
+    "previous": "results/ucv-goal-ftq-cycle-sampling-v3-20261102",
+    "previous_230_nodeids_removed_or_changed": [],
+    "added_selftests": {"transactions_and_lifecycle": 33, "schema_and_input_domains": 24},
+    "gaps": []
+  },
+  "seed1": {
+    "output": "results/ucv-goal-ftq-resolve-transactions-seed1-20261102",
+    "counts": {"PASS": 105, "XFAIL": 2},
+    "seed": 1,
+    "workers": 1,
+    "selection": "All original ResolveQueue tests, resolve_transactions/schema controls, cycle_sampling and all original CommitQueue tests",
+    "source_sha256": "854d02ef8b43cb0de170f48f2c4955930142504193383fa033638b69475c04ef",
+    "source_stable": true,
+    "source_files_match_at_audit": true,
+    "run_sha256": "d38d402aa3e827e486fc3239bab42b2c4376da4390a3b4a4f5eef5971e4dd82f",
+    "summary_sha256": "124575c242e85b072ee26f93aa8d3a78d80a07ccdfa9c290eed962c95ee05ea0",
+    "selected_outcomes_match_seed2": true,
+    "gaps": []
+  },
+  "original_program_preservation": {
+    "reference": "HEAD001735033979f52712808b25280efc262a48654f; git-show/AST comparison",
+    "unmodified_bodies_except_appended_tail": true,
+    "explicit_drain_tails": [
+      "test_agent_round_trip",
+      "test_new_index_creates_one_owned_entry_and_holds_under_backpressure",
+      "test_same_index_lanes_merge_and_advance_enqueue_by_unique_entries",
+      "test_ifu_resolve_is_an_independent_always_accepted_source",
+      "test_backend_correct_direct_and_return_resolves_do_not_allocate",
+      "test_bpu_enqueue_at_resident_index_invalidates_stale_speculation",
+      "test_reset_discards_pending_resolution_and_reinitializes"
+    ],
+    "boundary": "These7 original bodies formerly ended with accepted reports held behind ready0. Only after all original assertions they now explicitly request drain_all; finish/fixture never invent ready. Original report streams,180-iteration random ownership,512 slot/source vectors, wrap/toggle and overflow counterexamples are not deleted or shortened."
+  },
+  "implementation": [
+    "ResolveInput validates/copies the complete simultaneous3-backend+IFU vector and semantic reset/ready/redirect/enqueue controls before any side effect. The SDK SyncDriver owns all47 non-clock inputs; independent schema checks all60 outputs and clock width/direction. No fake enqueue-pointer flag is supplied.",
+    "Each planned slot/source has an environment(epoch, slot, source)UID. Atomic before/after snapshots compare actual inputs, full identity/startPc, branch payload/order and the real8-bit valid mask. Returned data/PC/index never select the input UID.",
+    "Reference entry ownership/startPc comes from the first input ancestor under RQ-001/003. Same-entry reports append in source priority and suppress training during merge; unrelated new reports and an old ready completion can occur in the same slot.",
+    "Backend filter, pre-edge global capacity rejection and branch-capacity rejection are explicit non-accepted terminals. IFU bypasses only the backend semantic filter, not finite capacity. Redirect grace, overwrite-by-pointer-value, normal completion and asynchronous reset cancellation keep distinct terminal sets.",
+    "Bounded finish preserves declared consumer readiness; it cannot raise ready, flush or reset to erase debt. Exact idle tail checks, cancellation-after-edge, closed observers, wrong input, missing/spurious output, changed identity/payload/mask and swallowed public/reference errors cannot pass clean finish."
+  ],
+  "oracle_boundary": {
+    "primary_contract": "suites/frontend/ftq/docs/functional-points.md RQ-001..011, including first-ownerPC, FIFO/source priority, capacity/filter, ready and cancellation semantics",
+    "geometry": "DefaultConfig16-entry queue,4-entry guard,8 branch slots;49-bit halfword Pc.addr,5-bit aligned position",
+    "independent_controls": "Fixed halfword alignment answer15+16=31, same-payload distinct UID sequence, original8-prefix retention instead of overflow wrap, first-ownerPC instead of last-source rename",
+    "limit": "The first-ownerPC corruption example is pure/invalid-producer control, not native proof that a real producer changes PC for one FTQ identity. Python observation/expected injections are not RTL mutation coverage. Native internal pointers are diagnostics only, not payload oracle inputs."
+  },
+  "unmasked_hardware_defects": {
+    "output": "results/ucv-goal-ftq-resolve-overflow-unmasked-20261102",
+    "selection": "tests/resolve_queue/test_resolve_overflow.py --runxfail",
+    "counts": {"FAIL": 2},
+    "source_sha256": "854d02ef8b43cb0de170f48f2c4955930142504193383fa033638b69475c04ef",
+    "source_stable": true,
+    "run_sha256": "adf36d92ccf36d13ec612ab0e25391b572d36e41fb9443c22f46076965894c39",
+    "summary_sha256": "99a710ed21da7e52dba415153cbbd409f3109b3c09a28311af6667b7ee870993",
+    "first_causes": ["ninth report changes branches[7].position8->9 and target to0xa0000000", "same-slot excess report changes branches[0].position1->9 and target to0xa0000000"],
+    "boundary": "Both are automatic resolve_queue.transactions Scoreboard mismatches at the original hardware overwrite behavior, not setup/cleanup errors. Safe first8 oracle and exact original two strict-XFAIL declarations are unchanged. Failure occurs before later original post-resolve assertions; those later statements are not claimed executed."
+  },
+  "artifacts": {
+    "native_build_inputs_match_at_audit": true,
+    "full_artifacts_checked": 7,
+    "full_native_inputs": 163,
+    "seed1_artifacts_checked": 7,
+    "seed1_native_inputs": 76,
+    "artifact_bytes_and_hashes_match": true,
+    "manifest_state": "committed",
+    "coverage_complete": true,
+    "keep_coverage_inputs": false,
+    "cleanup_complete": true,
+    "no_RTL_or_native_rebuild": true,
+    "limit": "Merged native/LCOV/HTML integrity is not coverage closure. Raw coverage inputs are not retained."
+  },
+  "root_tests": {"output": "results/ucv-goal-root-resolve-final-20261102.xml", "counts": {"PASS": 242}, "sha256": "36cadf722a3d46aa011970a4dd2fcdeb7f511e617562b6cf2a1f2d92f4c3a0bb"},
+  "collection": {
+    "output": "results/ucv-goal-collect-resolve-transactions-20261102",
+    "source_sha256": "d67ec0f1ec0c6f8b95713d0f9f0b4cc82481af2acb935a2276643120c0d6debd",
+    "run_sha256": "7875a6cb5cf2012458f436797c90bfa057648ee462d3b4e53eecfffd308a0210",
+    "summary_sha256": "f2579c0804c7c6785799054711338916d14cfca6a61bc1d5395350119a0b27ae",
+    "source_stable": true,
+    "source_files_match_at_audit": true,
+    "collection_tasks": 10,
+    "all_collection_tasks_exit_zero": true,
+    "total": 47805,
+    "initial_total": 45883,
+    "previous_total": 47748,
+    "initial_and_previous_removed_nodeids": [],
+    "initial_and_previous_relative_order_preserved_per_suite": true,
+    "suite_counts": {"bpu": 42199, "ftq": 287, "icache": 294, "ifu": 725, "dcache": 232, "lsq": 2575, "sbuffer": 66, "mmu": 417, "lsu": 543, "vagq": 467},
+    "boundary": "Collect-only full inventory includes internal VAGQ; not unified-public hardware acceptance. CLI exit1 is the registered IFU residual gate, all ten collection tasks exit0."
+  },
+  "remaining": "Ftq top-level still uses legacy manual producer drivers and needs complete input UID/epoch, prediction/meta, override, resolve/train, commit, retry/cancel and bounded finish integration. MBTB/other BPU, ICache, all MemBlock and VAGQ and final repository audits stay required."
+}

@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "state": "model-driven-functional-loop-repaired-full-lifecycle-review-still-pending",
+  "path": "suites/memblock/sbuffer/tests/sbuffer/test_sbuffer.py::test_timeout_writeout_all_lanes",
+  "red": "New owner-infrastructure gate correctly rejected env.model.lines and made the unmodified transaction-only root assertion fail. Full root-v1=256 PASS/1 FAIL; assertion was not changed or excluded.",
+  "fix": "Construct exactly the original four Enq requests in the original lane/order, then require four bounded wait_req/accept/hit transactions from that declared input plan. Replace the original three final idle edges with three no-extra-request checks, retain physical empty and accepted enqueue count. No forwarding model property, hidden counts, new exception or selftest reclassification.",
+  "source_sha256": "344c13511097a3fca494fc9c800acd0a934191518b50507e3cc49d7a739cd9b0",
+  "runs": [
+    {"output": "results/ucv-goal-sbuffer-planned-timeout-v1-20261102", "seed": 2, "counts": {"PASS": 66}, "audit": "results/ucv-goal-sbuffer-planned-timeout-audit-v1-20261102.json"},
+    {"output": "results/ucv-goal-sbuffer-planned-timeout-seed1-v1-20261102", "seed": 1, "counts": {"PASS": 66}, "audit": "results/ucv-goal-sbuffer-planned-timeout-seed1-audit-v1-20261102.json"}
+  ],
+  "audits": "Both runs source stable and every source file matched at audit,44 native inputs/12 build files each; committed/coverage_complete/cleanup_complete manifests and all artifact/build/processor hashes checked, native builds unchanged. Original66 nodeids/verdicts retained, no new test or exemption.",
+  "root": "results/ucv-goal-component-gate-root-v2-20261102.xml:257 PASS, including the unchanged Sbuffer transaction-only assertion",
+  "static_boundary": "New strict report production-v2 has Sbuffer0 owner/0 pin/0 signal. Not proof of the remaining full semantic/lifecycle review.",
+  "remaining": "Sbuffer/SbufferData overall task remains pending per active goal; older matching-by-payload/ownership/accepted response/reset/finish obligations still need complete current-code audit. No full-goal completion claim."
+}

@@ -78,7 +78,21 @@ python3 scripts/audit-assets.py
 仍报告真实待适配项；引脚 keyword、物理字符串和别名都被统计。零静态命中也不证明
 采样、引脚所有权或独立 checker 已经合格。
 
+2026-11-01 进一步补上 raw_dut、xport/xclock 和通道字典 .Set/.U 等盲区，
+以 signal_operations 单列，不改写旧 pin expressions 的历史口径。由此 Sbuffer 也有
+事务边界待适配项；结构通过不代表其用例已经完全摆脱信号对象。修复记录见
+[提交后语义复核](lessons/semantic-boundary-repair-20261101.md)。
+
+随后本日完成 Sbuffer/SbufferData 的框架 Driver、lossless Monitor、不可变事务与接受/响应
+账本修复，Sbuffer 的上述静态两类计数已清零，且有正常/错误对照，不再仅凭目录或零计数
+论证。全仓仍有六工程待适配；具体证据与不包含的证明范围见
+[事务边界修复](lessons/transaction-boundary-repair-20261101.md)。
+
 ## 工程目录和 Python 命名空间
+
+多人/AI协作的统一放置表、测试命名和交接规则见
+[CONTRIBUTING.md](../CONTRIBUTING.md)。沿用同一工程/DUT现有布局，不为发布批量搬迁
+或强制创建空角色目录；共享文件改动先协调。
 
 工程根直接作为包：例如磁盘 suites/memblock/lsq 对应 Python suites.memblock.lsq。
 十个旧 *verify 外壳均已去掉，common 按职责拆到 ports、drivers、monitors、runtime、

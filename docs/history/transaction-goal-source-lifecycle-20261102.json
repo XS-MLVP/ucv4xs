@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "scope": "BPU autonomous pipeline, entry/short revisit, positive short protection and PHR shared lifecycle; not all BPU or frontend acceptance",
+  "implementation": {
+    "short_preparation": "Main-only fallback then five bounded rounds of real accepted inputs establish NT0 without younger no-hit work allocating table1. Returned opposition is also bounded. Ahead NT0 is explicitly established with legal new originals before the declared wrong-base source.",
+    "short_unchanged_obligations": "Wrong base=False, original table0 NT0->NT1, same owner table1 T4 allocation, long priority, older-path fresh short consumer and exact S0 read/S1 checkpoint ancestry all remain required.",
+    "positive_preparation": "A dedicated normal-input primer establishes the required T4/protection1 source. Existing RecoveryDriver launches ready/recovery concurrently, preserving Main-taken read index ancestry and fallback tag checkpoint. Serial pulse cleanup selected another tag and saturated that different record toT7. Seeds are input-owned, not picked from actual table contents.",
+    "positive_paths": "Independent input hashes fix the two5/9-history read ancestors at160/96 with the same low5 bits. The old legal160/352 prefix remains as a control that cannot claim an ineligible new long allocation.",
+    "no_RTL_change_or_native_rebuild": true
+  },
+  "integrated": {
+    "output": "results/ucv-goal-bpu-source-lifecycle-integrated-20261102",
+    "counts": {"PASS": 686},
+    "native_partition": {"PASS": 33},
+    "pure_partition": {"PASS": 653},
+    "native_composition": {"pipeline": 2, "entry": 4, "short_revisit": 4, "positive_protection": 4, "phr": 10, "phr_handoff_controls": 2, "pipeline_runtime_controls": 3, "phr_runtime_controls": 4},
+    "selection": "Exact20 test paths are frozen in run.json.pytest_args; two BPU task partitions both exit0",
+    "source_sha256": "69771d1a331c40b9c4cccfbc0cd254b12d55065e8178b875af8eddfc7a75b2b1",
+    "source_stable": true,
+    "source_files_match_at_audit": true,
+    "run_sha256": "10ed9f97898bcafc3c69789e4ae84e7996ff4884aca981fa28101e727e6efe9b",
+    "summary_sha256": "87fa20e7c6abba6ff65e24a987891680c001f333cc92f0e931e4fc53431de847",
+    "comparison": "results/ucv-goal-bpu-short-nt-base-v5-20261101",
+    "previous_selected_cases": 320,
+    "removed_nodeids": [],
+    "unchanged_previous_cases": 316,
+    "changed_cases": [
+      {"nodeid": "bpu::tests/bpu/testcase/test_early_positive_protection.py::test_taken_original_protection_limits_and_recovery[upper-hold]", "old": "FAIL", "new": "PASS"},
+      {"nodeid": "bpu::tests/bpu/testcase/test_early_positive_protection.py::test_taken_original_protection_limits_and_recovery[upper-release]", "old": "FAIL", "new": "PASS"},
+      {"nodeid": "bpu::tests/bpu/testcase/test_early_positive_protection.py::test_taken_original_protection_limits_and_recovery[lower-recover]", "old": "FAIL", "new": "PASS"},
+      {"nodeid": "bpu::tests/bpu/testcase/test_early_positive_protection.py::test_taken_original_protection_limits_and_recovery[direction-return]", "old": "FAIL", "new": "PASS"}
+    ],
+    "additional_selected_cases": 366,
+    "gaps": []
+  },
+  "seed2": {
+    "output": "results/ucv-goal-bpu-source-lifecycle-seed2-20261102",
+    "selection": "entry_protection, short_revisit and early_positive_protection original native parameters",
+    "counts": {"PASS": 12},
+    "source_sha256": "69771d1a331c40b9c4cccfbc0cd254b12d55065e8178b875af8eddfc7a75b2b1",
+    "source_stable": true,
+    "source_files_match_at_audit": true,
+    "run_sha256": "53999100ebea7fa33c65dc4d94a7462003d62a61deab472ae9e3d1b4a8829ed9",
+    "summary_sha256": "298f7d94a80fc0bc3dbd17634547f3ac2b00c13d9b77b530b42e61074a3d30e6",
+    "gaps": []
+  },
+  "native_artifacts": {
+    "build_id": "8f187864bd50bbf98ca6d9616dad8ed0c6f8c5d6c754e5db211119efd7c49356",
+    "build_input_files_match_at_audit": true,
+    "integrated_native_inputs": 33,
+    "seed2_native_inputs": 12,
+    "artifacts_checked_per_run": 3,
+    "artifact_bytes_and_hashes_match": true,
+    "manifest_state": "committed",
+    "coverage_complete": true,
+    "keep_coverage_inputs": false,
+    "cleanup_complete": true,
+    "limit": "Merged coverage.dat/lcov/html are available; raw native inputs are not retained. Artifact integrity is not functional or coverage closure. Internal target checks do not prove DCE public prediction.target."
+  },
+  "remaining": "Other BPU programs and MBTB4-way writeback/shadow/duplicate cleanup require independent audit; FTQ/ICache and all MemBlock/VAGQ migration obligations remain in the active goal. Earlier red receipts and their original source hashes are preserved."
+}

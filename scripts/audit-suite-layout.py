@@ -11,6 +11,14 @@ io_* keywords and P.p_*/P.io aliases are all pin-level coupling, even when a
 harness owns the native DUT. --strict checks structural wiring only; add
 --require-transaction-boundary to reject pin-level coupling. Neither mode
 certifies monitor ownership, independent oracles or hardware correctness.
+
+Signal operations and exposed native handles are reported separately from
+physical-name counts. Renaming .dut to .raw_dut or returning a pin dictionary
+must not make the transaction report green.
+
+Functional access to an owner's driver/ports/model/monitor or private encoding
+and timing helpers is separate infrastructure coupling, even without physical
+field names. This remains a conservative syntax report, not a dataflow proof.
 """
 from __future__ import annotations
 
@@ -75,6 +83,81 @@ def pin_accesses(path):
               and node.value.id in aliases and (node.attr.startswith('p_') or node.attr == 'io')):
             counts['alias'] += 1
     return counts
+
+
+def signal_accesses(path):
+    """Find explicit signal operations, without treating response.value as a pin.
+
+    This is a conservative syntax check, not dataflow or protocol certification.
+    Keep the locations visible so unusual user-defined methods can be reviewed.
+    """
+    tree=ast.parse(path.read_text(encoding='utf-8'))
+    operations={'Set','U','Get','AsImmWrite','AsRiseWrite','IsInIO','IsOutIO',
+                'RefreshComb','Step','GetKeys','GetXClock'}
+    handles={'raw_dut','xport','xclock'}
+    hits=[]
+    for node in ast.walk(tree):
+        if isinstance(node,ast.Call) and isinstance(node.func,ast.Attribute) and node.func.attr in operations:
+            hits.append({'line':node.lineno,'kind':'signal-operation','expression':ast.unparse(node.func)})
+        elif isinstance(node,ast.Attribute) and node.attr in handles:
+            hits.append({'line':node.lineno,'kind':'native-handle','expression':ast.unparse(node)})
+    return sorted(hits,key=lambda hit:(hit['line'],hit['expression']))
+
+
+def component_accesses(path):
+    """Find explicit owner-infrastructure bypasses and simple owner aliases.
+
+    An imported standalone reference model or an immutable response's ordinary
+    fields are not an agent's mutable checker state. Owner names follow the
+    fixture convention; this check cannot certify arbitrary dynamic aliases.
+    """
+    tree=ast.parse(path.read_text(encoding='utf-8'))
+    owners={'agent','env','harness','dut'}
+    owners.update(node.id for node in ast.walk(tree)
+                  if isinstance(node,ast.Name) and is_owner(node.id))
+
+    def owner(value):
+        if isinstance(value,ast.Name):
+            return value.id in owners
+        if isinstance(value,(ast.Attribute,ast.Subscript)):
+            return owner(value.value)
+        return False
+
+    # Only a plain assignment of the owner itself carries its identity. A
+    # response obtained through a transaction method is deliberately not an
+    # owner alias, even if its fields happen to have infrastructure-like names.
+    changed=True
+    while changed:
+        changed=False
+        for node in ast.walk(tree):
+            targets=(node.targets if isinstance(node,ast.Assign) else
+                     (node.target,) if isinstance(node,ast.AnnAssign) else ())
+            value=getattr(node,'value',None)
+            if isinstance(value,ast.Name) and value.id in owners:
+                for target in targets:
+                    if isinstance(target,ast.Name) and target.id not in owners:
+                        owners.add(target.id)
+                        changed=True
+
+    def kind(name):
+        if name in {'ports','bundle','driver','monitor','model','checker','reference','scoreboard'}:
+            return 'owner-component'
+        if name.endswith(('_driver','_monitor','_scoreboard')):
+            return 'owner-component'
+        if name.startswith('_') and not name.startswith('__'):
+            return 'owner-private-helper'
+        return None
+
+    hits=[]
+    for node in ast.walk(tree):
+        if isinstance(node,ast.Attribute) and owner(node.value) and kind(node.attr):
+            hits.append(dict(line=node.lineno,kind=kind(node.attr),expression=ast.unparse(node)))
+        elif (isinstance(node,ast.Call) and isinstance(node.func,ast.Name)
+              and node.func.id=='getattr' and len(node.args)>=2 and owner(node.args[0])
+              and isinstance(node.args[1],ast.Constant) and isinstance(node.args[1].value,str)
+              and kind(node.args[1].value)):
+            hits.append(dict(line=node.lineno,kind=kind(node.args[1].value),expression=ast.unparse(node)))
+    return sorted(hits,key=lambda hit:(hit['line'],hit['expression']))
 
 
 def suite_entries():
@@ -163,6 +246,8 @@ def audit(suite, suite_root, pytest_root, tests_root):
     direct = []
     pin_fields = 0
     pin_level_cases = []
+    signal_level_cases = []
+    component_level_cases = []
     feature_cases = 0
     if tests_root.is_dir():
         for path in tests_root.rglob('test_*.py'):
@@ -174,6 +259,12 @@ def audit(suite, suite_root, pytest_root, tests_root):
             pin_fields += sum(fields.values())
             if any(fields.values()):
                 pin_level_cases.append({'path': str(path.relative_to(suite_root)), **fields})
+            signals=signal_accesses(path)
+            if signals:
+                signal_level_cases.append({'path':str(path.relative_to(suite_root)),'hits':signals})
+            components=component_accesses(path)
+            if components:
+                component_level_cases.append({'path':str(path.relative_to(suite_root)),'hits':components})
             hits = native_access(path)
             if hits:
                 direct.append({'path': str(path.relative_to(suite_root)), 'hits': hits})
@@ -193,7 +284,11 @@ def audit(suite, suite_root, pytest_root, tests_root):
         'direct_access_cases': direct,
         'pin_fields': pin_fields,
         'pin_level_cases': pin_level_cases,
-        'transaction_boundary': 'needs-adapter' if pin_fields or direct else 'no-static-leak-found',
+        'signal_level_cases': signal_level_cases,
+        'signal_operations': sum(len(case['hits']) for case in signal_level_cases),
+        'component_level_cases': component_level_cases,
+        'component_accesses': sum(len(case['hits']) for case in component_level_cases),
+        'transaction_boundary': 'needs-adapter' if pin_fields or direct or signal_level_cases or component_level_cases else 'no-static-leak-found',
         'namespace': '.'.join(suite_root.relative_to(ROOT).parts),
         'namespace_issues': namespace_problems(suite_root),
     }
@@ -214,6 +309,10 @@ def violations(row, *, require_transaction_boundary=False):
     problems.extend(row.get('namespace_issues',[]))
     if require_transaction_boundary and row['pin_fields']:
         problems.append(f"{row['pin_fields']} pin-level expressions require transaction adapters")
+    if require_transaction_boundary and row.get('signal_operations'):
+        problems.append(f"{row['signal_operations']} signal operations/native handles require transaction adapters")
+    if require_transaction_boundary and row.get('component_accesses'):
+        problems.append(f"{row['component_accesses']} owner infrastructure/private-helper accesses require transaction adapters")
     return problems
 
 
@@ -222,7 +321,7 @@ def main(argv=None):
     parser.add_argument('--json', type=Path, help='write the complete audit as JSON')
     parser.add_argument('--strict', action='store_true', help='exit nonzero on structural wiring violations only')
     parser.add_argument('--require-transaction-boundary', action='store_true',
-                        help='also reject physical fields and P.p_*/P.io aliases')
+                        help='also reject physical fields, signal operations and owner infrastructure bypasses')
     parser.add_argument('--suite', action='append', dest='suites',
                         help='limit the audit to one suite name; repeat for several')
     args = parser.parse_args(argv)
@@ -238,15 +337,16 @@ def main(argv=None):
         args.json.parent.mkdir(parents=True, exist_ok=True)
         args.json.write_text(json.dumps({'suites': rows}, indent=2, ensure_ascii=False) + '\n',
                              encoding='utf-8')
-    print('| suite | feature files | fixture entries | extra conftest | env/pytest | native access files | pin expressions | selftest | transaction boundary | structural status |')
-    print('|---|---:|---:|---:|---:|---:|---:|---|---|---|')
+    print('| suite | feature files | fixture entries | extra conftest | env/pytest | native access files | pin expressions | signal operations | owner infrastructure | selftest | transaction boundary | structural status |')
+    print('|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---|---|')
     failed = False
     for row in rows:
         problems = violations(row, require_transaction_boundary=args.require_transaction_boundary)
         failed = failed or bool(problems)
         print(f"| {row['suite']} | {row['feature_testcases']} | {len(row['root_owner_fixtures'])} | "
               f"{len(row['nested_conftests'])} | {row['env_pytest_count']} | "
-              f"{len(row['direct_access_cases'])} | {row['pin_fields']} | "
+              f"{len(row['direct_access_cases'])} | {row['pin_fields']} | {row['signal_operations']} | "
+              f"{row['component_accesses']} | "
               f"{'yes' if row['selftest_marker'] else 'no'} | "
               f"{row['transaction_boundary']} | "
               f"{'; '.join(problems) or 'ok'} |")

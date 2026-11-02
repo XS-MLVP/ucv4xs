@@ -1,0 +1,1017 @@
+{
+  "schema": 1,
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "module": "ifu/pred_checker",
+  "scope": "This module is verified; overall goal and IFU seven-DUT task remain active. PerfAnalysis and PredChecker are 2/7 adapted IFU DUTs.",
+  "before": {
+    "before_output": "results/ucv-goal-ifu-perf-integrated-20261101",
+    "counts": {
+      "PASS": 162,
+      "FAIL": 2,
+      "UNCERTAIN": 1
+    },
+    "run_sha256": "27831803ac8e098beb6b36db0efaf12c4d9acb7b35d0b02296ba131e42b9311c",
+    "source_sha256": "a4871b99145e434e62c5ae51f37431021d79fdffa44bb9c3a6511566b19cd62b",
+    "source_current": true,
+    "oracle_functions": {
+      "fault_classes": "846b82af276f2f41d989b0cb50505886a1f97dd7567413706893dfb27c37cc9d",
+      "predict": "3eedc6156aac1a02c43010344f70b6906e8b5a28c3a6cbeaacb2d3e910718bda"
+    },
+    "files": {
+      "model/pred_checker.py": "788b005bf53eed2259bffde383d681e6e46645435c82f4e6447e5a5596106ab4",
+      "tests/pred_checker/test_pred_checker.py": "6a7087d1756779769c39006da1707095c347b6f314247951f11962919a9af4cf",
+      "tests/framework/test_checker_discrimination.py": "892783129a1dd4434c41cbfe862e4f5d144498664e7ad340b6e80f28cf259435",
+      "tests/framework/test_oracle_independence.py": "e997facad88627c53046420caed510e90447e1610cfc64acd926cc57427beb2b",
+      "tests/framework/test_pruned_ports.py": "e7fb08189a6333c46896a1f7e6c64c10de1eb6a2b447b51011e0c79ad8f82156",
+      "fixtures.py": "16c55c6b5aa17351a5b29a70a6c71a6cb863e8fad209cfb28410dc3d20efe085",
+      "tests/conftest.py": "4db37680dccfcbf78659a44823b872a82929626a4c9a0ea3f082fc854d6fb838"
+    },
+    "out_of_domain_pc_wire_values": [
+      [
+        "0x7ffffffffffffe",
+        "0x7fffffffffffe"
+      ],
+      [
+        "0x3ffffffffffffe",
+        "0x7fffffffffffe"
+      ]
+    ]
+  },
+  "oracle_function_ast_unchanged": {
+    "fault_classes": "846b82af276f2f41d989b0cb50505886a1f97dd7567413706893dfb27c37cc9d",
+    "predict": "3eedc6156aac1a02c43010344f70b6906e8b5a28c3a6cbeaacb2d3e910718bda"
+  },
+  "delta": {
+    "before_count": 165,
+    "after_count": 217,
+    "before_counts": {
+      "PASS": 162,
+      "FAIL": 2,
+      "UNCERTAIN": 1
+    },
+    "after_counts": {
+      "PASS": 214,
+      "FAIL": 2,
+      "UNCERTAIN": 1
+    },
+    "removed": [],
+    "changed": {},
+    "added": {
+      "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[valid-2]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[is_rvc--1]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[is_pred_taken-1]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[invalid_taken-2]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[block_sel-2]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[is_cross_block-2]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[end_offset-32]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[end_offset--1]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[branch_type-4]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[branch_type--1]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[ras_action-4]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[pc-1]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[pc--2]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[pc-2251799813685248]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[jump_offset-1]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[jump_offset--1125899906842626]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[jump_offset-2251799813685248]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_request_must_name_the_entire_window[0]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_request_must_name_the_entire_window[35]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_request_must_name_the_entire_window[37]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[34-instruction0]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[35-instruction1]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[35-instruction2]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[35-instruction3]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[35-instruction4]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_requests_detach_mutable_producer_lists_and_freeze_nested_instructions": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_unknown_keys_and_untyped_instruction_payloads_fail": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_driver_control_domain_is_strict[reset-2]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_driver_control_domain_is_strict[padding_pc-1]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_driver_control_domain_is_strict[padding_pc-2251799813685248]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_missing_input_or_output_is_a_binding_error[io_req_bits_instrVec_0_valid]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_missing_input_or_output_is_a_binding_error[io_resp_stage2Out_checkerRedirect_bits_target_addr]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_changed_address_width_requires_a_real_migration[io_req_bits_instrPcVec_0_addr-49]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_changed_address_width_requires_a_real_migration[io_resp_stage2Out_checkerRedirect_bits_target_addr-51]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_wrong_direction_or_unowned_input_is_not_accepted": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_second_writer_is_rejected_without_disturbing_the_agent": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_every_valid_redirect_field_is_compared": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_task_handoffs_do_not_pre_sample_an_unsupplied_slot": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_concurrent_cycles_cannot_misassociate_phase_samples": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_stopping_either_monitor_cannot_pass[_before]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_stopping_either_monitor_cannot_pass[_after]": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_last_redirect_cannot_disappear_without_a_following_request": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_corrupt_combinational_truncation_is_detected": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_stale_previous_payload_cannot_stand_in_for_a_new_response": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_old_phase_tick_is_rejected_even_with_the_right_payload": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_finish_detects_a_repeated_final_redirect": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_cancelled_input_cannot_be_reported_as_a_clean_finished_stream": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_swallowed_reset_failure_cannot_finish_cleanly": "PASS",
+      "ifu::tests/framework/test_pred_agent.py::test_lifecycle_and_rejected_untyped_work_do_not_advance_slots": "PASS",
+      "ifu::tests/pred_checker/test_pred_checker.py::test_inactive_payload_is_combinational_but_cannot_redirect": "PASS",
+      "ifu::tests/pred_checker/test_pred_checker.py::test_identical_adjacent_requests_have_distinct_response_slots": "PASS",
+      "ifu::tests/pred_checker/test_pred_checker.py::test_reset_clears_redirect_before_a_new_fault": "PASS"
+    },
+    "initial_147_verdicts_preserved": true,
+    "native_build_receipts_unchanged": true
+  },
+  "runs": [
+    {
+      "output": "results/ucv-goal-ifu-pred-probe-20261101",
+      "counts": {
+        "ERROR": 15
+      },
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS"
+      ],
+      "hardware_verdict": "FAIL",
+      "migration_acceptance": "NOT_CERTIFIED",
+      "source_stable": true,
+      "source_sha256": "a320544c9468b51c7b665b4e1edd7e2d3bed8450c83543ad32613945ca5b8902",
+      "native_seed_note": "Adapter setup defect: IsInIO is the input direction, not the union of input/output. Preserved ERROR, not RTL failure.",
+      "run_sha256": "3a15f663f8b07813c24b27923c12ec7743301c6b2b8755bf439a5cdd8a526dca",
+      "summary_sha256": "87aee90995568225ed862046e029f8bf0b2987217258182e33cc6f338e7fb86b",
+      "manifest_sha256": "22cff1baa98392dcaa69c53d9715e873a1395daa7ef47619670a0bb1e92eb20e",
+      "manifest_state": "committed",
+      "coverage_complete": true
+    },
+    {
+      "output": "results/ucv-goal-ifu-pred-binding-20261101",
+      "counts": {
+        "FAIL": 15
+      },
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS"
+      ],
+      "hardware_verdict": "FAIL",
+      "migration_acceptance": "NOT_CERTIFIED",
+      "source_stable": true,
+      "source_sha256": "608990b15f87390ce071a1174a6c4d0d1b80d998d9a8900dc5dab5427de0e9d5",
+      "native_seed_note": "Adapter task-boundary defect: DriveStable idle snapshot sampled before request supplied; preserved FAIL.",
+      "run_sha256": "5f216752f13f60b034814ab74b9fab685cefc22363b4d2b92a58b7f01d39147f",
+      "summary_sha256": "ef1baece16fbe10e8ebe0d159e1cd9d64aea81a4776cc77d2859011db3a4f956",
+      "manifest_sha256": "932cad7a390ded3695604ae51614e1f89a570524e8e9903b92991f6355b3d294",
+      "manifest_state": "committed",
+      "coverage_complete": true
+    },
+    {
+      "output": "results/ucv-goal-ifu-pred-sampling-20261101",
+      "counts": {
+        "FAIL": 15
+      },
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS"
+      ],
+      "hardware_verdict": "FAIL",
+      "migration_acceptance": "NOT_CERTIFIED",
+      "source_stable": true,
+      "source_sha256": "2981129d2cb7a0272fa4a3d4438531a65438ad4eecd0e741785325179e41e43d",
+      "native_seed_note": "Changing getter strategy alone did not fix the task-boundary defect; preserved FAIL.",
+      "run_sha256": "4d9cadfd6ae098ad617a1634970d5066e98b6c3f60d2d31b6a97ed494c0c1cfa",
+      "summary_sha256": "a0b8143066a5c04356e351de2dd1e9540dfd9097b91f1c3562ddfac9cd522462",
+      "manifest_sha256": "a41c1e3a7151938d4ce98b6f4c7ded799d54a73a745b1781d991c7f8d8fdf8f8",
+      "manifest_state": "committed",
+      "coverage_complete": true
+    },
+    {
+      "output": "results/ucv-goal-ifu-pred-slots-20261101",
+      "counts": {
+        "PASS": 15
+      },
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS"
+      ],
+      "hardware_verdict": "INCOMPLETE",
+      "migration_acceptance": "NOT_CERTIFIED",
+      "source_stable": true,
+      "source_sha256": "365f3f8300cedc0ef0c3fffbead85132c8b1b5bb9fc62ca0e143e6be7275096f",
+      "native_seed_note": "Explicit-slot Execution pause fixes pre-sampling without disabling monitors.",
+      "run_sha256": "cdebcaf4f19130777277a75b3b81d9a1477880bc606fb37b1a36302f234ef9cb",
+      "summary_sha256": "37fe89b99ed5612a490af6b278b459a46168f368de46750d666fdb7b386bc4f7",
+      "manifest_sha256": "9e8d30fa58724eebb7aa75decc06605434727cee7b06b0b1292e5aa338062261",
+      "manifest_state": "committed",
+      "coverage_complete": true
+    },
+    {
+      "output": "results/ucv-goal-ifu-pred-controls-20261101",
+      "counts": {
+        "PASS": 62,
+        "FAIL": 3
+      },
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS"
+      ],
+      "hardware_verdict": "FAIL",
+      "migration_acceptance": "NOT_CERTIFIED",
+      "source_stable": true,
+      "source_sha256": "034e5578c5f1a5f29dc05df7d81feb8ccfa935033444a278f711ff5ebb26fd5b",
+      "native_seed_note": "Three Python injection controls incorrectly attempted to replace read-only Picker attributes; use binding-view injection. Preserved selftest FAIL.",
+      "run_sha256": "7555b206a71663728a03a950ce738fd101aace264049dc011267723797cd7f9f",
+      "summary_sha256": "489208640b3ce532b14268d2dc9a4737938c4f29778e776a8ccf81fcfc7b8b58",
+      "manifest_sha256": "a1db14b5538ab0c701d566bd3010f8b6043bd28bb870f60d78fdd5c683bbbf7c",
+      "manifest_state": "committed",
+      "coverage_complete": true
+    },
+    {
+      "output": "results/ucv-goal-ifu-pred-controls-seed2-20261101",
+      "counts": {
+        "PASS": 65
+      },
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS"
+      ],
+      "hardware_verdict": "INCOMPLETE",
+      "migration_acceptance": "NOT_CERTIFIED",
+      "source_stable": true,
+      "source_sha256": "d4b07d1a21ce00f65116378f1a0148ef16dc781cd7fda68044a818fceb3785ae",
+      "native_seed_note": "ucv seed=2 was recorded, but old IFU loader still used native seed=1. NOT evidence for native seed 2.",
+      "run_sha256": "bc35ca16ae2535fe9a103a059c10f702eb32da65a722d76a4231d8db2d03d299",
+      "summary_sha256": "6c1b6384b3e3e85f9d6ae6e4a8ef1a7cf2fbbb4482242ab39f42f8e4effde0ae",
+      "manifest_sha256": "260a43e4b2ffe120e318d6ecd7da708b194eb65f10c3ccda54b36294ebed7c8e",
+      "manifest_state": "committed",
+      "coverage_complete": true
+    },
+    {
+      "output": "results/ucv-goal-ifu-pred-integrated-20261101",
+      "counts": {
+        "PASS": 212,
+        "FAIL": 2,
+        "UNCERTAIN": 1
+      },
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS"
+      ],
+      "hardware_verdict": "FAIL",
+      "migration_acceptance": "NOT_CERTIFIED",
+      "source_stable": true,
+      "source_sha256": "fca4b276105b3e53fd965505ab71b0e1b6ada0a59127a7a559912e54bba6579a",
+      "native_seed_note": "Intermediate complete IFU regression; after native-seed forwarding fix.",
+      "run_sha256": "16602fac8556cf000dcebe6dd628c6aa9cde33950072aa568b4a7204dd60ef4d",
+      "summary_sha256": "f97d8be7ebc93f86c0f5d51e0f3d9146dbc91c34cb0269fa58d62ebc03ece07c",
+      "manifest_sha256": "a0941f8e979ef1557971df52b5590a3b149a26ea006f7f42024b189ee4f8b2da",
+      "manifest_state": "committed",
+      "coverage_complete": true
+    },
+    {
+      "output": "results/ucv-goal-ifu-pred-seed2-native-20261101",
+      "counts": {
+        "PASS": 65
+      },
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS"
+      ],
+      "hardware_verdict": "INCOMPLETE",
+      "migration_acceptance": "NOT_CERTIFIED",
+      "source_stable": true,
+      "source_sha256": "fca4b276105b3e53fd965505ab71b0e1b6ada0a59127a7a559912e54bba6579a",
+      "native_seed_note": "First corrected native seed=2 selection, before final all-field/pruned-proof controls.",
+      "run_sha256": "9c14fcfe3010edebc2720bfd3d0dc94842411aa1201ffb48e9057785f2982bf4",
+      "summary_sha256": "00843e44645b3c24ca97724d35a2f371144f4e5d6393d8ba3558817f47e4e67f",
+      "manifest_sha256": "22ac253a7f826b8715fa697a47f1078210bd770192477d04e7d15b8b58e36e74",
+      "manifest_state": "committed",
+      "coverage_complete": true
+    },
+    {
+      "output": "results/ucv-goal-ifu-pred-verified-20261101",
+      "counts": {
+        "PASS": 213,
+        "FAIL": 2,
+        "UNCERTAIN": 1
+      },
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS"
+      ],
+      "hardware_verdict": "FAIL",
+      "migration_acceptance": "NOT_CERTIFIED",
+      "source_stable": true,
+      "source_sha256": "8842a699c1193ab93212ce90d6e6c38529fa7a06b55df48ea74004a7106da202",
+      "native_seed_note": "Final complete IFU regression for this module.",
+      "run_sha256": "e213bf4db12d1ca2779b893a05b565d592b77b424bfa9decb9b441cdf2791eb9",
+      "summary_sha256": "1d739ed157d9458377a249dba190fb5cd860599d756eddccc74716da2bfb3969",
+      "manifest_sha256": "d1fe86bebe19a5ac47af976654c24d868d2bdb6dd1ff7503d57138d7860cc5e6",
+      "manifest_state": "committed",
+      "coverage_complete": true
+    },
+    {
+      "output": "results/ucv-goal-ifu-pred-verified-seed2-20261101",
+      "counts": {
+        "PASS": 66
+      },
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS"
+      ],
+      "hardware_verdict": "INCOMPLETE",
+      "migration_acceptance": "NOT_CERTIFIED",
+      "source_stable": true,
+      "source_sha256": "8842a699c1193ab93212ce90d6e6c38529fa7a06b55df48ea74004a7106da202",
+      "native_seed_note": "Final single-worker native-seed=2 selection for this module.",
+      "run_sha256": "416ece60e0ab18d2eedd879e661e6ef190503dd9f980425815714589b0814034",
+      "summary_sha256": "d45cd4d9d0438a28749747b581af8db7556c9f77ed8504e2ebc3180e12b201df",
+      "manifest_sha256": "5083db2c0d9c73336bcf26a69ee0d42f5d47015513e60cd7bfcc0dc1b7adc011",
+      "manifest_state": "committed",
+      "coverage_complete": true
+    },
+    {
+      "output": "results/ucv-goal-ifu-pred-final-20261101",
+      "counts": {
+        "PASS": 214,
+        "FAIL": 2,
+        "UNCERTAIN": 1
+      },
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS"
+      ],
+      "hardware_verdict": "FAIL",
+      "migration_acceptance": "NOT_CERTIFIED",
+      "source_stable": true,
+      "source_sha256": "4b930d2e30fe02dc82ec3486e26c9eff07cd4b8a84667b90f40d6b5f45cb5b28",
+      "native_seed_note": "Final current-source full regression (seed1).",
+      "run_sha256": "2a4f388add979b5df118820195e29326d2df54b5819f7aff78e39f9807a99cc0",
+      "summary_sha256": "05969872c5f389f20e97fc327af802eeeaac4ce178297c43408644d3137a4391",
+      "manifest_sha256": "d6129e2782ea0734b6e10089d62f4bb216798fc444af86168007d472ff80798c",
+      "manifest_state": "committed",
+      "coverage_complete": true
+    },
+    {
+      "output": "results/ucv-goal-ifu-pred-final-seed2-20261101",
+      "counts": {
+        "PASS": 67
+      },
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS"
+      ],
+      "hardware_verdict": "INCOMPLETE",
+      "migration_acceptance": "NOT_CERTIFIED",
+      "source_stable": true,
+      "source_sha256": "4b930d2e30fe02dc82ec3486e26c9eff07cd4b8a84667b90f40d6b5f45cb5b28",
+      "native_seed_note": "Final current-source single-worker native seed2 selection.",
+      "run_sha256": "64b9bee2974ef0c593b86eeab4b9f292038b17a03e8759feccff0128f08918aa",
+      "summary_sha256": "0b7807c75294f9adb9982d886b8f05e988df549f6785c7a75dfd7e3fe4d4190b",
+      "manifest_sha256": "9242ab7ffdd9e4256400303a65ad61c8ae40276e7a5365900f2c9f89f7ac176d",
+      "manifest_state": "committed",
+      "coverage_complete": true
+    }
+  ],
+  "collections": [
+    {
+      "suite": "bpu",
+      "count": 41031,
+      "before_count": 41031,
+      "old_order_preserved": true,
+      "added": [],
+      "ordered_nodeids_sha256": "329e6581d7b6370db251d361767fe0a2138e3049ff66613aac99c528e6d7374b",
+      "case_file": "results/ucv-goal-collect-pred-final-20261101/collection/bpu/cases.json",
+      "case_file_sha256": "2e5558c1e38a3034113007437b09f0385f4b04b4e26fb036ff8429bd0c011a82"
+    },
+    {
+      "suite": "ftq",
+      "count": 111,
+      "before_count": 111,
+      "old_order_preserved": true,
+      "added": [],
+      "ordered_nodeids_sha256": "481154c0c025719f7a4fc355ad0717515a06b995f6f971bb9f21b9708b202318",
+      "case_file": "results/ucv-goal-collect-pred-final-20261101/cases/ftq/cases.json",
+      "case_file_sha256": "11abee49eecd55e589de25a702d598c87b523551426b0ee10847c7bd0e731984"
+    },
+    {
+      "suite": "ifu",
+      "count": 217,
+      "before_count": 147,
+      "old_order_preserved": true,
+      "added": [
+        "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[icache_miss]",
+        "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[itlb_miss]",
+        "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[backend_redirect]",
+        "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[control_flow_redirect]",
+        "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[memory_violation_redirect]",
+        "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[tage_miss]",
+        "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[ittage_miss]",
+        "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[ras_miss]",
+        "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[ifu_wb_redirect]",
+        "tests/framework/test_perf_agent.py::test_ftq_reason_domain_cannot_silently_discard_unsupported_bits[-1]",
+        "tests/framework/test_perf_agent.py::test_ftq_reason_domain_cannot_silently_discard_unsupported_bits[1]",
+        "tests/framework/test_perf_agent.py::test_ftq_reason_domain_cannot_silently_discard_unsupported_bits[16]",
+        "tests/framework/test_perf_agent.py::test_ftq_reason_domain_cannot_silently_discard_unsupported_bits[37778931862957161709568]",
+        "tests/framework/test_perf_agent.py::test_semantic_request_is_frozen_and_unknown_fields_fail",
+        "tests/framework/test_perf_agent.py::test_missing_port_is_a_binding_failure_not_a_zero_observation",
+        "tests/framework/test_perf_agent.py::test_second_driver_cannot_claim_the_agent_inputs",
+        "tests/framework/test_perf_agent.py::test_stopped_monitor_cannot_make_the_agent_pass",
+        "tests/framework/test_perf_agent.py::test_missing_last_reason_is_detected_by_finish",
+        "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[valid-2]",
+        "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[is_rvc--1]",
+        "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[is_pred_taken-1]",
+        "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[invalid_taken-2]",
+        "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[block_sel-2]",
+        "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[is_cross_block-2]",
+        "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[end_offset-32]",
+        "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[end_offset--1]",
+        "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[branch_type-4]",
+        "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[branch_type--1]",
+        "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[ras_action-4]",
+        "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[pc-1]",
+        "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[pc--2]",
+        "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[pc-2251799813685248]",
+        "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[jump_offset-1]",
+        "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[jump_offset--1125899906842626]",
+        "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[jump_offset-2251799813685248]",
+        "tests/framework/test_pred_agent.py::test_request_must_name_the_entire_window[0]",
+        "tests/framework/test_pred_agent.py::test_request_must_name_the_entire_window[35]",
+        "tests/framework/test_pred_agent.py::test_request_must_name_the_entire_window[37]",
+        "tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[34-instruction0]",
+        "tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[35-instruction1]",
+        "tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[35-instruction2]",
+        "tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[35-instruction3]",
+        "tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[35-instruction4]",
+        "tests/framework/test_pred_agent.py::test_requests_detach_mutable_producer_lists_and_freeze_nested_instructions",
+        "tests/framework/test_pred_agent.py::test_unknown_keys_and_untyped_instruction_payloads_fail",
+        "tests/framework/test_pred_agent.py::test_driver_control_domain_is_strict[reset-2]",
+        "tests/framework/test_pred_agent.py::test_driver_control_domain_is_strict[padding_pc-1]",
+        "tests/framework/test_pred_agent.py::test_driver_control_domain_is_strict[padding_pc-2251799813685248]",
+        "tests/framework/test_pred_agent.py::test_missing_input_or_output_is_a_binding_error[io_req_bits_instrVec_0_valid]",
+        "tests/framework/test_pred_agent.py::test_missing_input_or_output_is_a_binding_error[io_resp_stage2Out_checkerRedirect_bits_target_addr]",
+        "tests/framework/test_pred_agent.py::test_changed_address_width_requires_a_real_migration[io_req_bits_instrPcVec_0_addr-49]",
+        "tests/framework/test_pred_agent.py::test_changed_address_width_requires_a_real_migration[io_resp_stage2Out_checkerRedirect_bits_target_addr-51]",
+        "tests/framework/test_pred_agent.py::test_wrong_direction_or_unowned_input_is_not_accepted",
+        "tests/framework/test_pred_agent.py::test_second_writer_is_rejected_without_disturbing_the_agent",
+        "tests/framework/test_pred_agent.py::test_every_valid_redirect_field_is_compared",
+        "tests/framework/test_pred_agent.py::test_task_handoffs_do_not_pre_sample_an_unsupplied_slot",
+        "tests/framework/test_pred_agent.py::test_concurrent_cycles_cannot_misassociate_phase_samples",
+        "tests/framework/test_pred_agent.py::test_stopping_either_monitor_cannot_pass[_before]",
+        "tests/framework/test_pred_agent.py::test_stopping_either_monitor_cannot_pass[_after]",
+        "tests/framework/test_pred_agent.py::test_last_redirect_cannot_disappear_without_a_following_request",
+        "tests/framework/test_pred_agent.py::test_corrupt_combinational_truncation_is_detected",
+        "tests/framework/test_pred_agent.py::test_stale_previous_payload_cannot_stand_in_for_a_new_response",
+        "tests/framework/test_pred_agent.py::test_old_phase_tick_is_rejected_even_with_the_right_payload",
+        "tests/framework/test_pred_agent.py::test_finish_detects_a_repeated_final_redirect",
+        "tests/framework/test_pred_agent.py::test_cancelled_input_cannot_be_reported_as_a_clean_finished_stream",
+        "tests/framework/test_pred_agent.py::test_swallowed_reset_failure_cannot_finish_cleanly",
+        "tests/framework/test_pred_agent.py::test_lifecycle_and_rejected_untyped_work_do_not_advance_slots",
+        "tests/pred_checker/test_pred_checker.py::test_inactive_payload_is_combinational_but_cannot_redirect",
+        "tests/pred_checker/test_pred_checker.py::test_identical_adjacent_requests_have_distinct_response_slots",
+        "tests/pred_checker/test_pred_checker.py::test_reset_clears_redirect_before_a_new_fault"
+      ],
+      "ordered_nodeids_sha256": "13cc4c7d772ca00540138237376f2d6b23cfc74d40170697f5e7c1ec01877528",
+      "case_file": "results/ucv-goal-collect-pred-final-20261101/cases/ifu/cases.json",
+      "case_file_sha256": "d7553eaf85918e4f43fed2d1860c1b3abe83e2e0314c73fe4c990fc4a4f3d351"
+    },
+    {
+      "suite": "icache",
+      "count": 294,
+      "before_count": 294,
+      "old_order_preserved": true,
+      "added": [],
+      "ordered_nodeids_sha256": "d965430d5dc1a18d47e7dd642bc28496675f5396b09c3f31d13153d8970ccf9e",
+      "case_file": "results/ucv-goal-collect-pred-final-20261101/cases/icache/cases.json",
+      "case_file_sha256": "3992189db6336a2823085a0597596c03e5f84f845b3beb899778ed65350dfbd9"
+    },
+    {
+      "suite": "dcache",
+      "count": 232,
+      "before_count": 232,
+      "old_order_preserved": true,
+      "added": [],
+      "ordered_nodeids_sha256": "84bd28f1c5cd5aa43b00dcb82003d613b5caaf94c75e8d41f9681dc6b9ee64a1",
+      "case_file": "results/ucv-goal-collect-pred-final-20261101/cases/dcache/cases.json",
+      "case_file_sha256": "5225ca42a272c8e61764cc2b9341b4d3cf7a4d547f85a0f20c4f8072ce384df1"
+    },
+    {
+      "suite": "sbuffer",
+      "count": 66,
+      "before_count": 66,
+      "old_order_preserved": true,
+      "added": [],
+      "ordered_nodeids_sha256": "15255c06377b30f582cdc64d36e2dc48e8dc4ee93c29ba388eff2499fb9dea3b",
+      "case_file": "results/ucv-goal-collect-pred-final-20261101/cases/sbuffer/cases.json",
+      "case_file_sha256": "0481b59d38f9003a3e15cfd749cc92f2dff8f39877cdafeddfdfc5db3aa45898"
+    },
+    {
+      "suite": "mmu",
+      "count": 417,
+      "before_count": 417,
+      "old_order_preserved": true,
+      "added": [],
+      "ordered_nodeids_sha256": "9b04f291852df3524e45743a62981b093ed3aca492d3a70cb8589ea31ea49590",
+      "case_file": "results/ucv-goal-collect-pred-final-20261101/cases/mmu/cases.json",
+      "case_file_sha256": "fbf776d359f3ff7cb9c51454fdb4e00b3cf41a1b8fab55c8126b24af9020edc9"
+    },
+    {
+      "suite": "lsq",
+      "count": 2575,
+      "before_count": 2575,
+      "old_order_preserved": true,
+      "added": [],
+      "ordered_nodeids_sha256": "3cbeb45c5191682bb2429d2b1b167d2d1a6c8fe5e3392e26e2589d0399a7fbb1",
+      "case_file": "results/ucv-goal-collect-pred-final-20261101/cases/lsq/cases.json",
+      "case_file_sha256": "5e2d15fd3fa0279e2b96518f3f10a9ddc3caa2f6d7898b2d61908c719ecccfe6"
+    },
+    {
+      "suite": "lsu",
+      "count": 543,
+      "before_count": 543,
+      "old_order_preserved": true,
+      "added": [],
+      "ordered_nodeids_sha256": "459f65ae25b0ad06e6934d6d784c6e131839ace08aa287d7809bfaf4d46c2c86",
+      "case_file": "results/ucv-goal-collect-pred-final-20261101/cases/lsu/cases.json",
+      "case_file_sha256": "957ef7e58d0d8e20832ec83c8652ef76d357ce53982240a921a1b6f7cfeb0f74"
+    },
+    {
+      "suite": "vagq",
+      "count": 467,
+      "before_count": 467,
+      "old_order_preserved": true,
+      "added": [],
+      "ordered_nodeids_sha256": "55b768e0b97a8cca6bf2854bc616ec9bba981cd6b9ee35790cab309c92118fd5",
+      "case_file": "results/ucv-goal-collect-pred-final-20261101/cases/vagq/cases.json",
+      "case_file_sha256": "2dc9a61cef7fd3b0c86f4032e09cade0d33baad01aedc7402c37d3f69372326c"
+    }
+  ],
+  "collection_source_stable": true,
+  "collection_exit_note": "all 10 collection tasks exit0; ucv exit1 retains IFU R-13 blocking residual, not collection failure",
+  "checks": [
+    {
+      "name": "root-tests",
+      "exit": 0,
+      "sha256": "4b4385e9cce4cef1b9f8217307d730941c245ef29347fa823161107f4b862f3e",
+      "tail": [
+        "........................................................................ [ 63%]",
+        ".........................................                                [100%]",
+        "113 passed in 60.72s (0:01:00)"
+      ]
+    },
+    {
+      "name": "layout",
+      "exit": 0,
+      "sha256": "11ce94d427f10e6e4c56c73bb69cfa138031de571d6ab4ae85b09143b5943b00",
+      "tail": [
+        "| lsu | 23 | 4 | 0 | 0 | 0 | 140 | 0 | yes | needs-adapter | ok |",
+        "| mmu | 23 | 52 | 0 | 0 | 0 | 29 | 382 | yes | needs-adapter | ok |",
+        "| sbuffer | 3 | 7 | 0 | 0 | 0 | 0 | 0 | yes | no-static-leak-found | ok |",
+        "| vagq | 54 | 14 | 0 | 0 | 0 | 179 | 9 | yes | needs-adapter | ok |"
+      ]
+    },
+    {
+      "name": "transaction",
+      "exit": 1,
+      "sha256": "77d1e2c760dd0ce6b5d180cf7af1a6f3f4195a0307effc86c814f08ba65ec91a",
+      "tail": [
+        "| lsu | 23 | 4 | 0 | 0 | 0 | 140 | 0 | yes | needs-adapter | 140 pin-level expressions require transaction adapters |",
+        "| mmu | 23 | 52 | 0 | 0 | 0 | 29 | 382 | yes | needs-adapter | 29 pin-level expressions require transaction adapters; 382 signal operations/native handles require transaction adapters |",
+        "| sbuffer | 3 | 7 | 0 | 0 | 0 | 0 | 0 | yes | no-static-leak-found | ok |",
+        "| vagq | 54 | 14 | 0 | 0 | 0 | 179 | 9 | yes | needs-adapter | 179 pin-level expressions require transaction adapters; 9 signal operations/native handles require transaction adapters |"
+      ]
+    },
+    {
+      "name": "skills",
+      "exit": 0,
+      "sha256": "e2ca572f1c1ac985d863422272810240f7825dd1da13a6cf826c0e8d2d828fd4",
+      "tail": [
+        "    \"API presence is not behavioral certification.\",",
+        "    \"Link fragments and methodological correctness need review.\"",
+        "  ]",
+        "}"
+      ]
+    },
+    {
+      "name": "assets",
+      "exit": 0,
+      "sha256": "b2601c21ac377bb37def91b46451c7bf2ae1adfa37ba72fe3b3856e80a71d617",
+      "tail": [
+        "  \"duts\": 132,",
+        "  \"historical_evidence_entries\": 134685,",
+        "  \"errors\": []",
+        "}"
+      ]
+    },
+    {
+      "name": "pip-check",
+      "exit": 0,
+      "sha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09",
+      "tail": [
+        "No broken requirements found."
+      ]
+    },
+    {
+      "name": "diff",
+      "exit": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tail": []
+    }
+  ],
+  "fixture_phase_diagnostic": {
+    "pytest_exit": 1,
+    "exchanges": [
+      {
+        "request_valid": 0,
+        "lane0_valid": 0,
+        "entry_tick": 0,
+        "entry_phase": "XPhase.RISING_STABLE",
+        "queued_before": []
+      },
+      {
+        "request_valid": 0,
+        "lane0_valid": 0,
+        "entry_tick": 2,
+        "entry_phase": "XPhase.RISING_STABLE",
+        "queued_before": []
+      },
+      {
+        "request_valid": 0,
+        "lane0_valid": 0,
+        "entry_tick": 4,
+        "entry_phase": "XPhase.RISING_STABLE",
+        "queued_before": []
+      },
+      {
+        "request_valid": 0,
+        "lane0_valid": 0,
+        "entry_tick": 6,
+        "entry_phase": "XPhase.RISING_STABLE",
+        "queued_before": []
+      },
+      {
+        "request_valid": 1,
+        "lane0_valid": 1,
+        "entry_tick": 9,
+        "entry_phase": "XPhase.DRIVE_STABLE",
+        "queued_before": [
+          {
+            "tick": 9,
+            "lane0": 0
+          }
+        ]
+      },
+      {
+        "request_valid": 0,
+        "lane0_valid": 0,
+        "entry_tick": 11,
+        "entry_phase": "XPhase.FALLING_STABLE",
+        "queued_before": []
+      },
+      {
+        "request_valid": 0,
+        "lane0_valid": 0,
+        "entry_tick": 12,
+        "entry_phase": "XPhase.RISING_STABLE",
+        "queued_before": []
+      }
+    ]
+  },
+  "obligations": {
+    "strict_domain_immutable_transactions": {
+      "files": [
+        "suites/frontend/ifu/model/pred_checker.py",
+        "suites/frontend/ifu/pred_checker/types.py"
+      ],
+      "evidence": "49 schema/runtime selftests plus prior legal functional cases; direct per-field output controls share production checker."
+    },
+    "binding_ownership": {
+      "files": [
+        "suites/frontend/ifu/pred_checker/ports.py",
+        "suites/frontend/ifu/pred_checker/driver.py"
+      ],
+      "evidence": "422 nonclock inputs owned exactly; missing input/output, direction/width changes, new input and pruned-presence controls reject."
+    },
+    "phase_identity_sampling": {
+      "files": [
+        "suites/frontend/ifu/pred_checker/agent.py",
+        "suites/frontend/ifu/pred_checker/checker.py"
+      ],
+      "evidence": "DriveStable current combinational + previous registered, adjacent RisingStable current registered; all slots sequence/tick checked; same payload two adjacent slots, stale tick/payload and task-yield controls."
+    },
+    "completion_reset_cancel_cleanup": {
+      "evidence": "Two checked empty finish slots, real reset followed by new identity, last-output loss/repetition and monitor closure controls; swallowed Python cancellation cannot finish cleanly. No ready/valid handshake invented. Final review also makes a swallowed/reset observation failure sticky after the monitor is restored; its dedicated control is included in final results."
+    },
+    "independent_oracle_legal_controls": {
+      "evidence": "predict/fault_classes normalized AST unchanged; target arithmetic exact wire values retained; independent ISA JAL lane33 cross control and actual lane34 constant sweep; all original165 and initial147 verdicts preserved."
+    },
+    "configuration_seed": {
+      "files": [
+        "suites/frontend/ifu/harness.py",
+        "tests/test_ifu_runtime.py"
+      ],
+      "evidence": "Default argv forwards native_seed from ucv environment, explicit override retained; 3 root controls and final native seed2 selection; earlier mislabeled seed2 run distinguished."
+    },
+    "documentation": {
+      "files": [
+        "suites/frontend/ifu/docs/transaction-adapters.md",
+        "suites/frontend/ifu/README.md",
+        "docs/lessons/transaction-goal-20261101.md",
+        "docs/status.md"
+      ]
+    }
+  },
+  "final_checks": [
+    {
+      "name": "layout",
+      "exit": 0,
+      "sha256": "11ce94d427f10e6e4c56c73bb69cfa138031de571d6ab4ae85b09143b5943b00",
+      "tail": [
+        "| mmu | 23 | 52 | 0 | 0 | 0 | 29 | 382 | yes | needs-adapter | ok |",
+        "| sbuffer | 3 | 7 | 0 | 0 | 0 | 0 | 0 | yes | no-static-leak-found | ok |",
+        "| vagq | 54 | 14 | 0 | 0 | 0 | 179 | 9 | yes | needs-adapter | ok |"
+      ]
+    },
+    {
+      "name": "transaction",
+      "exit": 1,
+      "sha256": "77d1e2c760dd0ce6b5d180cf7af1a6f3f4195a0307effc86c814f08ba65ec91a",
+      "tail": [
+        "| mmu | 23 | 52 | 0 | 0 | 0 | 29 | 382 | yes | needs-adapter | 29 pin-level expressions require transaction adapters; 382 signal operations/native handles require transaction adapters |",
+        "| sbuffer | 3 | 7 | 0 | 0 | 0 | 0 | 0 | yes | no-static-leak-found | ok |",
+        "| vagq | 54 | 14 | 0 | 0 | 0 | 179 | 9 | yes | needs-adapter | 179 pin-level expressions require transaction adapters; 9 signal operations/native handles require transaction adapters |"
+      ]
+    },
+    {
+      "name": "skills",
+      "exit": 0,
+      "sha256": "e2ca572f1c1ac985d863422272810240f7825dd1da13a6cf826c0e8d2d828fd4",
+      "tail": [
+        "    \"Link fragments and methodological correctness need review.\"",
+        "  ]",
+        "}"
+      ]
+    },
+    {
+      "name": "assets",
+      "exit": 0,
+      "sha256": "cb32063c9b1c4d3e3175f3b1338eaf9e94dc7c32fbd3e3620bdee60ec89e4f29",
+      "tail": [
+        "  \"historical_evidence_entries\": 134685,",
+        "  \"errors\": []",
+        "}"
+      ]
+    },
+    {
+      "name": "pip-check",
+      "exit": 0,
+      "sha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09",
+      "tail": [
+        "No broken requirements found."
+      ]
+    },
+    {
+      "name": "diff",
+      "exit": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tail": []
+    }
+  ],
+  "final_root_regression": {
+    "command": ".venv/bin/python -B -m pytest -q -p no:cacheprovider tests",
+    "exit": 0,
+    "reported_result": "113 passed in 60.11s",
+    "evidence": "Final root regression returned by the shell tool after the sticky reset-failure change; not a native/build receipt."
+  },
+  "prior_verified_checkpoint": {
+    "delta": {
+      "before_count": 165,
+      "after_count": 216,
+      "before_counts": {
+        "PASS": 162,
+        "FAIL": 2,
+        "UNCERTAIN": 1
+      },
+      "after_counts": {
+        "PASS": 213,
+        "FAIL": 2,
+        "UNCERTAIN": 1
+      },
+      "removed": [],
+      "changed": {},
+      "added": {
+        "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[valid-2]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[is_rvc--1]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[is_pred_taken-1]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[invalid_taken-2]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[block_sel-2]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[is_cross_block-2]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[end_offset-32]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[end_offset--1]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[branch_type-4]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[branch_type--1]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[ras_action-4]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[pc-1]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[pc--2]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[pc-2251799813685248]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[jump_offset-1]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[jump_offset--1125899906842626]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[jump_offset-2251799813685248]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_request_must_name_the_entire_window[0]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_request_must_name_the_entire_window[35]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_request_must_name_the_entire_window[37]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[34-instruction0]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[35-instruction1]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[35-instruction2]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[35-instruction3]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[35-instruction4]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_requests_detach_mutable_producer_lists_and_freeze_nested_instructions": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_unknown_keys_and_untyped_instruction_payloads_fail": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_driver_control_domain_is_strict[reset-2]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_driver_control_domain_is_strict[padding_pc-1]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_driver_control_domain_is_strict[padding_pc-2251799813685248]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_missing_input_or_output_is_a_binding_error[io_req_bits_instrVec_0_valid]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_missing_input_or_output_is_a_binding_error[io_resp_stage2Out_checkerRedirect_bits_target_addr]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_changed_address_width_requires_a_real_migration[io_req_bits_instrPcVec_0_addr-49]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_changed_address_width_requires_a_real_migration[io_resp_stage2Out_checkerRedirect_bits_target_addr-51]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_wrong_direction_or_unowned_input_is_not_accepted": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_second_writer_is_rejected_without_disturbing_the_agent": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_every_valid_redirect_field_is_compared": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_task_handoffs_do_not_pre_sample_an_unsupplied_slot": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_concurrent_cycles_cannot_misassociate_phase_samples": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_stopping_either_monitor_cannot_pass[_before]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_stopping_either_monitor_cannot_pass[_after]": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_last_redirect_cannot_disappear_without_a_following_request": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_corrupt_combinational_truncation_is_detected": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_stale_previous_payload_cannot_stand_in_for_a_new_response": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_old_phase_tick_is_rejected_even_with_the_right_payload": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_finish_detects_a_repeated_final_redirect": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_cancelled_input_cannot_be_reported_as_a_clean_finished_stream": "PASS",
+        "ifu::tests/framework/test_pred_agent.py::test_lifecycle_and_rejected_untyped_work_do_not_advance_slots": "PASS",
+        "ifu::tests/pred_checker/test_pred_checker.py::test_inactive_payload_is_combinational_but_cannot_redirect": "PASS",
+        "ifu::tests/pred_checker/test_pred_checker.py::test_identical_adjacent_requests_have_distinct_response_slots": "PASS",
+        "ifu::tests/pred_checker/test_pred_checker.py::test_reset_clears_redirect_before_a_new_fault": "PASS"
+      },
+      "initial_147_verdicts_preserved": true,
+      "native_build_receipts_unchanged": true
+    },
+    "current_source_runs": [
+      "results/ucv-goal-ifu-pred-verified-20261101",
+      "results/ucv-goal-ifu-pred-verified-seed2-20261101"
+    ],
+    "collections": [
+      {
+        "suite": "bpu",
+        "count": 41031,
+        "before_count": 41031,
+        "old_order_preserved": true,
+        "added": [],
+        "ordered_nodeids_sha256": "329e6581d7b6370db251d361767fe0a2138e3049ff66613aac99c528e6d7374b",
+        "case_file": "results/ucv-goal-collect-pred-20261101/collection/bpu/cases.json",
+        "case_file_sha256": "de898f4f238f5d9f1b0500f64209189e401f625b907be6c931b790f2016d8e06"
+      },
+      {
+        "suite": "ftq",
+        "count": 111,
+        "before_count": 111,
+        "old_order_preserved": true,
+        "added": [],
+        "ordered_nodeids_sha256": "481154c0c025719f7a4fc355ad0717515a06b995f6f971bb9f21b9708b202318",
+        "case_file": "results/ucv-goal-collect-pred-20261101/cases/ftq/cases.json",
+        "case_file_sha256": "b3b37a49e5dfba7154ef4b8a399036a01211be716f57dc2fa67b87482bd6467b"
+      },
+      {
+        "suite": "ifu",
+        "count": 216,
+        "before_count": 147,
+        "old_order_preserved": true,
+        "added": [
+          "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[icache_miss]",
+          "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[itlb_miss]",
+          "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[backend_redirect]",
+          "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[control_flow_redirect]",
+          "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[memory_violation_redirect]",
+          "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[tage_miss]",
+          "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[ittage_miss]",
+          "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[ras_miss]",
+          "tests/framework/test_perf_agent.py::test_reason_controls_reject_non_boolean_encodings[ifu_wb_redirect]",
+          "tests/framework/test_perf_agent.py::test_ftq_reason_domain_cannot_silently_discard_unsupported_bits[-1]",
+          "tests/framework/test_perf_agent.py::test_ftq_reason_domain_cannot_silently_discard_unsupported_bits[1]",
+          "tests/framework/test_perf_agent.py::test_ftq_reason_domain_cannot_silently_discard_unsupported_bits[16]",
+          "tests/framework/test_perf_agent.py::test_ftq_reason_domain_cannot_silently_discard_unsupported_bits[37778931862957161709568]",
+          "tests/framework/test_perf_agent.py::test_semantic_request_is_frozen_and_unknown_fields_fail",
+          "tests/framework/test_perf_agent.py::test_missing_port_is_a_binding_failure_not_a_zero_observation",
+          "tests/framework/test_perf_agent.py::test_second_driver_cannot_claim_the_agent_inputs",
+          "tests/framework/test_perf_agent.py::test_stopped_monitor_cannot_make_the_agent_pass",
+          "tests/framework/test_perf_agent.py::test_missing_last_reason_is_detected_by_finish",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[valid-2]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[is_rvc--1]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[is_pred_taken-1]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[invalid_taken-2]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[block_sel-2]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[is_cross_block-2]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[end_offset-32]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[end_offset--1]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[branch_type-4]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[branch_type--1]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[ras_action-4]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[pc-1]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[pc--2]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[pc-2251799813685248]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[jump_offset-1]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[jump_offset--1125899906842626]",
+          "tests/framework/test_pred_agent.py::test_instruction_cannot_rely_on_native_truncation[jump_offset-2251799813685248]",
+          "tests/framework/test_pred_agent.py::test_request_must_name_the_entire_window[0]",
+          "tests/framework/test_pred_agent.py::test_request_must_name_the_entire_window[35]",
+          "tests/framework/test_pred_agent.py::test_request_must_name_the_entire_window[37]",
+          "tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[34-instruction0]",
+          "tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[35-instruction1]",
+          "tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[35-instruction2]",
+          "tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[35-instruction3]",
+          "tests/framework/test_pred_agent.py::test_pruned_instruction_fields_cannot_be_silently_ignored[35-instruction4]",
+          "tests/framework/test_pred_agent.py::test_requests_detach_mutable_producer_lists_and_freeze_nested_instructions",
+          "tests/framework/test_pred_agent.py::test_unknown_keys_and_untyped_instruction_payloads_fail",
+          "tests/framework/test_pred_agent.py::test_driver_control_domain_is_strict[reset-2]",
+          "tests/framework/test_pred_agent.py::test_driver_control_domain_is_strict[padding_pc-1]",
+          "tests/framework/test_pred_agent.py::test_driver_control_domain_is_strict[padding_pc-2251799813685248]",
+          "tests/framework/test_pred_agent.py::test_missing_input_or_output_is_a_binding_error[io_req_bits_instrVec_0_valid]",
+          "tests/framework/test_pred_agent.py::test_missing_input_or_output_is_a_binding_error[io_resp_stage2Out_checkerRedirect_bits_target_addr]",
+          "tests/framework/test_pred_agent.py::test_changed_address_width_requires_a_real_migration[io_req_bits_instrPcVec_0_addr-49]",
+          "tests/framework/test_pred_agent.py::test_changed_address_width_requires_a_real_migration[io_resp_stage2Out_checkerRedirect_bits_target_addr-51]",
+          "tests/framework/test_pred_agent.py::test_wrong_direction_or_unowned_input_is_not_accepted",
+          "tests/framework/test_pred_agent.py::test_second_writer_is_rejected_without_disturbing_the_agent",
+          "tests/framework/test_pred_agent.py::test_every_valid_redirect_field_is_compared",
+          "tests/framework/test_pred_agent.py::test_task_handoffs_do_not_pre_sample_an_unsupplied_slot",
+          "tests/framework/test_pred_agent.py::test_concurrent_cycles_cannot_misassociate_phase_samples",
+          "tests/framework/test_pred_agent.py::test_stopping_either_monitor_cannot_pass[_before]",
+          "tests/framework/test_pred_agent.py::test_stopping_either_monitor_cannot_pass[_after]",
+          "tests/framework/test_pred_agent.py::test_last_redirect_cannot_disappear_without_a_following_request",
+          "tests/framework/test_pred_agent.py::test_corrupt_combinational_truncation_is_detected",
+          "tests/framework/test_pred_agent.py::test_stale_previous_payload_cannot_stand_in_for_a_new_response",
+          "tests/framework/test_pred_agent.py::test_old_phase_tick_is_rejected_even_with_the_right_payload",
+          "tests/framework/test_pred_agent.py::test_finish_detects_a_repeated_final_redirect",
+          "tests/framework/test_pred_agent.py::test_cancelled_input_cannot_be_reported_as_a_clean_finished_stream",
+          "tests/framework/test_pred_agent.py::test_lifecycle_and_rejected_untyped_work_do_not_advance_slots",
+          "tests/pred_checker/test_pred_checker.py::test_inactive_payload_is_combinational_but_cannot_redirect",
+          "tests/pred_checker/test_pred_checker.py::test_identical_adjacent_requests_have_distinct_response_slots",
+          "tests/pred_checker/test_pred_checker.py::test_reset_clears_redirect_before_a_new_fault"
+        ],
+        "ordered_nodeids_sha256": "05aa8c34422ae96476db8ac3e1fe9db46bd0613c552bd34d9f5694ec0f6ecb88",
+        "case_file": "results/ucv-goal-collect-pred-20261101/cases/ifu/cases.json",
+        "case_file_sha256": "651a92d188d80da3789a42b1e79699f65556a9dd7a4044673dfa628864996c8f"
+      },
+      {
+        "suite": "icache",
+        "count": 294,
+        "before_count": 294,
+        "old_order_preserved": true,
+        "added": [],
+        "ordered_nodeids_sha256": "d965430d5dc1a18d47e7dd642bc28496675f5396b09c3f31d13153d8970ccf9e",
+        "case_file": "results/ucv-goal-collect-pred-20261101/cases/icache/cases.json",
+        "case_file_sha256": "386b43ba903e71c21f9072cbf2ea1916532b8468f7b6cf9b2b4763be782f77f7"
+      },
+      {
+        "suite": "dcache",
+        "count": 232,
+        "before_count": 232,
+        "old_order_preserved": true,
+        "added": [],
+        "ordered_nodeids_sha256": "84bd28f1c5cd5aa43b00dcb82003d613b5caaf94c75e8d41f9681dc6b9ee64a1",
+        "case_file": "results/ucv-goal-collect-pred-20261101/cases/dcache/cases.json",
+        "case_file_sha256": "9817e6e6a9568b3f224363b4451e7d3dea8fc98773352f86058d1b1895d56cdc"
+      },
+      {
+        "suite": "sbuffer",
+        "count": 66,
+        "before_count": 66,
+        "old_order_preserved": true,
+        "added": [],
+        "ordered_nodeids_sha256": "15255c06377b30f582cdc64d36e2dc48e8dc4ee93c29ba388eff2499fb9dea3b",
+        "case_file": "results/ucv-goal-collect-pred-20261101/cases/sbuffer/cases.json",
+        "case_file_sha256": "d5a5ac64ec8abdbac9474b5b93a39e715fc7468527033b720f2e971378cd8984"
+      },
+      {
+        "suite": "lsq",
+        "count": 2575,
+        "before_count": 2575,
+        "old_order_preserved": true,
+        "added": [],
+        "ordered_nodeids_sha256": "3cbeb45c5191682bb2429d2b1b167d2d1a6c8fe5e3392e26e2589d0399a7fbb1",
+        "case_file": "results/ucv-goal-collect-pred-20261101/cases/lsq/cases.json",
+        "case_file_sha256": "797e8d4ca4a6f233d9e1c7decbbe3469811d7b01dc6f6d65ad41a8cc1d5064f7"
+      },
+      {
+        "suite": "mmu",
+        "count": 417,
+        "before_count": 417,
+        "old_order_preserved": true,
+        "added": [],
+        "ordered_nodeids_sha256": "9b04f291852df3524e45743a62981b093ed3aca492d3a70cb8589ea31ea49590",
+        "case_file": "results/ucv-goal-collect-pred-20261101/cases/mmu/cases.json",
+        "case_file_sha256": "7d7124ec0813f2f3476333364ae151c35127b4a9a92bb049fb61ab019ece528b"
+      },
+      {
+        "suite": "lsu",
+        "count": 543,
+        "before_count": 543,
+        "old_order_preserved": true,
+        "added": [],
+        "ordered_nodeids_sha256": "459f65ae25b0ad06e6934d6d784c6e131839ace08aa287d7809bfaf4d46c2c86",
+        "case_file": "results/ucv-goal-collect-pred-20261101/cases/lsu/cases.json",
+        "case_file_sha256": "9a9c54ac02555d29c7bf93839b8eb520eac4a0876feb9961ec39c95e1fb4da04"
+      },
+      {
+        "suite": "vagq",
+        "count": 467,
+        "before_count": 467,
+        "old_order_preserved": true,
+        "added": [],
+        "ordered_nodeids_sha256": "55b768e0b97a8cca6bf2854bc616ec9bba981cd6b9ee35790cab309c92118fd5",
+        "case_file": "results/ucv-goal-collect-pred-20261101/cases/vagq/cases.json",
+        "case_file_sha256": "b4ba07d9f73d97e05e0c73c8bb88561d81e3a2b6048ca885eb83f5846804b8a5"
+      }
+    ]
+  },
+  "current_source_runs": [
+    "results/ucv-goal-ifu-pred-final-20261101",
+    "results/ucv-goal-ifu-pred-final-seed2-20261101"
+  ],
+  "remaining_required_work": "IFU remaining five DUT adapters (next RvcExpander); BPU/FTQ/ICache semantic/configuration audits; MemBlock and VAGQ pending adapters and final whole-repository acceptance. Goal remains active."
+}

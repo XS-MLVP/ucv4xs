@@ -6,6 +6,7 @@ from typing import Any
 from suites.frontend.bpu.bpu.transaction.types import BpuBatchTraining
 from suites.frontend.bpu.bpu.transaction.types import BpuBranchFeedback
 from suites.frontend.bpu.bpu.transaction.types import BpuTraining
+from suites.frontend.bpu.bpu.transaction.types import validate_phr_metadata
 
 
 def _single_training(transaction: BpuTraining) -> BpuBatchTraining:
@@ -24,6 +25,9 @@ def _single_training(transaction: BpuTraining) -> BpuBatchTraining:
 
 
 def _encode_training(bits: Any, transaction: BpuBatchTraining) -> None:
+    validate_phr_metadata(transaction.resolve_meta)
+    if type(transaction.pc) is not int or not 0 <= transaction.pc < 1 << 49:
+        raise ValueError('BPU training PC must be an unsigned 49-bit halfword address')
     capacity = len(bits.branches)
     if not 1 <= len(transaction.branches) <= capacity:
         raise ValueError(f"BPU feedback requires 1 to {capacity} branch slots")
@@ -36,13 +40,12 @@ def _encode_training(bits: Any, transaction: BpuBatchTraining) -> None:
     bits.drive(
         {
             "meta": transaction.resolve_meta,
-            "start_pcs": tuple(
-                # FTQ supplies logical alignment starts; MainBTB rotates them
-                # to physical banks. Keep the head's sub-block offset, but
-                # advance and align the second 32-byte block (halfword PC).
-                ({"addr": transaction.pc}, {"addr": (transaction.pc + ALIGN_HALFWORDS) & ~(ALIGN_HALFWORDS - 1)})
-                for _ in range(3)
-            ),
+            # Whole-chip DefaultConfig retains only the head in copies0/1,
+            # but BOTH logical starts in MainBTB's copy2. Do not truncate the
+            # genuine successor or drive missing copies of it.
+            "start_pcs": (({"addr": transaction.pc},), ({"addr": transaction.pc},),
+                ({"addr": transaction.pc},
+                 {"addr": (transaction.pc + ALIGN_HALFWORDS) & ~(ALIGN_HALFWORDS - 1)})),
             "branches": tuple({
                 "valid": int(branch is not None),
                 "bits": {

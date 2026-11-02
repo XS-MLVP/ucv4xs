@@ -5,8 +5,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
+from toffee import Bundle
+
 from suites.frontend.ftq.ports import Pins
 from suites.frontend.ftq.harness import Dut
+from suites.frontend.ftq.resolve_queue.transaction.cycle import ResolveInput
 
 
 LANE_FIELDS = {
@@ -52,6 +55,8 @@ class ResolveQueuePorts:
     train: Pins
     redirect: Pins
     enqueue: Pins
+    inputs: dict
+    bits: Bundle
 
     @classmethod
     def bind(cls, dut: Dut) -> "ResolveQueuePorts":
@@ -70,4 +75,42 @@ class ResolveQueuePorts:
             "valid": "io_bpuEnqueue",
             "value": "io_bpuEnqueuePtr_value",
         }, name="resolve_queue.enqueue")
-        return cls(backend, ifu, train, redirect, enqueue)
+        widths = dict(index_flag=1, index=6, offset=5, pc=49, target=49,
+                      taken=1, mispredict=1, branch_type=2, ras_action=2, valid=1)
+        input_widths = {'reset': 1, 'io_bpuTrain_ready': 1}
+        for group in (*backend, ifu):
+            input_widths.update((pin, widths[logical]) for logical, pin in group.names.items())
+        input_widths.update((pin, dict(valid=1, flag=1, value=6)[key]) for key, pin in redirect.names.items())
+        input_widths.update((pin, dict(valid=1, value=6)[key]) for key, pin in enqueue.names.items())
+        output_widths = {train.physical(key): bits for key, bits in dict(valid=1, index_flag=1, index=6, start_pc=49).items()}
+        for slot in range(8):
+            for key, bits in dict(valid=1, bits_target_addr=49, bits_taken=1, bits_cfiPosition=5,
+                                  bits_attribute_branchType=2, bits_attribute_rasAction=2, bits_mispredict=1).items():
+                output_widths[train.physical(f'slot{slot}.{key}')] = bits
+        if set(dut.input_names()) != set(input_widths) or dut.output_names() != set(output_widths):
+            raise ValueError('ResolveQueue full input/output schema mismatch')
+        for output, fields in ((False, input_widths | {'clock': 1}), (True, output_widths)):
+            for name, bits in fields.items():
+                signal = getattr(dut.dut, name)
+                if (max(1, int(signal.W())) != bits or bool(signal.IsOutIO()) != output
+                        or (not output and not signal.IsInIO())):
+                    raise ValueError(f'ResolveQueue {name}: expected {bits}-bit ' + ('output' if output else 'input'))
+        inputs = {name: dut.input(name) for name in input_widths}
+        return cls(backend, ifu, train, redirect, enqueue, inputs, Bundle(**inputs))
+
+    def encode(self, frame):
+        from suites.frontend.ftq.resolve_queue.driver.encoding import encode
+        if type(frame) is not ResolveInput:
+            raise ValueError('ResolveQueue driver requires a validated ResolveInput')
+        values = dict.fromkeys(self.inputs, 0)
+        values['reset'], values['io_bpuTrain_ready'] = int(frame.reset), int(frame.ready)
+        for group, report in zip((*self.backend, self.ifu), frame.reports, strict=True):
+            if report is not None:
+                values.update((group.physical(key), value) for key, value in encode(report).items())
+        if frame.redirect is not None:
+            flag, pointer = frame.redirect
+            values.update((self.redirect.physical(key), value) for key, value in dict(valid=1, flag=flag, value=pointer).items())
+        if frame.enqueue is not None:
+            values[self.enqueue.physical('valid')] = 1
+            values[self.enqueue.physical('value')] = frame.enqueue
+        return values

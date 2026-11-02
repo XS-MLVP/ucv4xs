@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "baseline": "public-893e1580b",
+  "baseline": "public-a0c2a26cb",
   "suites": {
     "bpu": "suites/frontend/bpu",
     "ftq": "suites/frontend/ftq",

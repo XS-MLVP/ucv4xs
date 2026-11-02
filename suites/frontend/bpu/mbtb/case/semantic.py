@@ -98,8 +98,10 @@ async def coalesced_reset(agent, coverage, *, stale):
 
 async def cleanup_zero_key(agent, coverage, *, combined_zero):
     from suites.frontend.bpu.mbtb.case.cleanup_overlap_scenario import check_case
+    from suites.frontend.bpu.mbtb.model.cleanup import cleanup_way_plan
 
     rule = 'combined-zero-key-destination-clear' if combined_zero else 'nonzero-key-clear-control'
+    owners=cleanup_way_plan()
     prepared_tick = None
 
     class PreparedCheckpoint:
@@ -121,9 +123,9 @@ async def cleanup_zero_key(agent, coverage, *, combined_zero):
                     and item['tag'] == (0 if combined_zero else 1)
                     and item['position'] == (0 if combined_zero else 5)]
         if accepted:
-            assert all(item['way'] == 1 for item in accepted)
+            assert all(item['way'] == owners['clear'] for item in accepted)
             coverage.record('reached', rule, accepted_ticks=tuple(item['tick'] for item in accepted),
-                            tag=accepted[0]['tag'], position=accepted[0]['position'], cleared_way=1)
+                            tag=accepted[0]['tag'], position=accepted[0]['position'], cleared_way=owners['clear'])
     agent.reference.raise_failure()
     coverage.record('checked', rule, tick=agent.reference.input_tick + 1,
-                    survivor_way=0, cleared_way=1, neighboring_training_preserved=True)
+                    survivor_way=owners['keep'], cleared_way=owners['clear'], neighboring_training_preserved=True)

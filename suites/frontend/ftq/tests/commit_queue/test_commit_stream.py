@@ -28,4 +28,4 @@ async def test_mixed_lane_stream_matches_independent_fifo_model(commit_queue_age
     for _ in range(80):
         if await agent.submit((None,) * WIDTH) is None:
             break
-    assert agent.checker.depth == 0
+    assert agent.receipt()['pending'] == ()

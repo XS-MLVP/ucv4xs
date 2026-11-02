@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from suites.frontend.bpu.mbtb.transaction.types import MbtbPrediction
+from suites.frontend.bpu.mbtb.transaction.types import MbtbPrediction,MbtbLookupDisposition
 from suites.frontend.bpu.mbtb.checker.assertions import assert_miss
 from suites.frontend.bpu.mbtb.checker.assertions import assert_vector_hit
 from suites.frontend.bpu.mbtb.checker.assertions import train
@@ -17,7 +17,7 @@ from suites.frontend.bpu.mbtb.case.definitions import MISS_PC
 @dataclass(frozen=True, slots=True)
 class LookupGateObservation:
     held: MbtbPrediction
-    disabled: MbtbPrediction
+    disabled: MbtbLookupDisposition
     restored: MbtbPrediction
 
 
@@ -40,6 +40,7 @@ async def observe_lookup_gate(agent) -> LookupGateObservation:
     await agent.set_enabled(False)
     held = await agent.sample_prediction()
     disabled = await agent.predict(DIRECT.pc)
+    assert type(disabled) is MbtbLookupDisposition and disabled.reason=='disabled-filtered'
     await agent.set_enabled(True)
     restored = await agent.predict(DIRECT.pc)
     return LookupGateObservation(held, disabled, restored)

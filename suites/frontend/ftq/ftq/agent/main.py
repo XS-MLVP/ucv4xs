@@ -4,29 +4,25 @@ from __future__ import annotations
 
 import dataclasses
 from typing import Iterable
-from typing import Mapping
 from typing import Sequence
 
-from suites.frontend.ftq.commit_queue.checker.model import CommitChecker
-from suites.frontend.ftq.drivers.signal import LevelDriver
-from suites.frontend.ftq.drivers.signal import PulseDriver
-from suites.frontend.ftq.drivers.signal import ResetDriver
+from toffee import Scoreboard
 from suites.frontend.ftq.monitors.cycle import EdgeMonitor
 from suites.frontend.ftq.monitors.cycle import InvariantMonitor
-from suites.frontend.ftq.ports import Pins
 from suites.frontend.ftq.ftq.bundle.ports import FtqPorts
+from suites.frontend.ftq.ftq.bundle.abi import metadata_inputs
+from suites.frontend.ftq.ftq.bundle.slots import FtqInputPorts
+from suites.frontend.ftq.ftq.driver.slots import FtqInputDriver
+from suites.frontend.ftq.ftq.transaction.cycle import FtqInput, InputReceipt, allocation_plan
 from suites.frontend.ftq.ftq.checker.model import FtqChecker
-from suites.frontend.ftq.ftq.driver.encoding import encode_backend_redirect
+from suites.frontend.ftq.ftq.checker.commit import FtqCommits
+from suites.frontend.ftq.ftq.checker.frontend import FtqFrontend
 from suites.frontend.ftq.ftq.driver.encoding import encode_callret
-from suites.frontend.ftq.ftq.driver.encoding import encode_ifu_redirect
-from suites.frontend.ftq.ftq.driver.encoding import encode_meta
 from suites.frontend.ftq.ftq.driver.encoding import encode_prediction
-from suites.frontend.ftq.ftq.driver.encoding import encode_resolve
 from suites.frontend.ftq.ftq.monitor import decode
 from suites.frontend.ftq.ftq.transaction.types import BackendRedirect
 from suites.frontend.ftq.ftq.transaction.types import BackendWrite
 from suites.frontend.ftq.ftq.transaction.types import CommitEvent
-from suites.frontend.ftq.ftq.transaction.types import Consumers
 from suites.frontend.ftq.ftq.transaction.types import Entry
 from suites.frontend.ftq.ftq.transaction.types import FetchRequest
 from suites.frontend.ftq.ftq.transaction.types import FlushEvent
@@ -45,33 +41,23 @@ from suites.frontend.ftq.oracle import CallRet
 from suites.frontend.ftq.resolve_queue.transaction.types import ResolveReport
 
 
-def _union(dut: Dut, groups: Sequence[Pins], name: str) -> Pins:
-    names = {}
-    for index, group in enumerate(groups):
-        for logical, pin in group.names.items():
-            names[f"{index}.{logical}"] = pin
-    return Pins(dut, names, name=name)
-
-
 class FtqAgent:
     def __init__(self, dut: Dut) -> None:
         self.dut = dut
         self.ports = FtqPorts.bind(dut)
-        self.reset_driver = ResetDriver(
-            dut, Pins(dut, {"reset": "reset"}, name="ftq.reset"))
-        self.prediction_driver = PulseDriver(dut, self.ports.prediction)
-        self.meta_driver = PulseDriver(dut, self.ports.meta)
-        self.backend_redirect_driver = PulseDriver(dut, self.ports.backend_redirect)
-        self.ifu_redirect_driver = PulseDriver(dut, self.ports.ifu_redirect)
-        self.resolve_driver = PulseDriver(
-            dut, _union(dut, self.ports.resolve, "ftq.resolve"))
-        self.callret_driver = PulseDriver(
-            dut, _union(dut, self.ports.callret, "ftq.callret"))
-        self.commit_driver = PulseDriver(dut, self.ports.commit)
-        self.consumer_driver = LevelDriver(dut, self.ports.consumers)
-        self.ahead_driver = PulseDriver(dut, self.ports.ahead)
+        self.input_ports = FtqInputPorts(dut, self.ports)
+        self.input_driver = FtqInputDriver(dut, self.input_ports)
+        self.input_scoreboard = Scoreboard('ftq.input-slots')
+        self._frame = FtqInput()
+        self._slot = self._epoch = 0
+        self._input_receipts = []
+        self._resetting = self._used = self._busy = self._failed = False
+        self._finished = False
+        self._inflight = None
         self.checker = FtqChecker()
-        self.commit_checker = CommitChecker()
+        self.commit_checker = FtqCommits()
+        self.frontend = FtqFrontend()
+        self._prediction_revision = 0
         self.training_monitor = EdgeMonitor(
             "ftq.training", lambda d: decode.training(d, self.ports))
         self.commit_monitor = EdgeMonitor(
@@ -90,76 +76,229 @@ class FtqAgent:
         self.private_monitor = EdgeMonitor(
             "ftq.backend_write", lambda d: decode.backend_write(d, self.ports),
             history=64)
+        self.owners_monitor = EdgeMonitor('ftq.owners', decode.pointers, history=64)
         self.pointer_monitor = InvariantMonitor(
             "ftq.pointers", self.checker.check_pointers)
         self.last_redirect_topdown: Topdown | None = None
-        self._consumers = Consumers()
         self._started = False
 
     async def start(self) -> "FtqAgent":
-        if self._started:
-            raise RuntimeError("FTQ agent already started")
+        if self._used:
+            raise RuntimeError('FTQ agent cannot be restarted')
+        self._used = True
         for monitor in (self.training_monitor, self.commit_monitor,
                         self.redirect_monitor, self.prefetch_monitor,
                         self.fetch_monitor, self.flush_monitor,
                         self.topdown_monitor, self.private_monitor,
+                        self.owners_monitor,
                         self.pointer_monitor):
             self.dut.add_monitor(monitor)
+        await self.input_driver.__aenter__()
         self._started = True
+        self.input_driver.present(self._frame)
         return self
 
     async def aclose(self) -> None:
-        for monitor in (self.training_monitor, self.commit_monitor,
-                        self.redirect_monitor, self.prefetch_monitor,
-                        self.fetch_monitor, self.flush_monitor,
-                        self.topdown_monitor, self.private_monitor):
-            monitor.clear()
-        self.ahead_driver.close()
-        self.consumer_driver.close()
-        self.commit_driver.close()
-        self.callret_driver.close()
-        self.resolve_driver.close()
-        self.ifu_redirect_driver.close()
-        self.backend_redirect_driver.close()
-        self.meta_driver.close()
-        self.prediction_driver.close()
-        self.reset_driver.pins.set(reset=0)
+        self.input_driver.close()
         self._started = False
 
-    async def reset(self) -> None:
-        self._consumers = Consumers()
-        await self.consumer_driver.set(_consumer_values(self._consumers))
-        await self.reset_driver.send()
+    def _require_clean(self):
+        if not self._started:
+            raise RuntimeError('FTQ agent is not running')
+        if self._failed or self._inflight is not None:
+            raise RuntimeError('FTQ has unreconciled input work after failure/cancellation')
+        if self.input_scoreboard.status.failed:
+            raise RuntimeError('FTQ has a prior input comparison failure')
+        self.commit_checker.require_clean()
+        self.frontend.require_clean()
+        self.dut.check_sampling()
+
+    def _enter_work(self):
+        if self._busy:
+            raise RuntimeError('concurrent FTQ input work is not supported')
+        self._require_clean()
+        if self._finished:
+            raise RuntimeError('FTQ input stream is finished')
+        self._busy = True
+
+    def _present(self, frame, *, new_prediction=False):
+        if new_prediction or frame.prediction is not self._frame.prediction:
+            self._prediction_revision += 1
+        self.input_driver.present(frame)
+        self.frontend.present(frame, self._prediction_revision)
+        self._frame = frame
+
+    def _check_frontend_preview(self):
+        self._require_clean()
+        observations = {monitor.name: monitor.sample(self.dut) for monitor in (
+            self.training_monitor, self.redirect_monitor, self.prefetch_monitor, self.fetch_monitor,
+            self.flush_monitor, self.topdown_monitor, self.private_monitor)}
+        observations['ftq.owners'] = self.owners_monitor.sample(self.dut)
+        try:
+            self.frontend.check_phase(self._frame, observations, self._slot + 1)
+        except BaseException:
+            self._failed = True
+            raise
+
+    def _stage(self, **values):
+        frame = dataclasses.replace(self._frame, **values)
+        self.input_ports.encode(frame)
+        self._enter_work()
+        try:
+            self._present(frame, new_prediction='prediction' in values)
+            self._check_frontend_preview()
+        except BaseException:
+            self._failed = True
+            raise
+        finally:
+            self._busy = False
+
+    async def _cycle(self, frame):
+        self._slot += 1
+        self._inflight = frame
+        if frame.prediction is not self._frame.prediction:
+            self._prediction_revision += 1
+        self.frontend.begin_slot(frame, self._prediction_revision, self._slot)
+        event = await self.input_driver.send(frame)
+        cycle = self.dut.cycle_history[-1]
+        assert cycle.after.event.tick == event.tick, 'FTQ input/observation tick mismatch'
+        expected = self.input_ports.encode(frame)
+        for sample in (cycle.before, cycle.after):
+            self.input_scoreboard.check(expected=expected, actual=dict(sample.value.inputs))
+        self.commit_checker.advance_slot(frame, self._slot,
+            dict(cycle.before.value.observations)['ftq.commit'],
+            dict(cycle.after.value.observations)['ftq.commit'], event.tick)
+        self.frontend.advance_slot(frame, self._slot, dict(cycle.before.value.observations),
+                                   dict(cycle.after.value.observations), event.tick)
+        if frame.reset and not self._resetting:
+            self._epoch += 1
+        self._resetting = frame.reset
+        self._input_receipts.append(InputReceipt(self._epoch, self._slot, frame, event.tick))
+        self._frame = frame
+        self._inflight = None
+
+    async def _run(self, frames, *, final=None, tap=None):
+        frames = tuple(frames)
+        for frame in (*frames, *((final,) if final is not None else ())):
+            self.input_ports.encode(frame)
+        self._enter_work()
+        result = None
+        try:
+            for index, frame in enumerate(frames):
+                await self._cycle(frame)
+                if index == 0 and tap is not None:
+                    result = tap()
+            if final is not None:
+                self._present(final)
+            return result
+        except BaseException:
+            self._failed = True
+            raise
+        finally:
+            self._busy = False
+
+    async def _pulse(self, name, value, *, release_edge=True, tap=None):
+        active = dataclasses.replace(self._frame, **{name: value})
+        idle_value = getattr(FtqInput(), name)
+        released = dataclasses.replace(active, **{name: idle_value})
+        frames = (active, released) if release_edge else (active,)
+        return await self._run(frames, final=released, tap=tap)
+
+    async def reset(self, *, asserted=2, released=2) -> None:
+        if any(type(value) is not int or value < 1 for value in (asserted, released)):
+            raise ValueError('FTQ reset needs positive integer budgets')
+        await self._run((FtqInput(reset=True),) * asserted + (FtqInput(),) * released)
         for monitor in (self.training_monitor, self.commit_monitor,
                         self.redirect_monitor, self.prefetch_monitor,
                         self.fetch_monitor, self.flush_monitor,
                         self.topdown_monitor, self.private_monitor):
             monitor.clear()
+        self.owners_monitor.clear()
         self.checker = FtqChecker()
-        self.commit_checker = CommitChecker()
+        self.last_redirect_topdown = None
 
     async def step(self, cycles: int = 1) -> None:
-        await self.dut.edge(cycles)
+        if type(cycles) is not int or cycles < 1:
+            raise ValueError('FTQ step needs a positive integer cycle budget')
+        await self._run((self._frame,) * cycles)
+
+    async def cycle(self, frame: FtqInput):
+        """One complete simultaneous slot, retained until explicitly replaced."""
+        await self._run((frame,))
+
+    def input_receipt(self):
+        self._require_clean()
+        return tuple(self._input_receipts)
+
+    def receipt(self):
+        self._require_clean()
+        return dict(inputs=self.input_receipt(), commits=self.commit_checker.receipt(), frontend=self.frontend.receipt())
+
+    async def drain_training(self, *, cycles=24):
+        """Explicit BPU consumer schedule; finish never invents readiness."""
+        if type(cycles) is not int or cycles < 1:
+            raise ValueError('FTQ training drain needs a positive integer cycle budget')
+        await self.consumers(train=1)
+        for _ in range(cycles):
+            await self.step(1)
+            if not self.frontend.audit():
+                break
+        else:
+            self._failed = True
+            raise AssertionError('FTQ explicit training drain budget exhausted')
+        await self.consumers(train=0)
+        await self.step(2)
+
+    async def finish(self, *, cycles=66):
+        """Bounded local obligations; not full-machine program completion.
+
+        Readiness stays as explicitly supplied. No callret/metadata/ROB commit,
+        ready, redirect, response or reset is invented to erase outstanding work.
+        Unaccepted backpressured ICache offers remain explicitly in the receipt;
+        a handoff is not an ICache reply or an invented backend retirement.
+        """
+        if self._finished:
+            return self.receipt()
+        if type(cycles) is not int or cycles < 2:
+            raise ValueError('FTQ finish needs at least two idle observation cycles')
+        self._enter_work()
+        idle = FtqInput(consumers=self._frame.consumers)
+        try:
+            if self._frame != idle:
+                raise AssertionError('FTQ staged producers remain active; explicitly release them')
+            if (self.frontend.audit() or self.frontend.receivers.pending_resolve is not None) and not idle.consumers.train:
+                raise AssertionError('FTQ accepted training reports remain; explicitly drain training')
+            quiet = 0
+            for _ in range(cycles):
+                await self._cycle(idle)
+                pending = self.commit_checker.audit()
+                quiet = quiet + 1 if not pending and self.frontend.quiet(idle, self._slot + 1) else 0
+                if quiet >= 2:
+                    break
+            else:
+                raise AssertionError('FTQ finish budget exhausted with pending local obligations')
+            assert not self.commit_checker.audit(), 'FTQ accepted commits remain unfinished'
+            self._finished = True
+            return self.receipt()
+        except BaseException:
+            self._failed = True
+            raise
+        finally:
+            self._busy = False
 
     async def consumers(self, **values: int) -> None:
         """Update the readiness levels, keeping channels that are not named."""
 
-        spec = dataclasses.replace(self._consumers, **values)
-        self._consumers = spec
-        await self.consumer_driver.set(_consumer_values(spec))
+        spec = dataclasses.replace(self._frame.consumers, **values)
+        self._stage(consumers=spec)
 
     # ------------------------------------------------------------------ producer
 
     async def offer(self, prediction: Prediction) -> PredictionOffer:
         """Drive a prediction without taking an edge; call complete_offer()."""
 
-        self.prediction_driver.pins.set(**encode_prediction(prediction))
-        # The s3 write pointer is shared by the meta channel and an s3
-        # override; the meta driver owns both uses so they cannot double-drive.
-        self.meta_driver.pins.set(
-            s3_flag=prediction.s3_flag,
-            s3_value=(prediction.s3_ptr or 0) if prediction.s3_override else 0)
-        self.dut.refresh()
+        encode_prediction(prediction)
+        self._stage(prediction=prediction)
         value = decode.prediction_offer(self.dut, self.ports)
         return PredictionOffer(ready=value.ready, wen=value.wen,
                                index=value.index, start_pc=value.start_pc)
@@ -172,37 +311,32 @@ class FtqAgent:
         protocol violation rather than a legal idle value.
         """
 
-        self.prediction_driver.pins.set(**{
-            logical: 0 for logical in self.ports.prediction.names})
-        self.dut.refresh()
+        self._stage(prediction=None)
 
     async def predict(self, prediction: Prediction) -> PredictionOffer:
         """Offer one prediction as the BPU producer; requires ready."""
 
         offer = await self.offer(prediction)
         if not offer.ready:
+            self._failed = True
             raise AssertionError(f"prediction offered while not ready: {offer}")
-        await self.step(1)
-        await self.complete_offer()
-        await self.step(1)
+        released = dataclasses.replace(self._frame, prediction=None)
+        await self._run((self._frame, released))
         return offer
 
     async def override(self, prediction: Prediction) -> PredictionOffer:
         """Offer an s2/s3 override; override requests ignore prediction.ready."""
 
+        encode_prediction(prediction)
         if not (prediction.s2_override or prediction.s3_override):
             raise ValueError("override() needs s2_override or s3_override")
         offer = await self.offer(prediction)
-        await self.step(1)
-        await self.complete_offer()
-        await self.step(1)
+        released = dataclasses.replace(self._frame, prediction=None)
+        await self._run((self._frame, released))
         return offer
 
     async def write_meta(self, meta: Meta) -> None:
-        values = encode_meta(meta)
-        values["s3_flag"] = meta.flag
-        values["s3_value"] = meta.index
-        await self.meta_driver.send(values)
+        await self._pulse('meta', meta)
 
     def meta_payload(self, value: int) -> dict[str, int]:
         """All-ones or all-zeros for every stored metadata payload bit.
@@ -211,75 +345,48 @@ class FtqAgent:
         binding, so the bundle exposes the widths instead of each test pin.
         """
 
-        fields = {}
-        for logical, physical in self.ports.meta.names.items():
-            if logical in ("valid", "s3_flag", "s3_value"):
-                continue
-            width = max(1, int(self.dut.input(physical).W()))
-            fields[logical] = (1 << width) - 1 if value else 0
-        return fields
+        if type(value) is not int or value not in (0, 1):
+            raise ValueError('metadata fill must be an integer bit')
+        return {name: (1 << width) - 1 if value else 0 for name, width in metadata_inputs().items()}
 
     async def drive_backend_redirect(self, event: BackendRedirect) -> tuple[RedirectEvent | None, FlushEvent]:
         """Present the redirect without taking an edge."""
 
-        self.backend_redirect_driver.pins.set(**encode_backend_redirect(event))
-        self.dut.refresh()
-        return (decode.redirect_event(self.dut, self.ports),
-                decode.flush(self.dut, self.ports))
+        self._stage(backend_redirect=event)
+        return (self.redirect_monitor.sample(self.dut), self.flush_monitor.sample(self.dut))
 
     async def release_backend_redirect(self) -> None:
         """Release the redirect pins without advancing the clock."""
 
-        self.backend_redirect_driver.pins.set(**{
-            logical: 0 for logical in self.ports.backend_redirect.names})
-        self.dut.refresh()
+        self._stage(backend_redirect=None)
 
     async def finish_backend_redirect(self) -> None:
         # Keep the request asserted for the accepting edge, then release it.
-        await self.step(1)
-        await self.release_backend_redirect()
-        await self.step(1)
+        released = dataclasses.replace(self._frame, backend_redirect=None)
+        await self._run((self._frame, released))
 
     async def backend_redirect(self, event: BackendRedirect) -> tuple[RedirectEvent | None, FlushEvent]:
-        self.backend_redirect_driver.pins.set(**encode_backend_redirect(event))
-        self.dut.refresh()
-        await self.step(1)
-        redirect = decode.redirect_event(self.dut, self.ports)
-        flush = decode.flush(self.dut, self.ports)
-        self.last_redirect_topdown = decode.topdown(self.dut, self.ports)
-        self.backend_redirect_driver.pins.set(valid=0)
-        self.dut.refresh()
-        await self.step(1)
-        return redirect, flush
+        return await self._pulse('backend_redirect', event, tap=self._capture_redirect)
+
+    def _capture_redirect(self):
+        self.last_redirect_topdown = self.topdown_monitor.sample(self.dut)
+        return self.redirect_monitor.sample(self.dut), self.flush_monitor.sample(self.dut)
 
     async def drive_ifu_redirect(self, event: IfuRedirect) -> None:
         """Present the IFU redirect without taking an edge."""
 
-        self.ifu_redirect_driver.pins.set(**encode_ifu_redirect(event))
-        self.dut.refresh()
+        self._stage(ifu_redirect=event)
 
     async def release_ifu_redirect(self) -> None:
         """Release the IFU redirect pins without advancing the clock."""
 
-        self.ifu_redirect_driver.pins.set(**{
-            logical: 0 for logical in self.ports.ifu_redirect.names})
-        self.dut.refresh()
+        self._stage(ifu_redirect=None)
 
     async def finish_ifu_redirect(self) -> None:
-        await self.release_ifu_redirect()
-        await self.step(1)
+        await self._run((dataclasses.replace(self._frame, ifu_redirect=None),))
 
     async def ifu_redirect(self, event: IfuRedirect) -> tuple[RedirectEvent | None, FlushEvent]:
-        self.ifu_redirect_driver.pins.set(**encode_ifu_redirect(event))
-        self.dut.refresh()
-        await self.step(1)
-        redirect = decode.redirect_event(self.dut, self.ports)
-        flush = decode.flush(self.dut, self.ports)
-        self.last_redirect_topdown = decode.topdown(self.dut, self.ports)
-        self.ifu_redirect_driver.pins.set(valid=0)
-        self.dut.refresh()
-        await self.step(1)
-        return redirect, flush
+        return await self._pulse('ifu_redirect', event, tap=self._capture_redirect)
 
     async def resolve_hold(self, reports: Iterable[ResolveReport]) -> None:
         """Present resolve lanes without taking an edge (handshake tests)."""
@@ -287,32 +394,21 @@ class FtqAgent:
         reports = tuple(reports)
         if len(reports) > 3:
             raise ValueError("backend accepts at most three lane reports")
-        values = {f"{lane}.valid": 0 for lane in range(3)}
-        for lane, report in enumerate(reports):
-            values.update({f"{lane}.{logical}": value
-                           for logical, value in encode_resolve(report).items()})
-        self.resolve_driver.pins.set(**values)
-        self.dut.refresh()
+        self._stage(resolve=reports + (None,) * (3 - len(reports)))
 
     async def resolve_stream(self, groups: Sequence[Sequence[ResolveReport]]) -> None:
         """Drive adjacent resolve groups without an idle gap between them."""
 
+        frames = []
         for group in groups:
             if len(group) > 3:
                 raise ValueError("backend accepts at most three lane reports")
-            values = {f"{lane}.valid": 0 for lane in range(3)}
-            for lane, report in enumerate(group):
-                values.update({f"{lane}.{logical}": value
-                               for logical, value in encode_resolve(report).items()})
-            self.resolve_driver.pins.set(**values)
-            self.dut.refresh()
-            await self.step(1)
-        await self.resolve_release()
-        await self.step(1)
+            frames.append(dataclasses.replace(self._frame, resolve=tuple(group) + (None,) * (3 - len(group))))
+        frames.append(dataclasses.replace(self._frame, resolve=(None,) * 3))
+        await self._run(frames)
 
     async def resolve_release(self) -> None:
-        self.resolve_driver.pins.set(**{f"{lane}.valid": 0 for lane in range(3)})
-        self.dut.refresh()
+        self._stage(resolve=(None,) * 3)
 
     async def resolve(self, reports: Iterable[ResolveReport], *,
                       source: str = "backend") -> None:
@@ -323,93 +419,51 @@ class FtqAgent:
             raise ValueError("FTQ accepts only the three backend resolve lanes")
         if len(reports) > 3:
             raise ValueError("backend accepts at most three lane reports")
-        values = {}
-        for lane, report in enumerate(reports):
-            for logical, value in encode_resolve(report).items():
-                values[f"{lane}.{logical}"] = value
-        await self.resolve_driver.send(values)
+        await self._pulse('resolve', reports + (None,) * (3 - len(reports)))
 
     def set_resolve_lanes(self, lanes: Sequence[ResolveReport | None]) -> None:
         """Set lane pins without advancing the clock."""
 
         if len(lanes) != 3:
             raise ValueError("backend lane vector has exactly three entries")
-        values: dict[str, int] = {f"{lane}.valid": 0 for lane in range(3)}
-        for lane, report in enumerate(lanes):
-            if report is None:
-                continue
-            values.update({f"{lane}.{logical}": value
-                           for logical, value in encode_resolve(report).items()})
-        self.resolve_driver.pins.set(**values)
-        self.dut.refresh()
+        self._stage(resolve=tuple(lanes))
 
     async def resolve_cycle(self, lanes: Sequence[ResolveReport | None]) -> None:
         """Present lanes for exactly one edge, without a release edge."""
 
         if len(lanes) != 3:
             raise ValueError("backend lane vector has exactly three entries")
-        values: dict[str, int] = {f"{lane}.valid": 0 for lane in range(3)}
-        for lane, report in enumerate(lanes):
-            if report is None:
-                continue
-            values.update({f"{lane}.{logical}": value
-                           for logical, value in encode_resolve(report).items()})
-        self.resolve_driver.pins.set(**values)
-        self.dut.refresh()
-        await self.step(1)
+        await self._run((dataclasses.replace(self._frame, resolve=tuple(lanes)),))
 
     async def resolve_lanes(self, lanes: Sequence[ResolveReport | None]) -> None:
         if len(lanes) != 3:
             raise ValueError("backend lane vector has exactly three entries")
-        values: dict[str, int] = {f"{lane}.valid": 0 for lane in range(3)}
-        for lane, report in enumerate(lanes):
-            if report is None:
-                continue
-            values.update({f"{lane}.{logical}": value
-                           for logical, value in encode_resolve(report).items()})
-        await self.resolve_driver.send(values)
+        await self._pulse('resolve', tuple(lanes))
 
     async def callret_rows(self, rows: Sequence[CallRet | None]) -> None:
         if len(rows) != len(self.ports.callret):
             raise ValueError(f"expected {len(self.ports.callret)} call-return lanes")
-        values: dict[str, int] = {}
-        for lane, row in enumerate(rows):
-            values[f"{lane}.valid"] = int(row is not None)
-            values[f"{lane}.ras"] = 0 if row is None else row.ras
-            values[f"{lane}.ptr"] = 0 if row is None else row.ptr
-        self.callret_driver.pins.set(**values)
-        self.dut.refresh()
-        await self.step(1)
-        await self.release_callret()
+        await self._pulse('callret', tuple(rows), release_edge=False)
 
     async def callret(self, lane: int, row: CallRet) -> None:
-        if not 0 <= lane < len(self.ports.callret):
+        if type(lane) is not int or not 0 <= lane < len(self.ports.callret):
             raise ValueError(f"call-return lane {lane} outside 0..7")
-        values = {f"{index}.valid": 0 for index in range(len(self.ports.callret))}
-        values.update({f"{lane}.{logical}": value
-                       for logical, value in encode_callret(row).items()})
-        self.callret_driver.pins.set(**values)
-        self.dut.refresh()
-        await self.step(1)
-        await self.release_callret()
+        encode_callret(row)
+        rows = [None] * 8
+        rows[lane] = row
+        await self.callret_rows(rows)
 
     async def release_callret(self) -> None:
-        self.callret_driver.pins.set(**{
-            f"{index}.valid": 0 for index in range(len(self.ports.callret))
-        })
-        self.dut.refresh()
+        self._stage(callret=(None,) * 8)
 
     async def commit(self, index: int, flag: int = 0) -> None:
-        await self.commit_driver.send({"valid": 1, "flag": flag, "ptr": index})
+        await self._pulse('commit', (flag, index))
 
     async def ahead_set(self, index: int, flag: int = 0) -> None:
-        self.ahead_driver.pins.set(valid=1, flag=flag, value=index)
-        self.dut.refresh()
-        await self.step(1)
+        await self._run((dataclasses.replace(self._frame, ahead=(flag, index)),))
 
     async def ahead_clear(self) -> None:
-        self.ahead_driver.pins.set(valid=0)
-        self.dut.refresh()
+        self._stage(ahead=None)
 
     # ------------------------------------------------------------------ producer helper
 
@@ -420,85 +474,103 @@ class FtqAgent:
                        start_flag: int = 0) -> list[int]:
         """Admit predictions with the same timing the BPU producer uses."""
 
+        plan = allocation_plan(specs, consume=consume, with_meta=with_meta, meta_limit=meta_limit,
+                               start_index=start_index, start_flag=start_flag)
         if consume:
             await self.consumers(prefetch=1, mainpipe=1)
         pcs = []
-        for index, spec in enumerate(specs):
-            prediction = Prediction(start_pc=spec.start_pc, taken=spec.taken,
-                                    end_position=spec.end_position)
+        for index, (prediction, meta) in enumerate(plan):
             offer = await self.offer(prediction)
             if not offer.ready:
+                self._failed = True
                 raise AssertionError(f"prediction {index} offered without room")
-            pcs.append(spec.start_pc)
+            pcs.append(prediction.start_pc)
             await self.step(1)
             await self.complete_offer()
             await self.step(1)
-            if with_meta and (meta_limit is None or index < meta_limit):
-                absolute = start_index + index
-                await self.write_meta(Meta(
-                    absolute % 64, flag=(start_flag + absolute // 64) & 1,
-                    fields=spec.meta))
+            if meta is not None:
+                await self.write_meta(meta)
         return pcs
 
     # ------------------------------------------------------------------ observation
 
     def prediction_ready(self) -> bool:
+        self._require_clean()
+        self._check_frontend_preview()
         return self.ports.prediction_ready.b("ready")
 
     def prefetch(self) -> PrefetchRequest:
+        self._require_clean()
+        self._check_frontend_preview()
         return self.prefetch_monitor.sample(self.dut)
 
     def fetch(self) -> FetchRequest:
+        self._require_clean()
+        self._check_frontend_preview()
         return self.fetch_monitor.sample(self.dut)
 
     def training(self) -> TrainingEntry | None:
+        self._require_clean()
+        self._check_frontend_preview()
         return self.training_monitor.sample(self.dut)
 
     def commit_event(self) -> CommitEvent | None:
-        return self.commit_monitor.sample(self.dut)
+        self._require_clean()
+        value = self.commit_monitor.sample(self.dut)
+        try:
+            self.commit_checker.check_phase(value, reset=self._frame.reset)
+        except BaseException:
+            self._failed = True
+            raise
+        return value
 
     def redirect_event(self) -> RedirectEvent | None:
+        self._require_clean()
+        self._check_frontend_preview()
         return self.redirect_monitor.sample(self.dut)
 
     def flush(self) -> FlushEvent:
+        self._require_clean()
+        self._check_frontend_preview()
         return self.flush_monitor.sample(self.dut)
 
     def topdown(self) -> Topdown:
+        self._require_clean()
+        self._check_frontend_preview()
         return self.topdown_monitor.sample(self.dut)
 
     def redirect_topdown(self) -> Topdown:
+        self._require_clean()
         if self.last_redirect_topdown is None:
             raise AssertionError("no redirect topdown snapshot was captured")
         return self.last_redirect_topdown
 
     def backend_write(self) -> BackendWrite:
+        self._require_clean()
+        self._check_frontend_preview()
         return self.private_monitor.sample(self.dut)
 
     def pointers(self) -> Pointers:
+        self._require_clean()
         return decode.pointers(self.dut)
 
     def entry(self, index: int) -> Entry:
+        self._require_clean()
         return decode.entry(self.dut, index)
 
     def meta_redirect(self, index: int, field: str) -> int:
+        self._require_clean()
         return self.dut.internal(f"FtqDut_top.Ftq.metaQueueRedirect_{index}_{field}")
 
     def meta_resolve(self, index: int, field: str) -> int:
+        self._require_clean()
         return self.dut.internal(f"FtqDut_top.Ftq.metaQueueResolve_{index}_{field}")
 
     def meta_commit(self, index: int, field: str) -> int:
+        self._require_clean()
         return self.dut.internal(f"FtqDut_top.Ftq.metaQueueCommit_{index}_{field}")
 
     def assert_training_mask(self) -> None:
         training = self.training()
         if training is not None and not self.checker.training_mask_ok(training):
             raise AssertionError("training contains a branch after the first mispredict")
-
-
-def _consumer_values(spec: Consumers) -> dict[str, int]:
-    return {
-        "prefetch": spec.prefetch,
-        "mainpipe": spec.mainpipe,
-        "train": spec.train,
-        "real_two_fetch": spec.real_two_fetch,
-    }

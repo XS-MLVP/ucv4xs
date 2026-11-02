@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "state": "shared-level-ownership-verified-all-dut-transaction-migration-still-pending",
+  "scope": "ICache eleven DUTs,71 LevelDriver construction sites; this count is not the number of physical drivers or semantic closure",
+  "implementation": "Persistent LevelDriver now derives from SDK SyncDriver, claims all bound inputs before set()/send(), shares real signal identity ownership with other SDK drivers, and releases on close. set() remains zero-edge and is not acceptance; send() is only a one-clock persistent-level update, not ready/valid proof.",
+  "native_red": {"path": "results/ucv-goal-icache-level-ownership-red-20261102.xml", "counts": {"FAIL": 3}, "boundary": "Two same/different-name level competitors and one SDK competitor were silently able to drive the already used native DataBank read inputs. All three failed DID_NOT_RAISE at intended ownership assertion, not setup."},
+  "same_probe_green": {"path": "results/ucv-goal-icache-level-ownership-green-20261102.xml", "counts": {"PASS": 3}},
+  "source_sha256": "04bfc4cbdb2c1875d5b933b8f55f99568023292114a8bbfe5f33077cd2a3da21",
+  "runs": [
+    {"output": "results/ucv-goal-icache-level-ownership-integrated-v1-20261102", "seed": 2, "workers": 4, "counts": {"PASS": 326, "XFAIL": 3}, "native_inputs": 293, "build_files_checked": 66, "audit": "results/ucv-goal-icache-level-ownership-integrated-audit-v1-20261102.json", "baseline": "results/ucv-namespace-clean-final-20261031/icache", "removed": [], "verdict_changes": {}, "new_selftest_PASS": 35},
+    {"output": "results/ucv-goal-icache-level-ownership-seed1-v1-20261102", "seed": 1, "workers": 1, "selection": ["tests/databank", "tests/replacer", "tests/waylookup"], "counts": {"PASS": 102, "XFAIL": 1}, "native_inputs": 76, "build_files_checked": 18, "audit": "results/ucv-goal-icache-level-ownership-seed1-audit-v1-20261102.json", "baseline": "results/ucv-goal-icache-level-ownership-integrated-v1-20261102", "removed": [], "verdict_changes": {}}
+  ],
+  "verification": "Each run source stable and every recorded file matched at audit; all artifacts/build files/coverage processor hashes checked, native builds unchanged, committed/coverage_complete/cleanup_complete manifest and gaps[]. Original294 full-ICache nodeids/verdicts preserved; new35 PASS comprise27 domain,3 first-response and5 ownership selftests. XFAIL remains a real non-PASS outcome, no added exemptions.",
+  "new_close_boundary_red": {"path": "results/ucv-goal-icache-closed-level-followup-red-20261102.xml", "counts": {"FAIL": 1}, "boundary": "On same04bfc4... source, send() on an already closed LevelDriver raises closed only after inherited SDK send() reclaimed signals, so a fresh replacement is then rejected. Requires a pre-claim closed guard and corresponding lifecycle control; source stays frozen while ten-suite collection is active. This is a real remaining adapter item, not a completed ownership lifecycle."},
+  "closed_send_production_fix": {
+    "implementation": "LevelDriver.send() checks its semantic closed state before inherited SDK send() can claim any released input. Native control verifies zero edge advance and immediate fresh replacement ownership.",
+    "source_sha256": "a1c25a11af5dd3fd7f0659d2c7c7fd763417d227f442ad966a51d8650ba9e026",
+    "runs": [
+      {"output": "results/ucv-goal-icache-level-closed-send-integrated-v2-20261102", "seed": 2, "counts": {"PASS": 327, "XFAIL": 3}, "audit": "results/ucv-goal-icache-level-closed-send-integrated-audit-v2-20261102.json", "native_inputs": 294, "build_files_checked": 66},
+      {"output": "results/ucv-goal-icache-level-closed-send-seed1-v2-20261102", "seed": 1, "counts": {"PASS": 103, "XFAIL": 1}, "audit": "results/ucv-goal-icache-level-closed-send-seed1-audit-v2-20261102.json", "native_inputs": 77, "build_files_checked": 18}
+    ],
+    "verified": "Source stable and all files match at each audit; all artifact/build/processor hashes checked, builds unchanged; no old removed nodeid or verdict change,1 native selftest added. Later DataBank reset changes are not included in this source receipt.",
+    "limits": "This closes the exact closed-send reclaim bug, not DataBank/all-ICache ownership, continuous monitoring, UID or finish obligations."
+  },
+  "limits": [
+    "Owning level drivers does not establish complete reset, MBIST, SRAM-control or all non-LevelDriver ownership; direct Set still needs audit.",
+    "No claim that operation-local sampling is a continuous monitor or that driver set()/one-clock send() is actual acceptance.",
+    "Per-DUT input UID/accept/response/filter/reset/retry/finish, strict ABI/config and functional raw-driver/model abstraction remain required.",
+    "Coverage artifact integrity is not functional/coverage closure; raw coverage inputs cleaned by runner are not individually available."
+  ]
+}

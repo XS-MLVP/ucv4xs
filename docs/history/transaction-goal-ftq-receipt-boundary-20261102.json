@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "state": "four-functional-owner-checker-dependencies-removed-verdicts-and-order-retained",
+  "red_boundary": "The new owner-infrastructure gate found4 direct functional accesses that the older0 pin/0 signal gate did not report. No old test was removed or reclassified selftest to make this zero.",
+  "fixes": [
+    {"paths": ["tests/commit_queue/test_commit_queue.py", "tests/commit_queue/test_commit_stream.py"], "implementation": "Three raw checker.depth==0 assertions now require agent.receipt()['pending']==(). Existing receipt audits exact offered/accepted/terminal UID sets and reference-depth agreement before returning detached tuples, so this is stronger transaction completion evidence, not a new counter-forwarding facade."},
+    {"path": "tests/resolve_queue/test_resolve_model.py", "implementation": "The randomized scenario constructs its own fresh existing ResolveChecker rather than mutating/borrowing agent.checker. The same existing oracle class and180-iteration seed/choices/room/accept/push/drain algorithm remain; runtime continuous UID checker is independent. No oracle rewrite or stimulus-domain reduction. This is an explicitly standalone reference oracle, not hidden agent state under a new alias."}
+  ],
+  "source_sha256": "2c1bacd93ee4432f67842b7783326d8c3fa92eb904db7940cbd128f28132ae60",
+  "runs": [
+    {"output": "results/ucv-goal-ftq-receipt-boundary-v1-20261102", "seed": 2, "counts": {"PASS": 905, "XFAIL": 2}, "native_inputs": 236, "build_files_checked": 18, "audit": "results/ucv-goal-ftq-receipt-boundary-audit-v1-20261102.json"},
+    {"output": "results/ucv-goal-ftq-receipt-boundary-seed1-v1-20261102", "seed": 1, "counts": {"PASS": 57}, "native_inputs": 34, "build_files_checked": 12, "audit": "results/ucv-goal-ftq-receipt-boundary-seed1-audit-v1-20261102.json"}
+  ],
+  "audits": "Both sources stable and every file matched at audit; all artifact/build/processor hashes checked, builds unchanged, manifests committed/coverage_complete/cleanup_complete, gaps[]. Original full907 nodeids and per-suite relative order retained, no verdict changes or added/removed test. Strict two capacity XFAIL remain real non-PASS outcomes, no new exemption.",
+  "static": "results/ucv-goal-component-boundary-production-v2-20261102.json:FTQ0 owner/0 pin/0 signal, previously4 owner. This guard remains syntax-only and does not replace the previously implemented continuous transactions/UID/lifecycle evidence.",
+  "limits": "No claim that this small dependency repair re-ran IFU/BPU/ICache or completed the whole goal. Full physical RTL coverage closure and non-adapter system reachability remain separate."
+}

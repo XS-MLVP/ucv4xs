@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "state": "production-training-inputs-integrated-verified-lookup-followup-pending",
+  "scope": "MainBTB planned training UID, full actual-input comparison, physical-edge/gating, exact filter/reset/cancel/local-drain terminals and response-tail dispatch; not whole MainBTB/BPU acceptance",
+  "baseline": "results/ucv-goal-mbtb-transactions-integrated-v5-20261102",
+  "red": {
+    "intended_input": "results/ucv-goal-mbtb-intended-training-red-v2-20261102.xml:1 FAIL because a valid wrong encoded target was accepted as the oracle input; red-v1 was an invalid probe accessing BatchTraining.target and is not used as counterexample credit",
+    "same_probe_green": "results/ucv-goal-mbtb-intended-training-green-20261102.xml:1 PASS on actual repository implementation, no overlay",
+    "cancel_phase": "results/ucv-goal-mbtb-cancel-phase-probe-v2-20261102.xml:1 FAIL/1 PASS. Cancellation after DriveStable527 caused no physical offer, but the old preview-based model recorded phantom acceptance528 and pending entry work. Cancellation after Rising528 had exactly that one genuine accepted offer."
+  },
+  "prototype_boundary": "Before the two background jobs completed, repository source983931... was preserved. External /tmp prototype had20 pure/5 native selftest PASS and a phase probe1 PASS; these were not production or hardware-functional credit. Production was edited only after the completed v5 and collection audits.",
+  "implementation": {
+    "identity": "TrainingInputs allocates a unique monotonic environment UID before emission, keeps planned/offer epochs and complete immutable requests, and FIFO-matches each actual Valid-only beat including identical payloads. It never guesses a tag from target, PC or returned payload.",
+    "actual_input": "Compare the complete four-way metadata, PC pair, all eight valid/sparse resolve lanes and every active branch field against independent expected_mbtb_feedback, not the driver's encoder. A mismatch latches before advancing the independent model and remains sticky through finish.",
+    "edge": "DriveStable samples pre-edge reset-done output only. Driven inputs are captured at actual RisingEdge, then consumed at the next DriveStable; record the original physical edge tick, not the later model tick. A preview withdrawn before acceptance cannot become a phantom input.",
+    "terminals": "Accepted/local-drained, reset-cancelled, reset-filtered, initialization-filtered, disabled-filtered and cancelled-before-offer are distinct. Cancelling Python emission does not cancel an already accepted hardware obligation. Delayed observation at or before the cancellation tick remains valid; future offers cannot consume cancelled equal-payload plans.",
+    "finish": "Check exact declared UID and terminal sets, states and times in addition to actual/native and model quiescence. No automatic functional input pays a debt. Local-drained is isolated training completion, not FTQ retirement.",
+    "call_chain": "Normal train/burst, cleanup dirty/clean, first-clear collision and reset-lifetime acceptance-only issue all use the same planned-input service. Reset-lifetime no longer sends raw driver payload outside the plan.",
+    "drain_regression": "Dispatch already-ready input-tail tasks under Execution.paused rather than advancing a gratuitous edge. Keep the original pipeline completion assertions, continuous monitor and raw SDK observation accounting unchanged.",
+    "metadata_limit": "Metadata is still explicitly a declared upstream input. This change does not certify genuine lookup metadata ancestry, full FTQ reachability or all lookup/response epoch linkage. Those remain required work."
+  },
+  "runs": [
+    {"output": "results/ucv-goal-mbtb-training-inputs-v1-20261102", "seed": 2, "counts": {"PASS": 92, "FAIL": 2}, "native": {"PASS": 26, "FAIL": 2}, "pure": {"PASS": 66}, "source_sha256": "3961de8dc43d9bd8bdea61e70013134af053af0718542c20a906eec4d5871870", "audit": "results/ucv-goal-mbtb-training-inputs-audit-v1-20261102.json", "new_selftest_PASS": 41, "previous_pipeline_FAIL_to_PASS": 2},
+    {"output": "results/ucv-goal-mbtb-training-inputs-v2-20261102", "seed": 2, "counts": {"PASS": 2643, "FAIL": 5}, "native": {"PASS": 50, "FAIL": 5}, "pure": {"PASS": 2593}, "source_sha256": "25376b48ba76ba4ba538714018c5bbfa67b9c2dfd853403fe19b7182b2429783", "audit": "results/ucv-goal-mbtb-training-inputs-audit-v2-20261102.json", "new_selftest_PASS": 44, "previous_pipeline_FAIL_to_PASS": 2, "removed": [], "native_inputs": 55}
+  ],
+  "audits": "Both production runs had stable source and every recorded source file matched at audit time, no gaps, committed/coverage_complete/cleanup_complete manifests, all artifact/build/processor hashes checked and unchanged native build. The v2 selection retains five known ordinary functional FAILs; four full-capacity baseline FAILs were not selected. No xfail expansion or deleted counterexamples.",
+  "post_v2": "Added strict reset/enable pre-drive rejection controls and an all-empty resolve-lane Valid beat control; not retrospectively included in v2 counts/source.",
+  "interrupted_integrated_attempt": {
+    "output": "results/ucv-goal-mbtb-training-inputs-integrated-v3-20261102",
+    "cause": "外层shell前台600秒期限中止；进程检查确认不再活动。仅pure任务exit0，native未形成最终收据，无summary/source_after，不给完整回归或native判定信用。未修改/补造不完整收据。",
+    "source_sha256": "9f6825096705418c524e5dc6810c52ff4013e2c2287274167c013c4618cfa98c"
+  },
+  "integrated_v4": {
+    "output": "results/ucv-goal-mbtb-training-inputs-integrated-v4-20261102",
+    "counts": {"PASS": 2780, "FAIL": 9},
+    "native": {"PASS": 137, "FAIL": 9},
+    "pure": {"PASS": 2643},
+    "source_sha256": "9f6825096705418c524e5dc6810c52ff4013e2c2287274167c013c4618cfa98c",
+    "source_stable_and_matches_at_audit": true,
+    "audit": "results/ucv-goal-mbtb-training-inputs-integrated-audit-v4-20261102.json",
+    "native_inputs": 146,
+    "build_files_checked": 6,
+    "artifact_and_build_processor_hashes_verified": true,
+    "native_build_unchanged": true,
+    "removed": [],
+    "changes_from_full_v5": {"FAIL_to_PASS": 2, "new_selftest_PASS": 55},
+    "retained_failures": "Four full-capacity same-position counter failures, two shared-service old-miss retained-owner corrections, foreign-tag same-position counter, old-cold second-depth counter, joint zero-tag/position cleanup. All nine retain their native functional FAIL; no ERROR/XFAIL expansion."
+  },
+  "seed1_v4": {"output": "results/ucv-goal-mbtb-training-inputs-seed1-v4-20261102", "counts": {"PASS": 90}, "native_PASS_and_inputs": 41, "pure_PASS": 49, "source_sha256": "9f6825096705418c524e5dc6810c52ff4013e2c2287274167c013c4618cfa98c", "audit": "results/ucv-goal-mbtb-training-inputs-seed1-audit-v4-20261102.json", "source_stable_and_matches_at_audit": true, "artifact_build_processor_hashes_verified": true, "removed": []},
+  "production_lookup_followup": "docs/history/transaction-goal-mbtb-lookup-source-20261102.json",
+  "root_regression": "2026-11-02再次运行.venv/bin/python -m pytest -q tests：242 PASS。不是全仓硬件通过。",
+  "lookup_prototype": {
+    "boundary": "BPU source9f6825... preserved while background integrated/seed1 runs execute; /tmp memory-only overlay is not production implementation or final module credit",
+    "pure": "results/ucv-goal-mbtb-lookup-inputs-prototype-20261102.xml:10 PASS",
+    "native_red": "results/ucv-goal-mbtb-lookup-plan-red-v2-20261102.xml:6 FAIL/1 PASS. Wrong intended PC under custom expected/input-only query, suppressed S0/S1/S2 with identical payloads, and legitimate pending cancellation at finish all reach native assertions; actual S0/S1/S2 phase probe passes with ticks522/524/526 and SDK522->526.",
+    "overlay_green": "results/ucv-goal-mbtb-lookup-plan-prototype-green-v2-20261102.xml:7 PASS",
+    "lifetime_controls": "results/ucv-goal-mbtb-lookup-overlay-lifetimes-v2-20261102.xml:20 PASS from original pipeline/query-reset/cleanup-overlap/training-reset functional cases, no deletion. Earlier overlay attempt20 PASS/12 teardown ERROR was prototype uid NameError, retained in original XML and fixed before v2; it was not a production regression or hardware error.",
+    "remaining": "Integrate input UID/PC/stage checks with sticky failures and exact launch/offer time consistency, preserve deferred-cleanup scope semantics, then audit filtered/reset/response and genuine metadata ancestry. No claim that prototype completes these remaining obligations."
+  },
+  "remaining": [
+    "Audit final-source integrated and seed1 evidence and update full-repository collection without inventing a new total.",
+    "Complete genuine lookup-source/metadata ancestry, input UID/S1/S2/response/cancel/reset linkage and remaining MainBTB ownership/lifecycle audit.",
+    "Continue other BPU/ICache, MemBlock/VAGQ and final repository acceptance; neither partial PASS nor artifact completeness closes the goal."
+  ]
+}

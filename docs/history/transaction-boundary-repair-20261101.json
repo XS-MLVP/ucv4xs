@@ -1,0 +1,1071 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "base_commit": "001735033979f52712808b25280efc262a48654f",
+  "scope": "Sbuffer top/data transaction ownership and semantic-check repairs; explicit LSQ fixture contracts; StoreDelay framework runtime and schema/tail checks; not full repository sign-off",
+  "runs": [
+    {
+      "output": "results/ucv-sbuffer-transaction-before-20261101",
+      "counts": {
+        "PASS": 31
+      },
+      "status": "PASS",
+      "seed": 1,
+      "workers": 2,
+      "selection": [],
+      "source_stable": true,
+      "source_sha256": "0c01fb4f3cecced340b62e6abaa239aa46d5a69089d29284b66d81d95e499d76",
+      "gaps": [],
+      "hardware_verdict": "PASS",
+      "run_sha256": "1cd05b0548af9430d190872bd7ac58a2bfed3d503109820e57ad75e56114b3a6",
+      "summary_sha256": "1b51b92926a989829cd230730818dea512c3afed1881be28406e8eeec1b12183",
+      "tasks": [
+        {
+          "suite": "sbuffer",
+          "scope": "suite",
+          "exit_code": 0,
+          "manifest_path": "results/ucv-sbuffer-transaction-before-20261101/sbuffer/manifest.json",
+          "manifest_sha256": "44bfeb3baba885a24ea598fbeaf8b9735f984bf18dac7aff019ad74a28e8eea6",
+          "state": "committed",
+          "coverage_complete": true
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-sbuffer-transaction-probe-20261101",
+      "counts": {
+        "PASS": 4
+      },
+      "status": "PASS",
+      "seed": 1,
+      "workers": 1,
+      "selection": [
+        "tests/sbuffer/test_sbuffer.py::test_reset_and_idle",
+        "tests/sbuffer/test_sbuffer.py::test_merge_and_forward",
+        "tests/sbuffer/test_sbuffer.py::test_timeout_writeout_all_lanes",
+        "tests/sbuffer/test_sbuffer.py::test_replay_resends_same_line"
+      ],
+      "source_stable": true,
+      "source_sha256": "bfeacb9e9f1a6dc3884316f4955b25ba6481e2f1d566ff9e90ab73500f2b118d",
+      "gaps": [],
+      "hardware_verdict": "PASS",
+      "run_sha256": "2be7182a0da7863b0ebd63751aec33b4283a596e067378feea18d6c767d02d3e",
+      "summary_sha256": "b80728b40e1af5a30fec53ad55cdef47ac05fd8156682899b0696bdacd163123",
+      "tasks": [
+        {
+          "suite": "sbuffer",
+          "scope": "suite",
+          "exit_code": 0,
+          "manifest_path": "results/ucv-sbuffer-transaction-probe-20261101/sbuffer/manifest.json",
+          "manifest_sha256": "02e1d6d5452647f354dd3bd9b67ff64cf5888273a1c323b09b9018d2c163d625",
+          "state": "committed",
+          "coverage_complete": true
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-sbuffer-transaction-regression-20261101",
+      "counts": {
+        "PASS": 31
+      },
+      "status": "PASS",
+      "seed": 1,
+      "workers": 2,
+      "selection": [],
+      "source_stable": true,
+      "source_sha256": "bfeacb9e9f1a6dc3884316f4955b25ba6481e2f1d566ff9e90ab73500f2b118d",
+      "gaps": [],
+      "hardware_verdict": "PASS",
+      "run_sha256": "2b78c84d7028587c8be0633b228197160c00a82dee4719cf36a0440c786e98ad",
+      "summary_sha256": "580cd24754fbe56126016802bb1681e8b2245f1164715b7da03bf70d246d46cb",
+      "tasks": [
+        {
+          "suite": "sbuffer",
+          "scope": "suite",
+          "exit_code": 0,
+          "manifest_path": "results/ucv-sbuffer-transaction-regression-20261101/sbuffer/manifest.json",
+          "manifest_sha256": "164bff66a3d6dbe2ec30e33abec7d3e5c361f0b7b5161b45bd2e609012379ecf",
+          "state": "committed",
+          "coverage_complete": true
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-sbuffer-transaction-controls-20261101",
+      "counts": {
+        "PASS": 50,
+        "FAIL": 1
+      },
+      "status": "FAIL",
+      "seed": 1,
+      "workers": 2,
+      "selection": [],
+      "source_stable": true,
+      "source_sha256": "c3a1a191948aafb345015410963321f17a14ee68e0b20af4c71bdcee12ae2d76",
+      "gaps": [],
+      "hardware_verdict": "FAIL",
+      "run_sha256": "6fadad2bd3793f0b7be39f66049a6d47fa0499d40228d303616ca857d16898ad",
+      "summary_sha256": "5d35cc03914a16226c08de953aca63d257b6888518c9a4c3e7ab13c660967e4a",
+      "tasks": [
+        {
+          "suite": "sbuffer",
+          "scope": "suite",
+          "exit_code": 1,
+          "manifest_path": "results/ucv-sbuffer-transaction-controls-20261101/sbuffer/manifest.json",
+          "manifest_sha256": "87232f514c36793872774bbc4b9519bd74134d39d227fe36a9ce8417ec63464e",
+          "state": "committed",
+          "coverage_complete": true
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-sbuffer-cmo-source-probe-20261101",
+      "counts": {
+        "PASS": 1
+      },
+      "status": "PASS",
+      "seed": 1,
+      "workers": 1,
+      "selection": [
+        "tests/sbuffer/test_transactions.py::test_cmo_exit_does_not_leave_a_fence_drain_with_sq_nonempty"
+      ],
+      "source_stable": true,
+      "source_sha256": "7faafdf9ef7fa15343312a10fc8de1600d63d776d2311ae7fb70a29b71d8ff49",
+      "gaps": [],
+      "hardware_verdict": "PASS",
+      "run_sha256": "8b93859cf06cd78a2a1aa8a23422e28a8fafa64dca96d2caa538f9fa42fa6338",
+      "summary_sha256": "5fb22861c084183cbc77fcf3c9deec64d317ea23145c2fd4812ce7a8cbad8c6a",
+      "tasks": [
+        {
+          "suite": "sbuffer",
+          "scope": "suite",
+          "exit_code": 0,
+          "manifest_path": "results/ucv-sbuffer-cmo-source-probe-20261101/sbuffer/manifest.json",
+          "manifest_sha256": "5489201c73c316b148d5ca439bb681704becf25d54f438aabe144beb191a2ee7",
+          "state": "committed",
+          "coverage_complete": true
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-sbuffer-transaction-full-20261101",
+      "counts": {
+        "PASS": 57
+      },
+      "status": "PASS",
+      "seed": 1,
+      "workers": 2,
+      "selection": [],
+      "source_stable": true,
+      "source_sha256": "4d804ec9fc09aa4ff19e8c0cdadf076af8bc9357755143b349e33260cea19cb7",
+      "gaps": [],
+      "hardware_verdict": "PASS",
+      "run_sha256": "9022fcb1b1165486c8b79e28ea47868d7348a366ea9d02dc4cc285ee0ed4c1fc",
+      "summary_sha256": "94dbcf03b80fda13423f05982d89d42916d056b89503a5fc3fe011c151bbbde8",
+      "tasks": [
+        {
+          "suite": "sbuffer",
+          "scope": "suite",
+          "exit_code": 0,
+          "manifest_path": "results/ucv-sbuffer-transaction-full-20261101/sbuffer/manifest.json",
+          "manifest_sha256": "ac596bf7ec702df190cf009d30ba64e714359b2e6a9ae1e65f22751db6840b08",
+          "state": "committed",
+          "coverage_complete": true
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-sbuffer-native-negative-controls-20261101",
+      "counts": {
+        "PASS": 5
+      },
+      "status": "PASS",
+      "seed": 1,
+      "workers": 1,
+      "selection": [
+        "tests/checkers/test_native_controls.py"
+      ],
+      "source_stable": true,
+      "source_sha256": "32096b7326caf4a6fd42d2fae4efeaf9ea7ede99c871b4c1395a9c760214a524",
+      "gaps": [],
+      "hardware_verdict": "PASS",
+      "run_sha256": "5a5dbe015e82111eda8a46871e7414ac96846c7541fcac7d5bf236a39fac351e",
+      "summary_sha256": "c41b19c5dd1ec74a80c52b16b59896d341bae7d748ba76dc720df48fb6ca29b8",
+      "tasks": [
+        {
+          "suite": "sbuffer",
+          "scope": "suite",
+          "exit_code": 0,
+          "manifest_path": "results/ucv-sbuffer-native-negative-controls-20261101/sbuffer/manifest.json",
+          "manifest_sha256": "504c7386060f3f262975a047375c97eb06c8161c419e2926f3aa45d7fa61b76f",
+          "state": "committed",
+          "coverage_complete": true
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-sbuffer-transaction-final-20261101",
+      "counts": {
+        "PASS": 62
+      },
+      "status": "PASS",
+      "seed": 1,
+      "workers": 2,
+      "selection": [],
+      "source_stable": true,
+      "source_sha256": "32096b7326caf4a6fd42d2fae4efeaf9ea7ede99c871b4c1395a9c760214a524",
+      "gaps": [],
+      "hardware_verdict": "PASS",
+      "run_sha256": "5f6781e40242f8d59b6fe23cb0b5d51572daf3d1a268bf26a693c169895b9b69",
+      "summary_sha256": "fc29716c29bbc9b39c6e930ca6456816be3fb42c92dc97ff64bbd6242f803f74",
+      "tasks": [
+        {
+          "suite": "sbuffer",
+          "scope": "suite",
+          "exit_code": 0,
+          "manifest_path": "results/ucv-sbuffer-transaction-final-20261101/sbuffer/manifest.json",
+          "manifest_sha256": "32b42cc3c9a93e5ed6bcc959dcdd0ccc1988608175a415b9e6357accd2111ff9",
+          "state": "committed",
+          "coverage_complete": true
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-sbuffer-transaction-seed2-20261101",
+      "counts": {
+        "PASS": 62
+      },
+      "status": "PASS",
+      "seed": 2,
+      "workers": 2,
+      "selection": [],
+      "source_stable": true,
+      "source_sha256": "32096b7326caf4a6fd42d2fae4efeaf9ea7ede99c871b4c1395a9c760214a524",
+      "gaps": [],
+      "hardware_verdict": "PASS",
+      "run_sha256": "e7def036d6aa92523cee3c899d99cb7664d8622416d4c074285ad17b2eac5945",
+      "summary_sha256": "c8f9aca62254f33a49fb61caa3f67f7f86d0481d3ac341f5ce2e060af34b5f9d",
+      "tasks": [
+        {
+          "suite": "sbuffer",
+          "scope": "suite",
+          "exit_code": 0,
+          "manifest_path": "results/ucv-sbuffer-transaction-seed2-20261101/sbuffer/manifest.json",
+          "manifest_sha256": "87a2608cf2743c3307a5697b31e4779b6dd07442b99ac43bf661d61bb0c6d9cb",
+          "state": "committed",
+          "coverage_complete": true
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-sbuffer-transaction-verified-20261101",
+      "counts": {
+        "PASS": 62
+      },
+      "status": "PASS",
+      "seed": 1,
+      "workers": 2,
+      "selection": [],
+      "source_stable": true,
+      "source_sha256": "f6db40e667c5b8debc38bd0a5823f8d1ff63ccbd31ad765787f2e3419a24b875",
+      "gaps": [],
+      "hardware_verdict": "PASS",
+      "run_sha256": "f3fa59459463beefa33549e561ffa48beeb70b6ccd445570ee8b0f4fd18fbcc2",
+      "summary_sha256": "090f860ff574efa257a4487fbcea24a49768e036d0c62b1c3c41551b8e23d5ee",
+      "tasks": [
+        {
+          "suite": "sbuffer",
+          "scope": "suite",
+          "exit_code": 0,
+          "manifest_path": "results/ucv-sbuffer-transaction-verified-20261101/sbuffer/manifest.json",
+          "manifest_sha256": "de49994b81bebac054dd94bfeae008cab4557593d08a534318e8aeed06d38104",
+          "state": "committed",
+          "coverage_complete": true
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-sbuffer-transaction-verified-seed2-20261101",
+      "counts": {
+        "PASS": 62
+      },
+      "status": "PASS",
+      "seed": 2,
+      "workers": 2,
+      "selection": [],
+      "source_stable": true,
+      "source_sha256": "f6db40e667c5b8debc38bd0a5823f8d1ff63ccbd31ad765787f2e3419a24b875",
+      "gaps": [],
+      "hardware_verdict": "PASS",
+      "run_sha256": "bf6a048c80416aea12b9b831304b45e4269994dc6e4004a9c1597fe56fa9aff9",
+      "summary_sha256": "d166808f82b2edcf3db587981983e200e6894e42ff3a2c6f8cf8a8fa93f70cff",
+      "tasks": [
+        {
+          "suite": "sbuffer",
+          "scope": "suite",
+          "exit_code": 0,
+          "manifest_path": "results/ucv-sbuffer-transaction-verified-seed2-20261101/sbuffer/manifest.json",
+          "manifest_sha256": "8518935dc84fb46bc0cbed4c513c81102306df2cd74480a957b2e1b95fa77f74",
+          "state": "committed",
+          "coverage_complete": true
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-lsq-fixture-before-20261101",
+      "counts": {
+        "PASS": 324,
+        "FAIL": 16
+      },
+      "status": "FAIL",
+      "seed": 1,
+      "workers": 2,
+      "selection": [
+        "tests/local_reset",
+        "tests/sq_endpoint",
+        "tests/raw",
+        "tests/replay",
+        "tests/lsq_wrapper/test_initial.py",
+        "tests/normal_mixed",
+        "tests/normal_replay_probe",
+        "tests/replay_cause_probe",
+        "tests/vlq/test_extended.py"
+      ],
+      "source_stable": true,
+      "source_sha256": "aa99617058ee4cc329c9827c2ba9b28f2bc7d1214803519214c6731b908aecbd",
+      "gaps": [],
+      "hardware_verdict": "FAIL",
+      "run_sha256": "8a0e83c355b103bc32942867b14acd9de5bbda30d130eb0b05638a2acc3f93d4",
+      "summary_sha256": "96301718cb7b4af9d206e07ad272e1d0058481c81c94645a6d4e450210373dce",
+      "tasks": [
+        {
+          "suite": "lsq",
+          "scope": "suite",
+          "exit_code": 1,
+          "manifest_path": "results/ucv-lsq-fixture-before-20261101/lsq/manifest.json",
+          "manifest_sha256": "3b21ad8eac784d8bfd69a4452afb97bb6427f9e71ac3240847197a7431251754",
+          "state": "committed",
+          "coverage_complete": true
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-sbuffer-identity-final-20261101",
+      "counts": {
+        "PASS": 64
+      },
+      "status": "PASS",
+      "seed": 1,
+      "workers": 2,
+      "selection": [],
+      "source_stable": true,
+      "source_sha256": "1b5d89868b08c82b9f546fac2328ed7ccbec5388660afa6ff035a7dba6d98be2",
+      "gaps": [],
+      "hardware_verdict": "PASS",
+      "run_sha256": "c8b8fe4a354f317256a68afa9bc879542101d69927ada4f9a7081eda62574dbd",
+      "summary_sha256": "d15b6d26405a1f02905aa29dfc8582f95e48afdb279a8fcc67ea77dbde6f6910",
+      "tasks": [
+        {
+          "suite": "sbuffer",
+          "scope": "suite",
+          "exit_code": 0,
+          "manifest_path": "results/ucv-sbuffer-identity-final-20261101/sbuffer/manifest.json",
+          "manifest_sha256": "7abf2204ee87ed22fd34b1a1e315b214e95d2ba9af9c4a2484a9f7fd7860f55b",
+          "state": "committed",
+          "coverage_complete": true
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-sbuffer-identity-final-seed2-20261101",
+      "counts": {
+        "PASS": 64
+      },
+      "status": "PASS",
+      "seed": 2,
+      "workers": 2,
+      "selection": [],
+      "source_stable": true,
+      "source_sha256": "1b5d89868b08c82b9f546fac2328ed7ccbec5388660afa6ff035a7dba6d98be2",
+      "gaps": [],
+      "hardware_verdict": "PASS",
+      "run_sha256": "755f1f95b9d64631797cab04d80b1cec8d12af8121d2bab952b2720ef3c2886b",
+      "summary_sha256": "f0703c75aa78c6ba17740e215796262aac4d4bb20adb053ae0e9b91019ddcb30",
+      "tasks": [
+        {
+          "suite": "sbuffer",
+          "scope": "suite",
+          "exit_code": 0,
+          "manifest_path": "results/ucv-sbuffer-identity-final-seed2-20261101/sbuffer/manifest.json",
+          "manifest_sha256": "3626e2617d7e0614c7672a44a102ca203aff9691372c51c043d2e8c21ba87a42",
+          "state": "committed",
+          "coverage_complete": true
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-sbuffer-boundary-closed-20261101",
+      "counts": {
+        "PASS": 66
+      },
+      "status": "PASS",
+      "seed": 1,
+      "workers": 2,
+      "selection": [],
+      "source_stable": true,
+      "source_sha256": "2c467f85b8442a978d4dfc039ab38a5506fb1d95cc498e1cbef6bd14e70b97f4",
+      "gaps": [],
+      "hardware_verdict": "PASS",
+      "run_sha256": "c5a59ca04009857db94bf339db129f3ac523abd202270646ee7683a2e1859ae3",
+      "summary_sha256": "b222cf59f15ef10c632184736878ab649f4de56614f77c694d2d8091dbb6c531",
+      "tasks": [
+        {
+          "suite": "sbuffer",
+          "scope": "suite",
+          "exit_code": 0,
+          "manifest_path": "results/ucv-sbuffer-boundary-closed-20261101/sbuffer/manifest.json",
+          "manifest_sha256": "9a6f10208d3364225838e57aa086f444773ba84569a9d320f60c618a644063d3",
+          "state": "committed",
+          "coverage_complete": true
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-sbuffer-boundary-closed-seed2-20261101",
+      "counts": {
+        "PASS": 66
+      },
+      "status": "PASS",
+      "seed": 2,
+      "workers": 2,
+      "selection": [],
+      "source_stable": true,
+      "source_sha256": "2c467f85b8442a978d4dfc039ab38a5506fb1d95cc498e1cbef6bd14e70b97f4",
+      "gaps": [],
+      "hardware_verdict": "PASS",
+      "run_sha256": "2bb9a6971a56613f8c3a228fba54a2c67763f6b2dbbc6538b348da80b055531c",
+      "summary_sha256": "3ee6a6ca1e566c7fb4213f2cd798e41dc384b562a10201a988a27d312abb855f",
+      "tasks": [
+        {
+          "suite": "sbuffer",
+          "scope": "suite",
+          "exit_code": 0,
+          "manifest_path": "results/ucv-sbuffer-boundary-closed-seed2-20261101/sbuffer/manifest.json",
+          "manifest_sha256": "af96c8b1339d488420f25a7cd215358d4e8b3d9bbc715ad5e3eb3a153498b169",
+          "state": "committed",
+          "coverage_complete": true
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-lsq-fixture-explicit-20261101",
+      "counts": {
+        "PASS": 324,
+        "FAIL": 16
+      },
+      "status": "FAIL",
+      "seed": 1,
+      "workers": 2,
+      "selection": [
+        "tests/local_reset",
+        "tests/sq_endpoint",
+        "tests/raw",
+        "tests/replay",
+        "tests/lsq_wrapper/test_initial.py",
+        "tests/normal_mixed",
+        "tests/normal_replay_probe",
+        "tests/replay_cause_probe",
+        "tests/vlq/test_extended.py"
+      ],
+      "source_stable": true,
+      "source_sha256": "db6a8fd39bd43354d87722df62df83cdcc5ea3efc4f3ca0f846d530bf269e58a",
+      "gaps": [],
+      "hardware_verdict": "FAIL",
+      "run_sha256": "b2bc10e1ee0c3ec1ef2a4d7c654fcec03be8fb19395f4ad18bcf2e8bd91293f5",
+      "summary_sha256": "ad94003c421a0c6a8d7d852731de0273ef61c4f08a8cb75dc113d23cbebe1cbb",
+      "tasks": [
+        {
+          "suite": "lsq",
+          "scope": "suite",
+          "exit_code": 1,
+          "manifest_path": "results/ucv-lsq-fixture-explicit-20261101/lsq/manifest.json",
+          "manifest_sha256": "ad794d2d686ae4292c3bd81eea243d7b95511641f2f5348a4986a5979071953f",
+          "state": "committed",
+          "coverage_complete": true
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-lsu-delay-before-20261101",
+      "counts": {
+        "PASS": 14
+      },
+      "status": "PASS",
+      "seed": 1,
+      "workers": 1,
+      "selection": [
+        "tests/store_delay"
+      ],
+      "source_stable": true,
+      "source_sha256": "b287d83ada27cf8d41814f5edb3b3eeefdcc6507b47f4e74ba48a611915e53b2",
+      "gaps": [],
+      "hardware_verdict": "PASS",
+      "run_sha256": "21fac06493bab4a9d7f67208c60345499aba6fe2b005aac3a01a36cab123520e",
+      "summary_sha256": "33cf3b70fd1ad584c2389796a6c66d10bad76c925275b5ddc047620a91096f49",
+      "tasks": [
+        {
+          "suite": "lsu",
+          "scope": "suite",
+          "exit_code": 0,
+          "manifest_path": "results/ucv-lsu-delay-before-20261101/lsu/manifest.json",
+          "manifest_sha256": "12d8ccddb790d1b4d4fac410c294390168ab7ea5e5a3a6d728accc60db4eb491",
+          "state": "committed",
+          "coverage_complete": true
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-lsu-delay-probe-20261101",
+      "counts": {
+        "PASS": 14
+      },
+      "status": "PASS",
+      "seed": 1,
+      "workers": 1,
+      "selection": [
+        "tests/store_delay"
+      ],
+      "source_stable": true,
+      "source_sha256": "fc9115bb674620bbdc90688bdf9106cd4546fa32c65eeec0c86f488f1bc8b8f4",
+      "gaps": [],
+      "hardware_verdict": "PASS",
+      "run_sha256": "7564d4b46fe255fa13011f53a73fb17868e771e9ec67423e1592a0c528e43b02",
+      "summary_sha256": "b801bc514dfab19c000da4b6b9f4636c5b5da8f8901dc4a7f0fef38c43aec5d1",
+      "tasks": [
+        {
+          "suite": "lsu",
+          "scope": "suite",
+          "exit_code": 0,
+          "manifest_path": "results/ucv-lsu-delay-probe-20261101/lsu/manifest.json",
+          "manifest_sha256": "bf75ec6d91b0a2864fde8baf92c07d39693ca8b17f70b2fd87e5b413555461f9",
+          "state": "committed",
+          "coverage_complete": true
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-lsu-delay-controls-20261101",
+      "counts": {
+        "PASS": 28
+      },
+      "status": "PASS",
+      "seed": 1,
+      "workers": 1,
+      "selection": [
+        "tests/store_delay",
+        "tests/checkers/test_store_delay_transactions.py"
+      ],
+      "source_stable": true,
+      "source_sha256": "50a7e193d4d69bf7942f310f2befdbb17db2954e4f48103f574f9a0419328bf5",
+      "gaps": [],
+      "hardware_verdict": "PASS",
+      "run_sha256": "985b6a71417f557268cbc075ba8e42eb346e8169c1167c8779834046fa435588",
+      "summary_sha256": "53a6c20f2144f21dea83b081d98741bc5c13947e935abb4ee941982102994a62",
+      "tasks": [
+        {
+          "suite": "lsu",
+          "scope": "suite",
+          "exit_code": 0,
+          "manifest_path": "results/ucv-lsu-delay-controls-20261101/lsu/manifest.json",
+          "manifest_sha256": "e6065826b5df35249674cee92069ad5c777807b8386764e0c950d7fe770a7e7f",
+          "state": "committed",
+          "coverage_complete": true
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-lsu-delay-integrated-20261101",
+      "counts": {
+        "PASS": 536,
+        "FAIL": 7
+      },
+      "status": "FAIL",
+      "seed": 1,
+      "workers": 2,
+      "selection": [],
+      "source_stable": true,
+      "source_sha256": "50a7e193d4d69bf7942f310f2befdbb17db2954e4f48103f574f9a0419328bf5",
+      "gaps": [],
+      "hardware_verdict": "FAIL",
+      "run_sha256": "b3eaf88cba350e3bed5b38400ec5c82c8559c22c30ff11b9028cd30b02bd5ad0",
+      "summary_sha256": "567af0123c25427cda5cb79dd6503c5fc2cc1ae0dfad2771db23c0ac6739456e",
+      "tasks": [
+        {
+          "suite": "lsu",
+          "scope": "suite",
+          "exit_code": 1,
+          "manifest_path": "results/ucv-lsu-delay-integrated-20261101/lsu/manifest.json",
+          "manifest_sha256": "ac92eab2b1a907ae71e2c79c789af0c1b494308735a7b4bba2c92136c54f0a94",
+          "state": "committed",
+          "coverage_complete": true
+        }
+      ]
+    }
+  ],
+  "sbuffer_delta": {
+    "old_count": 31,
+    "new_count": 66,
+    "removed": [],
+    "changed": {},
+    "added": {
+      "sbuffer::tests/checkers/test_transactions.py::test_pending_slot_cannot_be_reused_for_an_unrelated_line": "PASS",
+      "sbuffer::tests/checkers/test_transactions.py::test_retry_keeps_slot_and_rejects_the_old_attempt_handle": "PASS",
+      "sbuffer::tests/checkers/test_transactions.py::test_finish_rejects_accepted_or_replay_obligations[none]": "PASS",
+      "sbuffer::tests/checkers/test_transactions.py::test_finish_rejects_accepted_or_replay_obligations[replay]": "PASS",
+      "sbuffer::tests/checkers/test_transactions.py::test_reset_does_not_reuse_a_line_identity": "PASS",
+      "sbuffer::tests/checkers/test_transactions.py::test_full_line_address_not_just_tag_is_checked[addr]": "PASS",
+      "sbuffer::tests/checkers/test_transactions.py::test_full_line_address_not_just_tag_is_checked[vaddr]": "PASS",
+      "sbuffer::tests/checkers/test_transactions.py::test_invalid_data_bytes_are_ignored_but_valid_bytes_are_checked": "PASS",
+      "sbuffer::tests/checkers/test_transactions.py::test_equal_payload_different_history_does_not_rebind_a_retry": "PASS",
+      "sbuffer::tests/checkers/test_transactions.py::test_offered_but_unaccepted_line_is_not_an_active_merge_target": "PASS",
+      "sbuffer::tests/checkers/test_transactions.py::test_same_edge_hit_new_request_and_enqueue_are_all_accounted": "PASS",
+      "sbuffer::tests/checkers/test_transactions.py::test_default_enqueue_cannot_succeed_with_zero_acceptance": "PASS",
+      "sbuffer::tests/checkers/test_transactions.py::test_exhausted_drain_is_not_success_and_does_not_clear_state": "PASS",
+      "sbuffer::tests/checkers/test_transactions.py::test_bad_parent_wline_and_duplicate_ports_fail_before_encoding": "PASS",
+      "sbuffer::tests/checkers/test_transactions.py::test_required_native_port_is_not_silently_optional": "PASS",
+      "sbuffer::tests/checkers/test_transactions.py::test_data_transactions_reject_ambiguous_physical_port_priority[ports0]": "PASS",
+      "sbuffer::tests/checkers/test_transactions.py::test_data_transactions_reject_ambiguous_physical_port_priority[ports1]": "PASS",
+      "sbuffer::tests/checkers/test_transactions.py::test_data_transactions_reject_ambiguous_physical_port_priority[ports2]": "PASS",
+      "sbuffer::tests/checkers/test_transactions.py::test_data_snapshot_does_not_retain_live_signal_references": "PASS",
+      "sbuffer::tests/checkers/test_native_controls.py::test_reject_all_cannot_leave_the_complete_timeout_case_green": "PASS",
+      "sbuffer::tests/checkers/test_transactions.py::test_native_driver_ownership_rejects_a_second_writer": "PASS",
+      "sbuffer::tests/checkers/test_native_controls.py::test_missing_output_cannot_leave_the_complete_merge_case_green": "PASS",
+      "sbuffer::tests/checkers/test_native_controls.py::test_cmo_classification_fault_is_detected_by_the_successor_case": "PASS",
+      "sbuffer::tests/checkers/test_native_controls.py::test_reversed_priority_oracle_is_not_silently_accepted": "PASS",
+      "sbuffer::tests/checkers/test_native_controls.py::test_uncompleted_writeback_cannot_exit_execution_normally": "PASS",
+      "sbuffer::tests/checkers/test_transactions.py::test_unaccepted_offer_is_not_a_response_identity": "PASS",
+      "sbuffer::tests/checkers/test_transactions.py::test_valid_low_cannot_be_counted_as_acceptance": "PASS",
+      "sbuffer::tests/checkers/test_transactions.py::test_accept_hit_and_duplicate_response": "PASS",
+      "sbuffer::tests/sbuffer/test_transactions.py::test_kill_suppresses_a_real_virtual_physical_mismatch": "PASS",
+      "sbuffer::tests/sbuffer/test_transactions.py::test_cmo_exit_does_not_leave_a_fence_drain_with_sq_nonempty": "PASS",
+      "sbuffer::tests/sbuffer/test_transactions.py::test_two_outstanding_requests_can_complete_in_reverse_order": "PASS",
+      "sbuffer::tests/sbuffer/test_transactions.py::test_active_bytes_override_inflight_with_old_byte_fallback": "PASS",
+      "sbuffer::tests/sbuffer/test_transactions.py::test_replayed_attempt_and_reset_cancel_reject_stale_handles": "PASS",
+      "sbuffer::tests/sbuffer/test_transactions.py::test_identical_younger_store_cannot_steal_an_inflight_retry_identity": "PASS",
+      "sbuffer::tests/sbuffer/test_transactions.py::test_new_sameblock_store_during_output_backpressure_gets_its_own_identity": "PASS"
+    },
+    "new_native_functional": 7,
+    "new_selftest": 28,
+    "build_receipts_unchanged": true
+  },
+  "checks": [
+    {
+      "name": "root-tests",
+      "exit": 0,
+      "log_sha256": "f5475985c7c6ec5f5e477a5a1bcd9c9e312495aa97d54858d18708206e4498fc",
+      "tail": [
+        "........................................................................ [ 66%]",
+        "....................................                                     [100%]",
+        "108 passed in 61.87s (0:01:01)"
+      ]
+    },
+    {
+      "name": "layout",
+      "exit": 0,
+      "log_sha256": "f12d78ba0cf86baa3fc3c09d13746182a8f43186c1a4b82981e5b889f8844afa",
+      "tail": [
+        "| lsu | 23 | 4 | 0 | 0 | 0 | 140 | 0 | yes | needs-adapter | ok |",
+        "| mmu | 23 | 52 | 0 | 0 | 0 | 29 | 382 | yes | needs-adapter | ok |",
+        "| sbuffer | 3 | 7 | 0 | 0 | 0 | 0 | 0 | yes | no-static-leak-found | ok |",
+        "| vagq | 54 | 14 | 0 | 0 | 0 | 179 | 9 | yes | needs-adapter | ok |"
+      ]
+    },
+    {
+      "name": "transaction",
+      "exit": 1,
+      "log_sha256": "8e5dfab87c3cf377f56a139481e62d53439cb26ab76b1ebe4d6a50f672e7f258",
+      "tail": [
+        "| lsu | 23 | 4 | 0 | 0 | 0 | 140 | 0 | yes | needs-adapter | 140 pin-level expressions require transaction adapters |",
+        "| mmu | 23 | 52 | 0 | 0 | 0 | 29 | 382 | yes | needs-adapter | 29 pin-level expressions require transaction adapters; 382 signal operations/native handles require transaction adapters |",
+        "| sbuffer | 3 | 7 | 0 | 0 | 0 | 0 | 0 | yes | no-static-leak-found | ok |",
+        "| vagq | 54 | 14 | 0 | 0 | 0 | 179 | 9 | yes | needs-adapter | 179 pin-level expressions require transaction adapters; 9 signal operations/native handles require transaction adapters |"
+      ]
+    },
+    {
+      "name": "sbuffer-transaction",
+      "exit": 0,
+      "log_sha256": "213b727753a8d949d48ed6151e91328d8ceda40ea5e4a0a154e4b68abc2dd7f3",
+      "tail": [
+        "| suite | feature files | fixture entries | extra conftest | env/pytest | native access files | pin expressions | signal operations | selftest | transaction boundary | structural status |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|---|---|---|",
+        "| sbuffer | 3 | 7 | 0 | 0 | 0 | 0 | 0 | yes | no-static-leak-found | ok |"
+      ]
+    },
+    {
+      "name": "skills",
+      "exit": 0,
+      "log_sha256": "e2ca572f1c1ac985d863422272810240f7825dd1da13a6cf826c0e8d2d828fd4",
+      "tail": [
+        "    \"API presence is not behavioral certification.\",",
+        "    \"Link fragments and methodological correctness need review.\"",
+        "  ]",
+        "}"
+      ]
+    },
+    {
+      "name": "assets",
+      "exit": 0,
+      "log_sha256": "4afd2ab0589e352b153e0ce5a273d9e362e4c10df50bdc0a1ac803e703240de8",
+      "tail": [
+        "  \"duts\": 132,",
+        "  \"historical_evidence_entries\": 134685,",
+        "  \"errors\": []",
+        "}"
+      ]
+    },
+    {
+      "name": "diff",
+      "exit": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tail": []
+    },
+    {
+      "name": "pip-check",
+      "exit": 0,
+      "log_sha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09",
+      "tail": [
+        "No broken requirements found."
+      ]
+    }
+  ],
+  "collections": [
+    {
+      "suite": "bpu",
+      "count": 41031,
+      "sha256": "329e6581d7b6370db251d361767fe0a2138e3049ff66613aac99c528e6d7374b"
+    },
+    {
+      "suite": "ftq",
+      "count": 111,
+      "sha256": "481154c0c025719f7a4fc355ad0717515a06b995f6f971bb9f21b9708b202318"
+    },
+    {
+      "suite": "icache",
+      "count": 294,
+      "sha256": "d965430d5dc1a18d47e7dd642bc28496675f5396b09c3f31d13153d8970ccf9e"
+    },
+    {
+      "suite": "ifu",
+      "count": 147,
+      "sha256": "6bdf4491d8074c9c56c55c948ec5836defb59507a6c9d9afb4f10ad3cc65ce05"
+    },
+    {
+      "suite": "dcache",
+      "count": 232,
+      "sha256": "84bd28f1c5cd5aa43b00dcb82003d613b5caaf94c75e8d41f9681dc6b9ee64a1"
+    },
+    {
+      "suite": "lsq",
+      "count": 2575,
+      "sha256": "3cbeb45c5191682bb2429d2b1b167d2d1a6c8fe5e3392e26e2589d0399a7fbb1"
+    },
+    {
+      "suite": "lsu",
+      "count": 543,
+      "sha256": "459f65ae25b0ad06e6934d6d784c6e131839ace08aa287d7809bfaf4d46c2c86"
+    },
+    {
+      "suite": "mmu",
+      "count": 417,
+      "sha256": "9b04f291852df3524e45743a62981b093ed3aca492d3a70cb8589ea31ea49590"
+    },
+    {
+      "suite": "sbuffer",
+      "count": 66,
+      "sha256": "15255c06377b30f582cdc64d36e2dc48e8dc4ee93c29ba388eff2499fb9dea3b"
+    },
+    {
+      "suite": "vagq",
+      "count": 467,
+      "sha256": "55b768e0b97a8cca6bf2854bc616ec9bba981cd6b9ee35790cab309c92118fd5"
+    }
+  ],
+  "layout": [
+    {
+      "suite": "bpu",
+      "pin_fields": 0,
+      "signal_operations": 0,
+      "transaction_boundary": "no-static-leak-found"
+    },
+    {
+      "suite": "ftq",
+      "pin_fields": 0,
+      "signal_operations": 0,
+      "transaction_boundary": "no-static-leak-found"
+    },
+    {
+      "suite": "icache",
+      "pin_fields": 0,
+      "signal_operations": 0,
+      "transaction_boundary": "no-static-leak-found"
+    },
+    {
+      "suite": "ifu",
+      "pin_fields": 313,
+      "signal_operations": 0,
+      "transaction_boundary": "needs-adapter"
+    },
+    {
+      "suite": "dcache",
+      "pin_fields": 2,
+      "signal_operations": 87,
+      "transaction_boundary": "needs-adapter"
+    },
+    {
+      "suite": "lsq",
+      "pin_fields": 1057,
+      "signal_operations": 1,
+      "transaction_boundary": "needs-adapter"
+    },
+    {
+      "suite": "lsu",
+      "pin_fields": 140,
+      "signal_operations": 0,
+      "transaction_boundary": "needs-adapter"
+    },
+    {
+      "suite": "mmu",
+      "pin_fields": 29,
+      "signal_operations": 382,
+      "transaction_boundary": "needs-adapter"
+    },
+    {
+      "suite": "sbuffer",
+      "pin_fields": 0,
+      "signal_operations": 0,
+      "transaction_boundary": "no-static-leak-found"
+    },
+    {
+      "suite": "vagq",
+      "pin_fields": 179,
+      "signal_operations": 9,
+      "transaction_boundary": "needs-adapter"
+    }
+  ],
+  "limits": [
+    "No RTL, native libraries, design baselines or dependency changes.",
+    "Bench encoding/observation/expected controls are not RTL mutations or natural hardware failures.",
+    "Sbuffer resident lines are permitted in forwarding/capacity tests; explicit drains and accepted/retry obligations must close.",
+    "Six other suites still have transaction-boundary debt.",
+    "Sbuffer residual high-slot coverage, trace I/O and SoC ordering are not certified.",
+    "Existing all-suite FAIL/XFAIL/UNCERTAIN and BPU/VAGQ full-production/exhaustive gaps remain.",
+    "Post-checkpoint semantic repairs remain uncommitted and unpushed."
+  ],
+  "sbuffer_final_runs": [
+    "results/ucv-sbuffer-boundary-closed-20261101",
+    "results/ucv-sbuffer-boundary-closed-seed2-20261101"
+  ],
+  "frozen_sbuffer_controls": {
+    "frozen_commit": "001735033979f52712808b25280efc262a48654f",
+    "file_sha256": "20cd14520facfcb34ab1caf6981718023e59117f6fb993652251124dad062e6d",
+    "injection_layer": "synthetic bench input/observation; no RTL mutation",
+    "controls": {
+      "zero_acceptance": {
+        "old": {
+          "returned": {
+            "0": 0,
+            "1": 0
+          },
+          "error": null,
+          "live_lines": 0
+        },
+        "new": {
+          "error": "AssertionError: : ready [0] != expected [1]",
+          "live_lines": 0
+        }
+      },
+      "missing_drain_output": {
+        "old": {
+          "error": null,
+          "live_lines": 1,
+          "uarch_drain": true
+        },
+        "new": {
+          "error": "TimeoutError: missing output: drain budget exhausted with 1 live lines",
+          "live_lines": 1,
+          "uarch_drain": true
+        }
+      },
+      "uarch_budget_exhausted": {
+        "old": {
+          "error": null,
+          "live_lines": 1,
+          "uarch_drain": false
+        },
+        "new": {
+          "error": "TimeoutError: drain_uarch: drain budget exhausted with 1 live lines",
+          "live_lines": 1,
+          "uarch_drain": true
+        }
+      }
+    }
+  },
+  "lsq_logic_comparison": {
+    "testcases": [
+      {
+        "path": "suites/memblock/lsq/tests/local_reset/test_retained_old_responses.py",
+        "test_logic_ast_unchanged_after_explicit_fixture_normalization": true
+      },
+      {
+        "path": "suites/memblock/lsq/tests/local_reset/test_retained_population.py",
+        "test_logic_ast_unchanged_after_explicit_fixture_normalization": true
+      },
+      {
+        "path": "suites/memblock/lsq/tests/sq_endpoint/test_raw_boundary.py",
+        "test_logic_ast_unchanged_after_explicit_fixture_normalization": true
+      },
+      {
+        "path": "suites/memblock/lsq/tests/sq_endpoint/test_replay_raw_boundary.py",
+        "test_logic_ast_unchanged_after_explicit_fixture_normalization": true
+      },
+      {
+        "path": "suites/memblock/lsq/tests/sq_endpoint/test_replay_raw_pool.py",
+        "test_logic_ast_unchanged_after_explicit_fixture_normalization": true
+      },
+      {
+        "path": "suites/memblock/lsq/tests/sq_endpoint/test_wrapper_raw_boundary.py",
+        "test_logic_ast_unchanged_after_explicit_fixture_normalization": true
+      },
+      {
+        "path": "suites/memblock/lsq/tests/sq_endpoint/test_ldu_joint_phases.py",
+        "test_logic_ast_unchanged_after_explicit_fixture_normalization": true
+      }
+    ],
+    "models_and_owner_fixtures": [
+      {
+        "path": "suites/memblock/lsq/raw/model.py",
+        "unchanged_sha256": "92d57f8d36809a1e756804dd528c1f02560e1649d4bef3d4db375f47163c2dac"
+      },
+      {
+        "path": "suites/memblock/lsq/replay/model.py",
+        "unchanged_sha256": "6d4ec0274774c61dde35e582756295843a0e304215c3658713d7226b36fc73d7"
+      },
+      {
+        "path": "suites/memblock/lsq/lsq_wrapper/model.py",
+        "unchanged_sha256": "435db040d4785337f9b97002748f45be73a9d6379eb6e3a26e465c7bdfcd4d5e"
+      },
+      {
+        "path": "suites/memblock/lsq/sq_endpoint/model.py",
+        "unchanged_sha256": "bab28c758cdb91175a90cbb901e469cb1e8ea77e1275e0e28576e1cd35d8ba1e"
+      },
+      {
+        "path": "suites/memblock/lsq/local_reset/reference.py",
+        "unchanged_sha256": "1a47db2e112d9212fa9a621b626e4e3c53167789317f055562a5ea02551f91ac"
+      },
+      {
+        "path": "suites/memblock/lsq/sq_endpoint/fixtures.py",
+        "unchanged_sha256": "1c387b65a7ef1c0466c0370a407342df4b0457e32fb0fb866f5b186ceca8821f"
+      },
+      {
+        "path": "suites/memblock/lsq/local_reset/fixtures.py",
+        "unchanged_sha256": "e1673b5af7f55988e326f165449f1f37f0b47e5a0e8a819f128831c851de12e8"
+      },
+      {
+        "path": "suites/memblock/lsq/lsq_wrapper/fixtures.py",
+        "unchanged_sha256": "e562df0e8a2f38e7f91ffdf3f84d95b1b2e23ad8c4d739fd72156c198f90aea8"
+      }
+    ]
+  },
+  "final_audit": {
+    "current_source_receipts_match": true,
+    "run_receipts_verified": 21,
+    "source_artifacts": [],
+    "source_cache_directories": [],
+    "document_link_errors": [],
+    "assets": {
+      "status": "PASS",
+      "source_files": 4636,
+      "suites": 10,
+      "duts": 132,
+      "historical_evidence_entries": 134685,
+      "errors": []
+    },
+    "collection_total": 45883,
+    "lsq_after_regression": "verified: 340 identical case verdicts; 324 PASS / 16 FAIL",
+    "lsu_integrated_regression": "verified: 536 PASS / 7 FAIL; 529 original case verdicts preserved; 14 new selftests PASS",
+    "diff_check": "PASS",
+    "skill_log_sha256": "e2ca572f1c1ac985d863422272810240f7825dd1da13a6cf826c0e8d2d828fd4"
+  },
+  "lsq_delta": {
+    "original_count": 340,
+    "final_count": 340,
+    "counts": {
+      "PASS": 324,
+      "FAIL": 16
+    },
+    "removed": [],
+    "added": {},
+    "changed": {},
+    "build_receipts_unchanged": true,
+    "source_stable": true,
+    "preserved_failures": [
+      "lsq::tests/sq_endpoint/test_ldu_joint_phases.py::test_source_LDU_joint_capacity_transfer_original_UIDs_three_epochs_and_serial_CBO[1-none-29456]",
+      "lsq::tests/sq_endpoint/test_ldu_joint_phases.py::test_source_LDU_joint_capacity_transfer_original_UIDs_three_epochs_and_serial_CBO[1-none-29457]",
+      "lsq::tests/sq_endpoint/test_ldu_joint_phases.py::test_source_LDU_joint_capacity_transfer_original_UIDs_three_epochs_and_serial_CBO[1-redirect-29456]",
+      "lsq::tests/sq_endpoint/test_ldu_joint_phases.py::test_source_LDU_joint_capacity_transfer_original_UIDs_three_epochs_and_serial_CBO[1-redirect-29457]",
+      "lsq::tests/sq_endpoint/test_ldu_joint_phases.py::test_source_LDU_joint_capacity_transfer_original_UIDs_three_epochs_and_serial_CBO[1-common_reset-29456]",
+      "lsq::tests/sq_endpoint/test_ldu_joint_phases.py::test_source_LDU_joint_capacity_transfer_original_UIDs_three_epochs_and_serial_CBO[1-common_reset-29457]",
+      "lsq::tests/replay/test_extended.py::test_strict_full_pool_is_not_unblocked_by_only_ready_bits",
+      "lsq::tests/replay/test_timing.py::test_disabled_feedback_cannot_clear_strict_dependency[0]",
+      "lsq::tests/replay/test_timing.py::test_disabled_feedback_cannot_clear_strict_dependency[1]",
+      "lsq::tests/replay/test_timing.py::test_disabled_feedback_cannot_clear_strict_dependency[2]",
+      "lsq::tests/normal_mixed/test_original_seeds.py::test_normal_producer_original_eight_types_weights_seeds_external_jobs_and_fair[28928]",
+      "lsq::tests/normal_mixed/test_original_seeds.py::test_normal_producer_original_eight_types_weights_seeds_external_jobs_and_fair[28934]",
+      "lsq::tests/normal_mixed/test_original_seeds.py::test_normal_producer_original_eight_types_weights_seeds_external_jobs_and_fair[28935]",
+      "lsq::tests/normal_mixed/test_original_seeds.py::test_normal_producer_original_eight_types_weights_seeds_external_jobs_and_fair[28930]",
+      "lsq::tests/normal_mixed/test_original_seeds.py::test_normal_producer_original_eight_types_weights_seeds_external_jobs_and_fair[28931]",
+      "lsq::tests/normal_mixed/test_original_seeds.py::test_normal_producer_original_eight_types_weights_seeds_external_jobs_and_fair[28932]"
+    ]
+  },
+  "lsu_delta": {
+    "historical_output": "results/20261027T071656Z-f6516a8c",
+    "historical_summary_sha256": "2efe051fe75ef43a50dc0a475992c2349b49e17d672ae8bbea3a123df43b5380",
+    "historical_counts": {
+      "PASS": 522,
+      "FAIL": 7
+    },
+    "new_output": "results/ucv-lsu-delay-integrated-20261101",
+    "new_counts": {
+      "PASS": 536,
+      "FAIL": 7
+    },
+    "historical_case_count": 529,
+    "new_case_count": 543,
+    "removed": [],
+    "changed": {},
+    "added": {
+      "lsu::tests/checkers/test_store_delay_transactions.py::test_bad_payload_is_rejected_before_any_native_write[missing]": "PASS",
+      "lsu::tests/checkers/test_store_delay_transactions.py::test_bad_payload_is_rejected_before_any_native_write[unknown]": "PASS",
+      "lsu::tests/checkers/test_store_delay_transactions.py::test_bad_payload_is_rejected_before_any_native_write[overflow]": "PASS",
+      "lsu::tests/checkers/test_store_delay_transactions.py::test_bad_payload_is_rejected_before_any_native_write[rob_range]": "PASS",
+      "lsu::tests/checkers/test_store_delay_transactions.py::test_bad_redirect_is_not_defaulted_or_truncated[missing]": "PASS",
+      "lsu::tests/checkers/test_store_delay_transactions.py::test_bad_redirect_is_not_defaulted_or_truncated[unknown]": "PASS",
+      "lsu::tests/checkers/test_store_delay_transactions.py::test_bad_redirect_is_not_defaulted_or_truncated[encoding]": "PASS",
+      "lsu::tests/checkers/test_store_delay_transactions.py::test_bad_redirect_is_not_defaulted_or_truncated[rob_range]": "PASS",
+      "lsu::tests/checkers/test_store_delay_transactions.py::test_frozen_command_does_not_retain_the_callers_dictionary": "PASS",
+      "lsu::tests/checkers/test_store_delay_transactions.py::test_random_payload_helper_respects_non_power_of_two_rob": "PASS",
+      "lsu::tests/checkers/test_store_delay_transactions.py::test_missing_required_port_cannot_turn_into_an_all_zero_pass": "PASS",
+      "lsu::tests/checkers/test_store_delay_transactions.py::test_final_beat_and_no_repeat_are_checked_on_context_exit[missing_final]": "PASS",
+      "lsu::tests/checkers/test_store_delay_transactions.py::test_final_beat_and_no_repeat_are_checked_on_context_exit[corrupt_final]": "PASS",
+      "lsu::tests/checkers/test_store_delay_transactions.py::test_final_beat_and_no_repeat_are_checked_on_context_exit[repeat_final]": "PASS"
+    },
+    "scope": "ordered case verdict comparison across dates; not identical validation-source certification",
+    "current_run_build_receipts_unchanged": true
+  },
+  "current_source_runs": [
+    "results/ucv-sbuffer-boundary-closed-20261101",
+    "results/ucv-sbuffer-boundary-closed-seed2-20261101",
+    "results/ucv-lsq-fixture-explicit-20261101",
+    "results/ucv-lsu-delay-integrated-20261101"
+  ]
+}

@@ -5,6 +5,7 @@ from __future__ import annotations
 import pytest
 
 from suites.frontend.icache.databank.model.bank import DataEntry
+from suites.frontend.icache.databank.transaction.types import BankCycle, BankWrite, BankPortRead
 
 
 @pytest.mark.feature("ICACHE-DATABANK-002")
@@ -58,32 +59,23 @@ async def test_code_is_stored_verbatim(databank_agent):
 async def test_read_ready_drops_while_a_write_is_offered(databank_agent):
     agent = databank_agent
     await agent.write(0x40, 0b0001, data=0x1, code=0)
-    agent.write_driver.set({
-        "valid": 1, "setIdx": 0x41, "waymask": 0b0001, "data": 0x2, "code": 0,
-    })
-    try:
-        await agent._edge()
-        assert agent.read_ready() == 0, "a write in flight must block the read port"
-        assert agent.write_ready() == 1
-    finally:
-        agent.write_driver.set({
-            "valid": 0, "setIdx": 0, "waymask": 0, "data": 0, "code": 0,
-        })
-        await agent._edge()
-    await agent.wait_for(lambda: agent.read_ready() == 1, what="read ready to return")
+    offered = await agent.cycle(BankCycle(write=BankWrite(0x41, 0b0001, 0x2)))
+    assert offered.read_ready == 0, "a write in flight must block the read port"
+    assert offered.write_ready == 1
+    await agent.cycle()
+    await agent.wait_ready()
 
 
 @pytest.mark.feature("ICACHE-DATABANK-007")
 async def test_reset_restores_every_way_to_zero(databank_agent):
     """The macro reset sweep clears all four way arrays."""
     agent = databank_agent
-    for set_index in range(0, agent.model.sets, 13):
+    for set_index in range(0, agent.geometry.sets, 13):
         await agent.write(set_index, 0b1111,
                           data=0xABCD_0000 + set_index, code=1)
     await agent.reset()
-    await agent.wait_for(lambda: agent.write_ready() == 1,
-                         what="the reset sweep to finish")
-    for set_index in range(0, agent.model.sets, 13):
+    await agent.wait_ready()
+    for set_index in range(0, agent.geometry.sets, 13):
         entries = await agent.read(set_index)
         assert entries == (DataEntry(0, 0),) * 4, (
             f"set {set_index} kept {entries} after reset")
@@ -102,22 +94,15 @@ async def test_write_in_the_read_response_cycle_does_not_corrupt_the_read(databa
     set_index = 0x70
     await agent.write(set_index, 0b1111, data=0x1111)
 
-    agent.read_driver.set({"valid": 1, "setIdx": (set_index,) * 4,
-                           "waymask": 0b1111})
-    await agent.wait_for(lambda: agent.read_ready() == 1, what="read ready")
-    await agent._edge()
-    agent.read_driver.set({"valid": 0, "setIdx": (0,) * 4, "waymask": 0})
-    await agent._edge()                  # the array samples the read
-    agent.write_driver.set({"valid": 1, "setIdx": set_index,
-                            "waymask": 0b1111, "data": 0x2222, "code": 0})
-    during = agent.read_entries()
+    await agent.wait_ready()
+    await agent.cycle(BankCycle(read=BankPortRead((set_index,) * 4)))
+    consumed = await agent.cycle()        # the array samples the read
+    during = tuple(DataEntry(data, code) for data, code in zip(
+        consumed.entries.data, consumed.entries.code, strict=True))
     assert all(entry.data == 0x1111 for entry in during), (
         f"a write in the response cycle replaced the accepted read: {during}")
-    await agent._edge()                  # the write commits here
-    agent.write_driver.set({"valid": 0, "setIdx": 0, "waymask": 0,
-                            "data": 0, "code": 0})
-    agent.model.write(set_index, 0b1111, DataEntry(0x2222, 0))
-    await agent._edge()
+    await agent.cycle(BankCycle(write=BankWrite(set_index, 0b1111, 0x2222)))
+    await agent.cycle()
 
     after = await agent.check_read(set_index)
     assert all(entry.data == 0x2222 for entry in after), (

@@ -2,6 +2,26 @@
 
 完整操作入口、编译踩坑与日志位置见 [编译、构建与工具链经验](lessons/build-and-toolchain.md)。
 
+## 当前默认与历史边界
+
+2026-11-02将公开根默认切换为
+[`public-a0c2a26cb`](../baselines/public-a0c2a26cb.json)，固定上游`kunminghu-v3`
+当次分支头`a0c2a26cbe3c862175174bad03a1a23c406315ed`（commit日期2026-10-30）。
+九个公开工程整工程继承；VAGQ的`internal-d4566d58a`覆盖不变。
+
+76个递归子模块条目从父commit的`.gitmodules`和实际gitlink逐层核对；相对旧基线仅
+`difftest`与`XSCache`两个gitlink变化。DefaultConfig、生成参数及工具版本保持当前
+显式锁定。旧[`public-893e1580b`](../baselines/public-893e1580b.json)字节不变，供历史
+来源/显式重放引用；不复用旧构建收据假称新基线构建完成。
+
+此次不执行新基线源码工作区准备、RTL生成、DUT构建/冒烟或功能回归。新源码、生成及
+native缓存身份自动与旧版分离，已有旧链接不手工切换；执行`ucv run`前必须先按新默认
+`prepare`/`build`。无参`ucv.runtime.source_path()`与`soc_rtl()`现在读取根默认，
+需要历史路径时显式传旧命名基线；按工程解析仍使用`source_path_for`/`soc_rtl_for`。
+来源与检查见[更新记录](history/baseline-kunminghu-v3-20261102.json)。
+
+## 继承与生成规则
+
 `ucv.json` 指定根默认基线。`suites/<group>/ucv.json` 和 `suites/<group>/<suite>/ucv.json` 可以用 `baseline` 引用 `baselines/<name>.json`。最近一级显式声明优先；缺省继承父级。空值、未知引用、不完整定义均报错。子目录只引用完整的命名基线，不对其字段做隐式合并。一个工程的所有 DUT 共用该基线，不支持 DUT 内单独改 commit。
 
 基线完整定义包含源码 URL、40 位 commit、递归子模块 gitlink、设计配置、Chisel 参数、firtool 参数、Mill/Chisel/firtool/Java 版本和带 SHA-256 的补丁列表。初始所有硬件分组均继承根；仅 VAGQ 工程 override。设计补丁必须列入命名基线。BPU 原修复及工作区修改存于 `docs/history/bpu/`，默认补丁列表为空。

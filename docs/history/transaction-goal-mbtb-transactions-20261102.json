@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "scope": "MainBTB shared-service/owner migration, strict transaction/snapshot boundaries, fixed ABI and checked bounded finish; not whole MainBTB or BPU acceptance",
+  "state": "integrated-v5-audited-training-input-followup-v6-pending",
+  "prerequisite": "docs/history/transaction-goal-mbtb-cleanup-20261102.json",
+  "red_controls": {
+    "owner": {"output": "results/ucv-goal-mbtb-shared-owner-red-20261102.xml", "FAIL": 4, "green_output": "results/ucv-goal-mbtb-shared-owner-green-20261102.xml", "green_PASS": 4},
+    "transaction_domain_and_immutability": {"output": "results/ucv-goal-mbtb-transaction-boundary-red-20261102.xml", "FAIL": 19, "green_output": "results/ucv-goal-mbtb-transaction-boundary-green-20261102.xml", "green_PASS": 19},
+    "swallowed_reference_on_close": {"output": "results/ucv-goal-mbtb-sticky-close-red-v2-20261102.xml", "FAIL": 1, "green_output": "results/ucv-goal-mbtb-sticky-close-green-abi-20261102.xml", "green_PASS": 1},
+    "invalid_first_probe": "sticky-close-red had a pytest mark tuple collection ERROR. Only red-v2 reached the native failure assertion."
+  },
+  "migration": {
+    "input_plan": "Raw-halfword base1<<31, tag stride1<<15, neighbor row stride0x80. Reset LRU gives original3/extra2/keep2/clear3. Current source nominates/services2; old miss after taken-original touch nominates1 and must recover retained owner3. Two simultaneous requests remain distinct within four-slot owner3 capacity.",
+    "comparison": "Require2 alignments/4 banks/4 ways/4 retained slots, complete original metadata and accepted feedback, both complete requests/services, prior owner/capacity and fresh consumers. All seven request/service payload fields have wrong-field controls.",
+    "depth_and_semantic": "Input-planned depth owner3/peer2/stale nomination1. Both provenances update the existing second-depth target, not expect stale unchanged data. Outer semantic cleanup uses keep2/clear3, not old clear1.",
+    "transaction": "Strict types, widths, exact metadata schema, dimensions, unique positions and at-most-one misprediction before driving. Sparse None lanes remain legal. Nested metadata is detached/read-only; explicit deepcopy creates a mutable detached profile. Old partial/fabricated metadata pure fixtures migrated; error controls remain discriminating.",
+    "address": "Lookup/result target50-bit raw-halfword GuardedPc.addr; resolve PC/target49-bit raw-halfword Pc.addr. Resolve successor wraps at49 bits. No49-bit narrowing or old alignment restriction on lookups.",
+    "abi": "Fixed logical schema rejects missing/extra/wrong-width/old-two-way or fabricated DCE leaves, even if both native metadata and live objects agree wrong. No RTL/native rebuild/edit.",
+    "finish": "Reuse SDK lookup drivers and Scoreboard. Bounded already-submitted stage-tail/autonomous-training drain plus two tail observations and model pending checks. No new reset/enable/training/meta/S2 clears debt. Failure sticky; actual failed/skipped setup/call selects cleanup only, passing/missing reports still finish. Independent cleanup errors propagate."
+  },
+  "runs": [
+    {"output": "results/ucv-goal-mbtb-shared-service-v1-20261102", "counts": {"PASS": 77, "FAIL": 2}, "native": {"PASS": 2, "FAIL": 2}, "pure": {"PASS": 75}, "source_sha256": "e1d3cc7a81f0eede4819386cd44afcd2259a6a4696d1b7fb4a9e4b404460d5c9", "audit": "results/ucv-goal-mbtb-shared-service-receipt-audit-v1-20261102.json"},
+    {"output": "results/ucv-goal-mbtb-owner-semantic-v2-20261102", "counts": {"PASS": 150, "FAIL": 5}, "native": {"PASS": 7, "FAIL": 5}, "pure": {"PASS": 143}, "source_sha256": "cc22aeceef7b4192dba4cbf29abb74e6a2c8363d1f0e21c5a0e08d7b41435068", "audit": "results/ucv-goal-mbtb-owner-semantic-receipt-audit-v2-20261102.json"},
+    {"output": "results/ucv-goal-mbtb-contract-runtime-v4-20261102", "seed": 2, "counts": {"PASS": 2599, "FAIL": 5}, "native": {"PASS": 22, "FAIL": 5}, "pure": {"PASS": 2577}, "source_sha256": "b4d416e91c0213d89ef2d67699df90808f8887d51b8c41f6afbf65ef6a7048ca", "audit": "results/ucv-goal-mbtb-contract-runtime-audit-v4-20261102.json", "selected_baseline_removed": [], "selected_baseline_FAIL_to_PASS": 3, "new_selftests_PASS": 182, "native_inputs": 27},
+    {"output": "results/ucv-goal-mbtb-runtime-seed1-v5-20261102", "seed": 1, "counts": {"PASS": 88, "FAIL": 5}, "native": {"PASS": 14, "FAIL": 5}, "pure": {"PASS": 74}, "source_sha256": "983931907adcb8d81e3b0298cc3f87be297ebbcb79ca66b5129e997ef8f67c67", "audit": "results/ucv-goal-mbtb-runtime-seed1-audit-v5-20261102.json", "native_inputs": 19, "new_selftests_PASS": 81, "note": "Adds a real trained high-guard target consumer after v4; these are not exact same-source multi-seed runs."}
+  ],
+  "audits": "Each named audit verifies stable source and every source file at audit time, committed manifests, artifact/build/processor hashes, unchanged native build, no gaps and selected-nodeid retention. Source identities stay per-run. Raw coverage inputs cleaned by runner; artifact completeness is not coverage closure.",
+  "intermediate_failures_kept": [
+    "contract-pure-v1:2402 PASS/102 FAIL from old partial/fabricated metadata fixtures; v2 passes the same selection after fixture migration",
+    "contract-runtime-v3:2583 PASS/14 FAIL; eight stub agents omitted the new lifecycle field and depth preparation rejected immutable Mapping as not dict; repaired in v4 without schema relaxation"
+  ],
+  "retained_native_failures": [
+    "shared-service old-miss ordinary/tag0: simultaneous nominal1/clear3 complete requests and available prior owner3 capacity, but only clear services; correction missing and fresh target wrong",
+    "unhit same-position foreign-tag counter2 becomes1",
+    "depth real-old-cold second-depth indirect owner3 counter2 becomes0",
+    "combined tag0/position0 clear aliases valid zero key and clears wrong owner",
+    "four baseline full-capacity same-position FAILs: new conditional counter2 becomes1; four different-position controls remain PASS, not narrowed to hide the contrast"
+  ],
+  "root_regression": {"command": ".venv/bin/python -m pytest -q tests", "PASS": 242},
+  "gates": {"structure": "PASS", "skill": "PASS", "diff_check": "PASS", "strict_transaction_boundary": "exit1: DCache2 pin/87 signal, LSQ1057 pin/1 signal, LSU140 pin, MMU29 pin/382 signal, VAGQ179 pin/9 signal"},
+  "full_integrated_v5": {
+    "output": "results/ucv-goal-mbtb-transactions-integrated-v5-20261102",
+    "counts": {"PASS": 2723, "FAIL": 11},
+    "native": {"PASS": 121, "FAIL": 11},
+    "pure": {"PASS": 2602},
+    "source_sha256": "983931907adcb8d81e3b0298cc3f87be297ebbcb79ca66b5129e997ef8f67c67",
+    "source_stable": true,
+    "source_files_matched_at_audit_before_followup": true,
+    "audit": "results/ucv-goal-mbtb-transactions-integrated-audit-v5-20261102.json",
+    "removed": [],
+    "new_selftests_PASS": 183,
+    "verdict_changes_from_cleanup_v3": {"FAIL_to_PASS": 3, "PASS_to_FAIL": 2},
+    "native_inputs": 132,
+    "artifacts_and_builds_verified": true,
+    "new_failures": "Both pipeline-ownership profiles saw raw SDK unmatched_observations1 after an unnecessary extra edge in drain's stage-tail wait. Functional requests all completed. Later dispatch-only paused drain repairs these adapters without clearing observations or weakening their assertion.",
+    "functional_failures": "Nine retained native functional FAILs; the extra two are the temporary drain adaptation regression, not new hardware defects."
+  },
+  "training_input_followup": "docs/history/transaction-goal-mbtb-training-inputs-20261102.json",
+  "required_remaining": [
+    "Audit full v6 after the training-input and actual-edge fixes; v5 and 48673-item collection are audited historical checkpoints, not reassigned to later source.",
+    "Training planned-input UID/wire/filter/reset/cancel/terminal comparison is now implemented with directed evidence in the followup. Genuine lookup-source ancestry and full lookup epoch/response linkage still need audit; global quiescence alone is insufficient.",
+    "Audit remaining MainBTB API/monitor ownership and cancellation/epoch paths, all other BPU/ICache, MemBlock/VAGQ and final repository obligations."
+  ]
+}

@@ -195,16 +195,16 @@
       "id": "IFU-UC-001",
       "component": "IfuUncacheUnit",
       "title": "Idle accepts one request and captures its address and type",
-      "description": "The unit has a single outstanding-request slot. While idle it must advertise ready and, on a valid request, capture the physical address and memory type so later phases never depend on the producer holding those signals. Requests offered while the unit is busy must not disturb the captured values."
+      "description": "The unit has a single live request slot. While idle it advertises ready and captures a48-bit aligned byte address and memory type at req valid/ready. The native PrunedAddr port has47 halfword-coordinate wires. Busy offers do not disturb captured values. Flush does not gate ready: a coincident req fire is recorded but its state effect is cancelled, not counted as a new live request."
     },
     {
       "id": "IFU-UC-002",
       "component": "IfuUncacheUnit",
       "title": "Non-idempotent accesses wait for older instructions",
-      "description": "MMIO accesses and PBMT=IO pages are not idempotent, so they may not overtake instructions still in the pipeline. They must wait until the fetch is the first instruction or the machine reports no older instructions, then proceed. Ordinary non-cacheable main memory (PBMT=NC or PMA) may issue without that wait.",
+      "description": "MMIO accesses and PBMT=IO pages are not idempotent, so they wait until isFirstInstr or emptyAfter releases the request. Ordinary PBMT=NC main-memory reads issue without waiting. PMA/nonMMIO and reserved-PBMT inputs are explicit leaf-port characterization, not normal IFU requests: the IFU routes only MMIO/NC/IO without a prior exception.",
       "metadata": {
         "traceability": {
-          "requirement": "non-idempotent (MMIO / PBMT=IO) uncached reads wait for older instructions; NC/PMA do not",
+          "requirement": "MMIO/PBMT=IO reads wait; NC reads do not; PMA/nonMMIO behavior is leaf-port characterization only",
           "oracle": "model/uncache.py four-phase state machine and memory-order rule",
           "observations": [
             "io_toUncache_req_valid",
@@ -225,7 +225,7 @@
       "id": "IFU-UC-003",
       "component": "IfuUncacheUnit",
       "title": "The request is held until the bus accepts it",
-      "description": "A non-cacheable read may be stalled by bus backpressure or by the IFU being unable to accept a response. The request address and type must remain stable and the request must not be dropped; it is launched only on a real bus handshake."
+      "description": "An offered bus request has stable address/type while valid and backpressured. ifuStall may withdraw valid without cancelling the captured read; when the stall clears the same read is offered again. Payload while valid=0 has no bus contract. Issue is counted exactly once at sampled valid/ready, not when a single-cycle driver call returns."
     },
     {
       "id": "IFU-UC-004",
@@ -237,7 +237,7 @@
       "id": "IFU-UC-005",
       "component": "IfuUncacheUnit",
       "title": "Bus completion becomes read data and an instruction exception",
-      "description": "One accepted bus response supplies the instruction data. A corrupted response is a hardware-error exception, a denied response is an access-fault exception, and a clean response has no exception. Need-resend is preserved for the IFU to finish a cross-page instruction."
+      "description": "An issued read consumes one explicitly associated peer reply: corrupt maps to hardware error, denied to access fault, clean to no exception. A denied reply must also be corrupt. needResend is forwarded; the real InstrUncache producer sets it only for clean nonRVC data at the final halfword of a page. Arbitrary resend combinations are port characterization. Environment UIDs are not native bus tags."
     },
     {
       "id": "IFU-UC-006",
@@ -249,7 +249,7 @@
       "id": "IFU-UC-007",
       "component": "IfuUncacheUnit",
       "title": "Flush aborts every phase and late responses are discarded",
-      "description": "A pipeline flush cancels the outstanding uncached fetch in any phase, clears the completion pulse and payload, and returns to idle. A bus response arriving after the abort must be ignored instead of producing an instruction."
+      "description": "A flush cancels the live leaf request, clears completion/payload at the edge and returns to idle; reset likewise cancels with an explicit epoch/reason. Late replies outside WaitResp are ignored and may be associated with a previously issued cancelled UID in the environment. The wire has no tag: a stale reply during a different live WaitResp is not distinguishable by this leaf and must be filtered by the real InstrUncache peer flush contract. The checker must not infer identity from returned data or invent stale-reply rejection hardware."
     },
     {
       "id": "IFU-UC-008",
@@ -294,13 +294,13 @@
       "id": "IFU-TR-003",
       "component": "FrontendTrigger",
       "title": "Enable, select and debug mode gate matching",
-      "description": "A trigger participates only when its CSR enable bit is set, when it is not marked select (this unit implements PC matching, not data matching), and when the hart is not already in debug mode. Clearing and restoring any gate must take effect without reconfiguring the trigger."
+      "description": "A trigger participates only when its registered enable bit is set, its stored select bit is clear (PC matching), and live debugMode is clear. Configuration and enable updates take effect at the next input edge; debugMode and breakpoint permission are live gates for the current PC snapshot. select=1 is explicit leaf-port characterization, not a CSR-reachable configuration."
     },
     {
       "id": "IFU-TR-004",
       "component": "FrontendTrigger",
       "title": "A chained trigger arms the next trigger only when both hit with equal timing",
-      "description": "For the legal pairwise chain, a trigger with chain=1 does not fire itself; it enables the immediately following trigger to fire only if both matched and their timing bits agree. A broken link or an unconfigured partner must suppress the terminal action, while an independent unchained trigger on the same PC still fires.",
+      "description": "For the legal pairwise chain, a trigger with chain=1 does not fire itself; it enables the immediately following trigger to fire only if both matched and their timing bits agree. An unmatched or disabled partner suppresses the terminal action, while an independent unchained trigger on the same PC still fires. The CSR forbids adjacent chain bits but permits the final chain bit to be1; with no successor that trigger cannot fire.",
       "metadata": {
         "traceability": {
           "requirement": "a chained trigger arms its successor instead of firing itself",
@@ -333,8 +333,8 @@
     {
       "id": "IFU-TR-007",
       "component": "FrontendTrigger",
-      "title": "Reset restores the unconfigured disabled state",
-      "description": "After reset no trigger may fire, even if an enable input is asserted: the configuration and enable registers must both be empty until reprogrammed. Reprogramming after reset must work normally."
+      "title": "Reset restores all-zero configuration and disabled enables",
+      "description": "Reset clears all configuration fields and registered enables to zero, so actions are disabled until a new enable is captured. There is no additional configuration-valid bit: after an external enable is captured, the reset EQ/tdata2=0/action=breakpoint configuration can match PC0 even without a tUpdate. This leaf contract is not a claim about complete CSR privilege/distribution history. Reprogramming after reset must replace the selected zero configuration normally."
     },
     {
       "id": "IFU-PA-001",
@@ -427,19 +427,25 @@
       "metadata": {
         "traceability": {
           "requirement": "misprediction truncates enqueue and redirects FTQ with the correct next PC and attributes",
-          "oracle": "model/fetch.py composes boundary/pred-checker/RVC models into the expected beat and redirect",
+          "oracle": "model/fetch.py composes independent byte-stream/boundary/pred-checker/RVC answers; ifu/checker.py projects consumed fields and ifu/agent.py associates cached stage/UID history, without deriving payload expectations from DUT outputs",
           "observations": [
             "toIBuffer enqEnable/instrs/isRvc/endOffset",
-            "toFtq wbRedirect valid/pc/target/taken/attribute"
+            "toFtq wbRedirect valid/pc/target/taken/attribute",
+            "cached DriveStable/RisingEdge snapshots, physical req fire vs effective UID, held offer vs enqueue fire, GPA validity and quiet tail"
           ],
           "controls": [
-            "legal conditional branch does not redirect"
+            "legal conditional branch does not redirect",
+            "Python observation/expectation controls reject repeated or hidden beats/redirects, wrong UID payload and zero acceptance; these are not RTL mutations",
+            "a prediction redirect cancels the younger stage but not its own backpressured beat"
           ],
           "tests": [
             "tests/ifu/test_ifu_fetch.py::test_unpredicted_jump_truncates_enqueue_and_redirects",
-            "tests/ifu/test_ifu_fetch.py::test_control_flow_classification_at_every_instruction_index"
+            "tests/ifu/test_ifu_fetch.py::test_control_flow_classification_at_every_instruction_index",
+            "tests/ifu/test_ifu_transactions.py::test_prediction_redirect_cancels_younger_not_its_own_held_beat",
+            "tests/framework/test_ifu_agent.py::test_duplicate_output_after_first_result_is_not_hidden_by_fetch",
+            "tests/framework/test_ifu_agent.py::test_incorrect_expected_payload_is_rejected_by_the_same_production_fetch"
           ],
-          "residual": "all tested fetch PCs have guard=0; see IFU-ENV-005"
+          "residual": "R-08 guard-bit handoff is an environment-domain limitation tested separately in IFU-ENV-005. R-14 remains a port-contract FAIL, but its former production-reachability claim is withdrawn: strict FTQ fall-through/taken controls pass. Top-level uncached calls now use the same checked agent; producer field admission and explicit port provenance do not certify an integrated predictor/translation/PNR history."
         }
       }
     },
@@ -484,15 +490,33 @@
           "oracle": "model/fetch.py truncation + carry-word assembly",
           "observations": [
             "first window enqEnable excludes the half",
-            "second window lane 3 instruction word and PC"
+            "second window lane 3 instruction word and folded virtual PC",
+            "input-established low-half/PC identity, carry retention across fetch calls and explicit scenario completion/cancellation"
           ],
           "controls": [
-            "RVC at the window end is complete and enqueued in the first window"
+            "RVC at the window end is complete and enqueued in the first window",
+            "a fabricated carry is rejected before driving; finish rejects an unfinished half, while explicit cancellation succeeds"
           ],
           "tests": [
             "tests/ifu/test_ifu_fetch.py::test_instruction_split_across_two_fetch_windows_is_assembled"
           ],
           "residual": "only cross-block split at the last slot is covered"
+        }
+      }
+    },
+    {
+      "id": "IFU-TOP-012",
+      "component": "Ifu",
+      "title": "Registered performance events retain accepted fetch metadata and count only real events",
+      "description": "The13 named public events are Boolean counts delayed by two registers, not accumulated counters. Enqueue/request/hit/miss categories count once on IBuffer fire using the accepted fetch's cache hit and double-line metadata. A held beat or unrelated live input cannot count, and frontendFlush counts the cached checker redirect rather than every uncache redirect.",
+      "metadata": {
+        "traceability": {
+          "requirement": "all13 public event fields are associated with accepted metadata, fire and their two-register delay",
+          "oracle": "model/fetch_events.py event categories from Ifu.perfEvents and ICachePerfInfo; agent phase history supplies semantic fires and two-register association without reading DUT counters as expectations",
+          "observations": ["all13 performance values in continuous DriveStable and RisingEdge snapshots"],
+          "controls": ["8 fixed hit/double-line truth-table controls hold the beat while unrelated live metadata changes", "each of13 observation fields is independently corrupted in both phases and must fail the real transaction chain"],
+          "tests": ["tests/ifu/test_ifu_event_transactions.py::test_registered_counts_use_the_accepted_fetch_and_fire_once_after_backpressure", "tests/ifu/test_ifu_event_transactions.py::test_registered_frontend_flush_counts_the_checker_redirect_not_the_live_request", "tests/framework/test_ifu_event_checking.py::test_each_performance_output_is_compared_in_both_phases"],
+          "residual": "Event register reset-less cold-start values are unknown until the two actual clock edges have filled the observation history; no counters or coverage closure are claimed."
         }
       }
     },
@@ -698,6 +722,21 @@
       "acceptance": "open",
       "features": [
         "IFU-TR-002"
+      ]
+    },
+    {
+      "id": "R-14",
+      "behavior": "InstrBoundary 把 carry 上半槽误标为横跨当前两块，导致恢复后的完整指令错误使用块1的FTQ归属",
+      "category": "defect",
+      "evidence": "端口域first block size=1、carry=1、fall-through且原始高半字低2位=11时leaf cross[0]=1；原顶层端口序列FTQ(0,33)而非(0,32)的FAIL保留。后续生产者复核发现该短fall-through不满足真实FTQ长度，撤回其生产可达claim；严格first sizes1/17 taken1/0、resume1/3 taken1/1的两种高半字对照均通过，尚未证明相同偏差生产可达。见 docs/bugs/instr-boundary-carry-ftq-owner.md",
+      "owner": "InstrBoundary / IFU",
+      "next_action": "只允许本窗口真实起始指令标记cross-block，并检查carry重建后的FTQ/redirect归属；修复后leaf、原600随机及顶层恢复反例均须通过",
+      "blocking": true,
+      "acceptance": "open",
+      "features": [
+        "IFU-IB-005",
+        "IFU-TOP-005",
+        "IFU-TOP-011"
       ]
     }
   ]

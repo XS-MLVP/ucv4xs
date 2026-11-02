@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "scope": "Ftq top SDK-exclusive full input slots, immutable dual-phase complete public observations and input-plan/event provenance; complete protocol lifecycle is still required",
+  "verified": {
+    "output": "results/ucv-goal-ftq-top-slots-v2-20261102",
+    "counts": {"PASS": 354, "XFAIL": 2},
+    "seed": 2,
+    "workers": 2,
+    "selection": [],
+    "source_sha256": "951c51016cbf32eac211f5cdd2958c4e2fed3c42bfc24586ee4f607b0d845f21",
+    "source_stable": true,
+    "source_files_match_at_audit": true,
+    "run_sha256": "ed0cc4621e5c9b7ea6fb1af76cc82f2ea664a00099bb7f0224ab29cd32b944eb",
+    "summary_sha256": "e5bb1ea932f42ab1eaf945b5802d6b7d02fcd6cff177934b4f0f964fdb3bcc58",
+    "previous": "results/ucv-goal-ftq-top-abi-v1-20261102",
+    "previous_324_nodeids_removed_or_changed": [],
+    "added_selftests": 32,
+    "original_ftq_test_support_files_ast_match_HEAD": 7
+  },
+  "seed1": {
+    "output": "results/ucv-goal-ftq-top-slots-seed1-20261102",
+    "counts": {"PASS": 145},
+    "seed": 1,
+    "workers": 1,
+    "selection": "tests/ftq, test_ftq_slots, test_ftq_input_contract, test_cycle_sampling",
+    "source_sha256": "951c51016cbf32eac211f5cdd2958c4e2fed3c42bfc24586ee4f607b0d845f21",
+    "source_stable": true,
+    "source_files_match_at_audit": true,
+    "run_sha256": "dbd0c6933e703c21284cc5af7a6375d0b799d887f728d079c475f25fd5b4d93c",
+    "summary_sha256": "46db80f8252f9633b6bb594909028c4b5d26fcd2f832e98a938c88a344cffd01"
+  },
+  "controls": [
+    "SDK duplicate owner fails even with identical driver label; all433 inputs including reset belong to the single SyncDriver",
+    "Independent ABI plus bound decoder groups account for all468 outputs; training/redirect complete metadata, physical branch mask, both full request lanes and pointer/ready are immutable dual-phase observations",
+    "Staged prediction preview may show backend write combinationally but produces no input receipt; task switches make no edges; three equal held predictions still produce three distinct slots/events",
+    "Same-identity s3 override and metadata can share one slot; mismatched physical shared-pointer requests reject before any write",
+    "Unknown metadata, bad final lane and bad later stream group cannot execute a valid prefix; consumers merge and all inactive payload leaves withdraw completely",
+    "Actual input mutation, replayed acceptance event, swallowed input error, cancellation after edge, concurrent staging and unwithdrawn override cannot pass the normal input-boundary finish"
+  ],
+  "intermediate": {
+    "output": "results/ucv-goal-ftq-top-slots-v1-20261102",
+    "pytest_counts": {"PASS": 353, "FAIL": 1, "ERROR": 1, "XFAIL": 2},
+    "ucv_counts": {"PASS": 353, "ERROR": 1, "XFAIL": 2},
+    "reason": "The concurrency selftest saw an in-flight slot misclassified as unreconciled, rather than concurrent; its missing finally left a waiting task and an independent SDK active-work cleanup ERROR. Fix busy-check order, always release/await the selftest task and reject active close before touching inputs. The original failure/cleanup report remains intact."
+  },
+  "artifacts": {
+    "full_artifacts_checked": 7,
+    "full_native_inputs": 182,
+    "full_build_files_checked": 18,
+    "seed1_artifacts_checked": 5,
+    "seed1_native_inputs": 94,
+    "seed1_build_files_checked": 12,
+    "bytes_and_hashes_match": true,
+    "gaps": [],
+    "no_RTL_or_native_rebuild": true,
+    "limit": "Merged artifact integrity is not a coverage closure claim. Raw coverage input retention follows the run manifest."
+  },
+  "root_tests": {
+    "output": "results/ucv-goal-root-top-slots-final-20261102.xml",
+    "counts": {"PASS": 242},
+    "sha256": "85ddfcefea068fd232cbb15bcf139961dc6a3347c6fe251c7c2077559dcab3da"
+  },
+  "collection": {
+    "output": "results/ucv-goal-collect-ftq-top-slots-20261102",
+    "source_sha256": "dfff3442f1a490f247a38ef112efeabc5f0b75d05f2b7a7d5510418c02cbbfb0",
+    "source_stable": true,
+    "source_boundary": "Frozen before the subsequent allocation-plan and direct-record immutability repairs; does not collect those newly added tests",
+    "run_sha256": "c90e0572be3685c43d2d096727d31e8ecf111ba018ba1931a56c15ed91d4490c",
+    "summary_sha256": "166dd428013900bab6752b62234f18f2bf01e89d1070a3fd292ea3c56f6f54ca",
+    "total": 47874,
+    "previous_total": 47805,
+    "initial_total": 45883,
+    "initial_and_previous_nodeids_removed": [],
+    "initial_and_previous_relative_order_preserved_per_suite": true,
+    "collection_tasks": 10,
+    "all_collection_tasks_exit_zero": true,
+    "suite_counts": {"bpu": 42199, "ftq": 356, "icache": 294, "ifu": 725, "dcache": 232, "lsq": 2575, "lsu": 543, "sbuffer": 66, "mmu": 417, "vagq": 467},
+    "boundary": "Full includes internal VAGQ, not unified-public hardware acceptance. CLI exit1 is the IFU residual gate, not a collection-task failure."
+  },
+  "remaining": "Input receipts are not accepted/completed source ledgers. Current finish is explicitly input-only and not bounded protocol completion. PredictionSpec metadata/allocation-plan atomicity and direct preview constructor immutability have newly reproduced red controls to repair next. Full prediction/meta/override, prefetch/fetch retries, resolve/train/cache, commit, cancellation and bounded protocol finish remain required. MBTB/other BPU/ICache, MemBlock/VAGQ and final repository acceptance remain in scope."
+}

@@ -33,9 +33,18 @@ class Pins:
         except KeyError as error:
             raise KeyError(f"{self.name} has no logical pin {logical!r}") from error
 
-    def set(self, **values: int | bool) -> None:
+    def set(self, **values: int) -> None:
+        updates = []
         for logical, value in values.items():
-            self.dut.input(self.physical(logical)).Set(int(value))
+            signal = self.dut.input(self.physical(logical))
+            width = max(1, int(signal.W()))
+            if type(value) is not int or not 0 <= value < (1 << width):
+                raise ValueError(f'{self.name}.{logical} must be an integer fitting {width} bits')
+            updates.append((signal, value))
+        # Validate the whole beat first: an unknown key or overflow near the
+        # end must not leave valid/high-priority control partially driven.
+        for signal, value in updates:
+            signal.Set(value)
 
     def u(self, logical: str) -> int:
         return self.dut.u(self.physical(logical))
@@ -44,10 +53,9 @@ class Pins:
         return self.dut.b(self.physical(logical))
 
     def claim(self, owner: str, *, inputs_only: bool = True) -> None:
-        for logical, pin in self.names.items():
-            if inputs_only and pin not in self.dut._inputs:
-                continue
-            self.dut.claim(pin, owner)
+        pins = tuple(pin for pin in self.names.values()
+                     if not inputs_only or pin in self.dut._inputs)
+        self.dut.claim_many(pins, owner)
 
 
 @dataclass(frozen=True)

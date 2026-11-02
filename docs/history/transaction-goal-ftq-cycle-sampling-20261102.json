@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "scope": "ResolveQueue/Ftq SDK continuous dual-phase full-channel snapshots and lifecycle guards; protocol transaction migration is still incomplete",
+  "red": {
+    "output": "results/ucv-goal-ftq-cycle-sampling-red-20261102",
+    "counts": {"FAIL": 3},
+    "source_stable": true,
+    "run_sha256": "cd54f468b1a240a2c032a86456b64f5f4e0ef427f1bdbb494664c246b77e9f34",
+    "summary_sha256": "50eb1ae1a5e9551038fb42e5c7d58bcc43a33eac3a8c6092159350a79ea3fd73",
+    "failure": "The old multi-edge wait lost ResolveQueue intermediate heads and both FTQ prefetch/fetch intermediate requests. Topdown.history retained a caller-mutable nested reasons mapping."
+  },
+  "intermediate_errors": [
+    {"output": "results/ucv-goal-ftq-cycle-sampling-v1-20261102", "status": "ERROR", "exit_code": 4, "reason": "An obsolete Monitor re-export in monitors/__init__.py was not updated during decoder-view rename; collection import failed. Fixed the actual export, not classified as a hardware failure."}
+  ],
+  "verified": {
+    "output": "results/ucv-goal-ftq-cycle-sampling-v3-20261102",
+    "counts": {"PASS": 228, "XFAIL": 2},
+    "seed": 2,
+    "workers": 2,
+    "selection": [],
+    "source_sha256": "d7bf7f392fa5242ff5e40ebe73cce5acbcdfa90d19a9a097a08703602fd88a3b",
+    "source_stable": true,
+    "source_files_match_at_audit": true,
+    "run_sha256": "ab0d2cb6853e7c71861ba41328b4784b7fe1454fe605531a77b1dbdae3404de9",
+    "summary_sha256": "02849cbd770d6530e55d1eb6bab46c5e7bcaa9e5951359db2df18c98e8096d75",
+    "previous": "results/ucv-goal-ftq-commit-transactions-verified-20261102",
+    "previous_212_nodeids_removed_or_changed": [],
+    "added_selftests": 18,
+    "gaps": []
+  },
+  "current_seed1": {
+    "output": "results/ucv-goal-ftq-current-lifecycle-seed1-20261102",
+    "counts": {"PASS": 71},
+    "seed": 1,
+    "workers": 1,
+    "selection": "All CommitQueue original function bodies and controls plus continuous-cycle controls for ResolveQueue/Ftq",
+    "source_sha256": "d7bf7f392fa5242ff5e40ebe73cce5acbcdfa90d19a9a097a08703602fd88a3b",
+    "source_stable": true,
+    "source_files_match_at_audit": true,
+    "run_sha256": "03c4c613af36472dffee19b54a00a33e1820bd5bfc9ca9e7ca83d87c0da71ada",
+    "summary_sha256": "332ee7c53efe315ba20edef407fcca3047397579f6bcdb3ddef8011137a90b55",
+    "gaps": []
+  },
+  "implementation": [
+    "Two SDK lossless SamplingMonitors freeze complete input and all registered output channels synchronously at DriveStable/RisingEdge. After paired event/tick/channel validation the environment publishes all decoder views together; it does not advance protocol models in capture callbacks.",
+    "Old EdgeMonitor names are only decoder/non-consuming cache views, not a second subscription or hand-written clock loop. CycleSnapshot is frozen and nested mappings are detached/read-only; mutable dataclasses or native views are rejected.",
+    "Execution.paused keeps subscriptions active but prevents idle pytest task switches from inventing ready/fire edges. Large waits are delivered in bounded chunks with every cycle retained and checked for tick continuity.",
+    "Closed phase observers, deleted/replaced registered channels, replayed events and cancellation after edge but before delivery leave sticky sampling failures. Normal fixture exit audits sampling, and live preview APIs cannot substitute for a vanished observer."
+  ],
+  "evidence_boundary": {
+    "full_artifacts_checked": 7,
+    "full_native_inputs": 136,
+    "seed1_artifacts_checked": 7,
+    "seed1_native_inputs": 53,
+    "artifact_bytes_hashes_and_build_inputs_match": true,
+    "no_RTL_or_native_rebuild": true,
+    "limit": "Sampling/checkpoint integrity is not complete protocol checking. ResolveQueue/Ftq still need SDK driver and full schema ownership, input UID/merge/age/retry/cancel semantics and bounded transaction finish. Existing live combinational previews remain phase-explicit observations, not acceptance evidence. Native merged artifacts do not imply coverage closure; raw coverage inputs are not retained."
+  },
+  "root_tests": {"output": "results/ucv-goal-root-ftq-sampling-20261102.xml", "counts": {"PASS": 242}, "sha256": "4c2bd060ee014f5abcb77055c8ca9c243f6771e008c41708a3e2d8cc199c633b"},
+  "collection": {
+    "output": "results/ucv-goal-collect-ftq-lifecycle-20261102",
+    "source_sha256": "e8fd78b9471264c2889f84548466223728463730dce10775442036ecfc8e9240",
+    "run_sha256": "253d7d29a6a71509f8734acbbb391202fd672d830ef998f5d68ada72adfcc49c",
+    "summary_sha256": "e6c16c80c8e20801734cd1b3e2eef7e5e86b0bb0e184d9ff9771de43371e88b4",
+    "source_stable": true,
+    "source_files_match_at_audit": true,
+    "collection_tasks": 10,
+    "all_collection_tasks_exit_zero": true,
+    "total": 47748,
+    "initial_total": 45883,
+    "previous_total": 47686,
+    "initial_and_previous_removed_nodeids": [],
+    "initial_and_previous_relative_order_preserved_per_suite": true,
+    "suite_counts": {"bpu": 42199, "ftq": 230, "icache": 294, "ifu": 725, "dcache": 232, "lsq": 2575, "sbuffer": 66, "mmu": 417, "lsu": 543, "vagq": 467},
+    "verdict_boundary": "Collection-only mixed full inventory includes internal VAGQ, not unified-public hardware acceptance. CLI exit1 remains the registered IFU residual gate, not a collection failure."
+  }
+}

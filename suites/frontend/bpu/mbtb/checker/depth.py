@@ -13,8 +13,7 @@ def defined_depth_profile(profile):
     if len(entries) != 2 * ways or len(metadata) != 2 or any(len(row) != ways for row in metadata):
         raise ValueError(f'depth comparison requires two alignments and {ways} ways')
     visible = tuple(asdict(entry) if entry.valid else dict(valid=entry.valid) for entry in entries)
-    sources = tuple(tuple(dict(rawHit=source['rawHit'], counter_value=source['counter_value'],
-        position=source['position'], attribute=deepcopy(source['attribute']))
+    sources = tuple(tuple(deepcopy(source)
         if source['rawHit'] else dict(rawHit=source['rawHit']) for source in row) for row in metadata)
     return dict(entries=visible, meta_entries=sources)
 

@@ -10,3 +10,14 @@ def pytest_configure(config):
         validate_runtime()
     except (ImportError, RuntimeError) as error:
         raise pytest.UsageError(str(error)) from error
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    report = outcome.get_result()
+    reports = getattr(item, '_icache_body_reports', None)
+    if reports is None:
+        reports = {}
+        item._icache_body_reports = reports
+    reports[report.when] = report.outcome

@@ -5,8 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from suites.frontend.ftq.ports import Pins
-from suites.frontend.ftq.ports import prefix_pins
 from suites.frontend.ftq.harness import Dut
+from suites.frontend.ftq.ftq.bundle.abi import metadata_inputs, redirect_meta, resolve_meta, validate
 
 
 RESOLVE_FIELDS = {
@@ -52,6 +52,7 @@ def training_out(dut: Dut) -> Pins:
         "meta_phr": "io_toBpu_train_bits_meta_phr_phrPtr_value",
         "meta_ghr": "io_toBpu_train_bits_meta_commonHR_ghr",
         "meta_common_valid": "io_toBpu_train_bits_meta_commonHR_valid",
+        **{f'meta.{key}': 'io_toBpu_train_bits_meta_' + key for key in resolve_meta()},
     }
     # TrainEntry carries no explicit FTQ value field; both duplicated buses
     # come from the same resolve transaction, so use slot 0 branch to derive
@@ -82,7 +83,7 @@ def prefetch_out(dut: Dut) -> Pins:
 
 def fetch_out(dut: Dut) -> Pins:
     names = {"valid": "io_toICache_toMainPipe_valid"}
-    common = ("vAddr_0_addr", "vAddr_1_addr", "taken",
+    common = ("vAddr_0_addr", "vAddr_1_addr", "vSetIdx_0", "vSetIdx_1", "taken",
               "endPosition", "bankSel_0", "bankSel_1", "ftqIdx_flag",
               "ftqIdx_value")
     for req in range(2):
@@ -120,6 +121,9 @@ class FtqPorts:
 
     @classmethod
     def bind(cls, dut: Dut, *, commit_width: int = 8) -> "FtqPorts":
+        if type(commit_width) is not int or commit_width != 8:
+            raise ValueError('DefaultConfig Ftq requires exactly eight commit lanes')
+        validate(dut)
         prediction = Pins(dut, {
             "valid": "io_fromBpu_prediction_valid",
             "start_pc": "io_fromBpu_prediction_bits_startPc_addr",
@@ -137,7 +141,7 @@ class FtqPorts:
             "valid": "io_fromBpu_meta_valid",
             "s3_flag": "io_fromBpu_s3FtqPtr_flag",
             "s3_value": "io_fromBpu_s3FtqPtr_value",
-            **prefix_pins(dut, "io_fromBpu_meta_bits_", name="ftq.meta"),
+            **{name: 'io_fromBpu_meta_bits_' + name for name in metadata_inputs()},
         }, name="ftq.meta")
         backend_redirect = lane(dut, "io_fromBackend_redirect_", {
             "valid": "valid",
@@ -206,6 +210,8 @@ class FtqPorts:
             "ras_action": "io_toBpu_redirect_bits_attribute_rasAction",
             "meta_phr": "io_toBpu_redirect_bits_meta_phr_phrPtr_value",
             "meta_ghr": "io_toBpu_redirect_bits_meta_commonHRMeta_ghr",
+            **{f'meta.{key}': 'io_toBpu_redirect_bits_meta_' + key
+               for key in redirect_meta(with_target=False)},
         }, name="ftq.redirect_out")
         prefetch = prefetch_out(dut)
         fetch = fetch_out(dut)
@@ -219,6 +225,8 @@ class FtqPorts:
             "redirect_flush": "io_toICache_redirectFlush",
             "to_ifu_redirect": "io_toIfu_redirect_valid",
             "ifu_s3_flush": "io_toIfu_flushFromBpu_s3_valid",
+            'ifu_s3_flag': 'io_toIfu_flushFromBpu_s3_bits_flag',
+            'ifu_s3_value': 'io_toIfu_flushFromBpu_s3_bits_value',
         }, name="ftq.flush")
         topdown = Pins(dut, {
             **{f"reason{index}": f"io_toIfu_topdownInfo_reasons_{index}"

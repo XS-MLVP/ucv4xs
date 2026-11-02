@@ -18,6 +18,7 @@ from suites.memblock.dcache.legacy_pins import P
 from suites.memblock.dcache.execution import step, refresh
 
 from suites.memblock.dcache.dcache_wrapper.coverage import DcacheWrapperCoverage
+from suites.memblock.dcache.dcache.tilelink import check_release_data
 from suites.memblock.dcache.dcache_wrapper.env import (
     DcacheWrapperEnv,
     WrapperDutView,
@@ -302,69 +303,14 @@ def test_store_and_eviction_through_wrapper(dw):
 
     victim = addrs[4]
     assert dw.load_once(0, victim, victim, context="wrapper evict")["miss"] == 1
-    for channel in dw.channels:
-        channel["a_ready"].Set(1)
-        channel["c_ready"].Set(1)
-    entries = []
-    accepted = None
-    for _ in range(32):
-        for index, channel in enumerate(dw.channels):
-            if int(channel["c_valid"].value):
-                entry = (index, int(channel["c_opcode"].value),
-                         int(channel["c_param"].value),
-                         int(channel["c_address"].value),
-                         int(channel["c_data"].value))
-                if entry[:4] not in [item[:4] for item in entries]:
-                    entries.append(entry)
-            if int(channel["a_valid"].value) and int(channel["a_ready"].value):
-                accepted = {"channel": index,
-                            "source": int(channel["a_source"].value),
-                            "address": int(channel["a_address"].value)}
-        if accepted:
-            break
-        step(dw)
-        dw.refresh()
-    assert accepted is not None
-    assert accepted["address"] == (victim & ~0x3F)
-    channel = dw.channels[accepted["channel"]]
-    for beat in range(2):
-        channel["d_valid"].Set(1)
-        channel["d_opcode"].Set(5)
-        channel["d_size"].Set(6)
-        channel["d_source"].Set(accepted["source"])
-        channel["d_sink"].Set(0)
-        channel["d_denied"].Set(0)
-        channel["d_corrupt"].Set(0)
-        channel["d_data"].Set(line_words(victim)[beat])
-        for _ in range(3):
-            for index, other in enumerate(dw.channels):
-                if int(other["c_valid"].value):
-                    entry = (index, int(other["c_opcode"].value),
-                             int(other["c_param"].value),
-                             int(other["c_address"].value),
-                             int(other["c_data"].value))
-                    if entry[:4] not in [item[:4] for item in entries]:
-                        entries.append(entry)
-            step(dw)
-            dw.refresh()
-    channel["d_valid"].Set(0)
-    for _ in range(8):
-        for index, other in enumerate(dw.channels):
-            if int(other["c_valid"].value):
-                entry = (index, int(other["c_opcode"].value),
-                         int(other["c_param"].value),
-                         int(other["c_address"].value),
-                         int(other["c_data"].value))
-                if entry[:4] not in [item[:4] for item in entries]:
-                    entries.append(entry)
-        step(dw)
-        dw.refresh()
-    dirty = [entry for entry in entries if entry[1] == 7]
-    assert dirty, entries
-    index, opcode, param, addr, data = dirty[0]
+    result=dw.refill_with_releases(victim,data_beats=line_words(victim),context="wrapper eviction")
+    dirty=[message for message in result.releases if message.header.opcode==7]
+    assert len(dirty)==1, result.releases
+    release=dirty[0]
+    addr=release.header.address
     assert addr in addrs[:4], hex(addr)
-    assert param == 1
-    assert (data & ((1 << 64) - 1)) == values[addr]
+    assert release.header.param == 1
+    check_release_data(release,address=addr,line=values[addr])
     if dw.coverage is not None:
         dw.coverage.sample_core("store")
         dw.coverage.sample_core("eviction")

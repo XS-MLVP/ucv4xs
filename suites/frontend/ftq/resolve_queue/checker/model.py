@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from toffee import Scoreboard
+
 from suites.frontend.ftq.oracle import ResolveBranch
 from suites.frontend.ftq.oracle import ResolveMergeModel
 from suites.frontend.ftq.resolve_queue.transaction.types import ResolveReport
@@ -29,6 +31,7 @@ class ResolveChecker:
 
     def __init__(self, *, capacity: int = 16, guard: int = 4) -> None:
         self.model = ResolveMergeModel(capacity=capacity, guard=guard)
+        self.scoreboard = Scoreboard('resolve_queue.reference', compare=self.compare)
 
     def accepts(self, report: ResolveReport) -> bool:
         return self.model.accepted(report.branch_type, report.mispredict,
@@ -72,7 +75,10 @@ class ResolveChecker:
         )
 
     def check(self, observed: Training | None) -> None:
-        expected = self.head()
+        self.scoreboard.check(expected=self.head(), actual=observed)
+
+    @staticmethod
+    def compare(expected, observed):
         if expected is None:
             assert observed is None, f"training appeared with no owned entry: {observed}"
             return
@@ -84,6 +90,7 @@ class ResolveChecker:
             f"start PC: observed {observed.start_pc:#x}, expected {expected.start_pc:#x}")
         assert len(observed.branches) == len(expected.branches), (
             f"branch count: observed {observed.branches}, expected {expected.branches}")
+        assert observed.valid_mask == expected.valid_mask, 'branch valid slots are not the admitted prefix'
         for got, want in zip(observed.branches, expected.branches):
             assert (got.position, got.target, got.taken, got.mispredict,
                     got.branch_type, got.ras_action) == (

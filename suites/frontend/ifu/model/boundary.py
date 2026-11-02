@@ -26,6 +26,11 @@ from dataclasses import dataclass
 SLOTS = 32
 
 
+def _unsigned(value, width, name):
+    if not isinstance(value, int) or not 0 <= value < (1 << width):
+        raise ValueError(f'{name} must be an unsigned {width}-bit value')
+
+
 @dataclass(frozen=True)
 class BoundaryInput:
     block0_size: int
@@ -37,6 +42,27 @@ class BoundaryInput:
     first_instr_is_half_rvi: int
     total_end_pos: int
     index: tuple[int, ...] | None = None
+
+    def __post_init__(self):
+        if not isinstance(self.block0_size, int) or not 1 <= self.block0_size <= SLOTS:
+            raise ValueError('block0_size must be within 1..32 slots')
+        for name in ('taken_valid', 'block1_valid', 'first_instr_is_half_rvi'):
+            _unsigned(getattr(self, name), 1, name)
+        for name in ('taken_offset', 'total_end_pos'):
+            _unsigned(getattr(self, name), 5, name)
+        if self.taken_valid and self.taken_offset >= self.block0_size:
+            raise ValueError('taken_offset must belong to the first block')
+        for name in ('maybe_rvc', 'block_sel'):
+            _unsigned(getattr(self, name), SLOTS, name)
+        expected_sel = (((1 << SLOTS) - 1) ^ ((1 << self.block0_size) - 1)) if self.block1_valid else 0
+        if self.block_sel != expected_sel:
+            raise ValueError('block_sel must describe the producer block split')
+        indices = tuple(range(SLOTS)) if self.index is None else self.index
+        if not isinstance(indices, (list, tuple)) or len(indices) != SLOTS:
+            raise ValueError('index must contain exactly 32 entries')
+        for value in indices:
+            _unsigned(value, 5, 'index entry')
+        object.__setattr__(self, 'index', tuple(indices))
 
 
 @dataclass(frozen=True)
@@ -51,6 +77,19 @@ class BoundaryOutput:
     index: tuple[int, ...]
     first_end_is_half_rvi: int
     total_end_is_half_rvi: int
+
+    def __post_init__(self):
+        for name in ('valid', 'is_rvc', 'is_cross_block', 'instr_end_mask', 'start_offset',
+                     'end_offset', 'block_sel', 'index'):
+            values = getattr(self, name)
+            if not isinstance(values, (list, tuple)) or len(values) != SLOTS:
+                raise ValueError(f'{name} snapshot must contain exactly 32 entries')
+            width = 5 if name in ('start_offset', 'end_offset', 'index') else 1
+            for value in values:
+                _unsigned(value, width, name)
+            object.__setattr__(self, name, tuple(values))
+        for name in ('first_end_is_half_rvi', 'total_end_is_half_rvi'):
+            _unsigned(getattr(self, name), 1, name)
 
 
 def starts(window: BoundaryInput) -> list[bool]:
@@ -81,12 +120,14 @@ def predict(window: BoundaryInput) -> BoundaryOutput:
     end_offset = [(start_offset[slot] + (0 if is_rvc[slot] else 1)) & 0x1F
                   for slot in range(SLOTS)]
     valid = [bool(window.first_instr_is_half_rvi) or start[0]] + start[1:]
-    # The block-crossing case can only be the last slot; the RTL deliberately
-    # excludes slot 31 from the general expression.
+    # A crossing instruction must start in this window. A carried upper half
+    # finishes an earlier instruction, and must never acquire block 1's FTQ
+    # ownership just because it occupies the last slot owned by block 0.
+    # Slot31 cannot start a cross-block pair inside the 32-slot window.
     cross = [False] * SLOTS
     for slot in range(SLOTS - 1):
         cross[slot] = bool(
-            window.block1_valid and not window.taken_valid
+            start[slot] and window.block1_valid and not window.taken_valid
             and slot == window.taken_offset and not sel[slot] and sel[slot + 1]
             and not is_rvc[slot]
         )

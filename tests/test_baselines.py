@@ -145,3 +145,22 @@ def test_whole_chip_generation_is_shared_and_tracks_baseline(project, monkeypatc
     (Path(before['source'])/'Unit.sv').write_text('corrupt')
     with pytest.raises(UcvError, match='cache is corrupt'):
         sources.generate(project, project.suite('lsq'))
+
+
+@pytest.mark.parametrize('helper', ['source_path', 'soc_rtl'])
+def test_runtime_path_defaults_follow_current_root_baseline(project, monkeypatch, helper):
+    from ucv import runtime
+
+    monkeypatch.setenv('UCV_ROOT', str(project.root))
+    resolve = getattr(runtime, helper)
+    original = resolve('a')
+    assert resolve() == original
+
+    config = dict(project.config, baseline='b')
+    write(project.root/'ucv.json', config)
+    assert resolve() == resolve('b')
+    assert resolve() != original
+    # An explicit historical name must remain reproducible after the default
+    # moves; resolving a path must not create a checkout or generated result.
+    assert resolve('a') == original
+    assert not (project.root/'.cache').exists()

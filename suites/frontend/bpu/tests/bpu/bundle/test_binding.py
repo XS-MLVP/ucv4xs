@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from toffee import Role, Value, DriveStable, as_xdata
+from toffee import Role, Value, DriveStable
+from suites.frontend.bpu.ports.bindings import ConstantLeaf
 
 
 async def test_bpu_ready_valid_and_control_interfaces_are_bound(bpu_agent):
@@ -14,5 +15,7 @@ async def test_bpu_ready_valid_and_control_interfaces_are_bound(bpu_agent):
     fire = interfaces.meta.fire
     assert isinstance(fire,Value) and fire.signal is interfaces.meta.valid and fire.expected == 1
     assert fire.sample == DriveStable(bpu_agent.dut.clock) and fire.mode.value == 'each_sample'
-    assert interfaces.meta.ready is as_xdata(interfaces.control.bits.meta_ready)
-    assert interfaces.meta.ready.IsInIO() and interfaces.meta.valid.IsOutIO()
+    assert 'meta_ready' not in interfaces.control.bits
+    assert type(interfaces.meta.ready) is ConstantLeaf and interfaces.meta.ready.U() == 1
+    assert not hasattr(interfaces.meta.ready, 'IsInIO')
+    assert interfaces.meta.valid.IsOutIO()

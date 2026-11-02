@@ -1,0 +1,382 @@
+{
+  "schema": 1,
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "module": "ifu/perf_analysis-runtime-revisit",
+  "artifact_base": "suites/frontend/ifu",
+  "scope": "Revisit only evidenced lifecycle/binding gap; preserve completed independent oracle/functional work. IFU6/7 with top-level and whole repository still pending, not full hardware or coverage sign-off.",
+  "revisit_evidence": {
+    "before_counts": {
+      "FAIL": 1,
+      "PASS": 1
+    },
+    "failing_control": "tests/framework/test_perf_agent.py::test_swallowed_comparison_cannot_become_a_clean_finish",
+    "failure": "DID NOT RAISE RuntimeError: known compare exception swallowed, capture restored, old finish succeeded.",
+    "legal_control": "test_explicit_slots_survive_suspending_the_pytest_producer PASS before repair; do not claim a reproduced phase bug.",
+    "before_output": "results/ucv-goal-ifu-uncache-integrated-20261101",
+    "before_source_sha256": "82363ac66cb498a715c16161eaf751dc9f1ecaf9cabdd6c5cedb0e7b2935ca8d"
+  },
+  "delta": {
+    "before_count": 484,
+    "after_count": 499,
+    "removed": [],
+    "changed": {},
+    "added": {
+      "ifu::tests/framework/test_perf_agent.py::test_swallowed_comparison_cannot_become_a_clean_finish": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_explicit_slots_survive_suspending_the_pytest_producer": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_changed_port_width_or_direction_requires_migration[reset]": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_changed_port_width_or_direction_requires_migration[io_topdownOut_topdown_reasons_75]": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_unowned_input_cannot_appear_silently": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_frame_schema_has_no_implicit_conversion_or_unknown_keys": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_cancelled_input_slot_remains_unreconciled": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_swallowed_reset_compare_failure_remains_unreconciled": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_old_tick_is_not_accepted_just_because_payload_is_equal": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_concurrent_reset_cannot_interleave_with_a_cycle": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_bad_budget_does_not_advance_and_finished_agent_cannot_restart": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_reason_checker_requires_complete_integer_snapshots[None]": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_reason_checker_requires_complete_integer_snapshots[0.0]": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_reason_checker_requires_complete_integer_snapshots[-1]": "PASS",
+      "ifu::tests/framework/test_perf_agent.py::test_reason_checker_requires_complete_integer_snapshots[75557863725914323419136]": "PASS"
+    }
+  },
+  "independent_oracle_and_functional_case_byte_unchanged": {
+    "suites/frontend/ifu/model/perf.py": "a078a8999b0d2ea53f02b23a201506dc7fc48a5efce4d6ea90e5611651e6a8e3",
+    "suites/frontend/ifu/tests/perf_analysis/test_perf_analysis.py": "b64f9616a09319bebf9e0b6a691f8893a5b2f01fec400a93b1e3853cc3d06398"
+  },
+  "runs": [
+    {
+      "output": "results/ucv-goal-ifu-perf-revisit-red-20261101",
+      "note": "Actual prerepair red control: swallowed checker error followed by restore made finish succeed unexpectedly; handoff legal control PASS, not a demonstrated timing fault.",
+      "counts": {
+        "FAIL": 1,
+        "PASS": 1
+      },
+      "source_sha256": "a4e13f2a0ed134dc568900a23a9e67be98ee0ec6c2dad5bb34c3ae40a69d0d3e",
+      "source_stable": true,
+      "source_matched_at_audit": false,
+      "seed": 1,
+      "workers": 1,
+      "run_sha256": "5b37b72e7dc96155263a53d4a25345771abfb8cfeb288feefae9f355404fdb31",
+      "summary_sha256": "b9dc5f7e0071b9a1fbaf86703b2a992c77254c22e768b71a3851b7fe1c37676b",
+      "manifest_sha256": "2f49b9145307a613f5bb00a002ba63fa309c55df317e55e2b9c5642e2fc372ab",
+      "manifest_state": "committed",
+      "coverage_complete": true,
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS",
+        "Open blocking residual R-14 (ifu): 只允许本窗口真实起始指令标记cross-block，并检查carry重建后的FTQ/redirect归属；修复后leaf、原600随机及顶层恢复反例均须通过"
+      ],
+      "hardware_verdict": "FAIL",
+      "migration_acceptance": "NOT_CERTIFIED"
+    },
+    {
+      "output": "results/ucv-goal-ifu-perf-revisit-controls-20261101",
+      "note": "Intermediate bounded control set before typed reason snapshot checker was added.",
+      "counts": {
+        "PASS": 39
+      },
+      "source_sha256": "531d42927f5692e93c4ca558f9860642efbad8973b23e57940229f93c9ba3671",
+      "source_stable": true,
+      "source_matched_at_audit": false,
+      "seed": 1,
+      "workers": 2,
+      "run_sha256": "557e369b4815c0926db0d76d1e91a452fc984c8ce65a83bf571960eadc51630e",
+      "summary_sha256": "a5f134a39cdfcff6ada585c84ade819d998c31509843bea07ff630691e08771d",
+      "manifest_sha256": "541c1ce09e3bcbdfdd81f77f384965c9bfa4e33a0219144995b807631475245e",
+      "manifest_state": "committed",
+      "coverage_complete": true,
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS",
+        "Open blocking residual R-14 (ifu): 只允许本窗口真实起始指令标记cross-block，并检查carry重建后的FTQ/redirect归属；修复后leaf、原600随机及顶层恢复反例均须通过"
+      ],
+      "hardware_verdict": "INCOMPLETE",
+      "migration_acceptance": "NOT_CERTIFIED"
+    },
+    {
+      "output": "results/ucv-goal-ifu-perf-revisit-integrated-20261101",
+      "note": "Final full499 cases: previous484 unchanged,15new selftests PASS.",
+      "counts": {
+        "PASS": 493,
+        "FAIL": 5,
+        "UNCERTAIN": 1
+      },
+      "source_sha256": "189605f465de6dca1834bf9858996683b2ecfde36570ae58cb03831135e925c6",
+      "source_stable": true,
+      "source_matched_at_audit": true,
+      "seed": 1,
+      "workers": 2,
+      "run_sha256": "2bab7daec7fa3be895d1bf2dd0a73402bf147b4b73d7fa82bb8382d2a5df9f1d",
+      "summary_sha256": "9bf23d8c6e56f54818f4ec3a1d8d65e422ed728a741a839e693010192b60a8f3",
+      "manifest_sha256": "fc5567283aeb74e6590b6b25205bd42b7ab422261c40be491d1e5702ecb11d2f",
+      "manifest_state": "committed",
+      "coverage_complete": true,
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS",
+        "Open blocking residual R-14 (ifu): 只允许本窗口真实起始指令标记cross-block，并检查carry重建后的FTQ/redirect归属；修复后leaf、原600随机及顶层恢复反例均须通过"
+      ],
+      "hardware_verdict": "FAIL",
+      "migration_acceptance": "NOT_CERTIFIED"
+    },
+    {
+      "output": "results/ucv-goal-ifu-perf-revisit-seed2-20261101",
+      "note": "Final native seed2 single-worker Perf selection43PASS.",
+      "counts": {
+        "PASS": 43
+      },
+      "source_sha256": "189605f465de6dca1834bf9858996683b2ecfde36570ae58cb03831135e925c6",
+      "source_stable": true,
+      "source_matched_at_audit": true,
+      "seed": 2,
+      "workers": 1,
+      "run_sha256": "56f6bd7a92e93611677869fd8fb75f4c9632536902df5afcb856313fb932bb41",
+      "summary_sha256": "fd35f45ead70811545ad5d8db12e7c4abad49684b7e348dec527d7c5ee1770d2",
+      "manifest_sha256": "085e3bcb4798362fdd8cc437474f3b2f573de1a5120ceb89306c92e401c0569b",
+      "manifest_state": "committed",
+      "coverage_complete": true,
+      "gaps": [
+        "Open blocking residual R-13 (ifu): 全宽比较，或把 CSR 高位 WARL 只读 0 并同步改合同；修复后两条用例必须转 PASS",
+        "Open blocking residual R-14 (ifu): 只允许本窗口真实起始指令标记cross-block，并检查carry重建后的FTQ/redirect归属；修复后leaf、原600随机及顶层恢复反例均须通过"
+      ],
+      "hardware_verdict": "INCOMPLETE",
+      "migration_acceptance": "NOT_CERTIFIED"
+    }
+  ],
+  "native_build_audit": {
+    "compared_to": "results/ucv-goal-ifu-uncache-integrated-20261101",
+    "all7_actual_native_inputs_and_build_receipts_verified": true,
+    "rows": [
+      {
+        "dut": "perf_analysis",
+        "cache_key": "c87d52be3b129f8321ec8e4027e96eebb7989321f922d2f5935e59fb14d5d48a",
+        "build_receipt_sha256": "6ffb68fa767b0e52126cde361423d41375aeb8289ebdd33a40931d1916b7ee26",
+        "manifest_build_id": "021cc86d014db9eabf8f948bbdd4dea8732361897ba3ea6172529e9c00adacb7",
+        "current_native_files_match": true
+      },
+      {
+        "dut": "instr_boundary",
+        "cache_key": "bc9daf14b3466a7eaa994d0bfc12c6d6c7cd1c7d3370cb9cd1e699eda1752f07",
+        "build_receipt_sha256": "800d14b50a0381671b2ddc4d2b6f57d045fdf34870f86afe6bff8a57158a7285",
+        "manifest_build_id": "0d6b317b43d03ce39bec40055475c63b91e0f497d621d2bfb0f54ffe81869463",
+        "current_native_files_match": true
+      },
+      {
+        "dut": "rvc_expander",
+        "cache_key": "0542feb1acd20b383ff7e979bfbbdb211eb1cda5e258791d84b294a5277d0b4f",
+        "build_receipt_sha256": "9888dc26c1207b423052d4daac803ec927eb3cdd0caec213ff378ed54e371be0",
+        "manifest_build_id": "41b9f00f162593500f0163543c5f1fd2827bd2513d416e1a576e5ce42ce1df75",
+        "current_native_files_match": true
+      },
+      {
+        "dut": "uncache_unit",
+        "cache_key": "7db11b5d74890fbf832023cdb61cbd13a783120f075a624ecf7041e407eda63f",
+        "build_receipt_sha256": "2240a8f558b1373177c6da053ecd59a1228efed029e22ef436e78498e16e6f8b",
+        "manifest_build_id": "4dbb1fff9cd1825dbad9edf92fdbf92bb5393d95568ed90f58bbfc37811bb3bb",
+        "current_native_files_match": true
+      },
+      {
+        "dut": "pred_checker",
+        "cache_key": "55f8213a715b4b9761ffa022d1174ba2e725410311af81edc5f26c13d2ae6e95",
+        "build_receipt_sha256": "4b639f99b8536aa8165b1a1e1a5095bf2e5b3809bfda32b38240b47d03aef848",
+        "manifest_build_id": "966f41fce03a978af6cba8f5c95348f0746028c3060c372867958ef67bff3bf8",
+        "current_native_files_match": true
+      },
+      {
+        "dut": "ifu",
+        "cache_key": "2710a07c8b5285ee019b1f56aa4c08f92b71a717abc6712a7cb0a3c52ebf740e",
+        "build_receipt_sha256": "87477f8c6776a214f8dfe9eacb869016548b1830e395ae25aca9ffee6ac56205",
+        "manifest_build_id": "c7be6ebbc84ce2daffd77148d3e70141fc9b63d7fd6ae8a4ce637c21e624735c",
+        "current_native_files_match": true
+      },
+      {
+        "dut": "frontend_trigger",
+        "cache_key": "d9d23aeb35307210163763d0d1f9a2027bbda2b4de9513a3814c3cf67acc7b81",
+        "build_receipt_sha256": "29835cf9155ed93cc513ab7da000ffedd21db971663e500d964d5d854e9363d8",
+        "manifest_build_id": "e6380c0358e045107e926fa52fac94fcbe1d73f829829ee7fc4c3fd3e21c8b58",
+        "current_native_files_match": true
+      }
+    ]
+  },
+  "collection": {
+    "output": "results/ucv-goal-collect-perf-revisit-20261101",
+    "total": 46235,
+    "initial_total": 45883,
+    "original_order_preserved": true,
+    "all10_tasks_exit0": true,
+    "suites": [
+      {
+        "suite": "bpu",
+        "before": 41031,
+        "after": 41031,
+        "original_order_preserved": true,
+        "cases_sha256": "addfa0dfa24b8266eabaf1a99aef84a11fd2195e7ee2368521230434f0accf9b"
+      },
+      {
+        "suite": "sbuffer",
+        "before": 66,
+        "after": 66,
+        "original_order_preserved": true,
+        "cases_sha256": "1fda8f16f03c2998e365bb22559674937597b67443d3ea0fcc3edc1a2b9b3934"
+      },
+      {
+        "suite": "ftq",
+        "before": 111,
+        "after": 111,
+        "original_order_preserved": true,
+        "cases_sha256": "a7b5a74e24532bc2553b343b04e3a21d02835d538fb20ed7e4ada8edcdcbde5a"
+      },
+      {
+        "suite": "dcache",
+        "before": 232,
+        "after": 232,
+        "original_order_preserved": true,
+        "cases_sha256": "3c7c20b75e79e3d8429be656561dd793f71a29f01817e82e0e5e45704c856209"
+      },
+      {
+        "suite": "ifu",
+        "before": 147,
+        "after": 499,
+        "original_order_preserved": true,
+        "cases_sha256": "30cff80842eab2dc401ce991e15c7663c0b32dd3cc39d30b142ddff29ed76cea"
+      },
+      {
+        "suite": "icache",
+        "before": 294,
+        "after": 294,
+        "original_order_preserved": true,
+        "cases_sha256": "ae01b7101ef272cd8e3293a6f353d06fc4b1f41a78e835da0bb24c86c2f1924e"
+      },
+      {
+        "suite": "lsu",
+        "before": 543,
+        "after": 543,
+        "original_order_preserved": true,
+        "cases_sha256": "90976fda3a6762381f0ec7dde25f520bceafed1c036b0d8472b152be07dc4f12"
+      },
+      {
+        "suite": "mmu",
+        "before": 417,
+        "after": 417,
+        "original_order_preserved": true,
+        "cases_sha256": "aeca63e99820c9574b640c3d4705fa69db01378993536fd09ce0793fdc3be85a"
+      },
+      {
+        "suite": "lsq",
+        "before": 2575,
+        "after": 2575,
+        "original_order_preserved": true,
+        "cases_sha256": "b2be9931ec34eba0856d2b2b3baf98150ad0547b04dd9376e318e0d3966639da"
+      },
+      {
+        "suite": "vagq",
+        "before": 467,
+        "after": 467,
+        "original_order_preserved": true,
+        "cases_sha256": "4ba1f3640759705ae1597d9bce5f9f56c9061f54078c36b0fa59456d753c5815"
+      }
+    ]
+  },
+  "checks": [
+    {
+      "name": "root-tests",
+      "exit": 0,
+      "sha256": "b8339afcc7b163a41255fb2e976413588b7fca7aa4520ead66d7d99110b57061",
+      "tail": [
+        "........................................................................ [ 57%]",
+        "......................................................                   [100%]",
+        "126 passed in 63.43s (0:01:03)"
+      ]
+    },
+    {
+      "name": "layout",
+      "exit": 0,
+      "sha256": "b6aae5b9d4b0df6156bf4ef0e4ba013622c672bed0b50c0eb538ffde5e9f64d7",
+      "tail": [
+        "| lsu | 23 | 4 | 0 | 0 | 0 | 140 | 0 | yes | needs-adapter | ok |",
+        "| mmu | 23 | 52 | 0 | 0 | 0 | 29 | 382 | yes | needs-adapter | ok |",
+        "| sbuffer | 3 | 7 | 0 | 0 | 0 | 0 | 0 | yes | no-static-leak-found | ok |",
+        "| vagq | 54 | 14 | 0 | 0 | 0 | 179 | 9 | yes | needs-adapter | ok |"
+      ]
+    },
+    {
+      "name": "transaction",
+      "exit": 1,
+      "sha256": "c99f0ac83cc40e1b1bfdec3f77e92041db73264b3a246fd50426a811f27b986b",
+      "tail": [
+        "| lsu | 23 | 4 | 0 | 0 | 0 | 140 | 0 | yes | needs-adapter | 140 pin-level expressions require transaction adapters |",
+        "| mmu | 23 | 52 | 0 | 0 | 0 | 29 | 382 | yes | needs-adapter | 29 pin-level expressions require transaction adapters; 382 signal operations/native handles require transaction adapters |",
+        "| sbuffer | 3 | 7 | 0 | 0 | 0 | 0 | 0 | yes | no-static-leak-found | ok |",
+        "| vagq | 54 | 14 | 0 | 0 | 0 | 179 | 9 | yes | needs-adapter | 179 pin-level expressions require transaction adapters; 9 signal operations/native handles require transaction adapters |"
+      ]
+    },
+    {
+      "name": "skills",
+      "exit": 0,
+      "sha256": "e2ca572f1c1ac985d863422272810240f7825dd1da13a6cf826c0e8d2d828fd4",
+      "tail": [
+        "    \"API presence is not behavioral certification.\",",
+        "    \"Link fragments and methodological correctness need review.\"",
+        "  ]",
+        "}"
+      ]
+    },
+    {
+      "name": "assets",
+      "exit": 0,
+      "sha256": "6e098845c882e221961d1231936cafb577ebc33b1ebd53a54f4b1745a8401dab",
+      "tail": [
+        "  \"duts\": 132,",
+        "  \"historical_evidence_entries\": 134685,",
+        "  \"errors\": []",
+        "}"
+      ]
+    },
+    {
+      "name": "pip-check",
+      "exit": 0,
+      "sha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09",
+      "tail": [
+        "No broken requirements found."
+      ]
+    },
+    {
+      "name": "diff",
+      "exit": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tail": []
+    }
+  ],
+  "request_to_artifact": [
+    {
+      "requirement": "Failure/cancel/reset lifecycle cannot be swallowed",
+      "artifacts": [
+        "perf_analysis/agent.py",
+        "tests/framework/test_perf_agent.py"
+      ],
+      "evidence": "New real red control fails prerepair then passes. Sticky_failed state encloses entire operation; explicit finished/used lifecycle, atomic busy/reset/finish, final3+1slots preserved."
+    },
+    {
+      "requirement": "Strict frame and native boundary",
+      "artifacts": [
+        "perf_analysis/ports.py",
+        "perf_analysis/checker.py"
+      ],
+      "evidence": "Frame/Inputs/reset typed; exact one-bit input/output widths and directions, clock and complete input set validated. Snapshot checker requires unsigned76-bit integer and uses frameworkScoreboard. Extra/wrongdirection/wide ports and malformed snapshots rejected."
+    },
+    {
+      "requirement": "Explicit slot sampling with framework reuse",
+      "artifacts": [
+        "drivers/explicit_slots.py",
+        "perf_analysis/agent.py"
+      ],
+      "evidence": "Use shared frameworkSingleCycleDriver wrapper; monitor remains active, +1edge/+2slot tick checks. Handoff legal control, stale tick, concurrency and cancellation controls pass; not a claim of a prerepair timing fault."
+    },
+    {
+      "requirement": "Preserve oracle/function/verdicts and evidence",
+      "artifacts": [
+        "model/perf.py",
+        "tests/perf_analysis/test_perf_analysis.py",
+        "docs/transaction-adapters.md"
+      ],
+      "evidence": "Independent model and original functional-case files byte-identical. Original484 verdicts unchanged,15new selftests pass; full493PASS/5FAIL/1UNCERTAIN,43seed2PASS; root126, all10collection46235. R13/R14/UNCERTAIN and strict repository gate exit1 remain."
+    }
+  ],
+  "remaining": "Ifu top-level transactions, BPU/FTQ/ICache domain/lifecycle audits, remaining MemBlock/VAGQ repairs and final whole-repository gates/regressions/package/assets/docs remain mandatory."
+}

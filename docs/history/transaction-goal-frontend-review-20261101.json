@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "module": "frontend-bpu-ftq-icache-review",
+  "status": "partial checkpoint; required BPU semantic and lifecycle migration remains open",
+  "ftq": {
+    "output": "results/ucv-goal-frontend-ftq-review-20261101",
+    "counts": {"PASS": 108, "XFAIL": 2},
+    "selection": "resolve_queue, commit_queue, ftq and checkers; not the entire collection",
+    "source_stable": true,
+    "source_sha256": "b3fa3c73850188f1c700ceed1e6f4d1c7ffc4c6c7df6ad248712ae2e9603a84a",
+    "run_sha256": "3c3b86d039af2d4223cc10e1d949be58f3dbdc3775375d85ee6b4944f600a7d4",
+    "summary_sha256": "14571254a57079f327b200f4511ee240a3d97a0f549a81d440e9d591dfb34630",
+    "residual": "ResolveQueue capacity XFAILs retained; this checkpoint does not itself complete the per-DUT semantic audit."
+  },
+  "icache": {
+    "output": "results/ucv-goal-frontend-icache-review-v4-20261101",
+    "counts": {"PASS": 44, "XFAIL": 1},
+    "selection": "-k test_read_ready or test_write_ready or test_flush or test_residency or test_backpressure or test_miss_request or test_fence or test_lifecycle",
+    "selected_hardware_points": 32,
+    "source_stable": true,
+    "source_sha256": "e4ea5565b67d33ccc30bc55be44f286667077b77b81f8c40807daac48c986713",
+    "run_sha256": "91caabee6de267e49df40ae02baa5ea66f9fbd2d346088183020c86c3e17e01c",
+    "summary_sha256": "176a7fd64384b7f962a78921aef3344ecce2708c342fb77e33fc8e3f5c0e9109",
+    "residual": "Earlier explicit-path selections collected zero tests and are not acceptance evidence. v4 is an actual selected run, not a full current suite certification."
+  },
+  "bpu_observation_boundary": {
+    "generated_schema_sha256": "77c3de88d7a0df171e7268d50d3c9970c8dda3602362c5009462065e4c929fe7",
+    "cache_key": "cc1bfd9f36573f239ef559906015057f815bfde34d124f3a1ed854718aaf886b",
+    "actual_projection": {
+      "prediction_bits": ["startPc_addr", "taken", "endPosition", "s2Override", "s3Override"],
+      "target_addr_present": false,
+      "perfMeta_present": false,
+      "metadata_ready_input_present": false
+    },
+    "corrected_initial_attempt": "A writable InputConstantLeaf with IsInIO incorrectly represented nonexistent metadata ready as a physical input. Removed it: the read-only valid-only adapter constant is outside all driver payloads and ownership. Snapshot decoders use reviewed capabilities and strict field sets, never hasattr-based silent fallback. redirect_and_settle rejects unavailable observation before driving any recovery.",
+    "red": {
+      "output": "results/ucv-goal-bpu-port-contract-red-20261101",
+      "counts": {"FAIL": 5},
+      "source_stable": true,
+      "run_sha256": "c0f6f2e6602419707d499acd8bbead7b451ebed57db03dfe858e749a43f6a79f",
+      "summary_sha256": "203f4fdc2ccc93c16155862080bf83a136c1db9e5af25955014f569c67e97f5b"
+    },
+    "verified": {
+      "output": "results/ucv-goal-bpu-port-contract-verified-20261101",
+      "counts": {"PASS": 38},
+      "source_stable": true,
+      "source_sha256": "0ca70e953a4e8018424eb32c7632a660549d05271b70abf8684e537b4a354d77",
+      "run_sha256": "38f35aa950cc4d306c0efe5ca3968c8fcdaee619e9ff6e8052890de2c1fd4291",
+      "summary_sha256": "7a807a9bc3c9c5512431d32e7aaffd2af1122db67f1ecd0b82c967e62a6a23e6"
+    },
+    "controls": "Declared-observable target/perf cannot disappear; DCE target cannot reappear without review; every consumed prediction leaf rejects missing/wrong-width/wrong-direction inputs. Legal actual native binding/control/decoding and negative target-query/ready-low controls pass.",
+    "geometry_boundary": "Model-constant checks assert 4-way MainBTB, MicroTAGE histories5/9, eight TAGE histories and SC tables. Actual public schema independently checks MainBTB slot shape and DCE. This is not a bidirectional verification of every internal table or a full configuration certification."
+  },
+  "bpu_phr_followup": {
+    "output": "results/ucv-goal-bpu-phr-boundary-review-20261101",
+    "counts": {"PASS": 42, "FAIL": 1},
+    "source_stable": true,
+    "run_sha256": "52b5722106326f9d0321d7592f80b77262f0344c04bf5a33e4bffbcc1b9427c2",
+    "summary_sha256": "62abc6cd0f405f6fb92b4283b883411150335e9b62d58a83f0798d1c5f734e66",
+    "failure": "tests/bpu/testcase/test_phr.py::test_phr_external_recovery_uses_captured_metadata[backpressured]",
+    "first_failure": "BpuPhrMonitor cannot bind phr.io_train_redirect_bits_meta_phr_phrPtr_flag; this field is genuinely removed from the generated native trace, not a new RTL functional defect.",
+    "additional_audit": "The actual schema exposes phrPtr_value only, not a pointer flag. PHR trace has532 cells and33 folds. The old PHR association/checker/case still assumes public target/perf echo, nested pointer flag/value and52-cell/19-fold accounting in some paths. These remain required migration work; do not fill the flag from golden state or invent a physical pin."
+  },
+  "repository_checks": {
+    "root_pytest_pass": 126,
+    "skill_framework_audit": "PASS",
+    "asset_audit": "PASS: ten suites/132 DUT; actual tracked files audited",
+    "diff_check": "PASS",
+    "updated_ifu_and_goal_local_links_checked": 57,
+    "missing_local_links": [],
+    "transaction_gate": "exit1 retained: dcache/lsq/lsu/mmu/vagq still need adapters; frontend/sbuffer zero static leakage is not a semantic completion claim",
+    "collection": "docs/history/transaction-goal-collect-frontend-boundary-20261101.json"
+  },
+  "required_remaining": [
+    "Migrate BPU PHR/semantic-pipeline observation and consumers that still expect removed public target/perf fields. An explicit None or query rejection alone is not scenario migration.",
+    "Redesign original-short/long-priority programs from legal 5/9 history initialization with true source/effect/consumer controls; do not relax table identity, change the oracle or erase the old counterexample. Current pure diagnostics show table1, not the claimed table0.",
+    "Audit MBTB four-way owner/writeback and cleanup scenarios, preserving real RTL defects and historical failures separately from adapter/model gaps.",
+    "Complete FTQ/ICache per-DUT semantic obligations and frontend review, then MemBlock/VAGQ and final repository gates, collection, regressions and asset/package audit."
+  ]
+}

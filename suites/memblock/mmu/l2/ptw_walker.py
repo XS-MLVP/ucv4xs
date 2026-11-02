@@ -1,7 +1,7 @@
 """Standalone PTW environment with page-table memory, PMP, bitmap and HPTW responders."""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from toffee import RisingEdge
 
@@ -11,6 +11,24 @@ from suites.memblock.mmu.l2.l2tlb import PageMemory, pte
 @dataclass
 class MemReq:
     address: int
+
+
+@dataclass(frozen=True)
+class WalkRequest:
+    """Caller identity, frozen at the actual PTW request acceptance edge."""
+    sequence: int
+    vpn: int
+    source: int
+    s2xlate: int
+    accepted_tick: int = -1
+    handoff_start: int = 0
+
+
+@dataclass(frozen=True)
+class WalkCompletion:
+    request: WalkRequest
+    kind: str
+    tick: int
 
 
 class PtwEnv:
@@ -33,6 +51,10 @@ class PtwEnv:
         self.hptw_identity = False
         self._hptw_pending: dict | None = None
         self._bitmap_pending = False
+        self._offered_request: WalkRequest | None = None
+        self._active_request: WalkRequest | None = None
+        self._next_sequence = 0
+        self.walk_completions: list[WalkCompletion] = []
         d = dut
         self.csr = dict(
             satp_mode=d.io_csr_satp_mode,
@@ -163,7 +185,17 @@ class PtwEnv:
 
     async def edge(self) -> None:
         self.dut.RefreshComb()
+        accepted = None
         if self._monitor_enabled:
+            flushing = self.read(self.sfence) or any(self.read(self.csr[key]) for key in (
+                "satp_changed", "vsatp_changed", "hgatp_changed", "virt_changed"))
+            if flushing and self._active_request is not None:
+                self.walk_completions.append(WalkCompletion(self._active_request, "flush", self.tick+1))
+                self._active_request = None
+            if (not flushing and self._offered_request is not None
+                    and self.read(self.req["valid"]) and self.read(self.req["ready"])):
+                accepted = replace(self._offered_request, accepted_tick=self.tick+1,
+                                   handoff_start=len(self.llptw_requests))
             if self.read(self.mem_req["valid"]) and self.read(self.mem_req["ready"]):
                 address = self.read(self.mem_req["addr"])
                 self.requests.append(MemReq(address))
@@ -189,6 +221,9 @@ class PtwEnv:
                         resp_perm_a=1, resp_perm_d=1))
         await RisingEdge(self.dut.clock)
         self.tick += 1
+        if accepted is not None:
+            self._active_request = accepted
+            self._offered_request = None
 
     def read(self, signal) -> int:
         return int(signal.value)
@@ -209,6 +244,10 @@ class PtwEnv:
         self.bitmap_requests.clear()
         self._hptw_pending = None
         self._bitmap_pending = False
+        self._offered_request = None
+        self._active_request = None
+        self._next_sequence = 0
+        self.walk_completions.clear()
         for name, signal in self.req.items():
             if name != "ready":
                 signal.Set(0)
@@ -251,27 +290,36 @@ class PtwEnv:
                     stage1hit: int = 0, not_super: int = 0,
                     jmp_bitmap: int = 0, bitmap_pte: int = 0,
                     bitmap_splevel: int = 0) -> None:
-        for _ in range(2000):
-            self.dut.RefreshComb()
-            if self.read(self.req["ready"]):
-                break
-            await self.service(1)
-        else:
-            raise TimeoutError("PTW: input ready timeout")
+        if self._active_request is not None or self._offered_request is not None:
+            raise RuntimeError("PTW: previous request has no consumed response/handoff or flush")
+        values=dict(vpn=vpn,s2xlate=s2xlate,source=source,l3hit=l3hit,l2hit=l2hit,
+                    ppn=ppn,stage1hit=stage1hit,not_super=not_super,
+                    jmp_bitmap=jmp_bitmap,bitmap_pte=bitmap_pte,bitmap_splevel=bitmap_splevel)
+        # Reject truncation before touching any signal; widths come from this DUT.
+        for key,value in values.items():
+            # xcomm width=0 denotes scalar SV logic, not a zero-bit field.
+            # Its 2/3 encodings are Z/X, not legal boolean request values.
+            width=max(1,int(self.req[key].mWidth))
+            if not isinstance(value,int) or not 0<=value<(1<<width):
+                raise ValueError(f"PTW request {key} does not fit {width} bits: {value!r}")
+        self._offered_request=WalkRequest(self._next_sequence,vpn,source,s2xlate)
+        self._next_sequence+=1
+        for key,value in values.items():
+            self.req[key].Set(value)
         self.req["valid"].Set(1)
-        self.req["vpn"].Set(vpn)
-        self.req["s2xlate"].Set(s2xlate)
-        self.req["source"].Set(source)
-        self.req["l3hit"].Set(l3hit)
-        self.req["l2hit"].Set(l2hit)
-        self.req["ppn"].Set(ppn)
-        self.req["stage1hit"].Set(stage1hit)
-        self.req["not_super"].Set(not_super)
-        self.req["jmp_bitmap"].Set(jmp_bitmap)
-        self.req["bitmap_pte"].Set(bitmap_pte)
-        self.req["bitmap_splevel"].Set(bitmap_splevel)
-        await self.edge()
-        self.req["valid"].Set(0)
+        try:
+            for _ in range(2000):
+                # service() can change ready combinationally. Only edge()'s
+                # pre-edge valid&&ready snapshot establishes acceptance.
+                await self.service(1)
+                if self._offered_request is None:
+                    return
+            raise TimeoutError("PTW: input ready timeout")
+        finally:
+            self._offered_request=None
+            self.req["valid"].Set(0)
+            for key in values:
+                self.req[key].Set(0)
 
     def _drive_hptw_resp(self, values: dict | None) -> None:
         self.hptw["resp_valid"].Set(1 if values is not None else 0)
@@ -304,24 +352,40 @@ class PtwEnv:
         return len(self.requests) - before
 
     async def wait_response(self, max_cycles: int = 2000, note: str = "") -> dict | None:
+        request=self._active_request
+        if request is None:
+            raise RuntimeError(f"{note}: no accepted PTW request awaiting completion")
         # Hold the response to avoid losing it inside the two-edge service helper.
         self.resp["ready"].Set(0)
         for _ in range(max_cycles):
             await self.service(1)
+            if self._active_request!=request:
+                raise RuntimeError(f"{note}: PTW request was cancelled while awaiting completion")
             if self.read(self.resp["valid"]):
                 snap = {key: self.read(sig) for key, sig in self.resp.items()
                         if not isinstance(sig, list)}
                 snap["pteidx"] = [self.read(sig) for sig in self.resp["pteidx"]]
                 for key, sig in self.hresp.items():
                     snap[f"h_{key}"] = self.read(sig)
+                assert (snap["source"],snap["s2xlate"])==(request.source,request.s2xlate), (
+                    "PTW response identity mismatch",request,snap)
                 if self.coverage is not None:
                     self.sample_response(snap)
                 self.resp["ready"].Set(1)
                 await self.edge()
                 self.resp["ready"].Set(0)
+                self.walk_completions.append(WalkCompletion(request,"response",self.tick))
+                self._active_request=None
                 return snap
-            if self.llptw_requests and self.read(self.req["ready"]):
+            handoffs=self.llptw_requests[request.handoff_start:]
+            if handoffs and self.read(self.req["ready"]):
                 # A 4KB walk legitimately ends at LLPTW without a PTW response.
+                assert len(handoffs)==1, ("duplicate PTW handoff",request,handoffs)
+                handoff=handoffs[0]
+                assert (handoff["vpn"],handoff["source"],handoff["s2xlate"])==(
+                    request.vpn,request.source,request.s2xlate), ("PTW handoff identity mismatch",request,handoff)
+                self.walk_completions.append(WalkCompletion(request,"llptw",self.tick))
+                self._active_request=None
                 return None
         raise TimeoutError(f"{note}: no PTW response; mem={[hex(r.address) for r in self.requests]} "
                            f"llptw={self.llptw_requests}")

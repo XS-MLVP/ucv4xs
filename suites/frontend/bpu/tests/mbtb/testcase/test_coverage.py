@@ -108,10 +108,11 @@ async def test_mbtb_functional_coverage_closes_defined_bins(mbtb_agent):
 
     lookup_gate = await observe_lookup_gate(mbtb_agent)
     assert_miss(lookup_gate.held)
-    assert lookup_gate.disabled == lookup_gate.held, lookup_gate
+    assert lookup_gate.disabled.reason == 'disabled-filtered'
+    assert lookup_gate.disabled.preview == lookup_gate.held, lookup_gate
     assert not any(
         item["rawHit"]
-        for bank in lookup_gate.disabled.meta_entries
+        for bank in lookup_gate.disabled.preview.meta_entries
         for item in bank
     ), lookup_gate
     assert_vector_hit(lookup_gate.restored, DIRECT)

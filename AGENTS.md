@@ -4,6 +4,7 @@
 
 ## 从哪里开始
 
+- 多人或 AI 协作先读 [CONTRIBUTING.md](CONTRIBUTING.md)，在既有工程/DUT目录中工作；目录与命名遵循同一约定，不为每位贡献者新建验证外壳。
 - 编排、构建、基线或工程接入：按需读取 [项目工作流 skill](skills/ucv4xs-workflow/SKILL.md)。
 - 模型、驱动、检查器或失败归因：先定位工程的合同，再查 [经验索引](docs/lessons/README.md) 中相关案例。
 - 阅读或修改历史报告时保留其日期、基线和结论边界；当前命令从 [README](README.md) 和 `src/ucv/` 获取。

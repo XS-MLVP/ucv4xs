@@ -65,8 +65,8 @@ class FullPopulationProgram(RetainedUncacheProgram):
 
 
 @pytest.mark.parametrize("lane",range(3))
-async def test_local_reset_retains_full16_external_SIDs_and_new_same_LQ_slots_all_really_complete(lsq,lane):
-    trace=FullPopulationProgram(lsq,lane,"full16")
+async def test_local_reset_retains_full16_external_SIDs_and_new_same_LQ_slots_all_really_complete(local_reset_lsq,lane):
+    trace=FullPopulationProgram(local_reset_lsq,lane,"full16")
     try:await trace.run()
     except BaseException as exc:
         trace.write(False,repr(exc));raise

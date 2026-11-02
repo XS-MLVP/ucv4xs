@@ -5,9 +5,11 @@ from __future__ import annotations
 from types import SimpleNamespace
 
 from suites.frontend.ftq.ftq.bundle.ports import FtqPorts
+from suites.frontend.ftq.ftq.bundle.abi import redirect_meta, resolve_meta
 from suites.frontend.ftq.ftq.transaction.types import BackendWrite
 from suites.frontend.ftq.ftq.transaction.types import CommitEvent
 from suites.frontend.ftq.ftq.transaction.types import FetchRequest
+from suites.frontend.ftq.ftq.transaction.types import FetchLane, PrefetchLane
 from suites.frontend.ftq.ftq.transaction.types import FlushEvent
 from suites.frontend.ftq.ftq.transaction.types import Owner
 from suites.frontend.ftq.ftq.transaction.types import Pointers
@@ -60,6 +62,8 @@ def training(dut: Dut, ports: FtqPorts) -> TrainingEntry | None:
         meta_phr=ports.train.u("meta_phr"),
         meta_ghr=ports.train.u("meta_ghr"),
         meta_common_valid=ports.train.u("meta_common_valid"),
+        branch_mask=sum(int(ports.train.b(f'slot{slot}.valid')) << slot for slot in range(8)),
+        metadata={key: ports.train.u(f'meta.{key}') for key in resolve_meta()},
     )
 
 
@@ -85,6 +89,7 @@ def redirect_event(dut: Dut, ports: FtqPorts) -> RedirectEvent | None:
         ras_action=ports.redirect_out.u("ras_action"),
         meta_phr=ports.redirect_out.u("meta_phr"),
         meta_ghr=ports.redirect_out.u("meta_ghr"),
+        metadata={key: ports.redirect_out.u(f'meta.{key}') for key in redirect_meta(with_target=False)},
     )
 
 
@@ -103,6 +108,11 @@ def prefetch(dut: Dut, ports: FtqPorts) -> PrefetchRequest:
         case=p.u("case"),
         req1_start=p.u("req1.startVAddr_addr"),
         req1_index=p.u("req1.ftqIdx_value"),
+        lanes=tuple(PrefetchLane(start=p.u(f'req{lane}.startVAddr_addr'),
+            next_line=p.u(f'req{lane}.nextLineVAddr_addr'), set0=p.u(f'req{lane}.vSetIdx_0'),
+            set1=p.u(f'req{lane}.vSetIdx_1'), cross_line=p.b(f'req{lane}.isCrossLine'),
+            owner=Owner(p.u(f'req{lane}.ftqIdx_flag'), p.u(f'req{lane}.ftqIdx_value')))
+            for lane in range(2)),
     )
 
 
@@ -123,6 +133,12 @@ def fetch(dut: Dut, ports: FtqPorts) -> FetchRequest:
         backend_exception=p.b("req0.hasBackendException"),
         satp_flush=p.b("req0.hasSatpFlush"),
         req1_index=p.u("req1.ftqIdx_value"),
+        lanes=tuple(FetchLane(addr0=p.u(f'req{lane}.vAddr_0_addr'), addr1=p.u(f'req{lane}.vAddr_1_addr'),
+            set0=p.u(f'req{lane}.vSetIdx_0'), set1=p.u(f'req{lane}.vSetIdx_1'),
+            taken=p.u(f'req{lane}.taken'), end_position=p.u(f'req{lane}.endPosition'),
+            bank0=p.u(f'req{lane}.bankSel_0'), bank1=p.u(f'req{lane}.bankSel_1'),
+            owner=Owner(p.u(f'req{lane}.ftqIdx_flag'), p.u(f'req{lane}.ftqIdx_value')))
+            for lane in range(2)),
     )
 
 
@@ -138,6 +154,7 @@ def flush(dut: Dut, ports: FtqPorts) -> FlushEvent:
         redirect_flush=p.b("redirect_flush"),
         to_ifu_redirect=p.b("to_ifu_redirect"),
         ifu_s3_flush=p.b("ifu_s3_flush"),
+        ifu_s3_flag=p.u('ifu_s3_flag'), ifu_s3_value=p.u('ifu_s3_value'),
     )
 
 
@@ -157,7 +174,8 @@ def topdown(dut: Dut, ports: FtqPorts) -> Topdown:
 def backend_write(dut: Dut, ports: FtqPorts) -> BackendWrite:
     p = ports.backend
     return BackendWrite(wen=p.b("wen"), index=p.u("index"),
-                        start_pc=p.u("start_pc"))
+                        start_pc=p.u("start_pc"), ready=ports.prediction_ready.b('ready'),
+                        bpu=Owner(ports.bpu_ptr.u('flag'), ports.bpu_ptr.u('value')))
 
 
 def prediction_offer(dut: Dut, ports: FtqPorts) -> SimpleNamespace:

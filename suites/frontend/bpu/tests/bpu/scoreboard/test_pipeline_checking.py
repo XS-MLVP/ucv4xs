@@ -32,7 +32,11 @@ def fixture_row(checker, events):
         observed['metadata']['ittage']=dict(valid=0,provider=dict(valid=0,bits=0),altProvider=dict(valid=0,bits=0),
             allocate=dict(valid=0,bits=0),altDiffers=0,providerCnt_value=0,providerUsefulCnt_value=0,
             providerTarget_addr=0,altProviderCnt_value=0,altProviderTarget_addr=0)
-    expected, _, _ = compared_values(checker.model,cycle,observed,events)
+    if not checker.projection.prediction_target:
+        del observed['prediction']['target']
+    if not checker.projection.perf_pc:
+        del observed['metadata']['pc']
+    expected, _, _ = compared_values(checker.model,cycle,observed,events,projection=checker.projection)
     if 'ittage_metadata' in expected:observed['metadata']['ittage'].update(deepcopy(expected['ittage_metadata']))
     if 'indirect_read' in expected:observed['indirect_read']=deepcopy(expected['indirect_read'])
     if 'indirect_random' in expected:observed['indirect_random']=tuple((expected['indirect_random']>>bit)&1 for bit in range(15))
@@ -57,7 +61,7 @@ def fixture_row(checker, events):
     if events.redirect is not None:
         request = events.redirect
         inputs['redirect'] = dict(valid=True,pc=request.cfi_pc,target=request.target,taken=request.taken,
-            history=request.source.metadata())
+            history=checker.projection.history(request.source))
     return dict(inputs=inputs,observed=deepcopy(observed))
 
 

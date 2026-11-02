@@ -8,6 +8,7 @@ A refill is answered on the L2 D channel with two GrantData beats of size 6.
 from __future__ import annotations
 
 from .coverage import DCacheCoverage
+from .tilelink import LegacyL2Responder
 
 SWEEP_CYCLES = 300
 GRANT_DATA = 5
@@ -150,6 +151,7 @@ class DcacheEnv:
         self.mshr_store_empty = dut.io_mshr_store_empty
         self.pending_miss = None
         self.cycles = 0
+        self.last_refill = None
 
     @staticmethod
     def _val(signal) -> int:
@@ -189,6 +191,7 @@ class DcacheEnv:
         for _ in range(SWEEP_CYCLES):
             self.dut.Step(1)
         self.pending_miss = None
+        self.last_refill = None
 
     # ---------------------------------------------------------------- loads
     def drive_load(self, lane: int, vaddr: int, paddr: int, mask: int = 0xFF,
@@ -251,63 +254,30 @@ class DcacheEnv:
 
     # ---------------------------------------------------------------- refill
     def service_miss(self, expected_addr: int | None = None, *,
-                     data_beats: list[int] | None = None,
-                     denied: bool = False, corrupt: bool = False,
-                     context: str = "refill") -> dict:
-        """Answer one pending AcquireBlock with two GrantData beats."""
-        beats = data_beats or [0] * BEATS
-        accepted = None
-        for index, channel in enumerate(self.channels):
-            channel["a_ready"].Set(1)
-        for _ in range(16):
-            for index, channel in enumerate(self.channels):
-                if self._val(channel["a_valid"]) and self._val(channel["a_ready"]):
-                    accepted = {
-                        "channel": index,
-                        "opcode": self._val(channel["a_opcode"]),
-                        "param": self._val(channel["a_param"]),
-                        "size": self._val(channel["a_size"]),
-                        "source": self._val(channel["a_source"]),
-                        "addr": self._val(channel["a_address"]),
-                    }
-                    break
-            if accepted:
-                break
-            self.dut.Step(1)
-            self.refresh()
-        if accepted is None:
-            raise AssertionError(f"{context}: no AcquireBlock observed")
-        if expected_addr is not None and accepted["addr"] != expected_addr:
-            raise AssertionError(
-                f"{context}: Acquire addr {accepted['addr']:#x} != {expected_addr:#x}")
-        if accepted["opcode"] not in (6, 7):
-            raise AssertionError(f"{context}: unexpected Acquire opcode {accepted['opcode']}")
-        channel = self.channels[accepted["channel"]]
-        # Complete the A handshake before driving D: TileLink requires at least
-        # one cycle between A and its response, and the MissQueue uses the A
-        # fire cycle to arm its refill capture.
-        channel["d_valid"].Set(0)
-        self.dut.Step(1)
-        self.refresh()
-        for beat in range(BEATS):
-            channel["d_valid"].Set(1)
-            channel["d_opcode"].Set(GRANT_DATA)
-            channel["d_size"].Set(GRANT_SIZE)
-            channel["d_source"].Set(accepted["source"])
-            channel["d_sink"].Set(0)
-            channel["d_denied"].Set(1 if denied else 0)
-            channel["d_corrupt"].Set(1 if corrupt else 0)
-            channel["d_data"].Set(beats[beat] if beat < len(beats) else 0)
-            self.dut.Step(1)
-            if not self._val(channel["d_ready"]):
-                raise AssertionError(f"{context}: D not ready for beat {beat}")
-        channel["d_valid"].Set(0)
-        for other in self.channels:
-            other["a_ready"].Set(0)
-        self.dut.Step(1)
+                      data_beats: list[int] | None = None,
+                      denied: bool = False, corrupt: bool = False,
+                      context: str = "refill", capture_c: bool = False,
+                      grant_data: bool = True) -> dict:
+        """Service exactly one recorded Acquire using pre-edge fire semantics.
+
+        Both Grant and GrantData are legal AcquirePerm responses in this TL
+        implementation. The no-data option exercises the full-overwrite path;
+        a demand AcquireBlock must still receive two data beats.
+        """
+        self.last_refill=None
+        responder=LegacyL2Responder(self.channels,self.dut.Step,self.refresh)
+        self.last_refill=responder.run(expected_addr,
+            tuple(data_beats) if data_beats is not None else (0,0),
+            denied=denied,corrupt=corrupt,capture_c=capture_c,grant_data=grant_data)
+        accepted=self.last_refill.acquire.legacy()
         if self.coverage is not None:
-            self.coverage.sample_refill(accepted, denied, corrupt)
+            self.coverage.sample_refill(accepted,denied,bool(corrupt or denied) if grant_data else False)
         return accepted
+
+    def refill_with_releases(self,expected_addr,*,data_beats,context="refill/eviction"):
+        """Return complete immutable C messages, not deduplicated first beats."""
+        self.service_miss(expected_addr,data_beats=data_beats,context=context,capture_c=True)
+        return self.last_refill
 
     # ------------------------------------------------------------- prefetch
     def issue_prefetch(self, vaddr: int, paddr: int, pf_source: int = 2,

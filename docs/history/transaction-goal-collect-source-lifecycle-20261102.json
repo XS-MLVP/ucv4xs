@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "output": "results/ucv-goal-collect-source-lifecycle-20261102",
+  "source_sha256": "2277b53225f5962d50dda098adab60cafeefaee20909e1622dc9a77b15732df3",
+  "run_sha256": "b3fd1c6d6b07b8af1db05be9fa1757bd317dc8c872b969c4aedcb10107cdbcba",
+  "summary_sha256": "b9a92a889ef1be7dfdd92ac19dc5e804227c71c513560aa884cd7bfbd2ed762a",
+  "source_stable": true,
+  "source_files_match_at_audit": true,
+  "source_boundary": "Before subsequent CommitQueue SDK/continuous sampling implementation; that later source is not covered by this receipt",
+  "collection_tasks": 10,
+  "all_collection_tasks_exit_zero": true,
+  "total": 47686,
+  "initial_baseline": "results/ucv-goal-collect-before-20261101",
+  "initial_total": 45883,
+  "previous_baseline": "results/ucv-goal-collect-pipeline-entry-20261101",
+  "previous_total": 47627,
+  "removed_nodeids": [],
+  "initial_and_previous_relative_order_preserved_per_suite": true,
+  "suites": {
+    "bpu": {"initial": 41031, "previous": 42197, "current": 42199},
+    "ftq": {"initial": 111, "previous": 111, "current": 168},
+    "icache": {"initial": 294, "previous": 294, "current": 294},
+    "ifu": {"initial": 147, "previous": 725, "current": 725},
+    "dcache": {"initial": 232, "previous": 232, "current": 232},
+    "lsq": {"initial": 2575, "previous": 2575, "current": 2575},
+    "sbuffer": {"initial": 66, "previous": 66, "current": 66},
+    "mmu": {"initial": 417, "previous": 417, "current": 417},
+    "lsu": {"initial": 543, "previous": 543, "current": 543},
+    "vagq": {"initial": 467, "previous": 467, "current": 467}
+  },
+  "verdict_boundary": "Inventory only, not hardware execution or unified-public acceptance. Full intentionally includes internal VAGQ. CLI exit1 is the registered IFU residual gate, not collection failure; all ten collection tasks exited0."
+}

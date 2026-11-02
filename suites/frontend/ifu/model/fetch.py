@@ -34,7 +34,7 @@ PC_BITS = 51  # GuardedPc: byte address plus overflow/guard bit
 PC_MASK = (1 << PC_BITS) - 1
 
 
-@dataclass
+@dataclass(frozen=True)
 class Inst:
     word: int
     is_rvc: int
@@ -57,7 +57,7 @@ class Inst:
     truncated: int = 0
 
 
-@dataclass
+@dataclass(frozen=True)
 class Window:
     instructions: list[Inst]
     size0: int
@@ -90,6 +90,12 @@ class Window:
     taken1_valid: int = 0
     start0_pc: int = 0
     start1_pc: int = 0
+
+    def __post_init__(self):
+        # A submitted fetch must not alias the builder's mutable buffers. The
+        # independent reconstruction algorithm below is otherwise unchanged.
+        for name in ('instructions', 'line0', 'line1', 'ftq0', 'ftq1'):
+            object.__setattr__(self, name, tuple(getattr(self, name)))
 
 
 def xor_fold(value: int, width: int) -> int:
@@ -222,10 +228,6 @@ def build_window(program: list[tuple[int, int]], base_pc: int, *,
     if line_offset1 is None:
         line_offset1 = ((base_pc >> 1) + split) & 31
 
-    map_bits = 0
-    for start, _, rvc in starts:
-        if rvc:
-            map_bits |= 1 << start
     line0 = [0] * 32
     line1 = [0] * 32
     raw_slots = [0] * total
@@ -235,6 +237,10 @@ def build_window(program: list[tuple[int, int]], base_pc: int, *,
         raw_slots[start] = word & 0xFFFF
         if not rvc and start + 1 < total:
             raw_slots[start + 1] = (word >> 16) & 0xFFFF
+    # ICacheMissUnit classifies every physical halfword's low2 bits, not just
+    # actual instruction starts. Continuations (including a carry high half)
+    # may legally set this map; data and metadata must describe the same bytes.
+    map_bits = sum(int((half & 3) != 3) << slot for slot, half in enumerate(raw_slots))
     for index in range(size0):
         line0[(line_offset0 + index) & 31] = raw_slots[index]
     for index in range(size1):
@@ -261,11 +267,17 @@ def build_window(program: list[tuple[int, int]], base_pc: int, *,
     instructions: list[Inst] = []
     if carry_in:
         raw = carry_word & 0xFFFFFFFF
+        btype, ras, jump = branch_info(raw, 0)
+        # The predictor's taken position belongs to the complete instruction
+        # containing it, including a prior low half completed by block0 slot0.
+        # A completed carry is never invalidTaken merely because its start was
+        # in the preceding request. Its ISA class is the full saved word's.
+        carry_taken = int(bool(taken0 and size0 == 1))
         instructions.append(Inst(
             word=raw, is_rvc=0, pc=(base_pc - 2) & PC_MASK, slot=0, block=0,
-            start_offset=0, end_offset=0, cross=0, pred_taken=0, invalid_taken=0,
+            start_offset=0, end_offset=0, cross=0, pred_taken=carry_taken, invalid_taken=0,
             ftq_flag=ftq0[0], ftq_value=ftq0[1], raw_data=raw, out_data=raw, ill=0,
-            branch_type=NONE, ras_action=0, jump_offset=0))
+            branch_type=btype, ras_action=ras, jump_offset=jump & PC_MASK))
     for index, (start, word, rvc) in enumerate(starts):
         block = 0 if start < split else 1
         start_offset = start if block == 0 else start - split

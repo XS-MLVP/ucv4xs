@@ -2,7 +2,7 @@
 
 Only public ports are used. The Picker build has no VPI and no internal-signal
 configuration; internal-signal access is therefore unavailable by design.
-A fixed Verilator seed keeps randomized register initialization reproducible.
+The CLI-recorded Verilator seed keeps register initialization reproducible.
 """
 from __future__ import annotations
 from suites.memblock.sbuffer import ROOT as _SUITE_ROOT
@@ -16,7 +16,6 @@ import xspcomm as xsp
 from toffee import as_xdata
 
 ROOT = _SUITE_ROOT
-DEFAULT_SEED = int(os.environ.get("SBUFFER_VERILATOR_SEED", "1"))
 
 
 def _load_package(directory: Path, alias: str):
@@ -39,19 +38,23 @@ def _load_package(directory: Path, alias: str):
     return module
 
 
-def _argv(seed: int):
+def _argv(seed: int | None):
     # Picker's DUTUnifiedBase expects argv[0] to be the shared-library path and
     # inserts it when absent. Keep the list minimal and deterministic.
+    if seed is None:
+        seed = int(os.environ.get("UCV_SEED", os.environ.get("SBUFFER_VERILATOR_SEED", "1")))
+    if type(seed) is not int or not 0 <= seed <= 4294967295:
+        raise ValueError("native seed must be an integer in 0..4294967295")
     return xsp.StringVector(["sbuffer-ut", f"+verilator+seed+{seed}"])
 
 
-def load_sbuffer_data_dut(seed: int = DEFAULT_SEED):
+def load_sbuffer_data_dut(seed: int | None = None):
     directory = Path(os.environ.get("SBUFFER_DATA_DUT_DIR", ROOT / "dut/sbuffer_data"))
     module = _load_package(directory, "_sbuffer_data_picker_dut")
     return module.DUTSbufferDataDut, _argv(seed)
 
 
-def load_sbuffer_dut(seed: int = DEFAULT_SEED):
+def load_sbuffer_dut(seed: int | None = None):
     directory = Path(os.environ.get("SBUFFER_DUT_DIR", ROOT / "dut/sbuffer"))
     module = _load_package(directory, "_sbuffer_picker_dut")
     return module.DUTSbufferDut, _argv(seed)

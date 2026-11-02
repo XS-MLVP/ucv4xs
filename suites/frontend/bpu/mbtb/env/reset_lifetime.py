@@ -56,7 +56,7 @@ class ResetLifetime:
             transaction = self.transaction(pending, original, allocate=program.profile != 'registered-direction')
             # Existing PulseDriver owns rise-write launch and deassertion. Do
             # not use train_batch here: its contract drains the old lifetime.
-            await self.agent.training_driver.send(self.agent._encode_training(transaction))
+            await self.agent.issue_training(transaction)
             check.phase = 'actual old feedback before reset'
             stage = self.activity()
             check.check(True, any(stage['writes']),

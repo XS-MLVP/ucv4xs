@@ -22,6 +22,7 @@ from dataclasses import dataclass
 from dataclasses import field
 
 SLOTS = 36
+LANES = 35  # DefaultConfig ties the final enqueue instruction lane off.
 PC_BITS = 51  # GuardedVAddrBits: byte PC plus one overflow/guard bit
 PC_MASK = (1 << PC_BITS) - 1
 
@@ -34,7 +35,12 @@ POP = 1
 PUSH = 2
 
 
-@dataclass
+def _unsigned(value, width, name):
+    if not isinstance(value, int) or not 0 <= value < (1 << width):
+        raise ValueError(f'{name} must be an unsigned {width}-bit value')
+
+
+@dataclass(frozen=True)
 class Instr:
     valid: int = 0
     is_rvc: int = 0
@@ -47,6 +53,24 @@ class Instr:
     ras_action: int = 0
     pc: int = 0
     jump_offset: int = 0
+
+    def __post_init__(self):
+        for name in ('valid', 'is_rvc', 'is_pred_taken', 'invalid_taken', 'block_sel',
+                     'is_cross_block'):
+            _unsigned(getattr(self, name), 1, name)
+        _unsigned(self.branch_type, 2, 'branch_type')
+        _unsigned(self.ras_action, 2, 'ras_action')
+        _unsigned(self.end_offset, 5, 'end_offset')
+        _unsigned(self.pc, PC_BITS, 'pc')
+        if self.pc & 1:
+            raise ValueError('pc must be a halfword-aligned byte address')
+        # Displacements may be signed byte offsets or their unsigned 51-bit
+        # residue (the form used by the IFU predecode model). Both are exact
+        # representations of the same modular target addition, not XData casts.
+        if (not isinstance(self.jump_offset, int)
+                or not -(1 << (PC_BITS - 1)) <= self.jump_offset < (1 << PC_BITS)
+                or self.jump_offset & 1):
+            raise ValueError('jump_offset must be an aligned signed/residue 51-bit offset')
 
     @property
     def has_pop(self) -> bool:
@@ -69,13 +93,27 @@ class Instr:
         return self.branch_type == NONE
 
 
-@dataclass
+@dataclass(frozen=True)
 class Request:
     valid: int = 1
-    instrs: list[Instr] = field(default_factory=lambda: [Instr() for _ in range(SLOTS)])
+    instrs: tuple[Instr, ...] = field(default_factory=lambda: (Instr(),) * SLOTS)
+
+    def __post_init__(self):
+        _unsigned(self.valid, 1, 'request valid')
+        if not isinstance(self.instrs, (list, tuple)):
+            raise TypeError('instrs must be an instruction sequence')
+        if len(self.instrs) != SLOTS:
+            raise ValueError(f'PredChecker requires exactly {SLOTS} instruction slots')
+        if not all(isinstance(instruction, Instr) for instruction in self.instrs):
+            raise TypeError('every instruction slot must be an Instr transaction')
+        object.__setattr__(self, 'instrs', tuple(self.instrs))
+        if self.instrs[LANES] != Instr():
+            raise ValueError('lane 35 instruction payload is tied off by the producer')
+        if self.instrs[LANES - 1].is_cross_block:
+            raise ValueError('lane 34 cross-block marker is structurally zero')
 
 
-@dataclass
+@dataclass(frozen=True)
 class Redirect:
     valid: int = 0
     target: int = 0
@@ -90,7 +128,7 @@ class Redirect:
     is_cross_block: int = 0
 
 
-@dataclass
+@dataclass(frozen=True)
 class Prediction:
     fixed_instr_valid: tuple[int, ...]
     redirect: Redirect

@@ -1,4 +1,13 @@
 """Only independently defined fields gate comparisons, never observed hits."""
+from suites.frontend.bpu.utage.model.semantic import training_folds
+
+
+def projected_metadata(values,*,base_strong,dense_training_folds):
+    result={key:value for key,value in values.items() if key not in ('hits','meta_valid')
+            and not key.endswith('.taken') and (base_strong or not key.endswith('.strong'))}
+    if not dense_training_folds and 'history' in result:
+        result['history']=training_folds(result['history'])
+    return result
 
 
 def metadata_values(expected,actual):
@@ -6,11 +15,11 @@ def metadata_values(expected,actual):
         for key in expected if key not in ('hits','meta_valid') and not key.endswith('.taken')}
 
 
-def live_values(sources,enabled,actual):
+def live_values(sources,enabled,actual,*,base_strong=True,dense_training_folds=True):
     if len(actual['useful'])!=2 or any(len(table)!=512 for table in actual['useful']):
         raise ValueError('independent MicroTAGE state checking requires both complete 512-cell useful vectors')
     prediction=sources.current_short(enabled);values=prediction.values()
-    wanted={key:value for key,value in values.items() if key not in ('hits','meta_valid') and not key.endswith('.taken')}
+    wanted=projected_metadata(values,base_strong=base_strong,dense_training_folds=dense_training_folds)
     observed=metadata_values(wanted,actual['meta'])
     providers=prediction.frame.providers() if prediction.frame is not None else (None,)*4
     active=enabled and sources.ahead.frame is not None and sources.ahead.frame.valid
@@ -37,14 +46,14 @@ def live_values(sources,enabled,actual):
     return wanted,observed
 
 
-def fast_values(sources,cycle,actual):
+def fast_values(sources,cycle,actual,*,base_strong=True,dense_training_folds=True):
     token,choice=cycle.tokens[2],cycle.decisions[2]
     wanted=dict(valid=int(token is not None));observed=dict(valid=actual['valid'])
     if token is not None:
         branch=choice.branch
         values=sources.defined_short_metadata(token)
         wanted.update(pc=token.pc,position=branch.position,taken=int(branch.taken),kind=int(branch.kind),
-            meta={key:value for key,value in values.items() if key not in ('hits','meta_valid') and not key.endswith('.taken')})
+            meta=projected_metadata(values,base_strong=base_strong,dense_training_folds=dense_training_folds))
         observed.update({key:actual[key] for key in ('pc','position','taken','kind')})
         observed['meta']=metadata_values(wanted['meta'],actual['meta'])
     return wanted,observed

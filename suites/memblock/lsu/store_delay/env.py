@@ -16,11 +16,18 @@ that equivalence instead of pretending to check it.
 The ``needFlush`` predicate is written from the RobPtr relation, not from the
 RTL bit expression.
 
-Contract: docs/contracts/store-delay.md
+Contract: docs/contracts/store-delay.md. Driver/Monitor lifetime and the final
+registered beat are checked by running(); no testcase advances the native DUT.
 """
 from __future__ import annotations
 
 import random
+from contextlib import asynccontextmanager
+
+from toffee import DriveStable, Execution, SamplingMonitor, SyncSingleCycleDriver, XCommClockBackend
+
+from .ports import DelayPorts
+from .transactions import DelayCommand, PAYLOAD_FIELDS
 
 from suites.memblock.lsu.pointers import (  # noqa: E402
     LEVEL_FLUSH,
@@ -30,31 +37,6 @@ from suites.memblock.lsu.pointers import (  # noqa: E402
     is_same_slot,
     rob_need_flush as need_flush,
 )
-
-PAYLOAD_FIELDS = {
-    "accessType_instrType": 3,
-    "uop_exceptionVec_23": 1,
-    "uop_exceptionVec_19": 1,
-    "uop_exceptionVec_15": 1,
-    "uop_exceptionVec_7": 1,
-    "uop_exceptionVec_6": 1,
-    "uop_exceptionVec_3": 1,
-    "uop_trigger": 4,
-    "uop_robIdx_flag": 1,
-    "uop_robIdx_value": 8,
-    "uop_robIdx_isFormer": 1,
-    "fullva": 64,
-    "tlbException_vaNeedExt": 1,
-    "tlbException_isHyper": 1,
-    "isForVSnonLeafPTE": 1,
-    "gpaddr": 64,
-    "nc": 1,
-    "mmio": 1,
-    "memBackTypeMM": 1,
-}
-
-
-
 
 class DelayReference:
     def __init__(self) -> None:
@@ -76,7 +58,10 @@ class DelayReference:
 def make_bits(rng: random.Random | None = None, **overrides) -> dict[str, int]:
     bits = {}
     for name, width in PAYLOAD_FIELDS.items():
-        bits[name] = rng.randrange(1 << width) if rng is not None else 0
+        limit = 160 if name == 'uop_robIdx_value' else 1 << width
+        bits[name] = rng.randrange(limit) if rng is not None else 0
+    if overrides.keys() - PAYLOAD_FIELDS.keys():
+        raise ValueError('unknown StoreDelay payload fields: ' + repr(sorted(overrides.keys() - PAYLOAD_FIELDS.keys())))
     bits.update(overrides)
     return bits
 
@@ -85,48 +70,73 @@ class StoreDelayEnv:
     def __init__(self, dut, coverage=None) -> None:
         self.dut = dut
         self.coverage = coverage
-        self.in_valid = dut.io_in_valid
-        self.in_bits = {name: getattr(dut, f"io_in_bits_{name}") for name in PAYLOAD_FIELDS}
-        self.out_valid = dut.io_out_valid
-        self.out_bits = {name: getattr(dut, f"io_out_bits_{name}") for name in PAYLOAD_FIELDS}
-        self.redirect_valid = dut.io_redirect_valid
-        self.redirect_level = dut.io_redirect_bits_level
-        self.redirect_flag = dut.io_redirect_bits_robIdx_flag
-        self.redirect_value = dut.io_redirect_bits_robIdx_value
-        self.redirect_former = dut.io_redirect_bits_robIdx_isFormer
+        self._ports = DelayPorts(dut)
+        self._idle = DelayCommand.build(0, {name: 0 for name in PAYLOAD_FIELDS}, no_redirect())
+        self._driver = SyncSingleCycleDriver(dut.clock, self._ports.bits,
+            idle=self._ports.encode(self._idle), encoder=self._ports.encode, name='store_delay.inputs')
+        self._monitor = None
+        self._output = None
+        self._busy = False
         self.model = DelayReference()
         self.cycles = 0
 
     # ------------------------------------------------------------------ reset
-    def reset(self, cycles: int = 4) -> None:
-        self.dut.reset.Set(1)
-        for _ in range(cycles):
-            self.dut.Step(1)
-        self.dut.reset.Set(0)
-        self.model = DelayReference()
-        # One settle cycle with no input keeps the model and DUT aligned.
-        self.drive(0, {name: 0 for name in PAYLOAD_FIELDS},
-                   {"valid": 0, "level": 0, "flag": 0, "value": 0, "former": 0})
-        self.dut.Step(1)
-        self.model.push(0, {name: 0 for name in PAYLOAD_FIELDS},
-                        {"valid": 0, "level": 0, "flag": 0, "value": 0, "former": 0})
-        # Leave the DUT and model in the same pre-edge state for cycle 0.
-        self.drive(0, {name: 0 for name in PAYLOAD_FIELDS},
-                   {"valid": 0, "level": 0, "flag": 0, "value": 0, "former": 0})
+    @asynccontextmanager
+    async def running(self):
+        if self._monitor is not None:
+            raise RuntimeError('StoreDelay environment already running')
+        backend = XCommClockBackend(self.dut.GetXClock())
+        try:
+            async with Execution(backend) as execution:
+                monitor = SamplingMonitor(DriveStable(self.dut.clock), capture=self._ports.capture)
+                async with self._driver, monitor.start(execution):
+                    self._monitor = monitor
+                    try:
+                        yield self
+                        await self.finish()
+                    finally:
+                        self._monitor = None
+        finally:
+            backend.close()
 
-    # ------------------------------------------------------------------ drive
-    def drive(self, in_valid: int, in_bits: dict[str, int], redirect: dict) -> None:
-        self.in_valid.Set(1 if in_valid else 0)
-        for name, signal in self.in_bits.items():
-            signal.Set(int(in_bits.get(name, 0)))
-        self.redirect_valid.Set(1 if redirect["valid"] else 0)
-        self.redirect_level.Set(int(redirect["level"]))
-        self.redirect_flag.Set(int(redirect["flag"]))
-        self.redirect_value.Set(int(redirect["value"]))
-        self.redirect_former.Set(int(redirect["former"]))
+    async def _exchange(self, command):
+        if self._monitor is None:
+            raise RuntimeError('StoreDelay transactions require running()')
+        if self._busy:
+            raise RuntimeError('concurrent StoreDelay cycle calls are not supported')
+        self._busy = True
+        try:
+            edge = await self._driver.send(command)
+            transfer = await self._monitor.recv()
+            assert transfer.event.tick + 1 == edge.tick, 'stale StoreDelay observation'
+            self._output = transfer.value
+            return transfer.value
+        finally:
+            self._busy = False
+
+    async def reset(self, cycles: int = 4) -> None:
+        if cycles < 1:
+            raise ValueError('reset requires a positive cycle count')
+        command = DelayCommand.build(0, {name: 0 for name in PAYLOAD_FIELDS}, no_redirect(), reset=True)
+        for _ in range(cycles):
+            await self._exchange(command)
+        self.model = DelayReference()
+        await self.cycle(0, {name: 0 for name in PAYLOAD_FIELDS}, no_redirect(), 'after reset')
+
+    def observation(self):
+        if self._output is None:
+            raise RuntimeError('StoreDelay has no sampled output')
+        return self._output
+
+    async def finish(self):
+        # Check the final registered beat, then a no-repeat control. Calling a
+        # driver once is not proof that its final output was ever compared.
+        zero = {name: 0 for name in PAYLOAD_FIELDS}
+        await self.cycle(0, zero, no_redirect(), 'finish pending beat')
+        await self.cycle(0, zero, no_redirect(), 'finish no duplicate')
 
     # -------------------------------------------------------------- one cycle
-    def cycle(self, in_valid: int, in_bits: dict[str, int], redirect: dict,
+    async def cycle(self, in_valid: int, in_bits: dict[str, int], redirect: dict,
               context: str = "cycle") -> dict:
         """Sample the outputs of the current cycle, then apply this cycle's inputs.
 
@@ -135,8 +145,9 @@ class StoreDelayEnv:
         cycle both in the model and in the returned data.
         """
         want = self.model.snapshot()
-        got_valid = int(self.out_valid.value)
-        got_bits = {name: int(signal.value) for name, signal in self.out_bits.items()}
+        command = DelayCommand.build(in_valid, in_bits, redirect)
+        got = (await self._exchange(command)).mapping()
+        got_valid, got_bits = got['valid'], got['bits']
         if got_valid != want["valid"]:
             raise AssertionError(
                 f"{context}: out.valid {got_valid} != {want['valid']} "
@@ -152,8 +163,6 @@ class StoreDelayEnv:
         self.coverage and self.coverage.observe(
             out_valid=got_valid, in_valid=int(in_valid), redirect=redirect,
             in_bits=in_bits, out_bits=got_bits)
-        self.drive(in_valid, in_bits, redirect)
-        self.dut.Step(1)
         self.model.push(in_valid, in_bits, redirect)
         self.cycles += 1
         return {"valid": got_valid, "bits": got_bits}

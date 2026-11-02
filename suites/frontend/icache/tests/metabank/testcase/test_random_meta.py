@@ -16,14 +16,14 @@ import pytest
 async def test_random_metadata_is_stored_verbatim(metabank_agent):
     agent = metabank_agent
     rng = random.Random(0x3E7A_B00C)
-    for set_index in range(agent.model.sets):
+    for set_index in range(agent.geometry.sets):
         waymask = rng.randrange(1, 0b1111 + 1)
         await agent.write(
             set_index, waymask,
             phy_tag=rng.getrandbits(36),
             maybe_rvc_map=rng.getrandbits(32),
             code=rng.getrandbits(1))
-    for set_index in range(agent.model.sets):
+    for set_index in range(agent.geometry.sets):
         await agent.check_read(set_index)
 
 
@@ -32,8 +32,7 @@ async def test_random_words_through_the_bist_port(metabank_agent):
     """Random tag words exercise the full 138-bit MBIST write-data path."""
     agent = metabank_agent
     rng = random.Random(0x3E7A_B157)
-    await agent.wait_for(lambda: agent.write_ready() == 1,
-                         what="the macro reset sweep")
+    await agent.wait_ready()
     for _ in range(16):
         set_index = rng.randrange(128)
         word = rng.getrandbits(138)

@@ -4,6 +4,7 @@ LRU chooses each request way, while an existing entry shadow retains its owner.
 Only one retained key, two rewrites and initially counter-2 residents are covered.
 """
 from suites.frontend.bpu.models.configuration import *
+from collections.abc import Mapping
 from suites.frontend.bpu.mbtb.model.entry import expected_mbtb_entry_activity
 from suites.frontend.bpu.mbtb.model.replacement import MbtbFourWayLru
 
@@ -31,7 +32,7 @@ def require_mbtb_shadow_cold_metadata(metadata):
     """Reject fabricated hit feedback and unsupported geometry before driving."""
     if (not isinstance(metadata, (tuple, list)) or len(metadata) != 2
             or any(not isinstance(row, (tuple, list)) or len(row) != MAIN_WAYS + 1 for row in metadata)
-            or any(not isinstance(entry, dict) or entry.get("rawHit") != 0
+            or any(not isinstance(entry, Mapping) or entry.get("rawHit") != 0
                    for row in metadata for entry in row)):
         raise ValueError("shadow replay requires genuine all-miss two-bank/Main-plus-victim cold metadata")
 

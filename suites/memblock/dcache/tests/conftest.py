@@ -31,32 +31,26 @@ def deterministic_test_seed():
     yield TEST_SEED
 
 
-_SCRATCH_DIR: Path | None = None
-_PREVIOUS_CWD: Path | None = None
-
-
-def pytest_configure(config) -> None:
-    """Give every process its own scratch cwd.
+@pytest.fixture(scope="session", autouse=True)
+def isolated_workdir():
+    """Change cwd only after worker collection, for native test execution.
 
     Picker's generated top still contains a default `$dumpfile`; if a DUT is opened
     with the project directory as cwd it can create `memory-direct.fst` there even
-    though the UT never enables tracing.  Running the controller *and* each xdist
-    worker in a private temporary directory keeps the project tree clean.
+    though the UT never enables tracing. Changing the controller cwd in
+    pytest_configure makes xdist workers start in scratch and silently lose
+    default testpaths. A session fixture runs only in executing workers, after
+    collection, and restores the invocation directory even on test failures.
     """
-    global _SCRATCH_DIR, _PREVIOUS_CWD
     from ucv.runtime import scratch_root
-    _PREVIOUS_CWD = Path.cwd()
-    _SCRATCH_DIR = Path(tempfile.mkdtemp(prefix="dcache-pytest-", dir=scratch_root()))
-    os.chdir(_SCRATCH_DIR)
-
-
-def pytest_unconfigure(config) -> None:
-    global _SCRATCH_DIR, _PREVIOUS_CWD
-    if _SCRATCH_DIR is not None:
-        os.chdir(_PREVIOUS_CWD)
-        shutil.rmtree(_SCRATCH_DIR, ignore_errors=True)
-        _SCRATCH_DIR = None
-        _PREVIOUS_CWD = None
+    previous = Path.cwd()
+    workdir = Path(tempfile.mkdtemp(prefix="dcache-pytest-", dir=scratch_root()))
+    os.chdir(workdir)
+    try:
+        yield workdir
+    finally:
+        os.chdir(previous)
+        shutil.rmtree(workdir, ignore_errors=True)
 
 
 @pytest.fixture
@@ -86,3 +80,14 @@ def dut_factory(request):
     for dut in opened:
         dut.Finish()
     pin_trace.dump()
+
+
+@pytest.fixture(params=("dcache","dcache_wrapper"))
+def cache_protocol_env(request,dut_factory):
+    """The same transport contract through the cache and its real wrapper."""
+    from suites.memblock.dcache.dcache.env import DcacheEnv
+    from suites.memblock.dcache.dcache_wrapper.env import DcacheWrapperEnv
+    env_type=DcacheWrapperEnv if request.param=="dcache_wrapper" else DcacheEnv
+    env=env_type(dut_factory(request.param))
+    env.reset()
+    return env

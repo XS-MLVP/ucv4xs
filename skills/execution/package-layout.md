@@ -125,7 +125,7 @@ suites/<group>/<suite>/
 
 - `tests/` 下的功能用例不再出现 `.pins`、`.dut`、物理引脚字符串或驱动编码调用；
   测试只调用 agent 方法并断言事务。编码/绑定的自检可以单独保留，但标 `selftest`，
-  不计硬件功能 credit。可用如下命令核对（命中应为 0；自检文件单独说明）：
+   不计硬件功能 credit。可用如下命令核对（命中应为 0；自检文件单独说明）：
 
   ```sh
   grep -rnE '\.(pins|dut)\.|io_[A-Za-z]' tests --include='*.py'
@@ -133,6 +133,14 @@ suites/<group>/<suite>/
   此 grep 只能发现部分泄漏；P.p_*、P.io(...) 仍然是引脚级耦合，不能靠改名绕过。
   当前静态审计用 `--require-transaction-boundary` 单列它们；零命中也不能替代采样、
   所有权、独立 oracle 与正负对照的语义验收。
+- 逻辑字段字典也不能直接交给用例中的 `agent.*_driver.set/send`；直接读 `agent.ports`、
+  修改 `agent.model` 或调用私有编码/边沿 helper 仍是基础设施耦合。静态工具现单列
+  `owner infrastructure`，与旧 pin/signal 数字分开；独立 oracle 和普通事务字段仍允许。
+  不能把这些调用改个名、藏进转发壳或改标 selftest 来取绿，见
+  [门禁漏检与真实债务](../../docs/history/transaction-goal-component-boundary-20261102.json)。
+- 零沿persistent level源也必须接入SDK的真实signal claim，与单/多周期driver共用所有权；
+  “不推进时钟”不是绕过唯一驱动的理由。set()只表示驱动电平，不表示已接受，见
+  [ICache level所有权证据](../../docs/history/transaction-goal-icache-level-ownership-20261102.json)。
 - 同一引脚被两个 driver 声明时，fixture 边界立即失败，而不是后写覆盖前写。
 - 把某个期望字段故意改错，至少一条用例失败；只有“观测到 valid”不算检查。
 - 关闭 monitor 后，依赖它的功能用例必须失败或缺少输入，不能静默通过。
@@ -153,6 +161,14 @@ suites/<group>/<suite>/
   规范或独立模型。
 - **fixture 放错层级。** 子目录 `conftest.py` 的 fixture 对兄弟目录不可见；需要跨
   子包共享时放到 pytest 根。
+- **收集前切 cwd。** 不在 pytest_configure 中将控制进程切入 scratch；xdist worker
+  会继承该目录，无显式路径时可能根本不使用工程 testpaths。用执行期 session/function
+  fixture 隔离原生 dumpfile，并核验无显式选择的单/多 worker collection、执行与 cwd 恢复。
+- **只扫 .dut 或 io_*。** raw_dut、通道字典的 .Set/.U、xport 等仍是原生耦合。
+  信号操作应单列检查；普通不可变事务的 .value 字段不应被机械误判为引脚。
+- **fixture 名相同但模型随路径变化。** 不根据 request.node.path 或目录名切换参考模型。
+  为不同合同注册显式 fixture 名，让用例签名声明依赖；搬动用例后模型语义应保持。
+  验收同时比较有序 nodeid、原生判定及在任意目录的 fixture 注册，不只比较收集数。
 
 ## 案例
 

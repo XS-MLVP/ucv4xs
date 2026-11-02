@@ -2,6 +2,7 @@
 from suites.frontend.bpu.models.configuration import *
 
 from toffee import Bundle
+from suites.frontend.bpu.utage.model.semantic import TRAIN_HISTORY_INDICES
 
 
 FIELDS=(('valid','valid'),('base','baseTaken'),('strong','baseIsStrongBias'),
@@ -17,9 +18,9 @@ def early_direction_bundle(signal):
             update=signal(prefix+'io_train_t1_update_valid'))
     def metadata(base):
         return Bundle(entries=tuple(Bundle(**{key:signal(f'{base}abtbResult_{way}_{field}')
-            for key,field in FIELDS}) for way in range(4)),
+            for key,field in FIELDS if key != 'strong'}) for way in range(4)),
             indices=tuple(signal(f'{base}readIndex_{table}') for table in range(2)),
-            history=tuple(signal(f'{base}foldedPathHistForTrain_hist_{index}_foldedHist') for index in range(len(PHR_FOLDS))))
+            history=tuple(signal(f'{base}foldedPathHistForTrain_hist_{index}_foldedHist') for index in TRAIN_HISTORY_INDICES))
     return Bundle(meta=metadata('utage.io_meta_bits_'),
         maintenance=Bundle(low=signal('utage.lowTickCounter'),fire=signal('utage.t1_fire'),
             need=signal('utage.t1_needAlloc'),mask=signal('utage.t1_normalAllocMask'),

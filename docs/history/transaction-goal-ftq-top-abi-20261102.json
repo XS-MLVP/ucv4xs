@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "scope": "Ftq top-level fixed DefaultConfig ABI and producer input domain; not whole-top transaction acceptance",
+  "verified": {
+    "output": "results/ucv-goal-ftq-top-abi-v1-20261102",
+    "counts": {"PASS": 322, "XFAIL": 2},
+    "seed": 2,
+    "workers": 2,
+    "selection": [],
+    "source_sha256": "d8c6339678b60d246b08de97ea22d9161772d788770bf9c46f1b18df7b163837",
+    "source_stable": true,
+    "source_files_match_at_audit_before_subsequent_slot_changes": true,
+    "run_sha256": "1738191f393cc87cf582253b229979223e3e001d83e04aa260661feb80f514da",
+    "summary_sha256": "cf68195a827718f2e05d767aadde4ca744d719dc4b98998b78b7b3dbade20bfc",
+    "previous": "results/ucv-goal-ftq-resolve-transactions-v4-20261102",
+    "previous_287_nodeids_removed_or_changed": [],
+    "added_selftests": 37
+  },
+  "discriminating_red": {
+    "output": "results/ucv-goal-ftq-top-input-contract-red-20261102",
+    "counts": {"FAIL": 8},
+    "summary_sha256": "d8e0b14464bbe8ab3669f8f3d9b752484254e9f7a636138e624e924a41c18b37",
+    "boundary": "Before correction: two legal guarded-target domains rejected, four duck-typed encoders accepted, two active overrides silently defaulted missing pointer to zero. Python boundary controls, not hardware defects. Additional native high-bit redirect probes are selftests, not proof every guard bit pattern has full producer history."
+  },
+  "abi": {
+    "nonclock_inputs": 433,
+    "outputs": 468,
+    "metadata_inputs": 329,
+    "expected_is_independent_of_live_port_discovery": true,
+    "address_source": "frontend/Bundles.scala FrontendRedirect: pc VAddrBits=50; target GuardedVAddrBits=51. PrunedAddr.scala defines Pc49/GuardedPc50 halfword projection.",
+    "geometry_source": "DefaultConfig, frontend/ftq/Bundles.scala, frontend/TwoFetch.scala, bpu metadata bundles and icache Parameters::DataBanks; victim MainBTB metadata omits main-way-only attributes.",
+    "corrections": ["redirect targets admit all51 bits without narrowing pc", "TwoPrefetchCase is4-bit onehot with zero Conflict", "mainpipe bankSel is8-bit DataBanks mask", "metadata expected widths/directions/field set are fixed templates, not dynamically absorbed prefixes"]
+  },
+  "artifacts": {
+    "checked": 7,
+    "native_inputs": 165,
+    "build_files_checked": 18,
+    "bytes_and_hashes_match": true,
+    "no_RTL_or_native_rebuild": true,
+    "limit": "Merged coverage artifact integrity is not coverage closure. Raw coverage inputs follow the run manifest's retention policy."
+  },
+  "remaining": "Subsequent source is being migrated to one SDK full-slot driver and complete observation snapshots. Top-level semantic prediction/meta/override/resolve/train/commit UID, cancellation/retry and bounded protocol finish are still required; schema controls or an input-only finish must not claim these complete. Other BPU/MBTB/ICache, MemBlock, VAGQ and final repository acceptance remain in scope."
+}

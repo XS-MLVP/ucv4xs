@@ -12,7 +12,8 @@ from suites.memblock.lsq.replay.types import Cause
 @pytest.mark.parametrize("start",(0,255))
 @pytest.mark.parametrize("lane",range(3))
 @pytest.mark.parametrize("wake",("pool_credit","address_prefix"))
-async def test_full120_RAW_capacity_exclusive128_preserves_every_original_public_grant_and_slot(replay,start,lane,wake):
+async def test_full120_RAW_capacity_exclusive128_preserves_every_original_public_grant_and_slot(sq_replay,start,lane,wake):
+    replay=sq_replay
     end=start+128
     reqs=[replay.request(Cause.RAW_CAPACITY,rob=10+i,lq=i,sq=end,tag=64+i) for i in range(120)]
     for req in reqs:

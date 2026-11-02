@@ -14,7 +14,12 @@ async def check_early_positive_protection(agent, mode, coverage):
         source = await env.negative_base(source)
         checks.negative_base_source(source)
         source = await env.steer_main(source, 3)
-        checks.main_positive(source); checks.arm_seed()
+        checks.main_positive(source)
+        try:
+            checks.arm_seed()
+        except Exception as error:
+            error.add_note('Independent seed preparation checkpoints (not actual-derived expected): '+repr(env.seed_preparation))
+            raise
         source = await env.base_bias(source, taken=True)
         if mode != 'direction-return':
             for _ in range(3):  # Three real consistent sources, not waiting cycles: direction4→7.

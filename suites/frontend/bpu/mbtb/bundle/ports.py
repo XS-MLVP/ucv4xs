@@ -11,6 +11,7 @@ from suites.frontend.bpu.ports.bindings import bind_bundle
 from suites.frontend.bpu.ports.bindings import bind_leaf
 from suites.frontend.bpu.ports.bindings import bind_sequence
 from suites.frontend.bpu.ports.bindings import tree_children
+from suites.frontend.bpu.mbtb.bundle.abi import validate_binding
 
 
 @dataclass(frozen=True, slots=True)
@@ -98,4 +99,6 @@ class MbtbPorts:
             Bundle(reset_done=leaf("sramResetDone"), train_ready=ConstantLeaf(1)),
             "mbtb.status",
         )
-        return cls(control, lookup, training, prediction, status)
+        ports=cls(control, lookup, training, prediction, status)
+        validate_binding(ports)
+        return ports

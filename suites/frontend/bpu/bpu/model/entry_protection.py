@@ -4,6 +4,14 @@ from suites.frontend.bpu.bpu.model.early_opposition import FALLBACK
 from suites.frontend.bpu.bpu.model.block_entry_learning import PROGRAMS as ENTRIES
 from suites.frontend.bpu.bpu.coverage.early_opposition import RULES as BASE_RULES
 
+# At each round a real recovery discards the stale held lookup. A single
+# redirect-bubble request warms the real lookup, then one valid original is
+# accepted and fully drained. Five rounds allocate NT3, apply the three normal
+# decrements and deliver fresh NT0 without letting an older no-hit snapshot
+# allocate the longer table. Do not switch to continuous flow at transient NT3.
+INITIALIZATION_ROUNDS = 5
+INITIALIZATION_REQUESTS_PER_ROUND = 2
+
 
 @dataclass(frozen=True,slots=True)
 class Program:

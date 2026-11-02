@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "state": "production-adaptation-and-native-controls-verified-collaboration-handoff-not-dut-or-all-goal-signoff",
+  "baseline": "public-893e1580b / full XiangShan DefaultConfig; no RTL/native/tool patch or native rebuild",
+  "contract": "suites/frontend/icache/docs/metabank-transaction-adaptation.md",
+  "requirements": [
+    {"id": "actual-abi-and-domain", "implementation": "metabank/transaction/types.py and independent bundle/abi.py", "evidence": "128sets,4ways,36tag+32map+1code=69bits/way; MetaWaySplit2 gives two138-bit macros, actual1-bit array0/1,2-bit per-way MBIST mask and8-bit address with128row alias. The obsolete zero-width/single-macro report is not the current contract. Typed cycles and immutable nested observations, strict flags/widths and driver-before-effect rejection retain zero masks and full physical encodings."},
+    {"id": "ownership-and-persistent-sampling", "implementation": "SDK LevelDriver/ResetDriver, two lossless SamplingMonitors and ArrayAgent shared by DataBank/MetaBank", "evidence": "Functional,reset,MBIST and all SRAM controls have SDK claims. Both complete phase frames are retained independently of test access. Closing monitors or the sole consumer cannot finish green; consumer termination also wakes current waiters. No copied SDK transport/association framework."},
+    {"id": "identity-and-independent-storage", "implementation": "MetaTransactions/MetaStorage, MetaInput/MetaReadResult", "evidence": "Input-before-drive UID, launch versus consumption, actual functional response versus MBIST ack/macro/readback. Independent validity and tag ancestors: write-valid sets validity even without SRAM fire; flush/reset clears validity, not fabricated tag write suppression; MBIST changes tags but not validity. Default read checks automatically at the exact boundary, original write corruption is rejected without readback, result delivery matches the retained exact input-established sample."},
+    {"id": "strict-shared-control-transactions", "implementation": "transactions/sram.py and per-DUT checker semantics", "evidence": "Complete exact0/1 control tuple per physical macro group. DataBank groups contain one way, MetaBank groups contain two ways. Persistent controls are declared by a typed cycle, input identity is recorded, and idle release is explicit; finish does not drive it. hold suppresses actual memory writes but not readiness/Meta validity. Non-hold inputs follow locked behavioral macro applicability, not invented silicon bypass/clock semantics."},
+    {"id": "physical-control-phase-and-reset-sweep", "implementation": "retained previous rising control source, models/sram_initialization.py and known storage-bit histories", "evidence": "A current release preview cannot re-enable a previous held write. MBIST uses control at its physical macro stage rather than ack or a next-cycle preview. Macro arrays have no reset input: declared reset starts an autonomous row sweep and only actual unsuppressed row writes establish zero ancestors. Held cells retain old ancestry across epochs. Unknown pre-initialization contents use explicit masks, not default-zero expectations. Real native fixed answers and a wrong hold algorithm are distinguishing controls."},
+    {"id": "strict-finish-and-fixture", "implementation": "ArrayAgent and checked MetaBank fixture reusing actual report bridge", "evidence": "Before any drain clock, reject unlaunched plans/reset schedules, functional held offers and non-idle controls. Autonomous scrub/pipeline drain only; no reset/flush/ready/reply input is invented. Completed history retained, unconsumed inputs cancelled by actual reset. Reported non-PASS only cleans up; swallowed error/PASS/missing report must finish and independent cleanup failures remain visible."}
+  ],
+  "red_and_interim_evidence": [
+    {"output": "results/ucv-goal-icache-metabank-runtime-red-v1-20261102.xml", "counts": {"FAIL": 10, "PASS": 1}, "boundary": "Actual native default-read, first-error, wrong original write,control claim and reset-prevalidation probes; not setup or RTL defect credit."},
+    {"output": "results/ucv-goal-icache-metabank-runtime-original-green-v2-20261102.xml", "counts": {"PASS": 10}, "boundary": "Same original obligation probes after production migration; known standalone feature-config warnings, no managed hardware-feature credit."},
+    {"output": "results/ucv-goal-icache-metabank-transactions-v2-20261102", "counts": {"INCOMPLETE": 182}, "boundary": "Collection failed from duplicate test_transaction_contract.py basenames under one pytest root. New MetaBank file renamed with its DUT prefix, not moved to hide a functional violation. No hardware execution/signoff credit."},
+    {"output": "results/ucv-goal-icache-metabank-transactions-v3-20261102", "source_sha256": "8f7a7ced2552fc6bedf24554b745820bf2b577e2e9d5c22d07f53f4cef477597", "counts": {"PASS": 258}, "audit": "results/ucv-goal-icache-metabank-transactions-audit-v3-20261102.json", "boundary": "Pre-DFT source:99native instances,12build files verified, original147cases/verdicts retained,111newselftestPASS. Not relabelled current source."},
+    {"output": "results/ucv-goal-icache-array-control-red-v1-20261102.xml", "counts": {"FAIL": 4}, "boundary": "Two native stopped-consumer finish controls DID NOT RAISE, and two held-write fixed answers exposed incorrect expected new data. The pre-DFT hold probe bypassed precisely the idle-only-control guard to exercise the missing storage semantics; no production waiver was added."},
+    {"output": "results/ucv-goal-icache-dft-controls-v1-20261102", "counts": {"PASS": 271, "FAIL": 5}, "boundary": "Intermediate adapter/control errors:zero-mask disposition mismatch,declared idle release still pending,first post-start cycle had a legitimately pre-captured old input. Not RTL failures."},
+    {"output": "results/ucv-goal-icache-dft-controls-v2-20261102", "counts": {"PASS": 275, "FAIL": 1}, "boundary": "Intermediate control row had terminal applied overwritten by offered. Corrected bookkeeping; not a hardware defect."},
+    {"output": "results/ucv-goal-icache-dft-controls-integrated-v4-20261102", "source_sha256": "71911acfb7399ff10187f61fa5d10b3b5c02b9b3a4b6b8c7cd9919671a339418", "counts": {"PASS": 278}, "boundary": "Verified prior source before release/scrub phase probes; not proof those later interleavings were correct."},
+    {"output": "results/ucv-goal-icache-dft-phase-red-v1-20261102.xml", "counts": {"FAIL": 2}, "boundary": "Real native hold+write followed by immediate declared idle release retains old data. Expected-new-data mismatch proved current preview was incorrectly reused for prior physical consumption."},
+    {"output": "results/ucv-goal-icache-scrub-hold-red-v1-20261102.xml", "counts": {"FAIL": 2}, "boundary": "Known nonzero cells retained under hold during reset sweep; old instant-clear model expected0 and failed for DataBank functional read and MetaBank full MBIST read."},
+    {"output": "results/ucv-goal-icache-scrub-phase-green-v2-20261102.xml", "counts": {"PASS": 4}, "boundary": "Same four real native release/scrub scenarios after production phase/sweep fix. Managed final regressions also contain permanent versions and wrong-algorithm controls."}
+  ],
+  "verified_current": {
+    "source_sha256": "b48dc54b08a3febfc7d0ba54f867e6a95efe15e1689d04419fcaa8f8a473d4b2",
+    "runs": [
+      {"output": "results/ucv-collaboration-checkpoint-sram-20261102", "seed": 2, "selection": ["tests/databank", "tests/metabank"], "counts": {"PASS": 305}, "native_instances": 131, "build_files_checked": 12, "audit": "results/ucv-collaboration-checkpoint-sram-audit-20261102.json"},
+      {"output": "results/ucv-collaboration-checkpoint-icache-full-20261102", "seed": 2, "selection": [], "counts": {"PASS": 567, "XFAIL": 3}, "native_instances": 387, "build_files_checked": 66, "audit": "results/ucv-collaboration-checkpoint-icache-full-audit-20261102.json"},
+      {"output": "results/ucv-collaboration-checkpoint-sram-seed1-20261102", "seed": 1, "selection": ["tests/databank", "tests/metabank"], "counts": {"PASS": 305}, "native_instances": 131, "build_files_checked": 12, "audit": "results/ucv-collaboration-checkpoint-sram-seed1-audit-20261102.json"}
+    ],
+    "source_stable_and_files_matched_at_audit": true,
+    "all_artifact_processor_build_hashes_checked": true,
+    "native_builds_unchanged": true,
+    "manifests_committed_coverage_and_cleanup_complete": true,
+    "old_full412_and_per_dut_relative_order_and_verdicts_retained": true,
+    "new_selftest_PASS_from_old_full": 158,
+    "new_XFAIL": 0,
+    "order_audit": "results/ucv-collaboration-checkpoint-icache-order-audit-20261102.json",
+    "order_qualification": "V3 explicitly selected MetaBank then DataBank; final default order selects DataBank then MetaBank. No false global-order claim is made for that differently ordered CLI. Old full412 and V4 global relative order are unchanged; V3 per-DUT order is unchanged.",
+    "coverage_boundary": "Artifact integrity/completeness only, not coverage closure. Runner-cleaned raw inputs are not claimed still independently available. Non-hold DFT inputs characterize the configured behavioral macro, not foundry silicon behavior."
+  },
+  "handoff": {
+    "user_request": "End this phase for a version others can collaborate on, including AI contributors using consistent directories.",
+    "directory_contract": "CONTRIBUTING.md and AGENTS.md; existing suite-root namespaces and per-DUT layout, no common/*verify wrapper or bulk directory migration",
+    "remaining": [
+      "Further complete API/scheduler/interleaving review and systematic direct-sample/identity negative controls before whole DataBank/MetaBank signoff.",
+      "Other nine ICache DUTs and327remaining functional owner accesses; all other BPU/MemBlock/VAGQ adaptation obligations remain.",
+      "Known hardware FAIL/XFAIL/UNCERTAIN are retained, not converted to expected behavior or waived for this release checkpoint.",
+      "Whole-goal completion criteria remain unchanged. This phase handoff is not complete or unmet for the overall goal."
+    ]
+  }
+}

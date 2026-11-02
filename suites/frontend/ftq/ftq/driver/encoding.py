@@ -11,6 +11,8 @@ from suites.frontend.ftq.resolve_queue.transaction.types import ResolveReport
 
 
 def encode_prediction(prediction: Prediction) -> dict[str, int]:
+    if type(prediction) is not Prediction:
+        raise ValueError('FTQ prediction input requires a validated Prediction')
     return {
         "valid": 1,
         "start_pc": prediction.start_pc,
@@ -24,10 +26,14 @@ def encode_prediction(prediction: Prediction) -> dict[str, int]:
 
 
 def encode_meta(meta: Meta) -> dict[str, int]:
+    if type(meta) is not Meta:
+        raise ValueError('FTQ metadata input requires a validated Meta')
     return {"valid": 1, **dict(meta.fields)}
 
 
 def encode_backend_redirect(redirect: BackendRedirect) -> dict[str, int]:
+    if type(redirect) is not BackendRedirect:
+        raise ValueError('FTQ backend redirect requires a validated BackendRedirect')
     return {
         "valid": 1,
         "index_flag": redirect.flag,
@@ -50,6 +56,8 @@ def encode_backend_redirect(redirect: BackendRedirect) -> dict[str, int]:
 
 
 def encode_ifu_redirect(redirect: IfuRedirect) -> dict[str, int]:
+    if type(redirect) is not IfuRedirect:
+        raise ValueError('FTQ IFU redirect requires a validated IfuRedirect')
     return {
         "valid": 1,
         "index_flag": redirect.flag,
@@ -66,6 +74,8 @@ def encode_ifu_redirect(redirect: IfuRedirect) -> dict[str, int]:
 
 
 def encode_resolve(report: ResolveReport) -> dict[str, int]:
+    if type(report) is not ResolveReport:
+        raise ValueError('FTQ resolve input requires a validated ResolveReport')
     return {
         "valid": 1,
         "flag": report.flag,
@@ -81,4 +91,6 @@ def encode_resolve(report: ResolveReport) -> dict[str, int]:
 
 
 def encode_callret(row: CallRet) -> dict[str, int]:
+    if type(row) is not CallRet:
+        raise ValueError('FTQ commit input requires a validated CallRet transaction')
     return {"valid": 1, "ras": row.ras, "ptr": row.ptr}

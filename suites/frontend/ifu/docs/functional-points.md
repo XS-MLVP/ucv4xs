@@ -29,7 +29,7 @@ ID，未挂或引用未知 ID 会直接报错。
 | 002 | 每个起始携带压缩位、所属 fetch block、块内起止偏移与 cacheline index | 偏移交换导致取错字节 | 取指坐标定义 |
 | 003 | end mask 标记每条指令最后一槽，任意前缀的 popcount 等于该前缀内的架构指令数 | 计数偏一 | 指令计数语义 |
 | 004 | 窗口在 32 位指令前半结束时必须报告“下一窗口续取后半”，分别对第一块结束位与总结束位报告 | 丢半条指令 | 半指令续取语义 |
-| 005 | 落在块边界上的 32 位指令是一条指令：标记 cross-block 由第二块提供高半；已压缩或已 taken 的结束不标记 | 拆成两条无关指令 | 跨块组装语义 |
+| 005 | 落在块边界上的 32 位指令是一条指令：真实起始位于块0末槽、由块1提供高半才标 cross-block；已压缩/已 taken/carry续半槽不标记 | 拆成两条无关指令，或carry误用块1 FTQ身份（R-14） | 跨块组装语义 |
 | 006 | 第二块槽位使用自身块内坐标（blockSel、起止偏移、index） | 延续第一块编号 | 块归属语义 |
 
 ## PredChecker（`IFU-PC-*`）
@@ -48,13 +48,13 @@ ID，未挂或引用未知 ID 会直接报错。
 
 | ID | 语义 | 典型错误 | 依据 |
 |---|---|---|---|
-| 001 | 空闲时接受一个请求并锁存地址与内存类型；忙时新请求不得扰动已锁存值 | 覆盖在飞请求 | 单槽语义 |
-| 002 | MMIO 与 PBMT=IO 非幂等，须等更老指令排空；PBMT=NC/PMA 普通非缓存可立即发起 | 非幂等访问超车 | 内存序语义 |
-| 003 | 请求保持到总线真正握手；反压或 IFU 不能接收响应时不得丢弃 | 丢请求或地址漂移 | valid-ready 语义 |
+| 001 | 空闲req fire锁存48位对齐字节地址/类型；native47线是半字坐标；busy不覆盖，同拍flush保留fire事实但取消生效 | 覆盖在飞请求或混淆fire/生效 | 单槽与flush优先级 |
+| 002 | MMIO/PBMT=IO等更老指令排空，NC主存立即发起；PMA非MMIO/reserved仅作显式端口压力，不称IFU可达 | 非幂等访问超车或错误准入 | 内存序与真实IFU路由 |
+| 003 | valid1反压期间保持地址/类型；ifuStall可撤valid但不能丢捕获请求，解除后重新发起；仅真实握手计issue | 丢请求/地址漂移/多计issue | Decoupled，不擅自增强Irrevocable |
 | 004 | 出站属性正确表达 MMIO vs 主存、NC 页 | 属性反了 | 互连协议语义 |
-| 005 | 总线完成变成读数据与指令异常：corrupt→硬件错、denied→访问错、干净→无异常；保留 needResend | 异常映射错 | TileLink/异常语义 |
+| 005 | 已issue请求的显式UID回复转数据/异常：corrupt→硬件错、denied→访问错（denied蕴含corrupt）；真实needResend仅干净非RVC跨页时产生，叶子转发 | 异常/身份映射错 | TileLink/InstrUncache生产者；UID是环境元数据 |
 | 006 | 每次请求只有一个完成脉冲，脉冲带稳定数据/异常，随后回到空闲并可立即接受下一个 | 多脉冲或漏脉冲 | 完成事件语义 |
-| 007 | flush 中止任意阶段、清除完成脉冲与载荷；迟到响应必须被丢弃 | 迟到响应产生指令 | 冲刷语义 |
+| 007 | flush/reset记录取消/epoch，沿后清脉冲/载荷；非WaitResp迟到回复忽略。新WaitResp期间无法凭tagless线辨别旧回复，须依外部peer过滤，不能冒称叶子有硬件身份检查 | 旧/新代际混淆或无条件宣称能丢旧响应 | 叶子冲刷与真实peer假设 |
 | 008 | 单请求槽互斥；完成当拍即可接受新请求，不多等一拍 | 重复接受或空转 | 单槽+吞吐语义 |
 
 ## FrontendTrigger（`IFU-TR-*`）
@@ -63,11 +63,11 @@ ID，未挂或引用未知 ID 会直接报错。
 |---|---|---|---|
 | 001 | 配置按索引原子更新，只替换该 trigger；下一拍可见，不出现部分更新 | 更新泄漏到相邻 trigger | Sdtrig CSR 语义 |
 | 002 | 用完整虚拟 PC 与 **64 位 `tdata2`** 按 EQ/GE/LT 匹配；超出实现地址空间的 trigger 值不得混叠到真实地址，不支持的模式不得命中 | 只比较低 50 位（当前 R-13 缺陷） | Sdtrig 匹配语义 + CSR `Tdata2Bundle RW(63,0)` |
-| 003 | enable、select（本单元仅 PC 匹配）、debugMode 三重门控，清/恢复即时生效 | 门控失效 | Sdtrig 语义 |
-| 004 | 合法成对链：chain=1 自身不开火，只在两者都命中时允许紧随者开火；断链或未配置伙伴抑制终端动作，同 PC 的独立无链 trigger 仍开火 | 链式误开火 | Sdtrig chain 规则 |
+| 003 | 寄存enable/存储select（仅PC匹配）与live debugMode门控；配置/enable下一沿更新，debug/permission当拍生效；select1仅是端口characterization | 门控错拍或失效 | 叶子时序合同与Sdtrig语义 |
+| 004 | 合法成对链：chain=1自身不开火，只在两者都命中时允许紧随者开火；未命中/被禁用伙伴抑制终端动作，独立无链trigger仍开火；CSR禁相邻chain1但允许末槽chain1（无后继不开火） | 链式误开火或过严准入 | Sdtrig规则与CSR真实链约束 |
 | 005 | 同 lane 多 trigger 动作优先级 debug > breakpoint（需 CSR 允许）> none；不支持的 trace 动作不得变成 breakpoint | 优先级/动作错 | TriggerAction 语义 |
 | 006 | 动作按 lane 解析，一个 lane 的命中不得泄漏到相邻 lane | lane 串扰 | 逐 lane 语义 |
-| 007 | 复位后配置与使能为空，即使使能输入为高也不得开火；复位后可重新编程 | 复位后残留 | 复位语义 |
+| 007 | 复位清零全部配置/enable（含action=0）；新enable被寄存前不开火，此后EQ0/PC0可触发breakpoint而无需额外tUpdate，接口没有配置valid位；重新编程只替换目标项 | 用None15伪造复位配置或旧状态残留 | 全零复位合同；不替代完整CSR权限/分发验证 |
 
 说明：本配置所有 trigger 由 CSR 生成为 before-execution timing，接口未暴露 timing
 输入，因此链式条件中的“timing 相同”恒成立；功能点 004 只承诺可达语义。
@@ -99,6 +99,7 @@ ID，未挂或引用未知 ID 会直接报错。
 | 009 | 非缓存取指：离开发起正确属性的 uncached 读、等待响应、展开返回指令、附着总线异常、顺序重定向 FTQ；跨页 resend 保留已完成半字并在下一窗口组装 | 非缓存路径漏指令 | 非缓存语义（复用 UC/RVC 模型） |
 | 010 | 前端 PC trigger 命中恰好标记对应指令 lane，其他 lane 无动作 | 动作串扰 | 触发传递语义 |
 | 011 | 跨越两个取指窗口的 32 位指令恰好组装一次：第一窗口不入队截断指令，第二窗口以原 PC 入队完整指令 | 拆成两半或漏指令 | 半指令续取语义（复用 IB 模型） |
+| 012 | 13个事件按接受时的cache hits/double-line与实际fire分类，经两级寄存后精确输出；held beat不重复计数，当前live元数据不串入旧UID | 漏采、错拍或把valid当fire计数 | `Ifu.perfEvents`、`ICachePerfInfo`事件类别、`HasPerfEvents`公开两级延迟；不是累积计数器 |
 
 ## DUT 合同（单位、身份、复位、时序与取消）
 
@@ -110,7 +111,7 @@ ID，未挂或引用未知 ID 会直接报错。
 | `RvcExpander` | 32 位输入字；PC 不在本层 | 无（纯组合） | `fsIsOff`；XLEN=64、F/D 开启 | 无寄存器，复位不适用 | 无握手 | 输出只依赖当前输入 | 无 | `io_ill` 为唯一异常输出 | 无状态；任意时刻可换输入 |
 | `InstrBoundary` | 16 位槽；PC 不出现；`takenCfiOffset`/`totalEndPos` 为槽号 | 无（纯组合） | `FetchBlockInstNum=32`、`MaxFetchReqNum=2` | 无寄存器 | 无握手 | 所有输出对同一输入同拍有效 | flush 不适用（组合层） | 不产生异常，只报告 end mask 与半指令 | 无状态 |
 | `PredChecker` | 51 位 `GuardedPc`（端口 `addr` 字段为 `[50:1]`）；`endOffset` 为块内槽号（5 位，回绕按字段宽度） | lane 身份由取指顺序决定，不从返回标签倒推 | `IBufferEnqueueWidth=36`，lane 35 由 IFU 置 0 | 异步复位清 `wbValid`；其余故障寄存器随 `io_req_valid` 更新 | 无 ready；请求 valid 保持时重定向按拍产生 | stage1 为组合截断，stage2 为下一拍重定向；同拍只能看 stage1 | 无 flush 端口；请求撤销后重定向在下一拍消失 | 首个违规优先：invalid-taken > 非 CFI-taken > 直接跳/间接跳/返回未预测；实现按 lane 顺序取首个 | 重定向可被后续请求覆盖；无跨拍完成义务 |
-| `IfuUncacheUnit` | 47 位物理地址（端口 `addr` 字段为 `[46:1]`） | 单请求槽；请求身份=锁存地址 | PBMT 2 位、isMmio；FSM 4 态 | 异步复位回 Idle 并清数据/异常/地址 | 总线 ready 与 `ifuStall` 分别阻塞发射；响应恒 ready | 完成脉冲与回 Idle 同拍；完成当拍可接受新请求 | `flush` 在任意态立即回 Idle 并清脉冲；迟到响应丢弃 | corrupt→硬件错、denied→访问错、两者→访问错；干净→无异常 | 请求不因反压丢失；无完成时间保证，靠上层 watchdog |
+| `IfuUncacheUnit` | **48位字节物理地址**，PrunedAddr端口47根线代表`[47:1]` | 单live槽；环境UID/epoch来源于输入，不用地址值冒充身份 | PBMT2位/isMmio，正常MMIO/NC/IO，其他显式压力 | 复位回Idle/清载荷；取消当前UID但不清历史账本 | ready与ifuStall阻发射，响应ready为已证明pruned1 | 沿前握手/沿后脉冲分别采样，完成可同时在下一槽接受新UID | flush沿后取消生效；新WaitResp中的旧回复由peer过滤，不虚构本层tag | denied优先AF且蕴含corrupt，单corrupt→HWE | 无RTL时间保证；显式read预算失败，finish不能自动回复/flush/reset |
 | `FrontendTrigger` | 50 位 PC（端口 `addr` 为 `[49:1]`）；`tdata2` 为 64 位 CSR 字段，**比较必须使用全部 64 位**（当前 RTL 只用低 50 位，缺陷 R-13） | 4 个 trigger 索引 | `TriggerNum=4`；CSR 生成 before-execution timing，接口无 timing 端口 | 配置与使能寄存器清 0 | 无握手 | 配置更新下一拍生效；使能向量同样下一拍 | flush 不适用 | 动作优先级 debug > breakpoint（需 CSR 允许）> none | 无状态机；动作按拍重算 |
 | `IfuPerfAnalysis` | 理由位编号 0..75；stage 为 3 级 | 按流水级身份传播 | 本配置只有 10 个理由位有驱动端口 | 复位清三级快照 | 无握手 | 输入快照 3 拍后到输出 | 无 flush；重定向仅覆盖理由位 | 不产生异常 | 无状态机；理由逐级替换 |
 | `Ifu` | 取指窗口 32 槽；端口 PC 为 `GuardedPc[50:1]`，模型内为字节 PC；GPA 端口为字节地址 | FTQ 指针 + IBuffer 写指针；lane 身份由对齐决定 | `IBufferEnqueueWidth=36`、`AlignWidth=4`、`FetchPorts=2` | 异步复位；复位后首个有效周期不接收入队 | `toIBuffer.ready` 反压保持整拍；`ibufferEmpty/backendEmpty` 参与非缓存等待 | s0 接收、s1 组装/对齐、s2 展开/检查/入队；同拍 IBuffer beat 与 FTQ 重定向可同时出现 | backend redirect 与 BPU stage3 flush 清除在飞窗口；uncache flush 走独立重定向 | ICache 异常优先于 RVC 非法；GPF 另行写 GPA；跨页异常单独标记 | 被 flush 的窗口不承诺入队；重定向为单拍响应；无完成时间保证 |
@@ -137,5 +138,5 @@ ID，未挂或引用未知 ID 会直接报错。
 | 001 | 被综合删除的端口只能以显式常量声明读取/驱动；声明已存在的端口必须失败；每条声明可审计 | `tests/framework/test_pruned_ports.py` 的 `test_*` + `DutHarness.read_pruned/set_pruned` |
 | 002 | 每个 DUT 比较器都能拒绝被篡改的期望/观测（负对照），也能拒绝四个“冻结的错误算法”，且未篡改时通过 | `tests/framework/test_checker_discrimination.py`、`tests/framework/test_oracle_independence.py` |
 | 003 | 功能点与用例双向可追溯；每个组件至少一条完整实现记录（requirement/oracle/observations/controls/tests/residual），记录中的 nodeid 必须存在 | `tests/framework/test_traceability.py` 的 `test_*` + `verification_plan.json` 的 `metadata.traceability` |
-| 004 | 非法窗口（对齐、压缩位、容量、carry-in、异常/属性范围）在夹具边界被拒绝；端口地址单位由 schema 固定 | `tests/framework/test_stimulus_legality.py` + `build_window` 校验 |
+| 004 | 非法窗口（对齐、压缩位、容量、carry-in、异常/属性范围）及与实际raw字节不一致的派生指令/计数在事务边界拒绝；producer额外检查extent/页/身份与活跃年龄，端口域来源不得晋升 | `tests/framework/test_stimulus_legality.py`、`test_ifu_input_contract.py`、`test_ifu_producer_domain.py`与`FetchRequest`准入；carry低半仍由agent按历史UID校验 |
 | 005 | 基线交接面限制被动态探测并以残余登记，不混入硬件 PASS | `tests/ifu/test_ifu_guard_handoff.py` + [上游复核](upstream-review-20261029.md) |

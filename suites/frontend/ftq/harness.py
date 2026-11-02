@@ -10,6 +10,7 @@ from __future__ import annotations
 from suites.frontend.ftq import ROOT as _SUITE_ROOT
 
 import importlib.util
+from collections import deque
 from pathlib import Path
 import sys
 from typing import Any
@@ -19,6 +20,9 @@ from typing import Mapping
 from toffee import ClockCycles
 from toffee import Execution
 from toffee import XCommClockBackend
+from toffee import DriveStable, RisingEdge
+from ucv.runtime import native_seed
+from suites.frontend.ftq.monitors.cycle import CycleSnapshot, SampledCycle, CycleMonitor, InvariantMonitor, freeze
 
 
 ROOT = _SUITE_ROOT
@@ -53,7 +57,7 @@ class Dut:
             raise RuntimeError(f"expected one exported DUT class in {package}")
         self._module = module
         self.dut = exported[0](
-            [],
+            module.xsp.StringVector([name, native_seed()]),
             coverage_filename="" if coverage_path is None else str(coverage_path),
         )
         self.dut.InitClock("clock")
@@ -73,6 +77,17 @@ class Dut:
         self._invariants = name == "ftq"
         self._monitors: list[Any] = []
         self._claims: dict[str, str] = {}
+        # CommitQueue owns its own SDK full-input slots and phase monitors.
+        # ResolveQueue/Ftq use the shared stream while their legacy driver APIs
+        # are being migrated; do not add a second pause owner to CommitQueue.
+        self._clock_slots = name != 'commit_queue'
+        self._pause_context = None
+        self._cycle_monitors = ()
+        self._bound_monitors = []
+        self._sampling_failed = self._edge_busy = False
+        self._last_sample_tick = None
+        self.sampled_cycles = 0
+        self.cycle_history = deque(maxlen=256)
 
     def input_names(self) -> tuple[str, ...]:
         return tuple(self._inputs)
@@ -92,13 +107,59 @@ class Dut:
     def claim(self, pin: str, owner: str) -> None:
         """Register pin ownership; two live drivers may not share a pin."""
 
-        previous = self._claims.get(pin)
-        if previous not in (None, owner):
-            raise RuntimeError(f"pin {pin} already owned by {previous}, cannot claim for {owner}")
-        self._claims[pin] = owner
+        self.claim_many((pin,), owner)
+
+    def claim_many(self, pins: Iterable[str], owner: str) -> None:
+        """Validate an entire driver claim before recording any ownership."""
+        pins = tuple(pins)
+        if not owner or type(owner) is not str:
+            raise ValueError('pin owner must have a nonempty component label')
+        if len(pins) != len(set(pins)):
+            raise ValueError('duplicate physical inputs in one driver claim')
+        for pin in pins:
+            if pin not in self._inputs:
+                raise KeyError(f'cannot claim non-input pin {pin!r}')
+            previous = self._claims.get(pin)
+            if previous is not None:
+                # Labels describe components, not object identity. Two Driver
+                # instances with the same label are still two physical owners.
+                raise RuntimeError(f"pin {pin} already owned by {previous}, cannot claim for {owner}")
+        self._claims.update((pin, owner) for pin in pins)
 
     def add_monitor(self, monitor: Any) -> None:
+        if not self._clock_slots:
+            raise RuntimeError('CommitQueue owns its separate SDK phase monitors')
+        if any(item.name == monitor.name for item in self._bound_monitors):
+            raise RuntimeError(f'duplicate FTQ observation channel {monitor.name}')
         self._monitors.append(monitor)
+        self._bound_monitors.append(monitor)
+
+    def _capture_cycle(self, *, before):
+        self.check_sampling()
+        inputs = tuple((name, int(signal.U())) for name, signal in self._inputs.items())
+        values = []
+        if not before:
+            self.check_invariants()
+        for monitor in self._monitors:
+            # The existing pointer safety net is a post-edge invariant. All
+            # data channels are frozen in both phases before any view changes.
+            value = None if before and isinstance(monitor, InvariantMonitor) else monitor.sample(self)
+            values.append((monitor.name, freeze(value)))
+        return CycleSnapshot(inputs, tuple(values))
+
+    async def _pause_clock(self):
+        self._pause_context = self._execution.paused()
+        await self._pause_context.__aenter__()
+
+    def check_sampling(self):
+        if self._sampling_failed:
+            raise RuntimeError('FTQ has unreconciled cycle sampling after failure/cancellation')
+        if self._monitors != self._bound_monitors:
+            self._sampling_failed = True
+            raise RuntimeError('FTQ registered observer disappeared or was replaced')
+        if self._cycle_monitors and not all(monitor.active for monitor in self._cycle_monitors):
+            self._sampling_failed = True
+            raise RuntimeError('FTQ phase observer is closed or not active')
 
     def __enter__(self) -> "Dut":
         return self
@@ -206,21 +267,45 @@ class Dut:
         self._backend = XCommClockBackend(self.dut.GetXClock())
         self._execution = Execution(self._backend, max_batch_ticks=512)
         await self._execution.__aenter__()
+        if self._clock_slots:
+            await self._pause_clock()
+            self._cycle_monitors = (
+                CycleMonitor(DriveStable(self.dut.clock),
+                    capture=lambda _: self._capture_cycle(before=True)),
+                CycleMonitor(RisingEdge(self.dut.clock),
+                    capture=lambda _: self._capture_cycle(before=False)))
+            for monitor in self._cycle_monitors:
+                monitor.start(self._execution)
         return self
 
     async def __aexit__(self, *exc: object) -> None:
         await self.aclose()
 
     async def aclose(self) -> None:
+        errors = []
         try:
+            for monitor in reversed(self._cycle_monitors):
+                try:
+                    await monitor.aclose()
+                except BaseException as error:
+                    errors.append(error)
+            context, self._pause_context = self._pause_context, None
+            if context is not None:
+                await context.__aexit__(None, None, None)
             if self._execution is not None:
                 await self._execution.__aexit__(None, None, None)
+        except BaseException as error:
+            errors.append(error)
         finally:
             if self._backend is not None:
                 self._backend.close()
             self._execution = None
             self._backend = None
             self._finish()
+        if errors:
+            if len(errors) == 1:
+                raise errors[0]
+            raise BaseExceptionGroup('FTQ observation cleanup failures', errors)
 
     def _finish(self) -> None:
         if not self._finished:
@@ -237,11 +322,53 @@ class Dut:
     async def edge(self, cycles: int = 1) -> None:
         if self._backend is None:
             raise RuntimeError("Dut must be entered before advancing the clock")
-        await ClockCycles(self.dut.clock, cycles)
-        self.refresh()
-        self.check_invariants()
-        for monitor in self._monitors:
-            monitor.observe(self)
+        if type(cycles) is not int or cycles < 1:
+            raise ValueError('FTQ edge needs a positive integer cycle budget')
+        if not self._clock_slots:
+            # Only pre-agent initialization uses this path for CommitQueue.
+            await ClockCycles(self.dut.clock, cycles)
+            self.refresh()
+            return
+        self.check_sampling()
+        if self._edge_busy:
+            raise RuntimeError('concurrent FTQ clock-slot work is not supported')
+        self._edge_busy = True
+        try:
+            remaining = cycles
+            while remaining:
+                # Delivery is still SDK lossless for every edge. Chunk large
+                # waits so a valid user wait cannot overflow an unread queue.
+                count = min(remaining, 32)
+                context, self._pause_context = self._pause_context, None
+                await context.__aexit__(None, None, None)
+                try:
+                    event = await ClockCycles(self.dut.clock, count)
+                finally:
+                    await self._pause_clock()
+                before_monitor, after_monitor = self._cycle_monitors
+                for offset in range(count):
+                    before, after = await before_monitor.recv(), await after_monitor.recv()
+                    expected_tick = event.tick - 2 * (count - 1 - offset)
+                    assert before.event.tick + 1 == after.event.tick == expected_tick, 'FTQ stale/missing phase snapshot'
+                    if self._last_sample_tick is not None:
+                        assert after.event.tick == self._last_sample_tick + 2, 'FTQ skipped/repeated cycle snapshot'
+                    assert isinstance(before.value, CycleSnapshot) and isinstance(after.value, CycleSnapshot)
+                    names = tuple(monitor.name for monitor in self._bound_monitors)
+                    assert tuple(name for name, _ in before.value.observations) == names, 'FTQ missing pre-edge channel'
+                    assert tuple(name for name, _ in after.value.observations) == names, 'FTQ missing post-edge channel'
+                    # All channels were captured before any decoder-view update.
+                    for monitor, (_, value) in zip(self._bound_monitors, after.value.observations, strict=True):
+                        monitor.record(value, after.event)
+                    self._last_sample_tick = after.event.tick
+                    self.sampled_cycles += 1
+                    self.cycle_history.append(SampledCycle(before, after))
+                remaining -= count
+            return event
+        except BaseException:
+            self._sampling_failed = True
+            raise
+        finally:
+            self._edge_busy = False
 
     async def pulse(self, values: Mapping[str, int | bool], *, hold: int = 1) -> None:
         """Hold a one-cycle request and release it before the next edge.

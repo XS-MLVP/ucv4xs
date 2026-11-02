@@ -9,10 +9,17 @@ from suites.frontend.bpu.bpu.transaction.types import BpuStage1Source
 from suites.frontend.bpu.bpu.bundle.values import _plain
 
 
-def _decode_prediction(sample: Any) -> BpuPrediction:
+def _require_fields(sample, fields):
+    if set(sample) != fields:
+        raise ValueError(f'BPU snapshot fields changed: expected {sorted(fields)}, got {sorted(sample)}')
+
+
+def _decode_prediction(sample: Any, *, target_observable=False) -> BpuPrediction:
+    _require_fields(sample, {'start_pc', 'taken', 'position', 's2_override', 's3_override'}
+                    | ({'target'} if target_observable else set()))
     return BpuPrediction(
         start_pc=sample.start_pc.as_int(),
-        target=sample.target.as_int(),
+        target=sample.target.as_int() if target_observable else None,
         taken=sample.taken.as_int(),
         position=sample.position.as_int(),
         s2_override=sample.s2_override.as_int(),
@@ -20,12 +27,13 @@ def _decode_prediction(sample: Any) -> BpuPrediction:
     )
 
 
-def _decode_meta(sample: Any) -> BpuMeta:
-    perf = sample.perf
+def _decode_meta(sample: Any, *, perf_observable=False) -> BpuMeta:
+    _require_fields(sample, {'resolve', 'redirect'} | ({'perf'} if perf_observable else set()))
+    perf = sample.perf if perf_observable else None
     return BpuMeta(
         resolve=_plain(sample.resolve),
         redirect=_plain(sample.redirect),
-        perf=BpuPerf(
+        perf=None if perf is None else BpuPerf(
             start_pc=perf.start_pc.as_int(),
             s1_target=perf.s1_target.as_int(),
             s1_taken=perf.s1_taken.as_int(),

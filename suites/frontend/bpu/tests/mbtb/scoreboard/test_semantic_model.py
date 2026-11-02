@@ -280,8 +280,8 @@ def actual_prediction(frame, enabled=True):
             slot = align * 5 + way
             get = lambda key, default=0: values.get(f'{slot}.{key}', default)
             entries.append(MbtbEntry(get('valid'),get('taken'),get('target'),get('position'),get('kind'),get('action')))
-            row.append(dict(rawHit=get('raw_hit'),position=get('meta_position'),
-                attribute=dict(branchType=get('meta_kind'),rasAction=get('meta_action')),counter_value=get('counter')))
+            row.append(dict(rawHit=get('raw_hit'),position=get('meta_position'),counter_value=get('counter'),
+                **({'attribute':dict(branchType=get('meta_kind'),rasAction=get('meta_action'))} if way<4 else {})))
         sources.append(row)
     return MbtbPrediction(tuple(entries), sources)
 
@@ -293,17 +293,19 @@ def test_wrong_actual_field_fails_without_resynchronization(field):
     checker.initialized = True
     learn(checker.model, feedback(lookup(checker.model)))
     actual = actual_prediction(lookup(checker.model))
+    metadata=deepcopy(actual.meta_entries)
     if field in ('valid', 'taken', 'target', 'position', 'branch_type', 'ras_action'):
         entry = actual.entries[3]
         actual = replace(actual, entries=(*actual.entries[:3], replace(entry, **{field: getattr(entry, field) ^ 1}),
                                          *actual.entries[4:]))
     elif field == 'meta_position':
-        actual.meta_entries[0][3]['position'] ^= 1
+        metadata[0][3]['position'] ^= 1
     elif field in ('meta_kind', 'meta_action'):
         key = 'branchType' if field == 'meta_kind' else 'rasAction'
-        actual.meta_entries[0][3]['attribute'][key] ^= 1
+        metadata[0][3]['attribute'][key] ^= 1
     else:
-        actual.meta_entries[0][3][field] ^= 1
+        metadata[0][3][field] ^= 1
+    actual=replace(actual,meta_entries=metadata)
     checker.events, checker.input_tick = Events(), 1
     before = deepcopy(checker.model.state())
     checker.capture_output(SimpleNamespace(tick=2), actual, enabled=True)
@@ -323,7 +325,7 @@ def test_wrong_accepted_pc_is_rejected_even_when_payload_would_be_a_miss():
         compare(actual_prediction(frame))
 
 
-@pytest.mark.parametrize('invalid', (lambda: Events(select=1), lambda: Events(pc=1 << 49),
+@pytest.mark.parametrize('invalid', (lambda: Events(select=1), lambda: Events(pc=1 << 50),
     lambda: Events(feedback=SimpleNamespace(as_int=lambda: 0)), lambda: Source(hit=1),
     lambda: Source(counter=4), lambda: Source(position=32), lambda: Branch(0, 1, 0, 1),
     lambda: Feedback((PC, PC + 16), ((Source(),) * 2,) * 2, ())))

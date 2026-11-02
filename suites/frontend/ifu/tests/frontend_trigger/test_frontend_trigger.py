@@ -6,7 +6,7 @@ import random
 
 import pytest
 
-from suites.frontend.ifu.legacy_pins import P
+from dataclasses import replace
 from suites.frontend.ifu.model.trigger import ACTION_BREAKPOINT
 from suites.frontend.ifu.model.trigger import ACTION_DEBUG
 from suites.frontend.ifu.model.trigger import ACTION_NONE
@@ -17,52 +17,18 @@ from suites.frontend.ifu.model.trigger import LANES
 from suites.frontend.ifu.model.trigger import LT
 from suites.frontend.ifu.model.trigger import TRIGGERS
 from suites.frontend.ifu.model.trigger import Trigger
-from suites.frontend.ifu.model.trigger import TriggerModel
+from suites.frontend.ifu.model.trigger import consecutive_pcs
 from suites.frontend.ifu.model.trigger import Update
 
 
-def apply(harness, inputs: Inputs, base_pc: int) -> None:
-    update = inputs.update
-    trigger = update.trigger or Trigger()
-    harness.set(
-        io_frontendTrigger_tUpdate_valid=update.valid,
-        io_frontendTrigger_tUpdate_bits_addr=update.index,
-        io_frontendTrigger_tUpdate_bits_tdata_matchType=trigger.match_type,
-        io_frontendTrigger_tUpdate_bits_tdata_select=trigger.select,
-        io_frontendTrigger_tUpdate_bits_tdata_action=trigger.action,
-        io_frontendTrigger_tUpdate_bits_tdata_chain=trigger.chain,
-        io_frontendTrigger_tUpdate_bits_tdata_tdata2=trigger.tdata2,
-        io_frontendTrigger_debugMode=inputs.debug_mode,
-        io_frontendTrigger_triggerCanRaiseBpExp=inputs.can_raise_breakpoint,
-    )
-    for index in range(TRIGGERS):
-        harness.set(**{P.io(f"frontendTrigger_tEnableVec_{index}"): inputs.enable[index]})
-    for lane in range(LANES):
-        harness.set(**{P.io(f"pc_{lane}_addr"): (base_pc >> 1) + lane})
+async def cycle(agent, inputs: Inputs, base_pc: int):
+    return list((await agent.cycle(replace(inputs, pcs=consecutive_pcs(base_pc)))).before.actions)
 
 
-def observe(harness) -> list[int]:
-    return [harness.read(P.io(f"triggered_{lane}")) for lane in range(LANES)]
-
-
-def cycle(harness, model: TriggerModel, inputs: Inputs, base_pc: int, *,
-          expected_override: list[int] | None = None) -> list[int]:
-    apply(harness, inputs, base_pc)
-    harness.refresh()
-    observed = observe(harness)
-    expected = (expected_override if expected_override is not None else
-                model.lane_actions(inputs, tuple(base_pc + 2 * lane for lane in range(LANES))))
-    assert observed == expected, (
-        f"base {base_pc:#x} update={inputs.update}\n"
-        f"expected {expected}\nobserved {observed}")
-    model.tick(inputs)
-    harness.step(1)
-    return observed
-
-
-def start(harness) -> TriggerModel:
-    harness.reset()
-    return TriggerModel()
+async def characterize(agent, inputs: Inputs, base_pc: int):
+    # Explicit port-domain pressure; not evidence of CSR WARL reachability.
+    return list((await agent.characterize_cycle(
+        replace(inputs, pcs=consecutive_pcs(base_pc)))).before.actions)
 
 
 IDLE = Update()
@@ -72,12 +38,12 @@ ENABLE01 = (1, 1, 0, 0)
 
 def normal(enable=ENABLE0, *, debug=0, can_raise=1) -> Inputs:
     return Inputs(update=IDLE, enable=enable, debug_mode=debug,
-                  can_raise_breakpoint=can_raise, pcs=())
+                  can_raise_breakpoint=can_raise, pcs=consecutive_pcs(0))
 
 
 def configure(index: int, trigger: Trigger, enable=ENABLE0, *, debug=0, can_raise=1) -> Inputs:
     return Inputs(update=Update(valid=1, index=index, trigger=trigger), enable=enable,
-                  debug_mode=debug, can_raise_breakpoint=can_raise, pcs=())
+                  debug_mode=debug, can_raise_breakpoint=can_raise, pcs=consecutive_pcs(0))
 
 
 # ---------------------------------------------------------------------------
@@ -86,44 +52,42 @@ def configure(index: int, trigger: Trigger, enable=ENABLE0, *, debug=0, can_rais
 @pytest.mark.feature("IFU-TR-001")
 @pytest.mark.feature("IFU-TR-002")
 @pytest.mark.feature("IFU-TR-005")
-def test_equal_match_raises_configured_action(frontend_trigger):
-    model = start(frontend_trigger)
+async def test_equal_match_raises_configured_action(frontend_trigger):
     base = 0x1000
     target = base + 2 * 10
-    cycle(frontend_trigger, model, configure(0, Trigger(EQ, action=ACTION_BREAKPOINT,
+    await cycle(frontend_trigger, configure(0, Trigger(EQ, action=ACTION_BREAKPOINT,
                                                         tdata2=target)), base)
-    actions = cycle(frontend_trigger, model, normal(), base)
+    actions = await cycle(frontend_trigger, normal(), base)
     assert actions[10] == ACTION_BREAKPOINT
     assert all(action == ACTION_NONE for index, action in enumerate(actions) if index != 10)
-    cycle(frontend_trigger, model, configure(0, Trigger(EQ, action=ACTION_DEBUG,
+    await cycle(frontend_trigger, configure(0, Trigger(EQ, action=ACTION_DEBUG,
                                                         tdata2=target)), base)
-    actions = cycle(frontend_trigger, model, normal(), base)
+    actions = await cycle(frontend_trigger, normal(), base)
     assert actions[10] == ACTION_DEBUG
 
 
 @pytest.mark.feature("IFU-TR-002")
-def test_greater_equal_and_less_than_compare_the_whole_address(frontend_trigger):
-    model = start(frontend_trigger)
+async def test_greater_equal_and_less_than_compare_the_whole_address(frontend_trigger):
     base = 0x2000
     threshold = base + 2 * 20
-    cycle(frontend_trigger, model, configure(0, Trigger(GE, action=ACTION_DEBUG,
+    await cycle(frontend_trigger, configure(0, Trigger(GE, action=ACTION_DEBUG,
                                                         tdata2=threshold)), base)
-    actions = cycle(frontend_trigger, model, normal(), base)
+    actions = await cycle(frontend_trigger, normal(), base)
     assert actions[:20] == [ACTION_NONE] * 20
     assert actions[20:] == [ACTION_DEBUG] * (LANES - 20)
-    cycle(frontend_trigger, model, configure(0, Trigger(LT, action=ACTION_DEBUG,
+    await cycle(frontend_trigger, configure(0, Trigger(LT, action=ACTION_DEBUG,
                                                         tdata2=threshold)), base)
-    actions = cycle(frontend_trigger, model, normal(), base)
+    actions = await cycle(frontend_trigger, normal(), base)
     assert actions[:20] == [ACTION_DEBUG] * 20
     assert actions[20:] == [ACTION_NONE] * (LANES - 20)
     # High PC bits participate: a trigger above the current window must not match.
-    cycle(frontend_trigger, model, configure(0, Trigger(EQ, action=ACTION_DEBUG,
+    await cycle(frontend_trigger, configure(0, Trigger(EQ, action=ACTION_DEBUG,
                                                         tdata2=base + (1 << 30))), base)
-    assert cycle(frontend_trigger, model, normal(), base) == [ACTION_NONE] * LANES
+    assert await cycle(frontend_trigger, normal(), base) == [ACTION_NONE] * LANES
 
 
 @pytest.mark.feature("IFU-TR-002")
-def test_compare_carry_boundary_sweep(frontend_trigger):
+async def test_compare_carry_boundary_sweep(frontend_trigger):
     """Sweep the 7-bit low/high split used by the consecutive-PC comparator.
 
     The optimized comparator computes the high part once and derives the
@@ -132,101 +96,96 @@ def test_compare_carry_boundary_sweep(frontend_trigger):
     carry paths in all three supported relations.
     """
 
-    model = start(frontend_trigger)
     for begin in range(0, 128, 2):
         base = 0x10000 + begin
         for match_type in (EQ, GE, LT):
             target = base + 2 * 10
-            cycle(frontend_trigger, model,
+            await cycle(frontend_trigger,
                   configure(0, Trigger(match_type, action=ACTION_DEBUG, tdata2=target)), base)
-            cycle(frontend_trigger, model, normal(), base)
+            await cycle(frontend_trigger, normal(), base)
 
 
 @pytest.mark.feature("IFU-TR-002")
 @pytest.mark.feature("IFU-TR-003")
-def test_each_trigger_replica_has_its_own_compare_and_select(frontend_trigger):
+async def test_each_trigger_replica_has_its_own_compare_and_select(frontend_trigger):
     """The comparator and select gate are replicated per trigger index."""
 
-    model = start(frontend_trigger)
     base = 0x10000 + 126  # crosses the 128-byte low/high split within the window
     target = base + 2 * 10
     for index in range(TRIGGERS):
         enable = tuple(1 if item == index else 0 for item in range(TRIGGERS))
-        cycle(frontend_trigger, model,
+        await characterize(frontend_trigger,
               configure(index, Trigger(GE, action=ACTION_DEBUG, tdata2=target), enable), base)
-        assert cycle(frontend_trigger, model, normal(enable), base)[10] == ACTION_DEBUG
-        cycle(frontend_trigger, model,
+        assert (await characterize(frontend_trigger, normal(enable), base))[10] == ACTION_DEBUG
+        await characterize(frontend_trigger,
               configure(index, Trigger(EQ, select=1, action=ACTION_DEBUG, tdata2=target),
                         enable), base)
-        assert cycle(frontend_trigger, model, normal(enable), base)[10] == ACTION_NONE
-        cycle(frontend_trigger, model,
+        assert (await characterize(frontend_trigger, normal(enable), base))[10] == ACTION_NONE
+        await characterize(frontend_trigger,
               configure(index, Trigger(EQ, select=0, action=ACTION_DEBUG, tdata2=target),
                         enable), base)
-        assert cycle(frontend_trigger, model, normal(enable), base)[10] == ACTION_DEBUG
+        assert (await characterize(frontend_trigger, normal(enable), base))[10] == ACTION_DEBUG
 
 
 @pytest.mark.feature("IFU-TR-003")
-def test_enable_select_and_debug_mode_gate_matching(frontend_trigger):
-    model = start(frontend_trigger)
+async def test_enable_select_and_debug_mode_gate_matching(frontend_trigger):
     base = 0x3000
     target = base + 2 * 5
     trigger = Trigger(EQ, action=ACTION_DEBUG, tdata2=target)
-    cycle(frontend_trigger, model, configure(0, trigger), base)
-    assert cycle(frontend_trigger, model, normal(), base)[5] == ACTION_DEBUG
+    await characterize(frontend_trigger, configure(0, trigger), base)
+    assert (await characterize(frontend_trigger, normal(), base))[5] == ACTION_DEBUG
     # The enable vector is registered: one cycle to observe the clear.
-    cycle(frontend_trigger, model, normal(enable=(0, 0, 0, 0)), base)
-    assert cycle(frontend_trigger, model, normal(enable=(0, 0, 0, 0)), base)[5] == ACTION_NONE
+    await characterize(frontend_trigger, normal(enable=(0, 0, 0, 0)), base)
+    assert (await characterize(frontend_trigger, normal(enable=(0, 0, 0, 0)), base))[5] == ACTION_NONE
     # Debug mode is a live gate.
-    assert cycle(frontend_trigger, model, normal(debug=1), base)[5] == ACTION_NONE
-    cycle(frontend_trigger, model, configure(0, Trigger(EQ, select=1, action=ACTION_DEBUG,
+    assert (await characterize(frontend_trigger, normal(debug=1), base))[5] == ACTION_NONE
+    await characterize(frontend_trigger, configure(0, Trigger(EQ, select=1, action=ACTION_DEBUG,
                                                         tdata2=target)), base)
-    assert cycle(frontend_trigger, model, normal(), base)[5] == ACTION_NONE
-    cycle(frontend_trigger, model, configure(0, Trigger(EQ, select=0, action=ACTION_DEBUG,
+    assert (await characterize(frontend_trigger, normal(), base))[5] == ACTION_NONE
+    await characterize(frontend_trigger, configure(0, Trigger(EQ, select=0, action=ACTION_DEBUG,
                                                         tdata2=target)), base)
-    assert cycle(frontend_trigger, model, normal(), base)[5] == ACTION_DEBUG
+    assert (await characterize(frontend_trigger, normal(), base))[5] == ACTION_DEBUG
 
 
 @pytest.mark.feature("IFU-TR-001")
-def test_update_targets_only_the_selected_index(frontend_trigger):
-    model = start(frontend_trigger)
+async def test_update_targets_only_the_selected_index(frontend_trigger):
     base = 0x4000
     pc_a = base + 2 * 3
     pc_b = base + 2 * 9
     pc_c = base + 2 * 17
-    cycle(frontend_trigger, model, configure(0, Trigger(EQ, action=ACTION_DEBUG, tdata2=pc_a),
+    await cycle(frontend_trigger, configure(0, Trigger(EQ, action=ACTION_DEBUG, tdata2=pc_a),
                                              ENABLE01), base)
-    cycle(frontend_trigger, model, configure(1, Trigger(EQ, action=ACTION_BREAKPOINT,
+    await cycle(frontend_trigger, configure(1, Trigger(EQ, action=ACTION_BREAKPOINT,
                                                         tdata2=pc_b), ENABLE01), base)
-    actions = cycle(frontend_trigger, model, normal(ENABLE01), base)
+    actions = await cycle(frontend_trigger, normal(ENABLE01), base)
     assert actions[3] == ACTION_DEBUG and actions[9] == ACTION_BREAKPOINT
-    cycle(frontend_trigger, model, configure(1, Trigger(EQ, action=ACTION_BREAKPOINT,
+    await cycle(frontend_trigger, configure(1, Trigger(EQ, action=ACTION_BREAKPOINT,
                                                         tdata2=pc_c), ENABLE01), base)
-    actions = cycle(frontend_trigger, model, normal(ENABLE01), base)
+    actions = await cycle(frontend_trigger, normal(ENABLE01), base)
     assert actions[3] == ACTION_DEBUG
     assert actions[9] == ACTION_NONE
     assert actions[17] == ACTION_BREAKPOINT
 
 
 @pytest.mark.feature("IFU-TR-005")
-def test_breakpoint_requires_permission_and_debug_wins(frontend_trigger):
-    model = start(frontend_trigger)
+async def test_breakpoint_requires_permission_and_debug_wins(frontend_trigger):
     base = 0x5000
     target = base + 2
-    cycle(frontend_trigger, model, configure(0, Trigger(EQ, action=ACTION_BREAKPOINT,
+    await cycle(frontend_trigger, configure(0, Trigger(EQ, action=ACTION_BREAKPOINT,
                                                         tdata2=target)), base)
-    assert cycle(frontend_trigger, model, normal(can_raise=0), base)[1] == ACTION_NONE
+    assert (await cycle(frontend_trigger, normal(can_raise=0), base))[1] == ACTION_NONE
     # A second trigger on the same PC requests debug mode; it must win.
-    cycle(frontend_trigger, model, configure(1, Trigger(EQ, action=ACTION_DEBUG,
+    await cycle(frontend_trigger, configure(1, Trigger(EQ, action=ACTION_DEBUG,
                                                         tdata2=target), ENABLE01), base)
-    assert cycle(frontend_trigger, model, normal(ENABLE01), base)[1] == ACTION_DEBUG
+    assert (await cycle(frontend_trigger, normal(ENABLE01), base))[1] == ACTION_DEBUG
     # Unsupported actions do not become breakpoints.
-    cycle(frontend_trigger, model, configure(1, Trigger(EQ, action=2, tdata2=target)), base)
-    assert cycle(frontend_trigger, model, normal(ENABLE01), base)[1] == ACTION_BREAKPOINT
+    await characterize(frontend_trigger, configure(1, Trigger(EQ, action=2, tdata2=target)), base)
+    assert (await characterize(frontend_trigger, normal(ENABLE01), base))[1] == ACTION_BREAKPOINT
 
 
 @pytest.mark.feature("IFU-TR-005")
 @pytest.mark.feature("IFU-TR-006")
-def test_action_resolution_at_every_lane(frontend_trigger):
+async def test_action_resolution_at_every_lane(frontend_trigger):
     """Each lane's debug/breakpoint/none arms need their own stimulus.
 
     The generated action mux is physically replicated per lane; a hit only on
@@ -234,123 +193,115 @@ def test_action_resolution_at_every_lane(frontend_trigger):
     across the window so every lane's priority mux is verified.
     """
 
-    model = start(frontend_trigger)
     base = 0x9000
     for lane in range(LANES):
         target = base + 2 * lane
         for action in (ACTION_DEBUG, ACTION_BREAKPOINT):
-            cycle(frontend_trigger, model,
+            await cycle(frontend_trigger,
                   configure(0, Trigger(EQ, action=action, tdata2=target)), base)
-            actions = cycle(frontend_trigger, model, normal(), base)
+            actions = await cycle(frontend_trigger, normal(), base)
             assert actions[lane] == action
             assert all(value == ACTION_NONE for index, value in enumerate(actions) if index != lane)
 
 
 @pytest.mark.feature("IFU-TR-006")
-def test_actions_are_per_lane(frontend_trigger):
-    model = start(frontend_trigger)
+async def test_actions_are_per_lane(frontend_trigger):
     base = 0x6000
-    cycle(frontend_trigger, model, configure(0, Trigger(EQ, action=ACTION_DEBUG,
+    await cycle(frontend_trigger, configure(0, Trigger(EQ, action=ACTION_DEBUG,
                                                         tdata2=base + 2 * 3), ENABLE01), base)
-    cycle(frontend_trigger, model, configure(1, Trigger(EQ, action=ACTION_BREAKPOINT,
+    await cycle(frontend_trigger, configure(1, Trigger(EQ, action=ACTION_BREAKPOINT,
                                                         tdata2=base + 2 * 7), ENABLE01), base)
-    actions = cycle(frontend_trigger, model, normal(ENABLE01), base)
+    actions = await cycle(frontend_trigger, normal(ENABLE01), base)
     assert actions[3] == ACTION_DEBUG and actions[7] == ACTION_BREAKPOINT
     assert sum(action != ACTION_NONE for action in actions) == 2
 
 
 @pytest.mark.feature("IFU-TR-004")
-def test_pairwise_chain_arms_the_next_trigger(frontend_trigger):
-    model = start(frontend_trigger)
+async def test_pairwise_chain_arms_the_next_trigger(frontend_trigger):
     base = 0x7000
     target = base + 2 * 4
     chained = Trigger(EQ, action=ACTION_DEBUG, chain=1, timing=0, tdata2=target)
     terminal = Trigger(EQ, action=ACTION_BREAKPOINT, chain=0, timing=0, tdata2=target)
-    cycle(frontend_trigger, model, configure(0, chained, ENABLE01), base)
-    cycle(frontend_trigger, model, configure(1, terminal, ENABLE01), base)
-    assert cycle(frontend_trigger, model, normal(ENABLE01), base)[4] == ACTION_BREAKPOINT
+    await cycle(frontend_trigger, configure(0, chained, ENABLE01), base)
+    await cycle(frontend_trigger, configure(1, terminal, ENABLE01), base)
+    assert (await cycle(frontend_trigger, normal(ENABLE01), base))[4] == ACTION_BREAKPOINT
     # This machine's CSR generation ties timing to "before execution" for
     # every trigger, so the timing comparison is constantly satisfied and the
     # interface does not expose a timing input.
     # A miss on the chained trigger also breaks the link.
-    cycle(frontend_trigger, model, configure(0, Trigger(EQ, action=ACTION_DEBUG, chain=1,
+    await cycle(frontend_trigger, configure(0, Trigger(EQ, action=ACTION_DEBUG, chain=1,
                                                         timing=0, tdata2=base + 2 * 20),
                                              ENABLE01), base)
-    cycle(frontend_trigger, model, configure(1, Trigger(EQ, action=ACTION_BREAKPOINT,
+    await cycle(frontend_trigger, configure(1, Trigger(EQ, action=ACTION_BREAKPOINT,
                                                         timing=0, tdata2=target), ENABLE01), base)
-    assert cycle(frontend_trigger, model, normal(ENABLE01), base)[4] == ACTION_NONE
+    assert (await cycle(frontend_trigger, normal(ENABLE01), base))[4] == ACTION_NONE
     # A chained trigger does not block an independent trigger for the same PC.
-    cycle(frontend_trigger, model, configure(0, Trigger(EQ, action=ACTION_DEBUG, chain=1,
+    await cycle(frontend_trigger, configure(0, Trigger(EQ, action=ACTION_DEBUG, chain=1,
                                                         timing=0, tdata2=target),
                                              (1, 0, 1, 0)), base)
-    cycle(frontend_trigger, model, configure(2, Trigger(EQ, action=ACTION_BREAKPOINT,
+    await cycle(frontend_trigger, configure(2, Trigger(EQ, action=ACTION_BREAKPOINT,
                                                         timing=0, tdata2=target),
                                              (1, 0, 1, 0)), base)
-    assert cycle(frontend_trigger, model, normal((1, 0, 1, 0)), base)[4] == ACTION_BREAKPOINT
+    assert (await cycle(frontend_trigger, normal((1, 0, 1, 0)), base))[4] == ACTION_BREAKPOINT
 
 
 @pytest.mark.feature("IFU-TR-007")
-def test_reset_clears_configuration(frontend_trigger):
-    model = start(frontend_trigger)
+async def test_reset_clears_configuration(frontend_trigger):
     base = 0x8000
     target = base + 2 * 6
-    cycle(frontend_trigger, model, configure(0, Trigger(EQ, action=ACTION_DEBUG,
+    await cycle(frontend_trigger, configure(0, Trigger(EQ, action=ACTION_DEBUG,
                                                         tdata2=target)), base)
-    assert cycle(frontend_trigger, model, normal(), base)[6] == ACTION_DEBUG
-    frontend_trigger.reset()
-    model = TriggerModel()
+    assert (await cycle(frontend_trigger, normal(), base))[6] == ACTION_DEBUG
+    await frontend_trigger.reset()
     # The enable register is also cleared; one cycle later the new enable is
     # visible but the trigger configuration is still empty.
-    assert cycle(frontend_trigger, model, normal(), base) == [ACTION_NONE] * LANES
-    assert cycle(frontend_trigger, model, normal(), base) == [ACTION_NONE] * LANES
+    assert await cycle(frontend_trigger, normal(), base) == [ACTION_NONE] * LANES
+    assert await cycle(frontend_trigger, normal(), base) == [ACTION_NONE] * LANES
 
 
 @pytest.mark.feature("IFU-TR-003")
-def test_disabled_trigger_ignores_any_tdata2_value(frontend_trigger):
+async def test_disabled_trigger_ignores_any_tdata2_value(frontend_trigger):
     """A disabled trigger must not act, whatever the 64-bit tdata2 holds.
 
-    This is the enable-gate contract, and it is also the only legal way to
-    exercise the high tdata2 bits: with the trigger disabled the result is
+    This is the enable-gate contract. With the trigger disabled we can also
+    exercise arbitrary high tdata2 bits: the result is
     "no action" under both the full-width and the truncated interpretation, so
     the check stays meaningful while the width defect (R-13) is still open.
     """
 
-    model = start(frontend_trigger)
     base = 0x7000
     rng = random.Random(0x7D15)
     for _ in range(8):
         value = rng.getrandbits(64)
-        cycle(frontend_trigger, model,
+        await cycle(frontend_trigger,
               configure(0, Trigger(EQ, action=ACTION_DEBUG, tdata2=value), (0, 0, 0, 0)), base)
-        assert cycle(frontend_trigger, model, normal((0, 0, 0, 0)), base) == [ACTION_NONE] * LANES
+        assert await cycle(frontend_trigger, normal((0, 0, 0, 0)), base) == [ACTION_NONE] * LANES
 
 
 # ---------------------------------------------------------------------------
 # tdata2 width: the producer (CSR) exposes all 64 bits
 # ---------------------------------------------------------------------------
 @pytest.mark.feature("IFU-TR-002")
-def test_tdata2_above_the_address_space_cannot_equal_a_fetch_pc(frontend_trigger):
+async def test_tdata2_above_the_address_space_cannot_equal_a_fetch_pc(frontend_trigger):
     """tdata2 is a 64-bit RW field; 2**50+pc is not the same address as pc."""
 
-    model = start(frontend_trigger)
     base = 0x5000
     target = base + 2 * 10
-    cycle(frontend_trigger, model,
+    await cycle(frontend_trigger,
           configure(0, Trigger(EQ, action=ACTION_DEBUG, tdata2=(1 << 50) | target)), base)
-    actions = cycle(frontend_trigger, model, normal(), base)
+    actions = await cycle(frontend_trigger, normal(), base)
     # 2**50 + target is outside the address space, so no fetch PC equals it.
     assert actions == [ACTION_NONE] * LANES
 
 
 @pytest.mark.feature("IFU-TR-002")
-def test_tdata2_above_the_address_space_is_greater_for_less_than(frontend_trigger):
+async def test_tdata2_above_the_address_space_is_greater_for_less_than(frontend_trigger):
     """Every implemented PC is less than 2**50, so LT must hit every lane."""
 
-    model = start(frontend_trigger)
     base = 0x6000
-    cycle(frontend_trigger, model,
+    await cycle(frontend_trigger,
           configure(0, Trigger(LT, action=ACTION_DEBUG, tdata2=(1 << 50))), base)
-    actions = cycle(frontend_trigger, model, normal(), base)
+    actions = await cycle(frontend_trigger, normal(), base)
     assert actions == [ACTION_DEBUG] * LANES
 
 
@@ -377,9 +328,8 @@ def random_trigger(rng: random.Random) -> Trigger:
 @pytest.mark.feature("IFU-TR-004")
 @pytest.mark.feature("IFU-TR-005")
 @pytest.mark.feature("IFU-TR-006")
-def test_random_configuration_sequences_match_the_model(frontend_trigger):
+async def test_random_configuration_sequences_match_the_model(frontend_trigger):
     rng = random.Random(0x7A11)
-    model = start(frontend_trigger)
     for step in range(180):
         # Spread PCs over the architectural range so the full comparator and
         # the per-lane match matrix see varied high bits; keep the window
@@ -392,5 +342,73 @@ def test_random_configuration_sequences_match_the_model(frontend_trigger):
                         enable=tuple(int(rng.random() < 0.6) for _ in range(TRIGGERS)),
                         debug_mode=int(rng.random() < 0.1),
                         can_raise_breakpoint=int(rng.random() < 0.7),
-                        pcs=())
-        cycle(frontend_trigger, model, inputs, base)
+                        pcs=consecutive_pcs(0))
+        await characterize(frontend_trigger, inputs, base)
+
+
+@pytest.mark.feature('IFU-TR-001')
+@pytest.mark.feature('IFU-TR-003')
+async def test_config_and_enable_are_checked_before_and_after_the_same_edge(frontend_trigger):
+    pcs = consecutive_pcs(0x4000)
+    first = Inputs(Update(1, 0, Trigger(action=ACTION_DEBUG, tdata2=pcs[4])), ENABLE0, pcs=pcs)
+    observed = await frontend_trigger.cycle(first)
+    assert observed.before.actions == (ACTION_NONE,) * LANES
+    assert observed.after.actions[4] == ACTION_DEBUG
+    second = replace(first, update=Update(1, 0, Trigger(action=ACTION_DEBUG, tdata2=pcs[7])))
+    changed = await frontend_trigger.cycle(second)
+    assert changed.before.actions[4] == ACTION_DEBUG and changed.before.actions[7] == ACTION_NONE
+    assert changed.after.actions[4] == ACTION_NONE and changed.after.actions[7] == ACTION_DEBUG
+
+
+@pytest.mark.feature('IFU-TR-007')
+async def test_reset_configuration_is_zero_including_the_action_field(frontend_trigger):
+    # No tUpdate at all. Reset EQ/PC0/action0 is observable once enabled.
+    inputs = Inputs(enable=ENABLE0, pcs=consecutive_pcs(0))
+    enabled = await frontend_trigger.cycle(inputs)
+    assert enabled.before.actions == (ACTION_NONE,) * LANES
+    assert enabled.after.actions == (ACTION_BREAKPOINT,) + (ACTION_NONE,) * (LANES - 1)
+    await frontend_trigger.reset()
+    again = await frontend_trigger.cycle(inputs)
+    assert again.before.actions == enabled.before.actions and again.after.actions == enabled.after.actions
+
+
+@pytest.mark.feature('IFU-TR-003')
+@pytest.mark.feature('IFU-TR-005')
+async def test_debug_and_breakpoint_permission_are_live_not_delayed(frontend_trigger):
+    pcs = consecutive_pcs(0x6000)
+    inputs = Inputs(Update(1, 0, Trigger(action=ACTION_BREAKPOINT, tdata2=pcs[3])), ENABLE0, pcs=pcs)
+    await frontend_trigger.cycle(inputs)
+    quiet = await frontend_trigger.cycle(replace(inputs, update=Update(), can_raise_breakpoint=0))
+    assert quiet.before.actions == quiet.after.actions == (ACTION_NONE,) * LANES
+    await frontend_trigger.cycle(replace(inputs, update=Update(1, 0, Trigger(action=ACTION_DEBUG, tdata2=pcs[3]))))
+    quiet = await frontend_trigger.cycle(replace(inputs, update=Update(), debug_mode=1))
+    assert quiet.before.actions == quiet.after.actions == (ACTION_NONE,) * LANES
+    active = await frontend_trigger.cycle(replace(inputs, update=Update()))
+    assert active.before.actions[3] == active.after.actions[3] == ACTION_DEBUG
+
+
+@pytest.mark.feature('IFU-TR-002')
+@pytest.mark.feature('IFU-TR-006')
+async def test_lane_pcs_need_not_form_a_dense_consecutive_sequence(frontend_trigger):
+    # Mixed-width instruction coordinates plus repeated unused lane PCs, all
+    # within a single64-byte fetch span crossing the128-byte comparison split.
+    pcs = tuple(0x1FF0 + 2 * min(lane + lane // 3, 31) for lane in range(LANES))
+    for relation in (EQ, GE, LT):
+        configured = Inputs(Update(1, 0, Trigger(relation, action=ACTION_DEBUG, tdata2=0x2000)),
+                            ENABLE0, pcs=pcs)
+        await frontend_trigger.cycle(configured)
+        observed = await frontend_trigger.cycle(replace(configured, update=Update()))
+        expected = tuple(ACTION_DEBUG if {EQ: pc == 0x2000, GE: pc >= 0x2000, LT: pc < 0x2000}[relation]
+                         else ACTION_NONE for pc in pcs)
+        assert observed.before.actions == observed.after.actions == expected
+
+
+@pytest.mark.feature('IFU-TR-004')
+async def test_last_slot_chain_bit_is_csr_reachable_but_has_no_successor(frontend_trigger):
+    # Debug.scala/TriggerUtil checks adjacent1 bits. It does not force chain[3]
+    # to0, so the producer domain must not reject this legal uncompleted link.
+    inputs = Inputs(Update(1, 3, Trigger(action=ACTION_DEBUG, chain=1, tdata2=0x4008)),
+                    (0, 0, 0, 1), pcs=consecutive_pcs(0x4000))
+    updated = await frontend_trigger.cycle(inputs)
+    held = await frontend_trigger.cycle(replace(inputs, update=Update()))
+    assert updated.after.actions == held.before.actions == held.after.actions == (ACTION_NONE,) * LANES

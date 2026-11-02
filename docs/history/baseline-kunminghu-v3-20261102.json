@@ -1,0 +1,86 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "kind": "public-default-baseline-update-not-build-or-hardware-acceptance",
+  "request": "Move the XiangShan baseline commit to the latest kunminghu-v3 branch head.",
+  "upstream": {
+    "repository": "https://github.com/OpenXiangShan/XiangShan.git",
+    "branch": "kunminghu-v3",
+    "ref": "refs/heads/kunminghu-v3",
+    "commit": "a0c2a26cbe3c862175174bad03a1a23c406315ed",
+    "tree": "17b917033742940620277c35b87f6b19afcac961",
+    "commit_date": "2026-10-30T17:46:44+08:00",
+    "subject": "misc(gsim): bump difftest & enable CI lightSSS (#6802)",
+    "lookup": "git ls-remote --heads https://github.com/OpenXiangShan/XiangShan.git refs/heads/kunminghu-v3",
+    "same_head_rechecked_after_update": true,
+    "floating_branch_reference_stored_as_baseline_commit": false
+  },
+  "selection": {
+    "root_config": "ucv.json",
+    "previous_baseline": "public-893e1580b",
+    "previous_commit": "893e1580b705d81f113c30c7a05734e09a08050e",
+    "new_baseline": "public-a0c2a26cb",
+    "new_manifest": "baselines/public-a0c2a26cb.json",
+    "manifest_sha256": "f7108f9598952f8dd4181cafed315bc081f8f3fbea57fc7e67af77e5bca67f91",
+    "public_suites": ["bpu", "ftq", "icache", "ifu", "lsq", "dcache", "mmu", "sbuffer", "lsu"],
+    "public_duts": 120,
+    "all_public_suites_inherit_from_root": true,
+    "vagq_override": "internal-d4566d58a",
+    "old_public_and_internal_manifests_byte_identical_to_previous_git_head": true
+  },
+  "recursive_lock": {
+    "entries": 76,
+    "parent_gitmodules_checked": 36,
+    "unique_child_repo_commit_objects_checked": 20,
+    "method": "Read each fixed parent commit's .gitmodules and all mode160000 gitlinks from its Git tree; require exact configured-path/gitlink set equality, then recursively inspect the pinned child object. Use isolated temporary bare repositories where the old read-only checkout did not already contain that object. No recursive checkout, existing source HEAD or active runtime link was changed.",
+    "all_declared_paths_urls_and_gitlink_commits_verified": true,
+    "canonical_json_lock_sha256": "abcd9e2ea52ed392c4cd4e3821a060c774df3d8793c2a485698a03b582b3c5b8",
+    "changes": [
+      {"path": "difftest", "before": "99f77ff455766d18cd05927b144641bd9744b19a", "after": "ecdf41e225a93699b9a1141ec4d0fc1ff485b890"},
+      {"path": "XSCache", "before": "300515bc7b2f65ca988041a984204489d80ec2fb", "after": "e9488aed486358e3e5984b531aab601f9b91a9c0"}
+    ],
+    "other_recursive_paths_and_commits_unchanged": true
+  },
+  "generation": {
+    "design_and_patch_list_and_firtool_options_unchanged": true,
+    "config": "DefaultConfig",
+    "top": "top.TopMain",
+    "num_cores": 1,
+    "tools": {"mill": "0.12.17", "chisel": "7.13.0", "firtool": "1.149.0", "java": "17"},
+    "source_tool_inputs_checked": {
+      ".mill-version": "e392c3dc01d4b408a047f0edc96a0ef6d59b2452",
+      "build.mill": "2605a6714dd3d162994d9ee25239d2a3fdaee74f",
+      "Makefile": "50ee86a02516646ec52c90efb6e0d287e8f2629c"
+    },
+    "tool_input_identifiers_are_git_blob_ids": true,
+    "new_source_cache_key": "f3ac6022d07c5c05d28869ac811f91038f9103677796dd6f051bd1981408be9b",
+    "old_source_cache_key": "972e31a9985fdbe9941d34f9e73472c229b4b899bcc3630dc531fffdc010a1ca",
+    "new_generation_cache_key": "d7c6bc4d17651fc1bd92ac39c469410a6bb91215f46c1efcfaf1ec66a72e972d",
+    "old_generation_cache_key": "a8161656790174e4b362f0db7ae9314d1f955e3b5b7f312b076c2dbd2b84558f",
+    "all_120_public_native_cache_keys_separate_from_old_baseline": true
+  },
+  "runtime_default_followup": {
+    "problem": "source_path() and soc_rtl() had public-893e1580b as a hardcoded default; moving ucv.json alone would leave no-argument calls on old source/RTL paths.",
+    "fix": "Omitted/None baseline resolves Project.config.baseline at call time. Explicit historical baseline names and per-suite source_path_for/soc_rtl_for retain their meaning; resolving paths creates no cache or build.",
+    "tests": "tests/test_baselines.py::test_runtime_path_defaults_follow_current_root_baseline[source_path|soc_rtl]",
+    "red": "results/ucv-baseline-kunminghu-v3-runtime-red-20261102.xml:2FAIL/18deselected; body attempted the hardcoded old name instead of the fixture root default",
+    "root_regression": {
+      "output": "results/ucv-baseline-kunminghu-v3-root-20261102.xml",
+      "counts": {"PASS": 268},
+      "sha256": "e28f6ef9bad69a090121c4caf6bf169988069abdad26a4e553efe3c78106b132"
+    }
+  },
+  "audit": "results/ucv-baseline-kunminghu-v3-audit-20261102.json",
+  "acceptance_boundary": {
+    "configuration_and_git_object_verification": "PASS",
+    "ucv_list_public_require_unified_baseline": "PASS:9public suites/120DUT, allpublic-a0c2a26cb",
+    "new_managed_source_checkout_prepared": false,
+    "rtl_generated": false,
+    "native_rebuilt": false,
+    "smoke_or_functional_regression_executed": false,
+    "historical_results_relabelled": false,
+    "old_build_receipts_or_active_runtime_links_modified": false,
+    "paused_transaction_goal_resumed": false,
+    "note": "Existing native packages still belong to the previous baseline. Normal ucv run preflight rejects a package whose cache identity/build baseline differs from the selected baseline; prepare/build the new baseline before functional execution. Earlier collaboration-checkpoint PASS/FAIL/collection and source-match evidence remain historical, not validation of this new default."
+  }
+}

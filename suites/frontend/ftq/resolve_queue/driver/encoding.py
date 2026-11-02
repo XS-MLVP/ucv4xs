@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from typing import Mapping
-
 from suites.frontend.ftq.resolve_queue.transaction.types import ResolveReport
 
 
-def encode(report: ResolveReport) -> dict[str, int | bool]:
+def encode(report: ResolveReport) -> dict[str, int]:
+    if type(report) is not ResolveReport:
+        raise ValueError('ResolveQueue requires a validated ResolveReport')
     return {
         "valid": 1,
         "index_flag": report.flag,

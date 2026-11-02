@@ -12,9 +12,11 @@ def decode_training(dut: Dut, train: Pins) -> Training | None:
     if not train.b("valid"):
         return None
     branches = []
+    valid_mask = 0
     for slot in range(8):
         if not train.b(f"slot{slot}.valid"):
             continue
+        valid_mask |= 1 << slot
         branches.append(Branch(
             position=train.u(f"slot{slot}.bits_cfiPosition"),
             target=train.u(f"slot{slot}.bits_target_addr"),
@@ -28,6 +30,7 @@ def decode_training(dut: Dut, train: Pins) -> Training | None:
         flag=train.u("index_flag"),
         start_pc=train.u("start_pc"),
         branches=tuple(branches),
+        valid_mask=valid_mask,
     )
 
 

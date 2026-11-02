@@ -17,6 +17,7 @@ from cache-structure invariants, not the RTL body:
 from __future__ import annotations
 
 from dataclasses import dataclass
+from suites.frontend.icache.metabank.transaction.types import unsigned
 
 
 @dataclass(frozen=True, slots=True)
@@ -25,11 +26,20 @@ class MetaEntry:
     maybe_rvc_map: int
     code: int
 
+    def __post_init__(self):
+        for name, width in (('phy_tag', 36), ('maybe_rvc_map', 32), ('code', 1)):
+            unsigned(getattr(self, name), width, name)
+
 
 @dataclass(frozen=True, slots=True)
 class MetaWay:
     valid: int
     entry: MetaEntry
+
+    def __post_init__(self):
+        unsigned(self.valid, 1, 'valid')
+        if type(self.entry) is not MetaEntry:
+            raise ValueError('ICacheMetaBank way requires an immutable metadata entry')
 
 
 @dataclass

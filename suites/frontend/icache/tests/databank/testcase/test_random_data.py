@@ -25,7 +25,7 @@ async def test_random_entries_are_stored_verbatim(databank_agent):
     # missing masks would then never be exercised.
     masks = list(range(1, 0b1111 + 1))
     for index in range(32):
-        set_index = rng.randrange(agent.model.sets)
+        set_index = rng.randrange(agent.geometry.sets)
         waymask = masks[index % len(masks)]
         data = rng.getrandbits(64)
         code = rng.getrandbits(1)
@@ -45,11 +45,10 @@ async def test_random_words_through_the_bist_port(databank_agent):
     """
     agent = databank_agent
     rng = random.Random(0xB157_DA7A)
-    await agent.wait_for(lambda: agent.write_ready() == 1,
-                         what="the macro reset sweep")
+    await agent.wait_ready()
     for way in range(4):
         for _ in range(4):
-            set_index = rng.randrange(agent.model.sets)
+            set_index = rng.randrange(agent.geometry.sets)
             word = rng.getrandbits(66)
             ack, _ = await agent.bist_command(
                 array=4 + way, readen=0, writeen=1, be=1,

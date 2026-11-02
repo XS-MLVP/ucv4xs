@@ -1,7 +1,7 @@
 """Small shared runtime helpers for running a DUT under toffee's main framework."""
 from __future__ import annotations
 
-from contextlib import asynccontextmanager
+from contextlib import AsyncExitStack, asynccontextmanager
 
 from toffee import Execution, XCommClockBackend
 
@@ -18,8 +18,12 @@ async def execution(target, *, max_batch_ticks: int = 64):
     dut = getattr(target, 'dut', target) if not hasattr(target, 'GetXClock') else target
     backend = XCommClockBackend(dut.GetXClock())
     try:
-        async with Execution(backend, max_batch_ticks=max_batch_ticks):
-            yield backend
+        async with Execution(backend, max_batch_ticks=max_batch_ticks) as running:
+            async with AsyncExitStack() as stack:
+                managed = getattr(target, 'managed', None)
+                if managed is not None:
+                    await stack.enter_async_context(managed(running))
+                yield backend
     finally:
         backend.close()
 

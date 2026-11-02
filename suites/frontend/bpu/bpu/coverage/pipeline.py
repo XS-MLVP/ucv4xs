@@ -36,7 +36,7 @@ class PipelineCoverage:
             if phase == 'stall':
                 if public['valid'] and not events.prediction_ready:
                     immediate.append('held-request')
-                if metadata['valid'] and not events.metadata_ready:
+                if metadata['valid'] and not events.prediction_ready:
                     immediate.append('metadata-valid-only')
             if phase == 'redirect' and events.redirect is not None and not events.prediction_ready and public['valid']:
                 deferred.append('redirect-replaces-held')

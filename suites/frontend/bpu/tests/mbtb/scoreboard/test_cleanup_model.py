@@ -8,7 +8,21 @@ from suites.frontend.bpu.mbtb.agent.main import MbtbAgent
 from suites.frontend.bpu.mbtb.transaction.types import MbtbEntry
 from suites.frontend.bpu.mbtb.model.cleanup import expected_mbtb_cleanup_states
 from suites.frontend.bpu.mbtb.model.cleanup import expected_mbtb_cleanup_dual
+from suites.frontend.bpu.mbtb.model.cleanup import cleanup_way_plan
+from suites.frontend.bpu.mbtb.model.cleanup import observed_mbtb_cleanup_dual
+from suites.frontend.bpu.models.configuration import MAIN_WAYS, MAIN_RETAINED
+from suites.frontend.bpu.mbtb.monitor.entry import ENTRY_FIELDS
 from suites.frontend.bpu.mbtb.case.definitions import BranchVector
+from suites.frontend.bpu.mbtb.checker.lookup_inputs import LookupInputs
+
+
+def stub_planned_training(agent):
+    """Phase-only selftests replace the validated input service, not live IO."""
+    async def issue(transactions,*,encoded=None):
+        await agent.training_driver.send(encoded[0] if encoded is not None else agent._encode_training(transactions[0]))
+        return ()
+    agent._issue_training=issue
+    agent._mark_training_drained=lambda inputs:None
 
 
 def profiles(align):
@@ -36,13 +50,14 @@ def profiles(align):
 def test_cleanup_preserves_counters_and_neighbor_profiles_without_mutation(align, way):
     duplicate, neighbor = profiles(align)
     before = deepcopy((duplicate, neighbor))
-    cleaned, updated = expected_mbtb_cleanup_states(duplicate, neighbor, 0x40000820, align, way, 0x40005560)
+    cleaned, updated = expected_mbtb_cleanup_states(duplicate, neighbor, 0x40000820, align, 0, 1, way, 0x40005560)
     assert (duplicate, neighbor) == before
     assert cleaned['entries'][align * 5] == duplicate['entries'][align * 5]
     cleared = cleaned['entries'][align * 5 + 1]
     assert (cleared.valid, cleared.taken, cleared.target, cleared.position, cleared.branch_type, cleared.ras_action) == (
         0, 1, 0x40000000, align * 16, 0, 0)
     assert [item['counter_value'] for item in cleaned['meta_entries'][align]] == [2, 2, 0, 0, 0]
+    assert cleaned['meta_entries'][align][1]['attribute'] == dict(branchType=0, rasAction=0)
     assert updated['entries'][align * 5 + way].target == 0x40005560
     assert updated['entries'][align * 5 + 1 - way] == neighbor['entries'][align * 5 + 1 - way]
     assert updated['meta_entries'] == neighbor['meta_entries']
@@ -61,7 +76,7 @@ def test_cleanup_reference_rejects_unsupported_preconditions(kind):
     else:
         neighbor['meta_entries'][0][0]['counter_value'] = 1
     with pytest.raises(ValueError):
-        expected_mbtb_cleanup_states(duplicate, neighbor, 0x40000820, 0, 0, 0x40005560)
+        expected_mbtb_cleanup_states(duplicate, neighbor, 0x40000820, 0, 0, 1, 0, 0x40005560)
 
 
 @pytest.mark.parametrize('depth', (0, 1))
@@ -72,13 +87,19 @@ def test_native_reference_distinguishes_both_depths_and_clear_dirtiness(depth, s
     extra = replace(first, pc=0x40000860, target=0x40003560, position=6)
     updated = replace(extra, target=0x40003D60)
     wanted = expected_mbtb_cleanup_dual(first, changed, extra, updated, depth, shadow_state)
-    assert wanted['before'][1][0]['dirty'] == int(shadow_state == 'dirty')
-    assert wanted['ports'][1]['read_valid'] == int(shadow_state == 'dirty')
-    assert wanted['ports'][1]['write_tag'] == wanted['ports'][1]['write_position'] == 0
-    assert wanted['ports'][0]['write_lower'] == 0x3D60
-    assert wanted['after'][0][depth]['lower'] == 0x3D60
-    assert wanted['after'][0][depth]['dirty'] == 1
-    assert wanted['after'][1] == wanted['before'][1]
+    plan = cleanup_way_plan()
+    update, clear = plan['extra'], plan['clear']
+    assert (update, clear) == (2, 3)
+    assert len(wanted['ports']) == len(wanted['before']) == len(wanted['after']) == MAIN_WAYS
+    assert all(len(row) == MAIN_RETAINED for row in wanted['before'])
+    assert wanted['before'][clear][0]['dirty'] == int(shadow_state == 'dirty')
+    assert wanted['ports'][clear]['read_valid'] == int(shadow_state == 'dirty')
+    assert wanted['ports'][clear]['write_tag'] == wanted['ports'][clear]['write_position'] == 0
+    assert wanted['ports'][update]['write_lower'] == 0x3D60
+    assert wanted['after'][update][depth]['lower'] == 0x3D60
+    assert wanted['after'][update][depth]['dirty'] == 1
+    assert wanted['after'][clear] == wanted['before'][clear]
+    assert not any(port['write_valid'] for port in wanted['ports'][:2])
 
 
 @pytest.mark.parametrize('shadow_state', ('dirty', 'clean'))
@@ -86,6 +107,7 @@ async def test_agent_owns_cleanup_phase_sequence(monkeypatch, shadow_state):
     log = []
     agent = object.__new__(MbtbAgent)
     agent._started = True
+    agent._finished = False
     agent._multi_hit_cleanup_scope_active = agent._defer_multi_hit_cleanup = True
     agent.dut = SimpleNamespace(clock='clock')
     agent.lookup_driver = SimpleNamespace(quiesce=lambda: None)
@@ -98,6 +120,7 @@ async def test_agent_owns_cleanup_phase_sequence(monkeypatch, shadow_state):
         assert clock == 'clock'
         log.append(('cycles', count))
     agent.training_driver = SimpleNamespace(send=send)
+    stub_planned_training(agent)
     async def idle(*groups):
         assert groups == ('pipeline', 'writes')
         log.append(('idle', agent._defer_multi_hit_cleanup))
@@ -114,6 +137,7 @@ async def test_agent_owns_cleanup_phase_sequence(monkeypatch, shadow_state):
 async def test_agent_rejects_invalid_cleanup_before_driving(condition):
     agent = object.__new__(MbtbAgent)
     agent._started = True
+    agent._finished = False
     agent._multi_hit_cleanup_scope_active = condition != 'inactive'
     agent._defer_multi_hit_cleanup = condition != 'resumed'
     def encode(_tx):
@@ -126,7 +150,9 @@ async def test_agent_rejects_invalid_cleanup_before_driving(condition):
 
 async def test_cleanup_scope_cannot_be_nested_after_resume(monkeypatch):
     agent = object.__new__(MbtbAgent)
+    agent.lookup_inputs=LookupInputs()
     agent._started = True
+    agent._finished = False
     agent._multi_hit_cleanup_scope_active = agent._defer_multi_hit_cleanup = False
     agent.dut = SimpleNamespace(clock='clock')
     agent.lookup_driver = SimpleNamespace(quiesce=lambda: None)
@@ -148,6 +174,7 @@ async def test_cleanup_scope_cannot_be_nested_after_resume(monkeypatch):
 async def test_failed_clean_pulse_restores_deferred_gate(monkeypatch):
     agent = object.__new__(MbtbAgent)
     agent._started = True
+    agent._finished = False
     agent._multi_hit_cleanup_scope_active = agent._defer_multi_hit_cleanup = True
     agent.dut = SimpleNamespace(clock='clock')
     agent.lookup_driver = SimpleNamespace(quiesce=lambda: None)
@@ -159,3 +186,26 @@ async def test_failed_clean_pulse_restores_deferred_gate(monkeypatch):
     with pytest.raises(RuntimeError, match='interrupted pulse'):
         await agent.train_during_multi_hit_cleanup('feedback', shadow_state='clean')
     assert agent._multi_hit_cleanup_scope_active and agent._defer_multi_hit_cleanup
+
+
+def test_reset_lru_plan_is_four_way_and_independent_of_observed_metadata():
+    assert cleanup_way_plan() == dict(original=3, displacer=3, changed=2, extra=2, keep=2, clear=3)
+
+
+@pytest.mark.parametrize('active', ((0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3), (0, 2, 3)))
+@pytest.mark.parametrize('foreign', (False, True))
+def test_partial_way_collision_preserves_every_active_port_and_foreign_write(active, foreign):
+    def port(enabled):
+        fields = {direction + '_' + name: 0 for name, _ in ENTRY_FIELDS for direction in ('write', 'read')}
+        return fields | dict(write_valid=int(enabled), read_valid=0, read_ready=1)
+    banks = tuple(tuple(tuple(port(way in active if (align, bank) == (0, 0)
+        else foreign and (align, bank, way) == (1, 2, 3)) for way in range(MAIN_WAYS))
+        for bank in range(4)) for align in range(2))
+    frame = SimpleNamespace(event=SimpleNamespace(tick=10), value={'banks': banks})
+    found = observed_mbtb_cleanup_dual((frame,), (), 0, 0)
+    assert len(found) == 1
+    value = found[0]['value']
+    assert len(value['ports']) == MAIN_WAYS
+    assert [index for index, payload in enumerate(value['ports']) if payload['write_valid']] == list(active)
+    assert value['foreign_writes'] == ([(1, 2, 3)] if foreign else [])
+    assert all(('write_tag' in payload) == bool(payload['write_valid']) for payload in value['ports'])

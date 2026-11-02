@@ -1,0 +1,837 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "checkpoint": {
+    "commit": "001735033979f52712808b25280efc262a48654f",
+    "remote": "origin",
+    "branch": "main",
+    "push_verified": true
+  },
+  "scope": "bounded DCache transport / PTW completion / collection / audit repairs, not completed all-suite transaction migration",
+  "runs": [
+    {
+      "output": "results/ucv-semantic-before-20261101",
+      "status": "FAIL",
+      "counts": {
+        "PASS": 408
+      },
+      "hardware_verdict": "INCOMPLETE",
+      "gaps": [
+        "Uncommitted/incomplete coverage: dcache/suite"
+      ],
+      "source_stable": true,
+      "source_sha256": "f28b20d63f0535b162323bc9668d6411cd94a9647d662fab155dc9e7ee065893",
+      "seed": 1,
+      "workers": 4,
+      "selection": [],
+      "run_sha256": "46c71c6568ec0d78e9a55e2d77f284e488b89366503f9f0c0e512ae2a1b24172",
+      "summary_sha256": "6d34f70418b456b16399d85672c66162de459f0b2edda13cbf49faa4aae1f239",
+      "tasks": [
+        {
+          "suite": "dcache",
+          "scope": "suite",
+          "exit_code": 5,
+          "status": "FAIL",
+          "manifest": {
+            "path": "results/ucv-semantic-before-20261101/dcache/manifest.json",
+            "state": "incomplete",
+            "coverage_complete": null,
+            "sha256": "5e485b82af0d922bff223b5fdee61cd8c942e2affc2de2fc3d425d51301085e4"
+          }
+        },
+        {
+          "suite": "mmu",
+          "scope": "suite",
+          "exit_code": 0,
+          "status": "PASS",
+          "manifest": {
+            "path": "results/ucv-semantic-before-20261101/mmu/manifest.json",
+            "state": "committed",
+            "coverage_complete": true,
+            "sha256": "b53035cbf6565a668ea90d627ae0c48afa4388111782a2f622ad52275b784a8b"
+          }
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-dcache-collection-fixed-20261101",
+      "status": "PASS",
+      "counts": {
+        "PASS": 210,
+        "XFAIL": 3
+      },
+      "hardware_verdict": "PASS",
+      "gaps": [],
+      "source_stable": true,
+      "source_sha256": "3604f89ff1d8f99539ee193926fa022606a3e2eab08338a08f090363ebaefb40",
+      "seed": 1,
+      "workers": 2,
+      "selection": [],
+      "run_sha256": "e22a008b6251491fcf07d86f942d06045a44dca7dc4dd9d5f5d11b9294cb2018",
+      "summary_sha256": "9aa7457b098c4e293ba3b0a81e14695773208b279bc27762261488f1b02bc02f",
+      "tasks": [
+        {
+          "suite": "dcache",
+          "scope": "suite",
+          "exit_code": 0,
+          "status": "PASS",
+          "manifest": {
+            "path": "results/ucv-dcache-collection-fixed-20261101/dcache/manifest.json",
+            "state": "committed",
+            "coverage_complete": true,
+            "sha256": "5a2ceba70af5afdc779bc76a6b0455c539cab8d4781cc67f22bce169a550d36a"
+          }
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-ptw-identity-probe-20261101",
+      "status": "FAIL",
+      "counts": {
+        "PASS": 30,
+        "FAIL": 5
+      },
+      "hardware_verdict": "FAIL",
+      "gaps": [],
+      "source_stable": true,
+      "source_sha256": "88bad3d9a392e3d850b4aee40a94b1f26a06596ade4e61eef9be72d8cbdb357a",
+      "seed": 1,
+      "workers": 1,
+      "selection": [
+        "tests/l2/test_ptw.py",
+        "tests/l2/test_ptw_identity.py",
+        "tests/checkers/test_ptw_completion.py"
+      ],
+      "run_sha256": "94a773f899c4144cc031e43b66fac149d088da637a8fc82d7d1b633f07b6bd72",
+      "summary_sha256": "3207ddb36fa10c63532f8d087b222549ac34445e67e34346d43dc1407dafd98c",
+      "tasks": [
+        {
+          "suite": "mmu",
+          "scope": "suite",
+          "exit_code": 1,
+          "status": "FAIL",
+          "manifest": {
+            "path": "results/ucv-ptw-identity-probe-20261101/mmu/manifest.json",
+            "state": "committed",
+            "coverage_complete": true,
+            "sha256": "445f53c9073e578e13f47aaf2d1640cafba095f76d99059b58e47fe28c362265"
+          }
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-mmu-semantic-fixed-20261101",
+      "status": "FAIL",
+      "counts": {
+        "PASS": 415,
+        "FAIL": 1
+      },
+      "hardware_verdict": "FAIL",
+      "gaps": [],
+      "source_stable": true,
+      "source_sha256": "0d3685b7b0da2e1d1032ae20d98d317d25a08ebc3bfc1172e3dc3aaa969ff7fe",
+      "seed": 1,
+      "workers": 2,
+      "selection": [],
+      "run_sha256": "34c440092d5746fb592ead2e69a5d0982fc3ed5aeabe2bb9cba28ea546511418",
+      "summary_sha256": "0fd717361753c9ea8faf810259af242377567fbf1eb246d9be8791da5efc7123",
+      "tasks": [
+        {
+          "suite": "mmu",
+          "scope": "suite",
+          "exit_code": 1,
+          "status": "FAIL",
+          "manifest": {
+            "path": "results/ucv-mmu-semantic-fixed-20261101/mmu/manifest.json",
+            "state": "committed",
+            "coverage_complete": true,
+            "sha256": "7c3a1202a4dd85778e553313a126b7f194b214cb45bea5225810bd3a95e70d44"
+          }
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-mmu-semantic-final-20261101",
+      "status": "PASS",
+      "counts": {
+        "PASS": 417
+      },
+      "hardware_verdict": "PASS",
+      "gaps": [],
+      "source_stable": true,
+      "source_sha256": "afdf25502f469941548ea690c700055fe45d730dc97a9a10aa0c255ef4503821",
+      "seed": 1,
+      "workers": 2,
+      "selection": [],
+      "run_sha256": "75039110e4f262c2fa279c99468f908e8b7462cb659d126e021cc889d5f3bd92",
+      "summary_sha256": "d30fad148c97371ec1054cd5fa225d201b27b4babe4ab33e18879d993a00ad62",
+      "tasks": [
+        {
+          "suite": "mmu",
+          "scope": "suite",
+          "exit_code": 0,
+          "status": "PASS",
+          "manifest": {
+            "path": "results/ucv-mmu-semantic-final-20261101/mmu/manifest.json",
+            "state": "committed",
+            "coverage_complete": true,
+            "sha256": "96995b34ba54ed22469173e47c7039f25858b0dd426b2499ae8350bde512d039"
+          }
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-dcache-protocol-probe-20261101",
+      "status": "PASS",
+      "counts": {
+        "PASS": 19
+      },
+      "hardware_verdict": "PASS",
+      "gaps": [],
+      "source_stable": true,
+      "source_sha256": "4b3980283ddd65522c43d414e29bf82dbdcef1a4961d361e9898b8cde57ad724",
+      "seed": 1,
+      "workers": 1,
+      "selection": [
+        "tests/checkers",
+        "tests/dcache/test_l2_protocol.py",
+        "tests/dcache/test_dcache.py::test_dirty_eviction_releases_line",
+        "tests/dcache/test_dcache.py::test_clean_eviction_releases_without_data",
+        "tests/dcache_wrapper/test_dcache_wrapper.py::test_store_and_eviction_through_wrapper",
+        "tests/dcache/test_dcache.py::test_refill_denied_reports_error"
+      ],
+      "run_sha256": "8ba45c5c66d3fe0bf468481d0aefcc5a2feef17f58c893b45fcfaa3ff8319200",
+      "summary_sha256": "f55977d38f5498b7fd1ca87e6dcbf39dbeca2404dfa668b0c26c023aae2a6415",
+      "tasks": [
+        {
+          "suite": "dcache",
+          "scope": "suite",
+          "exit_code": 0,
+          "status": "PASS",
+          "manifest": {
+            "path": "results/ucv-dcache-protocol-probe-20261101/dcache/manifest.json",
+            "state": "committed",
+            "coverage_complete": true,
+            "sha256": "9165f3c333deb9dfd80fc2ff29633e853c95f78e7c36928033263362fe28e172"
+          }
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-dcache-semantic-final-20261101",
+      "status": "FAIL",
+      "counts": {
+        "PASS": 224,
+        "XFAIL": 3,
+        "FAIL": 2
+      },
+      "hardware_verdict": "FAIL",
+      "gaps": [],
+      "source_stable": true,
+      "source_sha256": "c94996d7c9b498ac23b4b18fbb86441754ce0c8a0328141e8d3c5f1824a33ce3",
+      "seed": 1,
+      "workers": 2,
+      "selection": [],
+      "run_sha256": "3cf8bbad3e4e6e7fef4868899b71d5436da3be43ad74bad4d283b448726b16e8",
+      "summary_sha256": "f6328e3e8875e5f08acd72f779e1be68872a777d47b6123e3652b177f331307c",
+      "tasks": [
+        {
+          "suite": "dcache",
+          "scope": "suite",
+          "exit_code": 1,
+          "status": "FAIL",
+          "manifest": {
+            "path": "results/ucv-dcache-semantic-final-20261101/dcache/manifest.json",
+            "state": "committed",
+            "coverage_complete": true,
+            "sha256": "8cdfaa71e6bb22b05c02af70e7cbfc9bfb4d6be1fce03d6bbf531ce019658d3f"
+          }
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-dcache-random-l2-probe-20261101",
+      "status": "PASS",
+      "counts": {
+        "PASS": 17
+      },
+      "hardware_verdict": "PASS",
+      "gaps": [],
+      "source_stable": true,
+      "source_sha256": "7c68c1deb39478b1f0f52bb59818af2f58da1484c7e9054e2267f88d49c91d7a",
+      "seed": 1,
+      "workers": 1,
+      "selection": [
+        "tests/checkers",
+        "tests/dcache/test_dcache.py::test_constrained_random_load_store_traffic",
+        "tests/dcache_wrapper/test_wrapper_dcache_regression.py::test_constrained_random_load_store_traffic"
+      ],
+      "run_sha256": "44b2aa39a3d7fc92ccc774acabb61f4193134bfdd5196cd7d8d340f4b727204f",
+      "summary_sha256": "8daf7be4e0d095f9235d7f3f1732d077198093cb14a27a18b818d733be817285",
+      "tasks": [
+        {
+          "suite": "dcache",
+          "scope": "suite",
+          "exit_code": 0,
+          "status": "PASS",
+          "manifest": {
+            "path": "results/ucv-dcache-random-l2-probe-20261101/dcache/manifest.json",
+            "state": "committed",
+            "coverage_complete": true,
+            "sha256": "7922752bd173d722c1d4e7bf31d5bcf4057961600f835287404f9cb28dbc51ba"
+          }
+        }
+      ]
+    },
+    {
+      "output": "results/ucv-dcache-semantic-verified-20261101",
+      "status": "PASS",
+      "counts": {
+        "PASS": 229,
+        "XFAIL": 3
+      },
+      "hardware_verdict": "PASS",
+      "gaps": [],
+      "source_stable": true,
+      "source_sha256": "7c68c1deb39478b1f0f52bb59818af2f58da1484c7e9054e2267f88d49c91d7a",
+      "seed": 1,
+      "workers": 2,
+      "selection": [],
+      "run_sha256": "eec5f77b307b6e79e1b2904b67d8ab26a19f82a1a80c52318a015e0742eccafc",
+      "summary_sha256": "34f6ad4185190e789c36f0f9b3fc5e8d80fbcd6f25f07c36cbf117166798f279",
+      "tasks": [
+        {
+          "suite": "dcache",
+          "scope": "suite",
+          "exit_code": 0,
+          "status": "PASS",
+          "manifest": {
+            "path": "results/ucv-dcache-semantic-verified-20261101/dcache/manifest.json",
+            "state": "committed",
+            "coverage_complete": true,
+            "sha256": "9d8a5404c377f7162376d57971d89f39d9a2c4269332dc163e27b1fbf04e7d02"
+          }
+        }
+      ]
+    }
+  ],
+  "deltas": {
+    "dcache": {
+      "original_count": 213,
+      "final_count": 232,
+      "counts": {
+        "PASS": 229,
+        "XFAIL": 3
+      },
+      "removed": [],
+      "changed": {},
+      "added": {
+        "dcache::tests/checkers/test_l2_responder.py::test_bad_line_payload_is_rejected_before_acceptance[beats2]": "PASS",
+        "dcache::tests/checkers/test_l2_responder.py::test_c_assembler_keeps_equal_data_beats_and_second_beat_errors_visible": "PASS",
+        "dcache::tests/checkers/test_l2_responder.py::test_c_assembler_rejects_header_change_mid_message": "PASS",
+        "dcache::tests/checkers/test_l2_responder.py::test_wrong_native_beat_width_is_not_silently_truncated": "PASS",
+        "dcache::tests/checkers/test_l2_responder.py::test_random_l2_ack_uses_completed_c_source_not_a_constant": "PASS",
+        "dcache::tests/checkers/test_l2_responder.py::test_random_l2_ack_timeout_does_not_erase_an_obligation": "PASS",
+        "dcache::tests/checkers/test_l2_responder.py::test_refill_provider_does_not_leak_expected_store_bytes_to_the_dut": "PASS",
+        "dcache::tests/checkers/test_l2_responder.py::test_post_edge_ready_fall_does_not_reject_an_accepted_beat": "PASS",
+        "dcache::tests/checkers/test_l2_responder.py::test_post_edge_ready_rise_does_not_fake_acceptance": "PASS",
+        "dcache::tests/checkers/test_l2_responder.py::test_other_channel_is_not_accepted_without_a_recorded_response": "PASS",
+        "dcache::tests/checkers/test_l2_responder.py::test_timeout_is_not_a_zero_beat_success_and_restores_inputs": "PASS",
+        "dcache::tests/checkers/test_l2_responder.py::test_denied_grantdata_sets_corrupt_on_every_beat": "PASS",
+        "dcache::tests/checkers/test_l2_responder.py::test_full_overwrite_can_receive_one_no_data_grant": "PASS",
+        "dcache::tests/checkers/test_l2_responder.py::test_bad_line_payload_is_rejected_before_acceptance[beats0]": "PASS",
+        "dcache::tests/checkers/test_l2_responder.py::test_bad_line_payload_is_rejected_before_acceptance[beats1]": "PASS",
+        "dcache::tests/dcache/test_l2_protocol.py::test_two_pending_channels_are_serviced_without_losing_an_acquire[dcache]": "PASS",
+        "dcache::tests/dcache/test_l2_protocol.py::test_two_pending_channels_are_serviced_without_losing_an_acquire[dcache_wrapper]": "PASS",
+        "dcache::tests/dcache/test_l2_protocol.py::test_full_line_store_accepts_a_single_no_data_grant[dcache]": "PASS",
+        "dcache::tests/dcache/test_l2_protocol.py::test_full_line_store_accepts_a_single_no_data_grant[dcache_wrapper]": "PASS"
+      },
+      "build_receipts_unchanged": true
+    },
+    "mmu": {
+      "original_count": 408,
+      "final_count": 417,
+      "counts": {
+        "PASS": 417
+      },
+      "removed": [],
+      "changed": {},
+      "added": {
+        "mmu::tests/checkers/test_ptw_completion.py::test_old_handoff_cannot_complete_a_new_walk": "PASS",
+        "mmu::tests/checkers/test_ptw_completion.py::test_wait_without_accepted_request_is_not_a_successful_handoff": "PASS",
+        "mmu::tests/checkers/test_ptw_completion.py::test_matching_current_handoff_is_completed_once": "PASS",
+        "mmu::tests/checkers/test_ptw_completion.py::test_current_handoff_with_wrong_identity_is_rejected": "PASS",
+        "mmu::tests/checkers/test_ptw_completion.py::test_duplicate_current_handoff_is_not_deduplicated": "PASS",
+        "mmu::tests/checkers/test_ptw_completion.py::test_wrong_response_source_cannot_complete_the_request": "PASS",
+        "mmu::tests/checkers/test_ptw_completion.py::test_scalar_x_encoding_is_rejected_before_driving_any_field": "PASS",
+        "mmu::tests/checkers/test_ptw_completion.py::test_cancelled_request_cannot_later_complete_from_history": "PASS",
+        "mmu::tests/l2/test_ptw_identity.py::test_handoff_then_response_reuses_vpn_but_not_request_identity": "PASS"
+      },
+      "build_receipts_unchanged": true
+    }
+  },
+  "controls": {
+    "transport": {
+      "baseline_commit": "001735033979f52712808b25280efc262a48654f",
+      "frozen_file_sha256": {
+        "dcache/env.py": "ca21d59d191b8b8afd7a01e00806814568c0b8ae0eb984ddbf5ecdb23d89c4b2",
+        "mmu/ptw_walker.py": "05c9a6b1d2ec6a08ff9ac6d16d4e934088bbf9ccb0a43c112ed53ec6652f8726"
+      },
+      "injection_layer": "synthetic transport/response observation; not RTL mutation or ISA oracle proof",
+      "controls": {
+        "fall": {
+          "old": {
+            "error": "AssertionError: refill: D not ready for beat 0",
+            "a_channels_accepted": [
+              0
+            ],
+            "d_data_accepted": [
+              273
+            ],
+            "d_denied_corrupt": [
+              [
+                0,
+                0
+              ]
+            ]
+          },
+          "new": {
+            "error": null,
+            "a_channels_accepted": [
+              0
+            ],
+            "d_data_accepted": [
+              273,
+              546
+            ],
+            "d_denied_corrupt": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ]
+            ]
+          }
+        },
+        "rise": {
+          "old": {
+            "error": null,
+            "a_channels_accepted": [
+              0
+            ],
+            "d_data_accepted": [
+              546
+            ],
+            "d_denied_corrupt": [
+              [
+                0,
+                0
+              ]
+            ]
+          },
+          "new": {
+            "error": null,
+            "a_channels_accepted": [
+              0
+            ],
+            "d_data_accepted": [
+              273,
+              546
+            ],
+            "d_denied_corrupt": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ]
+            ]
+          }
+        },
+        "both": {
+          "old": {
+            "error": null,
+            "a_channels_accepted": [
+              0,
+              1
+            ],
+            "d_data_accepted": [
+              273,
+              546
+            ],
+            "d_denied_corrupt": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ]
+            ]
+          },
+          "new": {
+            "error": null,
+            "a_channels_accepted": [
+              0
+            ],
+            "d_data_accepted": [
+              273,
+              546
+            ],
+            "d_denied_corrupt": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ]
+            ]
+          }
+        },
+        "denied": {
+          "old": {
+            "error": null,
+            "a_channels_accepted": [
+              0
+            ],
+            "d_data_accepted": [
+              273,
+              546
+            ],
+            "d_denied_corrupt": [
+              [
+                1,
+                0
+              ],
+              [
+                1,
+                0
+              ]
+            ]
+          },
+          "new": {
+            "error": null,
+            "a_channels_accepted": [
+              0
+            ],
+            "d_data_accepted": [
+              273,
+              546
+            ],
+            "d_denied_corrupt": [
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                1
+              ]
+            ]
+          }
+        },
+        "old_handoff_history": {
+          "old": {
+            "returned": null,
+            "error": null
+          },
+          "new": {
+            "error": "TimeoutError: : no PTW response; mem=[] llptw=[{'vpn': 74565, 'source': 1, 's2xlate': 0}]"
+          }
+        },
+        "zero_accepted_request": {
+          "old": {
+            "returned": null,
+            "error": null
+          },
+          "new": {
+            "error": "RuntimeError: : no accepted PTW request awaiting completion"
+          }
+        }
+      }
+    },
+    "random_provider": {
+      "frozen_commit": "001735033979f52712808b25280efc262a48654f",
+      "old_file_sha256": "f6ab7c99baf75807e89820af38a3a7140c7846a9f528224ff81e7c91c4490127",
+      "old": {
+        "unsolicited_d_offers_at_idle": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "refill_data": [
+          [
+            730144440320,
+            0
+          ]
+        ],
+        "pending_store_preserved": true
+      },
+      "new": {
+        "unsolicited_d_offers_at_idle": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        "refill_data": [
+          [
+            0,
+            0
+          ]
+        ],
+        "pending_store_preserved": true
+      },
+      "injection_layer": "bench L2 provider, not RTL mutation"
+    }
+  },
+  "checks": [
+    {
+      "name": "root",
+      "exit": 0,
+      "sha256": "f12b4498caf1c18dab9e58a1d7557fd10aa17fafa06eb10f5a21b99ea129d94f",
+      "tail": [
+        "........................................................................ [ 70%]",
+        "..............................                                           [100%]",
+        "102 passed in 59.96s"
+      ]
+    },
+    {
+      "name": "layout",
+      "exit": 0,
+      "sha256": "0d6166567ae8767556379b07dd74d90306c9683c94a44bc8bb89febee8ab49e7",
+      "tail": [
+        "| lsu | 23 | 2 | 0 | 0 | 0 | 140 | 1 | yes | needs-adapter | ok |",
+        "| mmu | 23 | 52 | 0 | 0 | 0 | 29 | 382 | yes | needs-adapter | ok |",
+        "| sbuffer | 2 | 7 | 0 | 0 | 0 | 0 | 27 | yes | needs-adapter | ok |",
+        "| vagq | 54 | 14 | 0 | 0 | 0 | 179 | 9 | yes | needs-adapter | ok |"
+      ]
+    },
+    {
+      "name": "transaction",
+      "exit": 1,
+      "sha256": "0125b8e245b1a40c51b0bc650684daa47d28af95a2621eec668dadd31159485a",
+      "tail": [
+        "| lsu | 23 | 2 | 0 | 0 | 0 | 140 | 1 | yes | needs-adapter | 140 pin-level expressions require transaction adapters; 1 signal operations/native handles require transaction adapters |",
+        "| mmu | 23 | 52 | 0 | 0 | 0 | 29 | 382 | yes | needs-adapter | 29 pin-level expressions require transaction adapters; 382 signal operations/native handles require transaction adapters |",
+        "| sbuffer | 2 | 7 | 0 | 0 | 0 | 0 | 27 | yes | needs-adapter | 27 signal operations/native handles require transaction adapters |",
+        "| vagq | 54 | 14 | 0 | 0 | 0 | 179 | 9 | yes | needs-adapter | 179 pin-level expressions require transaction adapters; 9 signal operations/native handles require transaction adapters |"
+      ]
+    },
+    {
+      "name": "skills",
+      "exit": 0,
+      "sha256": "e2ca572f1c1ac985d863422272810240f7825dd1da13a6cf826c0e8d2d828fd4",
+      "tail": [
+        "    \"API presence is not behavioral certification.\",",
+        "    \"Link fragments and methodological correctness need review.\"",
+        "  ]",
+        "}"
+      ]
+    },
+    {
+      "name": "assets",
+      "exit": 0,
+      "sha256": "a30568d7c9ccdbd7480e3d4fe8d9db74496b0a16e32e38ec45aa63a1b17d6b7e",
+      "tail": [
+        "  \"duts\": 132,",
+        "  \"historical_evidence_entries\": 134685,",
+        "  \"errors\": []",
+        "}"
+      ]
+    },
+    {
+      "name": "diff",
+      "exit": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tail": []
+    }
+  ],
+  "collections": [
+    {
+      "suite": "bpu",
+      "exit": 0,
+      "collected": 41031,
+      "collection_sha256": "329e6581d7b6370db251d361767fe0a2138e3049ff66613aac99c528e6d7374b",
+      "log_sha256": "6a7d67838844e5bd0503ef0b1b4c928b56e6156d0de36638ffe8f4df0b7a1157"
+    },
+    {
+      "suite": "ftq",
+      "exit": 0,
+      "collected": 111,
+      "collection_sha256": "481154c0c025719f7a4fc355ad0717515a06b995f6f971bb9f21b9708b202318",
+      "log_sha256": "ddbf10e27a7eee7520e35c00409a61dc1b2f01bf9cc28c13e2cc17dcf433cacb"
+    },
+    {
+      "suite": "icache",
+      "exit": 0,
+      "collected": 294,
+      "collection_sha256": "d965430d5dc1a18d47e7dd642bc28496675f5396b09c3f31d13153d8970ccf9e",
+      "log_sha256": "ab85ccd5f669c22140b3dd3c01c94361e84d3498ff2e4d8c0fb664cfebc0ed23"
+    },
+    {
+      "suite": "ifu",
+      "exit": 0,
+      "collected": 147,
+      "collection_sha256": "6bdf4491d8074c9c56c55c948ec5836defb59507a6c9d9afb4f10ad3cc65ce05",
+      "log_sha256": "9bb40bde92446b9e3729690c8fd37f2c7e64e1325c9b3d488adc1474d531a48b"
+    },
+    {
+      "suite": "dcache",
+      "exit": 0,
+      "collected": 232,
+      "collection_sha256": "84bd28f1c5cd5aa43b00dcb82003d613b5caaf94c75e8d41f9681dc6b9ee64a1",
+      "log_sha256": "30340a82762ad5e8873e0f68f479a08e883dbae7c0e5cdcd5b9c0d080358824a"
+    },
+    {
+      "suite": "lsq",
+      "exit": 0,
+      "collected": 2575,
+      "collection_sha256": "3cbeb45c5191682bb2429d2b1b167d2d1a6c8fe5e3392e26e2589d0399a7fbb1",
+      "log_sha256": "6676852c342fefe3496f2984709913a32a3f22116a12738443796c5b33b1b66c"
+    },
+    {
+      "suite": "lsu",
+      "exit": 0,
+      "collected": 529,
+      "collection_sha256": "1c82b9cc8a88f5ab839f7320c138817a84264c24966006f2aaad38d7fa16283e",
+      "log_sha256": "1368da474d0d9f54011838e4242889519738ef6ba4a41fd93a941a9585ebf145"
+    },
+    {
+      "suite": "mmu",
+      "exit": 0,
+      "collected": 417,
+      "collection_sha256": "9b04f291852df3524e45743a62981b093ed3aca492d3a70cb8589ea31ea49590",
+      "log_sha256": "c152bed1d314c73daf0eae2a62788122c00b7cfb2051510484e4dc571769f753"
+    },
+    {
+      "suite": "sbuffer",
+      "exit": 0,
+      "collected": 31,
+      "collection_sha256": "50d0f5f3d4df2e0a48b094e61a567e42fc4e68d3730d39de234c81ff8a3bf959",
+      "log_sha256": "d97379a88c3acb9ed99801e90ef5e905e1f61526dabd7f4fc690c88f679a35c6"
+    },
+    {
+      "suite": "vagq",
+      "exit": 0,
+      "collected": 467,
+      "collection_sha256": "55b768e0b97a8cca6bf2854bc616ec9bba981cd6b9ee35790cab309c92118fd5",
+      "log_sha256": "8e43133090a21c6e31f39777de9f024598c3daf027478c188e16d741429c4cd7"
+    }
+  ],
+  "layout": [
+    {
+      "suite": "bpu",
+      "pin_fields": 0,
+      "signal_operations": 0,
+      "transaction_boundary": "no-static-leak-found"
+    },
+    {
+      "suite": "ftq",
+      "pin_fields": 0,
+      "signal_operations": 0,
+      "transaction_boundary": "no-static-leak-found"
+    },
+    {
+      "suite": "icache",
+      "pin_fields": 0,
+      "signal_operations": 0,
+      "transaction_boundary": "no-static-leak-found"
+    },
+    {
+      "suite": "ifu",
+      "pin_fields": 313,
+      "signal_operations": 0,
+      "transaction_boundary": "needs-adapter"
+    },
+    {
+      "suite": "dcache",
+      "pin_fields": 2,
+      "signal_operations": 87,
+      "transaction_boundary": "needs-adapter"
+    },
+    {
+      "suite": "lsq",
+      "pin_fields": 1057,
+      "signal_operations": 1,
+      "transaction_boundary": "needs-adapter"
+    },
+    {
+      "suite": "lsu",
+      "pin_fields": 140,
+      "signal_operations": 1,
+      "transaction_boundary": "needs-adapter"
+    },
+    {
+      "suite": "mmu",
+      "pin_fields": 29,
+      "signal_operations": 382,
+      "transaction_boundary": "needs-adapter"
+    },
+    {
+      "suite": "sbuffer",
+      "pin_fields": 0,
+      "signal_operations": 27,
+      "transaction_boundary": "needs-adapter"
+    },
+    {
+      "suite": "vagq",
+      "pin_fields": 179,
+      "signal_operations": 9,
+      "transaction_boundary": "needs-adapter"
+    }
+  ],
+  "limits": [
+    "No RTL, baseline, native libraries or dependency changes after checkpoint.",
+    "Checker controls inject bench transport/observation, not RTL mutations.",
+    "C transport monitoring is limited to explicit legacy service windows.",
+    "Accepted/completion ticks are environment edge ordinals, not global XEvent ticks.",
+    "Seven suites still need transaction adapters; BPU full native and VAGQ exhaustive certification remain unproved.",
+    "Existing FAIL/XFAIL/UNCERTAIN outside the selected regressions remain unchanged, not retested as hardware passing.",
+    "Semantic repairs after the checkpoint are not yet committed or pushed."
+  ],
+  "final_audit": {
+    "run_receipts_verified": 9,
+    "unchanged_other_suite_collections": [
+      "bpu",
+      "ftq",
+      "icache",
+      "ifu",
+      "lsq",
+      "lsu",
+      "sbuffer",
+      "vagq"
+    ],
+    "collection_total": 45834,
+    "source_artifacts": [],
+    "source_cache_directories": [],
+    "document_link_errors": [],
+    "assets": {
+      "status": "PASS",
+      "source_files": 4621,
+      "suites": 10,
+      "duts": 132,
+      "historical_evidence_entries": 134685,
+      "errors": []
+    },
+    "skills_sha256": "e2ca572f1c1ac985d863422272810240f7825dd1da13a6cf826c0e8d2d828fd4",
+    "diff_check": "PASS"
+  }
+}

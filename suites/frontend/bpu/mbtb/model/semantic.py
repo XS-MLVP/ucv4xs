@@ -17,6 +17,7 @@ from suites.frontend.bpu.mbtb.model.victim import RecencyTree, VictimRecords
 
 ALIGNMENTS, INTERNAL_BANKS, ROWS, WAYS = 2, MAIN_BANKS, MAIN_ROWS, MAIN_WAYS
 ADDRESS_LIMIT, TARGET_SPAN, TAG_SPAN = 1 << 49, 1 << 20, 1 << 16
+LOOKUP_LIMIT = 1 << 50
 
 
 def unsigned(value, limit, name):
@@ -25,12 +26,12 @@ def unsigned(value, limit, name):
 
 
 def coordinate(pc):
-    unsigned(pc, ADDRESS_LIMIT, 'halfword PC')
+    unsigned(pc, LOOKUP_LIMIT, 'guarded halfword PC')
     return (pc // ALIGN_HALFWORDS) % ALIGNMENTS, (pc // (ALIGN_HALFWORDS * ALIGNMENTS)) % INTERNAL_BANKS, (pc // (ALIGN_HALFWORDS * ALIGNMENTS * INTERNAL_BANKS)) % ROWS
 
 
 def tag(pc):
-    unsigned(pc, ADDRESS_LIMIT, 'halfword PC')
+    unsigned(pc, LOOKUP_LIMIT, 'guarded halfword PC')
     return (pc // (ALIGN_HALFWORDS * ALIGNMENTS * INTERNAL_BANKS * ROWS)) % TAG_SPAN
 
 
@@ -40,10 +41,10 @@ def replacement_row(pc):
 
 def window(pc):
     """Physical alignment -> (address, ordinal); not a packed rotate network."""
-    unsigned(pc, ADDRESS_LIMIT, 'halfword PC')
+    unsigned(pc, LOOKUP_LIMIT, 'guarded halfword PC')
     values = [None] * ALIGNMENTS
     for ordinal in range(ALIGNMENTS):
-        address = pc if ordinal == 0 else ((pc // ALIGN_HALFWORDS + ordinal) * ALIGN_HALFWORDS) % ADDRESS_LIMIT
+        address = pc if ordinal == 0 else ((pc // ALIGN_HALFWORDS + ordinal) * ALIGN_HALFWORDS) % LOOKUP_LIMIT
         values[coordinate(address)[0]] = address, ordinal
     return tuple(values)
 
@@ -60,7 +61,7 @@ class Target:
         return cls(target % TARGET_SPAN, (difference > 0) - (difference < 0))
 
     def at(self, pc):
-        region = (pc // TARGET_SPAN + self.region_delta) % (ADDRESS_LIMIT // TARGET_SPAN)
+        region = (pc // TARGET_SPAN + self.region_delta) % (LOOKUP_LIMIT // TARGET_SPAN)
         return region * TARGET_SPAN + self.offset
 
 
@@ -328,7 +329,7 @@ class Events:
     reset: bool = False
 
     def __post_init__(self):
-        unsigned(self.pc, ADDRESS_LIMIT, 'halfword PC')
+        unsigned(self.pc, LOOKUP_LIMIT, 'guarded halfword PC')
         if any(type(value) is not bool for value in (self.select, self.advance, self.consume,
                                                     self.last_stage, self.enabled, self.ready, self.reset)):
             raise ValueError('MBTB events require semantic bools, not signal wrappers')

@@ -1,12 +1,22 @@
 """Real fallback-path originals and existing driver-owned flowing recovery."""
 from suites.frontend.bpu.bpu.env.early_opposition import EarlyOppositionProgram
 from suites.frontend.bpu.bpu.driver.recovery import RecoveryDriver
-from suites.frontend.bpu.bpu.model.early_opposition import provider,main_counter
+from suites.frontend.bpu.bpu.model.early_opposition import provider,main_counter,steady_history,FALLBACK,ahead_owner
 from suites.frontend.bpu.bpu.transaction.types import BpuRedirect
+from suites.frontend.bpu.bpu.model.entry_protection import INITIALIZATION_REQUESTS_PER_ROUND
 
 
 class Program(EarlyOppositionProgram):
     actual_fallback=False
+
+    async def strong_negative(self,source):
+        return await self.bounded_strong_negative(source)
+
+    async def opposed(self,source,checks):
+        # A stale no-hit original must not run ahead of the first useful NT
+        # reward and allocate table1 from its older read. Each round has a
+        # recovery bubble plus exactly one drained candidate original.
+        return await self.bounded_opposition(source,checks)
 
     async def restart(self,source):
         if not self.actual_fallback: return await super().restart(source)
@@ -24,8 +34,23 @@ class Program(EarlyOppositionProgram):
             any(row[0]==owner for row in checks.confirmed_increases) and checks.pending_effect is None)
         checks.reward_receipt(source)
 
+    async def prepare_wrong_base(self,source):
+        # Bounded reward delivery deliberately admits no younger inputs. The
+        # first opposed original therefore need not have saturated Ahead to
+        # NT yet. Establish that declared precondition with fresh legal NT
+        # originals before disabling early learning and steering Main to T.
+        for _ in range(4):
+            for index in range(INITIALIZATION_REQUESTS_PER_ROUND):
+                source=await self._one_original(recover=source if index==0 else None)
+            token=self.checker.source_token(source)
+            owner=ahead_owner(self.checker.model.sources,token)
+            if main_counter(token)==0 and steady_history(token,FALLBACK) and owner is not None and owner[1]==0:
+                return source
+        raise AssertionError('bounded wrong-original preparation did not establish its independent NT base')
+
     async def contradict(self,source):
         checks=self.checker.coverage; self.actual_fallback=True
+        source=await self.prepare_wrong_base(source)
         source=await self.steer_main(source,3)
         # A NEW fallback-path original gives both read and matching ancestry.
         # Reusing the taken-loop source after just one edge does not do this.

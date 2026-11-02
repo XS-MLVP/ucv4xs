@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "scope": "CommitQueue transaction migration complete at this source checkpoint; ResolveQueue/Ftq remain required",
+  "contract": "suites/frontend/ftq/docs/transaction-adaptation.md#commitqueue-逐沿事务链",
+  "red": [
+    {"output": "results/ucv-goal-ftq-commit-sampling-red-20261102", "counts": {"FAIL": 2}, "source_stable": true, "run_sha256": "892981ac289a4c0eeaba6a331e509b8eb86f648d7dece036cc6e573432fde215", "summary_sha256": "86045a3c6f1ae63d1df663b5365953ef841f19e434114f45771c238157b749dc", "failure": "The real native queue emitted40/41/42/43, but a multi-cycle wait saved only40; replacing the sampled output withNone also failed to trigger any checker."},
+    {"output": "results/ucv-goal-ftq-commit-sdk-v1-20261102", "counts": {"PASS": 27, "FAIL": 1}, "failure": "The first SDK model incorrectly treated the exported asynchronous reset as synchronous. The source-boundary fix checks the fixed empty output already at DriveStable; no hardware FAIL was waived."},
+    {"output": "results/ucv-goal-ftq-commit-public-check-red-20261102", "counts": {"FAIL": 1}, "source_stable": true, "run_sha256": "5c234431a909a6b13f63295ee9f0233384934b1636a014c73bcd46fd4dd231c9", "summary_sha256": "66cd49f5e16471dafe6d2914d2c8903bb6c337134ef317dd95c29cc4dda22b2b", "failure": "Swallowing the public checker.check assertion bypassed the first sticky guard. The public checker now uses the same Scoreboard path, and finish/receipt reject prior comparison failures."}
+  ],
+  "verified": {
+    "output": "results/ucv-goal-ftq-commit-transactions-verified-20261102",
+    "counts": {"PASS": 210, "XFAIL": 2},
+    "seed": 2,
+    "workers": 2,
+    "selection": [],
+    "source_sha256": "b160a8ef900405339f40f7c176539aca6a573d614649a9c7e8ede6ca16f4a3cb",
+    "source_stable": true,
+    "source_files_match_at_audit": true,
+    "run_sha256": "8a2a5b62a6499cef124a1f4c079f7000d9b90412712b5738bcecda34816c7f01",
+    "summary_sha256": "5059d22170c8c3355384a5686b49ef24ef9dbff43608ce7c8398463e894fba45",
+    "previous": "results/ucv-goal-ftq-atomic-ownership-verified-20261102",
+    "previous_168_nodeids_removed_or_changed": [],
+    "added_selftests": {"pure_contract": 17, "native_observation_lifecycle": 27},
+    "gaps": []
+  },
+  "seed1": {
+    "output": "results/ucv-goal-ftq-commit-transactions-seed1-20261102",
+    "counts": {"PASS": 53},
+    "seed": 1,
+    "workers": 1,
+    "selection": "All original CommitQueue function bodies, commit_contract, commit_sampling and live_control_commit",
+    "source_sha256": "b160a8ef900405339f40f7c176539aca6a573d614649a9c7e8ede6ca16f4a3cb",
+    "source_stable": true,
+    "source_files_match_at_audit": true,
+    "run_sha256": "6285079531b53c23368fcc3adf701050ddf0b07fb52d14a271c99e032035ed3b",
+    "summary_sha256": "621c40ddff8b624493f3c525a6eeb6e0860e37928e62ca6747480dcc745d1445",
+    "gaps": []
+  },
+  "implementation": [
+    "SDK SyncSingleCycleDriver owns all25 non-clock inputs. Explicit idle-time pause keeps SamplingMonitors attached across task switches. Full frame withdrawal/cancellation and real edge event remain SDK behavior.",
+    "DriveStable/RisingEdge lossless snapshots freeze actual inputs and queue head, compare the declared frame and both FIFO stages, and reject skipped/replayed ticks. training() returns the last checked immutable preview, not a live fallback.",
+    "Environment UIDs are(epoch, input slot, lane), not hardware tags or observed payload keys. Valid-only repeated offers at separate edges have separate identities. Exact NONE filtering, pre-edge capacity rejection, consumption completion and async-reset cancellation terminal sets are retained.",
+    "Bounded finish only sends declared idle and passively observes the autonomous queue plus two empty tail slots. Armed producers, exhausted budgets, missing/closed observers, late/spurious output, cancellation and swallowed comparisons cannot claim successful closure.",
+    "All original8 functional test bodies and their lane/slot,240-cycle random and toggle schedules remain. Only the existing live-control selftest adds explicit release. The generic fixture tests setup/call outcomes separately from cleanup and never changes hardware verdicts."
+  ],
+  "native_boundary": {
+    "RTL_sha256": "1f843a42e1cc3dfaf5adcfc739be59bd11c272210fee4b5a0cfa125424793c5d",
+    "reset": "CommitQueueDut.v contains always @(posedge clock or posedge reset); cancellation tick is first compared reset boundary, not claimed electrical assertion time",
+    "full_run_artifacts_checked": 7,
+    "full_run_native_inputs": 119,
+    "seed1_artifacts_checked": 3,
+    "seed1_native_inputs": 36,
+    "artifact_bytes_hashes_and_build_inputs_match": true,
+    "manifest_state": "committed",
+    "coverage_complete": true,
+    "keep_coverage_inputs": false,
+    "cleanup_complete": true,
+    "no_RTL_or_native_rebuild": true,
+    "limit": "Native/LCOV/HTML integrity does not prove functional or coverage closure. Raw coverage inputs were not retained. Python observation/expected injections are not RTL mutation coverage."
+  },
+  "root_tests": {"output": "results/ucv-goal-root-ftq-commit-final-20261102.xml", "counts": {"PASS": 240}, "sha256": "d3fd7ddf21de84d03ccc103a2f3afd1d8d8eb2ae4955b874d01d05e1ba75ec0d"},
+  "remaining": "ResolveQueue and Ftq still require continuous SDK sampling, full protocol ownership/UID/cancellation/retry/finish migration; other frontend, MemBlock and VAGQ obligations stay active. This checkpoint cannot close the repository goal."
+}

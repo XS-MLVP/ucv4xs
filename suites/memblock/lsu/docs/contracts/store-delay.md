@@ -87,6 +87,21 @@ out.bits(T)  = in.bits(T-1)   // 当且仅当上一条成立时有意义
 不复用 RTL 的位表达式；用两状态（`reg_valid`、`reg_bits`）逐拍推进，并与 DUT 的
 `out.valid`/19 个字段逐拍比较。任何输入都不做"预期必过"的假设。
 
+2026-11-01 的运行接口补充：pytest 根统一注册环境 fixture，`StoreDelayEnv.running()`
+拥有唯一 Execution/Driver/Monitor 生命周期。SyncSingleCycleDriver 驱动完整不可变命令，
+lossless SamplingMonitor 在 DriveStable 保存输出，并由相邻 RisingEdge 确认；`cycle`
+返回原有“本输入捕获沿之前”的逻辑输出，不读取沿后变化值来冒充此前的接受/响应。
+
+输入必须完整包含约定载荷及 redirect 字段，未知键、缺字段、超出编码位宽及有效 ROB
+值不在 [0,160) 时，在驱动前拒绝；不静默补零或截断。随机 helper 生成该 ROB 合法域。
+差分用例双方也通过相同独立 checker；只比较有效 beat，invalid payload 不作过严检查。
+正常退出再核对最后的注册 beat，以及下一拍没有重复 beat；不能用停止调用 cycle
+消除最后一笔检查义务。错误控制的注入位置与真实 DUT 功能证据分开登记。
+
+本轮 14 个原用例保持 PASS，新增 14 个 schema/不变量/原生观察层自检 PASS；LSU 整体
+仍为 536 PASS / 7 FAIL，并非全部 LSU 语义无误。完整记录见
+[事务边界修复](../../../../../docs/lessons/transaction-boundary-repair-20261101.md)。
+
 ## 6. 覆盖要求
 
 - `out.valid` 的 0/1 两态与 `in.valid` 的 0/1 两态组合；

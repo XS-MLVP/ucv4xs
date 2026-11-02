@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "date": "2026-11-01",
+  "output": "results/ucv-goal-collect-pipeline-entry-20261101",
+  "source_sha256": "b5d8261f8cbb2a1f782b6de77c567b4cfba041c050fc2b821f9728d9efd3f6f9",
+  "run_sha256": "4ad87d6f56ca72f9795a02e41e4cfa999bc11083ee8d61c14aebf65344d13514",
+  "source_stable": true,
+  "source_boundary": "Collected before the later short-window diagnostic/precondition assertion; those later edits do not add/remove nodes and this receipt keeps its original source hash.",
+  "collection_tasks": 10,
+  "all_collection_tasks_exit_zero": true,
+  "total": 47627,
+  "initial_baseline": "results/ucv-goal-collect-before-20261101",
+  "initial_total": 45883,
+  "previous_baseline": "results/ucv-goal-collect-phr-current-20261101",
+  "previous_total": 47592,
+  "removed_nodeids": [],
+  "initial_and_previous_relative_order_preserved_per_suite": true,
+  "suites": {
+    "bpu": {"initial": 41031, "previous": 42162, "current": 42197, "added_since_previous": 35},
+    "ftq": {"initial": 111, "previous": 111, "current": 111, "added_since_previous": 0},
+    "icache": {"initial": 294, "previous": 294, "current": 294, "added_since_previous": 0},
+    "ifu": {"initial": 147, "previous": 725, "current": 725, "added_since_previous": 0},
+    "dcache": {"initial": 232, "previous": 232, "current": 232, "added_since_previous": 0},
+    "lsq": {"initial": 2575, "previous": 2575, "current": 2575, "added_since_previous": 0},
+    "mmu": {"initial": 417, "previous": 417, "current": 417, "added_since_previous": 0},
+    "sbuffer": {"initial": 66, "previous": 66, "current": 66, "added_since_previous": 0},
+    "lsu": {"initial": 543, "previous": 543, "current": 543, "added_since_previous": 0},
+    "vagq": {"initial": 467, "previous": 467, "current": 467, "added_since_previous": 0}
+  },
+  "verdict_boundary": "Collect-only, not hardware execution; CLI exit1 remains due to the open IFU residual register, all ten collection tasks exited0. Full includes internal VAGQ and is intentionally mixed-baseline inventory, not unified-public acceptance."
+}

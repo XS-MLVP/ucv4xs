@@ -23,6 +23,8 @@ class DataBankPorts:
     write_ready: PortBinding
     response: Any
     mbist: PortBinding
+    mbist_response: PortBinding
+    sram_control: PortBinding
 
     @classmethod
     def bind(cls, dut: Any) -> "DataBankPorts":
@@ -66,4 +68,14 @@ class DataBankPorts:
                 ),
                 "databank.mbist",
             ),
+            mbist_response=PortBinding(dut.clock, Bundle(
+                ack=dut.boreChildrenBd_bore_ack,
+                outdata=dut.boreChildrenBd_bore_outdata), 'databank.mbist.response'),
+            sram_control=PortBinding(dut.clock, Bundle(ways=tuple(
+                Bundle(**{name: getattr(dut, 'sigFromSrams_bore' +
+                    (f'_{way}' if way else '') + '_' + leaf)
+                    for name, leaf in dict(hold='ram_hold', bypass='ram_bypass',
+                        bp_clken='ram_bp_clken', aux_clk='ram_aux_clk',
+                        aux_ckbp='ram_aux_ckbp', mcp_hold='ram_mcp_hold', cgen='cgen').items()})
+                for way in range(4))), 'databank.sram-control'),
         )

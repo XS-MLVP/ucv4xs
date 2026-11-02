@@ -34,9 +34,9 @@ def encoded_payload(transaction, capacity=8):
     branches = transaction['branches'] + [None] * (capacity - len(transaction['branches']))
     return dict(meta=deepcopy(transaction['resolve_meta']),
         # Independent byte geometry, not the driver's halfword bit mask.
-        start_pcs=[[dict(addr=transaction['pc']),
-                    dict(addr=((transaction['pc'] // ALIGN_HALFWORDS) + 1) * ALIGN_HALFWORDS)]
-                   for _ in range(3)],
+        start_pcs=[[dict(addr=transaction['pc'])], [dict(addr=transaction['pc'])],
+                   [dict(addr=transaction['pc']),
+                    dict(addr=((transaction['pc'] // ALIGN_HALFWORDS) + 1) * ALIGN_HALFWORDS)]],
         branches=[dict(valid=int(branch is not None), bits=dict(
             target_addr=0 if branch is None else branch['target'], taken=0 if branch is None else branch['taken'],
             cfiPosition=0 if branch is None else branch['position'],

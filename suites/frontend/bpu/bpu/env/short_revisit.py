@@ -1,12 +1,55 @@
 """The same declared read ancestor and new owned semantic path edges."""
+import asyncio
 from suites.frontend.bpu.bpu.env.entry_protection import Program as ProtectionProgram
 from suites.frontend.bpu.bpu.driver.recovery import RecoveryDriver
 from suites.frontend.bpu.bpu.model.early_opposition import provider
 from suites.frontend.bpu.bpu.transaction.types import BpuRedirect
+from suites.frontend.bpu.utage.model.semantic import HISTORIES
+from suites.frontend.bpu.bpu.model.path_history import SHIFT
 
 
 class Program(ProtectionProgram):
     path_position=None
+
+    async def contradict(self,source):
+        checks=self.checker.coverage
+        self.actual_fallback=True
+        checks.preparation_phase='bounded-NT-base'
+        source=await self.prepare_wrong_base(source)
+        checks.preparation_phase='Main-only-steering'
+        source=await self.steer_main(source,3)
+        checks.preparation_phase='Main-only-bridge'
+        for _ in range((max(HISTORIES)+SHIFT-1)//SHIFT):
+            # A normal streaming query can accept younger Main-taken work
+            # before S3 delivery, replacing the very path being prepared.
+            # Keep each declared semantic edge to one actual accepted source.
+            source=await self._one_original(recover=source)
+        await self.agent.configure_predictors(abtb=True,settle=True)
+        await self.pause()
+        checks.before_flowing_recovery(source)
+        checks.preparation_phase='bounded-wrong-window'
+        accepted=asyncio.get_running_loop().create_future()
+        checks.open_wrong(accepted)
+        try:
+            await RecoveryDriver(self.agent,self.checker).send(source,
+                position=checks.program.recovery_offset,branch_type=2,until=accepted)
+        except BaseException as error:
+            error.add_note('Declared read bridge: '+repr(checks.bridge)+'; window precondition: '
+                +repr(checks.wrong_precondition)+'; first compared S1 candidates: '
+                +repr(checks.first_wrong_candidates)+'; last compared S1 candidates: '
+                +repr(list(checks.wrong_candidates))+'; actual-compared long allocation history: '
+                +repr(list(checks.long_allocation_history)))
+            raise
+        result=await self.agent.next_transaction(start_pc=self.pc,after_tick=checks.selected_wrong_tick-1)
+        token=self.checker.source_token(result)
+        self.owners.append(result)
+        await self.pause()
+        await self.observation.wait('named_wrong_short_and_parallel_long_actually_compared',lambda _:
+            checks.pending_loss is None and checks.pending_long is None
+            and token.sequence in checks.long_allocations
+            and any(row['owner']==token.sequence for row in checks.losses))
+        checks.wrong_receipt(result)
+        return result
 
     async def restart(self,source):
         if self.path_position is None: return await super().restart(source)

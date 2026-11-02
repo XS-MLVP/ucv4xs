@@ -1,5 +1,10 @@
 # FTQ 验证工程
 
+当前原生加载器按`ucv run --seed`传入Verilator seed（未设置时为1）；每次构造解析
+`ucv.runtime.native_seed`，不再忽略运行收据中的seed。构造器正反对照见根
+`tests/test_frontend_runtime_seed.py`。此前仅登记CLI seed的历史结果不自动成为已复现的
+原生多seed证据；真实功能FAIL/XFAIL仍按原结果保留。
+
 本工程按真实实例化层次验证香山 FTQ（Fetch Target Queue）：
 
 ```text
@@ -14,33 +19,51 @@ Ftq
 
 ## 验证包结构
 
+2026-11-02适配边界：CommitQueue已使用SDK Driver、双阶段lossless采样和UID终态账本；
+ResolveQueue已接入整槽SDK驱动、严格ABI及自动合并/完成/取消检查，双seed收据核验完成。
+Ftq顶层现已具备固定全ABI、SDK唯一整槽输入、完整公开输出的双阶段比较及输入UID/
+取消/重试/本地有界收尾。当前最终完整回归为**905 PASS/2 XFAIL**，495项新增selftest
+通过、前412项判定保持；同源码seed1定向**122 PASS**，Ftq收集907项保持原集合/顺序。
+当前三个DUT的事务适配范围已核验；不得把
+结构零泄漏、旧109/2或历史行覆盖结果推广成全工程事务验收。当前合同和信用边界见
+[事务迁移复核](docs/transaction-adaptation.md)。
+此前callret/commit子链源码完整回归为**410 PASS/2 XFAIL**，同源码seed1选测146 PASS、
+根242 PASS；原356项判定保持，新56项为输入计划/快照与commit协议selftest，不计新硬件点。
+当时全仓collection47930项，原集合无删除/顺序保持；另外五通道当时缺口保留在
+[commit机器证据](../../../docs/history/transaction-goal-ftq-top-commit-20261102.json)，后续实现/中间
+FAIL及当前905/2结果见[组合机器证据](../../../docs/history/transaction-goal-ftq-top-frontend-20261102.json)。
+较早354/2的整槽检查点见[原机器证据](../../../docs/history/transaction-goal-ftq-top-slots-20261102.json)，不重标其源码身份。
+两个XFAIL此前另以`--runxfail`保持真实slot7/slot0覆盖FAIL，见
+[ResolveQueue机器证据](../../../docs/history/transaction-goal-ftq-resolve-transactions-20261102.json)。
+
 环境按 agent / driver / monitor / checker / transaction 分层，测试只持有事务：
 
 ```text
 suites/frontend/ftq/      import suites.frontend.ftq
 ├── __init__.py           ROOT：工程资源根，不构造 DUT
 ├── ports.py              跨 DUT 的引脚所有权；具体映射仍在各 DUT bundle
-├── drivers/signal.py     Pulse / Level / Reset 驱动，负责发射与撤销时序
-├── monitors/cycle.py     EdgeMonitor / InvariantMonitor，每拍被动采样
+├── drivers/signal.py     旧手动驱动留档代码，当前三个agent均不再调用
+├── monitors/cycle.py     SDK双阶段采样的不可变snapshot及decoder/cache view
 ├── fixtures.py           DUT + Execution + agent 的 pytest fixture
 ├── harness.py            DUT 装载、时钟/执行上下文、引脚所有权与指针安全网
 ├── oracle.py             独立参考模型（CallRetFifo / ResolveMergeModel）
 ├── resolve_queue/
 │   ├── agent/main.py     ResolveQueueAgent：驱动、监视、checker 装配
 │   ├── bundle/ports.py   后端 3 lane、IFU、训练输出、重定向/入队引脚
-│   ├── driver/encoding.py
+│   ├── driver/           严格事务编码与SDK整槽SyncDriver
 │   ├── monitor/decode.py 训练事务解码
-│   ├── checker/model.py  与 oracle 对账
-│   └── transaction/types.py
+│   ├── checker/          原纯参考及自动UID/合并/终态比较
+│   └── transaction/      严格report、完整同时输入及不可变身份
 ├── commit_queue/         同构：8 lane、FIFO 监视与 checker
-└── ftq/                  同构：预测/meta/重定向/resolve/commit 与全部输出监视
+└── ftq/                  固定ABI、SDK整槽、全部通道比较、输入祖先与有界本地收尾
 ```
 
 约束：
 
 - 一个 driver 只能写自己声明的引脚；重复声明会在同一 DUT 上直接报错。
-- monitor 只在上升沿采样，测试读取 monitor 快照；checker 比较事务和独立模型，只有指针不变量读取内部所有权信号，且不把内部状态当作 payload 期望。
-- 内部指针仅用于所有权身份和不变量，不作为 payload 期望来源。
+- monitor在DriveStable/RisingEdge分别冻结全部通道；测试使用受检快照或明确的组合预览，
+  不把预览当成fire/完成。checker的payload期望来自输入或独立模型，不能从内部状态取答案。
+- 内部指针只作actual和不变量；输入计划决定expected owner，不从内部状态反推UID或payload。
 - 生成 RTL 去掉了 `XSError` 的 `$fatal`，因此 `InvariantMonitor` 每拍照
   CircularQueuePtr 语义检查 `fetch/pf ≤ bpu`、`pnr ≤ bpu`、`commit` 落后不超过一 lap。
 

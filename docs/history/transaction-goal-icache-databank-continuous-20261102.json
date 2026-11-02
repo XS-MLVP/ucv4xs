@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "goal_id": "ff03ca99-7d7f-4752-b8d7-3493ad1ca0a7",
+  "state": "continuous-storage-interleave-and-prelaunch-cancel-finish-production-verified-dft-review-open",
+  "baseline": "public-893e1580b / DefaultConfig / ICacheDataBank, no RTL/native/tool patch or rebuild",
+  "requirements": [
+    {"id": "strict-inputs-and-abi", "implementation": "BankPortRead/BankBist/BankCycle plus independent bundle/abi.py", "evidence": "All four independent8-bit read addresses and4-bit masks including zero; MBIST3-bit array,9-bit addresses,66-bit whole word, all flags exact ints; raw dictionaries/bools/negative/overwide encodings rejected before a driver. ABI independently requires the live fixed widths, including the physical addr leaf omitted from signals.json. No reduced geometry or missing field is silently accepted."},
+    {"id": "single-drive-owner", "implementation": "SDK LevelDriver for read/write/MBIST/all28 SRAM control bits, SDK ResetDriver for reset", "evidence": "49 non-clock inputs belong to drivers. Competing SDK test/control writers are rejected before input/time changes. Persistent level set stays zero-edge; reset and closed lifecycle retain their prior strict controls. DFT broadcast controls are owned/monitored idle in this ordinary storage mode; nonzero DFT semantic stimuli remain separate required review."},
+    {"id": "immutable-continuous-sampling", "implementation": "Two SDK SamplingMonitors, lossless64, compiled complete immutable BankFrames; async consumer pairs DriveStable.tick+1 with RisingEdge.tick and requires consecutive ticks", "evidence": "All inputs/readiness and complete outputs captured every edge, independent of whether the test calls read. Default read checks both the exact native response snapshot and the immutable returned view. Closing a required monitor and corrupting the first data/code response both fail; no late expected-matching sample is selected."},
+    {"id": "input-established-identity", "implementation": "BankTransactions creates immutable per-channel UID rows from BankCycle before driving; each equal valid edge is a distinct offer", "evidence": "Current SDK input preview and committed rising offer compared separately; prior rising input establishes physical consumption at the next rising edge using pre-edge readiness. launch/accepted/response/delivery/terminal times remain distinct. Same payload, concurrent serialized reads, unplanned input, zero mask, per-way addresses and simultaneous arbitration controls all checked; no identity guessed from response payload."},
+    {"id": "storage-and-mbist-oracle", "implementation": "Independent BankStorage raw66-bit words plus per-way StorageOrigin(uid,epoch,kind,tick,index,way)", "evidence": "Functional writes pack64data+code+zero pad, MBIST writes every66bit, and both update only from actual input consumption. Functional tests no longer mutate agent.model to make BIST appear correct. Each MBIST valid edge gets a distinct UID, ack at launch+2, macro operation launch+4 and readback launch+6. Ack is not a response. Repeated holds, wrong ack/full-word sample and corrupted original MBIST inputs have distinguishing controls."},
+    {"id": "reset-and-checked-finish", "implementation": "Input/response cancellation at the real reset fence, persistent primary failure, bounded autonomous-only finish, checked DataBank fixture and actual pytest report hook", "evidence": "Unconsumed read/acked-but-unreturned BIST reset dispositions have no fabricated response; already completed history remains intact. finish never drives idle/reset/responds to pay debt and fails before any tick on a still-held offer. Reported FAIL/SKIP only cleanup; PASS/missing report must finish, swallowed physical errors remain failures, independent cleanup errors propagate."
+    }
+  ],
+  "contract_sources": {
+    "logical": "src/main/scala/xiangshan/frontend/icache/ICacheDataBank.scala; utility/sram/SRAMTemplate.scala and SramInfo in SramHelper.scala; utility/mbist/MbistPipeline.scala in configured public source",
+    "physical": "Configured generated ICacheDataBank.sv/SRAMTemplate_4.sv/MbistPipeICacheData_bank0.sv and native signals/live widths, original native build receipts unchanged",
+    "important_qualification": "MbitsStandardInterface's generic comment calls addr_rd unused for single-port, but actual SRAMTemplate explicitly uses addr_rd for BOTH single-port read/write; 256 rows ignore the high bit of the9-bit bus. The adapter preserves/observes both leaves and supports differing values and aliases rather than narrowing the domain or declaring a new RTL defect from that stale generic comment. SramInfo for way=1 deliberately ignores be; it is not a byte mask on this whole-word macro. These are independently documented type/geometry rules, not response-derived expectations."
+  },
+  "original_red_green": {
+    "prior_red": "results/ucv-goal-icache-databank-runtime-red-20261102.xml:the original8 native runtime obligations were FAIL on the earlier implementation, as recorded in transaction-goal-component-boundary-20261102.json",
+    "same_original_probe_green": "results/ucv-goal-icache-databank-runtime-original-green-v4-20261102.xml:8 PASS; same external probe/helper sources, including default read, wrong original write without readback, reset/MBIST claim and invalid reset before side effects",
+    "boundary": "Standalone pytest supplies no managed feature plan (two known config warnings); actual native adapter controls, not new hardware features or a substitute for the managed full run."
+  },
+  "interim_failures_preserved": [
+    {"output": "results/ucv-goal-icache-databank-continuous-storage-v1-20261102", "counts": {"PASS": 7}, "audit": "results/ucv-goal-icache-databank-continuous-storage-audit-v1-20261102.json", "boundary": "Early production storage-only source, not final source credit"},
+    {"output": "results/ucv-goal-icache-databank-continuous-bist-v1-20261102", "boundary": "Original6 BIST/random functional cases passed on that early source. A later attempted generic source-current audit correctly failed after source changes; no current-file-match audit credit for this interim run."},
+    {"output": "results/ucv-goal-icache-databank-continuous-v2-20261102", "counts": {"PASS": 27, "FAIL": 12, "ERROR": 35}, "boundary": "New preview guard incorrectly compared current SDK queued input view to previous rising input, causing reset setup mismatches. Coverage/project lifecycle incomplete is retained; not native RTL failures. Guard corrected to compare the current declared intent at BOTH phase views, while consumption still uses the retained preceding rising UID."},
+    {"output": "results/ucv-goal-icache-databank-continuous-v3-20261102", "counts": {"PASS": 73, "FAIL": 1}, "boundary": "One close-lifecycle control expected active-agent refusal but a stopped monitor's error was recorded first. Cleanup now cancels the consumer before intentionally closing monitors and closed API checks active state first; real primary checker errors still persist through finish."},
+    {"output": "results/ucv-goal-icache-checked-fixture-controls-v1-20261102.xml", "counts": {"FAIL": 8}, "boundary": "New root async controls initially lacked explicit pytest-asyncio markers in root's strict mode; no test body/RTL/control execution credit. Marker added; the same controls pass in v2, then real async-yield/report-hook integration expanded to9PASS in v3."}
+  ],
+  "verified_v4": {
+    "source_sha256": "6a5d865ded9e8420b686ee1ea53c57b08035f94d1d9c8c7430279267eaf7d149",
+    "source_files": 222,
+    "runs": [
+      {"output": "results/ucv-goal-icache-databank-continuous-integrated-v4-20261102", "seed": 2, "counts": {"PASS": 401, "XFAIL": 3}, "native_inputs": 321, "build_files_checked": 66, "audit": "results/ucv-goal-icache-databank-continuous-integrated-audit-v4-20261102.json"},
+      {"output": "results/ucv-goal-icache-databank-continuous-seed1-v4-20261102", "seed": 1, "counts": {"PASS": 177, "XFAIL": 1}, "native_inputs": 104, "build_files_checked": 18, "audit": "results/ucv-goal-icache-databank-continuous-seed1-audit-v4-20261102.json"}
+    ],
+    "audits": "Source stable and every current file matched at each audit; all artifact/build/processor hashes checked and native builds unchanged, committed manifests/coverage_complete/cleanup_complete, gaps[]. Full baseline closed-send327PASS3XFAIL old nodes/verdicts retained,74 newselftestPASS=9 reset+16 continuous native cases+49 strict pure controls. Two existing bad-response controls now use a fresh native legal comparison execution, adding2 native instances without new nodeids; full native_inputs321 is instance count, not native testcase count.",
+    "databank_selection": "123 cases =47 native cases/76 pure controls;49 native instances because the two existing data/code negative tests also use fresh legal controls. No old nodeid deletion or new XFAIL.",
+    "audit_attempt_correction": "First generic full audit selected a DataBank-only baseline whose build map lacked other10DUTs and correctly raised KeyError. Rerun used the actual prior complete ICache baseline and verified all66 files; no audit assertion was weakened."
+  },
+  "v5_interleave_expansion": {
+    "source_sha256": "4003a071a966035e2f8a8b81657134837c06b64d5602387c67b0b4ea2c839a70",
+    "directed_output": "results/ucv-goal-icache-databank-bist-interleave-v5-20261102",
+    "directed_counts": {"PASS": 22},
+    "directed_audit": "results/ucv-goal-icache-databank-bist-interleave-audit-v5-20261102.json",
+    "evidence": "22native inputs/6 build files source stable/current matched, all artifacts/processor checked, builds unchanged; original16 controls retained,6 newPASS. Consecutive equal payload/different-array MBIST separates the unselected old result from the selected new one; functional physical fire overridden by a registered MBIST command creates no false storage ancestor; reset after ack does not create a read response; three wrong MBIST input leaves fail without any readback.",
+    "runs": [
+      {"output": "results/ucv-goal-icache-databank-continuous-integrated-v5-20261102", "seed": 2, "counts": {"PASS": 407, "XFAIL": 3}, "native_inputs": 327, "build_files_checked": 66, "audit": "results/ucv-goal-icache-databank-continuous-integrated-audit-v5-20261102.json"},
+      {"output": "results/ucv-goal-icache-databank-continuous-seed1-v5-20261102", "seed": 1, "counts": {"PASS": 129}, "selection": ["tests/databank"], "native_inputs": 55, "build_files_checked": 6, "audit": "results/ucv-goal-icache-databank-continuous-seed1-audit-v5-20261102.json"}
+    ],
+    "verified": "Both sources stable and every current file matched at audit, all artifact/build/processor hashes checked, native builds unchanged, manifests committed/coverage_complete/cleanup_complete and gaps[]. V4 full404 old cases and verdicts retained,6 newPASS; same-source DataBank129cases=53native cases/76pure controls and55native instances, with the extra2 fresh legal controls as before. No added XFAIL."
+  },
+  "v6_prelaunch_cancel_finish": {
+    "red_output": "results/ucv-goal-icache-databank-prelaunch-finish-red-v6-20261102",
+    "red_counts": {"FAIL": 2},
+    "red_boundary": "Both real native contexts establish a read or reset input plan, block the driver just before first launch, cancel/await the command, restore the actual driver, then check finish without changing signals. finish did eventually fail, but first advanced read522->526 and reset522->524. The outer no-tick assertion fails, not setup or a hardware predicate; a scheduled non-autonomous input/control must not be executed by drain clocks.",
+    "fix": "Before any drain tick, strict finish now also rejects nonempty declared input plans and reset schedules, not only already-observed _wire offers. It does not clear/cancel plans to get green, deassert signals, send reset or invent a terminal; cleanup remains separate.",
+    "directed_output": "results/ucv-goal-icache-databank-prelaunch-finish-green-v6-20261102",
+    "directed_counts": {"PASS": 24},
+    "source_sha256": "11cbc63673055e2bf7715f05ab61600614e1d88f84fbbbe66b1ba8732dc5fe65",
+    "directed_audit": "results/ucv-goal-icache-databank-prelaunch-finish-green-audit-v6-20261102.json",
+    "verified": "24native inputs/6build files, source stable/current files matched, all artifacts/build/processor hashes checked, native builds unchanged, old22controls retainedPASS and2newPASS; cancelled inputs fail finish before any tick.",
+    "runs": [
+      {"output": "results/ucv-goal-icache-databank-continuous-integrated-v6-20261102", "seed": 2, "counts": {"PASS": 409, "XFAIL": 3}, "native_inputs": 329, "build_files_checked": 66, "audit": "results/ucv-goal-icache-databank-continuous-integrated-audit-v6-20261102.json"},
+      {"output": "results/ucv-goal-icache-databank-continuous-seed1-v6-20261102", "seed": 1, "counts": {"PASS": 131}, "selection": ["tests/databank"], "native_inputs": 57, "build_files_checked": 6, "audit": "results/ucv-goal-icache-databank-continuous-seed1-audit-v6-20261102.json"}
+    ],
+    "verified": "Both sources stable/current files matched, all artifact/build/processor hashes checked, builds unchanged, committed/coverage_complete/cleanup_complete manifests and gaps[]. No old nodeid/verdict change; ordered-diff-v6 confirms closed-send330 and v5410 old nodeids retained in relative order within current412. Two new cancellation controlsPASS. Current DataBank131cases=55native cases/76pure,57native instances. Seed1 queued on the same suite lock, so actual native budget stayed BPU3+ICache1; both ICache jobs have completed, no source freeze remains needed for them."
+  },
+  "fixture_controls": "tests/test_icache_checked_fixture.py:9PASS; real pytest async-yield+makereport subprocess explicitly verifies a passing body, a swallowed-error teardownERROR, a bodyFAIL without duplicateERROR, and independent cleanupERROR after bodyFAIL. This fake-resource control is not native credit.",
+  "root_checkpoint": "results/ucv-goal-databank-continuous-root-v1-20261102.xml:265PASS before the ninth real hook integration control was added; v2=266PASS. After the later v6 prelaunch guard, final results/ucv-goal-databank-continuous-root-v3-20261102.xml:266PASS includes all9 fixture/report controls",
+  "hygiene": "Skill20documents/locked framework capability auditPASS, assets10suites/132DUT/4820publishable cached+untracked pathsPASS (results/ucv-goal-databank-continuous-assets-v2-20261102.json); Git diff--checkPASS. Publication audit-v2 explicitly reviews4610Gitcached paths,255modified relativeMarkdown links/45historyJSONs, current frozen BPU2499 andICache222file hashes; no generated/internal tracked asset. These are distinct from final transaction boundary and all-goal acceptance.",
+  "static_boundary": "results/ucv-goal-databank-continuous-boundary-v1-20261102.json strict exit1:ICache owner accesses370->351, no remaining DataBank functional owner access, no reclassification/removal; otherDUTs351 and otherengineering debt remain. Zero DataBank syntax leaks does not prove its full semantic closure.",
+  "subsequent_collaboration_checkpoint": "The v6 results above retain their original ordinary-storage source boundary. Subsequent MetaBank migration/shared ArrayAgent, complete nonzero SRAM controls, consumer cancellation, prior-rising control phase and actual per-row reset sweep are recorded in transaction-goal-icache-metabank-dft-20261102.json. Current sourceb48dc54b... fullICache567PASS/3XFAIL and same-source DataBank+MetaBank seed1/2each305PASS have been audited; original cases/verdicts retained. OtherICache owner accesses are now327. This is a user-requested phase handoff, not whole-DUT or whole-goal signoff.",
+  "remaining": [
+    "Nonzero SRAM controls and initialization/hold/bypass behavioral-macro applicability are subsequently implemented and covered by native controls in the linked followup. Silicon DFT/timing and exhaustive API/scheduler combinations are not claimed verified.",
+    "Further input/physical/output interleavings, cancellation and sampling lifecycle combinations must be reviewed before marking the whole DataBank DUT task complete; v5 tests do not mechanically prove every legal cycle composition.",
+    "Current v6 full409PASS3XFAIL and same-source DataBank second seed131PASS are audited, and current root266PASS. Final ten-suite ordered collection/gates and all other required engineering review remain; no v5 receipt is relabelled v6.",
+    "Other10ICache DUTs, otherBPU/MemBlock/VAGQ and complete-goal acceptance remain mandatory. Generated-artifact completeness is not coverage closure."
+  ]
+}

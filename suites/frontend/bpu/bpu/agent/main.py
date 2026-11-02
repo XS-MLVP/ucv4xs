@@ -48,9 +48,11 @@ class BpuAgent:
         self.training_activity = ActivityMonitor(training_activity(dut))
         self.applied_control = ActivityMonitor(control_activity(dut))
         self.initialization = ActivityMonitor(initialization_activity(dut))
-        self.retirement_monitor = CycleMonitor(PortBinding(dut.clock,
-            Bundle(valid=self.ports.meta.valid, pc=self.ports.meta.bits.perf.start_pc),
-            'bpu.pipeline_retirement'), decoder=lambda s: dict(valid=s.valid.as_int(), pc=s.pc.as_int()))
+        self.retirement_monitor = None
+        if self.ports.meta_perf_observable:
+            self.retirement_monitor = CycleMonitor(PortBinding(dut.clock,
+                Bundle(valid=self.ports.meta.valid, pc=self.ports.meta.bits.perf.start_pc),
+                'bpu.pipeline_retirement'), decoder=lambda s: dict(valid=s.valid.as_int(), pc=s.pc.as_int()))
         self.reset_driver = ResetDriver(dut)
         self.control_driver = BpuControlDriver(self.ports.control)
         self.training_driver = BpuTrainingDriver(
@@ -168,6 +170,11 @@ class BpuAgent:
         """Control FTQ backpressure and return its committed boundary tick."""
 
         self._require_started()
+        if not meta:
+            raise ValueError(
+                'integrated DefaultConfig BPU metadata is valid-only; '
+                'metadata ready cannot be driven low'
+            )
         self._prediction_ready = int(prediction)
         self._meta_ready = int(meta)
         return (await self._drive_control()).tick
@@ -317,6 +324,11 @@ class BpuAgent:
         self._require_stream_observation()
         if stage not in (None, "s1", "s2", "s3"):
             raise ValueError("stage must be one of: s1, s2, s3")
+        if target is not None and not self.ports.prediction_target_observable:
+            raise RuntimeError(
+                "integrated DefaultConfig BPU prediction.target is not observable; "
+                "use a component DUT with a target output or an unfiltered prediction"
+            )
         observed: list[tuple[int, int, int, int]] = []
         for index in range(limit + 1):
             transfer = await self.prediction_monitor.recv()
@@ -400,9 +412,9 @@ class BpuAgent:
                         f"meta_tick={meta_transfer.accepted_tick}"
                     )
                 perf = meta_transfer.value.perf
-                if (
+                if perf is not None and (
                     perf.start_pc != prediction.start_pc
-                    or perf.s1_target != prediction.target
+                    or (prediction.target is not None and perf.s1_target != prediction.target)
                     or perf.s1_taken != prediction.taken
                     or perf.s1_position != prediction.position
                 ):
@@ -436,6 +448,10 @@ class BpuAgent:
         """Pair an accepted S3 override with its same-cycle source echo."""
 
         self._require_stream_observation()
+        if target is not None and not self.ports.prediction_target_observable:
+            raise RuntimeError(
+                "integrated DefaultConfig BPU correction target is not observable"
+            )
         observed: list[tuple[int, int, int]] = []
         for _ in range(limit + 1):
             prediction_transfer = await self.prediction_monitor.recv()
@@ -464,7 +480,8 @@ class BpuAgent:
                         f"meta_tick={meta_transfer.accepted_tick}, "
                         f"prediction={prediction!r}"
                     )
-                if meta_transfer.value.perf.start_pc != prediction.start_pc:
+                if (meta_transfer.value.perf is not None and
+                        meta_transfer.value.perf.start_pc != prediction.start_pc):
                     raise AssertionError(
                         "BPU S3 correction/meta PC mismatch: "
                         f"prediction={prediction!r}, "
@@ -520,6 +537,10 @@ class BpuAgent:
         """
 
         self._require_stream_observation()
+        if not self.ports.prediction_target_observable:
+            raise RuntimeError(
+                "integrated DefaultConfig BPU correction target is not observable"
+            )
         for _ in range(limit + 1):
             transfer = await self.prediction_monitor.recv()
             if transfer.accepted_tick <= transaction.prediction_tick:
@@ -734,6 +755,11 @@ class BpuAgent:
 
         if cycles is not None and cycles < 4:
             raise ValueError("settle needs at least four pipeline cycles")
+        if cycles is None and self.retirement_monitor is None:
+            raise RuntimeError(
+                'integrated DefaultConfig BPU metadata perf source is not observable; '
+                'redirect_and_settle requires an exported retirement PC'
+            )
         await self.redirect(transaction)
         if cycles is not None:
             return (await ClockCycles(self.dut.clock, cycles)).tick
@@ -758,7 +784,6 @@ class BpuAgent:
         return {
             "reset_vector": self._reset_vector,
             "prediction_ready": self._prediction_ready,
-            "meta_ready": self._meta_ready,
             "ubtb_enable": self._predictor_enabled["ubtb"],
             "abtb_enable": self._predictor_enabled["abtb"],
             "mbtb_enable": self._predictor_enabled["mbtb"],

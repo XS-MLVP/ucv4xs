@@ -14,6 +14,7 @@ from pathlib import Path
 import shlex
 import subprocess
 import tempfile
+from suites.memblock.dcache.native import native_seed
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCK = __import__("ucv.runtime", fromlist=["toolchain"]).toolchain()
@@ -32,6 +33,8 @@ def main() -> None:
     output = (ROOT / "results" / args.name).resolve()
     if output.exists():
         raise SystemExit(f"output already exists: {output}")
+    seed = native_seed()
+    env = dict(os.environ, UCV_SEED=str(seed))
     removed = []
     for name in ("memory-direct.fst", "memory-direct.vcd"):
         stale = ROOT / name
@@ -46,7 +49,7 @@ def main() -> None:
         "--native-coverage-tool", VERILATOR_COVERAGE,
     ]
     with tempfile.TemporaryDirectory(prefix="dcache-run-", dir=None) as temp:
-        proc = subprocess.run(command, cwd=temp, env=dict(os.environ))
+        proc = subprocess.run(command, cwd=temp, env=env)
         for name in ("memory-direct.fst", "memory-direct.vcd"):
             stray = Path(temp) / name
             if stray.exists():
@@ -75,7 +78,7 @@ def main() -> None:
     output.mkdir(parents=True, exist_ok=True)
     (output / "trace-policy.json").write_text(json.dumps(policy, indent=2) + "\n")
     seeds = {
-        "verilator_seed": os.environ.get("DCACHE_VERILATOR_SEED", "1"),
+        "verilator_seed": str(seed),
         "python_seed": os.environ.get("DCACHE_TEST_RANDOM_SEED", "1"),
     }
     (output / "seed.json").write_text(json.dumps(seeds, indent=2) + "\n")
