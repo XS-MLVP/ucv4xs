@@ -58,7 +58,8 @@ class PsqAgent:
             # parent: it hid zero-write ownership and finish-order failures.
             stores.append(store)
             owner = self.owners.get(self.head + lane)
-            deq.append(DeqControl(owner.store.inactive, owner.store.committed, owner.finished) if owner else DeqControl())
+            deq.append(DeqControl(owner.store.inactive, owner.store.committed, owner.finished,
+                                  owner.store.cache_operation, owner.store.memory_type) if owner else DeqControl())
         owner = self.owners.get(self.read)
         page = SecondPage(True, owner.second_page, SqPtr.encode(owner.position)) if owner and owner.second_page is not None else SecondPage()
         inp = Inputs(tuple(stores), tuple(deq), (True, True), SqPtr.encode(self.read), (SqPtr.encode(self.head), SqPtr.encode(self.head + 1)),

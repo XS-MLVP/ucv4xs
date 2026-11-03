@@ -56,7 +56,9 @@ class DeqModel:
         capacity = 2 - len(queue) + sum(fires)
         zero = head.cache_operation and head.cbo == 3
         cacheable = head.memory_type & 3 == 0
-        first_valid = cacheable and head.committed and not head.inactive and (not head.cache_operation or cbo == "zero" and not queue) and (not head.cross_word or not queue)
+        first_valid = (cacheable and head.committed and not head.inactive
+                       and (not head.cache_operation or cbo == "zero" and not queue)
+                       and (not head.cross_word or capacity >= 2))
         offers = []
         sq = serial(inp.read_ptr)
         if first_valid:
@@ -89,10 +91,12 @@ class DeqModel:
             identity = (base + lane) % 256
             ctrl = controls.get(identity)
             inactive = bool(ctrl and ctrl.committed and ctrl.inactive)
-            # An inactive follower can join a lane-0 normal credit, but a
-            # split tail in Sbuffer lane 1 leaves it for the next head cycle.
-            # This is a permitted one-cycle wait, not an ownership failure.
-            inactive_ready = inactive and (not lane or first_inactive or self.credit_lanes[0] == base)
+            # DeqModule charges an Sbuffer credit only to
+            # isCacheable(memoryType) && !isCbo && !vecInactive entries, so an
+            # inactive entry completes from its own vecInactive bit and may
+            # leave in the same cycle as a neighbouring ordinary Store (a
+            # cross-16B tail included).
+            inactive_ready = inactive
             complete = identity in self.completed_sq or bool(ctrl and ctrl.committed and ctrl.finished)
             if not (inactive_ready or complete):
                 break

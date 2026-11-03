@@ -31,6 +31,11 @@ class DeqControl:
     inactive: bool = False
     committed: bool = False
     finished: bool = False
+    # The deq pointer names its own SQ entry: its type decides whether the
+    # dequeue needs an Sbuffer credit and whether it is a CBO. Both fields are
+    # public DeqModule inputs in the current RTL (NewStoreQueue deqUsesSbufferCredit).
+    cache_operation: bool = False
+    memory_type: int = 0
 
 
 @dataclass(frozen=True)
@@ -94,8 +99,9 @@ def encode(inp):
         for suffix, field in fields:
             put(prefix + suffix, getattr(store, field), 1)
     for lane, ctrl in enumerate(inp.dequeue_controls):
-        for suffix, field in (("vecInactive", "inactive"), ("committed", "committed"), ("handleFinish", "finished")):
+        for suffix, field in (("vecInactive", "inactive"), ("committed", "committed"), ("handleFinish", "finished"), ("isCbo", "cache_operation")):
             put(f"io_deqCtrlEntries_{lane}_{suffix}", getattr(ctrl, field), 1)
+        put(f"io_deqDataEntries_{lane}_memoryType", ctrl.memory_type, 3)
     for name, field in (("io_toUncacheBuffer_req_ready", "uncache_ready"), ("io_toUncacheBuffer_idResp_valid", "uncache_ack_valid"),
                         ("io_toUncacheBuffer_idResp_bits_is2lq", "uncache_ack_to_load"), ("io_toUncacheBuffer_resp_valid", "uncache_response"),
                         ("io_toDCache_req_ready", "cache_ready"), ("io_toDCache_resp_valid", "cache_response"),
