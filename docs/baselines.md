@@ -20,6 +20,13 @@ native缓存身份自动与旧版分离，已有旧链接不手工切换；执�
 需要历史路径时显式传旧命名基线；按工程解析仍使用`source_path_for`/`soc_rtl_for`。
 来源与检查见[更新记录](history/baseline-kunminghu-v3-20261102.json)。
 
+> 后续进度（2026-11-03）：LSQ 已完成整条链路——`prepare` 生成 2020 个 RTL 文件、
+> 38/38 DUT `BUILT + SMOKE PASS`、完整回归 2575 项 **2356 PASS / 219 FAIL**（旧基线
+> 2325/250）。完整生成 RTL 已作为 release 附件发布，tag `xiangshan-a0c2a26cb`，
+> 参数等价于上游 `make verilog`。其余九个工程仍未在新基线上构建或回归，上文
+> "不执行"的表述只保留 2026-11-02 当时含义。详见
+> [LSQ 回归结论](lessons/lsq-baseline-regression-20261103.md)。
+
 ## 继承与生成规则
 
 `ucv.json` 指定根默认基线。`suites/<group>/ucv.json` 和 `suites/<group>/<suite>/ucv.json` 可以用 `baseline` 引用 `baselines/<name>.json`。最近一级显式声明优先；缺省继承父级。空值、未知引用、不完整定义均报错。子目录只引用完整的命名基线，不对其字段做隐式合并。一个工程的所有 DUT 共用该基线，不支持 DUT 内单独改 commit。

@@ -21,10 +21,18 @@
 `kunminghu-v3` 分支头；保存完整commit，不自动漂移跟随分支。VAGQ工程继续显式覆盖
 internal `d4566d58a5ace1f6a5df4409b37a84b971f48e43`。
 
-此次只更新基线配置和默认路径解析，**尚未针对新基线生成RTL、构建/冒烟或执行功能回归**。
-旧 `public-893e1580b` 清单与其历史结果保留，不能把此前PASS/FAIL重标到新基线；后续先
-执行下方 `prepare` / `build`，旧native链接会被运行前校验拒绝。见
-[本次更新记录](docs/history/baseline-kunminghu-v3-20261102.json)。
+LSQ 已在新基线上完成整条链路：生成 RTL、38/38 DUT 构建冒烟、完整回归
+**2356 PASS / 219 FAIL**（旧基线 2325/250，2575 项 nodeid 一致）。其余九个工程尚未
+在新基线上构建或回归，不能套用这一结论。旧 `public-893e1580b` 清单与其历史结果保留，
+不能把此前 PASS/FAIL 重标到新基线；见
+[本次更新记录](docs/history/baseline-kunminghu-v3-20261102.json) 与
+[LSQ 回归结论](docs/lessons/lsq-baseline-regression-20261103.md)。
+
+该基线的完整生成 RTL（SystemVerilog，DefaultConfig，release 配置，等价于上游
+`make verilog`）已作为 release 附件发布：tag
+[`xiangshan-a0c2a26cb`](https://github.com/XS-MLVP/ucv4xs/releases/tag/xiangshan-a0c2a26cb)，
+含 `rtl/*.sv`、`rtl/*.v`、`rtl/filelist.f` 和完整 `BUILD-PARAMETERS.json`。附件不含断言
+（release 参数丢弃 verification layer），也不依赖 difftest；详见包内 README。
 
 所有工程使用 **DefaultConfig**。基线按“根 → 硬件分组 → 工程”继承，最近的显式完整命名基线优先；一个工程的所有 DUT 共用基线。源码 commit、递归子模块、生成参数、工具版本和设计补丁均进入版本清单。
 
