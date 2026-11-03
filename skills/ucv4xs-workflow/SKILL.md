@@ -112,6 +112,35 @@ python3.12 scripts/audit-assets.py
 
 分别报告实际执行的构建/冒烟、功能判定和覆盖缺口；缺少依赖、未执行和历史结果均明确说明。真实失败按原判定保留，不用修改模型对齐 RTL 或扩大 XFAIL 来取得通过。
 
+## 发布生成 RTL 包
+
+需要对外提供某基线的 RTL 时，发布的是**该 commit 的完整香山**，不是某个模块的闭包；
+模块级 UT 结论只是这份 RTL 的一条验证记录，不改变包的范围。
+
+1. 用 `ucv prepare` 生成的整芯片缓存（`.cache/generated/<key>/rtl`）作为来源，不要
+   从 DUT 闭包拼装。核对 `generation.json` 的 baseline commit 与生成命令。
+2. 打包 `*.sv`、`*.v` 和 **firtool 自带的 `filelist.f`**。`filelist.f` 是权威编译入口
+   （依赖顺序，顶层在末行），不要用 `*.sv` 通配替代；也不要手改它——部分条目带 `./`
+   前缀，改成裸名会与上游产物失去可比性，需要时另附说明而不是替换原文件。
+3. 附 `BUILD-PARAMETERS.json`（commit、递归子模块数、design、chisel/firtool 参数、
+   工具版本、`generation.json` 里的完整命令）、上游许可全文、逐文件 `SHA256SUMS`
+   和一份说明用法的 README。
+4. 在 README 和参数文件里如实写明两类边界，缺一项都会误导使用者：
+   - **断言**：`--default-layer-specialization=disable` 会丢弃 Chisel 的
+     verification layer，`.fir` 里有断言而 `.sv` 里 `$fatal` 为 0。需要不变量检查时
+     由 testbench 提供。
+   - **difftest**：`DiffExt*.v` 由 `` `ifdef DIFFTEST `` 保护；不定义该宏时可独立编译，
+     定义时需另供 `DifftestMacros.svh` 与 difftest C++ 库。
+5. 记录与上游 `make verilog` 的关系。`ucv` 复刻其默认参数但直接调 mill，产物内容相同，
+   差别是缺少 Makefile 附加的 `// <commit>`、`// <git diff>` 注释头。`$fatal` →
+   `xs_assert_v2` 的 sed 只存在于 `make sim-verilog` 规则，不要归到 `make verilog`。
+6. 验证后再发布：解压副本执行 `sha256sum -c`，并用
+   `verilator --lint-only -Wno-fatal -f filelist.f --top-module XSTop -I.` 确认可编译；
+   发布后重新下载，比对压缩包 SHA-256 与逐文件校验和。
+7. tag 与 release 以香山 commit 命名（如 `xiangshan-a0c2a26cb`），不要用 ucv4xs 自身
+   版本号，避免与仓库版本混淆。正文说明包是什么即可；模块级 PASS/FAIL 留在
+   `docs/status.md` 和对应工程文档，不写成这份 RTL 的属性。
+
 ## 产物与经验
 
 Git 中保留配方、锁定版本、补丁、验证代码和经验。`.cache/`、`results/`、`.history/`、本地环境和 internal 证据按 [维护约定](../../docs/maintenance.md) 管理。按任务授权回收文件时核对活动状态和用途，记录删除清单；此 skill 本身不授权额外删除或远端写入。
