@@ -5,6 +5,17 @@
 
 仓库名称为 `ucv4xs`，定位是基于 UnityChip 的香山单元测试；命令与 Python 导入名保持 `ucv`。
 
+**LSQ 新基线回归（2026-11-02/03）**：按新默认 `public-a0c2a26cb` 完成 prepare（2020 个
+RTL 文件）、38/38 `BUILT + SMOKE PASS` 和完整回归。完整 **2356 PASS / 219 FAIL**
+（旧基线 2325/250），2575 个 nodeid 与旧基线完全一致，运行前后源码 hash 稳定，
+`manifest committed`、`coverage_complete=true`、`gaps=[]`。逐项对比为 34 条上游修复、
+28 条模型滞后（cross-16B 入场合同，已按 `0a164bbf6` 更新并 311 项定向零回归验证）、
+216 条旧失败仍在（其中 197 条对上历史 11 个 RTL 根因，逐条源码确认未修）。
+另有 3 条只在 post-edge 采样不一致，四种改法实测均引入更多回归，保留为真实 FAIL。
+本结论只覆盖 LSQ、seed 1、DefaultConfig；其他九工程在新基线上仍未构建/回归。详见
+[案例](lessons/lsq-baseline-regression-20261103.md)与
+[机器记录](history/lsq-regression-a0c2a26cb-20261102.json)。
+
 **后续默认基线更新（2026-11-02）**：按用户要求，将九个公开工程的根默认改为
 `public-a0c2a26cb`，固定上游`kunminghu-v3`当次最新
 `a0c2a26cbe3c862175174bad03a1a23c406315ed`；76条递归gitlink已核对，只有

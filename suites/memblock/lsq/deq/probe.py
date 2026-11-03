@@ -7,17 +7,32 @@ mixed traffic remain required before acceptance.
 from dataclasses import asdict, replace
 import json
 
-from .types import Inputs, encode
+from .types import DeqControl, Inputs, encode
 
 
 class ProbeEnv:
     def __init__(self, driver, before, after, coverage, journal, checks, nodeid):
         self.driver, self.before, self.after, self.coverage, self.journal, self.checks = driver, before, after, coverage, journal, checks
-        self.nodeid, self.controls, self.last_tick = nodeid, Inputs(), -1
+        self.nodeid, self.controls, self.last_tick = nodeid, Inputs(dequeue_controls=(DeqControl(committed=True), DeqControl(committed=True))), -1
+        # Directed probes keep the deq window at an explicit pointer. Current
+        # RTL selects the completion rule from the deq entry's own type
+        # (isCacheable(memoryType) && !isCbo && !vecInactive), so remember the
+        # last real SQ entry presented on each lane and keep its type on the
+        # deq window after the read window moves on.
+        self.entry_types = [(False, 0), (False, 0)]
         self.observed = self.pre_observed = None
 
     async def cycle(self, **controls):
         self.controls = replace(self.controls, **controls)
+        for lane, store in enumerate(self.controls.stores):
+            if store.data_valid or store.address_valid:
+                self.entry_types[lane] = (store.cache_operation, store.memory_type)
+        typed = []
+        for lane, ctrl in enumerate(self.controls.dequeue_controls):
+            operation, memory = self.entry_types[lane]
+            typed.append(replace(ctrl, cache_operation=ctrl.cache_operation or operation,
+                                 memory_type=ctrl.memory_type or memory))
+        self.controls = replace(self.controls, dequeue_controls=tuple(typed))
         edge = await self.driver.send(self.controls)
         while True:
             pre, post = await self.before.recv(), await self.after.recv()

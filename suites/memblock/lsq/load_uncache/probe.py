@@ -260,7 +260,7 @@ class ProbeEnv:
         self.expect("bypass.s1.original-paddr", self.observed[prefix + "s1Resp_bits_paddr"], q.paddr)
         self.expect("exception.valid-on-consume", self.observed["io_exceptionInfo_valid"], 1)
         expected = {"robIdx_flag": int(q.rob.flag), "robIdx_value": q.rob.value, "robIdx_isFormer": int(q.rob.former),
-                    "vaddr": q.fullva, "gpaddr": q.gpaddr & ((1 << 50) - 1), "isHyper": int(q.hyper), "isForVSnonLeafPTE": int(q.nonleaf)}
+                    "vaddr": q.fullva, "gpaddr": q.gpaddr, "isHyper": int(q.hyper), "isForVSnonLeafPTE": int(q.nonleaf)}
         expected.update({f"exceptionVec_{bit}": q.exceptions >> bit & 1 for bit in SOURCE_EXCEPTION_BITS})
         expected.update(exceptionVec_19=int(error), exceptionVec_5=int(nderr))
         self.expect("exception.original-load-metadata", {key: self.observed["io_exceptionInfo_bits_" + key] for key in expected}, expected)

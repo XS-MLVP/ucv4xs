@@ -112,7 +112,14 @@ class LoadQueueModel:
                 return edges >= 1
             if name.startswith("io_perf_"):
                 index = int(name.split("_")[2])
-                return edges >= (4 if index < 17 else 5 if index == 25 else 3 if index == 26 else 2)
+                # RAR ld/ld nuke is a resetless register bank in the fixed
+                # RTL (LoadQueueRAR.matchMask = RegEnable(..., req.valid)),
+                # and every perf level is another two-edge public history.
+                # Verilator seeds those registers from _RANDOM, so their
+                # initial values are undefined for six edges: RAR, LoadQueue
+                # and LsqWrapper each register twice. Do not compare a
+                # power-up artifact; later events are checked normally.
+                return edges >= (8 if index < 17 else 5 if index == 25 else 3 if index == 26 else 2)
             return True
         return {key: value for key, value in values.items() if known(key)}
 

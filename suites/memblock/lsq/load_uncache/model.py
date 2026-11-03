@@ -166,7 +166,7 @@ class LoadUncacheModel:
         want["io_exceptionInfo_valid"] = int(fault is not None)
         if fault:
             payload = {"robIdx_flag": int(fault.rob.flag), "robIdx_value": fault.rob.value, "robIdx_isFormer": int(fault.rob.former),
-                       "vaddr": fault.fullva, "gpaddr": fault.gpaddr & ((1 << 50) - 1), "isHyper": int(fault.hyper), "isForVSnonLeafPTE": int(fault.nonleaf),
+                       "vaddr": fault.fullva, "gpaddr": fault.gpaddr, "isHyper": int(fault.hyper), "isForVSnonLeafPTE": int(fault.nonleaf),
                        **{f"exceptionVec_{bit}": fault.exceptions >> bit & 1 for bit in ALL_EXCEPTIONS}}
             want.update({"io_exceptionInfo_bits_" + key: value for key, value in payload.items()})
         if self.rollback and not reset:

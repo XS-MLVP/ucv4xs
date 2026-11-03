@@ -1,0 +1,245 @@
+{
+  "schema": 1,
+  "date": "2026-11-02",
+  "kind": "lsq-regression-on-new-public-baseline",
+  "baseline": {
+    "name": "public-a0c2a26cb",
+    "commit": "a0c2a26cbe3c862175174bad03a1a23c406315ed",
+    "previous": "public-893e1580b",
+    "previous_commit": "893e1580b705d81f113c30c7a05734e09a08050e",
+    "source_cache_key": "f3ac6022d07c5c05d28869ac811f91038f9103677796dd6f051bd1981408be9b",
+    "generation_cache_key": "d7c6bc4d17651fc1bd92ac39c469410a6bb91215f46c1efcfaf1ec66a72e972d",
+    "generated_rtl_files": 2020,
+    "local_source_mirror": ".cache/mirrors/public-a0c2a26cb",
+    "note": "Mirror is a local acceleration copy only; the locked checkout and all receipts stay under .cache/sources and .cache/generated."
+  },
+  "build": {
+    "command": ".venv/bin/ucv build lsq --require-unified-baseline --jobs 32",
+    "log": ".cache/build-lsq-a0c2a26cb.log",
+    "duts": 38,
+    "result": "38/38 BUILT + SMOKE PASS",
+    "exit_code": 0
+  },
+  "runs": [
+    {
+      "output": "/tmp/opencode/lsq-runs/old-fail-targeted",
+      "purpose": "targeted replay of the 250 historical failures",
+      "counts": {"PASS": 22, "FAIL": 98, "ERROR": 130},
+      "note": "ERRORs were port/startup artifacts before adapter fix; not hardware verdicts."
+    },
+    {
+      "output": "/tmp/opencode/lsq-runs/full-a0c2a26cb",
+      "counts": {"PASS": null, "FAIL": null},
+      "status": "ABORTED_BY_OPERATOR",
+      "invalid_reason": "Harness source changed after the run started, so source_identity could not be stable. Discarded; not used for any conclusion. Directory was deleted on operator approval."
+    },
+    {
+      "output": "/tmp/opencode/lsq-runs/full-a0c2a26cb-v2",
+      "counts": {"PASS": 2329, "FAIL": 246},
+      "cases": 2575,
+      "run_status": "FAIL",
+      "hardware_verdict": "FAIL",
+      "source_stable_before_and_after": true,
+      "source_sha256": "9fab214e239e19cd6608ca9e44f046da986e4b50cff31dea550d56e32e9a5c6f",
+      "seed": 1,
+      "workers": 32,
+      "manifest_state": "committed",
+      "coverage_complete": true,
+      "gaps": [],
+      "source_changed_during_run": false,
+      "status_note": "Superseded by the v3 run below after the cross-16B entry contract update. Retained as the pre-update record."
+    },
+    {
+      "output": "/tmp/opencode/lsq-runs/full-a0c2a26cb-v3",
+      "role": "AUTHORITATIVE full-suite result for the final source state",
+      "counts": {"PASS": 2356, "FAIL": 219},
+      "cases": 2575,
+      "run_status": "FAIL",
+      "hardware_verdict": "FAIL",
+      "source_stable_before_and_after": true,
+      "source_sha256": "69680282a8f2cbee59c539b862f4a921b9c6641269f9ef77a9af20c15529a3bf",
+      "seed": 1,
+      "workers": 32,
+      "manifest_state": "committed",
+      "coverage_complete": true,
+      "gaps": [],
+      "source_changed_during_run": false
+    }
+  ],
+  "comparison_against_public_893e1580b": {
+    "old": {"PASS": 2325, "FAIL": 250, "cases": 2575},
+    "new": {"PASS": 2356, "FAIL": 219, "cases": 2575},
+    "nodeid_set_identical": true,
+    "fixed": 34,
+    "still_failing": 216,
+    "old_fail_plus_new": "216 still + 3 new = 219 FAIL",
+    "pass_to_fail": 3,
+    "pass_to_fail_detail": [
+      "tests/deq/test_lifecycle.py::test_full_seeded_mixed_traffic_and_fair_drain[nonzero-cbo-control-54020]",
+      "tests/deq/test_lifecycle.py::test_split_followed_by_inactive_moves_one_sq_read_position[655420]",
+      "tests/deq/test_lifecycle.py::test_split_followed_by_inactive_moves_one_sq_read_position[659452]"
+    ],
+    "pass_to_fail_reason": "Post-edge sample phase: the registered Sbuffer credit has already advanced while the external deq window still carries the old controls. A post-edge rewrite fixed two of these but introduced one PASS->FAIL, so it was reverted; they are kept as real FAIL."
+  },
+  "fixed_by_upstream": {
+    "FWD-SQID-001": 12,
+    "LRQ-STRICT-001": 11,
+    "DEQ-FINISH-ORDER-001": 6,
+    "unadjudicated_controls": 3,
+    "upstream_commits": [
+      "302c0fe19 fix(StoreQueue): decouple Paddr match from Vaddr match (#6769)",
+      "4efe9f034 fix(StoreQueue): dequeue only completed StoreQueue prefix (#6768)",
+      "73cc6ee42 perf(LoadQueueReplay): fix strict mistakenly clean up"
+    ],
+    "remaining_root_causes_still_present_in_scala": [
+      "FWD-RANGE-001 rotateByteRight circular rotate unchanged",
+      "LQU-SID-001 slaveAccept lifetime after resp.fire unchanged",
+      "RAR-REL-001 release2Cycle.valid := RegNext(io.release.valid) unchanged",
+      "DEQ-WB-001 hasHardwareError := false.B in writeback state unchanged",
+      "DEQ-SPLIT-WLINE-001 port.bits.wline still from ctrlEntry.isCbo",
+      "DEQ-ZERO-001 CboState.writeZero still exits on req.head.fire",
+      "LSQ-BUS-OWNERSHIP-001 s_load/s_store still exit on any resp.fire",
+      "FWD-ALIAS-001 partially fixed: PA decoupling landed, 12 nodes still fail",
+      "DEQ-FINISH-ORDER-001 partially fixed: 14 nodes still fail"
+    ]
+  },
+  "pass_to_fail_attribution": {
+    "count": 28,
+    "root_cause": "upstream 0a164bbf6 perf(StoreQueue): reduce cross16B request enter latency",
+    "rtl_change": "toSbufferValid(0) cross-16B gate changed from dataQueue.io.empty to dataQueue.io.fromDeqModule(0).ready && fromDeqModule(1).ready",
+    "rtl_files": ["PhysicalStoreQueue.sv", "DeqModule.sv"],
+    "witnessed_assertions": [
+      "io_sbuffer_req_0_valid: actual 1, model 0",
+      "io_sbuffer_req_1_valid: actual 1, model 0",
+      "io_rdataPtrMoveCnt: actual 1, model 0",
+      "io_sqDeqCnt: actual 2, model 1"
+    ],
+    "affected_tests": [
+      "tests/deq/test_lifecycle.py::test_full_split_line_page_and_sq_rob_identity (9)",
+      "tests/deq/test_lifecycle.py::test_split_followed_by_inactive_moves_one_sq_read_position (2)",
+      "tests/deq/test_lifecycle.py::test_full_seeded_mixed_traffic_and_fair_drain (1)",
+      "tests/lsq_wrapper/test_forward_memory.py::test_cross_word_youngest_pa_alias_must_not_return_old_store_bytes (3)",
+      "tests/lsq_wrapper/test_shared_recovery.py (2)",
+      "tests/lsq_wrapper/test_uq_page_pairs.py (3)",
+      "tests/psq/test_full_model.py (2)",
+      "tests/psq/test_uq_page_pairs.py (1)",
+      "tests/store_queue/test_bytes.py (4)",
+      "tests/store_queue/test_stream.py (1)",
+      "tests/store_queue/test_uq_page_pairs.py (1)"
+    ],
+    "classification": "reference model encodes the pre-optimization latency contract; NOT a harness defect and NOT a demonstrated RTL bug",
+    "not_yet_changed": "No model or assertion was edited for this class; the failures are reported as-is pending an explicit decision."
+  },
+  "cross16b_entry_contract_update": {
+    "decision": "operator approved updating the entry contract (not relaxing an assertion)",
+    "file": "suites/memblock/lsq/deq/model.py",
+    "changes": [
+      {
+        "what": "cross-16B entry condition",
+        "before": "not head.cross_word or not queue",
+        "after": "not head.cross_word or capacity >= 2",
+        "basis": "NewStoreQueue.toSbufferValid lane 0 gates on dataQueue.io.fromDeqModule(0).ready && (1).ready after upstream 0a164bbf6; capacity already counts a same-cycle Sbuffer drain, so it is the public form of that two-port condition"
+      },
+      {
+        "what": "inactive dequeue readiness",
+        "before": "inactive and (lane 0 or first_inactive or credit_lanes[0] == base)",
+        "after": "inactive",
+        "basis": "NewStoreQueue.deqUsesSbufferCredit is isCacheable(memoryType) && !isCbo && !vecInactive, so a vecInactive entry completes from its own bit and never waits for a credit"
+      }
+    ],
+    "targeted_verification": {
+      "output": "/tmp/opencode/lsq-runs/cross16b-final",
+      "selection": "tests/deq tests/psq tests/store_queue tests/lsq_wrapper/test_forward_memory.py tests/lsq_wrapper/test_shared_recovery.py tests/lsq_wrapper/test_uq_page_pairs.py",
+      "cases": 311,
+      "counts": {"PASS": 239, "FAIL": 72},
+      "changed_against_full_v2": 27,
+      "old_fail_to_pass": 27,
+      "new_regressions": 0
+    },
+    "residual_after_update": [
+      "tests/deq/test_lifecycle.py::test_split_followed_by_inactive_moves_one_sq_read_position[655420]",
+      "tests/deq/test_lifecycle.py::test_split_followed_by_inactive_moves_one_sq_read_position[659452]",
+      "tests/deq/test_lifecycle.py::test_full_seeded_mixed_traffic_and_fair_drain[nonzero-cbo-control-54020]"
+    ],
+    "residual_reason": "All three compare the POST-edge sample, where the registered Sbuffer credit has advanced but the external deq window still carries the old controls.",
+    "regression_evidence_state": "The authoritative full-suite result is the v3 run (2356 PASS / 219 FAIL, source sha256 69680282...), which includes this contract update."
+  },
+  "post_edge_accounting_investigation": {
+    "problem": "The three residual nodes disagree only in the post-edge sample: RTL io_sqDeqCnt is 2, the model expects 1, for the shape ordinary-or-NC lane0 + vecInactive lane1.",
+    "rtl_rule": "DeqModule derives deqMask combinationally from the registered sbufferCreditCount and the deq window pins. Old RTL summed per-signal terms and used the RegNext-delayed deqPtrMoveFromSbuffer; upstream 4efe9f034 replaced that with a credit balance plus a deqUsesSbufferCredit prefix mask.",
+    "model_rule": "deq/model.py keeps the older sparse formula in the expected(after=True) branch, translated term by term from the pre-4efe9f034 DeqModule.sv. Its deqPtrMoveFromSbuffer_0 equivalent is 'credit_lanes[0] is not None'.",
+    "attempts": [
+      {"change": "mirror RTL exactly (credit counter + deqUsesSbufferCredit prefix, one formula for both phases)", "result": "10 fixed / 16 regressions", "why": "the model's handleFinish is set by PSQ one cycle after deq.advance(), so a literal RTL copy loses the explicit phase compensation"},
+      {"change": "delete the after branch and use plan() evaluated post-advance", "result": "4 fixed / 21 regressions", "why": "the 9 split-identity nodes depend on the sparse formula's one-cycle lag"},
+      {"change": "after branch: inactive lane1 may join when ANY credit was produced", "result": "0 fixed / 19 regressions", "why": "too permissive; a credit owned by a different SQ is not the prefix Store's credit"},
+      {"change": "after branch: inactive lane1 may join when base is in credit_lanes", "result": "0 fixed / 19 regressions", "why": "base is in credit_lanes in those cases too, so membership alone does not separate the two situations"}
+    ],
+    "conclusion": "No local edit fixes these three without regressing others. The correct fix is a redesign of the model's completion accounting to an explicit credit balance with per-phase snapshots, which is more than this regression task authorises and which risks turning the check into a mirror of the RTL.",
+    "decision": "Kept as three真实 FAIL. deq/model.py reverted to the verified v3 state."
+  },
+  "adapter_changes_made": {
+    "kind": "pin/interface only, no assertion or expected-value edits",
+    "files": [
+      {
+        "path": "suites/memblock/lsq/deq/types.py",
+        "change": "DeqControl gains cache_operation and memory_type; encode() drives io_deqCtrlEntries_N_isCbo and io_deqDataEntries_N_memoryType",
+        "why": "The current DeqModule consumes both fields for deqUsesSbufferCredit, so Picker exports them as 4 new inputs (61 -> 65)."
+      },
+      {
+        "path": "suites/memblock/lsq/deq/ports.py",
+        "change": "input count 61 -> 65; sample() fills the new fields from real pins",
+        "why": "Same exported-port change."
+      },
+      {
+        "path": "suites/memblock/lsq/deq/agent.py",
+        "change": "PsqAgent forwards owner store type into DeqControl",
+        "why": "Same; real entry type rather than a zero placeholder."
+      },
+      {
+        "path": "suites/memblock/lsq/deq/probe.py",
+        "change": "directed probes start with committed deq controls and remember the last real entry type per lane",
+        "why": "Same; the deq pointer now gates on its own entry's committed/type."
+      },
+      {
+        "path": "suites/memblock/lsq/load_uncache/model.py",
+        "change": "remove 50-bit gpaddr truncation",
+        "why": "ExceptionInfoGen.gpaddr widened from GPAddrBits to XLEN in this baseline."
+      },
+      {
+        "path": "suites/memblock/lsq/load_uncache/probe.py",
+        "change": "same gpaddr width alignment",
+        "why": "Same."
+      },
+      {
+        "path": "suites/memblock/lsq/manifest/duts.json",
+        "change": "exception_gpaddr_bits 50 -> 64 for load_queue_uncache",
+        "why": "Same."
+      },
+      {
+        "path": "suites/memblock/lsq/load_queue/model.py",
+        "change": "perf known-edge window for indices < 17 widened from 4 to 8 edges",
+        "why": "LoadQueueRAR.matchMask became an unreset RegEnable, so RAR/LoadQueue/LsqWrapper perf levels start from Verilator _RANDOM; only the power-up window is skipped and later events are still compared cycle by cycle."
+      }
+    ]
+  },
+  "known_gaps": [
+    {
+      "item": "psq/model.py does not yet drive DeqControl.memory_type",
+      "effect": "A non-cacheable entry sitting in the deq window would be presented as cacheable, so the RTL could demand an Sbuffer credit it never receives.",
+      "current_evidence": "No failure in this run traces to it; the file edit was rejected by the change policy because it touches the PSQ reference model.",
+      "next": "Needs an explicit decision, then one line of pin wiring with no expected-value change."
+    },
+    {
+      "item": "three post-edge accounting nodes",
+      "effect": "test_split_followed_by_inactive_moves_one_sq_read_position (x2) and test_full_seeded_mixed_traffic_and_fair_drain[nonzero-cbo-control-54020] fail only in the post-edge sample.",
+      "current_evidence": "See post_edge_accounting_investigation: four candidate edits were measured, each with more regressions than fixes.",
+      "next": "Redesign the model's completion accounting to an explicit credit balance with per-phase snapshots; not attempted here."
+    }
+  ],
+  "reproduce": {
+    "prepare": ".venv/bin/ucv prepare lsq --require-unified-baseline",
+    "build": ".venv/bin/ucv build lsq --require-unified-baseline --jobs 32",
+    "full": ".venv/bin/ucv run lsq --workers 32 --seed 1",
+    "report": ".venv/bin/ucv report <run-dir>"
+  }
+}

@@ -17,6 +17,7 @@
 - [提交后语义修复，2026-11-01](semantic-boundary-repair-20261101.md)：检查点提交/推送、默认多 worker 收集与 cwd、原生别名审计盲区、接受与完成身份的正反对照。
 - [事务边界与已登记漏检修复，2026-11-01](transaction-boundary-repair-20261101.md)：Sbuffer 双 DUT 的框架 Driver/Monitor、零接受/超时、写回 UID 与响应/重试、同字节竞争和 CMO 生产者时序；LSQ 显式 fixture 合同。
 - [全仓事务/迁移适配目标，2026-11-01（进行中）](transaction-goal-20261101.md)：十工程/132 DUT 的完整范围、冻结基线、IFU 逐 DUT 适配与未完成项；不沿用旧目标的过强完成结论。
+- [LSQ 基线升级回归，2026-11-02/03](lsq-baseline-regression-20261103.md)：新基线 prepare/build/完整回归；上游修复、模型滞后、缺陷仍在三分类；引脚适配边界；"照抄 RTL 不是优雅更新"的四种实测反例。
 - [跨模块假阴性总结，2026-10-26](false-negatives-20261026.md)：案例矩阵、状态快照、诊断树和历史证据；它不是 skill 方法正文。
 
 旧 skill 名称仅保留短导航以兼容已有引用。方法文件可按路径读取，不代表已向工具注册或自动加载。新仓库的维护规则见 [维护与验收](../maintenance.md)。
@@ -29,7 +30,7 @@
 | ICache | [验证经验](../../suites/frontend/icache/docs/verification-lessons.md)、[错误复核](../../suites/frontend/icache/docs/error-review.md) | 跨路径组合、过宽放行、死字段与观察点缺失 |
 | FTQ | [功能点与语义](../../suites/frontend/ftq/docs/functional-points.md)、[覆盖率闭环](../../suites/frontend/ftq/docs/coverage-analysis-20261030.md)、[分支槽溢出案例](ftq-resolve-capacity-20261029.md) | 自底向上层次、物理槽/来源枚举、100% 行覆盖下的容量缺陷、合法激励与不变量 |
 | IFU | [功能点语义](../../suites/frontend/ifu/docs/functional-points.md)、[覆盖率闭环](../../suites/frontend/ifu/docs/coverage-loop.md)、[环境完整性案例](ifu-harness-integrity-20261029.md) | 自底向上六子模块+顶层组合、规范级参考模型、未覆盖分支的结构性证明、复位随机化/删除端口/端口宽度截窄的静默通过 |
-| LSQ | [同源审计](../../suites/memblock/lsq/docs/reports/same-source-audit-20261022.md)、[假阳性复核](../../suites/memblock/lsq/docs/bug-reports-20261022/12-false-positive-review.md) | 独立模型、程序年龄与物理槽位、真实生产者约束 |
+| LSQ | [同源审计](../../suites/memblock/lsq/docs/reports/same-source-audit-20261022.md)、[假阳性复核](../../suites/memblock/lsq/docs/bug-reports-20261022/12-false-positive-review.md)、[新基线回归](lsq-baseline-regression-20261103.md) | 独立模型、程序年龄与物理槽位、真实生产者约束；基线升级后的三分类与适配边界 |
 | DCache | [功能点审计](../../suites/memblock/dcache/docs/reports/functional-point-audit-20261025.md)、[防误报漏检复核](../../suites/memblock/dcache/docs/reports/soundness-recheck-20261026.md) | 功能点与实际断言对账、缺陷与检查器问题分离 |
 | MMU | [验证可信度复核](../../suites/memblock/mmu/docs/reports/verification-soundness-20261025.md)、[上游漏检案例](mmu-upstream-escapes-20261029.md) | 并发采样、旧归因撤回、错误 oracle、组合/检查点缺口；上游探针仍在外部历史工作区 |
 | Sbuffer | [独立审计](../../suites/memblock/sbuffer/docs/reports/independent-audit-20261024.md)、[二次裁决](../../suites/memblock/sbuffer/docs/reports/bug-recheck-20261024.md) | 空跑、排空超时、同字节竞争与检查器扰动 |

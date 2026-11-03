@@ -19,7 +19,7 @@ class Ports:
                     if isinstance(child, dict):
                         walk(child, (*prefix, name))
         walk(json.loads((ROOT / "dut/deq_module/signals.json").read_text()))
-        assert len(self.inputs) == 61 and len(self.outputs) == 55 and set(self.inputs) == set(encode(Inputs()))
+        assert len(self.inputs) == 65 and len(self.outputs) == 55 and set(self.inputs) == set(encode(Inputs()))
 
     def sample(self, event):
         pins = {name: pin.U() for name, pin in self.inputs.items()}
@@ -32,7 +32,8 @@ class Ports:
                                 bool(pins.get(data + "isHyper", 0)), bool(pins.get(ctrl + "dataValid", 0)), bool(pins.get(ctrl + "addrValid", 0)),
                                 bool(pins[ctrl + "vecInactive"]), bool(pins[ctrl + "cross16Byte"]), bool(pins.get(ctrl + "hasException", 0)), bool(pins[ctrl + "committed"]), bool(pins[ctrl + "isCbo"])))
             prefix = f"io_deqCtrlEntries_{lane}_"
-            dequeue.append(DeqControl(bool(pins[prefix + "vecInactive"]), bool(pins[prefix + "committed"]), bool(pins[prefix + "handleFinish"])))
+            dequeue.append(DeqControl(bool(pins[prefix + "vecInactive"]), bool(pins[prefix + "committed"]), bool(pins[prefix + "handleFinish"]),
+                                      bool(pins[prefix + "isCbo"]), pins[f"io_deqDataEntries_{lane}_memoryType"]))
         rob = RobPtr(bool(pins["io_fromVirtualStoreQueue_headRobIdx_flag"]), pins["io_fromVirtualStoreQueue_headRobIdx_value"], bool(pins["io_fromVirtualStoreQueue_headRobIdx_isFormer"]))
         inp = Inputs(tuple(stores), tuple(dequeue), tuple(bool(pins[f"io_writeToSbuffer_req_{lane}_ready"]) for lane in range(2)), sq("io_rdataPtrExt_0_"),
                      tuple(sq(f"io_deqPtrExt_{lane}_") for lane in range(2)), rob, pins["io_validCnt"],
