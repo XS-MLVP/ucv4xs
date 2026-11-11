@@ -19,24 +19,25 @@ import sys
 import time
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.vector.vagq', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(ROOT))
 
-from suites.vector.vagq.vagq.exhaustive import build_shape_sequence
-from suites.vector.vagq.vagq.scenario_matrix import feature_case_id, legal_public_feature_cases
+from suites.vector.vagq.testbenches.vagq.env.exhaustive import build_shape_sequence
+from suites.vector.vagq.testbenches.vagq.env.scenario_matrix import feature_case_id
+from suites.vector.vagq.testbenches.vagq.env.scenario_matrix import legal_public_feature_cases
 
 
 SOURCES = (
     'tools/run_vagq_exhaustive.py',
-    'tests/vagq/test_isa_exhaustive_shape.py',
-    'tests/vagq/test_exhaustive_checker.py',
-    'vagq/exhaustive.py',
-    'vagq/scenario_matrix.py',
-    'vagq/isa_reference.py',
-    'maskgen/reference.py',
-    'vagq/probe.py',
-    'vagq/driver.py',
-    'native.py',
+    'testbenches/vagq/tests/test_isa_exhaustive_shape.py',
+    'testbenches/vagq/tests/test_exhaustive_checker.py',
+    'testbenches/vagq/env/exhaustive.py',
+    'testbenches/vagq/env/scenario_matrix.py',
+    'testbenches/vagq/env/isa_reference.py',
+    'testbenches/maskgen/env/reference.py',
+    'testbenches/vagq/env/probe.py',
+    'testbenches/vagq/env/driver.py',
+    'testbenches/shared/env/native.py',
 )
 
 
@@ -141,7 +142,7 @@ def main():
                 '--native-coverage-tool', str(ucv_paths.project_root() / '.tools/verilator/bin/verilator_coverage'),
                 '--export-coverage-json', '--', '--basetemp=' + str(attempt / 'cases'),
                 '--junitxml=' + str(attempt / 'pytest.xml'),
-                '-q', '-rs', 'tests/vagq/test_isa_exhaustive_shape.py']
+                '-q', '-rs', 'testbenches/vagq/tests/test_isa_exhaustive_shape.py']
             atomic_json(attempt / 'command.json', dict(argv=cmd,
                 env={key: env[key] for key in ('RUN_VAGQ_EXHAUSTIVE', 'EXHAUSTIVE_START',
                                              'EXHAUSTIVE_LIMIT', 'VAGQ_SHAPE_LOG')}))

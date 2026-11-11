@@ -10,14 +10,14 @@ import subprocess
 import sys
 import time
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.vector.vagq', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(ROOT))
 from tools.run_vagq_exhaustive import atomic_json, digest
 
 REVIEW = ROOT / 'results/vagq-exhaustive-review-20261020-v1'
 SOURCES = (
     'tools/run_vagq_failure_review.py', 'tools/analyze_vagq_failures.py',
-    'vagq/failure_review.py', 'tests/vagq/test_failure_review.py',
+    'testbenches/vagq/env/failure_review.py', 'testbenches/vagq/tests/test_failure_review.py',
 )
 
 
@@ -87,7 +87,7 @@ def main():
                 '--output', str(attempt / 'execution'), '--native-coverage-tool',
                 str(ucv_paths.project_root() / '.tools/verilator/bin/verilator_coverage'), '--export-coverage-json', '--',
                 '--basetemp=' + str(attempt / 'cases'), '--junitxml=' + str(attempt / 'pytest.xml'),
-                '-q', '-rs', 'tests/vagq/test_failure_review.py']
+                '-q', '-rs', 'testbenches/vagq/tests/test_failure_review.py']
             atomic_json(attempt / 'command.json', dict(argv=cmd,
                 start=start, stop=stop, ordinals=expected,
                 env={k: env[k] for k in ('RUN_VAGQ_FAILURE_REVIEW', 'REVIEW_START', 'REVIEW_LIMIT', 'REVIEW_LOG')}))

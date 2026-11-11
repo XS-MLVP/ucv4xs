@@ -8,13 +8,18 @@ from pathlib import Path
 import sys
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.vector.vagq', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(ROOT))
 
 from tools.run_vagq_exhaustive import audit_attempt, atomic_json, digest
-from suites.vector.vagq.waveform import convert_fst, read_public_samples
-from suites.vector.vagq.vagq.exhaustive import build_shape_sequence, compare_shape, observed_bytes
-from suites.vector.vagq.vagq.scenario_matrix import OPERATION_NAMES, feature_case_id, legal_public_feature_cases
+from suites.vector.vagq.testbenches.vagq.env.waveform import convert_fst
+from suites.vector.vagq.testbenches.vagq.env.waveform import read_public_samples
+from suites.vector.vagq.testbenches.vagq.env.exhaustive import build_shape_sequence
+from suites.vector.vagq.testbenches.vagq.env.exhaustive import compare_shape
+from suites.vector.vagq.testbenches.vagq.env.exhaustive import observed_bytes
+from suites.vector.vagq.testbenches.vagq.env.scenario_matrix import OPERATION_NAMES
+from suites.vector.vagq.testbenches.vagq.env.scenario_matrix import feature_case_id
+from suites.vector.vagq.testbenches.vagq.env.scenario_matrix import legal_public_feature_cases
 
 
 def main():
@@ -156,7 +161,8 @@ def main():
         result_receipt_aggregate_sha256=result_hash.hexdigest(),
         all_shape_identities_unique=True,
         functional_artifact_matches_journal=True,
-        unchanged_independent_isa_oracle=frozen['vagq/isa_reference.py'])
+        unchanged_independent_isa_oracle=next(
+            value for name, value in frozen.items() if name.endswith('isa_reference.py')))
     atomic_json(run.parent / 'evidence.json', evidence)
     lines = [
         '# VAGQ 全量 shape 重执行结果', '',

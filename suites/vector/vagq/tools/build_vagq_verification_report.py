@@ -23,15 +23,13 @@ HERE = Path(__file__).resolve()
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(ROOT))
 
-from suites.vector.vagq.vagq.scenario_matrix import (  # noqa: E402
-    OPERATION_NAMES,
-    PUBLIC_DIMENSIONS,
-    feature_values,
-    legal_public_feature_cases,
-    pairwise_tokens,
-    public_space_metadata,
-    representative_public_feature_cases,
-)
+from suites.vector.vagq.testbenches.vagq.env.scenario_matrix import OPERATION_NAMES
+from suites.vector.vagq.testbenches.vagq.env.scenario_matrix import PUBLIC_DIMENSIONS
+from suites.vector.vagq.testbenches.vagq.env.scenario_matrix import feature_values
+from suites.vector.vagq.testbenches.vagq.env.scenario_matrix import legal_public_feature_cases
+from suites.vector.vagq.testbenches.vagq.env.scenario_matrix import pairwise_tokens
+from suites.vector.vagq.testbenches.vagq.env.scenario_matrix import public_space_metadata
+from suites.vector.vagq.testbenches.vagq.env.scenario_matrix import representative_public_feature_cases
 
 
 def _group(functional, instance):
@@ -110,7 +108,7 @@ def _space_report():
     metadata = public_space_metadata()
     return {
         'definition': {
-            'source': 'vagq/scenario_matrix.py',
+            'source': 'testbenches/vagq/env/scenario_matrix.py',
             'vlen_bits': metadata['vlen_bits'],
             'vlen_bytes': metadata['vlen_bits'] // 8,
             'flow_bytes': metadata['flow_bytes'],
@@ -205,7 +203,7 @@ def _functional_report(functional):
             },
             'uop_count_execution': 'derived_label_only_in_matrix_packet; not a full multi-uop sequence',
             'separate_multi_uop_tests': [
-                'tests/vagq/test_isa_dut_matrix.py::test_multi_uop_index_window_is_partitioned_without_gaps_or_duplicates',
+                'testbenches/vagq/tests/test_isa_dut_matrix.py::test_multi_uop_index_window_is_partitioned_without_gaps_or_duplicates',
             ],
             'multi_uop_execution_scope': 'uop_type=4 and uop_type=6; two-uop indexed-load partitions',
             'marginal_coverage': {

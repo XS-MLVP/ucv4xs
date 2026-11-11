@@ -5,12 +5,12 @@ import json
 from pathlib import Path
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.vector.vagq', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(ROOT))
 
 from tools.run_vagq_exhaustive import atomic_json, digest
-from suites.vector.vagq.vagq.failure_review import analyze_failure
-from suites.vector.vagq.vagq.scenario_matrix import legal_public_feature_cases
+from suites.vector.vagq.testbenches.vagq.env.failure_review import analyze_failure
+from suites.vector.vagq.testbenches.vagq.env.scenario_matrix import legal_public_feature_cases
 
 
 def main():

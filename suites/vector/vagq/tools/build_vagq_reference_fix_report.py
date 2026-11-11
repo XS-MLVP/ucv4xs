@@ -11,16 +11,22 @@ import subprocess
 import sys
 import xml.etree.ElementTree as ET
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.vector.vagq', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(ROOT))
 
 from tools.build_vagq_failure_review_report import check_manifest
 from tools.run_vagq_exhaustive import atomic_json, digest
-from suites.vector.vagq.maskgen.reference import MaskRequest, allocated_uops, evaluate_protocol
-from suites.vector.vagq.vagq.exhaustive import U64_MASK, assess_shape_boundaries, build_shape_sequence
-from suites.vector.vagq.vagq.isa_reference import architectural_accesses
-from suites.vector.vagq.vagq.scenario_matrix import FeatureCase, legal_public_feature_cases
-from suites.vector.vagq.waveform import convert_fst, read_public_samples
+from suites.vector.vagq.testbenches.maskgen.env.reference import MaskRequest
+from suites.vector.vagq.testbenches.maskgen.env.reference import allocated_uops
+from suites.vector.vagq.testbenches.maskgen.env.reference import evaluate_protocol
+from suites.vector.vagq.testbenches.vagq.env.exhaustive import U64_MASK
+from suites.vector.vagq.testbenches.vagq.env.exhaustive import assess_shape_boundaries
+from suites.vector.vagq.testbenches.vagq.env.exhaustive import build_shape_sequence
+from suites.vector.vagq.testbenches.vagq.env.isa_reference import architectural_accesses
+from suites.vector.vagq.testbenches.vagq.env.scenario_matrix import FeatureCase
+from suites.vector.vagq.testbenches.vagq.env.scenario_matrix import legal_public_feature_cases
+from suites.vector.vagq.testbenches.vagq.env.waveform import convert_fst
+from suites.vector.vagq.testbenches.vagq.env.waveform import read_public_samples
 
 
 def junit(path):
@@ -188,7 +194,7 @@ def main():
     after = json.loads((out / 'after/source-hashes.json').read_text())
     for name, expected in after.items():
         assert digest(ROOT / name) == digest(out / 'after/sources' / name) == expected
-    assert digest(ROOT / 'maskgen/reference.py') != baseline['before_sources']['maskgen/reference.py']
+    assert digest(ROOT / 'testbenches/maskgen/env/reference.py') != baseline['before_sources']['modules/maskgen/env/reference.py']
 
     runs = {name: check_manifest(out / name / 'execution/manifest.json')
             for name in ('producer-recheck', 'directed', 'regression', 'extended-canaries')}
@@ -379,7 +385,7 @@ def write_readme(out, report):
         '- `mop_info().destination_window` 使用字段内的元素窗口，不再混用 field-major 目标寄存器偏移；skip-merge 仍保留窗口身份。',
         '- 固定答案覆盖多字段、LMUL 多窗口、fractional、mask/tail/agnostic 与 skip-merge；不是从 DUT 输出反推答案。',
         '- 新 `assess_shape_boundaries()` 分开给出 raw 字节 Counter、public 生命周期与单 flow projection；旧 v2 checker 保留不变。',
-        '- 新潜在缺陷台账见 `defects.json` 和项目 `docs/vagq-known-limitations.md`；RTL、原生库和生产译码不改。',
+        '- 新潜在缺陷台账见 `defects.json` 和项目 `docs/bugs/README.md`；RTL、原生库和生产译码不改。',
         '', '## 回归与资格检查', '',
         f'- 纯模型/反例资格检查：**{pure["passed"]} PASS**。',
         f'- 普通回归（显式 `not vagq_isa_audit`）：**{regression["passed"]} PASS、{regression["skipped"]} SKIP、0 FAIL、0 ERROR**。',
