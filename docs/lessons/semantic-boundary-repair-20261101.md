@@ -69,7 +69,7 @@ cwd，worker 从 scratch 启动，默认发现没有使用工程 testpaths。
 完整 C 后的正确 Ack 与未完成 Ack、禁止 golden 字节进入 refill。真实 DCache/wrapper
 的新协议用例另列，不能把这些 bench 注入自检计作 RTL mutation 或硬件功能 credit。
 详细字段/时序与限制见
-[DCache 传输合同](../../suites/memblock/dcache/docs/l2-transport-contract.md)。
+[DCache 传输合同](../../suites/memblock/dcache/docs/spec/design/l2-transport-contract.md)。
 
 ### MMU PTW：不能由历史日志证明新请求完成
 
@@ -77,7 +77,7 @@ cwd，worker 从 scratch 启动，默认发现没有使用工程 testpaths。
 source/stage，LLPTW 只消费该次接受后的记录并核对 VPN/source/stage。没有接受、旧
 handoff、重复完成、错误身份、等待中取消都不能返回成功。正常 field 范围在驱动前校验，
 请求接受后撤销 payload。详细依据与限制见
-[PTW 完成合同](../../suites/memblock/mmu/docs/ptw-completion-contract.md)。
+[PTW 完成合同](../../suites/memblock/mmu/docs/spec/design/contracts/ptw-completion-contract.md)。
 
 早期探测保留 30 PASS / 5 FAIL：是新增校验把 xcomm mWidth=0 误作零位的 bench 错误；
 查 xcomm 文档后按 scalar logic 的 1 位二态请求域处理，并新增拒绝 2/3（Z/X）控制。

@@ -98,4 +98,4 @@ reference model 把 tdata2 也截成 50 位，掩盖了真实 RTL 偏差（`conf
 - harness：`suites/frontend/ifu/ifuverify/common/dut.py`
 - 门禁：`suites/frontend/ifu/tests/framework/`
 - 模型扫描证明：`tests/framework/test_pruned_ports.py`
-- 交接面限制：`suites/frontend/ifu/docs/upstream-review-20261029.md`
+- 交接面限制：`suites/frontend/ifu/docs/spec/verification/evidence/upstream-review-20261029.md`

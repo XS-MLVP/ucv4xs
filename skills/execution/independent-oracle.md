@@ -25,10 +25,10 @@ oracle 来源表（版本/条款/配置及适用边界）、身份/粒度映射�
 案例：[十二类踩坑 P04/P05](../../docs/lessons/rtl-verification-soundness-20261026.md)。
 另见 [DCache L2 refill 泄漏 golden store 字节](../../docs/lessons/semantic-boundary-repair-20261101.md)：
 不是把 pending 从模型临时删除就独立，必须核对实际发给 DUT 的数据是否已混入期望。
-另见 [InstrBoundary carry归属漏检](../../suites/frontend/ifu/docs/bugs/instr-boundary-carry-ftq-owner.md)：
+另见 [InstrBoundary carry归属漏检](../../suites/frontend/ifu/docs/bugs/open/instr-boundary-carry-ftq-owner.md)：
 真实producer的map包含续半槽位，valid/carry有效域须追到consumer；不能把“不是RVC”当作
 “本窗口新起始”。新旧模型同答仍可能同错，须用合法完整历史及身份不变量区分。
-另见 [FTQ组合坐标与阶段](../../suites/frontend/ftq/docs/transaction-adaptation.md#五通道组合检查当前实现)：
+另见 [FTQ组合坐标与阶段](../../suites/frontend/ftq/docs/spec/verification/transaction-adaptation.md#五通道组合检查当前实现)：
 同一语义PC在不同通道可能分别是字节UInt、半字Pc或带guard的GuardedPc。必须在输入
 计划中显式转换，不能靠返回值猜单位或把first-owner改成last-writer掩盖原激励混用。
 合法producer年龄与反向端口压力的位宽回绕分别说明，后者不得晋升整机可达信用。

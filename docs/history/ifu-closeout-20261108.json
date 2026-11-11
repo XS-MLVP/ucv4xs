@@ -1,0 +1,420 @@
+{
+  "format": "ifu-closeout",
+  "version": 1,
+  "generated_at": "2026-11-08",
+  "scope": "IFU / DefaultConfig / public-a0c2a26cb only; verification-side only, no RTL/Scala/generated change",
+  "baseline": {
+    "name": "public-a0c2a26cb",
+    "commit": "a0c2a26cbe3c862175174bad03a1a23c406315ed",
+    "design_config": "DefaultConfig",
+    "source_cache": "f3ac6022d07c5c05d28869ac811f91038f9103677796dd6f051bd1981408be9b"
+  },
+  "commands": [
+    ".venv/bin/ucv prepare ifu --require-unified-baseline --jobs 8",
+    ".venv/bin/ucv build ifu --require-unified-baseline --jobs 8",
+    ".venv/bin/ucv run ifu --workers 16 --seed 1 --require-unified-baseline --output results/ifu-a0c2a26cb-closeout-seed1-authoritative-20261108",
+    ".venv/bin/ucv run ifu --workers 16 --seed 2 --require-unified-baseline --output results/ifu-a0c2a26cb-closeout-seed2-final-20261108 -- tests/ifu tests/uncache_unit tests/frontend_trigger",
+    ".venv/bin/python suites/frontend/ifu/tools/coverage_report.py --manifest results/ifu-a0c2a26cb-closeout-seed1-authoritative-20261108/ifu/manifest.json --output results/ifu-a0c2a26cb-closeout-seed1-authoritative-20261108/coverage.json --markdown results/ifu-a0c2a26cb-closeout-seed1-authoritative-20261108/coverage.md",
+    ".venv/bin/ucv run ifu --workers 2 --seed 1 --require-unified-baseline --output results/ifu-r13-ge-probe-20261108 -- tests/frontend_trigger/test_zz_r13_ge_probe.py  (one-off GE probe; file removed after measurement)"
+  ],
+  "runs": {
+    "seed1_full": {
+      "output": "results/ifu-a0c2a26cb-closeout-seed1-authoritative-20261108",
+      "seed": 1,
+      "workers": 16,
+      "counts": {
+        "PASS": 778,
+        "FAIL": 5
+      },
+      "nodes": 783,
+      "source_sha256": "dacaf1e27333c3bc5f069b7d2eb9e3ad94d9e4b3217ea78226ed6d7168330757",
+      "git_commit": "c13ee6fbb48f8b7eff19d1945393416822fe48ee",
+      "feature_report": {
+        "file": "results/ifu-a0c2a26cb-closeout-seed1-authoritative-20261108/feature-points.json",
+        "sha256": "cfeaef0f5b5abef9d97fc44278d3bcfb6acaa1ce3d0882c773ba05c6c69cf80a",
+        "hardware": {
+          "ERROR": 0,
+          "FAIL": 9,
+          "XPASS": 0,
+          "INCOMPLETE": 0,
+          "UNCERTAIN": 0,
+          "PASS": 47,
+          "XFAIL": 0,
+          "SKIP": 0,
+          "NOT_RUN": 0
+        },
+        "environment": {
+          "ERROR": 0,
+          "FAIL": 0,
+          "XPASS": 0,
+          "INCOMPLETE": 0,
+          "UNCERTAIN": 0,
+          "PASS": 5,
+          "XFAIL": 0,
+          "SKIP": 0,
+          "NOT_RUN": 0
+        },
+        "failing_points": [
+          "IFU-IB-001",
+          "IFU-IB-002",
+          "IFU-IB-003",
+          "IFU-IB-004",
+          "IFU-IB-005",
+          "IFU-IB-006",
+          "IFU-TR-002",
+          "IFU-TOP-005",
+          "IFU-TOP-011"
+        ],
+        "residual_summary": {
+          "total": 14,
+          "blocking": 2,
+          "open": 2,
+          "by_category": {
+            "structural": 5,
+            "coverage-limit": 2,
+            "out-of-domain": 2,
+            "unproven-scope": 2,
+            "observation-limitation": 1,
+            "defect": 2
+          }
+        },
+        "consistency_errors": []
+      },
+      "vs_2026_11_07_run": "results/ifu-a0c2a26cb-full-seed1-final5-20261107",
+      "removed_nodeids": [],
+      "added_nodeids_count": 56,
+      "added_verdicts": {
+        "PASS": 56
+      },
+      "verdict_changes": {
+        "tests/ifu/test_ifu_fetch.py::test_instruction_split_across_two_fetch_windows_is_assembled": {
+          "before": "UNCERTAIN",
+          "after": "PASS"
+        }
+      },
+      "non_pass": {
+        "tests/frontend_trigger/test_frontend_trigger.py::test_tdata2_above_the_address_space_cannot_equal_a_fetch_pc": "FAIL",
+        "tests/frontend_trigger/test_frontend_trigger.py::test_tdata2_above_the_address_space_is_greater_for_less_than": "FAIL",
+        "tests/ifu/test_ifu_fetch.py::test_recovered_half_instruction_keeps_its_completing_ftq_block[upper-half-low11]": "FAIL",
+        "tests/instr_boundary/test_instr_boundary.py::test_carried_upper_half_cannot_acquire_block_one_ownership[upper-half-low11]": "FAIL",
+        "tests/instr_boundary/test_instr_boundary.py::test_random_windows_match_the_model": "FAIL"
+      }
+    },
+    "seed2_target": {
+      "output": "results/ifu-a0c2a26cb-closeout-seed2-final-20261108",
+      "seed": 2,
+      "workers": 16,
+      "selection": [
+        "tests/ifu",
+        "tests/uncache_unit",
+        "tests/frontend_trigger"
+      ],
+      "counts": {
+        "PASS": 189,
+        "FAIL": 3
+      },
+      "nodes": 192,
+      "source_sha256": "dacaf1e27333c3bc5f069b7d2eb9e3ad94d9e4b3217ea78226ed6d7168330757",
+      "same_source_as_seed1": true,
+      "subset_verdicts_identical": true
+    },
+    "vs_old_719_run": {
+      "output": "results/ucv-goal-ifu-semantic-integrated-20261101",
+      "counts": {
+        "PASS": 719,
+        "FAIL": 5,
+        "UNCERTAIN": 1
+      },
+      "nodes": 725,
+      "removed_from_old": [
+        "tests/framework/test_ifu_agent.py::test_width_changes_are_explicit_migration_errors[io_toFtq_wbRedirect_bits_pc-51]"
+      ]
+    }
+  },
+  "r09_closure": {
+    "status": "resolved",
+    "policy": "verification-side sweep, no UNCERTAIN deletion without evidence",
+    "new_test": "tests/ifu/test_ifu_fetch.py::test_carry_position_and_instruction_class_sweep",
+    "positions": [
+      1,
+      3,
+      5,
+      9,
+      15,
+      21,
+      27,
+      31
+    ],
+    "window_end_position": 32,
+    "classes": [
+      "alu_i",
+      "alu_r",
+      "lui",
+      "mul",
+      "load",
+      "store",
+      "system"
+    ],
+    "result": "56/56 PASS",
+    "model_change": "model/fetch.py build_window(truncate_at=...) generalises the truncation point",
+    "converted_nodeid": "tests/ifu/test_ifu_fetch.py::test_instruction_split_across_two_fetch_windows_is_assembled",
+    "converted_verdict": {
+      "before": "UNCERTAIN",
+      "after": "PASS"
+    },
+    "exclusions": {
+      "control_flow": "predicting taken at a branch/jump start is a legal prediction, so a truncated CFI is not a legal input; covered by IFU-TOP-002/005/009",
+      "r14_class": "upper halfword low bits 11 (e.g. addi x5,x6,1) trips open R-14; its leaf/top-level cases remain FAIL"
+    }
+  },
+  "r13": {
+    "status": "open-blocking",
+    "root_cause": [
+      "NewCSR/DebugLevel.scala:301 Tdata2Bundle.ALL = RW(63,0) (no WARL high-bit clamp)",
+      "ifu/FrontendTrigger.scala:71-78 feeds full 64-bit tdata2 to TriggerCmpConsecutive",
+      "backend/fu/util/Trigger.scala:255-300 uses only tdata(5,0) and tdata(VAddrBits-1,6); tdata2[63:50] ignored",
+      "backend/fu/util/Trigger.scala:239-248 TriggerCmp is likewise 50-bit"
+    ],
+    "measured_impact": {
+      "eq": {
+        "input": "tdata2=2^50+(base+0x14), base=0x5000",
+        "expected": "no lane",
+        "actual": "lane 10 DEBUG"
+      },
+      "lt": {
+        "input": "tdata2=2^50, base=0x6000",
+        "expected": "all 36 lanes",
+        "actual": "all lanes NONE"
+      },
+      "ge": {
+        "input": "tdata2=2^50+(base+0x14), base=0x5000",
+        "expected": "no lane",
+        "actual": "lanes 10..35 DEBUG",
+        "evidence": "one-off probe results/ifu-r13-ge-probe-20261108, not registered to avoid duplicate counting"
+      }
+    },
+    "upstream_read_only_search": {
+      "mirror_ref": "origin/kunminghu-v3 = 2145ba1c9 (2026-11-03)",
+      "commits_after_baseline": 10,
+      "path_diff_empty": [
+        "src/main/scala/xiangshan/frontend/ifu",
+        "src/main/scala/xiangshan/backend/fu/util/Trigger.scala",
+        "src/main/scala/xiangshan/backend/fu/NewCSR/DebugLevel.scala"
+      ],
+      "latest_related_commit": "db3923fe0 (2025-03-07) fix(Trigger): fix comparison between consecutive pc and tdada2 (#4346), ancestor of the baseline",
+      "conclusion": "no fix in the pinned baseline or in the newest locally known upstream state",
+      "network_access": false,
+      "issues_or_prs_filed": false
+    },
+    "candidate_fixes_documented_not_implemented": [
+      "full 64-bit comparison (PC zero-extended); TriggerCmpConsecutive two-candidate high-bit optimisation must be re-proven",
+      "CSR high bits WARL read-only 0 with contract update (requires CSR-side readback case)"
+    ]
+  },
+  "r14": {
+    "status": "open-blocking",
+    "root_cause": [
+      "ifu/InstrBoundary.scala:84-92 crossBlockFallThrough lacks a boundary(i)/isStart check",
+      "ifu/InstrBoundary.scala:114 isCrossBlockInstr := crossBlockFallThrough && !maybeRvc(i)",
+      "ifu/Ifu.scala:334-339 carry rebuild overrides pc/data/isPrevEndHalfRvi/endOffset but NOT isCrossBlockInstr",
+      "ifu/Ifu.scala:540 and :559-561 use blockSel || isCrossBlockInstr to select block 1 FTQ identity and isLast"
+    ],
+    "minimal_reproduction": {
+      "leaf": "tests/instr_boundary/test_instr_boundary.py::test_carried_upper_half_cannot_acquire_block_one_ownership[upper-half-low11] (upper half 0x13 vs control 0x10)",
+      "batch": "600 windows, failing indices (137,254,406,477,529), all is_cross_block[0] expected 0 actual 1",
+      "top": "tests/ifu/test_ifu_fetch.py::test_recovered_half_instruction_keeps_its_completing_ftq_block[upper-half-low11] ftq[0][1] expected 32 actual 33"
+    },
+    "impact": "completion slot takes block-1 FTQ identity and isLast marker; instruction word/PC/endOffset are correct, so instruction-stream comparison alone cannot see it",
+    "production_reachability": "still withdrawn: short non-taken windows do not satisfy the real fall-through extent rule; strict producer controls pass",
+    "upstream_read_only_search": {
+      "conclusion": "no fix in pinned baseline or newest local upstream ref",
+      "network_access": false
+    }
+  },
+  "attribution_9_hardware_fail": {
+    "all_real_rtl": true,
+    "items": [
+      {
+        "feature": "IFU-TR-002",
+        "nodeid": "tests/frontend_trigger/test_frontend_trigger.py::test_tdata2_above_the_address_space_cannot_equal_a_fetch_pc",
+        "cause": "R-13"
+      },
+      {
+        "feature": "IFU-TR-002",
+        "nodeid": "tests/frontend_trigger/test_frontend_trigger.py::test_tdata2_above_the_address_space_is_greater_for_less_than",
+        "cause": "R-13"
+      },
+      {
+        "feature": "IFU-IB-001..006",
+        "nodeid": "tests/instr_boundary/test_instr_boundary.py::test_random_windows_match_the_model",
+        "cause": "R-14"
+      },
+      {
+        "feature": "IFU-IB-005",
+        "nodeid": "tests/instr_boundary/test_instr_boundary.py::test_carried_upper_half_cannot_acquire_block_one_ownership[upper-half-low11]",
+        "cause": "R-14"
+      },
+      {
+        "feature": "IFU-TOP-005,IFU-TOP-011",
+        "nodeid": "tests/ifu/test_ifu_fetch.py::test_recovered_half_instruction_keeps_its_completing_ftq_block[upper-half-low11]",
+        "cause": "R-14"
+      }
+    ],
+    "model_staleness": 0,
+    "observation_debt": 0
+  },
+  "coverage": {
+    "source_report": "results/ifu-a0c2a26cb-closeout-seed1-authoritative-20261108/coverage.json",
+    "source_report_sha256": "759342f4ffa32b252e4189b668b7ff0556b1f6244fbf270d5dcdf964fd259acc",
+    "by_dut": {
+      "DUTFrontendTriggerDut": {
+        "line": 100.0,
+        "branch": 99.35897435897436,
+        "toggle_bin": 95.23928839889751,
+        "toggle_bits": 95.28940115259333,
+        "branch_hit": 155,
+        "branch_total": 156,
+        "toggle_bin_hit": 7602,
+        "toggle_bin_total": 7982
+      },
+      "DUTInstrBoundaryDut": {
+        "line": 100.0,
+        "branch": 99.35064935064935,
+        "toggle_bin": 91.75774134790528,
+        "toggle_bits": 91.80327868852459,
+        "branch_hit": 153,
+        "branch_total": 154,
+        "toggle_bin_hit": 2015,
+        "toggle_bin_total": 2196
+      },
+      "DUTIfuUncacheUnitDut": {
+        "line": 100.0,
+        "branch": 93.75,
+        "toggle_bin": 100.0,
+        "toggle_bits": 100.0,
+        "branch_hit": 15,
+        "branch_total": 16,
+        "toggle_bin_hit": 546,
+        "toggle_bin_total": 546
+      },
+      "DUTPredCheckerDut": {
+        "line": 100.0,
+        "branch": 95.83333333333333,
+        "toggle_bin": 99.99374921865233,
+        "toggle_bits": 100.0,
+        "branch_hit": 23,
+        "branch_total": 24,
+        "toggle_bin_hit": 15997,
+        "toggle_bin_total": 15998
+      },
+      "DUTRvcExpanderDut": {
+        "line": 100.0,
+        "branch": 100.0,
+        "toggle_bin": 95.89041095890411,
+        "toggle_bits": 97.26027397260275,
+        "branch_hit": 66,
+        "branch_total": 66,
+        "toggle_bin_hit": 140,
+        "toggle_bin_total": 146
+      },
+      "DUTIfuPerfAnalysisDut": {
+        "line": 100.0,
+        "branch": 95.45454545454545,
+        "toggle_bin": 17.391304347826086,
+        "toggle_bits": 17.391304347826086,
+        "branch_hit": 21,
+        "branch_total": 22,
+        "toggle_bin_hit": 112,
+        "toggle_bin_total": 644
+      },
+      "DUTIfuDut": {
+        "line": 100.0,
+        "branch": 99.69733656174334,
+        "toggle_bin": 89.04254709958197,
+        "toggle_bits": 92.40107656187368,
+        "branch_hit": 1647,
+        "branch_total": 1652,
+        "toggle_bin_hit": 31099,
+        "toggle_bin_total": 34926
+      }
+    },
+    "delta_vs_2026_11_07": {
+      "DUTIfuDut": {
+        "branch": {
+          "before": [
+            1647,
+            1652
+          ],
+          "after": [
+            1647,
+            1652
+          ]
+        },
+        "toggle_bin": {
+          "before": [
+            30928,
+            34926
+          ],
+          "after": [
+            31099,
+            34926
+          ]
+        },
+        "toggle_bits": {
+          "before": [
+            16076,
+            17463
+          ],
+          "after": [
+            16136,
+            17463
+          ]
+        }
+      },
+      "leaf_duts": "unchanged in hit and denominator",
+      "branch_denominator_changed": false
+    },
+    "uncovered_ifu_branches": [
+      "if (reset) begin",
+      "select_35 ? s2_fetchBlock_1_ftqIdx_flag : s2_fetchBlock_0_ftqIdx_flag;",
+      "select_35 ? s2_fetchBlock_1_ftqIdx_value : s2_fetchBlock_0_ftqIdx_value;",
+      "_rvcExpanders_35_io_ill ? 32'h0 : _rvcExpanders_35_io_out_bits;",
+      "? _GEN_3[s1_alignedInstrVec_0_index]"
+    ]
+  },
+  "gates": {
+    "root_pytest": {
+      "command": ".venv/bin/python -m pytest -q tests",
+      "result": "272 passed",
+      "exit": 0
+    },
+    "layout_strict": {
+      "command": ".venv/bin/python scripts/audit-suite-layout.py --strict",
+      "exit": 0
+    },
+    "skills_strict": {
+      "command": ".venv/bin/python scripts/audit-skills.py --strict --check-framework",
+      "exit": 0
+    },
+    "assets": {
+      "command": "python3.12 scripts/audit-assets.py",
+      "exit": 1,
+      "error": "ibuffer: missing README.md",
+      "note": "external concurrent suite suites/frontend/ibuffer (untracked) registered in the shared ucv.json by another session; no IFU path appears in the error list"
+    },
+    "transaction_boundary": {
+      "command": ".venv/bin/python scripts/audit-suite-layout.py --strict --require-transaction-boundary",
+      "exit": 1,
+      "ifu_row": "no-static-leak-found / ok",
+      "note": "pre-existing exit1 preserved"
+    }
+  },
+  "not_done": {
+    "rtl_changes": false,
+    "scala_changes": false,
+    "generated_changes": false,
+    "baseline_or_tool_changes": false,
+    "push": false,
+    "upstream_issue_or_pr": false
+  }
+}

@@ -1,0 +1,280 @@
+{
+  "format": "ibuffer-baseline-evidence",
+  "version": 1,
+  "date": "2026-11-08",
+  "baseline": {
+    "name": "public-a0c2a26cb",
+    "commit": "a0c2a26cbe3c862175174bad03a1a23c406315ed",
+    "design": "DefaultConfig",
+    "cores": 1,
+    "vlen": 128,
+    "elen": 64,
+    "ibuffer_size": 48,
+    "enqueue_width": 36,
+    "decode_width": 8
+  },
+  "generation": {
+    "cache_key": "d7c6bc4d17651fc1bd92ac39c469410a6bb91215f46c1efcfaf1ec66a72e972d",
+    "generated_at": "2026-11-02T09:18:22.855930+00:00",
+    "source_cache": "f3ac6022d07c5c05d28869ac811f91038f9103677796dd6f051bd1981408be9b"
+  },
+  "duts": {
+    "vtype_gen": {
+      "top": "VTypeGen",
+      "export_name": "VTypeGenDut",
+      "cache_key": "fd55f14baed849d4d99a8fede18a215430fbbdcc75d47924bc36af558451cea2",
+      "rtl": {
+        "VSetFuncUnit.sv": "0fb26fdd7dbd06318b713befaada220732fcfc0ea5698f22077458993fa2d926",
+        "VTypeGen.sv": "09519af25fc05f02c5f0e25a8c2f8693ed654a8e81bcd1e3a64950860941bbcd"
+      },
+      "native": {
+        "__init__.py": "8eab400876ad99a8457a0ab26901e475336eb27d1850625fd98265e1a11e6ba3",
+        "signals.json": "1a787c588567e26db9a86feb347ccb642d080c01559d34984aae739fc3818d16",
+        "VTypeGenDut_offset.yaml": "400692ed980d74dc7beaaf749cae217c4fba559ba185059fc6a91fe940c74c7b",
+        "_UT_VTypeGenDut.so": "41e75a63443f688075910a1cc46dedc98bf69ffca65fb8007bfb0b9d6e5f08c3",
+        "libUTVTypeGenDut.so": "e2dc6710ce974982053c4580d5fec2bbf2e6d2de8ad4fa3beb2861b7aae20280"
+      },
+      "smoke": "PASS",
+      "tools": {
+        "toffee": {
+          "repository": "https://github.com/XS-MLVP/toffee.git",
+          "commit": "f57150021791535d4b2fd01056c106f0cad53177",
+          "distribution": "uc-toffee"
+        },
+        "picker": {
+          "repository": "https://github.com/XS-MLVP/picker.git",
+          "commit": "4dd442c4a80c92549381e417c608836e3b78a8e9",
+          "dependencies": {
+            "yaml-cpp": {
+              "repository": "https://github.com/jbeder/yaml-cpp.git",
+              "commit": "56e3bb550c91fd7005566f19c079cb7a503223cf"
+            },
+            "fmt": {
+              "repository": "https://github.com/fmtlib/fmt.git",
+              "commit": "407c905e45ad75fc29bf0f9bb7c5c2fd3475976f"
+            },
+            "slang": {
+              "repository": "https://github.com/MikePopoloski/slang.git",
+              "commit": "7ddf4059f79eff508dd486eb42fd650cdf320d52"
+            }
+          },
+          "patches": [
+            {
+              "path": "dependencies/patches/picker-trace-callgraph.patch",
+              "sha256": "2823ef36bfd4ee06853670c3c23543301abbef6da27b189779063e08072ad6f4",
+              "purpose": "Preserve scope across Verilator 5.052 split trace initialization calls"
+            }
+          ]
+        },
+        "xcomm": {
+          "repository": "https://github.com/XS-MLVP/xcomm.git",
+          "commit": "2e4a4a99293360c2a642025000c6948b24cf8e88",
+          "distribution": "uc-xcomm",
+          "package_version": "1.1.1",
+          "native_abi": 3,
+          "coverage_protocol": 5,
+          "patches": [
+            {
+              "path": "dependencies/patches/xcomm-wide-trace-word.patch",
+              "sha256": "a25e2833b41872a2e170c5b024534f19b141aee7c9fc8e94102a76e4a81bdec7",
+              "purpose": "Read bounded live 32-bit VlWide words in Verilator trace-derived expressions"
+            }
+          ]
+        },
+        "verilator": {
+          "version": "5.052",
+          "repository": "https://github.com/verilator/verilator.git",
+          "ref": "v5.052"
+        }
+      }
+    },
+    "ibuffer": {
+      "top": "IBuffer",
+      "export_name": "IBufferDut",
+      "cache_key": "015bffca7c4f78c38372a19ec8828d11f2d7e9c3ca1f8170334fef32a20cb991",
+      "rtl": {
+        "IBuffer.sv": "f4b8a31d086ba0d3d72306f1f6ce5cce772b0ec0a153f9f9bc8d212179983b96",
+        "VSetFuncUnit.sv": "0fb26fdd7dbd06318b713befaada220732fcfc0ea5698f22077458993fa2d926",
+        "VTypeGen.sv": "09519af25fc05f02c5f0e25a8c2f8693ed654a8e81bcd1e3a64950860941bbcd"
+      },
+      "native": {
+        "__init__.py": "f777d0a5d453830bdf150d5b9be18a680e17647bf0a22ac3fc38fbcb5d435256",
+        "signals.json": "3c4f99881e7fe2c3f2e95762cd88e30bfd531b86d9e553b3cc7713d28332cd23",
+        "IBufferDut_offset.yaml": "0e95a9b26cade40387222de88b83267dba6525b7c3b3dcc60c8705c8106e9556",
+        "_UT_IBufferDut.so": "fe8db08eb04137a9e37e93b6b8587ad5c36904ce9a2943df5718dabc50ce89b3",
+        "libUTIBufferDut.so": "ebfd7609a70a8dab888b99ad65caec3b07c2e190aa9d4af389779ee8fc218438"
+      },
+      "smoke": "PASS",
+      "tools": {
+        "toffee": {
+          "repository": "https://github.com/XS-MLVP/toffee.git",
+          "commit": "f57150021791535d4b2fd01056c106f0cad53177",
+          "distribution": "uc-toffee"
+        },
+        "picker": {
+          "repository": "https://github.com/XS-MLVP/picker.git",
+          "commit": "4dd442c4a80c92549381e417c608836e3b78a8e9",
+          "dependencies": {
+            "yaml-cpp": {
+              "repository": "https://github.com/jbeder/yaml-cpp.git",
+              "commit": "56e3bb550c91fd7005566f19c079cb7a503223cf"
+            },
+            "fmt": {
+              "repository": "https://github.com/fmtlib/fmt.git",
+              "commit": "407c905e45ad75fc29bf0f9bb7c5c2fd3475976f"
+            },
+            "slang": {
+              "repository": "https://github.com/MikePopoloski/slang.git",
+              "commit": "7ddf4059f79eff508dd486eb42fd650cdf320d52"
+            }
+          },
+          "patches": [
+            {
+              "path": "dependencies/patches/picker-trace-callgraph.patch",
+              "sha256": "2823ef36bfd4ee06853670c3c23543301abbef6da27b189779063e08072ad6f4",
+              "purpose": "Preserve scope across Verilator 5.052 split trace initialization calls"
+            }
+          ]
+        },
+        "xcomm": {
+          "repository": "https://github.com/XS-MLVP/xcomm.git",
+          "commit": "2e4a4a99293360c2a642025000c6948b24cf8e88",
+          "distribution": "uc-xcomm",
+          "package_version": "1.1.1",
+          "native_abi": 3,
+          "coverage_protocol": 5,
+          "patches": [
+            {
+              "path": "dependencies/patches/xcomm-wide-trace-word.patch",
+              "sha256": "a25e2833b41872a2e170c5b024534f19b141aee7c9fc8e94102a76e4a81bdec7",
+              "purpose": "Read bounded live 32-bit VlWide words in Verilator trace-derived expressions"
+            }
+          ]
+        },
+        "verilator": {
+          "version": "5.052",
+          "repository": "https://github.com/verilator/verilator.git",
+          "ref": "v5.052"
+        }
+      }
+    }
+  },
+  "runs": {
+    "seed1": {
+      "output": "results/ibuffer-seed1-final5",
+      "status": "PASS",
+      "seed": 1,
+      "source_before": "bef27be51e59c0abfc63cdf2d74a6f477cae3793ec6664f9db4853ca8527e39f",
+      "source_after": "bef27be51e59c0abfc63cdf2d74a6f477cae3793ec6664f9db4853ca8527e39f",
+      "collected": 83,
+      "collection_sha256": "5bf5301b93b507cfa88430ed9b85c5c89c24db29a83d92e1135401a2e31dca27",
+      "counts": {
+        "PASS": 83
+      },
+      "coverage": {
+        "DUTVTypeGenDut": {
+          "line": {
+            "point_hit": 14,
+            "point_total": 14,
+            "source_hit": 163,
+            "source_total": 163,
+            "percent": 100.0
+          },
+          "branch": {
+            "hit": 104,
+            "total": 106,
+            "percent": 98.11320754716981
+          },
+          "toggle": {
+            "bin_hit": 1226,
+            "bin_total": 1596,
+            "bin_percent": 76.8170426065163,
+            "bits_hit": 613,
+            "bits_total": 798,
+            "bits_percent": 76.8170426065163
+          }
+        },
+        "DUTIBufferDut": {
+          "line": {
+            "point_hit": 21,
+            "point_total": 21,
+            "source_hit": 4177,
+            "source_total": 4209,
+            "percent": 99.23972440009503
+          },
+          "branch": {
+            "hit": 666,
+            "total": 726,
+            "percent": 91.73553719008264
+          },
+          "toggle": {
+            "bin_hit": 18524,
+            "bin_total": 20252,
+            "bin_percent": 91.46750938178945,
+            "bits_hit": 9304,
+            "bits_total": 10126,
+            "bits_percent": 91.8822832312858
+          }
+        }
+      }
+    },
+    "seed2": {
+      "output": "results/ibuffer-seed2-final5",
+      "status": "PASS",
+      "seed": 2,
+      "source_before": "bef27be51e59c0abfc63cdf2d74a6f477cae3793ec6664f9db4853ca8527e39f",
+      "source_after": "bef27be51e59c0abfc63cdf2d74a6f477cae3793ec6664f9db4853ca8527e39f",
+      "collected": 83,
+      "collection_sha256": "5bf5301b93b507cfa88430ed9b85c5c89c24db29a83d92e1135401a2e31dca27",
+      "counts": {
+        "PASS": 83
+      },
+      "coverage": {
+        "DUTVTypeGenDut": {
+          "line": {
+            "point_hit": 14,
+            "point_total": 14,
+            "source_hit": 163,
+            "source_total": 163,
+            "percent": 100.0
+          },
+          "branch": {
+            "hit": 104,
+            "total": 106,
+            "percent": 98.11320754716981
+          },
+          "toggle": {
+            "bin_hit": 1224,
+            "bin_total": 1596,
+            "bin_percent": 76.69172932330827,
+            "bits_hit": 612,
+            "bits_total": 798,
+            "bits_percent": 76.69172932330827
+          }
+        },
+        "DUTIBufferDut": {
+          "line": {
+            "point_hit": 21,
+            "point_total": 21,
+            "source_hit": 4177,
+            "source_total": 4209,
+            "percent": 99.23972440009503
+          },
+          "branch": {
+            "hit": 667,
+            "total": 726,
+            "percent": 91.8732782369146
+          },
+          "toggle": {
+            "bin_hit": 18522,
+            "bin_total": 20252,
+            "bin_percent": 91.4576338139443,
+            "bits_hit": 9301,
+            "bits_total": 10126,
+            "bits_percent": 91.85265652775034
+          }
+        }
+      }
+    }
+  }
+}

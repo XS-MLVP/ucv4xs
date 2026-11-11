@@ -7,7 +7,7 @@
 | 文件 | 适用问题 | 本轮依据 |
 |---|---|---|
 | [依赖升级与能力核对](dependency-upgrade-and-capability-audit.md) | 虚拟环境依赖落后、分发名变化、需要确认框架实际能力 | `uc-toffee 2.1.0` / `uc-xcomm 1.1.1` 实际安装与根测试 |
-| [Fixture 集中与 agent 边界](fixture-consolidation.md) | 每 DUT 的 `env/pytest.py`、子目录 conftest、测试直接摸引脚 | 十工程根 fixture 迁移与布局审计 |
+| [Fixture 集中与 agent 边界](fixture-consolidation.md) | DUT/shared 职责分散、fixture 重复注册、测试直接摸引脚 | 工程根 fixture 迁移与按 workspace schema 的布局审计 |
 | [框架能力选型](framework-capability-selection.md) | 该复用 toffee 的哪个组件，何时允许工程自建 | BPU/FTQ/ICache 现有分层与 Toffee 2.1 公共 API |
 | [迁移边界复核](pin-schema-and-suite-migration.md) | 目录/静态门禁全绿但仍有引脚级耦合 | 2026-10-31 撤回“端口别名等于事务迁移”的错误标准 |
 

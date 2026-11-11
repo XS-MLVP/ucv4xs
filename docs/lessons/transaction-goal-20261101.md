@@ -107,7 +107,7 @@ manifest committed / coverage_complete=true，R-13缺口照实保留。IFU 引�
 为 **45953个有序nodeid**，原45883项都保留原顺序，新70项仅来自本目标的Perf与Pred。
 本模块与运行差分见
 [机器证据](../history/transaction-goal-pred-checker-20261101.json)，具体字段/所有权/阶段与
-需求到checker映射见 [IFU事务合同](../../suites/frontend/ifu/docs/transaction-adapters.md)。
+需求到checker映射见 [IFU事务合同](../../suites/frontend/ifu/docs/spec/verification/transaction-adapters.md)。
 
 最后复核还补齐了 reset 检查失败的粘滞状态：恢复正常 monitor、吞掉 reset 断言也不能
 使 finish 报成功，与中断输入槽采用同一未对账规则。上面的最终结果包含该第49个自检；
@@ -148,7 +148,7 @@ committed / coverage_complete=true；R-13与原硬件FAIL/UNCERTAIN保留，整�
 
 本模块逐运行、生成器差分、需求到产物映射及下一模块诊断见
 [机器证据](../history/transaction-goal-rvc-expander-20261101.json)；无时钟DUT事件含义与
-比较有效域见[IFU事务合同](../../suites/frontend/ifu/docs/transaction-adapters.md)。
+比较有效域见[IFU事务合同](../../suites/frontend/ifu/docs/spec/verification/transaction-adapters.md)。
 
 ## IFU InstrBoundary（已完成本模块，IFU 总任务仍进行中）
 
@@ -162,7 +162,7 @@ committed / coverage_complete=true；R-13与原硬件FAIL/UNCERTAIN保留，整�
 的native评估事件不是接受握手，精确tick/槽关系、唯一所有权、单idle尾部与取消/失败
 未对账均有控制。finite batch只累积真正的typed比较错误，不吞时序或传输故障。
 
-同时发现并保留真实新缺陷[R-14](../../suites/frontend/ifu/docs/bugs/instr-boundary-carry-ftq-owner.md)：
+同时发现并保留真实新缺陷[R-14](../../suites/frontend/ifu/docs/bugs/open/instr-boundary-carry-ftq-owner.md)：
 旧模型和RTL均缺cross的“真正起始”前提，carry首槽高半字low2=11且块0 size=1时会误用
 块1 FTQ。通过真实invalidTaken恢复、合法FTQ块大小/对齐序列复现：高半0x10正常，0x13
 指令字/PC/endOffset正确但FTQ错误。原600随机样本及顺序完全不变，全部执行并比较，
@@ -255,7 +255,7 @@ read有预算且只在实际issue后用调用方明确提供的数据回复；fi
 资产/pip/diff通过，严格事务门禁仍exit1，IFU仍有217个引脚表达式。当前合同已同步到
 verification_plan.json、功能点表和观察/账本对账；详见
 [本模块机器证据](../history/transaction-goal-uncache-unit-20261101.json)及
-[事务合同](../../suites/frontend/ifu/docs/transaction-adapters.md#ifuuncacheunit-请求回复完成合同)。
+[事务合同](../../suites/frontend/ifu/docs/spec/verification/transaction-adapters.md#ifuuncacheunit-请求回复完成合同)。
 
 ## PerfAnalysis生命周期复核（已修复新证实缺口）
 
@@ -368,7 +368,7 @@ exit0；根126 PASS，结构/Skill/资产/pip/diff检查通过。严格事务门
 
 详细需求—产物—正反对照映射、运行哈希和剩余义务见
 [本检查点机器记录](../history/transaction-goal-ifu-top-cached-20261101.json)及
-[顶层合同](../../suites/frontend/ifu/docs/transaction-adapters.md#ifu顶层缓存链已实施整体尚未签核)。
+[顶层合同](../../suites/frontend/ifu/docs/spec/verification/transaction-adapters.md#ifu顶层缓存链已实施整体尚未签核)。
 
 ## Ifu顶层uncache组合与生产者证据纠正（当前检查点）
 
@@ -433,7 +433,7 @@ PNR、翻译或提交历史的整机验证，所有权/采样/oracle检查对两
 采样，不给未比较的逐事件功能credit。其他前端、MemBlock/VAGQ及最终全仓门禁/回归/
 当前包/资产与文档验收均继续保留。详细需求映射、源码/运行哈希和差分见
 [本检查点机器记录](../history/transaction-goal-ifu-top-uncache-20261101.json)；
-[R-14当前范围](../../suites/frontend/ifu/docs/bugs/instr-boundary-carry-ftq-owner.md)明确区分
+[R-14当前范围](../../suites/frontend/ifu/docs/bugs/open/instr-boundary-carry-ftq-owner.md)明确区分
 实际native端口复现与生产可达证据，活动目标不关闭。
 
 ## IFU顶层最终语义审计补充（当前检查点）
@@ -747,7 +747,7 @@ support文件经AST对账，差异恰为5个附加drain与3个PC坐标适配；�
 
 修后定向73 PASS，新增447个纯字段控制与输入UID/重试/仲裁/meta来源/尾部等组合控制
 合计494 PASS，源码188ac50c...稳定并匹配。根242 PASS；最终完整、多seed与全仓收集
-仍在执行。详见[工程合同](../../suites/frontend/ftq/docs/transaction-adaptation.md#五通道组合检查当前实现)。
+仍在执行。详见[工程合同](../../suites/frontend/ftq/docs/spec/verification/transaction-adaptation.md#五通道组合检查当前实现)。
 纯字段翻转证明比较路径，不是RTL mutation；本地handoff完成不表示ICache回复或全机
 退休。未接受、无消费许可的backpressured offer明确列在收据，不能虚报接受/完成；
 已接受训练、receiver子义务及已给ROB target则必须有界完成或合法取消。

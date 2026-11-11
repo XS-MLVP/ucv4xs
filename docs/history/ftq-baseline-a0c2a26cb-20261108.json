@@ -1,0 +1,513 @@
+{
+  "schema": 1,
+  "date": "2026-11-08",
+  "scope": "FTQ 3-DUT new-baseline adaptation, full regression, nodeid reconciliation and coverage reconciliation; not whole-repository hardware acceptance",
+  "baseline": {
+    "name": "public-a0c2a26cb",
+    "commit": "a0c2a26cbe3c862175174bad03a1a23c406315ed",
+    "config": "DefaultConfig",
+    "source_checkout": ".cache/sources/f3ac6022d07c5c05d28869ac811f91038f9103677796dd6f051bd1981408be9b"
+  },
+  "rtl_sha256": {
+    "resolve_queue": {
+      "ResolveQueue.sv": "b5387db07bfdfaaf697b64fcccf860783b573d8a827c5a68d32628e562eac012"
+    },
+    "commit_queue": {
+      "CommitQueue.sv": "1f843a42e1cc3dfaf5adcfc739be59bd11c272210fee4b5a0cfa125424793c5d"
+    },
+    "ftq": {
+      "CommitQueue.sv": "1f843a42e1cc3dfaf5adcfc739be59bd11c272210fee4b5a0cfa125424793c5d",
+      "Ftq.sv": "88544217a5d3b3893100984828019fa65386345c0f0e45ff26c3574526e13f4f",
+      "PrefetchQueue.sv": "bfab73b506d92d275d792488641be029fc5cf61750fc7b12c22ca4cf4faf2651",
+      "ResolveQueue.sv": "b5387db07bfdfaaf697b64fcccf860783b573d8a827c5a68d32628e562eac012"
+    }
+  },
+  "rtl_unchanged_from_893e1580b": {
+    "ResolveQueue.sv": true,
+    "CommitQueue.sv": true,
+    "ResolveQueue.scala": "f6c0858a95c6cf61107d99b95a72afb8d0f033325afc7547dcb4e52dca3bc389",
+    "CommitQueue.scala": "de22d2ea81b56e13c6aed64e92b9f4e069b9f8c47da1bee04b709862eb5bf261"
+  },
+  "ftq_parent_sha256": "88544217a5d3b3893100984828019fa65386345c0f0e45ff26c3574526e13f4f",
+  "ftq_parent_previous_sha256": "abbc7914f0bca52bd2e5d606b9e88148e356138b3b90c7b031bc7f2d9a07d8e6",
+  "upstream_commits_touching_ftq": [
+    "4b9f938b7 feat(frontend): enhanced iprefetch part 1 (#6691)",
+    "b716aade5 fix(core): carry true PC guard bit (#6751)"
+  ],
+  "builds": {
+    "resolve_queue": {
+      "cache_key": "d1f653f7094a28496750694db159f8769396f904ba8d51d5a944741dca2e573e",
+      "rtl": {
+        "ResolveQueue.sv": "b5387db07bfdfaaf697b64fcccf860783b573d8a827c5a68d32628e562eac012"
+      },
+      "outputs": {
+        "__init__.py": "e5480853cac301fa79a3acb349b7ff68ff5db3899905c9951871d5196fd159ab",
+        "signals.json": "2374da65357b8357b9ef9360029773326f7f53f0975b83b36f5e1533af2ab51a",
+        "ResolveQueueDut_offset.yaml": "9874e5aef20e5ec2f201e2e615eed87c0bcd616684e672ba40e58ff890287a97",
+        "_UT_ResolveQueueDut.so": "9c18bc92fcd3ae970c6c7b2c84cd40e0e6761a82e83331a55f61b4ab70508558",
+        "libUTResolveQueueDut.so": "8b06e01ba09774de862c955524d19e5d13b9a97bde4df45010ce989a851370ee"
+      }
+    },
+    "commit_queue": {
+      "cache_key": "0cdc47520b14a18b98dfa280408f94007a8a163fe6676325caa191066a20d5c1",
+      "rtl": {
+        "CommitQueue.sv": "1f843a42e1cc3dfaf5adcfc739be59bd11c272210fee4b5a0cfa125424793c5d"
+      },
+      "outputs": {
+        "__init__.py": "d738f0c906bb7976f53c4cf7ea7f743f67791260761bf69dcc22feac1b73f538",
+        "signals.json": "d9a6d2ffd033dbdf38ff2ffd360a42745e643b498aff4e15d42d90283aa4013f",
+        "CommitQueueDut_offset.yaml": "d9ea018439fa1ee77d02d8a5f12f34740fee792ad8293fd6f48284e09bc9bcbd",
+        "_UT_CommitQueueDut.so": "a941ac8a97c4edcebda9fe9dbb74bd72167e1e5a57275444b9ae1e08372fd732",
+        "libUTCommitQueueDut.so": "25fed847499a1023bd503208f31e0f177a0fe3cabcecc991186f307ae0ac52b1"
+      }
+    },
+    "ftq": {
+      "cache_key": "d181e4c48a0df7cd40bbcc545780ed7484f8662fd3bfb35922f07f60151aca28",
+      "rtl": {
+        "CommitQueue.sv": "1f843a42e1cc3dfaf5adcfc739be59bd11c272210fee4b5a0cfa125424793c5d",
+        "Ftq.sv": "88544217a5d3b3893100984828019fa65386345c0f0e45ff26c3574526e13f4f",
+        "PrefetchQueue.sv": "bfab73b506d92d275d792488641be029fc5cf61750fc7b12c22ca4cf4faf2651",
+        "ResolveQueue.sv": "b5387db07bfdfaaf697b64fcccf860783b573d8a827c5a68d32628e562eac012"
+      },
+      "outputs": {
+        "__init__.py": "d72892ae9d9487dc6c90a40998a8870a3539d7dd4f03eb14c7dd189d87d86b22",
+        "signals.json": "f300724462797f25dbcaf060081a1eba03d090752c80be4f957ec39f86e070a6",
+        "FtqDut_offset.yaml": "ab2252b7b8c1315469b38e8a1da03e6d0b50fcc623629a963c89fd71f75a24c9",
+        "_UT_FtqDut.so": "a54e14840148b75812b1d9daed5b9d8abf9f9e1fdbe4f5b7f1c22f0f3bbd584b",
+        "libUTFtqDut.so": "10cdf5a0d643794e221417064a84d31e2a148b680c747a6e81076207a04da1b2"
+      }
+    }
+  },
+  "tools": {
+    "toffee": {
+      "repository": "https://github.com/XS-MLVP/toffee.git",
+      "commit": "f57150021791535d4b2fd01056c106f0cad53177",
+      "distribution": "uc-toffee"
+    },
+    "picker": {
+      "repository": "https://github.com/XS-MLVP/picker.git",
+      "commit": "4dd442c4a80c92549381e417c608836e3b78a8e9",
+      "dependencies": {
+        "yaml-cpp": {
+          "repository": "https://github.com/jbeder/yaml-cpp.git",
+          "commit": "56e3bb550c91fd7005566f19c079cb7a503223cf"
+        },
+        "fmt": {
+          "repository": "https://github.com/fmtlib/fmt.git",
+          "commit": "407c905e45ad75fc29bf0f9bb7c5c2fd3475976f"
+        },
+        "slang": {
+          "repository": "https://github.com/MikePopoloski/slang.git",
+          "commit": "7ddf4059f79eff508dd486eb42fd650cdf320d52"
+        }
+      },
+      "patches": [
+        {
+          "path": "dependencies/patches/picker-trace-callgraph.patch",
+          "sha256": "2823ef36bfd4ee06853670c3c23543301abbef6da27b189779063e08072ad6f4",
+          "purpose": "Preserve scope across Verilator 5.052 split trace initialization calls"
+        }
+      ]
+    },
+    "xcomm": {
+      "repository": "https://github.com/XS-MLVP/xcomm.git",
+      "commit": "2e4a4a99293360c2a642025000c6948b24cf8e88",
+      "distribution": "uc-xcomm",
+      "package_version": "1.1.1",
+      "native_abi": 3,
+      "coverage_protocol": 5,
+      "patches": [
+        {
+          "path": "dependencies/patches/xcomm-wide-trace-word.patch",
+          "sha256": "a25e2833b41872a2e170c5b024534f19b141aee7c9fc8e94102a76e4a81bdec7",
+          "purpose": "Read bounded live 32-bit VlWide words in Verilator trace-derived expressions"
+        }
+      ]
+    },
+    "verilator": {
+      "version": "5.052",
+      "repository": "https://github.com/verilator/verilator.git",
+      "ref": "v5.052"
+    }
+  },
+  "installed_tools": {
+    "tools": {
+      "toffee": {
+        "repository": "https://github.com/XS-MLVP/toffee.git",
+        "commit": "f57150021791535d4b2fd01056c106f0cad53177",
+        "distribution": "uc-toffee"
+      },
+      "picker": {
+        "repository": "https://github.com/XS-MLVP/picker.git",
+        "commit": "4dd442c4a80c92549381e417c608836e3b78a8e9",
+        "dependencies": {
+          "yaml-cpp": {
+            "repository": "https://github.com/jbeder/yaml-cpp.git",
+            "commit": "56e3bb550c91fd7005566f19c079cb7a503223cf"
+          },
+          "fmt": {
+            "repository": "https://github.com/fmtlib/fmt.git",
+            "commit": "407c905e45ad75fc29bf0f9bb7c5c2fd3475976f"
+          },
+          "slang": {
+            "repository": "https://github.com/MikePopoloski/slang.git",
+            "commit": "7ddf4059f79eff508dd486eb42fd650cdf320d52"
+          }
+        },
+        "patches": [
+          {
+            "path": "dependencies/patches/picker-trace-callgraph.patch",
+            "sha256": "2823ef36bfd4ee06853670c3c23543301abbef6da27b189779063e08072ad6f4",
+            "purpose": "Preserve scope across Verilator 5.052 split trace initialization calls"
+          }
+        ]
+      },
+      "xcomm": {
+        "repository": "https://github.com/XS-MLVP/xcomm.git",
+        "commit": "2e4a4a99293360c2a642025000c6948b24cf8e88",
+        "distribution": "uc-xcomm",
+        "package_version": "1.1.1",
+        "native_abi": 3,
+        "coverage_protocol": 5,
+        "patches": [
+          {
+            "path": "dependencies/patches/xcomm-wide-trace-word.patch",
+            "sha256": "a25e2833b41872a2e170c5b024534f19b141aee7c9fc8e94102a76e4a81bdec7",
+            "purpose": "Read bounded live 32-bit VlWide words in Verilator trace-derived expressions"
+          }
+        ]
+      },
+      "verilator": {
+        "version": "5.052",
+        "repository": "https://github.com/verilator/verilator.git",
+        "ref": "v5.052"
+      }
+    },
+    "completed_at": "2026-10-30T09:42:45.444797+00:00",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "packages": [
+      "execnet==2.1.2",
+      "iniconfig==2.3.1",
+      "packaging==26.3",
+      "pathspec==1.1.1",
+      "pluggy==1.7.0",
+      "Pygments==2.21.0",
+      "pytest==9.2.0",
+      "pytest-asyncio==1.4.1",
+      "pytest-xdist==3.8.0",
+      "PyYAML==6.0.3",
+      "scikit_build_core==1.1.1",
+      "setuptools==84.2.1",
+      "setuptools-scm==9.2.2",
+      "typing_extensions==4.16.0",
+      "uc-toffee @ file:///home/xyl/ucv4xs/.tools/sources/toffee",
+      "uc-xcomm @ file:///home/xyl/ucv4xs/.tools/sources/xcomm",
+      "-e git+https://github.com/XS-MLVP/ucv4xs.git@d553780d57435687709f7b7317edf0b21bf60afb#egg=ucv4xs",
+      "wheel==0.48.0"
+    ],
+    "binaries": {
+      "bin/picker": "d996e6b651f0d3655a0df4cdbe4574a4de2d917167dd6022b548f453b8e779fb",
+      "bin/firtool": "e9f436930a832a6badf6a4d2ef813bf135b6fc4fab7f196c77d7b51dabfeab58",
+      "bin/mill": "b04c98d6dface8ffdbf6c7f94aee68dae3d3309f2cab067989bb54159153db95",
+      "verilator/bin/verilator_bin": "ccf4908b4cae04cdf065a391d3d8cb4b5f3922731831703beeb75c65e4076520"
+    },
+    "runtime": {
+      "toffee": "/home/xyl/ucv4xs/.venv/lib/python3.12/site-packages/toffee",
+      "xspcomm": "/home/xyl/ucv4xs/.venv/lib/python3.12/site-packages/xspcomm/__init__.py",
+      "toffee_distribution": "uc-toffee",
+      "package_version": "2.1.0",
+      "binding_distribution": "uc-xcomm",
+      "binding_version": "1.1.1",
+      "native_abi": 3,
+      "coverage_protocol": 5
+    }
+  },
+  "smoke": {
+    "built": 3,
+    "pass": 3,
+    "log": ".cache/duts/{d1f653f7,0cdc4752,d181e4c4}/smoke.log",
+    "verdict": "BUILT + SMOKE PASS"
+  },
+  "commands": {
+    "prepare": ".venv/bin/ucv prepare ftq --require-unified-baseline",
+    "build": ".venv/bin/ucv build ftq --require-unified-baseline",
+    "seed2": ".venv/bin/ucv run ftq --workers 2 --seed 2 --require-unified-baseline --output results/ftq-a0c2a26cb-full-seed2-final-20261108 -- tests",
+    "seed1": ".venv/bin/ucv run ftq --workers 2 --seed 1 --require-unified-baseline --output results/ftq-a0c2a26cb-full-seed1-final-20261108 -- tests",
+    "runxfail": "PYTHONPATH=/home/xyl/ucv4xs .venv/bin/python -m pytest -q --runxfail tests/resolve_queue/test_resolve_overflow.py",
+    "gates": [
+      ".venv/bin/python -m pytest -q tests",
+      "python3.12 scripts/audit-assets.py",
+      ".venv/bin/python scripts/audit-suite-layout.py --strict",
+      ".venv/bin/python scripts/audit-skills.py --strict --check-framework",
+      ".venv/bin/python scripts/audit-suite-layout.py --strict --require-transaction-boundary"
+    ]
+  },
+  "runs": {
+    "seed2": {
+      "dir": "results/ftq-a0c2a26cb-full-seed2-final-20261108",
+      "counts": {
+        "PASS": 922,
+        "XFAIL": 2
+      },
+      "seed": 2,
+      "workers": 2,
+      "source_sha256": "e25c0d9a2339285502d61007af6e7a15f144bf1cd08633cb6f72b25c7fbe2620",
+      "source_after": "e25c0d9a2339285502d61007af6e7a15f144bf1cd08633cb6f72b25c7fbe2620",
+      "manifest": "committed",
+      "coverage_complete": true,
+      "gaps": []
+    },
+    "seed1": {
+      "dir": "results/ftq-a0c2a26cb-full-seed1-final-20261108",
+      "counts": {
+        "PASS": 922,
+        "XFAIL": 2
+      },
+      "seed": 1,
+      "workers": 2,
+      "source_sha256": "e25c0d9a2339285502d61007af6e7a15f144bf1cd08633cb6f72b25c7fbe2620",
+      "source_after": "e25c0d9a2339285502d61007af6e7a15f144bf1cd08633cb6f72b25c7fbe2620",
+      "same_nodeids_and_verdicts_as_seed2": true
+    }
+  },
+  "nodeid_reconciliation": {
+    "old_dir": "results/ucv-goal-ftq-frontend-integrated-v4-20261102",
+    "old_counts": {
+      "PASS": 905,
+      "XFAIL": 2
+    },
+    "new_dir": "results/ftq-a0c2a26cb-full-seed2-final-20261108",
+    "new_counts": {
+      "PASS": 922,
+      "XFAIL": 2
+    },
+    "removed": 0,
+    "changed": 0,
+    "added": 17,
+    "removed_nodeids": [],
+    "changed_rows": [],
+    "added_nodeids": [
+      "ftq::tests/checkers/test_ftq_frontend_fields.py::test_every_meaningful_field_is_actually_compared[prefetch-lane0.source-False]",
+      "ftq::tests/checkers/test_ftq_frontend_fields.py::test_every_meaningful_field_is_actually_compared[prefetch-lane1.source-False]",
+      "ftq::tests/checkers/test_ftq_frontend_fields.py::test_every_meaningful_field_is_actually_compared[prefetch-req1_source-False]",
+      "ftq::tests/checkers/test_ftq_frontend_fields.py::test_every_meaningful_field_is_actually_compared[prefetch-source-False]",
+      "ftq::tests/checkers/test_ftq_input_contract.py::test_redirect_pc_guard_bit_reaches_the_public_cfi_pc[backend]",
+      "ftq::tests/checkers/test_ftq_input_contract.py::test_redirect_pc_guard_bit_reaches_the_public_cfi_pc[ifu]",
+      "ftq::tests/ftq/test_ftq_prefetch_queue.py::test_enqueue_and_dequeue_on_the_same_edge_keep_queue_order",
+      "ftq::tests/ftq/test_ftq_prefetch_queue.py::test_every_enqueue_pointer_phase_and_lane_subset_is_offered",
+      "ftq::tests/ftq/test_ftq_prefetch_queue.py::test_every_software_prefetch_address_bit_toggles_in_all_lanes",
+      "ftq::tests/ftq/test_ftq_prefetch_queue.py::test_mixed_prefetch_consumes_one_fdip_and_one_queued_request",
+      "ftq::tests/ftq/test_ftq_prefetch_queue.py::test_queued_prefetch_wins_when_fdip_runs_past_the_preferred_distance",
+      "ftq::tests/ftq/test_ftq_prefetch_queue.py::test_reset_clears_a_pending_software_prefetch_queue",
+      "ftq::tests/ftq/test_ftq_prefetch_queue.py::test_soft_prefetch_queue_capacity_drops_excess_and_keeps_fifo_order",
+      "ftq::tests/ftq/test_ftq_prefetch_queue.py::test_software_prefetch_issues_source_sw_without_moving_the_fdip_pointer",
+      "ftq::tests/ftq/test_ftq_prefetch_queue.py::test_two_queued_prefetch_requests_report_the_declared_case[2147483664-1]",
+      "ftq::tests/ftq/test_ftq_prefetch_queue.py::test_two_queued_prefetch_requests_report_the_declared_case[2147483712-8]",
+      "ftq::tests/ftq/test_ftq_prefetch_queue.py::test_two_queued_prefetch_requests_report_the_declared_case[2147491840-0]"
+    ],
+    "classification": {
+      "upstream_fix": 0,
+      "model_lag": 0,
+      "real_defect_still_present": 2,
+      "new_missed_detection": 0
+    },
+    "boundary": "All 907 old nodeids retain their verdict; the 17 additions are selftests/new software-prefetch functional cases, not relabelled old results."
+  },
+  "xfail_recheck": {
+    "dir": "results/ftq-a0c2a26cb-resolve-overflow-runxfail-20261108",
+    "counts": {
+      "FAIL": 2,
+      "PASS": 0
+    },
+    "first_cause": "resolve_queue.transactions ScoreboardMismatch",
+    "cases": [
+      "test_ninth_branch_resolve_is_dropped_not_overwritten",
+      "test_same_cycle_group_overflow_preserves_existing_branch"
+    ],
+    "observed": "slot7 overwritten by ninth report; slot0 overwritten by third lane of a 6+3 same-cycle group",
+    "rtl_unchanged": "ResolveQueue.scala/sv byte-identical to public-893e1580b; strict XFAILs retained, not widened or promoted"
+  },
+  "coverage": {
+    "resolve_queue": {
+      "line": {
+        "total": 8045,
+        "hit": 8045,
+        "percent": 100.0
+      },
+      "branch": {
+        "total": 734,
+        "hit": 733,
+        "percent": 99.86376021798365
+      },
+      "toggle": {
+        "total": 19708,
+        "hit": 17587,
+        "percent": 89.23787294499695
+      },
+      "uncovered_lines": [],
+      "uncovered_branches": [
+        {
+          "module": "ResolveQueue",
+          "file": "ResolveQueue.sv",
+          "line": 12172,
+          "arm": "else",
+          "verilog": "if (reset) begin"
+        }
+      ],
+      "uncovered_toggle_count": 2121
+    },
+    "commit_queue": {
+      "line": {
+        "total": 2259,
+        "hit": 2259,
+        "percent": 100.0
+      },
+      "branch": {
+        "total": 520,
+        "hit": 519,
+        "percent": 99.8076923076923
+      },
+      "toggle": {
+        "total": 1364,
+        "hit": 1364,
+        "percent": 100.0
+      },
+      "uncovered_lines": [],
+      "uncovered_branches": [
+        {
+          "module": "CommitQueue",
+          "file": "CommitQueue.sv",
+          "line": 4089,
+          "arm": "else",
+          "verilog": "if (reset) begin"
+        }
+      ],
+      "uncovered_toggle_count": 0
+    },
+    "ftq": {
+      "line": {
+        "total": 52193,
+        "hit": 52193,
+        "percent": 100.0
+      },
+      "branch": {
+        "total": 1722,
+        "hit": 1715,
+        "percent": 99.59349593495935
+      },
+      "toggle": {
+        "total": 152622,
+        "hit": 128599,
+        "percent": 84.25980527053767
+      },
+      "uncovered_lines": [],
+      "uncovered_branches": [
+        {
+          "module": "CommitQueue",
+          "file": "CommitQueue.sv",
+          "line": 4089,
+          "arm": "else",
+          "verilog": "if (reset) begin"
+        },
+        {
+          "module": "Ftq",
+          "file": "Ftq.sv",
+          "line": 110836,
+          "arm": "else",
+          "verilog": "if (reset) begin"
+        },
+        {
+          "module": "PrefetchQueue",
+          "file": "PrefetchQueue.sv",
+          "line": 468,
+          "arm": "else",
+          "verilog": "if (reset) begin"
+        },
+        {
+          "module": "ResolveQueue",
+          "file": "ResolveQueue.sv",
+          "line": 2587,
+          "arm": "cond_then",
+          "verilog": "? enqIndex_0"
+        },
+        {
+          "module": "ResolveQueue",
+          "file": "ResolveQueue.sv",
+          "line": 2589,
+          "arm": "cond_then",
+          "verilog": "? enqIndex_1"
+        },
+        {
+          "module": "ResolveQueue",
+          "file": "ResolveQueue.sv",
+          "line": 2591,
+          "arm": "cond_then",
+          "verilog": "? enqIndex_2"
+        },
+        {
+          "module": "ResolveQueue",
+          "file": "ResolveQueue.sv",
+          "line": 12172,
+          "arm": "else",
+          "verilog": "if (reset) begin"
+        }
+      ],
+      "uncovered_toggle_count": 24023
+    }
+  },
+  "coverage_gaps_summary": {
+    "uncovered_lines_total": 0,
+    "uncovered_branches_total": 9,
+    "branch_causes": [
+      "4 Verilator initial reset-else blocks (CommitQueue.sv:4089, Ftq.sv:110836, PrefetchQueue.sv:468, ResolveQueue.sv:12172)",
+      "3 top-level structurally unreachable same-cycle IFU merge mux arms (ResolveQueue.sv:2587/2589/2591)"
+    ],
+    "toggle_boundary": "24023 uncovered toggles; payload high bits, uninitialised/one-direction bits, and constant Sw source / queued overlap arms. Not control/ownership closure."
+  },
+  "gate": {
+    "root_pytest": "270 passed",
+    "asset_audit": "PASS 4953 source files / 11 suites / 135 DUTs / 134685 historical evidence entries / 0 errors",
+    "layout_strict": "exit 0, all suites structural ok; FTQ no-static-leak-found",
+    "skills_strict": "exit 0, missing []",
+    "strict_transaction_boundary": "exit 1 preserved; 7 suites still need-adapter; FTQ no-static-leak-found, 0 owner infrastructure"
+  },
+  "changed_files": [
+    "suites/frontend/ftq/ftq/bundle/abi.py",
+    "suites/frontend/ftq/ftq/bundle/ports.py",
+    "suites/frontend/ftq/ftq/bundle/slots.py",
+    "suites/frontend/ftq/ftq/transaction/types.py",
+    "suites/frontend/ftq/ftq/transaction/cycle.py",
+    "suites/frontend/ftq/ftq/driver/encoding.py",
+    "suites/frontend/ftq/ftq/monitor/decode.py",
+    "suites/frontend/ftq/ftq/checker/frontend.py",
+    "suites/frontend/ftq/ftq/checker/handoffs.py",
+    "suites/frontend/ftq/ftq/checker/requests.py",
+    "suites/frontend/ftq/ftq/agent/main.py",
+    "suites/frontend/ftq/tests/ftq/test_ftq_prefetch_queue.py",
+    "suites/frontend/ftq/tests/checkers/test_ftq_input_contract.py",
+    "suites/frontend/ftq/tests/checkers/test_ftq_slots.py",
+    "suites/frontend/ftq/docs/functional-points.md",
+    "suites/frontend/ftq/docs/transaction-adaptation.md",
+    "suites/frontend/ftq/docs/bugs/resolve-queue-branch-overflow.md",
+    "suites/frontend/ftq/docs/baseline-adaptation-a0c2a26cb.md",
+    "suites/frontend/ftq/docs/architecture.md",
+    "suites/frontend/ftq/docs/requirements-boundary.md",
+    "suites/frontend/ftq/docs/equivalence-classes.md",
+    "suites/frontend/ftq/docs/residuals.md",
+    "suites/frontend/ftq/README.md",
+    "docs/status.md"
+  ],
+  "constraints": {
+    "rtl_modified": false,
+    "xfail_deleted_or_promoted": false,
+    "legal_stimulus_reduced": false,
+    "waiver_expanded": false,
+    "pushed": false
+  },
+  "remaining_scope": [
+    "Hardware sign-off is not claimed; seed coverage is finite.",
+    "Toggle coverage is 84.3% on ftq; payload high bits/constant-source directions remain unattributed as functional risk.",
+    "Two ResolveQueue capacity failures remain real RTL defects requiring a separate design change.",
+    "External ICache/IFU/BPU/ROB behaviour is outside this DUT boundary."
+  ]
+}
