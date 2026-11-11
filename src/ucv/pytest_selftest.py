@@ -24,5 +24,7 @@ def pytest_configure(config):
 def pytest_collection_modifyitems(items):
     for item in items:
         parts = Path(item.nodeid.split('::', 1)[0]).parts
-        if any(part in SELFTEST_DIRS for part in parts[:-1]):
+        shared=any(parts[i:i+3]==('testbenches','shared','tests') for i in range(len(parts)-2))
+        if (any(part in SELFTEST_DIRS for part in parts[:-1])
+                or (shared and item.get_closest_marker('selftest') is None)):
             item.add_marker(pytest.mark.selftest)

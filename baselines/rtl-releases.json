@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "releases": {
+    "public-a0c2a26cb": {
+      "baseline_sha256": "fc3b3d5dc4de80ad858d8396205e66c8364a591ea7206e3bd348f4ce989adbe3",
+      "url": "https://github.com/XS-MLVP/ucv4xs/releases/download/xiangshan-a0c2a26cb/xiangshan-a0c2a26cb-rtl.tar.gz",
+      "sha256": "80415d5635a4b1a59dec4d5a71a8c493f1c42879c1955d173638ca9d52b5e4e5",
+      "package": "xiangshan-a0c2a26cb-rtl"
+    }
+  }
+}

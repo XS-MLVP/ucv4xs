@@ -26,7 +26,8 @@ include = ["ucv", "ucv.*", "suites", "suites.*"]
 exclude = [
     "suites.*.*.dut*", "suites.*.*.rtl*", "suites.*.*.results*",
     "suites.*.*.XiangShan*", "suites.*.*.tests*", "suites.*.*.tools*",
-    "suites.*.*.docs*", "suites.*.*.manifest*", "suites.*.*.dependencies*",
+    "suites.*.*.modules.*.tests*",
+    "suites.*.*.docs*", "suites.*.*.spec*", "suites.*.*.manifest*", "suites.*.*.dependencies*",
     "suites.*.*.__pycache__*",
 ]
 

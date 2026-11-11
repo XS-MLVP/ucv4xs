@@ -6,8 +6,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from suites.frontend.ifu import harness
-from suites.frontend.ifu import fixtures as harness_fixtures
+from suites.frontend.ifu.testbenches.shared.env import harness
+from suites.frontend.ifu.testbenches.shared.env import agent_runtime as harness_fixtures
 
 
 @pytest.mark.parametrize('configured,override,expected', [('7', None, 7), ('7', 3, 3),

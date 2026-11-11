@@ -132,7 +132,7 @@ class Project:
         # injects Scala sources; the suite recipe change invalidates old BPU DUTs.
         return digest({'baseline':suite.baseline_key, 'suite':suite.name, 'dut':dut,
                        'recipe':suite.recipe, 'tools':self.tools, 'options':options or {},
-                       'pipeline_version':1,
+                        'pipeline_version':2,
                        'build_options':self.config.get('build_options',{}),
                        'overlay':None})
 

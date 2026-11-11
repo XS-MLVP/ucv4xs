@@ -9,7 +9,7 @@ import venv
 from .common import UcvError, digest, execute, file_hash, lock, now, read, write
 from .sources import checkout, git
 
-def setup(project, jobs=16):
+def setup(project, jobs=16, profile='runtime'):
     if sys.version_info[:2]!=(3,12) or platform.system()!='Linux' or platform.machine()!='x86_64':
         raise UcvError('The locked environment requires Linux x86_64 and Python 3.12')
     root = project.root
@@ -73,7 +73,7 @@ def setup(project, jobs=16):
         execute(['cmake','--build',pbuild,'-j',jobs],env=env,log=log)
         execute(['cmake','--install',pbuild],env=env,log=log)
         execute([python,'-m','pip','install','--no-build-isolation','--no-deps',sources['toffee']],env=env,log=log)
-        install_generation_tools(project,log)
+        if profile=='full':install_generation_tools(project,log)
         verilator = prefix/'verilator'
         if not (verilator/'bin/verilator').exists():
             seed = project.local.get('verilator_seed')
@@ -92,10 +92,12 @@ def setup(project, jobs=16):
         execute([python,'-m','pip','install','--no-build-isolation','--no-deps','-e',root],env=env,log=log)
         freeze=execute([python,'-m','pip','freeze'],env=env).stdout
         (prefix/'installed-python.txt').write_text(freeze)
-        write(prefix/'receipt.json',{'tools':project.tools,'completed_at':now(),
+        binaries=[prefix/'bin/picker',verilator/'bin/verilator_bin']
+        if profile=='full':binaries += [prefix/'bin/firtool',prefix/'bin/mill']
+        write(prefix/'receipt.json',{'tools':project.tools,'profile':profile,'completed_at':now(),
               'python':sys.version,'packages':freeze.splitlines(),
               'binaries':{str(p.relative_to(prefix)):file_hash(p) for p in
-                 [prefix/'bin/picker',prefix/'bin/firtool',prefix/'bin/mill',verilator/'bin/verilator_bin']}})
+                 binaries}})
     return str(prefix/'receipt.json')
 
 def install_generation_tools(project,log=None):

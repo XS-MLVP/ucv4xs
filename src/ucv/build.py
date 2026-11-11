@@ -8,7 +8,7 @@ import re
 import shutil
 import tempfile
 from .common import UcvError, activate, digest, execute, file_hash, lock, now, read, write
-from .sources import generate, source_key
+from .sources import obtain_rtl, source_key
 
 MODULE = re.compile(r'^\s*module\s+(\w+)', re.M)
 INSTANCE = re.compile(r'^[ \t]*(\w+)[ \t]+(?:#\s*\([^;]*?\)\s*)?(\w+)[ \t]*\(',re.M)
@@ -44,30 +44,34 @@ def closure(source, top):
         raise UcvError('Closure has colliding file names')
     return sorted(needed)
 
-def prepare(project, suite, dut):
+def prepare(project, suite, dut, rtl_source='auto', archive=None):
     if dut not in suite.recipe['duts']:raise UcvError(f'Unknown DUT {suite.name}/{dut}')
     spec = suite.recipe['duts'][dut]
     base = project.root/'.cache/duts'/project.cache_key(suite,dut)
     rtl = base/'rtl'
     receipt = rtl/'source.json'
     with lock(project.root/'.cache/locks'/('prepare-'+base.name)):
+        source, origin = obtain_rtl(project,suite,rtl_source,archive)
+        needed = closure(source,spec['top'])
+        files = {p.name:file_hash(p) for p in needed}
+        filelist = ''.join(p.name+'\n' for p in needed if p.suffix in {'.v','.sv'})
         if receipt.exists():
             data = read(receipt)
-            if any(file_hash(rtl/name)!=h for name,h in data['files'].items()):
+            if (data['baseline']!=suite.baseline or data['cache_key']!=base.name
+                    or data['files']!=files or (rtl/'filelist.f').read_text()!=filelist
+                    or any(file_hash(rtl/name)!=h for name,h in files.items())):
                 raise UcvError(f'RTL closure cache changed: {rtl}')
         else:
-            source = generate(project,suite)
-            needed = closure(source,spec['top'])
             rtl.mkdir(parents=True,exist_ok=True)
             for path in needed:shutil.copy2(path,rtl/path.name)
-            files = {p.name:file_hash(p) for p in needed}
-            (rtl/'filelist.f').write_text(''.join(p.name+'\n' for p in needed if p.suffix in {'.v','.sv'}))
+            (rtl/'filelist.f').write_text(filelist)
             write(receipt,{'key':dut,**spec,'files':files,'baseline':suite.baseline,
-                           'source':str(source),'cache_key':base.name,'created_at':now()})
+                           'source':str(source),'origin':origin,'cache_key':base.name,'created_at':now()})
         activate(suite.path/'rtl'/dut,rtl)
         # Existing contracts cite paths relative to the suite. Resolve that
         # compatibility entry to this suite's complete effective baseline.
-        activate(suite.path/'XiangShan',project.root/'.cache/sources'/source_key(suite.baseline))
+        checkout = project.root/'.cache/sources'/source_key(suite.baseline)
+        if checkout.is_dir():activate(suite.path/'XiangShan',checkout)
         # VAGQ's verification package addresses its original flat RTL names.
         if suite.name=='vagq':
             for name in read(receipt)['files']:
@@ -112,8 +116,8 @@ def repair_python_keywords(path):
     if text!=original:path.write_text(text)
     return {'before':digest(original),'after':digest(text),'changed':text!=original}
 
-def build(project, suite, dut, jobs=4):
-    base = prepare(project,suite,dut)
+def build(project, suite, dut, jobs=4, rtl_source='auto', archive=None):
+    base = prepare(project,suite,dut,rtl_source,archive)
     spec = suite.recipe['duts'][dut]
     package = base/'dut'
     receipt = base/'build.json'
@@ -141,7 +145,8 @@ def build(project, suite, dut, jobs=4):
             with tempfile.TemporaryDirectory(prefix='smoke-',dir=base) as temp:
                 execute([project.root/'.venv/bin/python','-c',SMOKE,package,tname],cwd=temp,env=env,log=base/'smoke.log')
             record = {'suite':suite.name,'dut':dut,**spec,'cache_key':base.name,
-                      'baseline':suite.baseline,'rtl':read(base/'rtl/source.json')['files'],
+                       'baseline':suite.baseline,'rtl':read(base/'rtl/source.json')['files'],
+                       'rtl_origin':read(base/'rtl/source.json')['origin'],
                       'tools':project.tools,'command':list(map(str,command)),'smoke':'PASS',
                       'python_keyword_fix':binding_fix,'completed_at':now(),
                       'coverage_processor':str(project.root/'.tools/verilator/bin/verilator_coverage'),
@@ -151,7 +156,7 @@ def build(project, suite, dut, jobs=4):
         activate(suite.path/'dut'/dut,package)
     return record
 
-def build_many(project, suites, duts=None, jobs=16, prepare_only=False):
+def build_many(project, suites, duts=None, jobs=16, prepare_only=False, rtl_source='auto', archive=None):
     tasks=[]
     for suite in suites:
         keys=list(suite.recipe['duts']) if not duts else duts
@@ -160,7 +165,8 @@ def build_many(project, suites, duts=None, jobs=16, prepare_only=False):
             tasks.append((suite,key))
     if not tasks:raise UcvError('No DUTs selected')
     from .validation import installed_tools
-    installed_tools(project,runtime=not prepare_only)
+    if not prepare_only or rtl_source=='source':
+        installed_tools(project,runtime=not prepare_only,generation=rtl_source=='source')
     with ExitStack() as stack:
         for suite in sorted(suites,key=lambda item:item.name):
             stack.enter_context(lock(project.root/'.cache/locks'/('suite-run-'+suite.name)))
@@ -169,6 +175,7 @@ def build_many(project, suites, duts=None, jobs=16, prepare_only=False):
         results=[]
         with ThreadPoolExecutor(max_workers=width) as pool:
             futures={pool.submit(prepare if prepare_only else build,project,suite,key,
+                                 rtl_source=rtl_source,archive=archive,
                                 **({} if prepare_only else {'jobs':per_job})):(suite.name,key) for suite,key in tasks}
             for future in as_completed(futures):
                 name,key=futures[future]

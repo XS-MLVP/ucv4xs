@@ -3,8 +3,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from suites.frontend.ftq import harness as ftq
-from suites.frontend.icache.runtime import dut as icache
+from suites.frontend.ftq.testbenches.shared.env import harness as ftq
+from suites.frontend.icache.testbenches.shared.env import dut as icache
 
 
 def loader(monkeypatch, tmp_path, kind):

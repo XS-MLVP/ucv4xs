@@ -3,13 +3,18 @@ import json
 import os
 from .common import UcvError, execute, file_hash, read
 
-def installed_tools(project, runtime=True):
+def installed_tools(project, runtime=True, generation=False):
     if not (project.root/'.tools/receipt.json').is_file():
         raise UcvError('Project tools are not installed; run ucv setup')
     receipt=read(project.root/'.tools/receipt.json')
     if receipt['tools']!=project.tools:
         raise UcvError('Installed tool lock differs from dependencies/versions.json; run ucv setup')
-    for name,expected in receipt['binaries'].items():
+    names=['bin/picker','verilator/bin/verilator_bin']
+    if generation:names+=['bin/mill','bin/firtool']
+    for name in names:
+        expected=receipt['binaries'].get(name)
+        if not expected:
+            raise UcvError('Missing installed tool receipt: '+name+'; run ucv setup --profile full for generation')
         if file_hash(project.root/'.tools'/name)!=expected:
             raise UcvError('Installed tool content changed: '+name)
     if runtime:

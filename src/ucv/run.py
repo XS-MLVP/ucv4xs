@@ -3,6 +3,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from contextlib import ExitStack
 from datetime import datetime, timezone
 import os
+import json
 from pathlib import Path
 import uuid
 from .common import UcvError, digest, execute, file_hash, lock, now, read, write
@@ -12,7 +13,7 @@ def source_identity(project,suites):
     files={}
     for directory in [project.root/'src',project.root/'baselines',*[s.path for s in suites]]:
         for p in directory.rglob('*'):
-            if p.is_file() and p.suffix in {'.py','.ini','.json','.toml','.scala','.patch'} and not p.is_symlink() and not {'rtl','dut','results','__pycache__'} & set(p.relative_to(directory).parts):
+            if p.is_file() and p.suffix in {'.py','.ini','.json','.toml','.scala','.patch','.md'} and not p.is_symlink() and not {'rtl','dut','results','__pycache__'} & set(p.relative_to(directory).parts):
                 files[str(p.relative_to(project.root))]=file_hash(p)
     namespace_files = [project.root/'suites/__init__.py',
                        *{s.path.parent/'__init__.py' for s in suites}]
@@ -37,39 +38,29 @@ def source_identity(project,suites):
     except UcvError:commit=None;status='uncommitted repository'
     return {'git_commit':commit,'git_status':status,'files':files,'sha256':digest(files)}
 
-def collection_arguments(suite):
+def collection_arguments(suite, paths=None):
     """Pytest defaults apply only when no explicit path/node ID is supplied."""
-    paths = [str(suite.path / p) for p in suite.recipe.get('tests', ['tests'])]
+    paths = [str(p) for p in paths] if paths is not None else [str(suite.path / p) for p in suite.recipe.get('tests', ['modules'])]
     # Pytest splits testpaths with shlex, including repositories with spaces.
     import shlex
     return ['-o', 'testpaths=' + ' '.join(shlex.quote(p) for p in paths)]
 
 
 def declared(suite):
-    """Suite summary plus any machine-readable residual register.
-
-    PASS/FAIL/XFAIL/SKIP only describe executed tests, so "unproven scope" has
-    no verdict.  A suite may declare it in ``verification_plan.json``; the run
-    record carries it so the report cannot present the case counts as the whole
-    status.  Suites without a register are unaffected.
-    """
-
+    """Freeze the suite identity and its canonical issue records at run start."""
     summary=suite.summary()
-    path=suite.path/'verification_plan.json'
-    if not path.is_file():
-        return summary
-    plan=read(path)
-    rows=plan.get('residuals') if isinstance(plan,dict) else None
-    if not isinstance(rows,list):
-        return summary
-    summary['residuals']=[{k:row.get(k) for k in
-        ('id','category','blocking','acceptance','owner','next_action')} for row in rows
-        if isinstance(row,dict) and row.get('id')]
+    from .documents import issues
+    summary['bugs']=issues(suite)
+    summary['acceptance_source']='issue-records'
     return summary
 
-def run(project,suites,workers=8,seed=1,pytest_args=None,collect_only=False,output=None):
+def run(project,suites,workers=8,seed=1,pytest_args=None,collect_only=False,output=None,duts=None):
     if workers<1:raise UcvError('workers must be positive')
     if not 0<=seed<=4294967295:raise UcvError('seed must be in [0, 4294967295]')
+    from .workspace import metadata, selected_duts, test_roots
+    from .layout import collection_plugins
+    selections={s.name:selected_duts(s,duts) for s in suites}
+    roots={s.name:test_roots(s,duts) for s in suites} if duts else {}
     extra=list(pytest_args or [])
     if any(a in {'-c','-o','--output','--workers'} or a.startswith(('-c','-o','--output=','--workers=','--toffee-output','--rootdir','--override-ini','--junitxml','--bpu-dut-scope','--bpu-partition','-n','--numprocesses')) for a in extra):
         raise UcvError('ucv owns output, pytest roots, BPU partitioning and worker budgets')
@@ -89,7 +80,7 @@ def run(project,suites,workers=8,seed=1,pytest_args=None,collect_only=False,outp
     record={'schema':1,'started_at':now(),'source':source_identity(project,suites),
             'suites':[declared(s) for s in suites], 'mixed_baseline':len({s.baseline_key for s in suites})>1,
             'tools':project.tools,'installed_tools':installed,'seed':seed,'workers':workers,'pytest_args':extra,
-            'collect_only':collect_only,'tasks':[],'status':'RUNNING'}
+            'collect_only':collect_only,'selected_duts':selections,'tasks':[],'status':'RUNNING'}
     write(output/'run.json',record)
     tasks=[]
     try:
@@ -101,13 +92,17 @@ def run(project,suites,workers=8,seed=1,pytest_args=None,collect_only=False,outp
                 env.update(PYTHONPATH=os.pathsep.join(
                                [str(project.root/'src'),str(project.root),str(suite.path)]),
                            UCV_SEED=str(seed),PYTHONHASHSEED=str(seed),DCACHE_TEST_RANDOM_SEED=str(seed))
-                flags=[*collection_arguments(suite),'-q','-p','no:cacheprovider','-p','ucv.pytest_plugin','--durations=20',
+                if duts:env['UCV_TEST_ROOTS']=json.dumps([str(p.resolve()) for p in roots[suite.name]])
+                else:env.pop('UCV_TEST_ROOTS',None)
+                flags=[*collection_arguments(suite,roots.get(suite.name)),'-q','-p','no:cacheprovider','-p','ucv.pytest_plugin','--durations=20',
                        '-c',str(suite.path/'pytest.ini'),'--rootdir='+str(suite.path)]
+                plugins=collection_plugins(suite) if metadata(suite)['schema']==2 else []
+                for plugin in plugins:flags+=['-p',plugin]
                 # A suite keeps its own pytest.ini and collection root.
                 tests=[]  # testpaths supplies defaults; explicit node IDs replace them.
                 builds={}
                 if not collect_only:
-                    for dut in suite.recipe['duts']:
+                    for dut in selections[suite.name]:
                         base=project.root/'.cache/duts'/project.cache_key(suite,dut)
                         receipt=read(base/'build.json')
                         if (suite.path/'dut'/dut).resolve() != (base/'dut').resolve():
@@ -118,15 +113,21 @@ def run(project,suites,workers=8,seed=1,pytest_args=None,collect_only=False,outp
                             if file_hash(base/'dut'/name)!=h:raise UcvError(f'Native package changed: {suite.name}/{dut}')
                         for name,h in receipt['rtl'].items():
                             if file_hash(base/'rtl'/name)!=h:raise UcvError(f'RTL changed: {suite.name}/{dut}')
-                        builds[dut]={'cache_key':base.name,'rtl':receipt['rtl'],'outputs':receipt['outputs']}
+                        builds[dut]={'cache_key':base.name,'rtl':receipt['rtl'],'outputs':receipt['outputs'],
+                                     'rtl_origin':receipt.get('rtl_origin')}
                     write(output/(suite.name+'-builds.json'),builds)
                 if suite.name=='bpu':
+                    # Preserve old launchers without a root plugin declaration.
+                    if not plugins:
+                        flags+=['-p','suites.frontend.bpu.runtime.pytest_plugins.isolation']
                     partition=output/'bpu-partition.json'
                     env['UCV_CASE_DIR']=str(output/'collection/bpu')
                     command=[python,'-m','pytest',*tests,*flags,'--collect-only',
                              '--bpu-write-partition',partition,*extra]
                     execute(command,cwd=suite.path,env=env,log=output/'logs/bpu-collection.log')
                     index=read(partition)
+                    if duts and {r['scope'] for r in index['cases']}-set(selections[suite.name])-{'pure'}:
+                        raise UcvError('Collected BPU ownership exceeds --dut selection')
                     if collect_only:
                         record['tasks'].append({'suite':'bpu','scope':'collection','status':'PASS','exit_code':0,
                                                 'cases':str((output/'collection/bpu/cases.json').relative_to(output))})

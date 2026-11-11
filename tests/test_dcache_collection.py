@@ -13,7 +13,7 @@ ROOT=Path(__file__).resolve().parents[1]
 @pytest.mark.parametrize('fails',[False,True],ids=['normal','body-failure'])
 def test_default_dcache_collection_and_execution_cwd(tmp_path,workers,fails):
     tests=tmp_path/'tests';tests.mkdir()
-    source=ROOT/'suites/memblock/dcache/tests/conftest.py'
+    source=ROOT/'suites/memblock/dcache/conftest.py'
     (tests/'conftest.py').write_text(source.read_text()+'''
 
 def pytest_sessionfinish(session):

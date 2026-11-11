@@ -124,8 +124,8 @@ def test_whole_chip_generation_is_shared_and_tracks_baseline(project, monkeypatc
     monkeypatch.setattr(sources, 'execute', compiler)
     monkeypatch.setenv('UCV_ROOT', str(project.root))
     # Real closure extraction: two suites share generation but own their DUT caches.
-    first = prepare(project, project.suite('bpu'), 'unit')
-    second = prepare(project, project.suite('lsq'), 'unit')
+    first = prepare(project, project.suite('bpu'), 'unit', rtl_source='source')
+    second = prepare(project, project.suite('lsq'), 'unit', rtl_source='source')
     assert first != second
     before = json.loads((first/'rtl/source.json').read_text())
     peer = json.loads((second/'rtl/source.json').read_text())
@@ -135,7 +135,7 @@ def test_whole_chip_generation_is_shared_and_tracks_baseline(project, monkeypatc
     assert not (checkout/'src').exists()  # No injected Scala entry.
     # A group override generates another whole-chip design; no cross-baseline reuse.
     write(project.root/'suites/frontend/ucv.json', {'baseline':'b'})
-    changed = prepare(project, project.suite('bpu'), 'unit')
+    changed = prepare(project, project.suite('bpu'), 'unit', rtl_source='source')
     assert changed != first
     assert len(calls) == 2
     after = json.loads((changed/'rtl/source.json').read_text())

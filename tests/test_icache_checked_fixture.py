@@ -7,7 +7,7 @@ import subprocess
 import sys
 import xml.etree.ElementTree as ET
 import pytest
-from suites.frontend.icache.runtime.fixtures import close_checked_agent
+from suites.frontend.icache.testbenches.shared.env.fixtures import close_checked_agent
 
 pytestmark = pytest.mark.asyncio
 
@@ -73,10 +73,10 @@ import json
 from pathlib import Path
 from types import SimpleNamespace
 import pytest
-from suites.frontend.icache.runtime import fixtures
-from suites.frontend.icache.pytest_plugins import runtime
+from suites.frontend.icache.testbenches.shared.env import fixtures
+from suites.frontend.icache.testbenches.shared.env.pytest_plugins import runtime
 runtime.validate_runtime=lambda:None
-pytest_plugins=('suites.frontend.icache.pytest_plugins.runtime',)
+pytest_plugins=('suites.frontend.icache.testbenches.shared.env.pytest_plugins.runtime',)
 
 class Backend:
     def __init__(self,*args):pass

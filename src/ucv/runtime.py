@@ -25,13 +25,11 @@ def source_path(baseline=None):
     return project.root/'.cache/sources'/source_key(project.baseline(baseline))
 
 def soc_rtl(baseline=None):
-    from .common import digest
-    from .sources import generation_spec
+    from .sources import rtl_path
     project=Project()
     if baseline is None:
         baseline=project.config['baseline']
-    spec=generation_spec(project.baseline(baseline))
-    return project.root/'.cache/generated'/digest(spec)/'rtl'
+    return rtl_path(project,project.baseline(baseline))
 
 def historical_path(suite,relative=''):
     project=Project()

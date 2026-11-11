@@ -24,13 +24,31 @@ def test_every_suite_passes_the_layout_contract():
 
 def test_layout_audit_sees_every_registered_suite():
     assert {row['suite'] for row in audit_rows()} == {
-        'bpu', 'ftq', 'icache', 'ifu', 'dcache',
+        'bpu', 'ftq', 'icache', 'ifu', 'ibuffer', 'instr_uncache', 'dcache',
         'lsq', 'lsu', 'mmu', 'sbuffer', 'vagq',
     }
 
 
-@pytest.mark.parametrize('suite', ['bpu', 'ftq', 'icache', 'ifu', 'dcache',
-                                   'lsq', 'lsu', 'mmu', 'sbuffer', 'vagq'])
+def test_owner_discovery_follows_registered_plugins_without_importing_them(tmp_path, monkeypatch):
+    monkeypatch.setattr(AUDIT, 'ROOT', tmp_path)
+    root = tmp_path / 'conftest.py'
+    root.write_text('pytest_plugins = ("fixtures_a", "missing_plugin")\n')
+    (tmp_path / 'fixtures_a.py').write_text('''raise RuntimeError("must not import")
+pytest_plugins = ["fixtures_b"]
+@pytest.fixture
+def cache_agent(): pass
+''')
+    (tmp_path / 'fixtures_b.py').write_text('''pytest_plugins = "fixtures_a"
+@pytest.fixture
+def queue_env(): pass
+''')
+    (tmp_path / 'unregistered.py').write_text('@pytest.fixture\ndef stray_dut(): pass\n')
+    assert AUDIT.root_fixtures(root) == {'cache_agent', 'queue_env'}
+
+
+@pytest.mark.parametrize('suite', ['bpu', 'ftq', 'icache', 'ifu', 'ibuffer',
+                                   'instr_uncache',
+                                   'dcache', 'lsq', 'lsu', 'mmu', 'sbuffer', 'vagq'])
 def test_audit_separates_structure_from_transaction_boundary(suite):
     """Report current debt without requiring it to remain in future code."""
     row = next(row for row in audit_rows() if row['suite'] == suite)
@@ -63,6 +81,66 @@ def test_transaction_audit_does_not_misclassify_a_plain_response_value(tmp_path)
     assert AUDIT.signal_accesses(path)==[]
 
 
+def test_explicit_selfchecks_keep_mixed_features_and_helpers_in_the_audit(tmp_path, monkeypatch):
+    suite = tmp_path / 'suite'
+    tests = suite / 'tests'
+    tests.mkdir(parents=True)
+    (suite / '__init__.py').write_text('')
+    (suite / 'conftest.py').write_text('agent = agent_fixture()\n')
+    (suite / 'pytest.ini').write_text('[pytest]\nmarkers =\n    selftest: framework controls\n')
+    (tests / 'test_encoding.py').write_text('''import pytest
+from example.legacy_pins import P as fields
+pytestmark = [pytest.mark.selftest, pytest.mark.toffee_functional_coverage(False)]
+def test_encoding():
+    assert encode()[fields.p_valid] == 1
+''')
+    (tests / 'test_mixed.py').write_text('''import pytest
+from example.legacy_pins import P as fields
+@pytest.mark.selftest
+def test_bad_field():
+    encode(fields.p_unknown)
+def helper(env):
+    env.raw_dut.Step(1)
+@pytest.mark.toffee_functional_coverage(False)
+def test_feature(env):
+    env.ports.read()
+class TestMixed:
+    @pytest.mark.selftest(reason="encoding contract")
+    def test_encoding(self):
+        assert encode()[fields.p_valid] == 1
+    def test_feature(self, env):
+        env.read_driver.send({})
+''')
+    monkeypatch.setattr(AUDIT, 'ROOT', tmp_path)
+    row = AUDIT.audit('example', suite, suite, tests)
+    assert row['transaction_boundary'] == 'needs-adapter'
+    assert row['pin_fields'] == 0
+    assert row['signal_operations'] == 2  # helper's raw handle and Step
+    assert row['component_accesses'] == 2
+    assert len(row['selftest_cases']) == 2
+    assert sum(case['pin_fields']['alias'] for case in row['selftest_cases']) == 3
+    assert {item['scope'] for case in row['selftest_cases'] for item in case['classifications']} == {
+        '<module>', 'test_bad_field', 'TestMixed.test_encoding'}
+    assert AUDIT.violations(row, require_transaction_boundary=True)
+
+
+def test_dynamic_or_reassigned_selftest_markers_do_not_hide_pin_access(tmp_path):
+    for marker in (
+        'pytestmark = pytest.mark.selftest if enabled else []',
+        'pytestmark = pytest.mark.selftest\npytestmark = []',
+        'pytestmark = [pytest.mark.selftest]\npytestmark.clear()',
+        'pytestmark = [pytest.mark.selftest]\nalias = pytestmark\nalias.clear()',
+        'pytestmark = pytest.mark.selftest\ndel pytestmark',
+        'if enabled:\n    pytestmark = pytest.mark.selftest',
+        'pytestmark = pytest.mark.toffee_functional_coverage(False)',
+    ):
+        path = tmp_path / 'test_example.py'
+        path.write_text(marker + '\ndef test_feature(env):\n    env.raw_dut.Step(1)\n')
+        tree, controls, classifications = AUDIT.selftest_scopes(AUDIT.source_tree(path))
+        assert not controls.body and not classifications
+        assert len(AUDIT.signal_accesses(tree)) == 2
+
+
 @pytest.mark.parametrize('body', [
     "agent.read_driver.set({'valid': 1})",
     "agent.write_driver.send({'valid': 1})",
@@ -82,7 +160,7 @@ def test_functional_component_bypass_is_not_a_clean_transaction_boundary(tmp_pat
     tests.mkdir(parents=True)
     (suite/'__init__.py').write_text('')
     (suite/'pytest.ini').write_text('[pytest]\nmarkers =\n    selftest: framework controls\n')
-    (tests/'conftest.py').write_text('cache_agent = agent_fixture()\n')
+    (suite/'conftest.py').write_text('cache_agent = agent_fixture()\n')
     (tests/'test_feature.py').write_text('def test_feature(agent, cache_agent, env, event):\n    '+body+'\n')
     monkeypatch.setattr(AUDIT, 'ROOT', tmp_path)
     row=AUDIT.audit('example',suite,suite,tests)
@@ -121,49 +199,49 @@ def test_sbuffer_functional_tests_remain_transaction_only():
 
 
 def test_store_delay_case_cannot_bypass_its_transaction_runtime():
-    path = ROOT / 'suites/memblock/lsu/tests/store_delay/test_store_delay.py'
+    path = ROOT / 'suites/memblock/lsu/testbenches/store_delay/tests/test_store_delay.py'
     assert AUDIT.signal_accesses(path) == []
     assert AUDIT.native_access(path) == []
     assert not any(AUDIT.pin_accesses(path).values())
 
 
 def test_ifu_perf_analysis_case_uses_only_semantic_transactions():
-    path = ROOT / 'suites/frontend/ifu/tests/perf_analysis/test_perf_analysis.py'
+    path = ROOT / 'suites/frontend/ifu/testbenches/perf_analysis/tests/test_perf_analysis.py'
     assert AUDIT.signal_accesses(path) == []
     assert AUDIT.native_access(path) == []
     assert not any(AUDIT.pin_accesses(path).values())
 
 
 def test_ifu_pred_checker_case_uses_only_semantic_transactions():
-    path = ROOT / 'suites/frontend/ifu/tests/pred_checker/test_pred_checker.py'
+    path = ROOT / 'suites/frontend/ifu/testbenches/pred_checker/tests/test_pred_checker.py'
     assert AUDIT.signal_accesses(path) == []
     assert AUDIT.native_access(path) == []
     assert not any(AUDIT.pin_accesses(path).values())
 
 
 def test_ifu_rvc_expander_case_uses_only_semantic_transactions():
-    path = ROOT / 'suites/frontend/ifu/tests/rvc_expander/test_rvc_expander.py'
+    path = ROOT / 'suites/frontend/ifu/testbenches/rvc_expander/tests/test_rvc_expander.py'
     assert AUDIT.signal_accesses(path) == []
     assert AUDIT.native_access(path) == []
     assert not any(AUDIT.pin_accesses(path).values())
 
 
 def test_ifu_instr_boundary_case_uses_only_semantic_transactions():
-    path = ROOT / 'suites/frontend/ifu/tests/instr_boundary/test_instr_boundary.py'
+    path = ROOT / 'suites/frontend/ifu/testbenches/instr_boundary/tests/test_instr_boundary.py'
     assert AUDIT.signal_accesses(path) == []
     assert AUDIT.native_access(path) == []
     assert not any(AUDIT.pin_accesses(path).values())
 
 
 def test_ifu_frontend_trigger_case_uses_only_semantic_transactions():
-    path = ROOT / 'suites/frontend/ifu/tests/frontend_trigger/test_frontend_trigger.py'
+    path = ROOT / 'suites/frontend/ifu/testbenches/frontend_trigger/tests/test_frontend_trigger.py'
     assert AUDIT.signal_accesses(path) == []
     assert AUDIT.native_access(path) == []
     assert not any(AUDIT.pin_accesses(path).values())
 
 
 def test_ifu_uncache_case_uses_only_semantic_transactions():
-    path = ROOT / 'suites/frontend/ifu/tests/uncache_unit/test_uncache_unit.py'
+    path = ROOT / 'suites/frontend/ifu/testbenches/uncache_unit/tests/test_uncache_unit.py'
     assert AUDIT.signal_accesses(path) == []
     assert AUDIT.native_access(path) == []
     assert not any(AUDIT.pin_accesses(path).values())
@@ -208,10 +286,10 @@ def test_example(env):
 @pytest.mark.parametrize('suite', ['dcache', 'lsu', 'mmu', 'sbuffer'])
 def test_moved_fixture_root_still_resolves_suite_directory(suite):
     import ast
-    path = ROOT / 'suites' / 'memblock' / suite / 'tests' / 'conftest.py'
+    path = ROOT / 'suites' / 'memblock' / suite / 'conftest.py'
     tree = ast.parse(path.read_text())
     expr = next(node.value for node in tree.body if isinstance(node, ast.Assign)
                 and any(isinstance(t, ast.Name) and t.id == 'ROOT' for t in node.targets))
     actual = eval(compile(ast.Expression(expr), str(path), 'eval'),
                   {'Path': Path, '__file__': str(path)})
-    assert actual == path.parents[1]
+    assert actual == path.parent

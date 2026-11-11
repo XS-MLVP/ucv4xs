@@ -4,7 +4,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from suites.frontend.ftq.fixtures import agent_runtime
+from suites.frontend.ftq.testbenches.shared.env.fixtures import agent_runtime
 
 
 class Agent:
