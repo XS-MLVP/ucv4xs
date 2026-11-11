@@ -19,7 +19,7 @@ import re
 import xml.etree.ElementTree as ElementTree
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.frontend.bpu', fromlist=['ROOT']).ROOT
 HINT = re.compile(r'estimated_runtime\(\s*(\d+(?:\.\d+)?)\s*\)')
 
 
@@ -77,9 +77,9 @@ def measured(path):
     for case in root.iter('testcase'):
         cls = case.get('classname') or ''
         seconds = float(case.get('time') or 0)
+        # Current runs report ``testbenches/...`` identities. Historical reports
+        # keep their original paths (including ``tests/...``) unchanged.
         module = cls.replace('.', '/') + '.py'
-        module = module.removeprefix('tests/')
-        module = 'tests/' + module
         totals[module] = totals.get(module, 0.0) + seconds
         peaks[module] = max(peaks.get(module, 0.0), seconds)
         counts[module] = counts.get(module, 0) + 1

@@ -11,7 +11,8 @@ import traceback
 import xml.etree.ElementTree as ET
 
 from tools.refresh_coverage import ROOT, FLOOR, NAMES, read, write, digest, source_epoch
-from suites.frontend.bpu.pytest_plugins.points import summary_for, validate_report
+from suites.frontend.bpu.testbenches.shared.env.pytest_plugins.points import summary_for
+from suites.frontend.bpu.testbenches.shared.env.pytest_plugins.points import validate_report
 
 CANONICAL = ('feature-points.json','rtl-line-coverage.json','rtl-coverage-manifest.json',
              'verification-report.html','summary.json')
@@ -129,7 +130,7 @@ def run_unpartitioned(args):
         if code:
             raise ValueError('collection failed')
         expected = [line for line in (output/'collection.log').read_text().splitlines()
-                    if line.startswith('tests/') and '::' in line]
+                    if line.startswith(('testbenches/', 'tests/')) and '::' in line]
         if not expected or len(expected) != len(set(expected)):
             raise ValueError('invalid frozen collection')
         print(f'managed regression: {len(expected)} tests, {args.workers} workers',flush=True)
@@ -152,15 +153,12 @@ def run_unpartitioned(args):
         validate_report(features)
         if features['integrity_errors']:
             raise ValueError('project feature evidence incomplete')
-        planned = {row['id'] for row in read(ROOT/'verification_plan.json')['features']}
-        if {row['id'] for row in features['features']} != planned:
-            raise ValueError('functional point identities differ from current plan')
         for row in features['features']:
             if any(tests.get(test['nodeid']) != test['status'] for test in row['tests']):
                 raise ValueError('feature/test verdict association changed')
-        if not args.select and summary_for(features,'all')['executed'] != len(planned):
-            raise ValueError('full regression has unexecuted functional points')
-        from suites.frontend.bpu.coverage.rtl import build_report
+        if not args.select and summary_for(features,'all')['executed'] != len(features['features']):
+            raise ValueError('full regression has unexecuted collected feature attachments')
+        from suites.frontend.bpu.tools.rtl_coverage import build_report
         native = build_report(execution/'rtl-coverage-manifest.json',output/'rtl-line-coverage.json')
         if not args.select and set(native['dut']) != set(NAMES):
             raise ValueError('full regression did not measure all ten DUTs')

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Functional-point traceability audit and report.
 
-The plan in ``docs/functional-points.md`` is the source of IDs.  Every test
+The plan in ``docs/spec/design/functional-points.md`` is the source of IDs.  Every test
 function must name at least one plan point with ``@pytest.mark.feature`` and
 every plan point must have at least one test; checker self-tests are marked
 ``selftest`` and are reported separately, never as hardware credit.
@@ -15,8 +15,8 @@ from pathlib import Path
 import re
 import xml.etree.ElementTree as ET
 
-ROOT = Path(__file__).resolve().parents[1]
-PLAN = ROOT / "docs/functional-points.md"
+ROOT = __import__('suites.frontend.ftq', fromlist=['ROOT']).ROOT
+PLAN = ROOT / "docs/spec/design/functional-points.md"
 ID = re.compile(r"\bFTQ-[A-Z]+-\d+\b")
 
 
@@ -66,7 +66,7 @@ def _module_markers(tree: ast.Module) -> tuple[list[str], bool]:
 
 def test_functions() -> list[dict[str, object]]:
     rows = []
-    for path in sorted((ROOT / "tests").rglob("test_*.py")):
+    for path in sorted((ROOT / "testbenches").rglob("test_*.py")):
         tree = ast.parse(path.read_text())
         module_features, module_selftest = _module_markers(tree)
         for node in ast.walk(tree):
@@ -197,7 +197,7 @@ def report(xml: Path | None = None) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--xml", type=Path)
-    parser.add_argument("--output", type=Path, default=ROOT / "docs/traceability.md")
+    parser.add_argument("--output", type=Path, default=ROOT / "docs/spec/verification/traceability.md")
     args = parser.parse_args()
     errors = audit()
     if errors:

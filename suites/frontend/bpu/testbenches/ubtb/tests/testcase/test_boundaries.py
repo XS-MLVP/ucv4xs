@@ -1,0 +1,38 @@
+"""MicroBTB partial-tag and payload boundaries."""
+
+from __future__ import annotations
+
+import pytest
+
+from suites.frontend.bpu.testbenches.ubtb.transactions.types import UbtbPrediction
+from suites.frontend.bpu.testbenches.ubtb.checker.assertions import assert_hit
+from suites.frontend.bpu.testbenches.ubtb.checker.assertions import train_taken
+from suites.frontend.bpu.testbenches.ubtb.model.vectors import DIRECT
+from suites.frontend.bpu.testbenches.ubtb.model.vectors import PARTIAL_TAG_SPAN
+from suites.frontend.bpu.testbenches.ubtb.model.vectors import PARTIAL_TARGET_SPAN
+from suites.frontend.bpu.testbenches.ubtb.model.vectors import boundary_vectors
+
+
+@pytest.mark.feature("BPU-UBTB-008")
+async def test_position_and_target_lower_boundaries_round_trip(ubtb_agent):
+    await ubtb_agent.reset()
+    for vector in boundary_vectors():
+        await train_taken(ubtb_agent, vector)
+        await assert_hit(ubtb_agent, vector)
+
+
+@pytest.mark.feature("BPU-UBTB-008")
+async def test_partial_tag_alias_reconstructs_target_from_lookup_region(ubtb_agent):
+    await ubtb_agent.reset()
+    await train_taken(ubtb_agent, DIRECT)
+    alias_pc = DIRECT.pc + PARTIAL_TAG_SPAN
+    alias_region = alias_pc & ~(PARTIAL_TARGET_SPAN - 1)
+    target_lower = DIRECT.target & (PARTIAL_TARGET_SPAN - 1)
+
+    assert await ubtb_agent.predict(alias_pc) == UbtbPrediction(
+        valid=1,
+        taken=1,
+        target=alias_region | target_lower,
+        position=DIRECT.position,
+        branch_type=DIRECT.branch_type,
+    )

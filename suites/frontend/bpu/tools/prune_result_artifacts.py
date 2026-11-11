@@ -200,7 +200,7 @@ def apply(results, candidates, kept):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--results', type=Path, default=Path(__file__).resolve().parents[1]/'results')
+    parser.add_argument('--results', type=Path, default=__import__('suites.frontend.bpu', fromlist=['ROOT']).ROOT/'results')
     parser.add_argument('--keep-run', type=Path, required=True)
     parser.add_argument('--plan', type=Path, required=True)
     parser.add_argument('--apply', action='store_true')

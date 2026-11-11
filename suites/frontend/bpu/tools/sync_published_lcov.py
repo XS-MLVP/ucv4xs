@@ -13,7 +13,7 @@ import os
 from pathlib import Path
 import tempfile
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.frontend.bpu', fromlist=['ROOT']).ROOT
 NAMES = frozenset(('abtb', 'bpu', 'ittage', 'mbtb', 'ras', 'sc', 'tage', 'ubtb', 'uras', 'utage'))
 
 

@@ -59,7 +59,8 @@ def toggle_families(data: dict, sample: int = 24) -> dict:
     }
 
 
-def summarize(report: Path, *, summary_note: str, previous: Path | None) -> dict:
+def summarize(report: Path, *, summary_note: str, previous: Path | None,
+              baseline: str = "public-a0c2a26cb") -> dict:
     data = json.loads(report.read_text(encoding="utf-8"))
     duts = {}
     for dut, row in sorted(data["duts"].items()):
@@ -80,6 +81,7 @@ def summarize(report: Path, *, summary_note: str, previous: Path | None) -> dict
         "source_report": str(report),
         "source_report_sha256": digest(report),
         "pytest_exitstatus": data.get("pytest_exitstatus"),
+        "baseline": baseline,
         "note": summary_note,
         "previous_summary": str(previous) if previous else None,
         "duts": duts,
@@ -89,9 +91,13 @@ def summarize(report: Path, *, summary_note: str, previous: Path | None) -> dict
 def markdown(summary: dict) -> str:
     lines = [
         "# IFU 覆盖率摘要（%s）" % summary["run_id"], "",
-        "基线 `public-893e1580b` / DefaultConfig；本文件由 `tools/coverage_summary.py`",
+        "基线 `%s` / DefaultConfig；本文件由 `tools/coverage_summary.py`" % summary["baseline"],
         "从该次运行的完整 `coverage.json` 生成。完整原生表、逐点 JSON 与 HTML 位于",
         "忽略目录 `results/` 下，不进入 Git。", "",
+    ]
+    if summary.get("note"):
+        lines += [summary["note"], ""]
+    lines += [
         "| DUT | line | branch | toggle bin | 曾变化位 | 未覆盖行 | 未覆盖分支臂 |",
         "|---|---|---|---|---|---:|---:|",
     ]
@@ -131,10 +137,12 @@ def main() -> int:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--note", default="")
+    parser.add_argument("--baseline", default="public-a0c2a26cb")
     parser.add_argument("--previous", type=Path)
     parser.add_argument("--markdown", type=Path)
     args = parser.parse_args()
-    summary = summarize(args.report, summary_note=args.note, previous=args.previous)
+    summary = summarize(args.report, summary_note=args.note, previous=args.previous,
+                        baseline=args.baseline)
     summary["run_id"] = args.run_id
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(summary, indent=2, ensure_ascii=False) + "\n",

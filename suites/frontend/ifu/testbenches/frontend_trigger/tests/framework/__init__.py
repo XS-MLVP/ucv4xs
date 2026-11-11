@@ -1,0 +1,1 @@
+"""FrontendTrigger framework self-tests."""

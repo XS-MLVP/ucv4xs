@@ -1,0 +1,80 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "duts": {
+    "instr_uncache_entry": {
+      "design_spec": [
+        "docs/spec/design/README.md",
+        "docs/spec/design/contracts.md",
+        "docs/spec/design/functional-points.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/coverage/coverage-loop.md",
+        "docs/spec/verification/coverage/coverage-summary.md",
+        "docs/spec/verification/defects.md",
+        "docs/spec/verification/exit-criteria.md",
+        "docs/spec/verification/reports/verification-report.md",
+        "docs/spec/verification/evidence/flush-closure.json"
+      ],
+      "tests": [
+        "testbenches/instr_uncache_entry/tests"
+      ],
+      "environment": "testbenches/instr_uncache_entry/env/agent.py",
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/instruncache/InstrUncacheEntry.scala"
+      ],
+      "testbench": "instr_uncache_entry"
+    },
+    "instr_uncache_resp_arbiter": {
+      "design_spec": [
+        "docs/spec/design/README.md",
+        "docs/spec/design/contracts.md",
+        "docs/spec/design/functional-points.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/coverage/coverage-loop.md",
+        "docs/spec/verification/coverage/coverage-summary.md",
+        "docs/spec/verification/defects.md",
+        "docs/spec/verification/exit-criteria.md",
+        "docs/spec/verification/reports/verification-report.md"
+      ],
+      "tests": [
+        "testbenches/instr_uncache_resp_arbiter/tests"
+      ],
+      "environment": "testbenches/instr_uncache_resp_arbiter/env/agent.py",
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/instruncache/InstrUncacheImp.scala",
+        "src/main/scala/xiangshan/frontend/instruncache/Bundles.scala"
+      ],
+      "testbench": "instr_uncache_resp_arbiter"
+    },
+    "instr_uncache": {
+      "design_spec": [
+        "docs/spec/design/README.md",
+        "docs/spec/design/contracts.md",
+        "docs/spec/design/functional-points.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/coverage/coverage-loop.md",
+        "docs/spec/verification/coverage/coverage-summary.md",
+        "docs/spec/verification/defects.md",
+        "docs/spec/verification/exit-criteria.md",
+        "docs/spec/verification/reports/verification-report.md",
+        "docs/spec/verification/evidence/flush-closure.json"
+      ],
+      "tests": [
+        "testbenches/instr_uncache/tests"
+      ],
+      "environment": "testbenches/instr_uncache/env/agent.py",
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/instruncache/InstrUncache.scala",
+        "src/main/scala/xiangshan/frontend/instruncache/InstrUncacheImp.scala"
+      ],
+      "testbench": "instr_uncache"
+    }
+  },
+  "loader": "testbenches/shared/env/harness.py"
+}

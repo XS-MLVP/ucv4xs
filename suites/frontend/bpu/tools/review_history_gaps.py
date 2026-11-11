@@ -4,8 +4,14 @@ from hashlib import sha256
 import json
 from pathlib import Path
 
-from suites.frontend.bpu.bpu.coverage.history_gaps import SOURCE,MODEL,local_claims,constrained_claims
-from suites.frontend.bpu.coverage.local_guards import ROOT,Source,match_native,native_points
+from suites.frontend.bpu.testbenches.bpu.coverage.history_gaps import SOURCE
+from suites.frontend.bpu.testbenches.bpu.coverage.history_gaps import MODEL
+from suites.frontend.bpu.testbenches.bpu.coverage.history_gaps import local_claims
+from suites.frontend.bpu.testbenches.bpu.coverage.history_gaps import constrained_claims
+from suites.frontend.bpu.testbenches.shared.coverage.local_guards import ROOT
+from suites.frontend.bpu.testbenches.shared.coverage.local_guards import Source
+from suites.frontend.bpu.testbenches.shared.coverage.local_guards import match_native
+from suites.frontend.bpu.testbenches.shared.coverage.local_guards import native_points
 
 
 def review(baseline,*,native_report=None,assume_owned_checkpoints=False):
@@ -17,7 +23,15 @@ def review(baseline,*,native_report=None,assume_owned_checkpoints=False):
     report=json.loads(path.read_text());epoch=json.loads((baseline/'source-epoch.json').read_text())
     source=Source(SOURCE)
     assert epoch[str(ROOT/SOURCE)]==source.sha256,'stale RTL source'
-    assert epoch[str(ROOT/MODEL)]==sha256((ROOT/MODEL).read_bytes()).hexdigest(),'stale semantic model'
+    # Historical epochs may still key the semantic model by its pre-module-layout
+    # path. Compare that recorded digest to the current file without rewriting
+    # the receipt or inventing a new identity.
+    model=ROOT/MODEL
+    model_sha256=sha256(model.read_bytes()).hexdigest()
+    legacy_model=ROOT/'bpu/model/path_history.py'
+    recorded={epoch.get(str(model))}
+    if legacy_model!=model:recorded.add(epoch.get(str(legacy_model)))
+    assert model_sha256 in recorded,'stale semantic model'
     manifest=json.loads((baseline/'pytest-artifacts/rtl-coverage-manifest.json').read_text())
     inputs=[Path(item).resolve() for item in manifest['files'] if '/native/bpu/' in item]
     assert inputs and all(item.is_relative_to(baseline) for item in inputs)

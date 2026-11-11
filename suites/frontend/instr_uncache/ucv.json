@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "suite": "instr_uncache",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "instr_uncache_entry": {
+      "top": "InstrUncacheEntry",
+      "export_name": "InstrUncacheEntryDut"
+    },
+    "instr_uncache_resp_arbiter": {
+      "top": "Arbiter1_InstrUncacheResp",
+      "export_name": "InstrUncacheRespArbiterDut"
+    },
+    "instr_uncache": {
+      "top": "InstrUncache",
+      "export_name": "InstrUncacheDut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "testbenches"
+  ],
+  "process_isolation": "suite"
+}

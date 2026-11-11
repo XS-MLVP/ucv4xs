@@ -17,7 +17,7 @@ import re
 import subprocess
 import tempfile
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.frontend.ftq', fromlist=['ROOT']).ROOT
 RTL_ROOT = ROOT / "rtl"
 TOOL = ROOT.parents[2] / ".tools" / "verilator" / "bin" / "verilator_coverage"
 POINT = re.compile(r"^C '(.*)' ([0-9]+)$")

@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 import subprocess
 
-from suites.frontend.bpu.coverage import rtl as rtl_coverage
+from suites.frontend.bpu.tools import rtl_coverage as rtl_coverage
 from tools.refresh_coverage import NAMES
 from tools.refresh_coverage import ROOT
 from tools.refresh_coverage import digest

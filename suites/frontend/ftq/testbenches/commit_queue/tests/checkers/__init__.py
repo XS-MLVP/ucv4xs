@@ -1,0 +1,1 @@
+"""CommitQueue checker self-tests."""

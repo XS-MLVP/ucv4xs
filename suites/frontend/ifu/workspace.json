@@ -1,0 +1,168 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "duts": {
+    "rvc_expander": {
+      "design_spec": [
+        "docs/spec/design/README.md",
+        "docs/spec/design/functional-points.md",
+        "docs/spec/design/behavior-matrix.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/transaction-adapters.md",
+        "docs/spec/verification/observation-coverage.md",
+        "docs/spec/verification/coverage/coverage-loop.md",
+        "docs/spec/verification/coverage/coverage-summary.md",
+        "docs/spec/verification/exit-criteria.md"
+      ],
+      "tests": [
+        "testbenches/rvc_expander/tests"
+      ],
+      "environment": "testbenches/rvc_expander/env/agent.py",
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/ifu/RvcExpander.scala"
+      ],
+      "testbench": "rvc_expander"
+    },
+    "instr_boundary": {
+      "design_spec": [
+        "docs/spec/design/README.md",
+        "docs/spec/design/functional-points.md",
+        "docs/spec/design/behavior-matrix.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/transaction-adapters.md",
+        "docs/spec/verification/observation-coverage.md",
+        "docs/spec/verification/coverage/coverage-loop.md",
+        "docs/spec/verification/coverage/coverage-summary.md",
+        "docs/spec/verification/exit-criteria.md"
+      ],
+      "tests": [
+        "testbenches/instr_boundary/tests"
+      ],
+      "environment": "testbenches/instr_boundary/env/agent.py",
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/ifu/InstrBoundary.scala"
+      ],
+      "testbench": "instr_boundary"
+    },
+    "pred_checker": {
+      "design_spec": [
+        "docs/spec/design/README.md",
+        "docs/spec/design/functional-points.md",
+        "docs/spec/design/behavior-matrix.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/transaction-adapters.md",
+        "docs/spec/verification/observation-coverage.md",
+        "docs/spec/verification/coverage/coverage-loop.md",
+        "docs/spec/verification/coverage/coverage-summary.md",
+        "docs/spec/verification/exit-criteria.md"
+      ],
+      "tests": [
+        "testbenches/pred_checker/tests"
+      ],
+      "environment": "testbenches/pred_checker/env/agent.py",
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/ifu/PredChecker.scala"
+      ],
+      "testbench": "pred_checker"
+    },
+    "uncache_unit": {
+      "design_spec": [
+        "docs/spec/design/README.md",
+        "docs/spec/design/functional-points.md",
+        "docs/spec/design/behavior-matrix.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/transaction-adapters.md",
+        "docs/spec/verification/observation-coverage.md",
+        "docs/spec/verification/coverage/coverage-loop.md",
+        "docs/spec/verification/coverage/coverage-summary.md",
+        "docs/spec/verification/exit-criteria.md"
+      ],
+      "tests": [
+        "testbenches/uncache_unit/tests"
+      ],
+      "environment": "testbenches/uncache_unit/env/agent.py",
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/ifu/IfuUncacheUnit.scala"
+      ],
+      "testbench": "uncache_unit"
+    },
+    "frontend_trigger": {
+      "design_spec": [
+        "docs/spec/design/README.md",
+        "docs/spec/design/functional-points.md",
+        "docs/spec/design/behavior-matrix.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/transaction-adapters.md",
+        "docs/spec/verification/observation-coverage.md",
+        "docs/spec/verification/coverage/coverage-loop.md",
+        "docs/spec/verification/coverage/coverage-summary.md",
+        "docs/spec/verification/exit-criteria.md"
+      ],
+      "tests": [
+        "testbenches/frontend_trigger/tests"
+      ],
+      "environment": "testbenches/frontend_trigger/env/agent.py",
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/ifu/FrontendTrigger.scala"
+      ],
+      "testbench": "frontend_trigger"
+    },
+    "perf_analysis": {
+      "design_spec": [
+        "docs/spec/design/README.md",
+        "docs/spec/design/functional-points.md",
+        "docs/spec/design/behavior-matrix.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/transaction-adapters.md",
+        "docs/spec/verification/observation-coverage.md",
+        "docs/spec/verification/coverage/coverage-loop.md",
+        "docs/spec/verification/coverage/coverage-summary.md",
+        "docs/spec/verification/exit-criteria.md"
+      ],
+      "tests": [
+        "testbenches/perf_analysis/tests"
+      ],
+      "environment": "testbenches/perf_analysis/env/agent.py",
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/ifu/IfuPerfAnalysis.scala"
+      ],
+      "testbench": "perf_analysis"
+    },
+    "ifu": {
+      "design_spec": [
+        "docs/spec/design/README.md",
+        "docs/spec/design/functional-points.md",
+        "docs/spec/design/behavior-matrix.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/transaction-adapters.md",
+        "docs/spec/verification/observation-coverage.md",
+        "docs/spec/verification/coverage/coverage-loop.md",
+        "docs/spec/verification/coverage/coverage-summary.md",
+        "docs/spec/verification/exit-criteria.md"
+      ],
+      "tests": [
+        "testbenches/ifu/tests"
+      ],
+      "environment": "testbenches/ifu/env/agent.py",
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/ifu/Ifu.scala"
+      ],
+      "testbench": "ifu"
+    }
+  },
+  "loader": "testbenches/shared/env/harness.py"
+}

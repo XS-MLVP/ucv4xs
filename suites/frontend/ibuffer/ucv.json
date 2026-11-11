@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "suite": "ibuffer",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "vtype_gen": {
+      "top": "VTypeGen",
+      "export_name": "VTypeGenDut"
+    },
+    "ibuffer": {
+      "top": "IBuffer",
+      "export_name": "IBufferDut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "testbenches"
+  ],
+  "process_isolation": "suite"
+}

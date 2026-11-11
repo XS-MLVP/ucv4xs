@@ -1,0 +1,19 @@
+"""Two independently captured old reads learn on adjacent accepted cycles."""
+from suites.frontend.bpu.testbenches.bpu.checker.direction_forwarding import DirectionForwardingChecks
+from suites.frontend.bpu.testbenches.bpu.tests.scenarios.lifetimes.directions import direction_program
+from suites.frontend.bpu.testbenches.bpu.model.tage.forwarding import PC
+from suites.frontend.bpu.testbenches.bpu.model.tage.forwarding import resolved_path
+
+
+async def check_direction_forwarding(agent,coverage):
+    async with direction_program(agent,PC) as env:
+        checks=DirectionForwardingChecks(env.checker,coverage)
+        await env.prepare_direction_pair(checks.prepared)
+        sources=(await env.capture_source(PC),await env.capture_source(PC))
+        checks.arm(sources)
+        checks.accepted_burst(await env.resolve_burst(tuple((source,env.branch_path(resolved_path())) for source in sources)))
+        final=await env.capture_source(PC)
+        checks.consumed(final)
+        checks.accepted_saturated(await env.resolve(final,*env.branch_path(resolved_path())))
+        checks.retained(await env.capture_source(PC))
+        checks.finish()

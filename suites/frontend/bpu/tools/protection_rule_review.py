@@ -15,7 +15,7 @@ import re
 import shutil
 import subprocess
 
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=__import__('suites.frontend.bpu', fromlist=['ROOT']).ROOT
 CELL=r'usefulEntries_(\d+)_(\d+)_value'
 
 

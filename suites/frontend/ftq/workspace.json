@@ -1,0 +1,76 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "loader": "testbenches/shared/env/harness.py",
+  "duts": {
+    "resolve_queue": {
+      "design_spec": [
+        "docs/spec/design/README.md",
+        "docs/spec/design/functional-points.md",
+        "docs/spec/design/requirements-boundary.md",
+        "docs/spec/design/equivalence-classes.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/traceability.md",
+        "docs/spec/verification/transaction-adaptation.md",
+        "docs/spec/verification/residuals.md",
+        "docs/spec/verification/reports/baseline-adaptation-a0c2a26cb.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/ftq/ResolveQueue.scala"
+      ],
+      "tests": [
+        "testbenches/resolve_queue/tests"
+      ],
+      "testbench": "resolve_queue",
+      "environment": "testbenches/resolve_queue/env/agent/main.py"
+    },
+    "commit_queue": {
+      "design_spec": [
+        "docs/spec/design/README.md",
+        "docs/spec/design/functional-points.md",
+        "docs/spec/design/requirements-boundary.md",
+        "docs/spec/design/equivalence-classes.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/traceability.md",
+        "docs/spec/verification/transaction-adaptation.md",
+        "docs/spec/verification/residuals.md",
+        "docs/spec/verification/reports/baseline-adaptation-a0c2a26cb.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/ftq/CommitQueue.scala"
+      ],
+      "tests": [
+        "testbenches/commit_queue/tests"
+      ],
+      "testbench": "commit_queue",
+      "environment": "testbenches/commit_queue/env/agent/main.py"
+    },
+    "ftq": {
+      "design_spec": [
+        "docs/spec/design/README.md",
+        "docs/spec/design/functional-points.md",
+        "docs/spec/design/requirements-boundary.md",
+        "docs/spec/design/equivalence-classes.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/traceability.md",
+        "docs/spec/verification/transaction-adaptation.md",
+        "docs/spec/verification/residuals.md",
+        "docs/spec/verification/reports/baseline-adaptation-a0c2a26cb.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/ftq/Ftq.scala"
+      ],
+      "tests": [
+        "testbenches/ftq/tests"
+      ],
+      "testbench": "ftq",
+      "environment": "testbenches/ftq/env/agent/main.py"
+    }
+  }
+}

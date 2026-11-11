@@ -12,7 +12,7 @@ from pathlib import Path
 import shutil
 import subprocess
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.frontend.bpu', fromlist=['ROOT']).ROOT
 MODULES = ('abtb', 'bpu', 'ittage', 'mbtb', 'ras', 'sc', 'tage', 'ubtb', 'uras', 'utage')
 LIBRARY = 'libxspcomm.so.0.3.0'
 EXTENSION = '_pyxspcomm.so.0.3.0'

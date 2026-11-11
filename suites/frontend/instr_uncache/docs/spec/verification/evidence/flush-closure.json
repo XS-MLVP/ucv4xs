@@ -1,0 +1,295 @@
+{
+  "format": "instr-uncache-flush-closure",
+  "version": 1,
+  "scope": {
+    "suite": "instr_uncache",
+    "baseline": "public-a0c2a26cb",
+    "commit": "a0c2a26cbe3c862175174bad03a1a23c406315ed",
+    "design": "DefaultConfig",
+    "conclusion": "DefaultConfig 下 flush 恒为 0，Entry 的 flush/needFlush 取消路径不可达；本证据只证明结构裁剪，不验证 flush 行为。"
+  },
+  "generation": {
+    "cache_key": "d7c6bc4d17651fc1bd92ac39c469410a6bb91215f46c1efcfaf1ec66a72e972d",
+    "source_cache": "f3ac6022d07c5c05d28869ac811f91038f9103677796dd6f051bd1981408be9b",
+    "command_has_default_config": true,
+    "baseline_name": "public-a0c2a26cb",
+    "baseline_commit": "a0c2a26cbe3c862175174bad03a1a23c406315ed"
+  },
+  "scala": {
+    "instantiation": {
+      "file": "Frontend.scala",
+      "line": 125,
+      "text": "val instrUncache: InstrUncache = LazyModule(new InstrUncache)"
+    },
+    "flush_tie": {
+      "file": "Frontend.scala",
+      "line": 266,
+      "text": "instrUncache.io.flush := false.B"
+    },
+    "imp_port": {
+      "file": "InstrUncacheImp.scala",
+      "line": 35,
+      "text": "val flush:   Bool                = Input(Bool())"
+    },
+    "imp_entry_tie": {
+      "file": "InstrUncacheImp.scala",
+      "line": 65,
+      "text": "entry.io.flush := io.flush"
+    },
+    "entry_port": {
+      "file": "InstrUncacheEntry.scala",
+      "line": 41,
+      "text": "val flush: Bool         = Input(Bool())"
+    },
+    "entry_register": {
+      "file": "InstrUncacheEntry.scala",
+      "line": 58,
+      "text": "private val needFlush = RegInit(false.B)"
+    },
+    "entry_capture": {
+      "file": "InstrUncacheEntry.scala",
+      "line": 59,
+      "text": "when(io.flush && (state =/= State.Invalid) && (state =/= State.SendResp)) {"
+    },
+    "entry_response_guard": {
+      "file": "InstrUncacheEntry.scala",
+      "line": 100,
+      "text": "io.resp.valid        := state === State.SendResp && !needFlush"
+    },
+    "entry_send_exit": {
+      "file": "InstrUncacheEntry.scala",
+      "line": 162,
+      "text": "when(io.resp.fire || needFlush) {"
+    },
+    "enable_sim_frontend_default": {
+      "file": "Parameters.scala",
+      "line": 632,
+      "text": "EnableSimFrontend: Boolean = false"
+    },
+    "sim_frontend_tie": {
+      "file": "SimFrontend.scala",
+      "line": 195,
+      "text": "instrUncache.io <> WireDefault(0.U.asTypeOf(instrUncache.io))"
+    }
+  },
+  "rtl": {
+    "InstrUncache.sv": {
+      "sha256": "a91b3c2cd2744a91a14ae1a952cc6f65de236c85877687aab2da5ff2377ceb14",
+      "port_count": 24,
+      "has_flush": false,
+      "has_needFlush": false,
+      "ports": [
+        [
+          "input",
+          "clock"
+        ],
+        [
+          "input",
+          "reset"
+        ],
+        [
+          "input",
+          "auto_client_out_a_ready"
+        ],
+        [
+          "output",
+          "auto_client_out_a_valid"
+        ],
+        [
+          "output",
+          "auto_client_out_a_bits_address"
+        ],
+        [
+          "output",
+          "auto_client_out_a_bits_user_memPageType_NC"
+        ],
+        [
+          "output",
+          "auto_client_out_a_bits_user_memBackType_MM"
+        ],
+        [
+          "input",
+          "auto_client_out_d_valid"
+        ],
+        [
+          "input",
+          "auto_client_out_d_bits_source"
+        ],
+        [
+          "input",
+          "auto_client_out_d_bits_denied"
+        ],
+        [
+          "input",
+          "auto_client_out_d_bits_data"
+        ],
+        [
+          "input",
+          "auto_client_out_d_bits_corrupt"
+        ],
+        [
+          "output",
+          "io_fromIfu_req_ready"
+        ],
+        [
+          "input",
+          "io_fromIfu_req_valid"
+        ],
+        [
+          "input",
+          "io_fromIfu_req_bits_addr_addr"
+        ],
+        [
+          "input",
+          "io_fromIfu_req_bits_memBackTypeMM"
+        ],
+        [
+          "input",
+          "io_fromIfu_req_bits_memPageTypeNC"
+        ],
+        [
+          "output",
+          "io_toIfu_resp_valid"
+        ],
+        [
+          "output",
+          "io_toIfu_resp_bits_data"
+        ],
+        [
+          "output",
+          "io_toIfu_resp_bits_corrupt"
+        ],
+        [
+          "output",
+          "io_toIfu_resp_bits_denied"
+        ],
+        [
+          "output",
+          "io_toIfu_resp_bits_needResend"
+        ],
+        [
+          "input",
+          "io_wfi_wfiReq"
+        ],
+        [
+          "output",
+          "io_wfi_wfiSafe"
+        ]
+      ]
+    },
+    "InstrUncacheEntry.sv": {
+      "sha256": "7c1fec63a64b9619ffea39e1a4d0711628f235c8e56676fca6550fc89185d7b6",
+      "port_count": 23,
+      "has_flush": false,
+      "has_needFlush": false,
+      "ports": [
+        [
+          "input",
+          "clock"
+        ],
+        [
+          "input",
+          "reset"
+        ],
+        [
+          "output",
+          "io_req_ready"
+        ],
+        [
+          "input",
+          "io_req_valid"
+        ],
+        [
+          "input",
+          "io_req_bits_addr_addr"
+        ],
+        [
+          "input",
+          "io_req_bits_memBackTypeMM"
+        ],
+        [
+          "input",
+          "io_req_bits_memPageTypeNC"
+        ],
+        [
+          "output",
+          "io_resp_valid"
+        ],
+        [
+          "output",
+          "io_resp_bits_data"
+        ],
+        [
+          "output",
+          "io_resp_bits_corrupt"
+        ],
+        [
+          "output",
+          "io_resp_bits_denied"
+        ],
+        [
+          "output",
+          "io_resp_bits_needResend"
+        ],
+        [
+          "input",
+          "io_mmioAcquire_ready"
+        ],
+        [
+          "output",
+          "io_mmioAcquire_valid"
+        ],
+        [
+          "output",
+          "io_mmioAcquire_bits_address"
+        ],
+        [
+          "output",
+          "io_mmioAcquire_bits_user_memPageType_NC"
+        ],
+        [
+          "output",
+          "io_mmioAcquire_bits_user_memBackType_MM"
+        ],
+        [
+          "input",
+          "io_mmioGrant_valid"
+        ],
+        [
+          "input",
+          "io_mmioGrant_bits_denied"
+        ],
+        [
+          "input",
+          "io_mmioGrant_bits_data"
+        ],
+        [
+          "input",
+          "io_mmioGrant_bits_corrupt"
+        ],
+        [
+          "input",
+          "io_wfi_wfiReq"
+        ],
+        [
+          "output",
+          "io_wfi_wfiSafe"
+        ]
+      ]
+    },
+    "Arbiter1_InstrUncacheResp.sv": {
+      "sha256": "35a2b18d15340af9f07908943cf87497b2fa49ebd592017b6d494d70712f36f3",
+      "port_count": 10
+    },
+    "Frontend.sv": {
+      "sha256": "fd988931577758db9fe6f1bbdf66d46433ae1f5e17fce0bd5b9100a5bcf83126",
+      "instance": {
+        "file": "Frontend.sv",
+        "instance": "inner_instrUncache",
+        "line": 2763,
+        "block_sha256": "3b09cd6ed3e9110ef044858f155002e2e3e6eab79bc02c22470615a89318ec83",
+        "has_flush_connection": false
+      }
+    }
+  }
+}
