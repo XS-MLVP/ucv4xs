@@ -14,14 +14,17 @@ import random
 import shutil
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.vector.vagq', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(ROOT))
 
 from tools.qualify_maskgen_semantics import configurations, profiles
 from tools.run_vagq_exhaustive import atomic_json, digest
-from suites.vector.vagq.maskgen.architectural import BoundDestination, DestinationBinding, DestinationInstruction
-from suites.vector.vagq.maskgen.reference import MaskRequest, evaluate
-from suites.vector.vagq.qualification.rvv_destination import Instruction as Oracle
+from suites.vector.vagq.testbenches.maskgen.env.architectural import BoundDestination
+from suites.vector.vagq.testbenches.maskgen.env.architectural import DestinationBinding
+from suites.vector.vagq.testbenches.maskgen.env.architectural import DestinationInstruction
+from suites.vector.vagq.testbenches.maskgen.env.reference import MaskRequest
+from suites.vector.vagq.testbenches.maskgen.env.reference import evaluate
+from suites.vector.vagq.testbenches.maskgen.model.qualification.rvv_destination import Instruction as Oracle
 
 
 def main():
@@ -89,9 +92,9 @@ def main():
     assert total['running_violations'] == total['noop_violations'] == 0
     assert mutations['active_clobber_rejected'] > 0
     assert mutations['noop_ones_checks'] == mutations['noop_ones_rejected'] > 0
-    names = ('maskgen/architectural.py', 'maskgen/reference.py',
-        'qualification/rvv_destination.py', 'tools/qualify_maskgen_semantics.py',
-        'tools/qualify_bound_destination_reference.py', 'tests/maskgen/test_architectural_reference.py')
+    names = ('testbenches/maskgen/env/architectural.py', 'testbenches/maskgen/env/reference.py',
+        'testbenches/maskgen/model/qualification/rvv_destination.py', 'tools/qualify_maskgen_semantics.py',
+        'tools/qualify_bound_destination_reference.py', 'testbenches/maskgen/tests/test_architectural_reference.py')
     for name in names:
         target = output / 'sources' / name
         target.parent.mkdir(parents=True, exist_ok=True)

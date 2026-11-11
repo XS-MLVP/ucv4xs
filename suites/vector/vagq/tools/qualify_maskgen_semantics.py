@@ -16,12 +16,12 @@ import random
 import shutil
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.vector.vagq', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(ROOT))
 
 from tools.run_vagq_exhaustive import atomic_json, digest
-from suites.vector.vagq.maskgen import reference as candidate
-from suites.vector.vagq.qualification.rvv_destination import Instruction
+from suites.vector.vagq.testbenches.maskgen.env import reference as candidate
+from suites.vector.vagq.testbenches.maskgen.model.qualification.rvv_destination import Instruction
 
 
 EMUL = ((5, Fraction(1, 8)), (6, Fraction(1, 4)), (7, Fraction(1, 2)),
@@ -180,8 +180,8 @@ def main():
             expected='ACCEPTED' if expected_legal else 'REJECTED', counts=result))
     assert all(item['result'] == item.get('expected', 'REJECTED') for item in mutations)
     atomic_json(out / 'mutation-results.json', mutations)
-    for name in ('qualification/rvv_destination.py', 'tests/maskgen/test_architectural_qualification.py',
-                 'tools/qualify_maskgen_semantics.py', 'maskgen/reference.py'):
+    for name in ('testbenches/maskgen/model/qualification/rvv_destination.py', 'testbenches/maskgen/tests/test_architectural_qualification.py',
+                 'tools/qualify_maskgen_semantics.py', 'testbenches/maskgen/env/reference.py'):
         target = out / 'sources' / name
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(ROOT / name, target)

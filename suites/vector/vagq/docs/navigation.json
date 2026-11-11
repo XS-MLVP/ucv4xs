@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "current": [
+    "README.md",
+    "docs/README.md",
+    "docs/spec/design/README.md",
+    "docs/spec/verification/README.md",
+    "docs/spec/verification/evidence/README.md",
+    "docs/bugs/README.md"
+  ]
+}

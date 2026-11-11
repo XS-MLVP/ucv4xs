@@ -1,0 +1,223 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "loader": "testbenches/shared/env/native.py",
+  "duts": {
+    "AddrGen": {
+      "design_spec": [
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/README.md"
+      ],
+      "environment": "testbenches/addrgen/env/probe.py",
+      "tests": [
+        "testbenches/addrgen/tests"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/backend/vector/vagq/AddrGen.scala",
+        "src/main/scala/xiangshan/backend/vector/vagq/SplitCtrl.scala"
+      ],
+      "testbench": "addrgen"
+    },
+    "MaskGen": {
+      "design_spec": [
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/README.md"
+      ],
+      "environment": "testbenches/maskgen/env/probe.py",
+      "tests": [
+        "testbenches/maskgen/tests"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/backend/vector/vagq/MaskGen.scala",
+        "src/main/scala/xiangshan/backend/vector/vagq/EntryTable.scala"
+      ],
+      "testbench": "maskgen"
+    },
+    "MergeCtrl": {
+      "design_spec": [
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/README.md"
+      ],
+      "environment": "testbenches/merge/env/__init__.py",
+      "tests": [
+        "testbenches/merge/tests"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/backend/vector/vagq/MergeCtrl.scala",
+        "src/main/scala/xiangshan/backend/vector/vagq/Vagq.scala"
+      ],
+      "testbench": "merge"
+    },
+    "NewPipelineConnectPipe": {
+      "design_spec": [
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/README.md"
+      ],
+      "environment": "testbenches/pipeline/env/__init__.py",
+      "tests": [
+        "testbenches/pipeline/tests"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/backend/datapath/NewPipelineConnect.scala",
+        "src/main/scala/xiangshan/backend/vector/vagq/Vagq.scala"
+      ],
+      "testbench": "pipeline"
+    },
+    "NewPipelineConnectPipe_3": {
+      "design_spec": [
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/README.md"
+      ],
+      "environment": "testbenches/pipeline/env/__init__.py",
+      "tests": [
+        "testbenches/pipeline/tests"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/backend/datapath/NewPipelineConnect.scala",
+        "src/main/scala/xiangshan/backend/vector/vagq/Vagq.scala"
+      ],
+      "testbench": "pipeline"
+    },
+    "OrderedPermitCtrl": {
+      "design_spec": [
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/README.md"
+      ],
+      "environment": "testbenches/ordered/env/__init__.py",
+      "tests": [
+        "testbenches/ordered/tests"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/backend/vector/vagq/OrderedPermitCtrl.scala",
+        "src/main/scala/xiangshan/backend/vector/vagq/Vagq.scala"
+      ],
+      "testbench": "ordered"
+    },
+    "SplitCtrl": {
+      "design_spec": [
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/README.md"
+      ],
+      "environment": "testbenches/split/env/__init__.py",
+      "tests": [
+        "testbenches/split/tests"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/backend/vector/vagq/SplitCtrl.scala",
+        "src/main/scala/xiangshan/backend/vector/vagq/Vagq.scala"
+      ],
+      "testbench": "split"
+    },
+    "StoreDataCtrl": {
+      "design_spec": [
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/README.md"
+      ],
+      "environment": "testbenches/storedata/env/__init__.py",
+      "tests": [
+        "testbenches/storedata/tests"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/backend/vector/vagq/StoreDataCtrl.scala",
+        "src/main/scala/xiangshan/backend/vector/vagq/Vagq.scala"
+      ],
+      "testbench": "storedata"
+    },
+    "VAGQ": {
+      "design_spec": [
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/README.md"
+      ],
+      "environment": "testbenches/vagq/env/__init__.py",
+      "tests": [
+        "testbenches/vagq/tests"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/backend/vector/vagq/Vagq.scala",
+        "src/main/scala/xiangshan/backend/Backend.scala"
+      ],
+      "testbench": "vagq"
+    },
+    "VAGQArbiter": {
+      "design_spec": [
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/README.md"
+      ],
+      "environment": "testbenches/arbiter/env/probe.py",
+      "tests": [
+        "testbenches/arbiter/tests"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/backend/vector/vagq/VAGQArbiter.scala",
+        "src/main/scala/xiangshan/backend/vector/vagq/Vagq.scala"
+      ],
+      "testbench": "arbiter"
+    },
+    "VAGQEntryTable": {
+      "design_spec": [
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/README.md"
+      ],
+      "environment": "testbenches/entrytable/env/__init__.py",
+      "tests": [
+        "testbenches/entrytable/tests"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/backend/vector/vagq/EntryTable.scala",
+        "src/main/scala/xiangshan/backend/vector/vagq/Vagq.scala"
+      ],
+      "testbench": "entrytable"
+    },
+    "VAGQManager": {
+      "design_spec": [
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/README.md"
+      ],
+      "environment": "testbenches/manager/env/agent.py",
+      "tests": [
+        "testbenches/manager/tests"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/backend/vector/vagq/VAGQManager.scala",
+        "src/main/scala/xiangshan/backend/vector/VecOrderQueue.scala"
+      ],
+      "testbench": "manager"
+    }
+  }
+}

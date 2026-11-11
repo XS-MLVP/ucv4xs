@@ -15,7 +15,7 @@ import shutil
 import subprocess
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.vector.vagq', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(ROOT))
 
 from tools.build_vagq_failure_review_report import check_manifest
@@ -23,15 +23,21 @@ from tools.build_vagq_reference_fix_report import (
     analyze_policy, audit_wave, historical_artifacts, junit, sparse_variants,
 )
 from tools.run_vagq_exhaustive import atomic_json, digest
-from suites.vector.vagq.maskgen.flow_fixture import active_sites, flow_metadata, wide_flow
-from suites.vector.vagq.maskgen.architectural import BoundDestination, DestinationBinding, DestinationInstruction
-from suites.vector.vagq.maskgen.reference import MaskRequest, evaluate
-from suites.vector.vagq.qualification.rvv_destination import Instruction as IndependentRegisterOracle
-from suites.vector.vagq.split.model import idx_offset
-from suites.vector.vagq.split.types import Entry
-from suites.vector.vagq.vagq.model import _data_size, _slot_element
-from suites.vector.vagq.vagq.types import AddrPacket
-from suites.vector.vagq.waveform import read_public_samples
+from suites.vector.vagq.testbenches.maskgen.env.flow_fixture import active_sites
+from suites.vector.vagq.testbenches.maskgen.env.flow_fixture import flow_metadata
+from suites.vector.vagq.testbenches.maskgen.env.flow_fixture import wide_flow
+from suites.vector.vagq.testbenches.maskgen.env.architectural import BoundDestination
+from suites.vector.vagq.testbenches.maskgen.env.architectural import DestinationBinding
+from suites.vector.vagq.testbenches.maskgen.env.architectural import DestinationInstruction
+from suites.vector.vagq.testbenches.maskgen.env.reference import MaskRequest
+from suites.vector.vagq.testbenches.maskgen.env.reference import evaluate
+from suites.vector.vagq.testbenches.maskgen.model.qualification.rvv_destination import Instruction as IndependentRegisterOracle
+from suites.vector.vagq.testbenches.split.model import idx_offset
+from suites.vector.vagq.testbenches.split.transactions import Entry
+from suites.vector.vagq.testbenches.vagq.model import _data_size
+from suites.vector.vagq.testbenches.vagq.model import _slot_element
+from suites.vector.vagq.testbenches.vagq.transactions import AddrPacket
+from suites.vector.vagq.testbenches.vagq.env.waveform import read_public_samples
 
 
 CONTRACTS = {
@@ -116,7 +122,7 @@ def audit_qualification(out):
     return dict(**result,
         tested_domain='401 segment operand configurations (2..8 fields), sampled vl/vstart/masks/policies; not all bit patterns or nonsegment certification',
         overall_implementation_reference='NOT_CERTIFIED',
-        immutable_oracle='qualification/rvv_destination.py',
+        immutable_oracle='testbenches/maskgen/model/qualification/rvv_destination.py',
         spec_provenance_sha256=digest(directory / 'spec/provenance.json'))
 
 
@@ -175,11 +181,11 @@ def load_snapshot(name, path):
 
 def audit_reference_defect_witnesses(out):
     """Run the ACTUAL frozen old functions, not merely invented bad variants."""
-    old_mask = load_snapshot('suites.vector.vagq.maskgen._before_bound_repair',
+    old_mask = load_snapshot('suites.vector.vagq.testbenches.maskgen._before_bound_repair',
         out / 'before/maskgen/reference.py')
-    old_split = load_snapshot('suites.vector.vagq.split._before_bound_repair',
+    old_split = load_snapshot('suites.vector.vagq.testbenches.split._before_bound_repair',
         out / 'before/split/model.py')
-    old_top = load_snapshot('suites.vector.vagq.vagq._before_bound_repair',
+    old_top = load_snapshot('suites.vector.vagq.testbenches.vagq._before_bound_repair',
         out / 'before/vagq/model.py')
     fragment = wide_flow(4, 5, 2)[1]
     entry = Entry(nf=4, deew=2, ieew=3, elem_base=2, start_byte=fragment.site)
@@ -324,7 +330,7 @@ def write_readme(out, report):
         '**已修复本轮识别的参考模型错误；RTL-01/02/03 与 INT-01 在独立预期下仍复现。未修改 RTL。**',
         '**新架构入口在显式绑定域通过独立语义检查；整个实现相关环境仍是 `NOT_CERTIFIED`。**', '',
         '## 参考模型改动', '',
-        '- `maskgen/architectural.py` 只接受架构参数和显式 field/register 身份；不导入 RTL、MOP adapter 或资格 oracle。',
+        '- `testbenches/maskgen/env/architectural.py` 只接受架构参数和显式 field/register 身份；不导入 RTL、MOP adapter 或资格 oracle。',
         '- `reference.evaluate()` 无显式 `BoundDestination` 时拒绝；有绑定时核对几何、ownership tag 和 v0 行，返回架构预期，而非 component 输出字典。',
         '- no-op 在参考自身处理：无 active memory elements、禁止目的提交、merge 保留全部、agnostic 为 0。不假设上游 gate。',
         '- 原 component 模型显式改名为 `evaluate_protocol()`，旧接口比较仍保留原输出域；不能把它当 ISA oracle。',
@@ -339,7 +345,7 @@ def write_readme(out, report):
         f'- 本轮定向纯模型检查：**{tests["pure-final"]["passed"]} PASS**；另保留初次 {tests["pure"]["passed"]} PASS 的运行，不覆盖历史。',
         '- 固定答案验证 no-op、显式身份/错误 v0 行拒绝、同一身份更换 uop tag 不改答案，以及两种合法 agnostic 选择；reference 与 oracle 的依赖隔离均有检查。',
         '- `reference-defect-witnesses.json` 实际加载本轮修前冻结函数：旧的 wide 元素编号、special 步距、size 取整/饱和以及 no-op 答案均被独立固定语义拒绝；不是仅捏造一个错误变体。',
-        '- 原独立 `rvv_destination.py` 与 `vagq/isa_reference.py` 内容 hash 未变。规范/provenance 复制自上一轮固定的官方 RVV v1.0 文件。', '',
+        '- 原独立 `rvv_destination.py` 与 `testbenches/vagq/env/isa_reference.py` 内容 hash 未变。规范/provenance 复制自上一轮固定的官方 RVV v1.0 文件。', '',
         '## 修复后原生复核', '',
         '| 检查 | 结果 | 独立预期与实际 |',
         '| --- | --- | --- |',

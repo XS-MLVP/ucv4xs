@@ -1,0 +1,1 @@
+"""VAGQManager framework self-tests."""

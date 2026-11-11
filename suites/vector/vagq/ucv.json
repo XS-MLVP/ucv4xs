@@ -55,7 +55,7 @@
   },
   "pytest_root": ".",
   "tests": [
-    "tests"
+    "testbenches"
   ],
   "process_isolation": "suite",
   "baseline": "internal-d4566d58a"

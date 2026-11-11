@@ -18,20 +18,23 @@ import subprocess
 import sys
 import xml.etree.ElementTree as ET
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.vector.vagq', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(ROOT))
 
 from tools.run_vagq_exhaustive import atomic_json, digest
 from tools.run_vagq_failure_review import audit
-from suites.vector.vagq.maskgen.reference import MaskRequest, evaluate_protocol
-from suites.vector.vagq.vagq.exhaustive import (
-    U64_MASK, build_shape_sequence, compare_shape, observed_bytes,
-)
-from suites.vector.vagq.vagq.failure_review import analyze_failure
-from suites.vector.vagq.vagq.scenario_matrix import (
-    FeatureCase, OPERATION_NAMES, legal_public_feature_cases,
-)
-from suites.vector.vagq.waveform import convert_fst, read_public_samples
+from suites.vector.vagq.testbenches.maskgen.env.reference import MaskRequest
+from suites.vector.vagq.testbenches.maskgen.env.reference import evaluate_protocol
+from suites.vector.vagq.testbenches.vagq.env.exhaustive import U64_MASK
+from suites.vector.vagq.testbenches.vagq.env.exhaustive import build_shape_sequence
+from suites.vector.vagq.testbenches.vagq.env.exhaustive import compare_shape
+from suites.vector.vagq.testbenches.vagq.env.exhaustive import observed_bytes
+from suites.vector.vagq.testbenches.vagq.env.failure_review import analyze_failure
+from suites.vector.vagq.testbenches.vagq.env.scenario_matrix import FeatureCase
+from suites.vector.vagq.testbenches.vagq.env.scenario_matrix import OPERATION_NAMES
+from suites.vector.vagq.testbenches.vagq.env.scenario_matrix import legal_public_feature_cases
+from suites.vector.vagq.testbenches.vagq.env.waveform import convert_fst
+from suites.vector.vagq.testbenches.vagq.env.waveform import read_public_samples
 
 
 FAMILY_NAMES = {
@@ -405,8 +408,8 @@ def main():
     suites = list(qualification.iter('testsuite'))
     assert sum(int(suite.attrib['tests']) for suite in suites) == 12
     assert not any(int(suite.attrib[key]) for suite in suites for key in ('failures', 'errors', 'skipped'))
-    checker_sources = ('tests/vagq/test_failure_review_qualification.py',
-                       'tests/vagq/test_failure_review_report_checks.py')
+    checker_sources = ('testbenches/vagq/tests/test_failure_review_qualification.py',
+                       'testbenches/vagq/tests/test_failure_review_report_checks.py')
     checker_qualification = dict(tests=12, failures=0, errors=0,
         junit=str(qualification_path), junit_sha256=digest(qualification_path),
         sources={name: digest(ROOT / name) for name in checker_sources},
@@ -445,7 +448,8 @@ def main():
     evidence = dict(original_failed_shapes_sha256=digest(original / 'failed-shapes.json'),
         original_report_sha256=digest(original / 'report.json'),
         frozen_source_epoch_verified=True, original_rtl_and_native_unchanged=True,
-        independent_isa_oracle_sha256=frozen['vagq/isa_reference.py'],
+        independent_isa_oracle_sha256=next(
+            value for name, value in frozen.items() if name.endswith('isa_reference.py')),
         receipt_and_journal_verified=2278, original_checker_recomputed=2278,
         offline_explanations_recomputed=2278, actually_driven_acks_verified=True,
         checker_qualification=checker_qualification,
@@ -525,7 +529,7 @@ def write_readme(review, report, rows):
         '本次定位使用的布局、active mask 和起点并非 adapter 擅自猜测。',
         '',
         '但全输出资格检查真实 **FAIL**：2278 项中共 **10596 个 uop** 的 `mergeWriteMask` 模型与 DUT 不同。',
-        '`maskgen/reference.py::mop_info()` 把 field-major 的 `destLsrcOffset` 当作 `destination_window`；',
+        '`testbenches/maskgen/env/reference.py::mop_info()` 把 field-major 的 `destLsrcOffset` 当作 `destination_window`；',
         'Scala 实际单独保存 `destElemWindow=lmulOffset`。按源契约的元素窗口单独计算后，',
         '**13536/13536** 原生样本所有字段都解释一致。该字段不参与原 exhaustive 的输入布局/架构字节答案，',
         '也不参与本次停滞 pending-bit 计算，故不是四组原始失败的原因；',

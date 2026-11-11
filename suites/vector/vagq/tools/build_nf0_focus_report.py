@@ -9,15 +9,21 @@ import shutil
 import subprocess
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.vector.vagq', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(ROOT))
 
 from tools.build_vagq_failure_review_report import check_manifest
 from tools.build_vagq_reference_fix_report import audit_wave, junit
 from tools.run_vagq_exhaustive import atomic_json, digest
-from suites.vector.vagq.vagq.exhaustive import assess_shape_boundaries, build_shape_sequence
-from suites.vector.vagq.vagq.nf0_focus import PROFILES, assess_events, compatible_shapes, make_variant, ready_values, shape_scope
-from suites.vector.vagq.vagq.scenario_matrix import legal_public_feature_cases
+from suites.vector.vagq.testbenches.vagq.env.exhaustive import assess_shape_boundaries
+from suites.vector.vagq.testbenches.vagq.env.exhaustive import build_shape_sequence
+from suites.vector.vagq.testbenches.vagq.env.nf0_focus import PROFILES
+from suites.vector.vagq.testbenches.vagq.env.nf0_focus import assess_events
+from suites.vector.vagq.testbenches.vagq.env.nf0_focus import compatible_shapes
+from suites.vector.vagq.testbenches.vagq.env.nf0_focus import make_variant
+from suites.vector.vagq.testbenches.vagq.env.nf0_focus import ready_values
+from suites.vector.vagq.testbenches.vagq.env.nf0_focus import shape_scope
+from suites.vector.vagq.testbenches.vagq.env.scenario_matrix import legal_public_feature_cases
 
 
 def audit_history(out):
