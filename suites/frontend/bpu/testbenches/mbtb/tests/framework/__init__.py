@@ -1,0 +1,1 @@
+"""MainBTB framework integration contracts."""

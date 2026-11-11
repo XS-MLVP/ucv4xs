@@ -15,13 +15,16 @@ from pathlib import Path
 from types import SimpleNamespace
 
 from suites.frontend.ifu import ROOT
-from suites.frontend.ifu.ifu.checker import uncached_redirect
-from suites.frontend.ifu.ifu.types import BusRequest, Enqueue, FetchRequest, FetchResult
-from suites.frontend.ifu.model.fetch import xor_fold
-from suites.frontend.ifu.model.rvc import expand
-from suites.frontend.ifu.model.uncache import Outputs
+from suites.frontend.ifu.testbenches.ifu.checker import uncached_redirect
+from suites.frontend.ifu.testbenches.ifu.transactions import BusRequest
+from suites.frontend.ifu.testbenches.ifu.transactions import Enqueue
+from suites.frontend.ifu.testbenches.ifu.transactions import FetchRequest
+from suites.frontend.ifu.testbenches.ifu.transactions import FetchResult
+from suites.frontend.ifu.testbenches.ifu.model.fetch import xor_fold
+from suites.frontend.ifu.testbenches.rvc_expander.model.rvc import expand
+from suites.frontend.ifu.testbenches.uncache_unit.model.uncache import Outputs
 from suites.frontend.ifu.tools.audit_cached_stimulus import GeneratorStandIn, load
-from suites.frontend.ifu.uncache_unit.types import BusReply
+from suites.frontend.ifu.testbenches.uncache_unit.transactions import BusReply
 
 
 def digest(value):
@@ -166,7 +169,7 @@ async def execute(path, name, migrated):
 
 
 async def audit(before):
-    after = ROOT / 'tests/ifu/test_ifu_fetch.py'
+    after = ROOT / 'testbenches/ifu/tests/test_ifu_fetch.py'
     import ast
     names = [node.name for node in ast.parse(after.read_text()).body
              if isinstance(node, ast.AsyncFunctionDef) and node.name.startswith('test_uncache')]

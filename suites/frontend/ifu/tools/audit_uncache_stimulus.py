@@ -15,13 +15,31 @@ import sys
 from types import SimpleNamespace
 
 from suites.frontend.ifu import ROOT
-from suites.frontend.ifu.model.uncache import Inputs, UncacheModel, WAIT_RESP
-from suites.frontend.ifu.uncache_unit.ledger import RequestLedger
-from suites.frontend.ifu.uncache_unit.types import ReadRequest
+from suites.frontend.ifu.testbenches.uncache_unit.model.uncache import Inputs
+from suites.frontend.ifu.testbenches.uncache_unit.model.uncache import UncacheModel
+from suites.frontend.ifu.testbenches.uncache_unit.model.uncache import WAIT_RESP
+from suites.frontend.ifu.testbenches.uncache_unit.env.ledger import RequestLedger
+from suites.frontend.ifu.testbenches.uncache_unit.transactions import ReadRequest
 
 
 def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+# Frozen snapshots may predate the module layout. Keep both names so old
+# receipts retain their original keys and hashes.
+LEGACY_PATHS = {
+    'modules/uncache_unit/model/uncache.py': 'model/uncache.py',
+    'modules/uncache_unit/tests/test_uncache_unit.py': 'tests/uncache_unit/test_uncache_unit.py',
+}
+
+
+def snapshot_file(before, frozen, name):
+    """Resolve a frozen file by its current or historical relative name."""
+    for candidate in (name, LEGACY_PATHS[name]):
+        if candidate in frozen['frozen_files'] and (before / candidate).is_file():
+            return candidate, before / candidate
+    raise AssertionError(f'missing frozen file: {name}')
 
 
 def load(path, name):
@@ -78,12 +96,15 @@ def main():
     if args.output.exists():
         parser.error('refuse to overwrite an existing evidence output')
     frozen = json.loads((args.before / 'before.json').read_text())
-    for name in ('model/uncache.py', 'tests/uncache_unit/test_uncache_unit.py'):
-        assert sha(args.before / name) == frozen['frozen_files'][name], f'changed before snapshot: {name}'
-    old_model = load(args.before / 'model/uncache.py', 'ifu_uncache_frozen_oracle')
-    old = load(args.before / 'tests/uncache_unit/test_uncache_unit.py', 'ifu_uncache_frozen_cases')
+    frozen_paths = {}
+    for name in ('modules/uncache_unit/model/uncache.py', 'modules/uncache_unit/tests/test_uncache_unit.py'):
+        key, path = snapshot_file(args.before, frozen, name)
+        assert sha(path) == frozen['frozen_files'][key], f'changed before snapshot: {key}'
+        frozen_paths[name] = path
+    old_model = load(frozen_paths['modules/uncache_unit/model/uncache.py'], 'ifu_uncache_frozen_oracle')
+    old = load(frozen_paths['modules/uncache_unit/tests/test_uncache_unit.py'], 'ifu_uncache_frozen_cases')
     old.Inputs, old.UncacheModel = old_model.Inputs, old_model.UncacheModel
-    current = load(ROOT / 'tests/uncache_unit/test_uncache_unit.py', 'ifu_uncache_current_cases')
+    current = load(ROOT / 'testbenches/uncache_unit/tests/test_uncache_unit.py', 'ifu_uncache_current_cases')
     old_rows = []
 
     def old_cycle(harness, model, inputs):
@@ -101,7 +122,7 @@ def main():
         recorder = PlannedRecorder()
         asyncio.run(getattr(current, name)(recorder))
         assert old_rows == recorder.rows, f'changed physical primary inputs: {name}'
-        rows.append(dict(nodeid='tests/uncache_unit/test_uncache_unit.py::' + name,
+        rows.append(dict(nodeid='testbenches/uncache_unit/tests/test_uncache_unit.py::' + name,
             primary_requests=len(old_rows), ordered_physical_inputs_unchanged=True,
             primary_input_sha256=hashlib.sha256(json.dumps(old_rows, sort_keys=True).encode()).hexdigest(),
             added_explicit_controls=recorder.additional_controls))
@@ -109,8 +130,8 @@ def main():
     def oracle(tree):
         return next(node for node in tree.body if isinstance(node, ast.ClassDef) and node.name == 'UncacheModel')
 
-    before_ast = ast.dump(oracle(ast.parse((args.before / 'model/uncache.py').read_text())), include_attributes=False)
-    current_ast = ast.dump(oracle(ast.parse((ROOT / 'model/uncache.py').read_text())), include_attributes=False)
+    before_ast = ast.dump(oracle(ast.parse(frozen_paths['modules/uncache_unit/model/uncache.py'].read_text())), include_attributes=False)
+    current_ast = ast.dump(oracle(ast.parse((ROOT / 'testbenches/uncache_unit/model/uncache.py').read_text())), include_attributes=False)
     assert before_ast == current_ast, 'independent FSM/comparison expectation changed'
     result = dict(scope='Pure planned producer-body equivalence, not native sampling or hardware credit.',
         original_test_bodies=len(rows), primary_requests=sum(row['primary_requests'] for row in rows),

@@ -20,10 +20,14 @@ from xml.etree import ElementTree as ET
 from toffee import CoverageDatabase
 from toffee.coverage_report import build_unified_coverage_model, parse_lcov, render_unified_coverage_html
 
-from suites.frontend.bpu.runtime.process_scope import SCOPES
-from suites.frontend.bpu.pytest_plugins.evidence import fingerprint, write_json, worst
-from suites.frontend.bpu.pytest_plugins.isolation import selected_ids
-from suites.frontend.bpu.pytest_plugins.points import make_report, summary_for, validate_report
+from suites.frontend.bpu.testbenches.shared.env.process_scope import SCOPES
+from suites.frontend.bpu.testbenches.shared.env.pytest_plugins.evidence import fingerprint
+from suites.frontend.bpu.testbenches.shared.env.pytest_plugins.evidence import write_json
+from suites.frontend.bpu.testbenches.shared.env.pytest_plugins.evidence import worst
+from suites.frontend.bpu.testbenches.shared.env.pytest_plugins.isolation import selected_ids
+from suites.frontend.bpu.testbenches.shared.env.pytest_plugins.points import make_report
+from suites.frontend.bpu.testbenches.shared.env.pytest_plugins.points import summary_for
+from suites.frontend.bpu.testbenches.shared.env.pytest_plugins.points import validate_report
 from tools.refresh_coverage import ROOT, FLOOR, NAMES, digest, read, source_epoch, write
 from tools.managed_regression import execution_verdicts, snapshot_publications
 
@@ -98,10 +102,10 @@ def verify_child(directory, expected, domain, code):
     return manifest, tests, native
 
 
-def combine_features(plan, index, child_reports, tests):
+def combine_features(index, child_reports, tests):
     expected = {(feature, row['nodeid']) for row in index['cases'] for feature in row['features']}
-    found, by_feature = set(), {point['id']: [] for point in plan['features']}
-    definitions = {point['id']: point for point in plan['features']}
+    found, by_feature = set(), {feature: [] for feature, _ in expected}
+    definitions = {}
     for report in child_reports:
         validate_report(report)
         if report['integrity_errors']:
@@ -109,7 +113,8 @@ def combine_features(plan, index, child_reports, tests):
         for point in report['features']:
             if point['id'] not in by_feature:
                 raise ValueError('unknown domain functional point')
-            if {key: value for key, value in point.items() if key not in ('tests', 'status')} != definitions[point['id']]:
+            definition = {key: value for key, value in point.items() if key not in ('tests', 'status')}
+            if definitions.setdefault(point['id'], definition) != definition:
                 raise ValueError('domain functional point definition changed')
             for row in point['tests']:
                 key = point['id'], row['nodeid']
@@ -117,10 +122,10 @@ def combine_features(plan, index, child_reports, tests):
                     raise ValueError('duplicate or changed domain feature/test association')
                 found.add(key)
                 by_feature[point['id']].append(row)
-    if found != expected:
+    if found != expected or definitions.keys() != by_feature.keys():
         raise ValueError('functional point association differs from frozen collection')
-    return make_report([dict(point, tests=by_feature[point['id']],
-        status=worst({row['status'] for row in by_feature[point['id']]})) for point in plan['features']],
+    return make_report([dict(definitions[identity], tests=by_feature[identity],
+        status=worst({row['status'] for row in by_feature[identity]})) for identity in sorted(definitions)],
         integrity_errors=[], execution_owner='process-per-DUT')
 
 
@@ -235,15 +240,15 @@ def run(args):
         code = int(any(status in ('FAIL', 'ERROR', 'XPASS', 'SKIP') for status in tests.values()))
         functional = database.report() if database.groups else None
         if not selection and code == 0:
-            from suites.frontend.bpu.coverage.parallel import validate_parallel_case_coverage
+            from suites.frontend.bpu.tools.parallel_coverage import validate_parallel_case_coverage
             validate_parallel_case_coverage(functional, profile=args.regression_profile)
-        features = combine_features(read(ROOT / 'verification_plan.json'), index, feature_reports, tests)
+        features = combine_features(index, feature_reports, tests)
         if not selection and summary_for(features, 'all')['executed'] != len(features['features']):
             raise ValueError('complete regression has unexecuted functional points')
         write(execution / 'feature-points.json', features)
         write(execution / 'rtl-coverage-manifest.json', dict(format='bpu-managed-native-manifest', version=1,
               pytest_exitstatus=code, native=native, files=[row['path'] for row in native]))
-        from suites.frontend.bpu.coverage.rtl import build_report
+        from suites.frontend.bpu.tools.rtl_coverage import build_report
         measured = build_report(execution / 'rtl-coverage-manifest.json', output / 'rtl-line-coverage.json')
         if not selection and set(measured['dut']) != set(NAMES):
             raise ValueError('complete regression did not measure all DUTs')

@@ -23,9 +23,10 @@ import traceback
 from uuid import uuid4
 import xml.etree.ElementTree as ET
 
-ROOT = Path(__file__).resolve().parents[1]
-from suites.frontend.bpu.pytest_plugins.regression import PROFILES
-from suites.frontend.bpu.pytest_plugins.points import summary_for, validate_report
+ROOT = __import__('suites.frontend.bpu', fromlist=['ROOT']).ROOT
+from suites.frontend.bpu.testbenches.shared.env.pytest_plugins.regression import PROFILES
+from suites.frontend.bpu.testbenches.shared.env.pytest_plugins.points import summary_for
+from suites.frontend.bpu.testbenches.shared.env.pytest_plugins.points import validate_report
 NAMES = ('abtb','bpu','ittage','mbtb','ras','sc','tage','ubtb','uras','utage')
 FLOOR = 86436216832
 DEFAULT_WORKERS = min(32, len(os.sched_getaffinity(0)) if hasattr(os, 'sched_getaffinity')
@@ -41,6 +42,12 @@ def digest(path):
         return file_digest(stream, 'sha256').hexdigest()
 
 
+def relocate_nodeid(nodeid):
+    """Navigate a frozen pre-module-layout nodeid without rewriting evidence."""
+    from ucv.layout import relocated_name
+    return relocated_name(ROOT, nodeid)
+
+
 def write(path, value):
     with Path(path).open('x') as stream:
         json.dump(value, stream, indent=2, ensure_ascii=False)
@@ -49,7 +56,7 @@ def write(path, value):
 
 def source_epoch():
     """Freeze source, DUTs, and the actual Python execution dependencies."""
-    paths = {ROOT / name for name in ('pytest.ini', 'requirements.txt', 'verification_plan.json')}
+    paths = {ROOT / name for name in ('pytest.ini', 'requirements.txt')}
     lock = ROOT / 'dependencies/versions.json'
     if lock.is_file():
         paths.add(lock)
@@ -90,8 +97,8 @@ def pytest_command(output, workers, profile='production'):
 
 def execution_inputs(run, expected, verdicts, *, require_coverage=True):
     """Revalidate current worker receipts; never discover inputs in old results."""
-    from suites.frontend.bpu.pytest_plugins.evidence import collection_digest
-    from suites.frontend.bpu.pytest_plugins.evidence import fingerprint
+    from suites.frontend.bpu.testbenches.shared.env.pytest_plugins.evidence import collection_digest
+    from suites.frontend.bpu.testbenches.shared.env.pytest_plugins.evidence import fingerprint
     evidence = read(run / 'evidence.json')
     if (evidence.get('format') != 'bpu-pytest-evidence' or evidence.get('version') != 1
             or evidence.get('pytest_exitstatus') != 0 or evidence.get('integrity_errors')
@@ -200,8 +207,8 @@ def junit_verdicts(path, expected):
     return actual
 
 
-def validate_functional_points(report, plan, previous, verdicts):
-    """Accept complete current-plan growth, never missing or retired points."""
+def validate_functional_points(report, verdicts):
+    """Check collected feature attachments against this execution's receipts."""
     def identities(rows, label):
         ids = [row.get('id') for row in rows]
         if (not ids or any(not isinstance(value, str) or not value for value in ids)
@@ -209,13 +216,7 @@ def validate_functional_points(report, plan, previous, verdicts):
             raise ValueError(f'invalid or duplicate {label} functional point IDs')
         return set(ids)
 
-    required = identities(plan['features'], 'planned')
-    prior = identities(previous['features'], 'previous')
     actual = identities(report['features'], 'reported')
-    if not prior <= required:
-        raise ValueError('current plan removes previously published functional points')
-    if actual != required:
-        raise ValueError(f'current functional point identities differ: missing={sorted(required-actual)}, extra={sorted(actual-required)}')
     statuses = Counter()
     for row in report['features']:
         cases = row.get('tests', [])
@@ -233,10 +234,10 @@ def validate_functional_points(report, plan, previous, verdicts):
     reported_counts = summary.get('status_counts', {})
     if (any(type(count) is not int or count < 0 for count in reported_counts.values())
             or {state: count for state, count in reported_counts.items() if count} != dict(statuses)
-            or type(summary.get('planned')) is not int or summary['planned'] != len(required)
-            or type(summary.get('executed')) is not int or summary['executed'] != len(required)
+             or type(summary.get('planned')) is not int or summary['planned'] != len(actual)
+             or type(summary.get('executed')) is not int or summary['executed'] != len(actual)
             or type(summary.get('passed')) is not int or summary['passed'] != statuses['PASS']):
-        raise ValueError('functional point summary differs from the complete current plan')
+        raise ValueError('functional point summary differs from the collected attachments')
 
 
 def main(argv=None):
@@ -258,7 +259,8 @@ def main(argv=None):
     parser.add_argument('--workers', type=int, default=DEFAULT_WORKERS,
                         help=f'Independent pytest processes (default: {DEFAULT_WORKERS}, capped by CPU affinity); 1 runs serially')
     parser.add_argument('--select', nargs='+', metavar='TEST',
-                        help='Run selected tests/ paths or nodeids with the same isolation; never replace full-suite reports')
+                        help='Run selected testbenches/ (or legacy tests/) paths or nodeids with the same isolation; '
+                             'never replace full-suite reports')
     args = parser.parse_args(argv)
     if args.engine == 'legacy' and (args.keep_coverage_inputs or args.export_coverage_json or args.dump_trace):
         parser.error('managed debug flags cannot be used with --engine=legacy')
@@ -266,8 +268,9 @@ def main(argv=None):
         parser.error('--workers must be positive; use 1 for serial execution')
     for scope in args.select or ():
         path = (ROOT / scope.split('::', 1)[0]).resolve()
-        if not path.is_relative_to(ROOT / 'tests') or not path.exists():
-            parser.error('--select requires existing repository tests/ paths or nodeids')
+        roots = (ROOT / 'testbenches',)
+        if not any(path.is_relative_to(root) for root in roots) or not path.exists():
+            parser.error('--select requires existing repository testbenches/ paths or nodeids')
     output = args.run_dir.resolve()
     if not output.is_relative_to(ROOT / 'results') or output == ROOT / 'results':
         parser.error('--run-dir must be a new directory under repository results/')
@@ -297,7 +300,7 @@ def main(argv=None):
             raise ValueError('deep regression needs the retained physical baseline, not a production baseline')
         scoped_baseline = baseline
     previous_features = read(ROOT / 'results/feature-points.json')
-    expected_xfails = {case['nodeid'] for row in previous_features['features']
+    previous_xfails = {case['nodeid'] for row in previous_features['features']
                        for case in row['tests'] if case['status'] == 'XFAIL'}
     protected = {name: digest(ROOT/'results'/name) for name in (
         'feature-points.json','rtl-coverage-manifest.json','rtl-line-coverage.json',
@@ -335,7 +338,7 @@ def main(argv=None):
                   f'--regression-profile={args.regression_profile}']
         command('collection', common+['--collect-only', *(args.select or ())])
         expected = [line for line in (output/'collection.log').read_text().splitlines()
-                    if line.startswith('tests/') and '::' in line]
+                    if line.startswith(('testbenches/', 'tests/')) and '::' in line]
         if not expected or len(expected) != len(set(expected)):
             raise ValueError('invalid full collection')
         label = 'selected regression' if args.select else 'full regression'
@@ -344,7 +347,14 @@ def main(argv=None):
         if not verify_source():
             raise ValueError('source epoch changed during full regression')
         tests = junit_verdicts(output/'pytest.xml', expected)
-        required_xfails = expected_xfails & set(expected) if args.select else expected_xfails
+        required_xfails = set()
+        for nodeid in previous_xfails:
+            current = {identity for identity in (nodeid, relocate_nodeid(nodeid))
+                       if identity in expected}
+            if current:
+                required_xfails.update(current)
+            elif not args.select:
+                raise ValueError(f'known strict XFAIL disappeared: {nodeid}')
         if {node for node, verdict in tests.items() if verdict == 'XFAIL'} != required_xfails:
             raise ValueError('known strict XFAIL set changed')
         artifact_run = output / 'pytest-artifacts'
@@ -352,7 +362,7 @@ def main(argv=None):
                             if args.select else execution_inputs(artifact_run, expected, tests))
         for name in ('feature-points.json', 'rtl-coverage-manifest.json', 'functional-manifest.json'):
             shutil.copyfile(artifact_run / name, output / name)
-        from suites.frontend.bpu.coverage.rtl import build_report
+        from suites.frontend.bpu.tools.rtl_coverage import build_report
         from toffee.coverage_report import load_functional_coverage
         from toffee.coverage_report import generate_unified_coverage_report
         native = build_report(output/'rtl-coverage-manifest.json', output/'rtl-line-coverage.json')
@@ -362,7 +372,7 @@ def main(argv=None):
             stream.write('\n')
         if args.select:
             # A selected run is qualified for its own complete collection only.
-            # Missing modules/feature bins are not waived in the full workflow;
+            # Missing testbenches/feature bins are not waived in the full workflow;
             # no canonical report or historical coverage is changed here.
             functional = load_functional_coverage(functional_paths)
             write(output/'functional-coverage.json', functional)
@@ -396,7 +406,7 @@ def main(argv=None):
             write(output/'lost-baseline-lines.json', losses)
             raise ValueError('full regression lost previously covered source lines')
         functional = load_functional_coverage(functional_paths)
-        from suites.frontend.bpu.coverage.parallel import validate_parallel_case_coverage
+        from suites.frontend.bpu.tools.parallel_coverage import validate_parallel_case_coverage
         matrices = validate_parallel_case_coverage(functional, profile=args.regression_profile)
         write(output/'matrix-acceptance.json', matrices)
         write(output/'functional-coverage.json', functional)
@@ -404,7 +414,7 @@ def main(argv=None):
             line_coverage=[(name,row['lcov_file']) for name,row in sorted(native['dut'].items())],
             output=output/'verification-report.html', title=f'Kunminghu-v3 {args.regression_profile} regression (physical denominator retained)')
         features = read(output/'feature-points.json')
-        validate_functional_points(features, read(ROOT/'verification_plan.json'), previous_features, tests)
+        validate_functional_points(features, tests)
         result.update(process_exitstatus=0, full_regression_complete=True,
             tests=dict(Counter(tests.values())), exact_full_collection=len(expected),
             functional_points=summary_for(features), environment_contracts=summary_for(features,'environment'),

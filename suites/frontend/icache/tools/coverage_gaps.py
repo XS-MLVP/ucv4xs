@@ -26,7 +26,7 @@ import tempfile
 from collections import defaultdict
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.frontend.icache', fromlist=['ROOT']).ROOT
 SCALA_REF = re.compile(r"//\s*(?P<file>[^\s:]+\.scala):(?P<line>\d+)")
 
 

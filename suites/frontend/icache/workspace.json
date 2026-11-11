@@ -1,0 +1,210 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "loader": "testbenches/shared/env/dut.py",
+  "duts": {
+    "waylookup": {
+      "design_spec": [
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/reports/baseline-update-a0c2a26cb.md",
+        "docs/spec/verification/coverage/waylookup-coverage-closure.md",
+        "docs/spec/verification/error-review.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/icache/ICacheWayLookup.scala"
+      ],
+      "tests": [
+        "testbenches/waylookup/tests"
+      ],
+      "environment": "testbenches/waylookup/env/agent/main.py",
+      "testbench": "waylookup"
+    },
+    "replacer": {
+      "design_spec": [
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/reports/baseline-update-a0c2a26cb.md",
+        "docs/spec/verification/coverage/replacer-coverage-closure.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/icache/ICacheReplacer.scala"
+      ],
+      "tests": [
+        "testbenches/replacer/tests"
+      ],
+      "environment": "testbenches/replacer/env/agent/main.py",
+      "testbench": "replacer"
+    },
+    "mshr": {
+      "design_spec": [
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/reports/baseline-update-a0c2a26cb.md",
+        "docs/spec/verification/coverage/coverage-line-toggle-branch.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/icache/ICacheMshr.scala"
+      ],
+      "tests": [
+        "testbenches/mshr/tests"
+      ],
+      "environment": "testbenches/mshr/env/agent/main.py",
+      "testbench": "mshr"
+    },
+    "databank": {
+      "design_spec": [
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/reports/baseline-update-a0c2a26cb.md",
+        "docs/spec/verification/coverage/sram-dut-coverage-limitation.md",
+        "docs/spec/verification/transactions/databank-transaction-adaptation.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/icache/ICacheDataBank.scala"
+      ],
+      "tests": [
+        "testbenches/databank/tests"
+      ],
+      "environment": "testbenches/databank/env/agent/main.py",
+      "testbench": "databank"
+    },
+    "metabank": {
+      "design_spec": [
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/reports/baseline-update-a0c2a26cb.md",
+        "docs/spec/verification/coverage/sram-dut-coverage-limitation.md",
+        "docs/spec/verification/transactions/metabank-transaction-adaptation.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/icache/ICacheMetaInterleavedBank.scala"
+      ],
+      "tests": [
+        "testbenches/metabank/tests"
+      ],
+      "environment": "testbenches/metabank/env/agent/main.py",
+      "testbench": "metabank"
+    },
+    "metaarray": {
+      "design_spec": [
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/reports/baseline-update-a0c2a26cb.md",
+        "docs/spec/verification/coverage/sram-dut-coverage-limitation.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/icache/ICacheMetaArray.scala"
+      ],
+      "tests": [
+        "testbenches/metaarray/tests"
+      ],
+      "environment": "testbenches/metaarray/env/agent/main.py",
+      "testbench": "metaarray"
+    },
+    "dataarray": {
+      "design_spec": [
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/reports/baseline-update-a0c2a26cb.md",
+        "docs/spec/verification/coverage/sram-dut-coverage-limitation.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/icache/ICacheDataArray.scala"
+      ],
+      "tests": [
+        "testbenches/dataarray/tests"
+      ],
+      "environment": "testbenches/dataarray/env/agent/main.py",
+      "testbench": "dataarray"
+    },
+    "missunit": {
+      "design_spec": [
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/reports/baseline-update-a0c2a26cb.md",
+        "docs/spec/verification/coverage/missunit-coverage-closure.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/icache/ICacheMissUnit.scala"
+      ],
+      "tests": [
+        "testbenches/missunit/tests"
+      ],
+      "environment": "testbenches/missunit/env/agent/main.py",
+      "testbench": "missunit"
+    },
+    "mainpipe": {
+      "design_spec": [
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/reports/baseline-update-a0c2a26cb.md",
+        "docs/spec/verification/coverage/mainpipe-prefetchpipe-coverage-closure.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/icache/ICacheMainPipe.scala"
+      ],
+      "tests": [
+        "testbenches/mainpipe/tests"
+      ],
+      "environment": "testbenches/mainpipe/env/agent/main.py",
+      "testbench": "mainpipe"
+    },
+    "prefetchpipe": {
+      "design_spec": [
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/reports/baseline-update-a0c2a26cb.md",
+        "docs/spec/verification/coverage/mainpipe-prefetchpipe-coverage-closure.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/icache/ICachePrefetchPipe.scala"
+      ],
+      "tests": [
+        "testbenches/prefetchpipe/tests"
+      ],
+      "environment": "testbenches/prefetchpipe/env/agent/main.py",
+      "testbench": "prefetchpipe"
+    },
+    "icache": {
+      "design_spec": [
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/reports/baseline-update-a0c2a26cb.md",
+        "docs/spec/verification/coverage/icache-coverage-closure.md",
+        "docs/spec/verification/error-review.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/icache/ICache.scala",
+        "src/main/scala/xiangshan/frontend/icache/ICacheImp.scala"
+      ],
+      "tests": [
+        "testbenches/icache/tests"
+      ],
+      "environment": "testbenches/icache/env/agent/main.py",
+      "testbench": "icache"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "current": [
+    "README.md",
+    "docs/README.md",
+    "docs/spec/design/README.md",
+    "docs/spec/design/functional-points.md",
+    "docs/spec/design/requirements-boundary.md",
+    "docs/spec/design/equivalence-classes.md",
+    "docs/spec/verification/README.md",
+    "docs/spec/verification/architecture.md",
+    "docs/spec/verification/traceability.md",
+    "docs/spec/verification/transaction-adaptation.md",
+    "docs/spec/verification/residuals.md",
+    "docs/spec/verification/reports/baseline-adaptation-a0c2a26cb.md",
+    "docs/bugs/README.md",
+    "docs/bugs/open/resolve-queue-branch-overflow.md",
+    "docs/bugs/closed/README.md",
+    "testbenches/commit_queue/README.md",
+    "testbenches/ftq/README.md",
+    "testbenches/resolve_queue/README.md",
+    "testbenches/shared/README.md"
+  ]
+}

@@ -1,0 +1,1 @@
+"""ResolveQueue checker self-tests."""

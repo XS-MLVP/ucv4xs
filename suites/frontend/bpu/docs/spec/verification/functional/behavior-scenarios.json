@@ -1,0 +1,90 @@
+{
+  "format": "bpu-behavior-scenario-notes",
+  "version": 1,
+  "baseline": {
+    "name": "public-a0c2a26cb",
+    "commit": "a0c2a26cbe3c862175174bad03a1a23c406315ed",
+    "config": "DefaultConfig"
+  },
+  "scope": "此文件保留 MBTB.learn 一条历史串行样本和两个未实现交叉，不生成或替代生产运行判定；十DUT的源码对照及待映射代表分区统一在coverage_design_ref，不在这里重复写静态PASS。run/artifact路径相对仓库根，source/checker及coverage_design_ref路径相对BPU工程根。",
+  "coverage_design_ref": "docs/spec/verification/coverage/behavior-coverage-design.json",
+  "scenarios": [
+    {
+      "scenario_id": "MBTB.learn.nt-reclassified.serial",
+      "behavior_id": "MBTB.learn",
+      "crosses": [],
+      "feature_ids": ["BPU-MBTB-033"],
+      "design_review": {
+        "state": "module-contract",
+        "source_refs": ["docs/spec/verification/contracts/mbtb-transaction-contract.md", "docs/spec/verification/coverage/io-matrix-extension-20261103.md"],
+        "legal_scope": "原 lookup 已发布且 rawHit/位置对应同一分支的模块反馈；完整 IFU/FTQ 指令产生史未证明。独立来源是执行 resolve 类型、NT 顺序后继及方向饱和性质，不是按 DUT 当前类型反推。"
+      },
+      "legal_precondition": "正常训练建立 indirect 原件与独立邻居，查询捕获完整不可变 metadata 和原 UID/epoch；不填写伪造第五槽或从 fresh 查询替换祖先。",
+      "stimulus_and_history": ["正常建立 position8 间接邻居。", "在 position1 正常分配 indirect，初始方向计数2，完整 target 由输入拥有。", "保存真实原件后，以该原件发送 mispredict=1 的 conditional NT，resolve target 为顺序后继。"],
+      "input_fields": {"pc_halfword": 1073743872, "alignment": 0, "position": 1, "old_kind": 3, "resolved_kind": 1, "taken": 0, "mispredict": 1, "original_taken_target": 1073746484, "resolve_successor": 1073743874},
+      "event": "上述原件的 conditional NT 反馈被实际接纳。",
+      "oracle": {
+        "source_refs": ["docs/spec/verification/contracts/mbtb-transaction-contract.md", "docs/spec/verification/coverage/io-matrix-extension-20261103.md"],
+        "expected": {"position": 1, "branch_type": 3, "ras_action": 0, "target": 1073746484, "taken": 0, "counter": 1},
+        "rationale": "实际条件 NT 令同一 raw-hit 身份的方向2→1；NT不能将旧 indirect payload改型或用顺序PC覆盖目标。"
+      },
+      "forbidden_side_effects": ["邻居 position8 的类型、目标、方向和计数改变。", "原 metadata 或 UID/epoch 被重新绑定。", "把 fresh actual 的 target/way/type 用作 expected。"],
+      "observations": ["真实训练输入及原件来源对账。", "MbtbPrediction 的全部有效条目 type/action/position/target/taken/counter，由独立性质比较。", "原 metadata 不变，邻居事实完整保持。"],
+      "completion": "实际训练接纳后，fresh查询完成 SDK 比较和 check_payload，再由 agent.finish 有界结清；checked 采样在这些断言之后。",
+      "controls": [
+        {"layer": "model-rule", "nodeid": "modules/mbtb/tests/scoreboard/test_mbtb_learning_matrix.py::test_old_predicted_type_only_rule_is_rejected_by_the_same_new_class"},
+        {"layer": "model-rule", "nodeid": "modules/mbtb/tests/scoreboard/test_mbtb_learning_matrix.py::test_reclassification_not_existing_conditional_is_needed_to_kill_the_missing_NT_rule"}
+      ],
+      "implementation": {
+        "state": "implemented",
+        "nodeids": ["modules/mbtb/tests/testcase/test_mbtb_learning_matrix.py::test_resolved_not_taken_preserves_owned_payload_and_neighbor[reclassified-nt.align0.pos1.same]"],
+        "checker_refs": ["modules/mbtb/checker/learning_matrix.py", "modules/mbtb/tests/scenarios/learning_matrix.py", "modules/mbtb/env/agent/main.py"]
+      },
+      "evidence": {
+        "kind": "historical-selected",
+        "lookup_key": "modules/mbtb/tests/testcase/test_mbtb_learning_matrix.py::test_resolved_not_taken_preserves_owned_payload_and_neighbor[reclassified-nt.align0.pos1.same]",
+        "run_refs": [
+          {"directory": "results/bpu-io-matrix-seed1-v4-20261103", "artifact": "io-matrix-audit.json", "source_sha256": "f22dc87a82699c270acc19450b0f1392be17bf2b4e06e9506238ecbfb076b24e", "seed": 1},
+          {"directory": "results/bpu-io-matrix-seed2-v4-20261103", "artifact": "io-matrix-audit.json", "source_sha256": "f22dc87a82699c270acc19450b0f1392be17bf2b4e06e9506238ecbfb076b24e", "seed": 2}
+        ]
+      },
+      "gap": {"category": "producer-reachability", "missing": "完整 IFU/FTQ 指令前史及其它交叉未证明。", "impact": "只能支撑此串行模块样本，不能作为整机可达性或其它场景闭环。", "owner": "BPU / IFU / FTQ 验证", "next_action": "追到真实解码和 FTQ 原件存活条件，建立可执行生产者历史；未满足前保留模块级限定。"}
+    },
+    {
+      "scenario_id": "MBTB.learn.nt-reclassified.read-overlap",
+      "behavior_id": "MBTB.learn",
+      "crosses": ["MBTB.service"],
+      "feature_ids": ["BPU-MBTB-033", "BPU-MBTB-020"],
+      "design_review": {"state": "pending-review", "source_refs": ["docs/spec/verification/contracts/mbtb-transaction-contract.md", "docs/spec/verification/contracts/mbtb-shared-service-owner-contract.json"], "legal_scope": "须先核对同资源读优先、训练接纳及效果可见的合法相位；不伪造内部状态或把提交请求当接纳。"},
+      "legal_precondition": "按串行样本正常建立同一 indirect 与邻居，持有真实原件；再由正常查询形成读占用。",
+      "stimulus_and_history": ["在合法查询占用期间发送原件的 conditional NT。", "记录读与反馈各自接受身份，按合同释放占用并读取新消费者。"],
+      "event": "NT 原件反馈与实际在途预测读取发生已证明的重叠。",
+      "oracle": {"source_refs": ["docs/spec/verification/contracts/mbtb-transaction-contract.md"], "expected": "按原接受快照分别预测在途读，更新完成后的消费者满足NT payload不变且方向削弱；具体效果相位待核，不从actual选取新旧期望。"},
+      "forbidden_side_effects": ["丢失原已接受反馈或覆盖邻居。", "把旧读响应错误当成新状态，或以fresh来源替换迟到原件。"],
+      "observations": ["真实接纳的查询/反馈身份和重叠见证。", "服务前快照、更新后的完整消费者、邻居和原metadata。"],
+      "completion": "待合同审查后确定读优先期间的义务、唯一服务与有界排空；不能用固定idle等待冒充完成。",
+      "controls": [],
+      "implementation": {"state": "not-implemented", "nodeids": [], "checker_refs": []},
+      "evidence": {"kind": "none", "run_refs": []},
+      "gap": {"category": "missing-scenario", "missing": "此类型纠正与真实读占用的接纳/服务/新消费者组合及负对照。", "impact": "串行场景通过不能支撑读写竞争正确性。", "owner": "MainBTB 验证", "next_action": "先确认相位和独立快照期望，再添加同一合法输入的错误服务/目标污染对照及定向DUT用例。"}
+    },
+    {
+      "scenario_id": "MBTB.learn.nt-reclassified.reset-after-accept",
+      "behavior_id": "MBTB.learn",
+      "crosses": ["MBTB.lookup", "MBTB.service"],
+      "feature_ids": ["BPU-MBTB-033", "BPU-MBTB-001"],
+      "design_review": {"state": "pending-review", "source_refs": ["docs/spec/verification/contracts/mbtb-transaction-contract.md"], "legal_scope": "须独立核实接纳后尚未服务的可达前态及reset边界，不能要求已按reset合同取消的每笔旧交易继续完成。"},
+      "legal_precondition": "正常建立原件，反馈已实际接受但效果仍在途；由监控证明该前态而非猜测延时。",
+      "stimulus_and_history": ["以真实原件发送NT类型纠正并见证接纳。", "在已确认的待服务阶段复位，初始化完成后发起新epoch查询及新学习正对照。"],
+      "event": "复位结束旧反馈寿命，随后新epoch继续预测/学习。",
+      "oracle": {"source_refs": ["docs/spec/verification/contracts/mbtb-transaction-contract.md"], "expected": "新epoch不能出现旧payload或待写方向复活；复位后新冷查询与新学习按独立冷态合同比较；精确取消边界待核。"},
+      "forbidden_side_effects": ["旧metadata跨epoch重获资格。", "把reset中的未定义输出当有效响应。", "为等待旧交易完成而暗中扩大reset豁免。"],
+      "observations": ["旧反馈接受、真实在途状态及reset切点。", "初始化完成、新epoch完整预测、新合法学习消费者和旧义务取消账本。"],
+      "completion": "待核reset取消合同，旧交易按真实取消/失效结清，新消费者与新学习实际完成；不强求旧offered均完成。",
+      "controls": [],
+      "implementation": {"state": "not-implemented", "nodeids": [], "checker_refs": []},
+      "evidence": {"kind": "none", "run_refs": []},
+      "gap": {"category": "missing-scenario", "missing": "新NT类型资格与reset在途边界的直接交叉及区分性控制。", "impact": "既有通用reset测试不能自动为本学习规则补覆盖。", "owner": "MainBTB 生命周期验证", "next_action": "核对可达切点并保留合法取消对照，补reset后冷态/新学习及旧版本复活错误规则的DUT定向测试。"}
+    }
+  ]
+}

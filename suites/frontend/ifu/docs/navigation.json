@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "current": [
+    "README.md",
+    "docs/README.md",
+    "docs/spec/design/README.md",
+    "docs/spec/design/functional-points.md",
+    "docs/spec/design/behavior-matrix.md",
+    "docs/spec/verification/README.md",
+    "docs/spec/verification/transaction-adapters.md",
+    "docs/spec/verification/observation-coverage.md",
+    "docs/spec/verification/exit-criteria.md",
+    "docs/spec/verification/coverage/coverage-loop.md",
+    "docs/spec/verification/coverage/coverage-summary.md",
+    "docs/bugs/README.md",
+    "docs/bugs/open/frontend-trigger-tdata2-width.md",
+    "docs/bugs/open/instr-boundary-carry-ftq-owner.md",
+    "docs/bugs/closed/README.md",
+    "testbenches/shared/README.md",
+    "testbenches/ifu/README.md",
+    "testbenches/uncache_unit/README.md",
+    "testbenches/frontend_trigger/README.md",
+    "testbenches/instr_boundary/README.md",
+    "testbenches/rvc_expander/README.md",
+    "testbenches/pred_checker/README.md",
+    "testbenches/perf_analysis/README.md"
+  ]
+}

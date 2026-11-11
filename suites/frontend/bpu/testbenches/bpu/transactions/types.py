@@ -1,0 +1,210 @@
+"""suites.frontend.bpu.testbenches.bpu.transactions.types components."""
+
+from __future__ import annotations
+from copy import deepcopy
+from dataclasses import dataclass
+from dataclasses import field
+from enum import IntEnum
+from typing import Any
+from collections.abc import Mapping
+from suites.frontend.bpu.testbenches.bpu.model.configuration import PHR_STORAGE_BITS
+
+
+def validate_phr_metadata(meta):
+    """Reject invalid physical PHR values before a driver can assert valid.
+
+    Aggregate completeness remains checked by the real Bundle binding. Scalar
+    API/encoding selftests may supply an empty metadata object without driving
+    hardware; a provided PHR object must always use the current strict domain.
+    """
+    if isinstance(meta, Mapping) and 'phr' in meta:
+        phr = meta['phr']
+        if (not isinstance(phr, Mapping) or set(phr) != {'phrPtr', 'phrLowBits'}
+                or not isinstance(phr['phrPtr'], Mapping) or set(phr['phrPtr']) != {'value'}):
+            raise ValueError('PHR metadata requires value-only phrPtr and phrLowBits')
+        value, low = phr['phrPtr']['value'], phr['phrLowBits']
+        if type(value) is not int or not 0 <= value < PHR_STORAGE_BITS:
+            raise ValueError(f'PHR pointer value must be an integer in 0..{PHR_STORAGE_BITS - 1}')
+        if type(low) is not int or not 0 <= low < 1 << 13:
+            raise ValueError('PHR low bits must be an unsigned 13-bit integer')
+
+
+def redirect_metadata(meta):
+    """Project the one declared output-only RAS field, not arbitrary extras.
+
+    The real published redirectMeta has ras.topRetAddr_addr; the actual FTQ
+    recovery input does not. Keep this explicit asymmetry out of pin drivers.
+    """
+    validate_phr_metadata(meta)
+    result = deepcopy(meta)
+    if isinstance(result, Mapping) and isinstance(result.get('ras'), Mapping):
+        ras = result['ras']
+        if 'topRetAddr_addr' in ras:
+            value = ras['topRetAddr_addr']
+            if type(value) is not int or not 0 <= value < 1 << 50:
+                raise ValueError('RAS output-only top return address must be an unsigned 50-bit integer')
+            del ras['topRetAddr_addr']
+    return result
+
+
+@dataclass(frozen=True, slots=True)
+class BpuPrediction:
+    start_pc: int
+    # The integrated DefaultConfig Bpu export may DCE this field because FTQ
+    # consumes only taken/endPosition.  ``None`` is an explicit observation
+    # boundary; component DUTs with a public target keep an integer here.
+    target: int | None
+    taken: int
+    position: int
+    s2_override: int
+    s3_override: int
+
+
+class BpuStage1Source(IntEnum):
+    UBTB = 0
+    ABTB = 1
+    UBTB_UTAGE = 2
+    ABTB_UTAGE = 3
+    FALLTHROUGH = 4
+
+
+@dataclass(frozen=True, slots=True)
+class BpuPerf:
+    """S3 metadata echo of the accepted S1 prediction and its source."""
+
+    start_pc: int
+    s1_target: int
+    s1_taken: int
+    s1_position: int
+    s1_source: BpuStage1Source
+
+
+@dataclass(frozen=True, slots=True)
+class BpuMeta:
+    resolve: Any
+    redirect: Any
+    perf: BpuPerf | None
+
+
+@dataclass(frozen=True, slots=True)
+class BpuBackpressure:
+    prediction_valid: tuple[int, int]
+    prediction: tuple[BpuPrediction, BpuPrediction]
+
+
+@dataclass(frozen=True, slots=True)
+class BpuPredictionSample:
+    """A prediction observed while FTQ backpressure prevents acceptance."""
+
+    valid: int
+    prediction: BpuPrediction
+
+
+@dataclass(frozen=True, slots=True)
+class BpuStalledRedirect:
+    stalled_valid: int
+    stalled_prediction: BpuPrediction
+    redirected_valid: int
+    redirected_prediction: BpuPrediction
+    first_accepted_tick: int
+    first_accepted_prediction: BpuPrediction
+
+
+@dataclass(frozen=True, slots=True)
+class BpuConcurrentActivity:
+    training_tick: int
+    prediction_ticks: tuple[int, ...]
+    predictions: tuple[BpuPrediction, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class BpuBurstActivity:
+    training_ticks: tuple[int, ...]
+    prediction_ticks: tuple[int, ...]
+    predictions: tuple[BpuPrediction, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class BpuAcceptedPrediction:
+    """Detached public-stream sample; no monitor, pin, or checker handle."""
+
+    accepted_tick: int
+    prediction: BpuPrediction
+
+
+@dataclass(frozen=True, slots=True)
+class BpuTransaction:
+    prediction_tick: int
+    meta_tick: int
+    prediction: BpuPrediction
+    meta: BpuMeta
+    # Environment receipt identity at the PHR S1 input boundary, NOT an RTL tag.
+    # Ordinary public-stream transactions have no such coherent receipt.
+    uid: int | None = None
+    epoch: int | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class BpuTraining:
+    pc: int
+    position: int
+    target: int
+    resolve_meta: Any
+    branch_type: int = 2
+    ras_action: int = 0
+    taken: int = 1
+    mispredict: int = 1
+
+
+@dataclass(frozen=True, slots=True)
+class BpuBranchFeedback:
+    position: int
+    target: int
+    branch_type: int
+    taken: int = 1
+    mispredict: int = 0
+    ras_action: int = 0
+
+
+@dataclass(frozen=True, slots=True)
+class BpuBatchTraining:
+    """One FTQ feedback beat; ``None`` preserves an invalid branch slot."""
+
+    pc: int
+    resolve_meta: Any
+    branches: tuple[BpuBranchFeedback | None, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class BpuRedirect:
+    """FTQ recovery; ``pc`` is the target, not necessarily the branch PC.
+
+    The two-positional-argument form keeps its original taken-jump behavior.
+    Explicit branch fields are keyword-only to avoid ambiguous transactions.
+    """
+
+    pc: int
+    meta: Any
+    cfi_pc: int | None = field(default=None, kw_only=True)
+    taken: int = field(default=1, kw_only=True)
+    branch_type: int = field(default=2, kw_only=True)
+    ras_action: int = field(default=0, kw_only=True)
+
+    def payload(self) -> dict[str, Any]:
+        for name, value, width in (
+            ("pc", self.pc, 50),
+            ("taken", self.taken, 1),
+            ("branch_type", self.branch_type, 2),
+            ("ras_action", self.ras_action, 2),
+        ):
+            if type(value) is not int or not 0 <= value < 1 << width:
+                raise ValueError(f"{name} must be an unsigned {width}-bit integer")
+        cfi_pc = self.cfi_pc
+        if cfi_pc is None:
+            # Both are raw GuardedPc halfword addresses. Preserve the actual
+            # guard, including a carry which differs from the virtual sign.
+            cfi_pc = self.pc
+        elif type(cfi_pc) is not int or not 0 <= cfi_pc < 1 << 50:
+            raise ValueError("cfi_pc must be an unsigned 50-bit guarded halfword integer")
+        return dict(meta=redirect_metadata(self.meta), cfi_pc=cfi_pc, target=self.pc,
+                    taken=self.taken, branch_type=self.branch_type, ras_action=self.ras_action)

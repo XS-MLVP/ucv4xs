@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "current": [
+    "README.md",
+    "docs/README.md",
+    "docs/spec/design/README.md",
+    "docs/spec/design/contracts.md",
+    "docs/spec/design/functional-points.md",
+    "docs/spec/verification/README.md",
+    "docs/spec/verification/coverage/coverage-loop.md",
+    "docs/spec/verification/coverage/coverage-summary.md",
+    "docs/spec/verification/defects.md",
+    "docs/spec/verification/exit-criteria.md",
+    "docs/spec/verification/reports/verification-report.md",
+    "docs/spec/verification/evidence/flush-closure.json",
+    "docs/bugs/README.md",
+    "testbenches/instr_uncache_entry/README.md",
+    "testbenches/instr_uncache_resp_arbiter/README.md",
+    "testbenches/instr_uncache/README.md",
+    "testbenches/shared/README.md"
+  ]
+}

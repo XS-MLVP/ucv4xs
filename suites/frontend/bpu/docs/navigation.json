@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "current": [
+    "README.md",
+    "docs/README.md",
+    "docs/guides/repository-layout.md",
+    "docs/spec/design/README.md",
+    "docs/spec/design/bpu.md",
+    "docs/spec/design/abtb.md",
+    "docs/spec/design/mbtb.md",
+    "docs/spec/design/ubtb.md",
+    "docs/spec/design/tage.md",
+    "docs/spec/design/utage.md",
+    "docs/spec/design/ittage.md",
+    "docs/spec/design/sc.md",
+    "docs/spec/design/ras.md",
+    "docs/spec/design/uras.md",
+    "docs/spec/design/module-behavior-matrix.md",
+    "docs/spec/design/scala-interactions-20261106.md",
+    "docs/spec/verification/README.md",
+    "docs/bugs/README.md"
+  ],
+  "relocations": {
+    "docs/mbtb-transaction-contract.md": "docs/spec/verification/contracts/mbtb-transaction-contract.md",
+    "docs/pipeline-transaction-contract.md": "docs/spec/verification/contracts/pipeline-transaction-contract.md",
+    "docs/phr-transaction-contract.md": "docs/spec/verification/contracts/phr-transaction-contract.md",
+    "docs/scala-interactions-20261106.md": "docs/spec/design/scala-interactions-20261106.md",
+    "docs/behavior-coverage-design.json": "docs/spec/verification/coverage/behavior-coverage-design.json",
+    "docs/behavior-scenarios.json": "docs/spec/verification/functional/behavior-scenarios.json"
+  }
+}

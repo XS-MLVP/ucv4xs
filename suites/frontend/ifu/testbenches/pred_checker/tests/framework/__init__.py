@@ -1,0 +1,1 @@
+"""PredChecker framework self-tests."""

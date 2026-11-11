@@ -23,7 +23,7 @@ import subprocess
 import sys
 import xml.etree.ElementTree as ET
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.frontend.ftq', fromlist=['ROOT']).ROOT
 DUTS = ("resolve_queue", "commit_queue", "ftq")
 
 
@@ -35,7 +35,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--seed", type=int, default=1)
-    parser.add_argument("selection", nargs="*", default=["tests"])
+    parser.add_argument("selection", nargs="*", default=["testbenches"])
     args = parser.parse_args()
     output = args.output.resolve()
     if output.exists():

@@ -1,0 +1,227 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "loader": "testbenches/shared/env/dut.py",
+  "duts": {
+    "bpu": {
+      "design_spec": [
+        "docs/spec/design/bpu.md",
+        "docs/spec/design/README.md",
+        "docs/spec/design/module-behavior-matrix.md",
+        "docs/spec/design/scala-interactions-20261106.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/contracts/pipeline-transaction-contract.md",
+        "docs/spec/verification/contracts/phr-transaction-contract.md",
+        "docs/spec/verification/coverage/behavior-coverage-design.json",
+        "docs/spec/verification/evidence/reviews/bpu-integrated-functional-definition-review-20261016.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/bpu/Bpu.scala"
+      ],
+      "tests": [
+        "testbenches/bpu/tests"
+      ],
+      "environment": "testbenches/bpu/env/agent/main.py",
+      "testbench": "bpu"
+    },
+    "abtb": {
+      "design_spec": [
+        "docs/spec/design/abtb.md",
+        "docs/spec/design/README.md",
+        "docs/spec/design/module-behavior-matrix.md",
+        "docs/spec/design/scala-interactions-20261106.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/coverage/behavior-coverage-design.json",
+        "docs/spec/verification/evidence/module-reviews/abtb-module-review-20261030.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/bpu/abtb/AheadBtb.scala"
+      ],
+      "tests": [
+        "testbenches/abtb/tests"
+      ],
+      "environment": "testbenches/abtb/env/agent/main.py",
+      "testbench": "abtb"
+    },
+    "ittage": {
+      "design_spec": [
+        "docs/spec/design/ittage.md",
+        "docs/spec/design/README.md",
+        "docs/spec/design/module-behavior-matrix.md",
+        "docs/spec/design/scala-interactions-20261106.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/coverage/behavior-coverage-design.json",
+        "docs/spec/verification/evidence/module-reviews/ittage-module-review-20261030.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/bpu/ittage/Ittage.scala"
+      ],
+      "tests": [
+        "testbenches/ittage/tests"
+      ],
+      "environment": "testbenches/ittage/env/agent/main.py",
+      "testbench": "ittage"
+    },
+    "mbtb": {
+      "design_spec": [
+        "docs/spec/design/mbtb.md",
+        "docs/spec/design/README.md",
+        "docs/spec/design/module-behavior-matrix.md",
+        "docs/spec/design/scala-interactions-20261106.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/contracts/mbtb-transaction-contract.md",
+        "docs/spec/verification/contracts/mbtb-shared-service-owner-contract.json",
+        "docs/spec/verification/coverage/behavior-coverage-design.json",
+        "docs/spec/verification/evidence/module-reviews/mbtb-module-review-20261030.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtb.scala"
+      ],
+      "tests": [
+        "testbenches/mbtb/tests"
+      ],
+      "smoke": "testbenches/mbtb/tests/testcase/test_reset.py::test_reset_completes_before_cold_lookup",
+      "environment": "testbenches/mbtb/env/agent/main.py",
+      "testbench": "mbtb"
+    },
+    "ras": {
+      "design_spec": [
+        "docs/spec/design/ras.md",
+        "docs/spec/design/README.md",
+        "docs/spec/design/module-behavior-matrix.md",
+        "docs/spec/design/scala-interactions-20261106.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/contracts/ras-original-commit-action-contract.json",
+        "docs/spec/verification/contracts/owned-return-stack-contract-20261020.json",
+        "docs/spec/verification/coverage/behavior-coverage-design.json",
+        "docs/spec/verification/evidence/module-reviews/ras-module-review-20261030.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/bpu/ras/Ras.scala"
+      ],
+      "tests": [
+        "testbenches/ras/tests"
+      ],
+      "environment": "testbenches/ras/env/agent/main.py",
+      "testbench": "ras"
+    },
+    "sc": {
+      "design_spec": [
+        "docs/spec/design/sc.md",
+        "docs/spec/design/README.md",
+        "docs/spec/design/module-behavior-matrix.md",
+        "docs/spec/design/scala-interactions-20261106.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/coverage/behavior-coverage-design.json",
+        "docs/spec/verification/evidence/module-reviews/sc-module-review-20261030.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/bpu/sc/Sc.scala"
+      ],
+      "tests": [
+        "testbenches/sc/tests"
+      ],
+      "environment": "testbenches/sc/env/agent/main.py",
+      "testbench": "sc"
+    },
+    "tage": {
+      "design_spec": [
+        "docs/spec/design/tage.md",
+        "docs/spec/design/README.md",
+        "docs/spec/design/module-behavior-matrix.md",
+        "docs/spec/design/scala-interactions-20261106.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/coverage/behavior-coverage-design.json",
+        "docs/spec/verification/evidence/module-reviews/tage-module-review-20261030.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/bpu/tage/Tage.scala"
+      ],
+      "tests": [
+        "testbenches/tage/tests"
+      ],
+      "environment": "testbenches/tage/env/agent/main.py",
+      "testbench": "tage"
+    },
+    "ubtb": {
+      "design_spec": [
+        "docs/spec/design/ubtb.md",
+        "docs/spec/design/README.md",
+        "docs/spec/design/module-behavior-matrix.md",
+        "docs/spec/design/scala-interactions-20261106.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/coverage/behavior-coverage-design.json",
+        "docs/spec/verification/evidence/module-reviews/ubtb-module-review-20261029.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/bpu/ubtb/MicroBtb.scala"
+      ],
+      "tests": [
+        "testbenches/ubtb/tests"
+      ],
+      "environment": "testbenches/ubtb/env/agent/main.py",
+      "testbench": "ubtb"
+    },
+    "uras": {
+      "design_spec": [
+        "docs/spec/design/uras.md",
+        "docs/spec/design/README.md",
+        "docs/spec/design/module-behavior-matrix.md",
+        "docs/spec/design/scala-interactions-20261106.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/contracts/owned-return-stack-contract-20261020.json",
+        "docs/spec/verification/coverage/behavior-coverage-design.json",
+        "docs/spec/verification/evidence/module-reviews/uras-module-review-20261029.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/bpu/ras/MicroRas.scala"
+      ],
+      "tests": [
+        "testbenches/uras/tests"
+      ],
+      "environment": "testbenches/uras/env/agent/main.py",
+      "testbench": "uras"
+    },
+    "utage": {
+      "design_spec": [
+        "docs/spec/design/utage.md",
+        "docs/spec/design/README.md",
+        "docs/spec/design/module-behavior-matrix.md",
+        "docs/spec/design/scala-interactions-20261106.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/contracts/utage-working-set-contract.json",
+        "docs/spec/verification/contracts/utage-learning-persistence-contract.json",
+        "docs/spec/verification/coverage/behavior-coverage-design.json",
+        "docs/spec/verification/evidence/module-reviews/utage-module-review-20261030.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala"
+      ],
+      "tests": [
+        "testbenches/utage/tests"
+      ],
+      "environment": "testbenches/utage/env/agent/main.py",
+      "testbench": "utage"
+    }
+  }
+}

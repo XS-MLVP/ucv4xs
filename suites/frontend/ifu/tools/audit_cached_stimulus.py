@@ -17,11 +17,20 @@ from pathlib import Path
 from types import SimpleNamespace
 
 from suites.frontend.ifu import ROOT
-from suites.frontend.ifu.ifu.checker import cached_expectation, expected_redirect
-from suites.frontend.ifu.ifu.types import Enqueue, FetchRequest, FetchResult, Frame, GpaWrite
-from suites.frontend.ifu.model.fetch import aligned_lanes
-from suites.frontend.ifu.model.pred_checker import DIRECT, POP
-from suites.frontend.ifu.model.trigger import Inputs as TriggerInputs, Trigger, TriggerModel, Update
+from suites.frontend.ifu.testbenches.ifu.checker import cached_expectation
+from suites.frontend.ifu.testbenches.ifu.checker import expected_redirect
+from suites.frontend.ifu.testbenches.ifu.transactions import Enqueue
+from suites.frontend.ifu.testbenches.ifu.transactions import FetchRequest
+from suites.frontend.ifu.testbenches.ifu.transactions import FetchResult
+from suites.frontend.ifu.testbenches.ifu.transactions import Frame
+from suites.frontend.ifu.testbenches.ifu.transactions import GpaWrite
+from suites.frontend.ifu.testbenches.ifu.model.fetch import aligned_lanes
+from suites.frontend.ifu.testbenches.pred_checker.model.pred_checker import DIRECT
+from suites.frontend.ifu.testbenches.pred_checker.model.pred_checker import POP
+from suites.frontend.ifu.testbenches.frontend_trigger.model.trigger import Inputs as TriggerInputs
+from suites.frontend.ifu.testbenches.frontend_trigger.model.trigger import Trigger
+from suites.frontend.ifu.testbenches.frontend_trigger.model.trigger import TriggerModel
+from suites.frontend.ifu.testbenches.frontend_trigger.model.trigger import Update
 
 
 MANUAL = {
@@ -169,7 +178,7 @@ async def collect(path, name, rs1, *, migrated):
 
 
 async def audit(before):
-    after = ROOT / 'tests/ifu/test_ifu_fetch.py'
+    after = ROOT / 'testbenches/ifu/tests/test_ifu_fetch.py'
     old_tree, new_tree = ast.parse(before.read_text()), ast.parse(after.read_text())
     helpers = ('dense_compressed', 'random_compressed', 'build_cfi_window')
     helper_proofs = {}

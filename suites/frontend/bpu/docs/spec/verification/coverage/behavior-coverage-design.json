@@ -1,0 +1,536 @@
+{
+  "format": "bpu-scala-coverage-design",
+  "version": 1,
+  "date": "2026-11-06",
+  "baseline": {"name": "public-a0c2a26cb", "commit": "a0c2a26cbe3c862175174bad03a1a23c406315ed", "config": "DefaultConfig"},
+  "scope": "十DUT已登记行为族的有界场景设计；cases是待映射的检查义务，不是新增已执行测试。依据Scala定位交互，再由独立合同确定性质；实现策略未独立确认时明确pending-confirmation。与behavior-scenarios.json中的真实历史样本互引，不复制运行判定。",
+  "evidence_policy": "本文件所有cases继承unmapped/none：未审计完整场景到用例/检查/控制/同轮结果的一一绑定，不表示仓库没有相关测试。历史FAIL/ERROR/XFAIL不因新设计而关闭。不得从本文件生成生产PASS或覆盖率。",
+  "axes": {
+    "source": "执行resolve、S3 FastTrain、redirect、commit及模块端口切点分别处理；仅可编码不是完整producer可达。",
+    "state": "冷/暖、置信强弱、原身份/现驻留、重复/版本和受保护状态由合法前史建立。",
+    "identity": "原UID/epoch/PC/历史/位置/发布资格和不可变metadata；相同payload不合并所有权。",
+    "address": "字节与半字、末半字、align/page/区域及guard/sign；不把坐标遍历当独立功能。",
+    "capacity": "空/可替换/满保护/满待写及回绕；有限保留与超容量政策分开。",
+    "timing": "顺序、相邻、同拍、背压、服务前后消费者；风险驱动交叉而非参数笛卡尔积。",
+    "lifecycle": "reset/初始化/enable/redirect/取消/提交及公平释放；接纳与效果完成分开。",
+    "outcome": "按行为使用miss/hit/repair/rejected/cancelled/replacement/maintenance，不为预测器捏造总线fault。"
+  },
+  "module_axes": {
+    "MBTB": {"source": ["MBTB.learn.foreign-prefix-isolation"], "state": ["MBTB.learn.cold-warm-nt", "MBTB.residency.exposure-residence"], "identity": ["MBTB.service.two-owners"], "address": ["MBTB.lookup.address-boundary", "MBTB.residency.unique-zero-key"], "capacity": ["MBTB.residency.late-same-cycle-replace", "MBTB.service.newest-owner-version"], "timing": ["MBTB.service.two-owners", "MBTB.residency.late-same-cycle-replace"], "lifecycle": ["MBTB.service.reset-disable-boundary"], "outcome": ["MBTB.lookup.window-filter", "MBTB.learn.false-hit-none", "MBTB.residency.exposure-residence"]},
+    "RAS": {"source": ["RAS.retire.original-action"], "state": ["RAS.stack.lifo-and-duplicates", "RAS.stack.empty-restart"], "identity": ["RAS.recovery.rollback-redo"], "address": ["RAS.recovery.guard-capacity"], "capacity": ["RAS.retire.capacity-turnover"], "timing": ["RAS.stack.lifo-and-duplicates", "RAS.recovery.guard-capacity"], "lifecycle": ["RAS.retire.dynamic-enable", "RAS.recovery.rollback-redo"], "outcome": ["RAS.stack.empty-restart", "RAS.retire.capacity-turnover", "RAS.stack.pop-and-push"]},
+    "INT": {"source": ["BPU.learn.fast-vs-resolve", "BPU.arbitrate.meta-lifetime"], "state": ["BPU.select.abtb-all-nt", "BPU.history.executed-prefix"], "identity": ["BPU.arbitrate.meta-lifetime"], "address": ["BPU.history.guard-active-recovery"], "capacity": ["BPU.arbitrate.train-bank-release", "BPU.history.pending-r0-r1-wrap"], "timing": ["BPU.arbitrate.ready-override", "BPU.learn.redirect-parallel-old"], "lifecycle": ["BPU.select.derived-enable", "BPU.history.pending-r0-r1-wrap"], "outcome": ["BPU.select.s2-s3-correction", "BPU.learn.prefix-provider", "BPU.arbitrate.ready-override"]},
+    "UBTB": {"source": ["UBTB.lifecycle.sources-enable-reset"], "state": ["UBTB.lookup.cold-taken-nt", "UBTB.confidence.decay-rebuild"], "identity": ["UBTB.lookup.alias-carry-overlap"], "address": ["UBTB.lookup.alias-carry-overlap"], "capacity": ["UBTB.lifecycle.replace-read"], "timing": ["UBTB.confidence.adjacent-boundaries", "UBTB.lifecycle.replace-read"], "lifecycle": ["UBTB.lifecycle.sources-enable-reset"], "outcome": ["UBTB.lookup.cold-taken-nt", "UBTB.lifecycle.replace-read", "UBTB.confidence.decay-rebuild"]},
+    "ABTB": {"source": ["ABTB.learn.prefix-and-all-nt"], "state": ["ABTB.lookup.distinct-replays"], "identity": ["ABTB.residency.two-destinations"], "address": ["ABTB.lookup.index-match-context"], "capacity": ["ABTB.residency.replace-clean", "ABTB.residency.two-destinations"], "timing": ["ABTB.learn.indirect-payload-and-type", "ABTB.residency.two-destinations"], "lifecycle": ["ABTB.lifecycle.redirect-replay", "ABTB.lifecycle.nonempty-reset-enable"], "outcome": ["ABTB.learn.prefix-and-all-nt", "ABTB.residency.replace-clean", "ABTB.lifecycle.redirect-replay"]},
+    "UTAGE": {"source": ["UTAGE.learn.prefix-eligibility"], "state": ["UTAGE.select.tag-position-domain", "UTAGE.learn.direction-useful-boundaries"], "identity": ["UTAGE.select.override-age"], "address": ["UTAGE.select.tag-position-domain"], "capacity": ["UTAGE.learn.failed-allocation-maintenance", "UTAGE.service.force-read-and-control"], "timing": ["UTAGE.service.adjacent-versions", "UTAGE.select.override-age"], "lifecycle": ["UTAGE.service.force-read-and-control"], "outcome": ["UTAGE.select.tag-position-domain", "UTAGE.learn.failed-allocation-maintenance", "UTAGE.service.force-read-and-control"]},
+    "TAGE": {"source": ["TAGE.learn.counter-selector-votes"], "state": ["TAGE.select.provider-alternate-base"], "identity": ["TAGE.service.stale-owner-and-two-branches"], "address": ["TAGE.select.history-position-overlap"], "capacity": ["TAGE.learn.allocation-maintenance"], "timing": ["TAGE.service.meta-reread-bank", "TAGE.service.stale-owner-and-two-branches"], "lifecycle": ["TAGE.service.enable-reset-maintenance"], "outcome": ["TAGE.select.provider-alternate-base", "TAGE.learn.allocation-maintenance", "TAGE.service.enable-reset-maintenance"]},
+    "SC": {"source": ["SC.select.qualification-and-role"], "state": ["SC.select.signed-strict-threshold", "SC.weights.qualified-boundaries"], "identity": ["SC.threshold.snapshot-service-control"], "address": ["SC.weights.shared-votes-history-valid"], "capacity": ["SC.threshold.aggregate-whole-step", "SC.weights.qualified-boundaries"], "timing": ["SC.weights.shared-votes-history-valid", "SC.threshold.snapshot-service-control"], "lifecycle": ["SC.threshold.snapshot-service-control"], "outcome": ["SC.select.qualification-and-role", "SC.threshold.aggregate-whole-step", "SC.threshold.snapshot-service-control"]},
+    "ITTAGE": {"source": ["ITTAGE.select.qualification-publication"], "state": ["ITTAGE.select.zero-confidence-fallback"], "identity": ["ITTAGE.service.overlap-enable-reset"], "address": ["ITTAGE.region.zero-confidence-cross-region", "ITTAGE.region.reuse-full-directory"], "capacity": ["ITTAGE.region.reuse-full-directory", "ITTAGE.service.bank-maintenance"], "timing": ["ITTAGE.region.same-cycle-directory-update", "ITTAGE.service.bank-maintenance"], "lifecycle": ["ITTAGE.service.overlap-enable-reset"], "outcome": ["ITTAGE.select.qualification-publication", "ITTAGE.region.reuse-full-directory", "ITTAGE.service.bank-maintenance"]},
+    "URAS": {"source": ["URAS.stack.known-depth-age"], "state": ["URAS.recovery.neutral-keeps-old-call"], "identity": ["URAS.recovery.authority-and-trust"], "address": ["URAS.stack.address-combined-action"], "capacity": ["URAS.stack.known-depth-age"], "timing": ["URAS.recovery.authority-and-trust", "URAS.stack.known-depth-age"], "lifecycle": ["URAS.enable.pending-handoff-reset", "URAS.enable.disabled-qualification"], "outcome": ["URAS.stack.known-depth-age", "URAS.stack.address-combined-action", "URAS.recovery.authority-and-trust"]}
+  },
+  "coverage_limit": "module_axes只证明每个模块八维已有明确设计入口，非八维全组合或状态空间穷尽。每case是有约束历史的代表分区；interactions列必须额外构造联合前态，不能将各单case证据相加充交叉通过。所有未映射、待确认、不可观察格仍是gap，物理坐标/seed复制不增加语义种类。",
+  "inheritance": {
+    "binding": {"state": "unmapped", "nodeids": [], "checker_refs": []},
+    "evidence": {"kind": "none", "run_refs": []},
+    "owner": "suites/frontend/bpu对应DUT验证；FTQ/IFU仅承接producer合法性证明",
+    "completion_rule": "每case先见证合法前态和真实接纳，再比较该case的expected及forbidden、所属behavior的observations，最后满足completion；首错挡住的后续比较不记checked。接纳后合法reset/flush取消单列终态，不能靠cleanup或固定idle补完成。"
+  },
+  "out_of_domain": [
+    {"domain": "instruction-exception/refill/translation-fault", "owner": "IFU / ICache / MMU", "reason": "BPU预测接口没有这些响应码；只设计错误预测后的redirect/训练，不用常量零假装验证异常响应。"},
+    {"domain": "complete-FTQ-instruction-reachability", "owner": "FTQ / IFU及后端producer合同", "reason": "本轮读producer源码，但没有新建完整执行见证；模块端口合法场景不能晋升为整机可达。"},
+    {"domain": "unbounded-retention-or-unfair-service", "owner": "有界预测器容量合同与上游流控", "reason": "有限存储不承诺任意深度永久保存，持续读不让写的序列不获得无条件活性承诺；不能据此豁免声明保留范围内的错误。"}
+  ],
+  "behaviors": [
+    {
+      "behavior_id": "MBTB.lookup",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtbAlignBank.scala", "lines": [138,218], "anchor": "s1_crossPage"}],
+      "contract_refs": ["docs/spec/verification/contracts/mbtb-transaction-contract.md", "docs/spec/verification/evidence/reviews/main-btb-functional-definition-review-20261016.md"],
+      "implementation_observation": "Main rawHit和按窗口过滤的valid分别发布，重建目标保留guard；第五槽另从Victim返回。",
+      "partition_basis": "结果由原窗口内有效分支集合、起点过滤及地址重建域改变；物理bank本身不是新语义。",
+      "legal_scope": "真实lookup接口原件；完整IFU/FTQ前史未证明。地址遵守50位guarded半字lookup与49位训练域。",
+      "observations": ["每UID两align全部有效条目的位置/类型/方向/完整target及原metadata", "rawHit与输出valid的差别、原件不可变及未命中payload不作真值"],
+      "completion": "原lookup经S0/S1/S2对应并由SDK完成比较；过滤项不虚构响应条目，随后重查仍存居民。",
+      "cases": [
+        {"scenario_id": "MBTB.lookup.window-filter", "outcomes": ["miss", "hit"], "oracle_status": "module-contract", "given": "冷窗口后正常学习不同位置的条件/直接/间接分支。", "events": ["分别查询最早分支前、两分支之间与最后分支后起点。", "回访原起点，并交错另一个不同payload窗口。"], "expected": "只返回本窗口起点之后的已学分支；后续回访仍见未被消费删除的居民，逐UID归属正确。", "forbidden": "按物理way排序替代位置、过滤时清表、把新窗口响应归旧UID。", "control": "合法对照为原起点全命中；错误规则忽略起点/互换两UID应导致有效集合或payload差异。", "next_experiment": "选择不同首尾位置及异质窗口，先映射现有窗口checker，再补逐UID全向量断言。"},
+        {"scenario_id": "MBTB.lookup.address-boundary", "outcomes": ["hit", "rejected"], "oracle_status": "module-contract", "given": "正常训练目标低位进位/借位和相邻align居民；预先声明guard与sign以及页边界。", "events": ["查询两align及跨页窗口。", "对不跨页合法窗口回访完整target。"], "expected": "窗口有效性服从页边界合同，目标按原PC区域和输入target独立重建；guard不等于sign。", "forbidden": "半字当字节、丢carry/guard、跨页过滤连带破坏已学条目。", "control": "合法不跨页/同区对照；错误codec或carry反向使完整目标或有效集合不同。", "next_experiment": "先确认跨页的具体align承接层和地址codec，再绑定目标全位比较；不以低位相等通过。"}
+      ]
+    },
+    {
+      "behavior_id": "MBTB.learn",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtbAlignBank.scala", "lines": [248,368], "anchor": "t1_canWriteEntry"}],
+      "contract_refs": ["docs/spec/verification/contracts/mbtb-transaction-contract.md", "docs/spec/verification/coverage/io-matrix-extension-20261103.md"],
+      "implementation_observation": "entry写与方向计数路径分离，Main按位置更新的路径仍有未用rawHit的旧风险。",
+      "partition_basis": "冷/原conditional/原indirect显式纠正/None及foreign rawHit不同，不能按taken一个位合并。",
+      "legal_scope": "保留原lookup metadata和稀疏resolve前缀；执行类型与原预测类型不是同一真值。",
+      "observations": ["真实接纳resolve、完整旧payload与邻居", "fresh方向/计数/类型/target、原UID/epoch和metadata保持"],
+      "completion": "训练实际接纳并完成entry/counter服务，fresh消费者经完整比较；NT不写payload也不能省略方向义务。",
+      "existing_scenario_ids": ["MBTB.learn.nt-reclassified.serial", "MBTB.learn.nt-reclassified.read-overlap", "MBTB.learn.nt-reclassified.reset-after-accept"],
+      "cases": [
+        {"scenario_id": "MBTB.learn.cold-warm-nt", "outcomes": ["miss", "repair"], "oracle_status": "module-contract", "given": "分别由冷态、暖conditional及暖indirect显式类型纠正取得真实原件，旁边有不同位置居民。", "events": ["发送conditional NT且target为顺序后继。", "比较旧payload与新方向，再发送合法taken正对照。"], "expected": "冷NT不分配；暖同rawHit/位置的合格方向削弱并饱和，原类型/target保持；后续taken仍能正常学。", "forbidden": "写入顺序PC、给NT改型、只允许旧conditional而漏掉显式纠正、损坏邻居。", "control": "合法暖conditional和显式纠正成对；旧类型限定/NT改payload错误规则必须分别被拒绝。", "next_experiment": "复用已审计serial历史格，不扩张其信用；为冷/暖/纠正的满容量×真实读占用补新用例。"},
+        {"scenario_id": "MBTB.learn.false-hit-none", "outcomes": ["repair"], "oracle_status": "module-contract", "given": "正常学到假分支及独立邻居，保存原预测。", "events": ["IFU合同允许的None/NT纠正进入原位置。", "新查询检查该分支失效并回访邻居。"], "expected": "假命中失效，邻居payload/方向保持；不能因统一NT保护把None失效也禁掉。", "forbidden": "保留假taken、删除其它位置、将NT顺序目标学成新taken。", "control": "conditional NT保留payload与None NT失效是合法不同后果；全体NT不写错误规则应失败。", "next_experiment": "绑定现有None格，再展开同拍VBTB迁移/待写补丁的失效场景。"},
+        {"scenario_id": "MBTB.learn.foreign-prefix-isolation", "outcomes": ["rejected", "repair"], "oracle_status": "module-contract", "given": "建立同位置不同tag和原件未命中对照；有效resolve按CFI位置有空洞且首错后有年轻分支。", "events": ["合法对照只训练同rawHit身份。", "分别输入声明的foreign-tag端口压力、不同位置和FTQ过滤后的前缀。"], "expected": "只有合格身份/已执行前缀方向改变；foreign/raw miss不借同位置学习，未执行后缀不改变。", "forbidden": "按数组槽当执行顺序、同位置跨tag计数污染、从actual重选owner。", "control": "同rawHit/位置合法更新与foreign保持成对；去rawHit资格或吞后缀过滤的错误规则可区分。", "next_experiment": "保留旧foreign-tag普通FAIL；核声明端口压力与完整producer可达的不同资格，不扩大放行。"}
+      ]
+    },
+    {
+      "behavior_id": "MBTB.residency",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtbAlignBank.scala", "lines": [248,399], "anchor": "t1_vbtbTrainInPlace"}, {"file": "src/main/scala/xiangshan/frontend/bpu/mbtb/VictimBtb.scala", "lines": [89,224], "anchor": "rawHit"}],
+      "contract_refs": ["docs/spec/verification/contracts/mbtb-transaction-contract.md", "docs/spec/verification/coverage/io-matrix-extension-20261103.md"],
+      "implementation_observation": "原第五槽暴露与当前victim exact驻留共同决定就地训练；隐藏/淘汰不能仅因当前命中而借用原资格。",
+      "partition_basis": "暴露×仍驻留是有意义状态交叉；容量参数只有改变淘汰/复制清理时才拆类。",
+      "legal_scope": "正常压力建立Main/Victim状态，不造第五槽；全部迟到反馈使用原快照。",
+      "observations": ["原第五槽rawHit/position及UID不变", "Main/Victim完整幸存者、重复身份、真实snapshot/cleanup及新消费者"],
+      "completion": "迁移/清理和目标修正实际服务后消费新状态，核全部存活身份及原件；只见某个hit不足。",
+      "cases": [
+        {"scenario_id": "MBTB.residency.exposure-residence", "outcomes": ["repair", "replacement"], "oracle_status": "module-contract", "given": "用合法前史分别建立暴露仍驻留、被更早位置隐藏、原暴露后正常淘汰三种状态。", "events": ["保存原第五槽后改变容量状态。", "以同原件反馈新的间接目标。"], "expected": "暴露且仍驻留才就地改Victim；隐藏或已淘汰需按原身份走Main分配，幸存居民保持。", "forbidden": "fresh lookup替换祖先、隐藏项冒原暴露资格、只检查selected target漏重复。", "control": "暴露驻留是正对照；以current residency或old exposure单独判路的错误规则必须分开失败。", "next_experiment": "已有034历史四原生格仅作有限证据；补隐藏与暴露在相邻替换边界的完整对象比较。"},
+        {"scenario_id": "MBTB.residency.late-same-cycle-replace", "outcomes": ["repair", "replacement"], "oracle_status": "pending-confirmation", "given": "原暴露Victim快照仍合法存活，另一不同身份已到可产生同拍snapshot替换的阶段。", "events": ["使迟到反馈与真实snapshot/cleanup同拍竞争。", "分别以替换前/后相邻拍合法序列作对照并排空。"], "expected": "按独立确认的事件顺序完成原修正与合法替换，不能误修新居民或遗失仍承诺保留的记录；精确同拍线性化点待确认。", "forbidden": "用actual所选way决定顺序、丢旧owner、覆盖无关幸存者。", "control": "相邻两顺序为合法对照；错误规则按最新物理槽而非逻辑原件写入应造成完整居民差异。", "next_experiment": "先确认同拍snapshot/train/cleanup优先级的功能合同，再用两个原UID构造有区分度的新DUT程序。"},
+        {"scenario_id": "MBTB.residency.unique-zero-key", "outcomes": ["replacement", "repair"], "oracle_status": "module-contract", "given": "正常地址构造真实零tag/key及同位置不同身份；有独立保留居民。", "events": ["触发正常重复清理和替换，并同时保留另一条待服务修正。", "逐身份回访。"], "expected": "每逻辑身份唯一，清理只取消其旧副本；零key不是空槽，另一个owner仍被服务。", "forbidden": "将零键当无效、清错误owner、减少服务义务以得到通过。", "control": "非零key合法序列与零key同义；零值哨兵/按row合并错误规则应改变幸存集合。", "next_experiment": "保持旧zero-key与retained-owner FAIL，审计现有完整状态checker后映射此联合场景。"}
+      ]
+    },
+    {
+      "behavior_id": "MBTB.service",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtbInternalBank.scala", "lines": [85,272], "anchor": "writeBuffer"}],
+      "contract_refs": ["docs/spec/verification/contracts/mbtb-transaction-contract.md", "docs/spec/verification/contracts/mbtb-shared-service-owner-contract.json"],
+      "implementation_observation": "读优先与entry/counter缓冲各有服务；同物理行不等于同逻辑目的地。",
+      "partition_basis": "独立owner、同owner新版本、可服务/被阻挡和取消终态决定不同检查。",
+      "legal_scope": "声明有界dirty容量并有限释放读；合法reset/disable终态与FTQ退休分开。",
+      "observations": ["逐UID训练真实接纳、完整entry/counter请求与服务", "全部retained-owner、未服务版本、fresh消费者及epoch终态"],
+      "completion": "主动释放占用后所有仍承诺的owner唯一结清，SDK/训练tail和模型债务均排空；不补reset或改metadata清债。",
+      "cases": [
+        {"scenario_id": "MBTB.service.two-owners", "outcomes": ["repair"], "oracle_status": "module-contract", "given": "同bank两条不同逻辑分支/row补丁已接纳，读阻挡写且dirty未超声明容量。", "events": ["重叠查询阻挡服务。", "有限释放读并消费两身份新状态。"], "expected": "两个owner都完整服务，entry/counter补丁不互吞，读响应按其快照比较。", "forbidden": "只数两次write却写同owner、同row/tag错误合并、丢邻居。", "control": "无重叠合法序列作对照；吞第二owner/服务归错UID的错误规则应被完整服务和消费者拒绝。", "next_experiment": "映射shared-service既有首错与完整字段检查，不以旧普通FAIL数量不变代替后续完成。"},
+        {"scenario_id": "MBTB.service.newest-owner-version", "outcomes": ["repair"], "oracle_status": "module-contract", "given": "同逻辑owner有未服务旧目标，紧邻反馈给新完整payload；另有负peer。", "events": ["沿原件分别接纳两版本。", "释放读后查询原owner和peer。"], "expected": "按合同合并保留最新完整版本，方向更新顺序不倒退；peer和不可变快照保持。", "forbidden": "字段拼接成混合版本、旧服务回盖新目标、用fresh原件替换迟到输入。", "control": "不同owner不应合并的合法对照；版本last-writer倒转或只更新低target应失败。", "next_experiment": "映射既有retained/depth owner程序并补新NT规则与满待写的组合。"},
+        {"scenario_id": "MBTB.service.reset-disable-boundary", "outcomes": ["cancelled", "rejected", "hit"], "oracle_status": "pending-confirmation", "given": "已学与实际接纳但未服务的反馈同时存在；显式记录控制变化前响应是否已交付。", "events": ["分别在S0/S1和待写切点关闭或复位。", "初始化/重开后做冷查询与新学习正对照。"], "expected": "reset结束旧epoch且无旧版本复活；disable新使用/学习受资格限制但不是reset；已经交付的响应不追溯取消，具体在途服务切点待确认。", "forbidden": "关闭monitor消债、将local-drained当退休、无依据要求reset后所有旧offer完成。", "control": "无控制变化完成链作正对照；旧epoch复活或把disable当清表的错误规则应可区分。", "next_experiment": "从真实接纳/服务监控确定切点，复用现有disposition终态而不新增传输框架。"}
+      ]
+    },
+    {
+      "behavior_id": "RAS.stack",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/ras/RasStack.scala", "lines": [114,171], "anchor": "specPush"}, {"file": "src/main/scala/xiangshan/frontend/bpu/ras/Ras.scala", "lines": [63,74], "anchor": "pushAddr"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/ras-functional-definition-review-20261016.md", "docs/spec/verification/contracts/ras-original-commit-action-contract.json"],
+      "implementation_observation": "重复地址用计数压缩，公开返回地址由末半字位置加2字节产生；Push/Pop解码不含PopAndPush。",
+      "partition_basis": "不同地址LIFO、重复组次数、初始空态和组合动作后果不同。",
+      "legal_scope": "有界主栈合法调用序列，公开top不带不存在的valid；不承诺无限深保留。",
+      "observations": ["完整guarded字节返回地址、重复次数与存活前驱", "真实spec事件及独立调用帧程序，不从物理指针重建expected"],
+      "completion": "每逻辑调用由后续return恰消费一次，声明老前驱完整unwind；容量抑制输入不冒充有效push。",
+      "cases": [
+        {"scenario_id": "RAS.stack.lifo-and-duplicates", "outcomes": ["hit"], "oracle_status": "module-contract", "given": "正常call A、B、B且A/B地址不同，重复组接近但未超过边界。", "events": ["连续return并插入无操作停顿。", "跨重复上界另建组后再次完整unwind。"], "expected": "B逐逻辑次数消耗后露A，重复上界不绕回或丢帧；地址按原指令末半字后继计算。", "forbidden": "同top相等掩盖少push/多pop、错用最新起点、字节/半字混用。", "control": "A/B异址链是合法对照；少一重复计数/错误指令长度规则在露A时应失败。", "next_experiment": "审计原栈模型和消费者，补guard/carry×重复上界×相邻调用的定向设计绑定。"},
+        {"scenario_id": "RAS.stack.empty-restart", "outcomes": ["miss", "hit"], "oracle_status": "module-contract", "given": "复位已知初始空态，不伪称任意历史下溢有相同合同。", "events": ["一次空return。", "正常call C再return。"], "expected": "初始空return不造非零地址，但允许物理游标合法移动；新call/return仍工作。", "forbidden": "要求所有物理位不变、把无声明历史底部当无限栈、只比较第一次top。", "control": "空态和C消费者成对；伪造地址/游标冻结错误规则由后续调用检出。", "next_experiment": "绑定初始空态一次return并补restart消费者，任意多次历史下溢另留待确认。"},
+        {"scenario_id": "RAS.stack.pop-and-push", "outcomes": ["repair"], "oracle_status": "module-contract", "given": "有A/B两存活调用及真实C返回地址来源，原动作PopAndPush来自合法JALR hint。", "events": ["分别发原件Pop、Push、PopAndPush三对照。", "比较C替换B后仍能返回A。"], "expected": "PopAndPush先返回再调用，C替换B而非无操作；动作与地址均归原来源。", "forbidden": "因isCall/isReturn排他而把组合动作当neutral、伪造child同时双valid来掩盖parent漏译。", "control": "单Pop/Push为正对照；组合动作漏译错误规则必须在完整帧链产生差异。", "next_experiment": "保留原RAS-017普通FAIL和父动作不可达边界；不修改RTL或豁免来取得通过。"}
+      ]
+    },
+    {
+      "behavior_id": "RAS.recovery",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/ras/Ras.scala", "lines": [92,113], "anchor": "callAddr"}, {"file": "src/main/scala/xiangshan/frontend/bpu/ras/RasStack.scala", "lines": [389,414], "anchor": "io.redirect.valid"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/ras-functional-definition-review-20261016.md", "docs/spec/verification/evidence/runs/baseline-update-a0c2a26cb.md"],
+      "implementation_observation": "redirect延一拍恢复原metadata并重做动作，近满资格按checkpoint年龄；返回地址guarded字节域加2。",
+      "partition_basis": "neutral/call/ret重做、老checkpoint/当前checkpoint及guard/sign独立是不同后果。",
+      "legal_scope": "真实未过期checkpoint及年轻投机，完整FTQ年龄/代际可达未证明。",
+      "observations": ["原checkpoint全字段及UID保持", "恢复后完整top/前驱/重复信息、年轻取消及新消费者"],
+      "completion": "实际r1恢复并重做完成，随后异址push/pop及全老链消费者检查；不能只看恢复当拍top。",
+      "cases": [
+        {"scenario_id": "RAS.recovery.rollback-redo", "outcomes": ["repair", "cancelled"], "oracle_status": "module-contract", "given": "A/B/C异址调用保存B真实检查点，再加错误年轻路径。", "events": ["原件分别以neutral/call/ret属性恢复。", "撤redirect后做新call并逐层return。"], "expected": "还原原前缀后恰好重做原动作，年轻后缀不复活，A保留。", "forbidden": "把当前top当checkpoint、重复redo、只清输出不清年轻链。", "control": "无年轻后缀和单动作合法对照；恢复后仍留C/重复redo规则由后续unwind检出。", "next_experiment": "映射真实checkpoint程序并扩展相邻redirect×新spec×commit的相位见证。"},
+        {"scenario_id": "RAS.recovery.guard-capacity", "outcomes": ["repair", "rejected"], "oracle_status": "pending-confirmation", "given": "guard/sign独立的原PC及真实老checkpoint；通过合法未退休调用达到nearOverflow。", "events": ["近满时恢复老checkpoint并以guarded末半字PC重做call。", "新call/return确认释放信用和完整地址。"], "expected": "有资格旧checkpoint可释放年轻版本并恢复调用；地址按51位字节回绕加2且不以sign代guard；同拍容量/commit优先级需独立确认。", "forbidden": "把guard位裁掉、用当前checkpoint假称释放、绕过nearOverflow作无条件push。", "control": "未近满guard恢复与近满老/当前checkpoint成对；旧codec/错误年龄规则应改变地址或信用。", "next_experiment": "RAS-018旧五例只支撑原选择；为满容量×真实commit×恢复构造新程序并确认切点。"}
+      ]
+    },
+    {
+      "behavior_id": "RAS.retire",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/ras/RasStack.scala", "lines": [333,422], "anchor": "commitPushAddr"}, {"file": "src/main/scala/xiangshan/frontend/ftq/CommitQueue.scala", "lines": [43,65], "anchor": "bpuTrain"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/ras-functional-definition-review-20261016.md", "docs/spec/verification/contracts/ras-original-commit-action-contract.json"],
+      "implementation_observation": "commit为Valid延后消费原meta；nearOverflow非ready，启停对spec与commit采样相位不同。",
+      "partition_basis": "投机/提交分离、原动作唯一退休、有限容量/遗漏通知及动态启停各有义务。",
+      "legal_scope": "真实callRet顺序和原提交metadata；branchType在FTQ提交为DontCare，不能拿它决定动作。",
+      "observations": ["实际commit输入/注册child动作、完整提交组及bos/tosw寿命", "抑制操作与有效push分别记账，老帧和原metadata保持"],
+      "completion": "原退休通知按动作完成一次并可由后续恢复/return消费；声明容量内老存活链保持，新信用可用。",
+      "cases": [
+        {"scenario_id": "RAS.retire.original-action", "outcomes": ["repair"], "oracle_status": "module-contract", "given": "投机与已提交A/B分离，C地址由真实原件产生；提交队列按序。", "events": ["使用原commit meta提交Push/Pop/PopAndPush及neutral对照。", "查询完整提交组，再恢复并return。"], "expected": "提交作用于原调用而非当前投机top；neutral不多退一调用，组合动作按退休合同替换B保A。", "forbidden": "输入重复通知冒充真实重复call、从actual提交栈选择C地址、将可见投机C当已提交。", "control": "真实两次同址call与同通知误重放区分；错误当前top/忽略组合动作规则在提交组检出。", "next_experiment": "复用原commit-action checker保留失败；完整FTQ重复通知准入另行证明。"},
+        {"scenario_id": "RAS.retire.capacity-turnover", "outcomes": ["rejected", "replacement", "hit"], "oracle_status": "module-contract", "given": "合法调用占用推测版本接近保护，原老checkpoint和明确存活范围已声明。", "events": ["继续提供不同地址call/return见证效果抑制。", "按序退休/老恢复释放容量，再调用新身份。"], "expected": "被保护输入不覆盖存活帧，不计成成功push；合法释放后新call可用，有界存储只承诺声明保留范围。", "forbidden": "driver返回即算生效、无限栈要求、删掉丢退休通知的旧反例。", "control": "阈值前有效与阈值后抑制成对；早覆盖/永久锁死规则由幸存者和新消费者检出。", "next_experiment": "审计nearOverflow真实相位与遗漏通知程序，分别绑定保留范围和恢复消费者。"},
+        {"scenario_id": "RAS.retire.dynamic-enable", "outcomes": ["rejected", "hit"], "oracle_status": "pending-confirmation", "given": "已学栈非空；一条spec/commit已接纳在途，另一条在关闭后才offer。", "events": ["在各采样相位关闭，再重开。", "检查原top、提交组与新call/return。"], "expected": "关闭不是清栈，关闭后新动作不得非法生效；已接纳在途按确认的采样合同结清，不能凭spec.fire=0推断所有child写都无效。", "forbidden": "仅看enable/fire忽略pushValid副作用、重开旧年轻帧复活。", "control": "静态关闭/静态开启为合法对照；漏门控和错误清栈规则分别由保持/新动作拒绝检出。", "next_experiment": "源码显示Ras spec.pushValid未直接与enable合取；先核父级合法切点再补leaf和Bpu对照，不宣称新原生FAIL。"}
+      ]
+    },
+    {
+      "behavior_id": "BPU.select",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/Bpu.scala", "lines": [296,474], "anchor": "s2_override"}],
+      "contract_refs": ["docs/spec/verification/contracts/pipeline-transaction-contract.md", "docs/spec/verification/evidence/reviews/bpu-integrated-functional-definition-review-20261016.md"],
+      "implementation_observation": "S1按ABTB有效集合遮UBTB；S2不比较target，S3补完整目标及来源纠正。",
+      "partition_basis": "候选有效/全NT、条件纠正、target-only与身份/方向错，以及动态使能具有不同来源和纠正时机。",
+      "legal_scope": "Bpu真实自主流水；公开target/perfMeta已裁，内部PHR输入不能冒充公开目标比较。",
+      "observations": ["原UID每级候选资格/first-taken位置/类型/来源、override与FTQ ptr", "完整目标仅在真实可观察域比较；被裁字段单列blocked"],
+      "completion": "正常prediction按fire、override按真实FTQ消费合同记账，S3 meta对应原件完成；目标观察不足不得授予目标checked。",
+      "cases": [
+        {"scenario_id": "BPU.select.abtb-all-nt", "outcomes": ["hit", "miss"], "oracle_status": "pending-confirmation", "given": "UBTB有taken，ABTB分别为空/有有效全NT/有不同位置taken；UTAGE仅条件候选。", "events": ["让可区分候选进入同一原窗口。", "交换物理way但不变CFI顺序，并分别开启/关闭UTAGE资格。"], "expected": "最终选择须服从已确认来源合同与最早taken位置；实现观察为ABTB有效全NT遮UBTB并fallthrough，策略优先级待独立确认，不直接抄作golden。", "forbidden": "将ABTB无taken等价于无有效entry、按way优先、非条件被UTAGE改方向。", "control": "ABTB无有效候选与全NT是合法分离对照；错误taken-only优先规则应产生不同S1来源/路径。", "next_experiment": "先独立确认全NT优先策略，再在可观察来源建立有区分的自主前史；缺公开target保持blocked。"},
+        {"scenario_id": "BPU.select.s2-s3-correction", "outcomes": ["repair"], "oracle_status": "module-contract", "given": "S1与Main/TAGE/SC/ITTAGE/RAS候选具有可区分方向、位置、类型或完整目标。", "events": ["分别造成target-only、方向/身份错以及S2已改后S3另一来源目标不同。", "同拍S2/S3纠正后观察存活请求。"], "expected": "最终独立first-taken/目标来源正确且归原UID；S2不比target只是实现相位观察，不能用S2未纠正证明最终目标正确；S3旧权威取消年轻。", "forbidden": "S2已改就全局抑制S3目标比较、拿新窗口target补旧原件、叶PASS晋升组合PASS。", "control": "只目标不同与只方向不同成对；S3全抑制/选错年龄规则由最终来源及取消后消费者检出。", "next_experiment": "先解除相应观察阻挡；完整目标被裁的格维持blocked，不借内部结果替代。"},
+        {"scenario_id": "BPU.select.derived-enable", "outcomes": ["rejected", "hit"], "oracle_status": "pending-confirmation", "given": "热UBTB/URAS等候选仍有残留payload；CSR延2拍且UTAGE依ABTB、后级依MBTB。", "events": ["在独立确认的CSR切点关闭候选并保持其他合法来源。", "重开并查询同一存活身份。"], "expected": "禁用候选不占优且不被错误清表；不能以leaf valid抑制推断父级bits.taken/usable同样抑制，精确在途切点待确认。", "forbidden": "构造不存在的独立UTAGE CSR、把残留bits当有效候选、按关闭前值给新UID。", "control": "静态enabled/disabled和过延迟切点成对；遗漏父级门控/错一拍CSR规则应被来源比较拒绝。", "next_experiment": "重点复核UBTB父级取bits.taken和MicroRAS无enable门控，补活跃预测器动态切换见证。"}
+      ]
+    },
+    {
+      "behavior_id": "BPU.learn",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/Bpu.scala", "lines": [158,198], "anchor": "t0_fire"}, {"file": "src/main/scala/xiangshan/frontend/ftq/Ftq.scala", "lines": [405,453], "anchor": "train"}],
+      "contract_refs": ["docs/spec/verification/contracts/pipeline-transaction-contract.md", "docs/spec/verification/contracts/phr-transaction-contract.md", "docs/spec/verification/evidence/reviews/bpu-integrated-functional-definition-review-20261016.md"],
+      "implementation_observation": "所有predictor ready相与才接纳resolve；S3 FastTrain和backend resolve教导来源不同，原provider身份按MBTB位置匹配。",
+      "partition_basis": "发布资格、类型/位置/执行前缀、provider存在/实际使用、meta-only/重读及fast/resolve竞争必须分开。",
+      "legal_scope": "FTQ输出合法原metadata和位置前缀；完整指令可达不由本轮读源码自动证明。",
+      "observations": ["真实t0 fire输入UID和不可变meta/PHR/CommonHR", "每预测器实际资格/方向/目标/useful、共享选择器与新消费者，首错后未比较项无信用"],
+      "completion": "resolve实际接受后每模块合格效果与拒绝保持均比较并完成服务；S3指导和执行真值分别记账。",
+      "cases": [
+        {"scenario_id": "BPU.learn.prefix-provider", "outcomes": ["repair", "rejected"], "oracle_status": "module-contract", "given": "真实S3原件含非首位置和稀疏conditional、indirect、return；provider存在/被采用各有对照。", "events": ["在首个位置误预测前后放入分支，FTQ按位置滤后缀。", "分别让SC有强票但无Main/无provider/非条件。"], "expected": "各模块只学自身合格原来源及已执行前缀，SC资格与TAGE最终是否用provider不混同，后缀与邻居保持。", "forbidden": "按resolve槽索引引用SC/TAGE meta、用当前history替代祖先、强SC票绕过资格。", "control": "同rawHit位置合法conditional与无资格对照；错provider角色/错槽映射规则必须产生状态差异。", "next_experiment": "优先修INT-041旧PHR形状观察阻挡后再映射192条角色用例；本轮不声称已消除阻挡。"},
+        {"scenario_id": "BPU.learn.fast-vs-resolve", "outcomes": ["repair", "rejected"], "oracle_status": "pending-confirmation", "given": "S3指导分支和backend误预测原件属于两个可区分UID；早级可有多个相对错误。", "events": ["同拍fastTrain与resolve竞争，并安排全NT/较晚非条件指导。", "另做无竞争串行对照。"], "expected": "resolve对UBTB的权威优先与ABTB/UTAGE只消费S3原meta分别检查；不能把S3指导当执行真值；多个相对错误的完整producer准入及学习完成义务待确认。", "forbidden": "借resolve onehot证明FastTrain单错误、同拍混合两原件metadata、删除多错误候选需求。", "control": "两个指导payload不同的合法单错误对照；混源/fast误压resolve规则应导致不同居民。", "next_experiment": "先构造真实多早级错误到单S3选择的前史，确认局部单错误假设能否成立后确定精确预期。"},
+        {"scenario_id": "BPU.learn.redirect-parallel-old", "outcomes": ["repair", "cancelled"], "oracle_status": "module-contract", "given": "仍合法的老resolve原件与redirect取消的年轻预测并存。", "events": ["让train.ready全体满足后与redirect同拍。", "另让一个模块ready=0形成真实未接纳。"], "expected": "合格老反馈可学习，年轻投机取消；ready=0不学习，不能将所有redirect拍全局屏蔽训练。", "forbidden": "取消老反馈、借取消年轻名义重用其meta、offer即算fire、某模块独立提前学习。", "control": "老合法/年轻取消及ready开关对照；全局屏蔽或部分接纳错误规则由新消费者区分。", "next_experiment": "用逐输入UID/fire账本建立同拍资格见证，并给各预测器训练服务统一结清记录。"}
+      ]
+    },
+    {
+      "behavior_id": "BPU.history",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/history/phr/Phr.scala", "lines": [139,346], "anchor": "redirect"}, {"file": "src/main/scala/xiangshan/frontend/bpu/history/commonhr/CommonHR.scala", "lines": [88,405], "anchor": "redirect"}],
+      "contract_refs": ["docs/spec/verification/contracts/phr-transaction-contract.md", "docs/spec/verification/contracts/pipeline-transaction-contract.md"],
+      "implementation_observation": "PHR有pending写/逻辑旁路与分相位fold；CommonHR有r0无效/r1重建及IMLI独立相位。",
+      "partition_basis": "实际前缀与物理槽、guard/sign、NT/taken、祖先与当前history、双拍恢复互相影响。",
+      "legal_scope": "自主流水真实UID与checkpoint；训练fold从原meta重建，不从当前物理cell倒推。",
+      "observations": ["原lookup fold与S1/S2/S3祖先、训练fold的全部定义投影", "实际PHR逻辑值/指针、CommonHR有效性/ghr/bw/imli和恢复取消账本"],
+      "completion": "pending及r1恢复义务结清后新消费者与训练原件各获正确history；旧物理值不代替逻辑可见值。",
+      "cases": [
+        {"scenario_id": "BPU.history.executed-prefix", "outcomes": ["repair"], "oracle_status": "module-contract", "given": "有空洞、非首条件和多位置的真实预测，先设非零历史且前缀可独立演算。", "events": ["分别taken和NT恢复，插入未执行后缀及位置重复对照。", "fresh预测和老原件训练并行消费不同年龄history。"], "expected": "仅已执行条件前缀进入GHR/BW/IMLI与PHR规定摘要；NT不附加未执行后缀，老训练仍使用自身祖先。", "forbidden": "槽号当顺序、重复位置计两次、只比physical cell漏旁路、所有来源借当前history。", "control": "零/非零历史和同前缀不同后缀成对；后缀污染/错祖先规则由fold和新消费者拒绝。", "next_experiment": "保留CommonHR旧前缀失败，按真实当前532-cell/33-fold投影绑定而非旧PHR形状。"},
+        {"scenario_id": "BPU.history.guard-active-recovery", "outcomes": ["repair", "cancelled"], "oracle_status": "module-contract", "given": "guard/sign分别取同/异，空/非零历史，活跃TAGE/SC/RAS有合法在途原件。", "events": ["恢复guarded PC并与老训练/年轻call竞争。", "撤恢复后发新UID预测及原件训练。"], "expected": "消费Pc处显式去guard，RAS保留guarded返回地址；年轻取消，老原件历史不串用且新UID归正确路径。", "forbidden": "以旧INT-114全禁用预测器结果当活跃组合证明、丢有效地址位、沿用已取消UID。", "control": "全禁用原有限样本仅作合法对照；sign替guard/错年龄规则应在地址或history产生差异。", "next_experiment": "先修观察阻挡再新增活跃预测器×恢复×训练场景，不重标旧16实例证据。"},
+        {"scenario_id": "BPU.history.pending-r0-r1-wrap", "outcomes": ["repair", "cancelled"], "oracle_status": "pending-confirmation", "given": "PHR已有pending写，CommonHR有未完r1，环指针接近回绕且原checkpoint未过期。", "events": ["连续redirect或r1与新r0同拍，并加入S2/S3 override竞争。", "有限排空并消费新旧年龄历史。"], "expected": "最新权威恢复取消年轻历史，保留未取消祖先；精确r0/r1/pending同拍线性化点需由合同独立确认，不能复制Scala优先级作答案。", "forbidden": "物理写覆盖逻辑旁路、回绕后同指针借新epoch、固定idle当恢复完成。", "control": "同事件相邻两顺序为对照；旧r1回盖新r0/丢pending规则由最终fold及前缀区分。", "next_experiment": "先定义双拍恢复的事件账本和环指针存活范围，再实现同时性正负控制。"}
+      ]
+    },
+    {
+      "behavior_id": "BPU.arbitrate",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/Bpu.scala", "lines": [248,275], "anchor": "s1_fire"}, {"file": "src/main/scala/xiangshan/frontend/ftq/Ftq.scala", "lines": [187,241], "anchor": "override"}],
+      "contract_refs": ["docs/spec/verification/contracts/pipeline-transaction-contract.md", "docs/spec/verification/contracts/phr-transaction-contract.md"],
+      "implementation_observation": "普通prediction受ready，override由FTQ特殊消费，meta每S3 valid发布且真实FTQ恒ready；多个待写服务不能只按计数对齐。",
+      "partition_basis": "正常fire/override/flush、读冲突反压与有限服务容量、原metadata发布寿命不同。",
+      "legal_scope": "仅真实父级可发生的组合；leaf任意控制压力与真实FTQ ready/meta行为分开。",
+      "observations": ["逐原UID各阶段fire/flush、实际FTQ消费及meta配对", "训练全ready、缓冲逻辑owner和全部存活/取消/排空终态"],
+      "completion": "无新offer后所有仍存活请求完成或合法取消，待写在有限释放后服务，meta/预测不重不漏且原件保持。",
+      "cases": [
+        {"scenario_id": "BPU.arbitrate.ready-override", "outcomes": ["hit", "repair", "cancelled"], "oracle_status": "module-contract", "given": "不同payload的S1/S2/S3请求并存，FTQ prediction.ready可真实变0且meta.ready恒1。", "events": ["背压正常S1同时发生较老S3或S2 override。", "再加redirect并撤背压。"], "expected": "普通响应按fire，override按真实FTQ特殊写入而非盲套普通握手；老权威取消年轻，meta仍归自身S3原件。", "forbidden": "ready=0即认为override未消费、强行驱动不存在的meta.ready、meta配最新PC。", "control": "无override背压是合法保持对照；错普通握手/错FTQ ptr规则由实际消费账本拒绝。", "next_experiment": "在可观察端口绑定原流水账本，缺公开target的必需比较维持blocked。"},
+        {"scenario_id": "BPU.arbitrate.train-bank-release", "outcomes": ["rejected", "repair"], "oracle_status": "module-contract", "given": "TAGE/SC确需重读训练且与预测同bank；另一对照可meta-only或不同bank。", "events": ["保持train offer到真实全ready接受。", "有限停止冲突预测，让全部待写owner完成。"], "expected": "冲突拍不部分学习；无冲突meta-only不被不必要阻挡，接受后按原版本完成且各模块不混源。", "forbidden": "把offer计作接纳、ready=0仍某模块学习、无限持续读却要求无条件drain。", "control": "同/异bank及需/不需重读成对；忽略冲突或全训练无条件阻挡规则由接纳和状态区分。", "next_experiment": "先确认原ready监控和服务完成字段，再绑定独立consumer而非只测最终FAIL数量。"},
+        {"scenario_id": "BPU.arbitrate.meta-lifetime", "outcomes": ["hit", "cancelled", "rejected"], "oracle_status": "pending-confirmation", "given": "不同UID相同PC/payload的FTQ原件已分别发布，原槽随后发生override/reuse或年轻redirect。", "events": ["合法老resolve/commit与年轻取消并行。", "在原槽回绕前后分别查询资格并保留不可变meta。"], "expected": "原预测、redirect和commit meta分别归自己原件；失效/重用槽不借数值相等重获来源；完整FTQ存活证明仍待构造。", "forbidden": "按payload搜索任何来源、fresh meta替旧、用BPU端口形状证明FTQ资格。", "control": "合法未重用原件与失效对照；同PC合并UID/跨epoch复活错误规则由资格账本拒绝。", "next_experiment": "只审FTQ资格接口并构造最小原件生命周期见证，不扩为FTQ工程重构；解除INT-059观察绑定阻挡另列。"}
+      ]
+    },
+    {
+      "behavior_id": "UBTB.lookup",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/ubtb/MicroBtb.scala", "lines": [58,100], "anchor": "s1_hitT1Victim"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/micro-btb-functional-definition-review-20261016.md"],
+      "implementation_observation": "UBTB命中是always-taken候选，查询锁存hit mask但payload来自居民，分配碰原victim会转miss。",
+      "partition_basis": "冷NT与taken建立、原查询payload与新线上PC、目标/部分tag地址域不能合并。",
+      "legal_scope": "独立UBTB原件及已声明地址codec；旧字节API问题需核当前adapter，不能靠回读数值相等证明。",
+      "observations": ["原查询有效性和全部有效payload：position/type/action/target", "原PC/UID与部分tag、完整目标重建的独立算术"],
+      "completion": "实际查询逐UID完成；训练后fresh消费者及回访旧身份完整比较，miss不比较无效target。",
+      "cases": [
+        {"scenario_id": "UBTB.lookup.cold-taken-nt", "outcomes": ["miss", "hit", "rejected"], "oracle_status": "module-contract", "given": "reset冷身份及不同payload邻居，不填内部条目。", "events": ["分别送冷NT与合格taken条件/直接/间接反馈。", "fresh查询及邻居回访。"], "expected": "冷NT不建taken，taken建立同原身份的完整候选；命中方向为taken而非用可靠性作条件方向。", "forbidden": "只看valid忽略payload、NT新建、位置/属性/target来自不同反馈。", "control": "冷NT与taken成对；错误全反馈分配或混字段应由完整消费者拒绝。", "next_experiment": "先审计当前codec与full payload checker，再绑定三族代表学习链。"},
+        {"scenario_id": "UBTB.lookup.alias-carry-overlap", "outcomes": ["hit", "miss"], "oracle_status": "pending-confirmation", "given": "独立计算同部分tag/不同tag地址和目标区域进位，两个查询payload明确不同。", "events": ["异质查询相邻接纳并同时有另一身份学习。", "回查目标区域边界。"], "expected": "结果按原PC重建与原UID关联；合法部分tag别名不被要求无限隔离。精确当前字节/半字API合同待adapter审计。", "forbidden": "模型/driver同错codec相互抵消、只比较低target、按最新请求归属。", "control": "低位相等高区域不同及非别名对照；一位移位/carry丢失规则应改变完整结果。", "next_experiment": "静态核当前driver/monitor/model的单位链，选择能区分已记录旧错位问题的地址，不改oracle迎合wire。"}
+      ]
+    },
+    {
+      "behavior_id": "UBTB.confidence",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/ubtb/MicroBtb.scala", "lines": [138,193], "anchor": "t1_hitNotUseful"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/micro-btb-functional-definition-review-20261016.md"],
+      "implementation_observation": "精确taken强化，错payload/NT衰减，耗尽后新taken才建立新完整身份。",
+      "partition_basis": "可靠性强弱/耗尽、连续同向与反向及t0/t1相邻版本具有不同后果，不等同方向计数。",
+      "legal_scope": "同部分tag真实反馈顺序，始终保留原payload和邻居。",
+      "observations": ["各次反馈资格、可靠性/有效性、旧新完整payload", "相邻反馈实际接纳/服务及fresh版本，原输入保持"],
+      "completion": "每合格学习到状态效果与消费者闭合；耗尽/重建由不同payload或最终异址前驱区分，非稳定taken即可。",
+      "cases": [
+        {"scenario_id": "UBTB.confidence.decay-rebuild", "outcomes": ["hit", "miss", "repair"], "oracle_status": "module-contract", "given": "强可靠性候选A和独立邻居，新的taken B同tag但position/type/target至少一项不同。", "events": ["连续发送错payload或NT衰减到耗尽。", "再发新taken B并做fresh查询。"], "expected": "未耗尽先保留完整A，不部分改目标；耗尽不回绕，合法B随后完整重建且可消费。", "forbidden": "首错立即部分覆盖、连续NT复活旧taken、同地址稳定掩盖版本倒退。", "control": "精确taken强化和错误反馈衰减成对；立即覆盖/计数绕回规则应在中间状态失败。", "next_experiment": "映射原逐反馈checker，保留旧历史反例版本边界，核当前基线是否已有独立完整状态证据。"},
+        {"scenario_id": "UBTB.confidence.adjacent-boundaries", "outcomes": ["repair", "miss"], "oracle_status": "module-contract", "given": "候选靠近正/负可靠性边界，前一反馈尚在t1，下一反馈已到t0。", "events": ["无空拍同向到两端后反向，再在耗尽点紧邻新taken。", "与query读旧身份重叠。"], "expected": "边界保持且反向可恢复，连续版本不丢不重；查询按协议快照/失效资格，旧失效版本不压新B。", "forbidden": "从过期快照重算退回计数、以固定等待掩盖旁路缺失。", "control": "相同输入串行对照；去t0/t1版本转发/绕回规则在中间计数或最终B不同。", "next_experiment": "补精确边界与相邻查询时序见证，先确认读/更新线性化点再绑定期望。"}
+      ]
+    },
+    {
+      "behavior_id": "UBTB.lifecycle",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/ubtb/MicroBtb.scala", "lines": [58,197], "anchor": "t0_useResolve"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/micro-btb-functional-definition-review-20261016.md", "docs/spec/verification/contracts/pipeline-transaction-contract.md"],
+      "implementation_observation": "resolve误预测压fastTrain，t0按enable采样而t1已接纳动作继续；预测valid和bits.taken门控不同。",
+      "partition_basis": "容量受害者、同拍读/分配和fast/resolve、控制边界分别改变可见结果。",
+      "legal_scope": "有界容量和合法两类教导来源；父级禁用资格须独立组合检查。",
+      "observations": ["独立受害者/全部幸存payload、接纳来源UID", "enable切点及reset新epoch、原查询miss/valid与父级消费"],
+      "completion": "新居民及全部声明幸存者回访完成；已接纳在途与关闭后新offer分别结清，复位后无旧版本复活。",
+      "cases": [
+        {"scenario_id": "UBTB.lifecycle.replace-read", "outcomes": ["replacement", "miss", "hit"], "oracle_status": "module-contract", "given": "合法填满且由独立recency确定victim，另有可区分正在读的原victim。", "events": ["t1新分配与查询原victim重叠。", "查询新身份与所有幸存者。"], "expected": "读取被覆盖原件不得拼成旧tag新payload假命中；只合法victim被移除，其余保持。", "forbidden": "从actual miss选择受害者、强求被覆盖查询旧payload永存、漏查幸存者。", "control": "读非victim合法hit对照；去hitT1Victim保护/错误recency规则应产生错误有效集合。", "next_experiment": "确认原read/allocate相位并绑定异质victim/non-victim对照，不机械枚举每slot作功能。"},
+        {"scenario_id": "UBTB.lifecycle.sources-enable-reset", "outcomes": ["repair", "rejected", "cancelled"], "oracle_status": "pending-confirmation", "given": "fastTrain与resolve不同payload；旧已学身份和已接纳t0学习在途。", "events": ["两教导同拍并在t0/t1切点关闭；另在非空/在途前态reset。", "重开查询并发新学习。"], "expected": "权威resolve按确认合同优先；关闭后新学习拒绝但已接纳效果按采样合同处理；reset清旧epoch，禁用不等于reset。", "forbidden": "所有t1关闭时强行取消、父级只看bits.taken误用禁用候选、旧reset前反馈复活。", "control": "静态开启和分别单来源为合法对照；源优先反转/漏门控/清表错误规则由新旧消费者区分。", "next_experiment": "先确认精确控制边界和Bpu消费资格，补leaf和父级两个层次的场景绑定。"}
+      ]
+    },
+    {
+      "behavior_id": "ABTB.lookup",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/abtb/AheadBtb.scala", "lines": [93,223], "anchor": "bpuS3ReplayState"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/ahead-btb-functional-definition-review-20261016.md"],
+      "implementation_observation": "index使用S0 PC/PHR，匹配用next PC；S2/S3 override重匹配不同年龄保存快照。",
+      "partition_basis": "索引/匹配PC角色、历史上下文、正常/S2/S3年龄和局部目标重建域决定不同后果。",
+      "legal_scope": "半字API的ahead窗口合同；fastPositions和result不强制在同拍属于同请求。",
+      "observations": ["逐原窗口set/bank/meta及全部有效position/type/target/taken/strong", "S1 fastPositions与S2 result分别按真实年龄关联"],
+      "completion": "正常及replay结果各对应原件并完成fresh消费者；查询不学习或改变替换年龄。",
+      "cases": [
+        {"scenario_id": "ABTB.lookup.index-match-context", "outcomes": ["miss", "hit"], "oracle_status": "module-contract", "given": "同PC不同PHR及不同next PC建立不同方向/位置/目标的窗口；独立计算半字区域。", "events": ["交错ahead查询，并改变当前线上PC而保留原请求。", "跨低target carry与索引回绕回访。"], "expected": "按原索引读取再用对应next PC匹配，完整局部目标正确重建；各阶段字段归自身窗口。", "forbidden": "把next PC当索引、全部字段硬对同一拍、局部target当任意全地址。", "control": "同索引不同匹配tag和同PC不同历史成对；错PC/错年龄/错单位规则应改变结果。", "next_experiment": "补fastPositions逐前后笔归属断言，现有静态同PC程序不能单独证明该义务。"},
+        {"scenario_id": "ABTB.lookup.distinct-replays", "outcomes": ["hit", "miss", "repair"], "oracle_status": "module-contract", "given": "正常当前、保存S2、保存S3快照的方向/位置/目标各异，随后SRAM还可学习新版本。", "events": ["分别S2/S3 override，改恢复tag作拒绝对照。", "推进/撤override并回访未取消来源。"], "expected": "S2/S3只重匹配对应年龄快照而非重读最新表；不同tag拒绝，原快照不被新学习改写。", "forbidden": "三个快照同payload伪证明年龄、S3误借S2、恢复已取消来源。", "control": "三种快照异质是合法对照；wrong-age/重读规则应出现可观察差异。", "next_experiment": "映射016/017现有重匹配证据，再补真正三快照不同和撤回后消费者。"}
+      ]
+    },
+    {
+      "behavior_id": "ABTB.learn",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/abtb/AheadBtb.scala", "lines": [230,305], "anchor": "t1_condMask"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/ahead-btb-functional-definition-review-20261016.md"],
+      "implementation_observation": "用原ABTB meta的S3 FastTrain：NT不分配；条件前序方向惩罚与间接目标写分离，counter reset优先。",
+      "partition_basis": "冷/暖、前序/同位置/后序、条件/间接、指导taken/NT及原meta资格必须拆开。",
+      "legal_scope": "公开FastTrain是较晚预测的教导，不是后端已执行真值；使用真实原ABTB快照。",
+      "observations": ["原FastTrain/meta、全部条件计数及payload", "目标修正是否原唯一身份、未执行后序/邻居保持及fresh消费者"],
+      "completion": "方向效果与目标记录实际服务分别完成；未分配不能当成所有计数保持，原meta不改写。",
+      "cases": [
+        {"scenario_id": "ABTB.learn.prefix-and-all-nt", "outcomes": ["repair", "rejected"], "oracle_status": "module-contract", "given": "原快照中有稀疏前/同/后位置条件项和非条件项，计数不同且有冷miss对照。", "events": ["较晚taken和全NT指导分别训练。", "fresh逐位置查询。"], "expected": "合格前序条件项落空学习，同位置taken可强化，未执行后序保持；NT不新分配，非条件方向不能借资格改。", "forbidden": "按数组顺序、把不分配等价全冻结、误伤后序或间接方向。", "control": "同位置/前序/后序与冷NT成对；后缀惩罚或全NT冻结错误规则可由计数区分。", "next_experiment": "明确全NT指导位置边界的producer准入，再按不同后果映射原用例而非按坐标增bin。"},
+        {"scenario_id": "ABTB.learn.indirect-payload-and-type", "outcomes": ["repair", "replacement"], "oracle_status": "module-contract", "given": "真实间接原件目标A与条件邻居；同位置改类型与同类型改目标为两程序。", "events": ["分别纠正间接目标B及taken属性改变。", "等待真实服务并查身份唯一/计数。"], "expected": "同间接原身份修目标不应重置方向或生重复；新身份初始化与旧计数更新分开，counter reset/同拍方向优先级另核。", "forbidden": "目标写即新身份、改型旧副本残留、从actual服务响应反推全部golden。", "control": "只改target与只改type合法对照；错误always-reset/重复副本规则由完整向量拒绝。", "next_experiment": "复核既有切点counter参考范围，补初始化服务×方向同拍的独立前态与消费者。"}
+      ]
+    },
+    {
+      "behavior_id": "ABTB.residency",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/abtb/AheadBtb.scala", "lines": [307,370], "anchor": "cleanMultiHitValid"}, {"file": "src/main/scala/xiangshan/frontend/bpu/abtb/AheadBtbBank.scala", "lines": [43,102], "anchor": "write"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/ahead-btb-functional-definition-review-20261016.md"],
+      "implementation_observation": "新分配/修正先于清理，清理有pending；记录待写和实际服务/训练touch是不同事件。",
+      "partition_basis": "合法victim、重复副本清理、同row不同目的与同owner新版本，以及有限dirty容量不可混为一个压力类。",
+      "legal_scope": "有界dirty保留范围且有限读释放；无通用反压不等于无限无损，也不豁免已承诺owner。",
+      "observations": ["独立替换年龄、全部幸存者和重复身份", "完整请求/服务目的地、原owner及最终target/方向，清理pending真正结清"],
+      "completion": "释放读后全部声明保留owner被服务且fresh消费者完整比较；清理不破坏已发布快照。",
+      "cases": [
+        {"scenario_id": "ABTB.residency.replace-clean", "outcomes": ["replacement", "repair"], "oracle_status": "module-contract", "given": "合法填满并由独立训练touch/分配服务决定victim；正常序列造成可检测重复。", "events": ["让普通写和清理竞争并有限释放。", "逐居民与已发布原快照回访。"], "expected": "合法victim替换，清理最终移除旧重复而不丢幸存者；查询本身不算替换年龄事件。", "forbidden": "按实际淘汰反选victim、只清valid却损原快照、pending被普通写永久吞掉。", "control": "无普通写清理与并发清理成对；query-touch/清错副本规则在幸存集合区分。", "next_experiment": "核050并发年龄合同并绑定真实清理完成，保持旧原生反例而不排除覆盖分母。"},
+        {"scenario_id": "ABTB.residency.two-destinations", "outcomes": ["repair"], "oracle_status": "module-contract", "given": "同row/tag不同位置/目的分支A/B均有合法原件，待写量未超声明容量。", "events": ["读阻挡中相邻接纳两个不同目标补丁。", "释放后再送同owner更新版本并消费A/B。"], "expected": "不同目的不互吞，同owner按确认版本合同合并完整最新payload；两身份和邻居均可消费。", "forbidden": "用row/tag相同合并不同分支、只见一个write就称两者完成、从现行shadow-key模型豁免053。", "control": "同owner合并与不同owner保留成对；错误粗key规则应丢一消费者。", "next_experiment": "保留ABTB-053普通FAIL，审查原052物理模型不能覆盖相反语义；绑定新owner/服务记录。"}
+      ]
+    },
+    {
+      "behavior_id": "ABTB.lifecycle",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/abtb/AheadBtb.scala", "lines": [114,223], "anchor": "io.redirect"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/ahead-btb-functional-definition-review-20261016.md"],
+      "implementation_observation": "关闭/redirect清不同级valid与S3 replay资格，已接纳训练t1和待写服务有自己寿命。",
+      "partition_basis": "保存来源未消费/已消费/已取消、新epoch及关闭前后接纳时点决定不同终态。",
+      "legal_scope": "ahead窗口实际控制相位；leaf压力不自动等于Bpu可达。",
+      "observations": ["各年龄快照valid和owner、原meta是否仍可重放", "初始化完成、关闭后反馈资格和重开保留/新学习消费者"],
+      "completion": "取消者记终态且不复活，存活者完成服务；reset就绪后冷态和新学习真实完成。",
+      "cases": [
+        {"scenario_id": "ABTB.lifecycle.redirect-replay", "outcomes": ["cancelled", "rejected", "hit"], "oracle_status": "module-contract", "given": "S2/S3保存异质窗口且有一份尚未消费，另有未取消老来源。", "events": ["redirect与override/普通推进竞争。", "撤redirect后试图重放旧来源并发新查询。"], "expected": "被取消replay不再发布，老存活来源和新查询归各自UID；不能用新的相同payload复活旧原件。", "forbidden": "只清S2漏S3 replay、旧epoch借相同PC通过、查询清掉已学居民。", "control": "未取消合法replay对照；漏清/错年龄valid规则由撤控制后输出拒绝。", "next_experiment": "先核真实父级可产生组合，再绑定取消当拍和撤回后的两段消费者。"},
+        {"scenario_id": "ABTB.lifecycle.nonempty-reset-enable", "outcomes": ["cancelled", "rejected", "hit", "miss"], "oracle_status": "pending-confirmation", "given": "热居民、真实待写补丁和保存replay同时存在。", "events": ["分别关闭和复位于接纳/服务边界。", "重开/初始化后查询旧居民，再发新合法训练。"], "expected": "disable不等于清表，reset清旧寿命并无待写/replay复活；已接纳训练具体处理切点待确认。", "forbidden": "只测新实例冷态冒非空reset证明、固定等待等价初始化完成、重开旧补丁回盖新版本。", "control": "无控制变化完整服务与静态关闭反馈拒绝成对；错误清表/旧待写复活规则应可区分。", "next_experiment": "用真实初始化和待写监控确认切点，补每类有区分度的控制对照。"}
+      ]
+    },
+    {
+      "behavior_id": "UTAGE.select",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala", "lines": [73,243], "anchor": "overrideSourcePredRead"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/utage-functional-definition-review-20261016.md", "docs/spec/verification/evidence/analyses/utage-source-ownership-scenarios-20261016.md"],
+      "implementation_observation": "ahead索引与匹配tag分相位，最长匹配表按ABTB有效条件位置输出；S2取A2、S3取A3。",
+      "partition_basis": "冷/暖、同索引不同完整tag/位置、条件/非条件和异质A2/A3快照必须区分。",
+      "legal_scope": "两表5/9历史，ABTB提供真实基础位置及原FastTrain；不证明所有折叠历史碰撞独立。",
+      "observations": ["各原分支hit/taken/provider/计数及基础meta", "index/tag来源、有效条件资格、A2/A3/正常三快照和原UID"],
+      "completion": "每查询/重匹配逐原件比较；无效方向payload不作真值，学习后fresh消费者确认原分支。",
+      "cases": [
+        {"scenario_id": "UTAGE.select.tag-position-domain", "outcomes": ["miss", "hit", "rejected"], "oracle_status": "module-contract", "given": "同低索引但完整tag或位置不同的原身份，ABTB有条件/非条件及无效位置对照。", "events": ["交错冷/暖与短/长历史查询，逐分支替换资格而不改原件。", "回访已学身份。"], "expected": "只真实有效条件基础位置可获纠正，冷/错tag/错位置不借来源；最长合法provider归原历史。", "forbidden": "仅低位相等即命中、无效原始taken当结果、强票改非条件。", "control": "全tag/位置相同合法命中与单维不同对照；缺高tag/缺pos资格规则应失败。", "next_experiment": "保持旧tag/provider普通FAIL，核当前两表独立hash和基础有效域再映射。"},
+        {"scenario_id": "UTAGE.select.override-age", "outcomes": ["hit", "miss", "repair"], "oracle_status": "module-contract", "given": "A2/A3与最新表内容各有不同计数/方向/位置，合法override上下文已知。", "events": ["分别S2与S3 override，并做改tag拒绝。", "与新的异质查询重叠后撤override。"], "expected": "从正确年龄保存快照重新解释tag，不用最新SRAM；不同恢复tag拒绝且原基础位置不换祖先。", "forbidden": "A2/A3同数据伪证明、错年龄快照、年轻学习改写旧meta。", "control": "三快照明确异质；wrong-age/重读最新规则必须产生hit/方向差异。", "next_experiment": "复用来源检查设计但逐项核实际DUT绑定，补异质三快照与后续消费者。"}
+      ]
+    },
+    {
+      "behavior_id": "UTAGE.learn",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala", "lines": [252,389], "anchor": "t0_firstMisPredOH"}, {"file": "src/main/scala/xiangshan/frontend/bpu/utage/BypassShadowBuffer.scala", "lines": [177,222], "anchor": "newUseful"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/utage-functional-definition-review-20261016.md"],
+      "implementation_observation": "FastTrain只学ABTB条件位置，按位置取首错误并向更长无保护表分配；方向/有用性与失败tick不同。",
+      "partition_basis": "原provider对错与base分歧、前序/后序、保护初始化、方向两端和分配失败维护不能以同taken输出合并。",
+      "legal_scope": "教导是S3预测；完整多相对错误准入未证。当前NumTables与tick分域不能照旧四表注释推导。",
+      "observations": ["合格原件的方向/useful、分配候选与实际首错误位置", "合格失败次数/维护事件和全部声明居民身份/方向"],
+      "completion": "学习与维护实际完成后fresh消费者确认；稳定方向不代替计数/保护到边界，维护不抹tag/方向。",
+      "cases": [
+        {"scenario_id": "UTAGE.learn.prefix-eligibility", "outcomes": ["repair", "rejected"], "oracle_status": "module-contract", "given": "原ABTB条件分支有前序/同位置/后序且有空洞，provider/base意见不同。", "events": ["较晚非条件指导与同位置非条件纠正分别输入。", "对各位置查询新状态。"], "expected": "较早已执行条件可学NT，同位置已非条件及未执行后序不借旧条件资格；首错误按位置不按槽。", "forbidden": "无ABTB分支仍分配、同位置非条件污染方向、后缀训练。", "control": "较晚非条件与同位置非条件是不同合法后果；错误省类型/前缀规则应被逐位置比较拒绝。", "next_experiment": "映射原013/025/026方向资格对照，不把FastTrain输入误称后端执行证明。"},
+        {"scenario_id": "UTAGE.learn.direction-useful-boundaries", "outcomes": ["repair"], "oracle_status": "module-contract", "given": "分别用合格前史把方向与有用性推近两端，原provider和base分歧及一致均有对照。", "events": ["同向学习到边界并继续，随后反向合格学习。", "分别让provider提供额外价值或预测错误。"], "expected": "方向饱和不回绕且反向可恢复；useful只按其资格奖励/削弱，不由方向稳定代替。", "forbidden": "强base正确也一律奖励provider、把新长表零值误当旧短表到零、源误选。", "control": "同方向不同useful资格成对；错误奖励/计数绕回规则由完整provider状态区分。", "next_experiment": "从独立前史指定原provider身份并核实际消费者，保留当前usefulness失败。"},
+        {"scenario_id": "UTAGE.learn.failed-allocation-maintenance", "outcomes": ["rejected", "maintenance", "repair"], "oracle_status": "pending-confirmation", "given": "合法保护填满候选且原方向/身份可独立预期，声明两表实际tick及保护初始化关系。", "events": ["只累计真实合格分配失败，穿越维护边界并继续学习。", "与普通方向更新同拍，再消费原居民与新身份。"], "expected": "维护释放保护而非删除方向，成功分配不算失败；两表tick覆盖与同拍useful优先策略待独立确认。", "forbidden": "固定循环次数冒维护完成、按四表注释推当前分域、清tag/方向。", "control": "失败阈值前后及可分配成功对照；错误事件计数/清方向规则可由新旧消费者拒绝。", "next_experiment": "先审NumTables=2时tick/初始化差异，确认独立维护合同后绑定有意义边界而非机械表编号。"}
+      ]
+    },
+    {
+      "behavior_id": "UTAGE.service",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/utage/BypassShadowBuffer.scala", "lines": [99,268], "anchor": "needBypass"}, {"file": "src/main/scala/xiangshan/frontend/bpu/utage/MicroTageTable.scala", "lines": [105,133], "anchor": "forceWrite"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/utage-functional-definition-review-20261016.md", "docs/spec/verification/evidence/analyses/utage-source-ownership-scenarios-20261016.md"],
+      "implementation_observation": "shadow buffer新版本优先，紧邻相同索引走旁路；近满强制写回可使同bank读无效，redirect清hit及次拍教导资格。",
+      "partition_basis": "同owner/索引别名、旧快照/现存版本、正常/强制服务及reset/enable接纳边界决定义务。",
+      "legal_scope": "有界buffer与真实训练/查询相位，等待公平释放不等于无限读下承诺。",
+      "observations": ["原读索引/tag/位置及完整新旧provider计数、useful", "实际旁路/服务/forceWrite、读valid和取消终态，fresh SRAM消费者"],
+      "completion": "buffer和实际SRAM服务按合同结清，释放后新消费者验证最新完整版本；被作废的读不能伪造有效输出。",
+      "cases": [
+        {"scenario_id": "UTAGE.service.adjacent-versions", "outcomes": ["repair", "hit"], "oracle_status": "module-contract", "given": "同索引连续同身份更新与同索引不同tag/位置对照，至少另一独立居民。", "events": ["无空拍训练并交错查询，迫使旧/新buffer副本共存。", "flush服务后回访所有声明身份。"], "expected": "同身份从最新合法计数继续，不退回原快照；不同身份按资格拒绝/分配而非混字段，原metadata保持。", "forbidden": "错priorityMask读老版本、同索引即当同tag、训练旧位置污染新居民。", "control": "串行同输入与异tag保持对照；去旁路/错tag规则应在精确计数或目标位置差异。", "next_experiment": "映射真实版本服务而非只看末端方向，核全部retained与fresh消费者。"},
+        {"scenario_id": "UTAGE.service.force-read-and-control", "outcomes": ["miss", "repair", "cancelled", "rejected"], "oracle_status": "pending-confirmation", "given": "合法接纳使buffer近满，查询与将要强制写回同bank；另有未消费replay和真实原FastTrain。", "events": ["见证forceWrite/读冲突后有限释放。", "分别在此边界redirect、关闭或reset，再新epoch学习。"], "expected": "强制写不让旧/错误读冒有效provider；redirect次拍无预测资格不训练，reset无旧版本复活；具体读miss/重试及关闭在途切点待确认。", "forbidden": "强制写直接丢owner、把无效读残留payload作golden、重开已取消教导。", "control": "不同bank/非强制服务与无控制变化为对照；读valid漏抑制/旧epoch复活规则应被拒绝。", "next_experiment": "确认forceWrite后上层实际miss/重新消费协议，再加合法取消和新学习对照。"}
+      ]
+    },
+    {
+      "behavior_id": "TAGE.select",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/tage/Tage.scala", "lines": [96,189], "anchor": "useProvider"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/tage-functional-definition-review-20261016.md"],
+      "implementation_observation": "最长provider与次长alternate独立，weak+useAlt可退base；fastTaken候选和最终taken选择不同，SC看到provider而非最后采用位。",
+      "partition_basis": "无provider、弱/强provider、有/无alternate、base强弱与非首分支位置改变选择或资格。",
+      "legal_scope": "真实Main分支上下文及原fold历史，散列别名与非别名分开，不外推PHR正确。",
+      "observations": ["provider/alternate身份及计数、有用性、useProvider/altConf/base来源", "逐原分支fast与final方向、无效方向域和邻居保持"],
+      "completion": "查询和元数据按原UID逐笔完成，学习后新消费者区分原provider强化而非意外重分配。",
+      "cases": [
+        {"scenario_id": "TAGE.select.provider-alternate-base", "outcomes": ["miss", "hit", "repair"], "oracle_status": "module-contract", "given": "用合法前史分别建立无provider、weak/strong最长、意见相反的次长与base；非首分支参与。", "events": ["改变合法selector/置信前态后查询，并使fast/final意见可区分。", "将provider提供给SC作资格对照。"], "expected": "最长/次长及弱回退由同原件决定；provider存在不等于最终采用，fast方向不冒充final；SC不能错取final位代provider置信。", "forbidden": "无alternate造有效方向、把baseConf当方向、最先物理表替最长历史。", "control": "弱/强与有/无alternate合法交叉；错provider角色/总用最长规则在metadata和方向不同。", "next_experiment": "映射原029/032角色合同并联系Bpu的INT-041阻挡，不由leaf结果替代顶层来源。"},
+        {"scenario_id": "TAGE.select.history-position-overlap", "outcomes": ["hit", "miss"], "oracle_status": "module-contract", "given": "相同PC不同历史/位置或同索引不同tag的身份，payload/计数可区分。", "events": ["异质查询相邻并在前一响应前改变线上PC。", "回访未训练居民及非条件资格对照。"], "expected": "每原查询的tag/position匹配和provider输出正确，冷/错tag不造来源；合法散列别名不被误要求无限独立。", "forbidden": "按最新PC匹配、query修改学习、把非条件raw payload解释为方向纠正。", "control": "原身份合法命中与单独改tag/位置对照；错年龄/漏tag规则应由完整来源区分。", "next_experiment": "核driver/monitor原UID后映射异质流水测试，避免四笔同数据冒归属证明。"}
+      ]
+    },
+    {
+      "behavior_id": "TAGE.learn",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/tage/Tage.scala", "lines": [371,658], "anchor": "trainUseAltOnNa"}, {"file": "src/main/scala/xiangshan/frontend/bpu/tage/TageTable.scala", "lines": [153,219], "anchor": "usefulReset"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/tage-functional-definition-review-20261016.md"],
+      "implementation_observation": "原Main条件命中才训练；provider/base分歧且weak才投selector票，分配在更长候选；维护只清useful。",
+      "partition_basis": "方向/保护/selector三种状态分别判；可分配/最高表/无候选、合法随机集合与扫表不同。",
+      "legal_scope": "八表当前配置和真实原件；独立推导候选/性质，不从实际victim或调试memory播种。",
+      "observations": ["真实合格分支、各provider/alternate方向与useful、selector净票", "合法分配集合/身份初态、真实失败/扫表服务和全部声明居民"],
+      "completion": "每学习服务及维护扫掠实际完成，fresh新旧消费者和邻居比较；方向稳定不代替保护/饱和证明。",
+      "cases": [
+        {"scenario_id": "TAGE.learn.counter-selector-votes", "outcomes": ["repair", "rejected"], "oracle_status": "module-contract", "given": "合法provider方向近两端，weak时与alt/base分歧；两合格分支可共享selector但数据对象不重叠。", "events": ["同向/反向合格学习穿越边界。", "两分支同向/相反票同时更新并加无provider/strong/一致意见拒绝对照。"], "expected": "方向双端饱和且可恢复；useful只奖励额外价值；共享selector先净票再饱和，无资格票不计。", "forbidden": "同向饱和后相反票按顺序多步造成偏置、把强provider也计票、复制MicroTAGE惩罚算法。", "control": "净零票与单票、weak/strong成对；先饱和再相抵/遗漏资格规则由精确selector区分。", "next_experiment": "保留032原角色门禁历史PASS范围，审计到达/比较及无资格状态保持后映射设计。"},
+        {"scenario_id": "TAGE.learn.allocation-maintenance", "outcomes": ["replacement", "rejected", "maintenance"], "oracle_status": "module-contract", "given": "分别有空候选/弱无保护/仅强无保护/全保护以及最高历史provider，声明随机候选集合。", "events": ["合格误预测申请分配，随机筛选空时使用合法回退。", "真实失败达到维护后，在扫表中插入预测和方向学习。"], "expected": "只更长合法候选分配弱初态，最高表仍可方向学习；失败不毁居民，维护清useful且不清tag/方向，成功不算失败。", "forbidden": "把actual所选候选反推唯一golden、清entry代useful、维护队列陈旧保护复活。", "control": "可/不可分配及维护前后对照；错误短表分配/清方向/不释放保护规则由新旧消费者拒绝。", "next_experiment": "以合法集合检查绑定随机分配，核useful扫表真实完成而非固定次数，补扫表×同拍方向服务。"}
+      ]
+    },
+    {
+      "behavior_id": "TAGE.service",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/tage/Tage.scala", "lines": [210,255], "anchor": "t0_needRead"}, {"file": "src/main/scala/xiangshan/frontend/bpu/tage/TageTable.scala", "lines": [118,219], "anchor": "entryWriteBuffers"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/tage-functional-definition-review-20261016.md", "docs/spec/verification/contracts/pipeline-transaction-contract.md"],
+      "implementation_observation": "meta-only与alternate/分配重读两路径；需重读同bank才trainReady冲突。entry与useful分开服务，陈旧way迁移风险保留。",
+      "partition_basis": "原逻辑key与当前owner、相邻反馈/稀疏双写、重读/不用重读及控制切点决定义务。",
+      "legal_scope": "有界buffer，有限读释放；原meta是输入切点，不能把过期provider-way自动当合法最新owner。",
+      "observations": ["逐输入真实fire、重读路径与原PC/fold/meta", "方向/useful所有owner、精确版本和fresh消费者，取消/初始化终态"],
+      "completion": "无新输入后全部承诺版本实际服务，方向/useful债务分别结清；关闭后新offer与既接纳学习分开。",
+      "cases": [
+        {"scenario_id": "TAGE.service.meta-reread-bank", "outcomes": ["rejected", "repair"], "oracle_status": "module-contract", "given": "分别准备正确provider-only、需alternate和误预测需分配的原件，预测占同/异bank。", "events": ["保持offer到真实ready接纳，期间检查无提前学习。", "释放读并消费状态。"], "expected": "需重读冲突拒绝而meta-only不无故停顿；实际接纳后按各自原history和快照正确服务。", "forbidden": "ready=0部分更新、强行所有训练都重读、丢另bank并行服务。", "control": "需/不需重读×同/异bank合法对照；忽略冲突/全阻挡规则由fire和状态区分。", "next_experiment": "绑定实际ready沿前采样与后续服务，不以训练协程返回代替效果完成。"},
+        {"scenario_id": "TAGE.service.stale-owner-and-two-branches", "outcomes": ["repair"], "oracle_status": "module-contract", "given": "原provider-way经正常迁移/替换，旧原件仍声明在合法寿命；另一独立分支也有补丁。", "events": ["相邻/稀疏双分支反馈进入读阻挡窗口。", "有限排空并回访所有逻辑身份。"], "expected": "按逻辑key与当前owner修正，不串写新占槽者；两分支方向/useful独立，旧版本不回盖新计数。", "forbidden": "盲信原way、按row吞独立owner、把XFAIL当无需检查。", "control": "无迁移正对照与迁移旧way压力成对；stale-way写规则由邻居和原分支区分。", "next_experiment": "保留TAGE-026原XFAIL，审计新场景完整obligation是否映射现有程序，缺失部分明确补测。"},
+        {"scenario_id": "TAGE.service.enable-reset-maintenance", "outcomes": ["cancelled", "rejected", "hit", "miss"], "oracle_status": "pending-confirmation", "given": "有待服务entry/useful且维护在途，旧热身份与新冷身份都已知。", "events": ["在真实接纳后分别关闭或reset。", "重开/初始化后查询并做新学习。"], "expected": "disable不是reset，关闭后新学拒绝；reset不让旧entry或保护队列复活，新epoch可学；在途enable采样点待合同确认。", "forbidden": "清队列冒完成、旧useful覆盖维护、新epoch借旧meta。", "control": "静态开启/关闭与非空reset成对；错误清表/队列复活规则由完整状态检出。", "next_experiment": "确认t0接纳到t3/write-buffer的控制边界，再补维护×reset×真实新消费者。"}
+      ]
+    },
+    {
+      "behavior_id": "SC.select",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/sc/Sc.scala", "lines": [241,338], "anchor": "s2_providerValid"}, {"file": "src/main/scala/xiangshan/frontend/bpu/sc/Helpers.scala", "lines": [49,60], "anchor": "aboveThreshold"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/sc-functional-definition-review-20261016.md"],
+      "implementation_observation": "仅Main条件命中和原TAGE provider有效可使用，bias取provider方向/置信；阈值严格且按置信缩放。",
+      "partition_basis": "统计符号≠使用资格，provider存在≠实际采用，正负等阈/上下邻界与资格交错不能合并。",
+      "legal_scope": "独立SC合法公开Main/provider切点，不能声称已证明上游TAGE/PHR；定义权重由reset独立演算。",
+      "observations": ["原Main/条件/provider资格、bias类别、统计方向/useSc/threshold", "原meta和逐UID快照，未定义方向域只判资格"],
+      "completion": "逐原件使用决定和注册meta均比较，新资格消费者恢复后不丢原学习；被首错阻断后不记checked。",
+      "cases": [
+        {"scenario_id": "SC.select.qualification-and-role", "outcomes": ["hit", "rejected"], "oracle_status": "module-contract", "given": "已有强统计票，Main有效/无效、条件/非条件、provider有/无及TAGE用alt的原件可区分。", "events": ["只改变一项资格并交错相邻查询。", "恢复合法来源查询同特征。"], "expected": "不合格不使用SC，恢复后保留权重；bias和置信取原provider而非TAGE final方向，逐UID不借邻居资格。", "forbidden": "强票绕过Main/provider、用TAGE最终方向代provider、把资格拒绝当权重被清。", "control": "同强票不同资格及恢复对照；缺资格/错角色规则应在use/meta区分。", "next_experiment": "映射leaf资格链，顶层INT-041旧PHR形状先修后再谈角色checked。"},
+        {"scenario_id": "SC.select.signed-strict-threshold", "outcomes": ["hit", "rejected"], "oracle_status": "module-contract", "given": "独立合法学习建立正/负分数，分别处于三类provider置信的等阈、下邻、上邻；只选可达值。", "events": ["查询同一原件类别各边界，保持历史/权重不变。", "正负镜像对照并核实际sum/使用。"], "expected": "仅严格超过对应强度阈值可使用，等于不使用；符号本身不替代资格且所有位正确符号扩展。", "forbidden": "用>=、负分数当无符号、从actual分数选择期望、不可达等阈硬造状态。", "control": "可达边界两侧为合法对照；非严格/符号错规则必须有可观察使用差异。", "next_experiment": "先用独立算术证明当前配置可达的分数/阈值余数，再绑定原生边界，不拿纯模型边界当DUT证据。"}
+      ]
+    },
+    {
+      "behavior_id": "SC.weights",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/sc/Sc.scala", "lines": [375,423], "anchor": "t0_writeValidVec"}, {"file": "src/main/scala/xiangshan/frontend/bpu/sc/Helpers.scala", "lines": [62,94], "anchor": "PopCount"}, {"file": "src/main/scala/xiangshan/frontend/bpu/sc/Sc.scala", "lines": [578,610], "anchor": "biasWayIdx"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/sc-functional-definition-review-20261016.md"],
+      "implementation_observation": "合格且错误/置信不足才学，按共享way/bias特征净票聚合；CommonHR无效不读/不训练global/bw，预测把其权重置零；getPercsum=2w+1意味着零权重仍是常量正票，不能称总贡献为0。",
+      "partition_basis": "五类权重、共享/非共享特征、同/反向意见、资格关闭与有资格到边界分别决定不同后果。",
+      "legal_scope": "原Main/SC meta决定资格，统计别名合法；不是每个不同PC都拥有无限独立权重。",
+      "observations": ["独立特征坐标和各家族权重/方向、资格、bias与邻居", "净票和实际t1/t2服务、fresh消费者及原meta保持"],
+      "completion": "真实有资格反馈推进权重到声明边界，状态服务后由新消费者和反向学习验证；不以80次稳定方向冒饱和。",
+      "cases": [
+        {"scenario_id": "SC.weights.qualified-boundaries", "outcomes": ["repair", "rejected"], "oracle_status": "module-contract", "given": "独立前史保证各次反馈仍有资格，不因SC/TAGE同时正确而过早停学。", "events": ["五家族分别向正/负边界学习、继续同向，再反向跨零。", "加入已正确且高置信导致不学的对照。"], "expected": "合格权重双端饱和且可反向恢复，资格关闭保持而不能声称到边界；未选特征/原meta保持。", "forbidden": "最终方向不变就宣称权重到31、一个家族合计方向代替全部、改base来伪造学习。", "control": "资格持续与关闭两程序；绕回/缺家族更新规则由精确权重或可区分反向消费者拒绝。", "next_experiment": "审计005已有补强证据的实际检查域，再绑定完整五家族边界及未选邻居义务。"},
+        {"scenario_id": "SC.weights.shared-votes-history-valid", "outcomes": ["repair", "rejected"], "oracle_status": "pending-confirmation", "given": "两个合格原分支映射共享/不同way、共享/不同bias及非别名邻居；CommonHR valid有切换。", "events": ["同向两票、反向净零同时反馈。", "CommonHR无效原件仅对允许家族学习并恢复有效对照。"], "expected": "共享对象先净聚合再饱和，独立对象分别更新；无效CommonHR的global/bw不使用陈旧历史权重、不训练，path/imli/bias按自身资格；零权重常量票策略需独立确认，不能直接抄Scala。", "forbidden": "吞第二分支、顺序饱和引入偏置、history无效全家族冻结、将零权重误当总票0或用旧global贡献。", "control": "净零与单票、有效/无效历史成对；漏票/全冻结/占位总票0规则由各家族及严格阈值附近消费者区分。", "next_experiment": "确认CommonHR无效时常量票策略并构造会改变严格阈值使用决定的合法前态；映射共享权重合同，不归其他。"}
+      ]
+    },
+    {
+      "behavior_id": "SC.threshold",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/sc/Sc.scala", "lines": [487,692], "anchor": "t1_thresholdOverflowVec"}, {"file": "src/main/scala/xiangshan/frontend/bpu/sc/ScTable.scala", "lines": [79,126], "anchor": "writeBuffer"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/sc-functional-definition-review-20261016.md"],
+      "implementation_observation": "t1先更新阈值，权重t2进入待写且读优先；阈值越界整步拒绝，原bias类别在快照中保存。",
+      "partition_basis": "净步长/区间边界、原新快照、阈值早于权重服务及bank反压/控制切点各有义务。",
+      "legal_scope": "真实合格反馈和原快照；不可从当前查询provider类别替换旧bias。",
+      "observations": ["阈值原/新值、净票及整步接受/拒绝", "原history/bias/weight快照、真实trainReady/fire、t2和实际SRAM服务、邻居"],
+      "completion": "阈值和权重按各自相位结清，新消费者预期从独立快照选择；不能把t1阈值变化当权重已服务。",
+      "cases": [
+        {"scenario_id": "SC.threshold.aggregate-whole-step", "outcomes": ["repair", "rejected"], "oracle_status": "module-contract", "given": "通过合法学习使阈值接近上下界，两个合格分支可对同阈值提出相同/相反票。", "events": ["分别净零、区间内一步、越界多步。", "查询对应及其他阈值way。"], "expected": "先净聚合，区间内整步更新，越界整步拒绝保持旧值而非夹紧；其他way和无资格票不变。", "forbidden": "逐票饱和后相抵、越界夹到边界、未选阈值被重置。", "control": "同前态净一步/两步越界成对；clamp/顺序投票错误规则有精确阈值差异。", "next_experiment": "映射021整步合同及原SC FAIL，补边界实际到达和新消费者，不只比较最终used。"},
+        {"scenario_id": "SC.threshold.snapshot-service-control", "outcomes": ["repair", "rejected", "cancelled"], "oracle_status": "pending-confirmation", "given": "相邻原件历史/bias类别不同，旧权重待写、阈值已t1变化；同bank预测读占用。", "events": ["保持训练offer到真实ready，有限释放并查询服务前后消费者。", "分别在在途切点关闭/reset后新epoch学习。"], "expected": "每消费者配自己合法可见的权重/阈值及原bias来源，ready=0无部分学习；reset无旧补丁复活，具体混相位可见点/enable切点待独立确认。", "forbidden": "原bias换成当前provider、t1阈值当t2权重完成、隐藏取消债务、向后补checked。", "control": "无读阻挡与相邻同/异历史对照；新旧快照串用/早接纳规则由完整meta和消费者拒绝。", "next_experiment": "先独立定义阈值/权重提交切点，绑定actual服务监控后补启停/复位组合。"}
+      ]
+    },
+    {
+      "behavior_id": "ITTAGE.select",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/ittage/Ittage.scala", "lines": [155,168], "anchor": "needIttage"}, {"file": "src/main/scala/xiangshan/frontend/bpu/ittage/Ittage.scala", "lines": [217,307], "anchor": "providerNull"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/ittage-functional-definition-review-20261016.md"],
+      "implementation_observation": "最长provider置信0可退alternate，meta.valid在S3发布但updateValid未检查它；间接call也needIttage，Pop/PopAndPush不合格。",
+      "partition_basis": "冷/暖、置信0/正、有/无alternate、真正发布/未发布、间接无pop与其它类型资格不同。",
+      "legal_scope": "唯一taken且indirect无pop的原件及合法候选；未发布端口压力不获真实producer信用。",
+      "observations": ["真实发布资格、原provider/alternate完整target和置信/useful", "selected target、合法候选集合、稀疏分支来源与原metadata保持"],
+      "completion": "合格反馈实际服务后fresh查询两个完整来源及selected目标；未合格输入验证无学习，不能只查selected掩盖隐藏错误。",
+      "cases": [
+        {"scenario_id": "ITTAGE.select.qualification-publication", "outcomes": ["miss", "hit", "rejected"], "oracle_status": "module-contract", "given": "真实冷/暖S3发布原件及未发布形状对照，唯一合格间接可在非首槽，return等无资格槽先行。", "events": ["分别反馈OtherIndirect/IndirectCall taken与NT/return/PopAndPush/未发布。", "fresh查询各历史。"], "expected": "仅唯一真实发布且taken无pop间接原件可学；正确稀疏位置不串slot0，未发布不借形状学习。", "forbidden": "把isOtherIndirect注释当完整资格而漏indirect call、无meta.valid也赋来源信用、多合格输入猜优先。", "control": "已发布与未发布、间接call与return成对；漏发布资格/错类型规则应改变状态。", "next_experiment": "保留ITTAGE-020普通FAIL，先审当前真实来源追踪和非法多合格API拒绝，再映射发布资格完整义务。"},
+        {"scenario_id": "ITTAGE.select.zero-confidence-fallback", "outcomes": ["hit", "repair"], "oracle_status": "module-contract", "given": "通过正常学习建立不同完整target的最长和次长provider，置信接近0/上界。", "events": ["正确/错误反馈使置信饱和、降至0并继续修正。", "比较provider、alternate及selected而不只最终目标。"], "expected": "正置信用provider，零置信有alt则退alt但原provider仍有完整目标学习义务；饱和不回绕且能恢复。", "forbidden": "新分配掩盖原provider写错、selected正确就忽略隐藏target、用actual target选择expected。", "control": "有/无alternate且目标不同成对；总选最长/仅改selected错误规则由完整来源拒绝。", "next_experiment": "映射旧003/005/007，零置信跨区无新分配另交ITTAGE.region独立验证。"}
+      ]
+    },
+    {
+      "behavior_id": "ITTAGE.region",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/ittage/Ittage.scala", "lines": [309,365], "anchor": "updateRealTargetOffset"}, {"file": "src/main/scala/xiangshan/frontend/bpu/ittage/RegionWays.scala", "lines": [51,90], "anchor": "writePointer"}, {"file": "src/main/scala/xiangshan/frontend/bpu/ittage/IttageTable.scala", "lines": [245,263], "anchor": "targetOffset"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/ittage-functional-definition-review-20261016.md"],
+      "implementation_observation": "目录写仅新分配跨区触发，零置信非分配目标重写有旧跨区风险；目录满允许受害指针重新解释，更新有同拍区域旁路。",
+      "partition_basis": "PC区域/外部区域、已有/新区域、目录空/满、分配/置信0就地纠正分别影响完整目标。",
+      "legal_scope": "公共API字节target，区域压缩遵守有限目录合同，不承诺受害指针永久保存旧高位。",
+      "observations": ["provider/alternate完整目标及offset/usePcRegion/pointer归属", "独立目录替换候选/全部未受害指针、原件保持与字节往返"],
+      "completion": "目录/表补丁实际服务，fresh读取完整新旧目标；只比低offset或selected不足，受害和幸存者分别判。",
+      "cases": [
+        {"scenario_id": "ITTAGE.region.reuse-full-directory", "outcomes": ["hit", "replacement"], "oracle_status": "module-contract", "given": "通过合法新分配填区域目录，多个provider共享/不共享指针且同低offset高region不同。", "events": ["重用已有区域，再在满目录分配新区域。", "新旧provider全目标回访。"], "expected": "已有区域优先复用无新受害；满表仅合法受害指针可重解释，非受害完整target保持，字节域不翻倍。", "forbidden": "对有界目录要求所有旧目标永恒、重用也驱逐、低offset相等掩高位错。", "control": "目录空/满和已有/新region成对；总分配/错victim/位移codec规则由完整目标拒绝。", "next_experiment": "绑定独立Region PLRU及所有幸存指针消费者，不用DUT目录反推期望。"},
+        {"scenario_id": "ITTAGE.region.zero-confidence-cross-region", "outcomes": ["repair"], "oracle_status": "module-contract", "given": "原provider置信0且无新表分配，目标由区域A改为B，B可为PC区/已存在/未存在外部区。", "events": ["使用同原件合法反馈新完整target。", "比较隐藏provider、alternate及fresh选中目标。"], "expected": "零置信纠正必须保留B完整高位而非仅offset；没有新表分配不取消原目标学习义务。", "forbidden": "usePcRegion兜底误用PC高位、只查selected被alt掩盖、把新分配当修原项。", "control": "同区offset纠正为合法正对照；错误仅offset/强制PC区规则在跨区必须失败。", "next_experiment": "保留ITTAGE-019普通FAIL，补B已存在/未存在及目录满的区分性前态，不改RTL或放宽目标。"},
+        {"scenario_id": "ITTAGE.region.same-cycle-directory-update", "outcomes": ["repair", "replacement"], "oracle_status": "pending-confirmation", "given": "合法旧meta region更新与新的目录write同拍，write可命中旧region或替换被引用指针。", "events": ["安排同region旁路及不同region受害两类竞争。", "相邻两顺序作对照并排空表补丁。"], "expected": "按确认的线性化顺序重新编码原目标，不能把新指针高位错归旧meta；精确同拍目录与表服务合同待确认。", "forbidden": "指针数值相同即身份相同、从新目录actual补旧target、吞另一补丁。", "control": "同/异region及相邻顺序对照；漏旁路/错受害引用规则在完整目标区分。", "next_experiment": "先独立确认目录write与meta重编码的顺序和有限容量承诺，再补同拍场景。"}
+      ]
+    },
+    {
+      "behavior_id": "ITTAGE.service",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/ittage/IttageTable.scala", "lines": [185,243], "anchor": "usefulCanReset"}, {"file": "src/main/scala/xiangshan/frontend/bpu/ittage/Ittage.scala", "lines": [116,167], "anchor": "t0_fire"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/ittage-functional-definition-review-20261016.md"],
+      "implementation_observation": "per-bank待写在读空闲服务；useful维护只无读/更新时推进，reset和普通字段按bitmask区分，enable在t0采样。",
+      "partition_basis": "同/异bank、普通目标/置信更新与useful-only维护、异历史迟到原件和控制边界决定不同后果。",
+      "legal_scope": "有界buffer且有限释放读/更新；不给持续忙下无条件维护活性，也不豁免有限保留丢写。",
+      "observations": ["每原PC/fold/发布资格及异质重叠查询target/meta", "真实buffer服务、bitmask/useful扫掠、目标/置信保持和新epoch终态"],
+      "completion": "所有声明保留目标补丁和维护扫掠在公平释放后实际完成，fresh消费者全目标比较；local drain不冒FTQ寿命证明。",
+      "cases": [
+        {"scenario_id": "ITTAGE.service.bank-maintenance", "outcomes": ["repair", "maintenance"], "oracle_status": "module-contract", "given": "两个不同历史/target在同/异bank各有合法补丁，保护维护已由真实失败触发。", "events": ["查询阻挡部分服务并插入普通update。", "有限释放读和更新让维护实际扫完。"], "expected": "异bank可独立服务，普通更新与useful-only维护不互相抹target/置信，原件和幸存历史保持。", "forbidden": "用周期数代替真实扫掠、mask错清全entry、读永不释放却要求无条件完成。", "control": "同/异bank和无维护普通写对照；错误全字段mask/吞补丁规则由完整新旧消费者拒绝。", "next_experiment": "映射原INT-074/leaf008各自来源范围，补实际服务/扫掠完成而非只260次末端target。"},
+        {"scenario_id": "ITTAGE.service.overlap-enable-reset", "outcomes": ["hit", "rejected", "cancelled", "miss"], "oracle_status": "pending-confirmation", "given": "异质查询重叠且一条发布原件迟到，热目录/待写存在；另一未发布原件保持无资格。", "events": ["在t0接纳/后续服务边界关闭或reset。", "重开/初始化后查询旧身份并发送新合法反馈。"], "expected": "每响应归原PC/history，关闭不新学且不清已学目标；reset无旧补丁/目录复活，已接纳在途切点待确认，未发布仍不学。", "forbidden": "鲜原件替迟到来源、无效target当命中、跨epoch学习旧meta。", "control": "静态开/关与真实已发布/未发布成对；错年龄/旧epoch复活规则由资格和全目标拒绝。", "next_experiment": "先核driver/monitor切点，联合目录满与未发布资格设计新用例，旧失败保持。"}
+      ]
+    },
+    {
+      "behavior_id": "URAS.stack",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/ras/MicroRas.scala", "lines": [81,146], "anchor": "specPushAddr"}, {"file": "src/main/scala/xiangshan/frontend/bpu/ras/MicroRas.scala", "lines": [188,246], "anchor": "s2_hasPush"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/micro-ras-functional-definition-review-20261016.md"],
+      "implementation_observation": "只知主top与两个在途窗口，按已知push/pop推算下一top；深度未知时isCanUse为假，组合动作未译成普通push/pop。",
+      "partition_basis": "已知/未知前驱、老/年轻call年龄、重复地址但不同调用及PopAndPush必须分开。",
+      "legal_scope": "主top是输入切点，不冒完整主RAS栈证明；API guarded半字与字节算术经adapter明确。",
+      "observations": ["实际阶段推进及各call原地址/年龄", "usable和有效target、老到年轻独立栈归约及未知深度"],
+      "completion": "原call从S2到S3再由主栈接管后释放，后续neutral/return消费者证明不重不漏；无效target不作真值。",
+      "cases": [
+        {"scenario_id": "URAS.stack.known-depth-age", "outcomes": ["hit", "miss"], "oracle_status": "module-contract", "given": "主top M、老call A、年轻call B互异；仅公开已知深度，不造任意前驱。", "events": ["早级call/return/neutral、停顿、推进和释放按合法顺序组合。", "继续return到已知深度以下。"], "expected": "按老到年轻LIFO归约，有可抵消call才可继续给已知target；未知前驱不可用，释放后回主top。", "forbidden": "把advance空窗口当已证明有效call迁移、重复push同call、无效target填零充正确。", "control": "不同年龄异址与无已知call对照；错年龄/漏释放规则在后续neutral或return区分。", "next_experiment": "审计原共享12规则实际是否有有效call前态，补有龄迁移和接管消费者。"},
+        {"scenario_id": "URAS.stack.address-combined-action", "outcomes": ["hit", "repair"], "oracle_status": "module-contract", "given": "guard/sign/carry独立的原call末半字地址，存在老前驱；PopAndPush由合法JALR hint产生。", "events": ["早级和修正窗口分别call，再以PopAndPush替换最新已知调用。", "后续return消费。"], "expected": "返回按原结束位置+2字节且保留guard；组合动作先pop再push而非neutral，老前驱保持。", "forbidden": "借主top当call地址、半字位移错误、漏组合动作仍以普通call PASS关闭。", "control": "单Pop/Push及低/高guard合法对照；旧codec/排他解码漏组合规则应产生可用性或目标差异。", "next_experiment": "保留URAS-016普通FAIL，绑定完整有效目标及后续消费者，不改编码或RTL掩盖。"}
+      ]
+    },
+    {
+      "behavior_id": "URAS.recovery",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/ras/MicroRas.scala", "lines": [105,187], "anchor": "s3_override"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/micro-ras-functional-definition-review-20261016.md"],
+      "implementation_observation": "redirect高于S3高于S2；中性S2保留老CALL，主RAS恢复有延后不可信窗口。",
+      "partition_basis": "neutral是取消年轻的真实事件，非无操作输入；老CALL有无、修正年龄和redirect恢复期决定不同后果。",
+      "legal_scope": "leaf合法控制相位与父级可达分别标；不推断没有公开的深层主栈。",
+      "observations": ["原修正地址/年龄与年轻取消、usable及有效target", "撤控制后仍存活来源、恢复期信任和主top接管"],
+      "completion": "权威动作在正确年龄生效并撤销年轻，撤修正/redirect后新消费者验证年轻不复活、老来源未误删。",
+      "cases": [
+        {"scenario_id": "URAS.recovery.neutral-keeps-old-call", "outcomes": ["repair", "hit"], "oracle_status": "module-contract", "given": "老S3持call A，主top M与年轻call B都不同；另有无老call对照。", "events": ["S2中性修正可停顿/推进。", "撤修正后neutral/return消费。"], "expected": "中性取消年轻B但保留不受其支配的老A；无老call才按主top恢复信任合同判断，不混同两前态。", "forbidden": "中性一律回主top、保留B幽灵、暂停时丢修正call地址。", "control": "有/无老A与修正call/neutral对照；错误全neutral回M规则在目标和后续return区分。", "next_experiment": "映射009/015分离的前态，核父级停顿可达约束，补撤回后检查。"},
+        {"scenario_id": "URAS.recovery.authority-and-trust", "outcomes": ["repair", "cancelled", "miss", "hit"], "oracle_status": "module-contract", "given": "S1/S2/S3各异地址和动作，主top未恢复，所有原年龄可追溯。", "events": ["同拍S3/S2/年轻输入，再加redirect最高权威。", "连续redirect后合法新call或neutral，并撤所有控制。"], "expected": "按年龄权威修正，redirect先撤信任；未知主前驱期间不造有效target，合法新call可建立已知来源；年轻取消后不复活。", "forbidden": "只看竞争当拍目标不查撤回、用旧main_top跨恢复当可信、较年轻操作抢权。", "control": "无redirect老修正与有redirect成对；反转年龄/漏恢复期规则在usable及后续消费者区分。", "next_experiment": "绑定实际推进/信任事件，再联合主RAS r1恢复检查；leaf可编码组合不自动记整机可达。"}
+      ]
+    },
+    {
+      "behavior_id": "URAS.enable",
+      "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/ras/MicroRas.scala", "lines": [153,246], "anchor": "io.specOut.isCanUse"}, {"file": "src/main/scala/xiangshan/frontend/bpu/Bpu.scala", "lines": [198,222], "anchor": "uras.io.fullRetAddr"}],
+      "contract_refs": ["docs/spec/verification/evidence/reviews/micro-ras-functional-definition-review-20261016.md", "docs/spec/verification/contracts/pipeline-transaction-contract.md"],
+      "implementation_observation": "MicroRas leaf输出未与io.enable合取，父级消费需单独核；旧关闭资格FAIL仍保留。",
+      "partition_basis": "静态禁用、动态开关时老待决返回、主栈接管及已取消/存活call不同。",
+      "legal_scope": "原enable CSR传播与父级实际使用，完整FTQ返回可达未证明。",
+      "observations": ["leaf usable与父级采用分开、原call UID/epoch及主top", "关闭/重开后有效target、新查询与取消者不复活"],
+      "completion": "关闭期间无非法使用，重开后只消费合法存活来源，新call/return可以继续；不能清监控当完成。",
+      "cases": [
+        {"scenario_id": "URAS.enable.disabled-qualification", "outcomes": ["rejected", "hit"], "oracle_status": "module-contract", "given": "热有效call转发已存在，父级RAS派生enable按CSR真实延迟变化。", "events": ["静态关闭/重开，并让可区分的其他合法预测源存在。", "比较leaf资格与父级最终采用。"], "expected": "禁用不能作为可用返回目标占优，重开后仅合法存活来源恢复，不因禁用清全部已学主栈。", "forbidden": "仅驱动enable低就声称无使用、借残留usable占优、用另leaf通过抵消017失败。", "control": "开启同原件为正对照；缺enable门控/错误清表规则应由父级使用及重开消费者区分。", "next_experiment": "保留URAS-017普通FAIL，分别审leaf合同和Bpu采用；DCE目标观察不足另标blocked。"},
+        {"scenario_id": "URAS.enable.pending-handoff-reset", "outcomes": ["cancelled", "rejected", "hit"], "oracle_status": "pending-confirmation", "given": "老返回待决，年轻call将被redirect取消，同时主RAS要接管；原元数据有epoch。", "events": ["在enable边界加入redirect或非空reset。", "重开并发新call/return及neutral消费者。"], "expected": "已取消者不复活、主栈恢复前保持不可信；重开新身份正常，具体在途控制切点待独立确认，reset与disable不是同终态。", "forbidden": "把老目标重新命名为新UID、关闭即完成全部待决、猜深层主前驱。", "control": "无控制变化接管与redirect取消对照；旧epoch复活/漏接管释放规则在后续消费者区分。", "next_experiment": "先确认主RAS r1接管与派生enable相位，再构造最小有龄程序联合核验。"}
+      ]
+    }
+  ],
+  "interactions": [
+    {"interaction_id": "X.s3-fasttrain-abtb-utage", "behavior_ids": ["BPU.learn", "ABTB.learn", "UTAGE.learn"], "source_refs": ["src/main/scala/xiangshan/frontend/bpu/Bpu.scala", "src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala"], "status": "pending-confirmation", "legal_precondition": "先用真实S3有效预测及原ABTB/UTAGE metadata证明教导来源，再另外构造早级与S3多位置差异；后端resolve不是同源替身。", "events": "S3 FastTrain和后端resolve同拍，单/多早级相对错误及全NT分别发生。", "expected": "分开S3指导学习与后端执行真值，resolve对UBTB的既定优先不改变ABTB/UTAGE原S3归属；多相对错误是否上游不可达待证明。", "forbidden": "将resolve onehot当FastTrain onehot、混两份UID/meta、靠局部注释删多错误候选。", "checks": "S3发布、各接纳UID、原meta保持、各表完整新消费者及未执行项保持。", "control": "S3指导/resolve两种payload可区分，单错误串行对照与错误混源规则。", "next_experiment": "核真实多早级错误前史可达性，再定该场景oracle与DUT对照。"},
+    {"interaction_id": "X.abtb-valid-allnt-ubtb", "behavior_ids": ["BPU.select", "ABTB.lookup", "UBTB.lookup", "UTAGE.select"], "source_refs": ["src/main/scala/xiangshan/frontend/bpu/Bpu.scala", "src/main/scala/xiangshan/frontend/bpu/abtb/AheadBtb.scala"], "status": "pending-confirmation", "legal_precondition": "UBTB taken与ABTB有效但全NT，另有ABTB无有效和有taken对照，真实CSR延时已过。", "events": "同原窗口竞争S1路径并将条件方向由UTAGE修正。", "expected": "按独立确认的来源优先与最早位置选择；ABTB valid全NT遮UBTB是Scala观察，不直接充golden。", "forbidden": "把ABTB有效当taken或用物理way代位置，禁用残留候选冒有效。", "checks": "S1来源/位置/完整可观察输出及S3后续纠正和原件归属；DCE目标列blocked。", "control": "ABTB无有效与全NT正对照，错误只在taken时优先ABTB的规则应区分。", "next_experiment": "核来源优先独立合同和Bpu公开端口实际可观察范围。"},
+    {"interaction_id": "X.s2-s3-target-only", "behavior_ids": ["BPU.select", "BPU.arbitrate", "MBTB.lookup", "ITTAGE.select", "RAS.stack"], "source_refs": ["src/main/scala/xiangshan/frontend/bpu/Bpu.scala"], "status": "pending-confirmation", "legal_precondition": "由正常学习获得S1/S2/S3各不同位置/target的可区分原候选和老/年轻UID。", "events": "target-only、方向+身份错以及S2已override时S3的ITTAGE/RAS目标差异分别出现。", "expected": "最终first-taken及真正目标归原件，较老S3修正取消年轻，S2无target比较不等于最终免检查。", "forbidden": "S2修正后全局禁止晚级目标纠正、将叶组件命中冒父级公开目标正确。", "checks": "各级来源/UID/FTQ消费及全target；当前DCE字段无法比较时保持blocked。", "control": "只target不同与只方向不同对照，错误全屏蔽S3应产生可见差异。", "next_experiment": "先解除可观察字段残余或缩窄明确可比结果域，不从内部PHR输入冒公开target。"},
+    {"interaction_id": "X.mbtb-nt-read-reset-full", "behavior_ids": ["MBTB.learn", "MBTB.lookup", "MBTB.service", "MBTB.residency"], "source_refs": ["src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtbAlignBank.scala", "src/main/scala/xiangshan/frontend/bpu/mbtb/VictimBtb.scala"], "status": "pending-confirmation", "legal_precondition": "真实原第五槽、暖indirect改conditional NT，另建冷/暖与满dirty但未越承诺范围的邻居，确认查询和待写切点。", "events": "条件NT同拍读占用、满保留待写或reset；分别做相邻顺序对照并有限释放。", "expected": "NT方向可学而旧target/type保持，独立邻居无污染；reset取消边界按新epoch合同，精确同拍服务顺序须独立确认。", "forbidden": "顺序后继改旧target、无资格同位置借计数、reset旧版本复活或以丢服务解容量。", "checks": "原UID/epoch/rawHit/位置、真实读/反馈接受、完整写服务与fresh消费者、复位终态。", "control": "已有serial历史样本仅作对照，错误payload污染和老版本复活规则分别可区分。", "next_experiment": "完成现有两个未实现交叉并加入真实满dirty边界；先核同拍优先与reset取消。"},
+    {"interaction_id": "X.vbtb-late-replace", "behavior_ids": ["MBTB.residency", "MBTB.service", "BPU.learn"], "source_refs": ["src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtbAlignBank.scala", "src/main/scala/xiangshan/frontend/bpu/mbtb/VictimBtb.scala"], "status": "pending-confirmation", "legal_precondition": "经真实查询发布暴露第五槽，正常容量迁移后旧原件仍有合法寿命；另构造隐藏/已淘汰与异owner对照。", "events": "迟到反馈与同拍victim snapshot/cleanup或另一身份替换竞争。", "expected": "原暴露和当前驻留双资格决定是否原地改，未暴露或淘汰走Main分配；同拍精确线性化点待核。", "forbidden": "用fresh第五槽换旧、修新占槽者、丢独立retained owner。", "checks": "原件不可变、all Main/Victim居民和清理、两owner接受与实际服务、全target消费者。", "control": "v4四个迟到普通顺序对照限其历史范围，错误current-only/old-only规则需新同拍场景。", "next_experiment": "先确认Victim snapshot/training实际优先关系，再补能区分物理槽复用的两身份原生程序。"},
+    {"interaction_id": "X.phr-commonhr-guard-active", "behavior_ids": ["BPU.history", "BPU.learn", "RAS.recovery", "TAGE.select", "SC.select"], "source_refs": ["src/main/scala/xiangshan/frontend/bpu/history/phr/Phr.scala", "src/main/scala/xiangshan/frontend/bpu/history/commonhr/CommonHR.scala", "src/main/scala/xiangshan/frontend/bpu/Bpu.scala"], "status": "pending-confirmation", "legal_precondition": "原guarded checkpoint和非零前缀、活跃TAGE/SC/RAS已学并存，不能继承旧全禁用预测器样本为活跃证明。", "events": "guard/sign不同的恢复与老resolve训练、年轻CALL同拍，r0/r1并排与连续redirect另分。", "expected": "历史按原已执行前缀/祖先恢复，年轻取消，老训练和新UID独立，guard在真实消费点保留/显式去除。", "forbidden": "用当前PHR替旧fold、用physical cell替旁路、把符号位当guard或同指针跨epoch重认身份。", "checks": "实际阶段UID、PHR全fold与CommonHR valid/ghr/bw/imli、主栈地址、最终可观察预测。", "control": "v4已审计16个全禁用样本只作有限对照，错祖先/guard规则须在活跃反馈显差异。", "next_experiment": "修INT-041形状、INT-059对齐绑定后构造活跃双seed定向；不重标旧完整判定。"},
+    {"interaction_id": "X.tage-sc-provider-training-conflict", "behavior_ids": ["TAGE.service", "TAGE.learn", "SC.select", "SC.weights", "BPU.arbitrate"], "source_refs": ["src/main/scala/xiangshan/frontend/bpu/tage/Tage.scala", "src/main/scala/xiangshan/frontend/bpu/sc/Sc.scala", "src/main/scala/xiangshan/frontend/bpu/Bpu.scala"], "status": "pending-confirmation", "legal_precondition": "同源Main条件分支有原provider/alt及SC权重，训练需重读或可meta-only，不同bank作为对照。", "events": "预测和训练同bank读冲突时保持offer，加入同拍redirect使老训练仍合法。", "expected": "所有ready才fire，未接受时两模块均无学习；接受后provider资格/SC bias属于同原件且可独立服务。", "forbidden": "某模块提前更新、SC错用TAGE final而非provider、同拍redirect清合法老训练。", "checks": "ready/fire前态、原metadata/PHR及TAGE/SC各项计数/权重/阈值服务与fresh消费者。", "control": "需/无需重读和同/异bank正对照；部分接纳错误规则必须留下状态差异。", "next_experiment": "先解除顶层旧PHR形状阻挡并按原选择逐项检查后续比较。"},
+    {"interaction_id": "X.ittage-region-late-alias", "behavior_ids": ["ITTAGE.select", "ITTAGE.region", "ITTAGE.service", "MBTB.residency", "BPU.learn"], "source_refs": ["src/main/scala/xiangshan/frontend/bpu/ittage/Ittage.scala", "src/main/scala/xiangshan/frontend/bpu/ittage/RegionWays.scala", "src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtbAlignBank.scala"], "status": "pending-confirmation", "legal_precondition": "已发布的原indirect且无pop原件、置信0无分配、区域目录可满，Main原target/第五槽独立；未发布形状作拒绝对照。", "events": "跨区目标纠正与目录替换/读服务/迟到Main更新交叉。", "expected": "ITTAGE完整provider目标及Main基础目标各按自己来源更新；目录受害只改变允许的指针，未发布不获得学习资格。", "forbidden": "用selected target掩盖隐藏provider错、以新目录actual反推旧区域、只改低offset。", "checks": "原发布metadata、Main与ITTAGE两路径全target、区域幸存指针/目录及实际服务。", "control": "同区纠正与跨区零置信、目录空与满合法对照；低位-only和漏发布资格应显差异。", "next_experiment": "先保留ITTAGE-019/020旧FAIL和边界，补同拍目录合同后确定可执行最小序列。"},
+    {"interaction_id": "X.ras-uras-return-handoff", "behavior_ids": ["RAS.stack", "RAS.recovery", "RAS.retire", "URAS.stack", "URAS.recovery", "URAS.enable", "BPU.select"], "source_refs": ["src/main/scala/xiangshan/frontend/bpu/ras/Ras.scala", "src/main/scala/xiangshan/frontend/bpu/ras/MicroRas.scala", "src/main/scala/xiangshan/frontend/bpu/Bpu.scala"], "status": "pending-confirmation", "legal_precondition": "真实A/B不同返回地址及原检查点/commit，早级MicroRAS只知主top和在途，不造主栈深层。", "events": "晚级主RAS返回或guard恢复与早级CALL/RETURN、S2/S3 override、FTQ commit竞争。", "expected": "MicroRAS按已知年龄提供目标/不可用，权威主栈恢复/退休保持原链；PopAndPush仍是独立动作，父级禁用不能选残留值。", "forbidden": "用MicroRAS top替主栈全状态、错guard/halfword、将组合动作当neutral、清监控取消义务。", "checks": "原UID/epoch/原checkpoint、主栈完整链和提交组、MicroRAS usable/有效target、后续unwind。", "control": "单CALL/RETURN与组合动作、静态启停及无恢复对照；年龄反转/残留可用错误规则需可区分。", "next_experiment": "确认Bpu父级选择与FTQ寿命的可观察边界，保留RAS/URAS旧FAIL并补主微栈联合程序。"},
+    {"interaction_id": "X.csr-derived-enable-inflight", "behavior_ids": ["BPU.enable-boundary", "UBTB.lifecycle", "ABTB.lifecycle", "UTAGE.service", "TAGE.service", "SC.threshold", "ITTAGE.service", "RAS.retire", "URAS.enable"], "source_refs": ["src/main/scala/xiangshan/frontend/bpu/Bpu.scala", "src/main/scala/xiangshan/frontend/bpu/ubtb/MicroBtb.scala", "src/main/scala/xiangshan/frontend/bpu/ras/Ras.scala"], "status": "pending-confirmation", "legal_precondition": "CSR延2拍，UTAGE随ABTB、后级随MBTB；各叶在途已接纳/新offer和保存居民分开。", "events": "逐个真实enable资格切换并让训练/预测在接受前、已接受未服务与服务后三相位遇控制。", "expected": "禁用候选不占优、关闭后新学习不生效、已有学识不被disable清空；已接纳在途依各模块确认切点结清，reset另列。", "forbidden": "发不存在的独立UTAGE CSR、leaf valid门控推断父级bits门控、关闭所有已接纳义务清零。", "checks": "CSR及派生enable相位、各叶实际接纳/服务/取消、父级采用与重开消费者。", "control": "静态开/关与分相位切换对照；漏门控/错误清表/错一拍规则应显差异。", "next_experiment": "先核父级实际可达控制序列和模块合同；从UBTB/URAS/RAS风险优先补实验。"},
+    {"interaction_id": "X.ftq-prefix-meta-lifetime", "behavior_ids": ["BPU.learn", "BPU.history", "BPU.arbitrate", "MBTB.learn", "ITTAGE.select"], "source_refs": ["src/main/scala/xiangshan/frontend/ftq/Ftq.scala", "src/main/scala/xiangshan/frontend/ftq/ResolveQueue.scala", "src/main/scala/xiangshan/frontend/ifu/PredChecker.scala"], "status": "pending-confirmation", "legal_precondition": "原S3/FTQ真实发布、稀疏多条件位置，backend/IFU纠正互斥资格及原meta/epoch/槽重用受年龄约束。", "events": "首误预测前缀、已正确direct/return过滤、None假命中与年轻redirect/FTQ回绕冲突。", "expected": "只把原已执行前缀的合格反馈交各预测器；失效或未发布meta不得借同PC恢复资格，原commit动作按年龄。", "forbidden": "以物理resolve槽决定执行先后、用fresh原件顶旧、忽略IFU canTrain的None纠正。", "checks": "producer合法编码、真实发布/接纳/redirect/commit、原UID/epoch/PHR、各消费者完整保持。", "control": "同位置合法原件与重用失效对照，漏前缀过滤/跨epoch重认错误规则必须被拒绝。", "next_experiment": "只建最小真实producer见证而不重构FTQ/IFU；旧INT-041/059观察阻挡先解除。"}
+  ],
+  "candidate_requirements": [
+    {"behavior_id": "BPU.enable-boundary", "state": "candidate-gap", "old_feature_ids": [], "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/Bpu.scala", "lines": [90,108], "anchor": "enable"}], "basis": "Bpu.scala的派生enable和CSR两拍、leaf延迟训练/服务的采样时点跨多个预测器；旧BPU.select/arbitrate均相关但没有独立已确认的整体动态启停责任。", "missing": "逐模块已接纳/新offer界限与父级关闭使用资格的独立合同、真实producer/完整可观测证明及区分性硬件程序。", "owner": "Bpu集成验证，leaf各自承担本层状态结果", "next_action": "先独立确认动态切点，测试Bpu与UBTB/URAS/RAS的父子有效资格，再决定是否分配新功能ID，不将已有PASS顺带升级。"},
+    {"behavior_id": "SC.invalid-history-vote", "state": "candidate-gap", "old_feature_ids": [], "scala_refs": [{"file": "src/main/scala/xiangshan/frontend/bpu/sc/Sc.scala", "lines": [181,218], "anchor": "s1_commonHRValid"}, {"file": "src/main/scala/xiangshan/frontend/bpu/sc/Helpers.scala", "lines": [57,60], "anchor": "Cat(ctr, 1.U"}], "basis": "CommonHR失效的global/bw读取被零权重占位，但2w+1仍产生常量正票；既有SC.weights相关，不自动断言这是已确认策略或新RTL缺陷。", "missing": "无效历史时常量占位票的独立策略依据、实际可达阈值附近区分场景及原生证据。", "owner": "SC / CommonHR集成验证", "next_action": "先确认占位语义，再用合法学习构造总票0与常量正票会导致不同使用决定的前态；不从actual反推答案，不先给新ID或PASS。"}
+  ]
+}

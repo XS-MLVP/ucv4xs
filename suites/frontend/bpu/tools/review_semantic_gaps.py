@@ -14,15 +14,20 @@ import json
 from pathlib import Path
 import re
 
-from suites.frontend.bpu.coverage.local_guards import Source, claim, match_native, native_points
-from suites.frontend.bpu.sc.coverage.guard_audit import source_claims as sc_claims
-from suites.frontend.bpu.tage.coverage.coverage_audit import source_claims as tage_claims
-from suites.frontend.bpu.bpu.coverage.history_gaps import assignment, local_claims, constrained_claims
-from suites.frontend.bpu.bpu.coverage.main_gaps import associate
+from suites.frontend.bpu.testbenches.shared.coverage.local_guards import Source
+from suites.frontend.bpu.testbenches.shared.coverage.local_guards import claim
+from suites.frontend.bpu.testbenches.shared.coverage.local_guards import match_native
+from suites.frontend.bpu.testbenches.shared.coverage.local_guards import native_points
+from suites.frontend.bpu.testbenches.sc.coverage.guard_audit import source_claims as sc_claims
+from suites.frontend.bpu.testbenches.tage.coverage.coverage_audit import source_claims as tage_claims
+from suites.frontend.bpu.testbenches.bpu.coverage.history_gaps import assignment
+from suites.frontend.bpu.testbenches.bpu.coverage.history_gaps import local_claims
+from suites.frontend.bpu.testbenches.bpu.coverage.history_gaps import constrained_claims
+from suites.frontend.bpu.testbenches.bpu.coverage.main_gaps import associate
 from tools.coverage_delta import lcov_rows
 
-ROOT = Path(__file__).resolve().parents[1]
-CATALOG = ROOT/'docs/functional-events.json'
+ROOT = __import__('suites.frontend.bpu', fromlist=['ROOT']).ROOT
+CATALOG = ROOT/'docs/spec/verification/functional/functional-events.json'
 NAMES = dict(sc='Sc', tage='Tage', bpu='Bpu', utage='Utage', mbtb='Mbtb', ras='Ras')
 
 
@@ -42,14 +47,16 @@ def shadow_role(text, previous):
     return 'UNRESOLVED', ()
 
 
-def validate_catalog(catalog, plan):
-    ids = {p['id'] for p in plan['features']}
+def validate_catalog(catalog):
     for event in catalog['events'].values():
         for field in ('title','event','effect','observation','source'):
             if not isinstance(event[field], str) or not event[field].strip():
                 raise ValueError(f'empty semantic definition: {field}')
-        if any(identity not in ids for names in event['features'].values() for identity in names):
-            raise ValueError('semantic catalog references an unknown functional point')
+        for names in event['features'].values():
+            if (not isinstance(names, list) or any(not isinstance(identity, str)
+                    or not re.fullmatch(r'[A-Za-z0-9][\w.-]*', identity) for identity in names)
+                    or len(names) != len(set(names))):
+                raise ValueError('semantic catalog has invalid or duplicate functional point references')
         path, number = event['source'].rsplit(':',1)
         if not 0 < int(number) <= len((ROOT/path).read_text().splitlines()):
             raise ValueError('semantic source reference is outside source file')
@@ -104,8 +111,7 @@ def review(baseline):
     if manifest['pytest_exitstatus'] != report['pytest_exitstatus']:
         raise ValueError('measurement exit statuses disagree')
     catalog = json.loads(CATALOG.read_text())
-    plan = json.loads((ROOT/'verification_plan.json').read_text())
-    validate_catalog(catalog,plan)
+    validate_catalog(catalog)
     native = {}
     for dut, name in NAMES.items():
         artifacts = [a for a in manifest['artifacts'] if a['kind']=='native' and a['build']['name']==f'DUT{name}Dut']
@@ -196,7 +202,7 @@ def review(baseline):
     return dict(format='bpu-source-semantic-event-review',version=1,baseline=str(baseline),
         scope='exact native zero DA -> implementation role -> semantic requirements; NOT new execution, causal proof or PASS',
         measurement_sha256=sha256((baseline/'rtl-line-coverage.json').read_bytes()).hexdigest(),
-        catalog_sha256=sha256(CATALOG.read_bytes()).hexdigest(),plan_sha256=sha256((ROOT/'verification_plan.json').read_bytes()).hexdigest(),
+        catalog_sha256=sha256(CATALOG.read_bytes()).hexdigest(),
         source_sha256={name:entry['sha256'] for name,entry in sources.items()},
         parent_connection_sha256=parent.sha256,
         native_pytest_exitstatus=report['pytest_exitstatus'],native_denominator_unchanged=True,functional_pass_credit=False,

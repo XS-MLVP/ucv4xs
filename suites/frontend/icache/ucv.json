@@ -51,7 +51,7 @@
   },
   "pytest_root": ".",
   "tests": [
-    "tests"
+    "testbenches"
   ],
   "process_isolation": "suite"
 }

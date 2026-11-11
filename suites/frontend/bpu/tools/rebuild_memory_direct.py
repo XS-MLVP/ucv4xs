@@ -22,7 +22,7 @@ if __package__:
 else:
     from dut_sdk import normalize_sdk, validate_sdk
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.frontend.bpu', fromlist=['ROOT']).ROOT
 MODULES = dict(abtb='AheadBtb', bpu='Bpu', ittage='Ittage', mbtb='MainBtb',
     ras='Ras', sc='Sc', tage='Tage', ubtb='MicroBtb', uras='MicroRas', utage='MicroTage')
 

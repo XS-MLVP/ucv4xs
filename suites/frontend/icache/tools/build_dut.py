@@ -18,7 +18,7 @@ import sys
 import time
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.frontend.icache', fromlist=['ROOT']).ROOT
 VERILATOR_ROOT = Path(str(ucv_paths.project_root() / '.tools/verilator'))
 PICKER = Path(str(ucv_paths.project_root() / '.tools/bin/picker'))
 
