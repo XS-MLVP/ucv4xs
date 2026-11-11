@@ -18,7 +18,7 @@ import re
 import subprocess
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 VERILATOR_COVERAGE = str(ucv_paths.project_root() / '.tools/verilator/bin/verilator_coverage')
 SUMMARY_RE = re.compile(
     r"^\s+(line|toggle|branch|expr|fsm_state|fsm_arc)\s+:\s+"

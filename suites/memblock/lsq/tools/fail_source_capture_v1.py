@@ -18,7 +18,7 @@ ACTORS = {}
 
 
 def pytest_configure(config):
-    from suites.memblock.lsq.evidence import Journal
+    from suites.memblock.lsq.testbenches.shared.env.evidence import Journal
     original = Journal.write
 
     def observed(self, value):
@@ -30,7 +30,7 @@ def pytest_configure(config):
         return result
 
     Journal.write = observed
-    from tests.lsq_wrapper.mixed_owners import MixedOwners
+    from suites.memblock.lsq.testbenches.lsq_wrapper.tests.mixed_owners import MixedOwners
     original_drain = MixedOwners.drain
 
     async def observed_drain(self, *args, **kwargs):

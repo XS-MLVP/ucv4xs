@@ -19,7 +19,7 @@ from audit_coverage_points_v1 import records, sha256_file
 from audit_vsq_cancel_capacity_v1 import FULL, failure_witness
 from audit_vsq_recovery_boundaries_v1 import SOURCES
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 REPO = ucv_paths.source_path_for(ROOT)
 COMMIT = "893e1580b705d81f113c30c7a05734e09a08050e"
 PREFIX = "src/main/scala/xiangshan/"

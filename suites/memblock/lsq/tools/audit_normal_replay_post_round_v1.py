@@ -14,7 +14,7 @@ from audit_final_evidence_matrix_v1 import audit as matrix_audit
 from audit_normal_replay_metadata_v1 import FULL, PRIOR, REPLAY_BASE, PAIRS, FILES, audit_full, audit_pair
 from audit_normal_replay_remaining_v1 import audit as remaining_audit
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 NAME = "lsq-progress-regression-15"
 UNIFIED = ROOT / "results" / NAME
 INPUT = UNIFIED / "normal-replay-integration-input-guard-v1.json"

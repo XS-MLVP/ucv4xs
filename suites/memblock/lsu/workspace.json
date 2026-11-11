@@ -1,0 +1,356 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "loader": "testbenches/shared/env/native.py",
+  "duts": {
+    "store_arbiter": {
+      "design_spec": [
+        "docs/spec/design/contracts/store-arbiter.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/gaps/store_arbiter.json"
+      ],
+      "environment": "testbenches/store_arbiter/env/__init__.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala",
+        "src/main/scala/xiangshan/mem/MemBlock.scala"
+      ],
+      "tests": [
+        "testbenches/store_arbiter/tests"
+      ],
+      "testbench": "store_arbiter"
+    },
+    "store_trigger": {
+      "design_spec": [
+        "docs/spec/design/contracts/store-trigger.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/gaps/store_trigger.json"
+      ],
+      "environment": "testbenches/store_trigger/env/__init__.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala",
+        "src/main/scala/xiangshan/backend/fu/NewCSR/Debug.scala"
+      ],
+      "tests": [
+        "testbenches/store_trigger/tests"
+      ],
+      "testbench": "store_trigger"
+    },
+    "store_delay": {
+      "design_spec": [
+        "docs/spec/design/contracts/store-delay.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/gaps/store_delay.json"
+      ],
+      "environment": "testbenches/store_delay/env/__init__.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala"
+      ],
+      "tests": [
+        "testbenches/store_delay/tests"
+      ],
+      "testbench": "store_delay"
+    },
+    "store_s0": {
+      "design_spec": [
+        "docs/spec/design/contracts/store-s0.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/gaps/store_s0.json"
+      ],
+      "environment": "testbenches/store_s0/env/__init__.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala"
+      ],
+      "tests": [
+        "testbenches/store_s0/tests"
+      ],
+      "testbench": "store_s0"
+    },
+    "store_s1": {
+      "design_spec": [
+        "docs/spec/design/contracts/store-s1.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/gaps/store_s1.json"
+      ],
+      "environment": "testbenches/store_s1/env/__init__.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala"
+      ],
+      "tests": [
+        "testbenches/store_s1/tests"
+      ],
+      "testbench": "store_s1"
+    },
+    "store_s2": {
+      "design_spec": [
+        "docs/spec/design/contracts/store-s2.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/gaps/store_s2.json"
+      ],
+      "environment": "testbenches/store_s2/env/__init__.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala"
+      ],
+      "tests": [
+        "testbenches/store_s2/tests"
+      ],
+      "testbench": "store_s2"
+    },
+    "store_s3": {
+      "design_spec": [
+        "docs/spec/design/contracts/store-s3.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/gaps/store_s3.json"
+      ],
+      "environment": "testbenches/store_s3/env/__init__.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala"
+      ],
+      "tests": [
+        "testbenches/store_s3/tests"
+      ],
+      "testbench": "store_s3"
+    },
+    "store_s4": {
+      "design_spec": [
+        "docs/spec/design/contracts/store-s4.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/gaps/store_s4.json"
+      ],
+      "environment": "testbenches/store_s4/env/__init__.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala"
+      ],
+      "tests": [
+        "testbenches/store_s4/tests"
+      ],
+      "testbench": "store_s4"
+    },
+    "new_store_unit": {
+      "design_spec": [
+        "docs/spec/design/contracts/new-store-unit.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/gaps/new_store_unit.json"
+      ],
+      "environment": "testbenches/new_store_unit/env/__init__.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala",
+        "src/main/scala/xiangshan/mem/MemBlock.scala"
+      ],
+      "tests": [
+        "testbenches/new_store_unit/tests"
+      ],
+      "testbench": "new_store_unit"
+    },
+    "std_exe_unit": {
+      "design_spec": [
+        "docs/spec/design/contracts/std-exe-unit.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/gaps/std_exe_unit.json"
+      ],
+      "environment": "testbenches/std_exe_unit/env/__init__.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/pipeline/StdExeUnit.scala",
+        "src/main/scala/xiangshan/mem/MemBlock.scala"
+      ],
+      "tests": [
+        "testbenches/std_exe_unit/tests"
+      ],
+      "testbench": "std_exe_unit"
+    },
+    "load_arbiter": {
+      "design_spec": [
+        "docs/spec/design/contracts/load-arbiter.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/gaps/load_arbiter.json"
+      ],
+      "environment": "testbenches/load_arbiter/env/__init__.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala",
+        "src/main/scala/xiangshan/mem/MemBlock.scala"
+      ],
+      "tests": [
+        "testbenches/load_arbiter/tests"
+      ],
+      "testbench": "load_arbiter"
+    },
+    "load_trigger": {
+      "design_spec": [
+        "docs/spec/design/contracts/load-trigger.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/gaps/load_trigger.json"
+      ],
+      "environment": "testbenches/load_trigger/env/__init__.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala",
+        "src/main/scala/xiangshan/backend/fu/NewCSR/Debug.scala"
+      ],
+      "tests": [
+        "testbenches/load_trigger/tests"
+      ],
+      "testbench": "load_trigger"
+    },
+    "load_datapath": {
+      "design_spec": [
+        "docs/spec/design/contracts/load-datapath.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/gaps/load_datapath.json"
+      ],
+      "environment": "testbenches/load_datapath/env/__init__.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala"
+      ],
+      "tests": [
+        "testbenches/load_datapath/tests"
+      ],
+      "testbench": "load_datapath"
+    },
+    "load_s0": {
+      "design_spec": [
+        "docs/spec/design/contracts/load-s0.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/gaps/load_s0.json"
+      ],
+      "environment": "testbenches/load_s0/env/__init__.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala"
+      ],
+      "tests": [
+        "testbenches/load_s0/tests"
+      ],
+      "testbench": "load_s0"
+    },
+    "load_s1": {
+      "design_spec": [
+        "docs/spec/design/contracts/load-s1.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/gaps/load_s1.json"
+      ],
+      "environment": "testbenches/load_s1/env/__init__.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala"
+      ],
+      "tests": [
+        "testbenches/load_s1/tests"
+      ],
+      "testbench": "load_s1"
+    },
+    "load_s2": {
+      "design_spec": [
+        "docs/spec/design/contracts/load-s2.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/gaps/load_s2.json"
+      ],
+      "environment": "testbenches/load_s2/env/__init__.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala"
+      ],
+      "tests": [
+        "testbenches/load_s2/tests"
+      ],
+      "testbench": "load_s2"
+    },
+    "load_s3": {
+      "design_spec": [
+        "docs/spec/design/contracts/load-s3.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/gaps/load_s3.json"
+      ],
+      "environment": "testbenches/load_s3/env/__init__.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala"
+      ],
+      "tests": [
+        "testbenches/load_s3/tests"
+      ],
+      "testbench": "load_s3"
+    },
+    "load_s4": {
+      "design_spec": [
+        "docs/spec/design/contracts/load-s4.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/gaps/load_s4.json"
+      ],
+      "environment": "testbenches/load_s4/env/__init__.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala"
+      ],
+      "tests": [
+        "testbenches/load_s4/tests"
+      ],
+      "testbench": "load_s4"
+    },
+    "new_load_unit": {
+      "design_spec": [
+        "docs/spec/design/contracts/new-load-unit.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/gaps/new_load_unit.json"
+      ],
+      "environment": "testbenches/new_load_unit/env/__init__.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala",
+        "src/main/scala/xiangshan/mem/MemBlock.scala"
+      ],
+      "tests": [
+        "testbenches/new_load_unit/tests"
+      ],
+      "testbench": "new_load_unit"
+    }
+  }
+}

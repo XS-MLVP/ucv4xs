@@ -11,11 +11,14 @@ import shutil
 import typing
 
 from audit_sq_initial import ROOT, sha, verify_common
-from suites.memblock.lsq.raw.model import LoadQueueRawModel
-from suites.memblock.lsq.raw.types import Inputs as RawInputs, SqPtr
-from suites.memblock.lsq.replay.model import ReplayModel, sq_after
-from suites.memblock.lsq.replay.types import Inputs as ReplayInputs
-from suites.memblock.lsq.sq_endpoint.model import ExclusiveRawModel, ExclusiveReplayModel
+from suites.memblock.lsq.testbenches.raw.model import LoadQueueRawModel
+from suites.memblock.lsq.testbenches.raw.transactions import Inputs as RawInputs
+from suites.memblock.lsq.testbenches.raw.transactions import SqPtr
+from suites.memblock.lsq.testbenches.replay.model import ReplayModel
+from suites.memblock.lsq.testbenches.replay.model import sq_after
+from suites.memblock.lsq.testbenches.replay.transactions import Inputs as ReplayInputs
+from suites.memblock.lsq.testbenches.lsq_wrapper.tests.scenarios.sq_endpoint.model import ExclusiveRawModel
+from suites.memblock.lsq.testbenches.lsq_wrapper.tests.scenarios.sq_endpoint.model import ExclusiveReplayModel
 
 
 def typed(kind, value):

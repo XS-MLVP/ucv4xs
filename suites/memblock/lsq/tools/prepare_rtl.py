@@ -9,7 +9,7 @@ from pathlib import Path
 import re
 import shutil
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 MODULE = re.compile(r"^module\s+(\w+)", re.M)
 INSTANCE = re.compile(r"^[ \t]*(\w+)[ \t]+(?:#\s*\([^;]*?\)\s*)?(\w+)[ \t]*\(", re.M)
 KEYWORDS = set("module input output inout wire reg logic assign always always_ff always_comb always_latch initial if else case casez casex endcase for while return begin end function endfunction automatic task endtask generate endgenerate genvar parameter localparam typedef struct enum packed signed unsigned unique priority default break continue wait disable forever repeat".split())

@@ -1,0 +1,158 @@
+{
+  "schema": 1,
+  "note": "Fields a functional point depends on, reconciled across three sources: the spec/contract (what must be observable), the Scala (who writes it), and the generated DUT port surface (what can actually be driven/sampled). 'expect=port' means the field must exist in dut/<dut>/signals.json. 'expect=absent' records a field the Scala needs but the generated port does not carry; it must state a reason and re-opens the adjudication if the port ever appears. Checked by suites/memblock/lsq/tools/audit_scala_rtl_fields.py --strict and modules/lsq_wrapper/tests/meta/test_critical_fields.py.",
+  "fields": [
+    {
+      "dut": "lsq_wrapper",
+      "field": "io_uncache_resp_bits_nderr",
+      "expect": "port",
+      "functional_point": "io_store x fault / io_load x fault",
+      "source": "Uncache.scala:121 drives r.nderr := resp_nderr",
+      "why": "the wrapper exposes the bus access-fault bit, so the wrapper can observe it; the loss must therefore be inside the store queue"
+    },
+    {
+      "dut": "lsq_wrapper",
+      "field": "io_uncache_resp_bits_error",
+      "expect": "port",
+      "functional_point": "io_store x fault / io_load x fault",
+      "source": "Uncache.scala:127 drives r.error := resp_derr",
+      "why": "same as nderr for the hardware-error bit"
+    },
+    {
+      "dut": "lsq_wrapper",
+      "field": "io_mmioStout_bits_exceptionVec_7",
+      "expect": "port",
+      "functional_point": "io_store x fault / cbo x fault",
+      "source": "NewStoreQueue.scala:1106 writeBackToRob.exceptionVec(storeAccessFault)",
+      "why": "the writeback access-fault observation point asserted by test_uncache_store_fault.py"
+    },
+    {
+      "dut": "lsq_wrapper",
+      "field": "io_mmioStout_bits_exceptionVec_19",
+      "expect": "port",
+      "functional_point": "io_store x fault / cbo x fault",
+      "source": "NewStoreQueue.scala:1105 writeBackToRob.exceptionVec(hardwareError)",
+      "why": "the writeback hardware-error observation point"
+    },
+    {
+      "dut": "lsq_wrapper",
+      "field": "io_ldExceptionInfo_bits_exceptionVec_5",
+      "expect": "port",
+      "functional_point": "io_load x fault",
+      "source": "LoadQueueUncache.scala:211 loadAccessFault",
+      "why": "load-side access-fault observation point used as the contrast in the same probe"
+    },
+    {
+      "dut": "deq_module",
+      "field": "io_writeBack_bits_exceptionVec_7",
+      "expect": "port",
+      "functional_point": "io_store x fault",
+      "source": "NewStoreQueue.scala:1106",
+      "why": "proves the writeback port survives inside the store queue; DeqModule.sv:684 wires it from hasAccessFault"
+    },
+    {
+      "dut": "deq_module",
+      "field": "io_writeBack_bits_exceptionVec_19",
+      "expect": "port",
+      "functional_point": "io_store x fault",
+      "source": "NewStoreQueue.scala:1105",
+      "why": "same for hardwareError"
+    },
+    {
+      "dut": "deq_module",
+      "field": "io_toUncacheBuffer_resp_valid",
+      "expect": "port",
+      "functional_point": "io_store x fault",
+      "source": "NewStoreQueue.scala:1083 io.toUncacheBuffer.resp.ready := true.B",
+      "why": "only the valid bit reaches the store queue; this is the observable half of the same interface"
+    },
+    {
+      "dut": "physical_store_queue",
+      "field": "io_toUncacheBuffer_resp_valid",
+      "expect": "port",
+      "functional_point": "io_store x fault",
+      "source": "NewStoreQueue.scala:1083",
+      "why": "control: the interface itself exists at this level"
+    },
+    {
+      "dut": "deq_module",
+      "field": "io_toUncacheBuffer_resp_bits_denied",
+      "expect": "absent",
+      "reason": "THE DEFECT, surfaced mechanically by this diff: DeqModule reads resp.bits.denied (NewStoreQueue.scala:1095) but no such port exists because the producer never drives it (Uncache.scala:118-128 leaves denied/corrupt at DontCare). The two bits the RTL reads are exactly the two shapes this tool reports as scala-only. The fix must expose nderr/error instead of resurrecting denied/corrupt.",
+      "functional_point": "io_store x fault",
+      "reopen_if": "the port appears, or the Scala switches to nderr/error"
+    },
+    {
+      "dut": "deq_module",
+      "field": "io_toUncacheBuffer_resp_bits_corrupt",
+      "expect": "absent",
+      "reason": "same defect as resp.bits.denied (NewStoreQueue.scala:1087)",
+      "functional_point": "io_store x fault",
+      "reopen_if": "the port appears"
+    },
+    {
+      "dut": "physical_store_queue",
+      "field": "io_toUncacheBuffer_resp_bits_nderr",
+      "expect": "absent",
+      "reason": "DEFECT (not the intentional trimming case): NewStoreQueue.scala:1095 reads resp.bits.denied, which Uncache.toUncacheWordResp never drives (Uncache.scala:118-128 drives only data/id/nderr/nc/is2lq/error). firtool therefore removes the whole bits bundle, and DeqModule.sv:684-685 derive hasAccessFault/hasHardwareError from the DCache (CBO) path only. Registered as io_store x fault in kind-outcome-matrix.md and as the same root cause as upstream #6833 item 1.",
+      "functional_point": "io_store x fault",
+      "reopen_if": "the port appears, i.e. the store queue starts reading nderr/error"
+    },
+    {
+      "dut": "physical_store_queue",
+      "field": "io_toUncacheBuffer_resp_bits_error",
+      "expect": "absent",
+      "reason": "same defect as resp_bits_nderr: the hardware-error bit never reaches the store queue",
+      "functional_point": "io_store x fault",
+      "reopen_if": "the port appears"
+    },
+    {
+      "dut": "store_queue",
+      "field": "io_toUncacheBuffer_resp_bits_nderr",
+      "expect": "absent",
+      "reason": "the StoreQueue wrapper inherits the same dropped bundle from PhysicalStoreQueue",
+      "functional_point": "io_store x fault",
+      "reopen_if": "the port appears"
+    },
+    {
+      "dut": "physical_store_queue",
+      "field": "io_fromStoreUnit_storeAddrIn_0_bits_tlbMiss",
+      "expect": "port",
+      "functional_point": "store x tlb_miss",
+      "source": "NewStoreQueue.scala:1813 addresses not trusted when tlbMiss",
+      "why": "the translation-miss stimulus path must be drivable at the physical store queue"
+    },
+    {
+      "dut": "forward_module",
+      "field": "io_query_0_s2Resp_bits_forwardMask_0",
+      "expect": "port",
+      "functional_point": "cached x fault (byte-level forwarding)",
+      "source": "NewStoreQueue.scala:643 s2OutMask",
+      "why": "per-byte forward mask is the observation the independent byte oracle reads (FWD-RANGE-001 / #6718)"
+    },
+    {
+      "dut": "forward_module",
+      "field": "io_query_0_s2Resp_bits_dataInvalid_valid",
+      "expect": "port",
+      "functional_point": "cached x fault",
+      "source": "NewStoreQueue.scala:675 dataInvalid",
+      "why": "data-dependency blocking is one of the four reasons the byte oracle treats a response as blocked"
+    },
+    {
+      "dut": "load_queue_uncache",
+      "field": "io_exceptionInfo_bits_exceptionVec_5",
+      "expect": "port",
+      "functional_point": "io_load x fault",
+      "source": "LoadQueueUncache.scala:238 RegEnable(nderr, writeback)",
+      "why": "the load-side bus fault observation; contrast case for the store defect"
+    },
+    {
+      "dut": "load_queue_uncache",
+      "field": "io_exceptionInfo_bits_exceptionVec_19",
+      "expect": "port",
+      "functional_point": "io_load x fault",
+      "source": "LoadQueueUncache.scala:239 RegEnable(derr, writeback)",
+      "why": "load-side hardware error"
+    }
+  ]
+}

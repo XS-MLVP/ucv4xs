@@ -10,7 +10,7 @@ from pathlib import Path
 import re
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from audit_coverage_points_v1 import records  # noqa: E402
 from audit_foundation_gaps_v1 import classify as foundation_classify  # noqa: E402

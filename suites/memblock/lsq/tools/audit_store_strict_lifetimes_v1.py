@@ -15,7 +15,7 @@ from audit_failure_preservation_v1 import pytest_status
 from audit_gap_closure_v1 import digest_keys, native, point_key, point_sets
 from coverage_audit import lcov
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 PAIRS = (
     ("physical_store_queue", "psq-strict-lifetimes-baseline-01", "psq-strict-lifetimes-after-01", "PSQ-STRICT.lifecycle"),
     ("store_queue", "sq-strict-lifetimes-baseline-01", "sq-strict-lifetimes-after-01", "SQ-STRICT.lifecycle"),
@@ -98,7 +98,7 @@ def audit_pair(dut, before, after, scenario):
             else:
                 assert (group["points"][0]["counts"][scenario] > 0) == (name == after)
     report = dict(format="lsq-store-strict-lifetimes-evidence-v1", dut=dut, before_run=before, after_run=after,
-                  contract="docs/contracts/store-strict-wait-lifetimes.md", native_build_id=closure["native_build_id"],
+                  contract="docs/spec/design/contracts/store-strict-wait-lifetimes.md", native_build_id=closure["native_build_id"],
                   source_aggregate=old["source"]["aggregate_SHA256"], baseline_tests=len(old["nodes"]), after_tests=len(new["nodes"]),
                   raw_nonwrapper_metrics=closure["metrics"], regression15_gap_overlap=overlap,
                   strict_branch_targets=dict(hit=12, total=12, regression15_missing_now_hit=expected_closed, locations=branch_locations),

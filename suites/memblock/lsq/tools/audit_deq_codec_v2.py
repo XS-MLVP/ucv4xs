@@ -5,9 +5,10 @@ import json
 from pathlib import Path
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(ROOT))
-from suites.memblock.lsq.deq.types import Inputs, encode
+from suites.memblock.lsq.testbenches.deq.transactions import Inputs
+from suites.memblock.lsq.testbenches.deq.transactions import encode
 
 
 def main():

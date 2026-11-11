@@ -15,7 +15,7 @@ from audit_evidence_io import write_report
 from audit_gap_closure_v1 import digest_keys, native, point_key
 from audit_initial_branch_boundaries_v1 import initial_region
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 SOURCES = {
     "virtual_store_queue": "dut/virtual_store_queue/VirtualStoreQueueDut.v",
     "store_queue": "rtl/store_queue/VirtualStoreQueue.sv",
@@ -115,7 +115,7 @@ def audit(name):
         open_wait.append(dict(dut=dut, source=SOURCES[dut], source_line=15850, point="else", hierarchy=waits[0]["h"],
                               hit=0, classification="existing_feature_missing_case", boundary="release_wait_not_proven_unreachable",
                               reason="This predicate is state1 && headIsRetired and is not excluded by the state encoding proof. Legal timing complements and the remaining exact cone/producer proof must be evaluated separately."))
-    report = dict(format="lsq-vsq-recovery-boundaries-v1", run=name, contract="docs/contracts/vsq-release-walk.md",
+    report = dict(format="lsq-vsq-recovery-boundaries-v1", run=name, contract="docs/spec/design/contracts/vsq-release-walk.md",
                   induction=proof, proven_points=proven, proven_post_reset_state3_points=len(proven), open_release_wait_points=open_wait,
                   verification=dict(exact_pinned_source_and_all_state_writes_checked=True, asynchronous_reset_base_case_checked=True,
                       arbitrary_boolean_next_state_closure_checked=True, missing_else_is_exactly_state3=True,

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "note": "当前已配置导出的 DUT；完整目标范围仍见 docs/ut-plan.md。",
+  "note": "当前已配置导出的 DUT；当前验证范围/顺序见 docs/spec/verification/plan.md，旧基线逐轮进度见 docs/spec/verification/evidence/plan-progress-20261018-20261019.md。",
   "duts": {
     "freelist_rar": {"top": "FreeList", "export_name": "FreeListRarDut", "size": 96, "allocate_width": 3, "free_width": 4, "preallocate": false},
     "freelist_raw": {"top": "FreeList_1", "export_name": "FreeListRawDut", "size": 56, "allocate_width": 3, "free_width": 4, "preallocate": true},

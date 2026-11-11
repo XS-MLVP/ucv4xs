@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from audit_coverage_points_v1 import digest_points, records  # noqa: E402
 
@@ -95,8 +95,8 @@ def audit(name: str) -> dict:
             uncovered=line_gap_count, source_scope=line_audit["scope"],
         )
         rows.append(dict(
-            dut=key, export=export, top=top, report=f"docs/reports/{report}",
-            contract=f"docs/contracts/{contract_family}.md", build_id=artifact["build"]["build_id"],
+            dut=key, export=export, top=top, report=f"docs/spec/verification/evidence/reports/{report}",
+            contract=f"docs/spec/design/contracts/{contract_family}.md", build_id=artifact["build"]["build_id"],
             coverage_dat=str(coverage_path.relative_to(ROOT)), coverage_dat_SHA256=sha256(coverage_path),
             metrics=metrics,
             functional=functional_summary(foundation_functional, key),

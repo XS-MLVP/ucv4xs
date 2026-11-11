@@ -15,7 +15,7 @@ import subprocess
 import sys
 
 
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=__import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 
 
 def aggregate(pairs):
@@ -28,7 +28,7 @@ def aggregate(pairs):
 def source_summary():
     groups=defaultdict(list)
     paths=[ROOT/"pytest.ini",ROOT/"README.md",*ucv_paths.suite_python_sources(ROOT)]
-    for folder in("docs/contracts","manifest"):
+    for folder in("docs/spec/design/contracts","manifest"):
         paths.extend(p for p in(ROOT/folder).rglob("*") if p.is_file() and "__pycache__" not in p.parts and p.suffix!=".pyc")
     pairs=[]
     for p in paths:
@@ -50,7 +50,7 @@ def run(name,workers,pytest_args=None):
         raise ValueError("summary-only runner does not enable per-cycle JSON or waveforms")
     command=[sys.executable,"-B","-m","toffee","run","--workers",str(workers),"--output",str(output/"execution"),
         "--native-coverage-tool",str(ucv_paths.project_root() / '.tools/verilator/bin/verilator_coverage'),"--export-coverage-json","--", "--basetemp",str(output/"cases"),
-        "--junitxml",str(output/"pytest.xml"),"-q","--lsq-trace-max-mb","16",*(tests or ["tests"]),"--tb=short"]
+        "--junitxml",str(output/"pytest.xml"),"-q","--lsq-trace-max-mb","16",*(tests or ["modules"]),"--tb=short"]
     for filename,data in(("source-aggregate-launch.json",launch),("trace-policy.json",dict(per_cycle_JSON=False,waveforms=False,default="summary_only_no_per_cycle_JSON_no_waveforms",source_retention="aggregate_only_no_complete_file_inventory_or_source_copy")),
                           ("command.json",dict(cwd=str(ROOT),command=command))):
         with(output/filename).open("x") as f:f.write(json.dumps(data,indent=2)+"\n")

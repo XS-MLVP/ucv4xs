@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "current": [
+    "README.md",
+    "docs/README.md",
+    "docs/spec/design/README.md",
+    "docs/spec/design/contracts/ptw-completion-contract.md",
+    "docs/spec/verification/README.md",
+    "docs/spec/verification/residuals.md",
+    "docs/spec/verification/functional-points/functional-points-tlbfa.md",
+    "docs/spec/verification/functional-points/functional-points-wrapper.md",
+    "docs/spec/verification/functional-points/functional-points-tlb.md",
+    "docs/spec/verification/functional-points/functional-points-tlbn.md",
+    "docs/spec/verification/functional-points/functional-points-l2-leaves.md",
+    "docs/spec/verification/functional-points/functional-points-l2-midblocks.md",
+    "docs/spec/verification/functional-points/functional-points-ptwcache.md",
+    "docs/spec/verification/functional-points/functional-points-l2tlb.md",
+    "docs/spec/verification/functional-points/functional-points-l2tlbwrapper.md",
+    "docs/spec/verification/functional-points/functional-points-hptw.md",
+    "docs/spec/verification/evidence/README.md",
+    "docs/bugs/README.md"
+  ]
+}

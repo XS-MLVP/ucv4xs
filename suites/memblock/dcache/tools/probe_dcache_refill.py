@@ -12,9 +12,9 @@ import importlib.util
 from pathlib import Path
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.dcache', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(ROOT / "tools"))
-from suites.memblock.dcache.inventory import dut_dir  # noqa: E402
+from suites.memblock.dcache.testbenches.shared.env.inventory import dut_dir  # noqa: E402
 
 
 def load_dut():

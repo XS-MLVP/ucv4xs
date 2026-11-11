@@ -21,7 +21,7 @@ from audit_uq_page_pairs_v1 import node_summaries
 from audit_vsq_release_windows_v1 import line_delta
 from run_summary import aggregate
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 FULL = "normal-replay-metadata-contributor-regression-01"
 REPLAY_BASE = "normal-replay-original-contributors-01"
 REPLAY_PATHS = ["tests/replay", "tests/sq_endpoint/test_replay_raw_boundary.py", "tests/sq_endpoint/test_replay_raw_pool.py"]
@@ -125,7 +125,7 @@ def id_padding_source_proof():
 def calibration():
     correction_path = ROOT / "results/normal-replay-metadata-probe-01/FTQ-source-projection-correction-v1.json"
     ftq = load(correction_path)
-    assert ftq["corrected_producer_SHA256"] == sha256_file(ROOT / "normal_replay_metadata.py")
+    assert ftq["corrected_producer_SHA256"] == sha256_file(ROOT / "testbenches/replay/model/normal_replay_metadata.py")
     assert ftq["old_bytes_reconstructed_and_entire_library_aggregate_verified"]
     historical = []
     for after in ("lrq-normal-metadata-after-01", "lq-normal-metadata-after-01", "lsq-normal-metadata-after-01"):
@@ -240,7 +240,7 @@ def audit_pair(dut, before, after):
     ws = witness_rows(after, dut)
     probe = witness_rows("normal-replay-metadata-probe-02", dut, per_profile=2)
     report = dict(format="lsq-normal-replay-metadata-evidence-v1", dut=dut, before_run=before, after_run=after,
-        contract="docs/contracts/normal-load-replay-metadata.md", baseline_tests=len(old), after_tests=len(new),
+        contract="docs/spec/design/contracts/normal-load-replay-metadata.md", baseline_tests=len(old), after_tests=len(new),
         added_nodes=sorted(added), native_build_id=closure["native_build_id"], source_aggregate=a["source"]["aggregate_SHA256"],
         raw_nonwrapper_metrics=closure["metrics"], target_domains=targets,
         original_source_line_coverage=line_delta(source_lines(a["meta"], a["dat"], dut), source_lines(b["meta"], b["dat"], dut)),

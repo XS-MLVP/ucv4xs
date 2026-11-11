@@ -18,7 +18,7 @@ from audit_store_strict_lifetimes_v1 import source_lines
 from audit_uq_page_pairs_v1 import functional_counts, node_summaries
 from audit_vsq_recovery_boundaries_v1 import SOURCES, source_proof
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 PREVIOUS = "uq-page-contributor-regression-01"
 FULL = "vsq-release-contributor-regression-01"
 DEEP_FULL = "vsq-deep-suffix-contributor-regression-01"
@@ -167,7 +167,7 @@ def audit_deep_directed():
     assert functions[before]["reached"]["count"] == functions[before]["checked"]["count"] == 0
     assert functions[after]["reached"]["count"] > 0 and functions[after]["checked"]["count"] > 0
     report = dict(format="lsq-vsq-deep-suffix-evidence-v1", dut=dut, before_run=before, after_run=after,
-        feature_id="VSQ-REDIRECT-DEEP-SUFFIX", contract="docs/contracts/vsq-release-walk.md",
+        feature_id="VSQ-REDIRECT-DEEP-SUFFIX", contract="docs/spec/design/contracts/vsq-release-walk.md",
         baseline_tests=len(old_cases), after_tests=len(new_cases), added_nodes=sorted(added),
         native_build_id=closure["native_build_id"], raw_nonwrapper_metrics=closure["metrics"],
         source_aggregate=old_run["source"]["aggregate_SHA256"],
@@ -289,7 +289,7 @@ def audit_batch_directed():
     assert functions[before]["reached"]["count"] == functions[before]["checked"]["count"] == 0
     assert functions[after]["reached"]["count"] > 0 and functions[after]["checked"]["count"] > 0
     report = dict(format="lsq-vsq-retire-batch-evidence-v1", dut=dut, before_run=before, after_run=after,
-        feature_id="VSQ-RETIRE-BATCH-WIDTH", contract="docs/contracts/vsq-release-walk.md",
+        feature_id="VSQ-RETIRE-BATCH-WIDTH", contract="docs/spec/design/contracts/vsq-release-walk.md",
         baseline_tests=len(old_cases), after_tests=len(new_cases), added_nodes=sorted(added), native_build_id=closure["native_build_id"],
         source_aggregate=old_run["source"]["aggregate_SHA256"],
         raw_nonwrapper_metrics=closure["metrics"], retire_req_num_points=dict(before=old_points, after=new_points), functional=functions,
@@ -423,7 +423,7 @@ def audit_pair(dut, before, after, scenario, feature):
         old_streams, new_streams = journal_streams(before), journal_streams(after)
         assert all(new_streams[key] == value for key, value in old_streams.items())
     report = dict(format="lsq-vsq-release-windows-evidence-v1", dut=dut, before_run=before, after_run=after, feature_id=feature,
-        contract="docs/contracts/vsq-release-walk.md", baseline_tests=len(original), after_tests=len(current), added_nodes=sorted(added),
+        contract="docs/spec/design/contracts/vsq-release-walk.md", baseline_tests=len(original), after_tests=len(current), added_nodes=sorted(added),
         source_aggregate=old_run["source"]["aggregate_SHA256"], native_build_id=new_meta["artifact"]["build"]["build_id"],
         raw_nonwrapper_metrics=closure["metrics"], branch_targets=targets, regression15_gap_overlap=overlap,
         state3_source_proof=source_proof(dut), functional=functions,

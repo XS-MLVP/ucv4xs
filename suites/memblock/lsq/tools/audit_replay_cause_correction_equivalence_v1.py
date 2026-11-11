@@ -9,7 +9,7 @@ from audit_expanded_regression_v1 import cases, failure_digest
 from audit_gap_closure_v1 import native, point_sets, digest_keys
 from audit_replay_cause_lifetimes_v1 import FULL, PAIRS, witness, calibration
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 OLD = 'replay-cause-lifetimes-contributor-regression-01'
 
 

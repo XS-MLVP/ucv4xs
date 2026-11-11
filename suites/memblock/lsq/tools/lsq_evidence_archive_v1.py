@@ -18,7 +18,7 @@ import sys
 import uuid
 
 
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=__import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 RESULTS=ROOT/"results"
 STORE=RESULTS/"evidence-store-v1"
 INDEX="storage-index-v1.json"

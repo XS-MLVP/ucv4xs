@@ -14,11 +14,12 @@ from pathlib import Path
 import shutil
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsu', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(ROOT / "tools"))
 
 from dep_closure import load_index  # noqa: E402
-from suites.memblock.lsu.inventory import DUTS, rtl_dir  # noqa: E402
+from suites.memblock.lsu.testbenches.shared.env.inventory import DUTS
+from suites.memblock.lsu.testbenches.shared.env.inventory import rtl_dir  # noqa: E402
 SOC_RTL = ucv_paths.soc_rtl_for(ROOT).resolve()
 
 

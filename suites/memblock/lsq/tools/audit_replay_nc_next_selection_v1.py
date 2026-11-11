@@ -6,7 +6,7 @@ from pathlib import Path
 import re
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(ROOT / 'tools'))
 from audit_coverage_points_v1 import records, sha256_file
 from audit_evidence_io import write_report

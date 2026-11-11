@@ -22,18 +22,18 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.dcache', fromlist=['ROOT']).ROOT
 VENV = Path(str(ucv_paths.project_root() / '.venv/bin/python'))
 
 PAIRS = [
-    ("bda_readback", "tests/banked_data_array/test_banked_data_array.py::test_read_window_all_ports_and_ways"),
-    ("cf_expected", "tests/counter_filter/test_counter_filter.py::test_random_legal_traffic"),
-    ("dta_readback", "tests/duplicated_tag_array/test_duplicated_tag_array.py::test_set_independence_and_boundaries"),
-    ("mq_expected", "tests/miss_queue/test_miss_queue.py::test_two_beat_refill_installs_line"),
-    ("lp_expected", "tests/load_pipe/test_load_pipe.py::test_outcome_way_matrix"),
-    ("mp_expected", "tests/main_pipe/test_main_pipe.py::test_amo_miss_request_and_replay"),
-    ("dcache_readback", "tests/dcache/test_dcache.py::test_cold_miss_refill_then_hit"),
-    ("store_hit_readback", "tests/dcache/test_dcache.py::test_store_then_load_observes_data"),
+    ("bda_readback", "testbenches/banked_data_array/tests/test_banked_data_array.py::test_read_window_all_ports_and_ways"),
+    ("cf_expected", "testbenches/counter_filter/tests/test_counter_filter.py::test_random_legal_traffic"),
+    ("dta_readback", "testbenches/duplicated_tag_array/tests/test_duplicated_tag_array.py::test_set_independence_and_boundaries"),
+    ("mq_expected", "testbenches/miss_queue/tests/test_miss_queue.py::test_two_beat_refill_installs_line"),
+    ("lp_expected", "testbenches/load_pipe/tests/test_load_pipe.py::test_outcome_way_matrix"),
+    ("mp_expected", "testbenches/main_pipe/tests/test_main_pipe.py::test_amo_miss_request_and_replay"),
+    ("dcache_readback", "testbenches/dcache/tests/test_dcache.py::test_cold_miss_refill_then_hit"),
+    ("store_hit_readback", "testbenches/dcache/tests/test_dcache.py::test_store_then_load_observes_data"),
 ]
 
 

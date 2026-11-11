@@ -12,7 +12,7 @@ from audit_coverage_points_v1 import sha256_file
 from audit_evidence_io import write_report
 from audit_load_raw_owners_v1 import FULL,PAIRS
 
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=__import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 NAME="lsq-progress-regression-15"
 UNIFIED=ROOT/"results"/NAME
 INPUT_GUARD=UNIFIED/"load-RAW-owner-integration-input-guard-v1.json"

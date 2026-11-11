@@ -13,7 +13,7 @@ import re
 import subprocess
 import xml.etree.ElementTree as ET
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsu', fromlist=['ROOT']).ROOT
 REVIEW = ROOT / "review/failure_recheck_20261026"
 RUN = "failure-recheck-final-03"
 COMMIT = "893e1580b705d81f113c30c7a05734e09a08050e"
@@ -50,7 +50,7 @@ def point_id(point):
 def sync_metadata(report, audit):
     """Refresh current indexes only; preserve old run and metadata snapshots."""
     for relative in ("manifest/baseline.json", "manifest/coverage-summary.json",
-                     "docs/gaps/load_s2.json", "docs/gaps/new_load_unit.json"):
+                     "docs/spec/verification/gaps/load_s2.json", "docs/spec/verification/gaps/new_load_unit.json"):
         source = ROOT / relative; backup = REVIEW / "before-metadata" / relative
         if not backup.exists():
             backup.parent.mkdir(parents=True, exist_ok=True)
@@ -58,7 +58,7 @@ def sync_metadata(report, audit):
     baseline = load(ROOT / "manifest/baseline.json")
     review_info = {k: report[k] for k in ("status", "acceptance_passed", "known_rtl_defects",
                    "historical_failures_fully_attributed", "independent_reached_checked_complete")}
-    review_info.update(report="docs/bug-reports-20261026/README.md",
+    review_info.update(report="docs/bugs/evidence/bug-reports-20261026/README.md",
                        evidence="review/failure_recheck_20261026/final-audit.json")
     baseline.update(current_status="known_rtl_performance_defect_and_evidence_limits",
                     final_run=RUN, failure_review=review_info,
@@ -88,7 +88,7 @@ def sync_metadata(report, audit):
             summary["totals"][k]+=row[k]
     save(ROOT / "manifest/coverage-summary.json",summary)
     for key in ("load_s2", "new_load_unit"):
-        p=ROOT / "docs/gaps" / (key+".json"); gap=load(p)
+        p=ROOT / "docs/spec/verification/gaps" / (key+".json"); gap=load(p)
         b=next(x for x in audit["builds"] if x["key"]==key)
         gap["run"]=RUN
         metrics=gap["metrics"]
@@ -204,7 +204,7 @@ def main():
                 errors.append(f"execution source changed since run: {name}")
         elif not ok:
             reporting_changes.append(name)
-    for path in (ROOT / "tests").rglob("test_*.py"):
+    for path in (ROOT / "testbenches").rglob("test_*.py"):
         text = path.read_text()
         if re.search(r"@pytest\.mark\.(?:xfail|skip)|pytest\.(?:xfail|skip)", text):
             errors.append(f"waiver marker: {path}")
@@ -265,7 +265,7 @@ def main():
         if load(path / "trace-policy.json")["status"] != "PASS":
             errors.append(f"trace policy not PASS: {path}")
     document_checks=[]
-    for path in sorted((ROOT / "docs/bug-reports-20261026").glob("*.md")):
+    for path in sorted((ROOT / "docs/bugs/evidence/bug-reports-20261026").glob("*.md")):
         text=path.read_text(); links=[]; quotes=[]
         for label,target in re.findall(r"\[([^]]+)\]\(([^)]+)\)",text):
             if target.startswith(("http:","https:","#")):

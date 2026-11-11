@@ -10,7 +10,7 @@ from audit_evidence_io import write_report
 from audit_gap_closure_v1 import native, point_key, digest_keys
 from audit_replay_cause_lifetimes_v1 import BASE, FULL, NEW, source_projection
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 
 
 def audit():

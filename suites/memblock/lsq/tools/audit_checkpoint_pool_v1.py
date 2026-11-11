@@ -13,7 +13,7 @@ from audit_coverage_points_v1 import records, sha256_file, summarize
 from audit_gap_closure_v1 import digest_keys, native, point_sets
 from coverage_audit import lcov
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 PAIRS = (
     ("load_queue_replay", "replay-checkpoint-pool-baseline-01", "replay-checkpoint-pool-after-01",
      "test_checkpoint_high_low_lifetimes_at_every_public_replay_slot",
@@ -140,7 +140,7 @@ def audit_pair(dut, before, after, case_id, bins):
         gap_hits[kind] = dict(regression15_missing_seen_in_directed_after=len(overlap), point_set_SHA256=digest_keys(overlap))
     report = dict(
         format="lsq-checkpoint-pool-evidence-v1", dut=dut, before_run=before, after_run=after,
-        contract="docs/contracts/replay-checkpoint-pool.md", source_aggregate=old["source"]["aggregate_SHA256"],
+        contract="docs/spec/design/contracts/replay-checkpoint-pool.md", source_aggregate=old["source"]["aggregate_SHA256"],
         native_build_id=closure["native_build_id"], baseline_tests=len(old["nodes"]), after_tests=len(new["nodes"]),
         raw_nonwrapper_metrics=closure["metrics"],
         original_source_line_coverage=dict(before_hit=len(old["line_hit"]), after_hit=len(new["line_hit"]),

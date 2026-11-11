@@ -13,7 +13,7 @@ import re
 import shutil
 import xml.etree.ElementTree as ET
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 FAMILIES = dict(age=11, cam=24, freelist=52, rar=54, raw=32, vlq=22, uncache_entry=384,
                 load_uncache=72, replay=131, enter_sbuffer=26, unalign=41)
 

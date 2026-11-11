@@ -18,7 +18,7 @@ import subprocess
 import sys
 import tempfile
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.mmu', fromlist=['ROOT']).ROOT
 PICKER = str(ucv_paths.project_root() / '.tools/bin/picker')
 VERILATOR = Path(str(ucv_paths.project_root() / '.tools/verilator'))
 

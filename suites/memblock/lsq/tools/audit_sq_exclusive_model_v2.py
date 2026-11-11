@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 import sys
 
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=__import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 sys.path.insert(0,str(ROOT))
 
 from audit_sq_exclusive_model_v1 import audit

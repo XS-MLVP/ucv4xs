@@ -18,7 +18,7 @@ from audit_expanded_regression_v1 import cases, failure_digest
 from audit_sq_head_permit_domain_v1 import source, evidence, REPO, COMMIT
 from run_summary import aggregate
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 OUT = ROOT / "results/fail-review-baseline-01"
 UNIFIED = "lsq-progress-regression-15"
 LATEST = "replay-cause-lifetimes-contributor-regression-03"
@@ -45,9 +45,12 @@ def guard_old():
         "tools": {"tools/audit_fail_review_v1.py"}}
     groups = {}
     for group, old in guard["old_source_groups"].items():
-        base = ROOT / "docs/contracts" if group == "docs" else ROOT / group
+        base = ROOT / "docs/spec/design/contracts" if group == "docs" else ROOT / group
         paths = [p for p in base.rglob("*") if p.is_file() and "__pycache__" not in p.parts and p.suffix != ".pyc"] if base.is_dir() else [base]
-        pairs = [(str(p.relative_to(ROOT)), sha(p)) for p in paths if str(p.relative_to(ROOT)) not in exclusions.get(group, set())]
+        def old_name(path):
+            name = str(path.relative_to(ROOT))
+            return "docs/contracts/" + name.split("docs/spec/design/contracts/", 1)[1] if group == "docs" and "docs/spec/design/contracts/" in name else name
+        pairs = [(old_name(p), sha(p)) for p in paths if str(p.relative_to(ROOT)) not in exclusions.get(group, set())]
         actual = aggregate(pairs)
         assert actual == old, ("preexisting source changed", group, old, actual)
         groups[group] = actual
@@ -275,7 +278,7 @@ def fixed_sources():
 
 
 def source_lineage():
-    current = (ROOT / "tests/fail_review/test_public_contracts.py").read_text()
+    current = (ROOT / "testbenches/lsq_wrapper/tests/fail_review/test_public_contracts.py").read_text()
     second = current.replace('e.check("external response valid actually sampled", e.input["io_uncache_resp_valid"], 1)',
         'e.check("external response actual fire", e.pre["io_uncache_resp_ready"], 1)').replace(
         'e.event("response_valid_SID_returned", uid=owner["uid"], sid=sid, data=data, error=error,\n            response_ready_not_retained=True, acceptance_confirmed_by_following_original_LQ_wakeup=True)',
@@ -295,11 +298,11 @@ def source_lineage():
     before = next(n for n in ast.parse(second).body if isinstance(n, ast.AsyncFunctionDef) and n.name == name)
     after = next(n for n in ast.parse(current).body if isinstance(n, ast.AsyncFunctionDef) and n.name == name)
     assert ast.dump(before) == ast.dump(after)
-    for filename in ("tests/fail_review/conftest.py", "tests/fail_review/test_public_contracts.py"):
+    for filename in ("testbenches/lsq_wrapper/tests/fail_review/conftest.py", "testbenches/lsq_wrapper/tests/fail_review/test_public_contracts.py"):
         text = (ROOT / filename).read_text()
         assert not re.search(r"\b(?:skip|xfail)\b", text)
         assert not re.search(r"(?:from|import)\s+[^\n]*\.model\b", text)
-    return dict(current_probe_sources=[identity(ROOT / "tests/fail_review/conftest.py"), identity(ROOT / "tests/fail_review/test_public_contracts.py")],
+    return dict(current_probe_sources=[identity(ROOT / "testbenches/lsq_wrapper/tests/fail_review/conftest.py"), identity(ROOT / "testbenches/lsq_wrapper/tests/fail_review/test_public_contracts.py")],
         correction_reports=[identity(ROOT / "results" / RUNS[0] / "probe-correction-v1.json"), identity(ROOT / "results" / RUNS[1] / "probe-correction-v2.json")],
         original_new_probe_source_bytes_reconstructed=True, completed_WB_RAR_and_strict_function_ASTs_unchanged=True,
         no_completed_independent_case_reexecuted_to_hide_a_failure=True, no_reference_model_import=True)
@@ -449,7 +452,7 @@ def unresolved_head_cancel():
         assert not (owner["data"] ^ data) & selected
         observed.append(dict(lane=lane, old_UID=owner["uid"], physical_position=owner["position"], actual_VA=va, actual_PA=pa, mask=mask))
     assert observed
-    actor = ROOT / "store_queue/actor.py"
+    actor = ROOT / "testbenches/store_queue/env/actor.py"
     text = actor.read_text().splitlines()
     assert "self.live.values()" in text[233] and "del self.live[self.all[uid].position]" in text[338]
     fifo = ROOT / "rtl/store_queue/EnterSbufferQueue.sv"

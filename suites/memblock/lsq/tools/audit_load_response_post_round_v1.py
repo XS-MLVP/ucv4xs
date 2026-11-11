@@ -10,7 +10,7 @@ from audit_coverage_points_v1 import sha256_file
 from audit_evidence_io import write_report
 from audit_load_response_payload_v1 import FULL,PAIRS
 
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=__import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 UNIFIED=ROOT/"results/lsq-progress-regression-15"
 GUARD=UNIFIED/"load-response-post-index-guard-v1.json"
 

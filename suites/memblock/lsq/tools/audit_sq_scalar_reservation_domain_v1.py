@@ -62,7 +62,7 @@ def audit():
     assert hashlib.sha256(physical.read_bytes()).hexdigest()==physical_sha
     assert physical.read_text().splitlines()[16122].strip()=="assign io_full = allowEnqueue_REG > 8'h80;"
     report=dict(format="lsq-sq-scalar-reservation-domain-v1",commit=COMMIT,utility_gitlink=link,source_ranges=ranges,
-        contract="docs/contracts/sq-scalar-reservation-pool.md",domain="UNIT_INTERFACE_LSQ_CAPACITY",
+        contract="docs/spec/design/contracts/sq-scalar-reservation-pool.md",domain="UNIT_INTERFACE_LSQ_CAPACITY",
         scalar_count=1,LSQ_virtual_capacity=128,physical_issue_window=64,ROB_entries=160,
         public_sqFull=dict(source="rtl/store_queue/PhysicalStoreQueue.sv",source_SHA256=physical_sha,source_line=16123,
             exact_assignment="assign io_full = allowEnqueue_REG > 8'h80;",value_at_exact128=0,

@@ -137,7 +137,7 @@ def audit_pair(dut,before,after,scenario):
     functions={name:functional_counts(name,dut,scenario) for name in (before,after)}
     assert functions[after]["checked"]["count"]>functions[before]["checked"]["count"]
     report=dict(format="lsq-load-response-payload-evidence-v1",dut=dut,before_run=before,after_run=after,
-        contract="docs/contracts/load-response-payload-pool.md",producer_source=producer_source(),
+        contract="docs/spec/design/contracts/load-response-payload-pool.md",producer_source=producer_source(),
         baseline_tests=len(x),after_tests=len(y),added_nodes=[added],source_aggregate=a["source"]["aggregate_SHA256"],native_build_id=closure["native_build_id"],
         raw_nonwrapper_metrics=closure["metrics"],response_data_targets=targets,public_lifetime=witness(after,dut),functional=functions,
         original_source_line_coverage=line_delta(source_lines(a["meta"],a["dat"],dut),source_lines(b["meta"],b["dat"],dut)),
@@ -174,7 +174,7 @@ LQU_RELOCATED_NODES=(
 
 def relocated_failure_source_evidence():
     previous=ROOT/'results/entry-toggle-gap-after-01/verification-source/lsqverify/load_uncache/probe.py'
-    current=ROOT/"load_uncache/probe.py"
+    current=ROOT/"testbenches/load_uncache/env/probe.py"
     assert sha256_file(previous)=="e0caec07f0513b45210caa4a24ec84541cd26c369df0f20a89c8446195785f17"
     assert sha256_file(current)=="117820cc947b82e5fc39b74278db4ea6677f688b012c5a0f8ecac7eb94cfe77f"
     left,right=previous.read_text(),current.read_text()

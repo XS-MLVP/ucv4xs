@@ -17,7 +17,7 @@ from pathlib import Path
 import re
 import subprocess
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.sbuffer', fromlist=['ROOT']).ROOT
 VERILATOR_COVERAGE = str(ucv_paths.project_root() / '.tools/verilator/bin/verilator_coverage')
 METRIC = re.compile(r"^\s+(line|toggle|branch|expr|fsm_state|fsm_arc)\s+:\s+([0-9.]+)%\s+\(\s*([0-9]+)\s*/\s*([0-9]+)\)")
 DAT_POINT = re.compile(r"C '(.*)' (\d+)\n?\Z")

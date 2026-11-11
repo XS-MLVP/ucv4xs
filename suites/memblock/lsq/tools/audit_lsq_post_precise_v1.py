@@ -43,7 +43,7 @@ def main():
     refs={p:h for p,h in reference.items() if p.startswith('lsqverify/')}
     assert all(digest(ROOT/p)==h for p,h in refs.items())
     broken=[]
-    docs=[ROOT/"README.md",ROOT/"docs/ut-plan.md",*(ROOT/"docs/reports"/n for n in("lsq-progress-regression-12-20261019.md","lsq-s4-precise-20261019.md","lsq-local-reset-20261019.md"))]
+    docs=[ROOT/"README.md",ROOT/"docs/spec/verification/plan.md",*(ROOT/"docs/spec/verification/evidence/reports"/n for n in("lsq-progress-regression-12-20261019.md","lsq-s4-precise-20261019.md","lsq-local-reset-20261019.md"))]
     import re
     for doc in docs:
         for target in re.findall(r"\]\(([^)]+)\)",doc.read_text()):

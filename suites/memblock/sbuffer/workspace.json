@@ -1,0 +1,44 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "loader": "testbenches/shared/env/native.py",
+  "duts": {
+    "sbuffer_data": {
+      "design_spec": [
+        "docs/spec/design/functional-points-sbuffer-data.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/sbuffer-data-20261024.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/mem/sbuffer/Sbuffer.scala"
+      ],
+      "testbench": "sbuffer_data",
+      "tests": [
+        "testbenches/sbuffer_data/tests"
+      ],
+      "environment": "testbenches/sbuffer_data/env/__init__.py"
+    },
+    "sbuffer": {
+      "design_spec": [
+        "docs/spec/design/functional-points-sbuffer.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/sbuffer-top-20261024.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/mem/sbuffer/Sbuffer.scala",
+        "src/main/scala/xiangshan/mem/MemBlock.scala"
+      ],
+      "testbench": "sbuffer",
+      "tests": [
+        "testbenches/sbuffer/tests"
+      ],
+      "environment": "testbenches/sbuffer/env/__init__.py"
+    }
+  }
+}

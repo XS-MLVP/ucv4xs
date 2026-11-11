@@ -9,7 +9,7 @@ from pathlib import Path
 import re
 import xml.etree.ElementTree as ET
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 
 
 def sha256(path: Path) -> str:

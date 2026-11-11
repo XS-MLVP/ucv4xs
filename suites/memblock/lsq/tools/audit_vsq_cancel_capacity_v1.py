@@ -18,7 +18,7 @@ from audit_uq_page_pairs_v1 import functional_counts, node_summaries
 from audit_vsq_recovery_boundaries_v1 import SOURCES
 from audit_vsq_release_windows_v1 import FULL_PATHS, line_delta
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 BEFORE_FULL = "vsq-retire-batch-contributor-regression-01"
 FULL = "vsq-cancel-capacity-contributor-regression-01"
 FAIL_NODE = "tests.store_queue.test_cancel_capacity::test_real_cancel_capacity_old_bytes_and_every_new_UID_normal_consumption[True]"
@@ -119,7 +119,7 @@ def audit_pair(dut, before, after, scenario, bits):
     original, current = node_summaries(before, primary_name), node_summaries(after, primary_name)
     assert all(current[node] == value for node, value in original.items())
     result = dict(format="lsq-vsq-cancel-capacity-evidence-v1", dut=dut, before_run=before, after_run=after,
-        contract="docs/contracts/vsq-cancel-capacity.md", baseline_tests=len(old_cases), after_tests=len(new_cases), added_nodes=[new_node],
+        contract="docs/spec/design/contracts/vsq-cancel-capacity.md", baseline_tests=len(old_cases), after_tests=len(new_cases), added_nodes=[new_node],
         source_aggregate=old["source"]["aggregate_SHA256"], native_build_id=closure["native_build_id"], raw_nonwrapper_metrics=closure["metrics"],
         cancel_count_targets=dict(before=old_targets, after=new_targets), functional=functions,
         original_source_line_coverage=line_delta(source_lines(old["meta"],old["dat"],dut), source_lines(new["meta"],new["dat"],dut)),

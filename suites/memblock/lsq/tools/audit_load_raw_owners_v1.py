@@ -20,7 +20,7 @@ from audit_uq_page_pairs_v1 import node_summaries
 from audit_vsq_release_windows_v1 import line_delta
 from run_summary import aggregate
 
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=__import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 FULL="load-raw-owners-contributor-regression-02"
 PAIRS=(("load_queue","lq-RAW-owners-baseline-02","lq-RAW-owners-after-02"),
        ("lsq_wrapper","lsq-RAW-owners-baseline-02","lsq-RAW-owners-after-02"))
@@ -136,7 +136,7 @@ def calibration():
     correction_path=ROOT/'results/lsq-RAW-owners-after-01/ROB-source-correction-v1.json'
     correction=load(correction_path)
     assert correction['old_bytes_reconstructed_and_verified_against_original_full_library_aggregate']
-    assert correction['new_producer_SHA256']==sha256_file(ROOT/'load_raw_owners.py')
+    assert correction['new_producer_SHA256']==sha256_file(ROOT/'testbenches/load_queue/model/load_raw_owners.py')
     for name in ('lq-RAW-owners-after-01','lsq-RAW-owners-after-01'):
         historical=load(ROOT/'results'/name/'load-RAW-owners-evidence-v1.json')
         assert not historical['normal_ROB_admission']['proven']
@@ -165,7 +165,7 @@ def audit_pair(dut,before,after):
     assert targets['after']['stored']['hit']==7168 and targets['after']['rollback_output']['hit']==256
     ws=witnesses(after,dut)
     report=dict(format='lsq-load-RAW-owners-evidence-v1',dut=dut,before_run=before,after_run=after,
-        contract='docs/contracts/load-raw-checkpoint-owners.md',source_aggregate=a['source']['aggregate_SHA256'],
+        contract='docs/spec/design/contracts/load-raw-checkpoint-owners.md',source_aggregate=a['source']['aggregate_SHA256'],
         baseline_tests=len(old),after_tests=len(new),added_nodes=sorted(added),
         native_build_id=closure['native_build_id'],raw_nonwrapper_metrics=closure['metrics'],targets=targets,
         original_source_line_coverage=line_delta(source_lines(a['meta'],a['dat'],dut),source_lines(b['meta'],b['dat'],dut)),

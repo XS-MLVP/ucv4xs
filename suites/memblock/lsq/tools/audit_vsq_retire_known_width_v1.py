@@ -96,7 +96,7 @@ def audit_pair(dut, before, after, scenario):
     functions = {name: functional_counts(name, dut, scenario) for name in (before, after)}
     assert functions[after]["checked"]["count"] > functions[before]["checked"]["count"]
     report = dict(format="lsq-vsq-retire-known-width-evidence-v1", dut=dut, before_run=before, after_run=after,
-        contract="docs/contracts/vsq-retire-known-width.md", baseline_tests=len(a), after_tests=len(b), added_nodes=[node],
+        contract="docs/spec/design/contracts/vsq-retire-known-width.md", baseline_tests=len(a), after_tests=len(b), added_nodes=[node],
         source_aggregate=old["source"]["aggregate_SHA256"], native_build_id=closure["native_build_id"],
         raw_nonwrapper_metrics=closure["metrics"], retire_count_targets=dict(before=prior, after=current),
         original_source_line_coverage=line_delta(source_lines(old["meta"],old["dat"],dut),source_lines(new["meta"],new["dat"],dut)),

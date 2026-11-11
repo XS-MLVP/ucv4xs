@@ -138,7 +138,7 @@ def selftest():
 
 def audit(root):
     root = Path(root)
-    ev = root / 'docs/reports/evidence/soundness-20261025'
+    ev = root / 'docs/spec/verification/evidence/reports/evidence/soundness-20261025'
     index = json.loads((ev / 'final-runs.json').read_text())
     plan = json.loads((ev / 'final-run-plan.json').read_text())
     drift = json.loads((ev / 'source-drift-review.json').read_text())

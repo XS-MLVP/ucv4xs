@@ -11,16 +11,19 @@ from pathlib import Path
 import shutil
 import sys
 
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=__import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 sys.path.insert(0,str(ROOT))
 
 from audit_sq_exclusive_model_v1 import typed
 from audit_sq_initial import sha, verify_common
-from suites.memblock.lsq.raw.model import LoadQueueRawModel
-from suites.memblock.lsq.raw.types import Inputs as RawInputs, SqPtr
-from suites.memblock.lsq.replay.model import ReplayModel, sq_after
-from suites.memblock.lsq.replay.types import Inputs as ReplayInputs
-from suites.memblock.lsq.sq_endpoint.model import ExclusiveRawModel, ExclusiveReplayModel
+from suites.memblock.lsq.testbenches.raw.model import LoadQueueRawModel
+from suites.memblock.lsq.testbenches.raw.transactions import Inputs as RawInputs
+from suites.memblock.lsq.testbenches.raw.transactions import SqPtr
+from suites.memblock.lsq.testbenches.replay.model import ReplayModel
+from suites.memblock.lsq.testbenches.replay.model import sq_after
+from suites.memblock.lsq.testbenches.replay.transactions import Inputs as ReplayInputs
+from suites.memblock.lsq.testbenches.lsq_wrapper.tests.scenarios.sq_endpoint.model import ExclusiveRawModel
+from suites.memblock.lsq.testbenches.lsq_wrapper.tests.scenarios.sq_endpoint.model import ExclusiveReplayModel
 
 
 def audit(name):
@@ -57,7 +60,7 @@ def audit(name):
     assert previous["tests"]=={"PASS":1691,"FAIL":191}
     for key,digest in old_source.items():
         if key.startswith('lsqverify/'):assert source[key]==digest,("shared reference changed",key)
-    assert sha(ROOT/"sq_endpoint/model.py")==source['lsqverify/sq_endpoint/model.py']
+    assert sha(ROOT/"testbenches/lsq_wrapper/tests/scenarios/sq_endpoint/model.py")==source['lsqverify/sq_endpoint/model.py']
     specs=json.loads((frozen/"manifest/duts.json").read_text())["duts"]
     counts,trace_hashes={},{}
     for family,filename,kind,legacy,extended in(("RAW","load_queue_raw.jsonl",RawInputs,lambda:LoadQueueRawModel(specs["load_queue_raw"]),lambda:ExclusiveRawModel(specs["load_queue_raw"])),

@@ -1,0 +1,354 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "loader": "testbenches/shared/env/native.py",
+  "duts": {
+    "tlbfa": {
+      "design_spec": [
+        "docs/spec/verification/functional-points/functional-points-tlbfa.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/reports/tlbfa-20261024.md"
+      ],
+      "environment": "testbenches/tlbfa/env/__init__.py",
+      "tests": [
+        "testbenches/tlbfa/tests",
+        "testbenches/tlbfa/tests/test_tlbfa_basic.py",
+        "testbenches/tlbfa/tests/test_tlbfa_pages.py",
+        "testbenches/tlbfa/tests/test_tlbfa_refill.py",
+        "testbenches/tlbfa/tests/test_tlbfa_sfence.py",
+        "testbenches/tlbfa/tests/test_tlbfa_toggle.py"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/mmu/TLBStorage.scala"
+      ],
+      "testbench": "tlbfa"
+    },
+    "wrapper": {
+      "design_spec": [
+        "docs/spec/verification/functional-points/functional-points-wrapper.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/reports/wrapper-20261024.md"
+      ],
+      "environment": "testbenches/wrapper/env/__init__.py",
+      "tests": [
+        "testbenches/wrapper/tests",
+        "testbenches/wrapper/tests/test_wrapper.py"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/mmu/TLBStorage.scala",
+        "src/main/scala/xiangshan/cache/mmu/TLB.scala"
+      ],
+      "testbench": "wrapper"
+    },
+    "tlb": {
+      "design_spec": [
+        "docs/spec/verification/functional-points/functional-points-tlb.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/reports/tlb-20261024.md"
+      ],
+      "environment": "testbenches/tlb/env/__init__.py",
+      "tests": [
+        "testbenches/tlb/tests",
+        "testbenches/tlb/tests/test_tlb.py"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/mmu/TLB.scala",
+        "src/main/scala/xiangshan/frontend/Frontend.scala"
+      ],
+      "testbench": "tlb"
+    },
+    "l2mq": {
+      "design_spec": [
+        "docs/spec/verification/functional-points/functional-points-l2-leaves.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/reports/l2-leaves-20261024.md"
+      ],
+      "environment": "testbenches/l2mq/env/missqueue.py",
+      "tests": [
+        "testbenches/l2mq/tests",
+        "testbenches/l2mq/tests/test_l2mq.py"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/mmu/L2TLBMissQueue.scala",
+        "src/main/scala/xiangshan/cache/mmu/L2TLB.scala"
+      ],
+      "testbench": "l2mq"
+    },
+    "l2pf": {
+      "design_spec": [
+        "docs/spec/verification/functional-points/functional-points-l2-leaves.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/reports/l2-leaves-20261024.md"
+      ],
+      "environment": "testbenches/l2pf/env/l2pf.py",
+      "tests": [
+        "testbenches/l2pf/tests",
+        "testbenches/l2pf/tests/test_l2pf.py"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/mmu/L2TlbPrefetch.scala",
+        "src/main/scala/xiangshan/cache/mmu/L2TLB.scala"
+      ],
+      "testbench": "l2pf"
+    },
+    "ptwrepeater": {
+      "design_spec": [
+        "docs/spec/verification/functional-points/functional-points-l2-leaves.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/reports/l2-filter-repeater-20261024.md"
+      ],
+      "environment": "testbenches/ptwrepeater/env/ptw.py",
+      "tests": [
+        "testbenches/ptwrepeater/tests",
+        "testbenches/ptwrepeater/tests/test_ptwrepeater.py"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/mmu/Repeater.scala"
+      ],
+      "testbench": "ptwrepeater"
+    },
+    "ptwfilter": {
+      "design_spec": [
+        "docs/spec/verification/functional-points/functional-points-l2-leaves.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/reports/l2-filter-repeater-20261024.md"
+      ],
+      "environment": "testbenches/ptwrepeater/env/ptw.py",
+      "tests": [
+        "testbenches/ptwrepeater/tests",
+        "testbenches/ptwrepeater/tests/test_ptwfilter.py"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/mmu/Repeater.scala"
+      ],
+      "testbench": "ptwrepeater"
+    },
+    "ptw": {
+      "design_spec": [
+        "docs/spec/verification/functional-points/functional-points-l2-midblocks.md",
+        "docs/spec/design/contracts/ptw-completion-contract.md",
+        "docs/spec/design/contracts/implicit-gstage-mxr-contract.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/reports/l2-midblocks-20261024.md"
+      ],
+      "environment": "testbenches/ptw/env/ptw_walker.py",
+      "tests": [
+        "testbenches/ptw/tests",
+        "testbenches/ptw/tests/test_ptw.py",
+        "testbenches/ptw/tests/test_ptw_identity.py"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/mmu/PageTableWalker.scala",
+        "src/main/scala/xiangshan/cache/mmu/L2TLB.scala"
+      ],
+      "testbench": "ptw"
+    },
+    "pmp": {
+      "design_spec": [
+        "docs/spec/verification/functional-points/functional-points-l2-midblocks.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/reports/l2-midblocks-20261024.md"
+      ],
+      "environment": "testbenches/pmp/env/pmp.py",
+      "tests": [
+        "testbenches/pmp/tests",
+        "testbenches/pmp/tests/test_pmp.py"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/backend/fu/PMP.scala",
+        "src/main/scala/xiangshan/cache/mmu/L2TLB.scala",
+        "src/main/scala/xiangshan/mem/MemBlock.scala"
+      ],
+      "testbench": "pmp"
+    },
+    "bitmap": {
+      "design_spec": [
+        "docs/spec/verification/functional-points/functional-points-l2-midblocks.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/reports/l2-midblocks-20261024.md"
+      ],
+      "environment": "testbenches/bitmap/env/bitmap.py",
+      "tests": [
+        "testbenches/bitmap/tests",
+        "testbenches/bitmap/tests/test_bitmap.py"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/mmu/BitmapCheck.scala",
+        "src/main/scala/xiangshan/cache/mmu/L2TLB.scala"
+      ],
+      "testbench": "bitmap"
+    },
+    "bitmapcache": {
+      "design_spec": [
+        "docs/spec/verification/functional-points/functional-points-l2-midblocks.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/reports/l2-midblocks-20261024.md"
+      ],
+      "environment": "testbenches/bitmap/env/bitmap.py",
+      "tests": [
+        "testbenches/bitmap/tests",
+        "testbenches/bitmap/tests/test_bitmapcache.py"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/mmu/BitmapCheck.scala",
+        "src/main/scala/xiangshan/cache/mmu/L2TLB.scala"
+      ],
+      "testbench": "bitmap"
+    },
+    "ptwcache": {
+      "design_spec": [
+        "docs/spec/verification/functional-points/functional-points-ptwcache.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/reports/ptwcache-20261025.md"
+      ],
+      "environment": "testbenches/ptwcache/env/ptwcache.py",
+      "tests": [
+        "testbenches/ptwcache/tests",
+        "testbenches/ptwcache/tests/test_ptwcache.py"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/mmu/PageTableCache.scala",
+        "src/main/scala/xiangshan/cache/mmu/L2TLB.scala"
+      ],
+      "testbench": "ptwcache"
+    },
+    "llptw": {
+      "design_spec": [
+        "docs/spec/verification/functional-points/functional-points-l2-midblocks.md",
+        "docs/spec/design/contracts/ptw-completion-contract.md",
+        "docs/spec/design/contracts/implicit-gstage-mxr-contract.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/reports/llptw-20261025.md"
+      ],
+      "environment": "testbenches/llptw/env/llptw.py",
+      "tests": [
+        "testbenches/llptw/tests",
+        "testbenches/llptw/tests/test_llptw.py"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/mmu/PageTableWalker.scala",
+        "src/main/scala/xiangshan/cache/mmu/L2TLB.scala"
+      ],
+      "testbench": "llptw"
+    },
+    "tlbn": {
+      "design_spec": [
+        "docs/spec/verification/functional-points/functional-points-tlbn.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/reports/tlbn-20261025.md"
+      ],
+      "environment": "testbenches/tlbn/env/__init__.py",
+      "tests": [
+        "testbenches/tlbn/tests",
+        "testbenches/tlbn/tests/test_tlbn.py"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/mmu/TLB.scala",
+        "src/main/scala/xiangshan/mem/MemBlock.scala"
+      ],
+      "testbench": "tlbn"
+    },
+    "l2tlbwrapper": {
+      "design_spec": [
+        "docs/spec/verification/functional-points/functional-points-l2tlbwrapper.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/reports/l2tlbwrapper-20261025.md"
+      ],
+      "environment": "testbenches/l2tlbwrapper/env/l2tlbwrapper.py",
+      "tests": [
+        "testbenches/l2tlbwrapper/tests",
+        "testbenches/l2tlbwrapper/tests/test_l2tlbwrapper.py"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/mmu/L2TLB.scala",
+        "src/main/scala/xiangshan/mem/MemBlock.scala"
+      ],
+      "testbench": "l2tlbwrapper"
+    },
+    "l2tlb": {
+      "design_spec": [
+        "docs/spec/verification/functional-points/functional-points-l2tlb.md",
+        "docs/spec/design/contracts/ptw-completion-contract.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/reports/l2tlb-20261024.md"
+      ],
+      "environment": "testbenches/l2tlb/env/l2tlb.py",
+      "tests": [
+        "testbenches/l2tlb/tests",
+        "testbenches/l2tlb/tests/test_l2tlb.py"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/mmu/L2TLB.scala"
+      ],
+      "testbench": "l2tlb"
+    },
+    "hptw": {
+      "design_spec": [
+        "docs/spec/verification/functional-points/functional-points-hptw.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/reports/hptw-20261024.md"
+      ],
+      "environment": "testbenches/hptw/env/hptw.py",
+      "tests": [
+        "testbenches/hptw/tests",
+        "testbenches/hptw/tests/test_hptw.py"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/mmu/PageTableWalker.scala",
+        "src/main/scala/xiangshan/cache/mmu/L2TLB.scala"
+      ],
+      "testbench": "hptw"
+    }
+  }
+}

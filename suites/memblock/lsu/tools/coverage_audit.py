@@ -17,7 +17,7 @@ from pathlib import Path
 import re
 import subprocess
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsu', fromlist=['ROOT']).ROOT
 LOCK = __import__("ucv.runtime", fromlist=["toolchain"]).toolchain()
 VERILATOR_COVERAGE = LOCK["verilator"]["coverage_processor"]
 METRIC = re.compile(r"^\s+(line|toggle|branch|expr|fsm_state|fsm_arc)\s+:\s+([0-9.]+)%\s+\(\s*([0-9]+)\s*/\s*([0-9]+)\)")

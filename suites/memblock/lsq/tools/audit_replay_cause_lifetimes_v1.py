@@ -19,7 +19,7 @@ from audit_uq_page_pairs_v1 import node_summaries
 from audit_vsq_release_windows_v1 import line_delta
 from run_summary import aggregate
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 FULL = "replay-cause-lifetimes-contributor-regression-03"
 PAIRS = (("load_queue_replay", "lrq-cause-lifetimes-before-03", "lrq-cause-lifetimes-after-03"),
     ("load_queue", "lq-cause-lifetimes-before-03", "lq-cause-lifetimes-after-03"),
@@ -45,7 +45,7 @@ def calibration():
     assert width['parameter_chain'] == source_chain() and width['parameter_chain']['address_bit'] == 5
     v3_path = width_path.with_name('PA-bit5-producer-correction-v3.json')
     v3 = load(v3_path)
-    assert v3['corrected_producer_SHA256'] == sha256_file(ROOT / 'replay_cause_lifetimes.py')
+    assert v3['corrected_producer_SHA256'] == sha256_file(ROOT / 'testbenches/replay/model/replay_cause_lifetimes.py')
     assert v3['old02producer_bytes_and_entire_library_aggregate_verified']
     assert report['old_helper_bytes_and_entire_library_and_test_aggregates_verified']
     assert report['first_post_audit_actual_exitstatus'] == 1
@@ -183,7 +183,7 @@ def audit_pair(dut, before, after):
     ws = witness(after, dut)
     probe = witness("replay-cause-lifetimes-probe-03", dut, count=8)
     result = dict(format="lsq-Replay-cause-lifetime-directed-v1", dut=dut, before=before, after=after,
-        old_nodes=4, new_nodes=5, contract="docs/contracts/replay-cause-lifetimes.md", metrics=closure["metrics"],
+        old_nodes=4, new_nodes=5, contract="docs/spec/design/contracts/replay-cause-lifetimes.md", metrics=closure["metrics"],
         target_domains=ts, original_source_line_coverage=line_delta(source_lines(a["meta"], a["dat"], dut), source_lines(b["meta"], b["dat"], dut)),
         compact_witness=dict(path=ws["path"], SHA256=ws["SHA256"]), probe=dict(path=probe["path"], SHA256=probe["SHA256"]),
         source_projection=source_projection(), old_sources=old_sources(), calibration=calibration(),

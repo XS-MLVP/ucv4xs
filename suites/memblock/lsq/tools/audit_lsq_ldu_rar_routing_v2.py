@@ -45,7 +45,13 @@ def audit(name):
     fc=json.loads((run/"line-audit.json").read_text())["functional"]
     checked=next(g for g in fc if g["instance"]=="lsq.lsq_wrapper.checked")
     reached=next(g for g in fc if g["instance"]=="lsq.lsq_wrapper.reached")
-    contract=(run/"verification-source/docs/contracts/lsq-wrapper.md").read_text()
+    # Old run snapshots store the original docs/contracts path; new snapshots use the
+    # migrated docs/spec/design/contracts layout. Prefer the original path and only
+    # fall back for snapshots created after the migration.
+    contract_path = run/"verification-source/docs/contracts/lsq-wrapper.md"
+    if not contract_path.is_file():
+        contract_path = run/"verification-source/docs/spec/design/contracts/lsq-wrapper.md"
+    contract=contract_path.read_text()
     catalog=set()
     for line in contract.splitlines():
         if line.startswith("| LSQ-"):

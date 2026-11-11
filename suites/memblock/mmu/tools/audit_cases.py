@@ -6,13 +6,13 @@ import hashlib
 import json
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "docs/reports/evidence/soundness-20261025/case-audit.json"
+ROOT = __import__('suites.memblock.mmu', fromlist=['ROOT']).ROOT
+OUT = ROOT / "docs/spec/verification/evidence/reports/evidence/soundness-20261025/case-audit.json"
 
 
 def audit(root=ROOT):
     cases, failures = [], []
-    for path in sorted((root / "tests").rglob("test_*.py")):
+    for path in sorted((root / "testbenches").rglob("test_*.py")):
         source = path.read_text()
         tree = ast.parse(source)
         defs = [n for n in tree.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))]

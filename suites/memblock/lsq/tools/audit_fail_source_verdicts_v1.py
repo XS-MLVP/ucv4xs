@@ -21,7 +21,7 @@ from audit_evidence_io import write_report
 from audit_expanded_regression_v1 import cases, failure_digest
 from run_summary import aggregate
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 REPO = ucv_paths.source_path_for(ROOT)
 COMMIT = '893e1580b705d81f113c30c7a05734e09a08050e'
 OUT = ROOT / 'results/fail-source-adjudication-01'
@@ -62,9 +62,12 @@ def protected():
     exclude = {'tests/fail_review/conftest.py', 'tests/fail_review/test_public_contracts.py',
         'tools/audit_fail_review_v1.py', 'tools/fail_source_capture_v1.py', 'tools/audit_fail_source_verdicts_v1.py'}
     for group, expected in before['old_source_groups'].items():
-        path = ROOT / ('docs/contracts' if group == 'docs' else group)
+        path = ROOT / ('docs/spec/design/contracts' if group == 'docs' else group)
         paths = path.rglob('*') if path.is_dir() else (path,)
-        entries = [(str(p.relative_to(ROOT)), digest(p.read_bytes())) for p in paths if p.is_file()
+        def old_name(p):
+            name = str(p.relative_to(ROOT))
+            return 'docs/contracts/' + name.split('docs/spec/design/contracts/', 1)[1] if group == 'docs' and 'docs/spec/design/contracts/' in name else name
+        entries = [(old_name(p), digest(p.read_bytes())) for p in paths if p.is_file()
             and '__pycache__' not in p.parts and p.suffix != '.pyc' and str(p.relative_to(ROOT)) not in exclude]
         assert aggregate(entries) == expected, ('old verification source changed', group)
     return dict(old_artifacts=141, all_old_artifact_bytes_equal=True,
@@ -174,28 +177,28 @@ def root_definitions():
         source('backend/rob/Rob.scala', 1248, 1258, 'val pendingPtrInput = WireInit(deqPtr)', 'io.lsq.pendingPtr'),
         source('mem/lsqueue/LoadQueueUncache.scala', 122, 126, 'isNotAfterSlot(pendingPtr)'),
         source('mem/lsqueue/LoadQueueUncache.scala', 421, 453, 'mmioSelect'),
-        source('tests/load_uncache/test_timing_boundaries.py', 105, 123, 'UNIT-INTERFACE', 'pending'))
+        source('testbenches/load_uncache/tests/test_timing_boundaries.py', 105, 123, 'UNIT-INTERFACE', 'pending'))
     add('NOT-RAR-REPLAY-ROUTING', False, '验证producer把RAR回滚错接成C_NK重放',
         'MixedOwners把RAR nuke也赋成Cause.VIOLATION，再把同一个老Load送回Replay而不flush年轻已released的Load；同一个RAR冲突永远存在，造成5000拍超时。RTL按给定C_NK正常重放，不是RTL死锁。',
         '真实LDU的RAR违约走flushAfter回滚；C_NK来自较老STA同拍nuke，二者不能混用。',
-        source('tests/lsq_wrapper/mixed_owners.py', 316, 328, 'rarNukeQuery', 'Cause.VIOLATION'),
-        source('tests/lsq_wrapper/mixed_owners.py', 224, 231, 'causes=0 if cause is None else 1 << cause'),
+        source('testbenches/lsq_wrapper/tests/mixed_owners.py', 316, 328, 'rarNukeQuery', 'Cause.VIOLATION'),
+        source('testbenches/lsq_wrapper/tests/mixed_owners.py', 224, 231, 'causes=0 if cause is None else 1 << cause'),
         source('mem/pipeline/NewLoadUnit.scala', 1020, 1031, 'io.staNukeQueryReq', 'val nuke ='),
         source('mem/pipeline/NewLoadUnit.scala', 1118, 1125, 'cause(C_NK) := troubleMaker && nuke'),
         source('mem/pipeline/NewLoadUnit.scala', 1496, 1504, 's3RarViolation', 'RedirectLevel.flushAfter'))
     add('NOT-CBO-SIZE-PRODUCER', False, '原混合seed28928伪造8B CBO.zero',
         '首次physical-byte断言中的年轻slot6是CBO.zero，但旧SpecialStore沿用size3/mask0xff，只在byte0..7进入重叠域；检查器却按整line zero认为它覆盖byte12。实际StoreUnit CBO包固定size QB=4、mask0xffff；修正元数据后该first-failure条件消失。不是新增第13个Forward alias bug。',
         '必须先使用真实CBO生产者size/mask，再检查其整line语义。不能把这个错误刺激当作普通跨VA Store的别名反例。',
-        source('tests/lsq_wrapper/special_owners.py', 18, 33, 'class SpecialStore', 'StoreOwner.words'),
-        source('tests/lsq_wrapper/mixed_owners.py', 83, 84, 'else 3'),
-        source('tests/lsq_wrapper/mixed_owners.py', 115, 119, 'cbo=cbo'),
+        source('testbenches/lsq_wrapper/tests/special_owners.py', 18, 33, 'class SpecialStore', 'StoreOwner.words'),
+        source('testbenches/lsq_wrapper/tests/mixed_owners.py', 83, 84, 'else 3'),
+        source('testbenches/lsq_wrapper/tests/mixed_owners.py', 115, 119, 'cbo=cbo'),
         source('mem/pipeline/NewStoreUnit.scala', 430, 438, 'toSqAddr.size := Mux(isCbo, MemorySize.QB.U, size)'),
         source('mem/MemCommon.scala', 169, 171, 'case object QB extends Size(BitPat("b100"))'),
-        source('tests/lsq_wrapper/normal_owners.py', 24, 31, 'size=4', 'mask=65535'))
+        source('testbenches/lsq_wrapper/tests/normal_owners.py', 24, 31, 'size=4', 'mask=65535'))
     add('NOT-HEAD-CANCEL-PRODUCER', False, '用例撤销已获不可撤回许可的无异常普通Store',
         '测试令同一无异常scalar Store到ROB头、STA/STD/S2全完成并给出precommit后，又人为flushSelf并把其owner删除。已入EnterSbufferQueue的数据没有redirect撤回协议。正常分支/Load回滚不能撤销最老Store；Store自己的异常/trigger在S2阻止commit，singleStep项根本不发给IQ，含Store的ROB entry禁止IRQ。因而本用例不是合法未提交取消，也不是FIFO漏清bug；StopIteration来自actor删除了仍有副作用义务的owner。',
         '在许可前测试可取消项；已不可撤回的Store必须保留消费义务，不能重用其UID或期待FIFO消失。此裁定仅覆盖该无异常scalar反例，不把它扩大为任意vector/压缩/异常重定向定理。',
-        source('vsq_cancel_capacity.py', 115, 126, 'advance_rob=False', 'head_permit', 'actor.cancel'),
+        source('testbenches/vsq/model/vsq_cancel_capacity.py', 115, 126, 'advance_rob=False', 'head_permit', 'actor.cancel'),
         source('mem/lsqueue/VirtualStoreQueue.scala', 282, 284, 'isSameSlot(robHeadPtr)'),
         source(sq, 1995, 2007, '!ctrlEntries(ptr).hasException', '!ctrlEntries(ptr).waitStoreS2'),
         source(sq, 727, 735, 'val fromDeqModule', 'val toSbuffer'),
@@ -205,7 +208,7 @@ def root_definitions():
         source('backend/rename/CompressUnit.scala', 233, 235, 'in.valid && !allow'),
         source('backend/rename/CompressUnit.scala', 296, 300, 'entryInterruptSafeByToken'),
         source('backend/rob/Rob.scala', 768, 768, 'deqPtrEntry.interruptSafe'),
-        source('store_queue/actor.py', 330, 340, 'del self.live[self.all[uid].position]'))
+        source('testbenches/store_queue/env/actor.py', 330, 340, 'del self.live[self.all[uid].position]'))
     return roots
 
 

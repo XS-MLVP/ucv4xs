@@ -7,16 +7,16 @@ import hashlib
 import json
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.sbuffer', fromlist=['ROOT']).ROOT
 FINAL = {
     "sbuffer_data": "sbuffer-data-initial-04",
     "sbuffer": "sbuffer-top-contract-03",
 }
 REPORTS = [
-    "docs/reports/sbuffer-data-20261024.md",
-    "docs/reports/sbuffer-top-20261024.md",
-    "docs/reports/coverage-loop-20261024.md",
-    "docs/reports/flush-contract-review-20261024.md",
+    "docs/spec/verification/evidence/sbuffer-data-20261024.md",
+    "docs/spec/verification/evidence/sbuffer-top-20261024.md",
+    "docs/spec/verification/evidence/coverage-loop-20261024.md",
+    "docs/spec/verification/evidence/flush-contract-review-20261024.md",
 ]
 
 
@@ -81,7 +81,7 @@ def check_run(name: str, *, require_trace: bool) -> dict:
 
 def check_wline_domain() -> dict:
     """The parent only issues wline for cbo.zero with a zero payload."""
-    path = ROOT / "tests/sbuffer/test_sbuffer.py"
+    path = ROOT / "testbenches/sbuffer/tests/test_sbuffer.py"
     lines = path.read_text().splitlines()
     violations = []
     occurrences = 0
@@ -121,7 +121,7 @@ def main() -> None:
         "test_cmo_completion_uses_sbempty_without_sqempty",
         "test_wline_zero_all_lines",
     ]
-    test_source = (ROOT / "tests/sbuffer/test_sbuffer.py").read_text()
+    test_source = (ROOT / "testbenches/sbuffer/tests/test_sbuffer.py").read_text()
     missing_contract_tests = [name for name in contract_tests if f"async def {name}(" not in test_source]
     if missing_contract_tests:
         problems.append(f"missing contract tests: {missing_contract_tests}")

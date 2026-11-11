@@ -17,10 +17,13 @@ import subprocess
 import sys
 import tempfile
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsu', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(ROOT / "tools"))
 
-from suites.memblock.lsu.inventory import DUTS, dut_dir, export_name, rtl_dir  # noqa: E402
+from suites.memblock.lsu.testbenches.shared.env.inventory import DUTS
+from suites.memblock.lsu.testbenches.shared.env.inventory import dut_dir
+from suites.memblock.lsu.testbenches.shared.env.inventory import export_name
+from suites.memblock.lsu.testbenches.shared.env.inventory import rtl_dir  # noqa: E402
 
 LOCK = __import__("ucv.runtime", fromlist=["toolchain"]).toolchain()
 PICKER = LOCK["picker"]["executable"]

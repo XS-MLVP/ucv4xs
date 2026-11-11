@@ -8,12 +8,16 @@ import re
 import shutil
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(ROOT))
-from suites.memblock.lsq.deq.ports import Ports
-from suites.memblock.lsq.deq.types import DeqControl, Inputs, SecondPage, Store, encode
-from suites.memblock.lsq.raw.types import SqPtr
-from suites.memblock.lsq.vlq.types import RobPtr
+from suites.memblock.lsq.testbenches.deq.env.ports import Ports
+from suites.memblock.lsq.testbenches.deq.transactions import DeqControl
+from suites.memblock.lsq.testbenches.deq.transactions import Inputs
+from suites.memblock.lsq.testbenches.deq.transactions import SecondPage
+from suites.memblock.lsq.testbenches.deq.transactions import Store
+from suites.memblock.lsq.testbenches.deq.transactions import encode
+from suites.memblock.lsq.testbenches.raw.transactions import SqPtr
+from suites.memblock.lsq.testbenches.vlq.transactions import RobPtr
 
 
 def sha(path):
@@ -64,7 +68,9 @@ def main():
     out = ROOT / "results/deq-codec-static-01"
     out.mkdir(exist_ok=False)
     hashes = {}
-    for path in (Path(__file__), *(ROOT / "deq").glob("*.py")):
+    for path in (Path(__file__), *(ROOT / "testbenches/deq").glob("*.py"),
+                 *(ROOT / "testbenches/deq/env").glob("*.py"),
+                 ROOT / "testbenches/deq/tests/fixtures.py"):
         dest = out / "source" / path.relative_to(ROOT)
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(path, dest)

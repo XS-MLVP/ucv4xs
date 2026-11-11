@@ -7,7 +7,7 @@
       "severity": "reviewed_not_bug",
       "status": "closed_no_defect",
       "summary": "CMO \u671f\u95f4 flush.empty \u53d7 sqempty \u95e8\u63a7\u4e0d\u662f\u7f3a\u9677\uff1aCMO \u6d88\u8d39 sbempty\uff0cfence/atomics \u6d88\u8d39 flush.empty\u3002",
-      "evidence": "docs/reports/flush-contract-review-20261024.md; RISC-V CMO spec 19.1.4.1; XiangShan PR #6183; MemBlock.scala:1175-1186,1239; Fence.scala:58-83; AtomicsUnit.scala:125,312; NewStoreQueue.scala:967-1003",
+      "evidence": "docs/spec/verification/evidence/flush-contract-review-20261024.md; RISC-V CMO spec 19.1.4.1; XiangShan PR #6183; MemBlock.scala:1175-1186,1239; Fence.scala:58-83; AtomicsUnit.scala:125,312; NewStoreQueue.scala:967-1003",
       "impact": "\u4e24\u4e2a\u7a7a\u4fe1\u53f7\u662f\u4e0d\u540c\u5c42\u7ea7\uff1asbempty=Sbuffer+\u8f93\u5165+MSHR\uff1bflush.empty=\u518d\u52a0 sqempty\u3002CBO \u5728 SQ \u5934\u6267\u884c\u3001\u81ea\u8eab\u6761\u76ee\u4f7f sqempty=0\uff0c\u7b49 flush.empty \u4f1a\u6b7b\u9501\u3002",
       "next": "\u82e5\u672a\u6765 sbempty \u52a0\u5165 sqempty\u3001CBO \u6539\u6d88\u8d39 flush.empty\uff0c\u6216 CMO \u4e0d\u518d\u7b49 MSHR\uff0c\u5219\u9700\u91cd\u65b0\u5ba1\u67e5\u3002"
     },

@@ -9,11 +9,16 @@ import re
 import shutil
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(ROOT))
-from suites.memblock.lsq.forward.codec import encode
-from suites.memblock.lsq.forward.types import Inputs, Query, Store, Translation, SecondPage, byte_count
-from suites.memblock.lsq.raw.types import SqPtr
+from suites.memblock.lsq.testbenches.forward.env.codec import encode
+from suites.memblock.lsq.testbenches.forward.transactions import Inputs
+from suites.memblock.lsq.testbenches.forward.transactions import Query
+from suites.memblock.lsq.testbenches.forward.transactions import Store
+from suites.memblock.lsq.testbenches.forward.transactions import Translation
+from suites.memblock.lsq.testbenches.forward.transactions import SecondPage
+from suites.memblock.lsq.testbenches.forward.transactions import byte_count
+from suites.memblock.lsq.testbenches.raw.transactions import SqPtr
 
 
 def sha(path):
@@ -55,7 +60,7 @@ def main():
     out = ROOT / "results/forward-codec-static-01"
     out.mkdir(exist_ok=False)
     hashes = {}
-    for path in (Path(__file__), ROOT / "forward/types.py", ROOT / "forward/codec.py"):
+    for path in (Path(__file__), ROOT / "testbenches/forward/transactions.py", ROOT / "testbenches/forward/env/codec.py"):
         dest = out / "source" / path.relative_to(ROOT)
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(path, dest)

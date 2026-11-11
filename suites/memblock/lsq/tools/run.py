@@ -11,7 +11,7 @@ import subprocess
 import shutil
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--name", default=None)
@@ -32,7 +32,7 @@ output.mkdir(parents=True, exist_ok=False)
 snapshot = output / "verification-source"
 files = [ROOT / "pytest.ini", ROOT / "README.md"]
 files.extend(ucv_paths.suite_python_sources(ROOT))
-for folder in ("docs/contracts", "manifest"):
+for folder in ("docs/spec/design/contracts", "manifest"):
     files.extend(p for p in (ROOT / folder).rglob("*")
                  if p.is_file() and "__pycache__" not in p.parts and p.suffix != ".pyc")
 source_hashes = {}
@@ -51,7 +51,7 @@ cmd = [sys.executable, "-m", "toffee", "run", "--workers", str(args.workers),
        "--native-coverage-tool", str(ucv_paths.project_root() / '.tools/verilator/bin/verilator_coverage'),
        "--export-coverage-json", "--", "--basetemp", str(output / "cases"),
         "--junitxml", str(output / "pytest.xml"), "-q", "--lsq-trace-max-mb",str(args.trace_max_mb),
-        *(["--lsq-trace"] if args.trace else []),*(["--lsq-waves"] if args.waves else []),*(tests or ["tests"])]
+        *(["--lsq-trace"] if args.trace else []),*(["--lsq-waves"] if args.waves else []),*(tests or ["modules"])]
 env = dict(os.environ)
 env["PYTHONPATH"] = str(ucv_paths.project_root() / '.tools/share/picker/python') + os.pathsep + str(ROOT) + os.pathsep + env.get("PYTHONPATH", "")
 (output / "command.json").write_text(json.dumps({"cwd": str(ROOT), "command": cmd}, indent=2) + "\n")

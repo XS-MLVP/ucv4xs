@@ -71,7 +71,7 @@ def audit(name):
     assert len(report["native"]) == 1 and report["native"][0]["dut"] == "lsq_wrapper"
     native = report["native"][0]
     catalog = set()
-    for line in (ROOT / "docs/contracts/lsq-wrapper.md").read_text().splitlines():
+    for line in (ROOT / "docs/spec/design/contracts/lsq-wrapper.md").read_text().splitlines():
         if line.startswith("| LSQ-"):
             _, group, cases, *_ = line.split("|")
             catalog.update(group.strip() + "." + case.strip() for case in cases.split("/"))

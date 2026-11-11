@@ -12,7 +12,7 @@ import shutil
 import xml.etree.ElementTree as ET
 
 
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=__import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 RESULTS=ROOT/"results"
 
 

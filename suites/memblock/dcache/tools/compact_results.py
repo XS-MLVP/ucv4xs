@@ -24,7 +24,7 @@ import json
 import shutil
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.dcache', fromlist=['ROOT']).ROOT
 
 
 def gzip_file(src: Path, dst: Path, level: int = 6) -> int:

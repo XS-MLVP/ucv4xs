@@ -8,7 +8,7 @@ from pathlib import Path
 
 from audit_evidence_io import write_report
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 
 
 def load(path: Path) -> dict:

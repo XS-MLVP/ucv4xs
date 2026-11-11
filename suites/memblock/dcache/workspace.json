@@ -1,0 +1,256 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "loader": "testbenches/shared/env/dut.py",
+  "duts": {
+    "duplicated_tag_array": {
+      "design_spec": [
+        "docs/spec/design/functional-points-duplicated-tag-array.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/duplicated-tag-array-20261024.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/dcache/meta/TagArray.scala",
+        "src/main/scala/xiangshan/cache/dcache/DCacheWrapper.scala"
+      ],
+      "testbench": "duplicated_tag_array",
+      "tests": [
+        "testbenches/duplicated_tag_array/tests"
+      ],
+      "environment": "testbenches/duplicated_tag_array/env/__init__.py"
+    },
+    "ctrl_unit": {
+      "design_spec": [
+        "docs/spec/design/functional-points-ctrl-unit.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/ctrl-unit-20261024.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/dcache/CtrlUnit.scala",
+        "src/main/scala/xiangshan/cache/dcache/DCacheWrapper.scala"
+      ],
+      "testbench": "ctrl_unit",
+      "tests": [
+        "testbenches/ctrl_unit/tests"
+      ],
+      "environment": "testbenches/ctrl_unit/env/__init__.py"
+    },
+    "miss_ready_gen": {
+      "design_spec": [
+        "docs/spec/design/functional-points-miss-ready-gen.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/miss-ready-gen-20261024.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/dcache/DCacheWrapper.scala"
+      ],
+      "testbench": "miss_ready_gen",
+      "tests": [
+        "testbenches/miss_ready_gen/tests"
+      ],
+      "environment": "testbenches/miss_ready_gen/env/__init__.py"
+    },
+    "counter_filter": {
+      "design_spec": [
+        "docs/spec/design/functional-points-counter-filter.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/counter-filter-20261024.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/mem/prefetch/FDP.scala",
+        "src/main/scala/xiangshan/cache/dcache/DCacheWrapper.scala"
+      ],
+      "testbench": "counter_filter",
+      "tests": [
+        "testbenches/counter_filter/tests"
+      ],
+      "environment": "testbenches/counter_filter/env/__init__.py"
+    },
+    "miss_track": {
+      "design_spec": [
+        "docs/spec/design/functional-points-miss-track.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/miss-track-20261024.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/dcache/loadpipe/MissTrack.scala",
+        "src/main/scala/xiangshan/cache/dcache/DCacheWrapper.scala"
+      ],
+      "testbench": "miss_track",
+      "tests": [
+        "testbenches/miss_track/tests"
+      ],
+      "environment": "testbenches/miss_track/env/__init__.py"
+    },
+    "load_pipe": {
+      "design_spec": [
+        "docs/spec/design/functional-points-load-pipe.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/load-pipe-20261024.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/dcache/loadpipe/LoadPipe.scala",
+        "src/main/scala/xiangshan/cache/dcache/DCacheWrapper.scala"
+      ],
+      "testbench": "load_pipe",
+      "tests": [
+        "testbenches/load_pipe/tests"
+      ],
+      "environment": "testbenches/load_pipe/env/__init__.py"
+    },
+    "banked_data_array": {
+      "design_spec": [
+        "docs/spec/design/functional-points-banked-data-array.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/banked-data-array-20261024.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/dcache/data/BankedDataArray.scala",
+        "src/main/scala/xiangshan/cache/dcache/DCacheWrapper.scala"
+      ],
+      "testbench": "banked_data_array",
+      "tests": [
+        "testbenches/banked_data_array/tests"
+      ],
+      "environment": "testbenches/banked_data_array/env/__init__.py"
+    },
+    "main_pipe": {
+      "design_spec": [
+        "docs/spec/design/functional-points-main-pipe.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/main-pipe-20261025.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/dcache/mainpipe/MainPipe.scala",
+        "src/main/scala/xiangshan/cache/dcache/DCacheWrapper.scala"
+      ],
+      "testbench": "main_pipe",
+      "tests": [
+        "testbenches/main_pipe/tests"
+      ],
+      "environment": "testbenches/main_pipe/env/__init__.py"
+    },
+    "miss_queue": {
+      "design_spec": [
+        "docs/spec/design/functional-points-miss-queue.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/miss-queue-20261025.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/dcache/mainpipe/MissQueue.scala",
+        "src/main/scala/xiangshan/cache/dcache/DCacheWrapper.scala"
+      ],
+      "testbench": "miss_queue",
+      "tests": [
+        "testbenches/miss_queue/tests"
+      ],
+      "environment": "testbenches/miss_queue/env/__init__.py"
+    },
+    "probe_queue": {
+      "design_spec": [
+        "docs/spec/design/functional-points-probe-queue.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/writeback-probe-20261024.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/dcache/mainpipe/Probe.scala",
+        "src/main/scala/xiangshan/cache/dcache/DCacheWrapper.scala"
+      ],
+      "testbench": "probe_queue",
+      "tests": [
+        "testbenches/probe_queue/tests"
+      ],
+      "environment": "testbenches/probe_queue/env/__init__.py"
+    },
+    "writeback_queue": {
+      "design_spec": [
+        "docs/spec/design/functional-points-writeback-queue.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/writeback-probe-20261024.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/dcache/mainpipe/WritebackQueue.scala",
+        "src/main/scala/xiangshan/cache/dcache/DCacheWrapper.scala"
+      ],
+      "testbench": "writeback_queue",
+      "tests": [
+        "testbenches/writeback_queue/tests"
+      ],
+      "environment": "testbenches/writeback_queue/env/__init__.py"
+    },
+    "dcache": {
+      "design_spec": [
+        "docs/spec/design/functional-points-dcache.md",
+        "docs/spec/design/hierarchy.md",
+        "docs/spec/design/l2-transport-contract.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/dcache-top-20261025.md",
+        "docs/spec/verification/evidence/coverage-20261025.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/dcache/DCacheWrapper.scala"
+      ],
+      "testbench": "dcache",
+      "tests": [
+        "testbenches/dcache/tests"
+      ],
+      "environment": "testbenches/dcache/env/__init__.py"
+    },
+    "dcache_wrapper": {
+      "design_spec": [
+        "docs/spec/design/functional-points-dcache-wrapper.md",
+        "docs/spec/design/hierarchy.md",
+        "docs/spec/design/README.md"
+      ],
+      "verification_spec": [
+        "docs/spec/verification/README.md",
+        "docs/spec/verification/evidence/dcache-wrapper-20261025.md"
+      ],
+      "chisel": [
+        "src/main/scala/xiangshan/cache/dcache/DCacheWrapper.scala",
+        "src/main/scala/xiangshan/mem/MemBlock.scala"
+      ],
+      "testbench": "dcache_wrapper",
+      "tests": [
+        "testbenches/dcache_wrapper/tests"
+      ],
+      "environment": "testbenches/dcache_wrapper/env/__init__.py"
+    }
+  }
+}
