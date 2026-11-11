@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(ROOT))
 
 from audit_coverage_points_v1 import records, sha256_file, summarize
@@ -117,7 +117,7 @@ def audit(name):
             origin, implementation = case["target_origin"], case["implementation_SHA256"]
         assert origin == case["target_origin"] and implementation == case["implementation_SHA256"]
         assert origin["target_count"] == len(keys) and origin["target_set_SHA256"] == digest_keys(set(keys))
-        assert implementation["observer"] == sha256_file(ROOT / "native_case_probe.py")
+        assert implementation["observer"] == sha256_file(ROOT / "testbenches/lsq_wrapper/env/native_case_probe.py")
         assert len(case["native_exports"]) == 1
         export = case["native_exports"][0]
         assert export["native_build_id"] == build["build_id"]

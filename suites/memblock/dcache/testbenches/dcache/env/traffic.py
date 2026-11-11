@@ -1,0 +1,287 @@
+"""Constrained-random traffic for the DCache top level.
+
+The generator keeps an L2 shadow memory plus the set of store bytes that the
+DCache has acknowledged but not yet written back.  Every load is compared against
+that model, and every dirty eviction is checked on the C channel before its bytes
+are absorbed into the model.  This is the coverage-driven complement to the
+directed tests: it mixes hits, misses, refills, dirty evictions, dual-channel
+traffic and partial store masks in a single reproducible run.
+
+Contract note: a 64-bit load reads only the banks selected by its 8-byte mask
+(`byteMaskToBankMask`), so the 128-bit response carries valid bytes only for that
+mask.  The generator therefore compares the low 64 bits of a 16-byte-aligned load
+instead of assuming the whole window is fresh.
+
+Documented limit of the generator: it never issues a second store to a line that
+still has an outstanding miss, because that sequence is the open RTL defect
+`MQ-STORE-MERGE-DATA-PENDING` (see
+`test_two_partial_stores_same_missing_line_merge_data`).  Everything else,
+including dirty eviction, is covered by the directed tests; this generator uses
+one line per set so its model does not need a PLRU.  A `handled=0` response is
+retried like the LSU would replay it. L2 service windows drain complete releases
+and return source-matched acknowledgements; idle D.valid is always zero.
+"""
+
+from __future__ import annotations
+
+from suites.memblock.dcache.testbenches.shared.env.execution import step
+from suites.memblock.dcache.testbenches.dcache.env.tilelink import CAssembler
+from suites.memblock.dcache.testbenches.dcache.env.tilelink import CBeat
+from suites.memblock.dcache.testbenches.dcache.env.tilelink import check_release_data
+
+import random
+
+
+def shadow_line(block: int) -> bytearray:
+    """Deterministic L2 content for one 64B block."""
+    seed = (block >> 6) & 0xFFFF
+    return bytearray(((seed * 37 + i * 11 + 5) & 0xFF) for i in range(64))
+
+
+def line_beats(line: bytes) -> list[int]:
+    return [int.from_bytes(line[:32], "little"),
+            int.from_bytes(line[32:], "little")]
+
+
+def block_of(addr: int) -> int:
+    return addr & ~0x3F
+
+
+def collect_same_set(start: int, count: int, span: int = 0x400000) -> list[int]:
+    """Collect `count` block addresses mapping to the same set as `start`."""
+    from suites.memblock.dcache.testbenches.load_pipe.model import dcache_index
+    want = dcache_index(start)
+    out = [start]
+    addr = start + 0x40
+    while len(out) < count and addr < start + span:
+        if dcache_index(addr) == want:
+            out.append(addr)
+        addr += 0x40
+    return out
+
+
+def same_set_addresses(start: int, count: int) -> list[int]:
+    """Return `count` block addresses that map to the same DCache set."""
+    from suites.memblock.dcache.testbenches.load_pipe.model import dcache_index
+    want = dcache_index(start)
+    found = [start]
+    addr = start + 0x40
+    while len(found) < count:
+        if dcache_index(addr) == want:
+            found.append(addr)
+        addr += 0x40
+    return found
+
+
+def expected_line(model: dict, block: int) -> bytearray:
+    """L2 content plus the store bytes the model believes are still pending."""
+    line = bytearray(model["l2"].setdefault(block, shadow_line(block)))
+    for offset, value in model["pending"].get(block, {}).items():
+        line[offset] = value
+    return line
+
+
+def ack_ready(dc) -> None:
+    """Legacy name: leave L2 responses idle between monitored service windows.
+
+    ReleaseAck is a transaction, not a ready signal. No D.valid may be offered
+    until a complete C Release has actually been accepted. Hold C backpressure
+    outside pump() so direct legacy Step calls cannot consume an unrecorded beat.
+    """
+    for channel in dc.channels:
+        channel["a_ready"].Set(0)
+        channel["c_ready"].Set(0)
+        for field in ("valid","opcode","size","source","sink","denied","corrupt","data"):
+            channel["d_"+field].Set(0)
+
+
+def pump(dc, model: dict, cycles: int = 4) -> None:
+    """Observe complete C transfers and acknowledge each exact source once."""
+    if cycles<0:
+        raise ValueError('negative L2 pump budget')
+    assembler=model.setdefault('c_assembler',CAssembler())
+    acks=model.setdefault('release_acks',[[],[]])
+    try:
+        for tick in range(cycles+64):
+            for index,ch in enumerate(dc.channels):
+                ch['a_ready'].Set(0)
+                ch['c_ready'].Set(1)
+                source,size=acks[index][0] if acks[index] else (0,0)
+                fields=dict(valid=int(bool(acks[index])),opcode=6,size=size,source=source,
+                            sink=0,denied=0,corrupt=0,data=0)
+                for field,value in fields.items():
+                    ch['d_'+field].Set(value)
+            dc.refresh()
+            d_fires=[index for index,ch in enumerate(dc.channels)
+                     if dc._val(ch['d_valid']) and dc._val(ch['d_ready'])]
+            c_fires=[CBeat(index,*(dc._val(ch['c_'+field]) for field in
+                       ('opcode','param','size','source','address','data')))
+                     for index,ch in enumerate(dc.channels)
+                     if dc._val(ch['c_valid']) and dc._val(ch['c_ready'])]
+            step(dc)
+            dc.refresh()
+            for index in d_fires:
+                acks[index].pop(0)
+            for beat in c_fires:
+                count=len(assembler.messages)
+                assembler.accept(beat)
+                for message in assembler.messages[count:]:
+                    header=message.header
+                    assert header.opcode in (6,7), ('unsolicited probe response',message)
+                    block=block_of(header.address)
+                    line=expected_line(model,block)
+                    if header.opcode==7:
+                        check_release_data(message,address=block,line=int.from_bytes(line,'little'))
+                    else:
+                        assert not model['pending'].get(block), ('clean Release with pending stores',block)
+                    # Sequence disambiguates legal reuse of the same source/address.
+                    key=(header.channel,len(model['releases']),header.address,header.source)
+                    model['releases'][key]={'opcode':header.opcode,'beats':message.data,'absorbed':True}
+                    model['l2'][block]=line
+                    model['pending'].pop(block,None)
+                    model['retired'].add(block)
+                    acks[header.channel].append((header.source,header.size))
+            if tick+1>=cycles and not any(acks) and not assembler.pending:
+                return
+        raise AssertionError('L2 pump has incomplete Release/ReleaseAck obligations')
+    finally:
+        ack_ready(dc)
+
+
+def service(dc, model: dict, block: int, context: str, limit: int = 20) -> bool:
+    """Answer one Acquire for `block` with the model's L2 content."""
+    # The DCache applies pending stores itself. Do not fold the golden store
+    # bytes into the L2 response: that can make a broken DUT pass by coincidence.
+    line = model["l2"].setdefault(block,shadow_line(block))
+    try:
+        dc.service_miss(block, data_beats=line_beats(bytes(line)), context=context)
+    finally:
+        ack_ready(dc)
+    return True
+
+
+def observe_miss(dc, model: dict, block: int, context: str,
+                 limit: int = 10) -> bool:
+    """If the DCache raises an Acquire for `block`, answer it. Returns True if so."""
+    for _ in range(limit):
+        for channel in dc.channels:
+            channel["a_ready"].Set(1)
+        dc.refresh()
+        for channel in dc.channels:
+            if dc._val(channel["a_valid"]):
+                address = dc._val(channel["a_address"])
+                if address == block:
+                    service(dc, model, block, context)
+                    pump(dc, model, 2)
+                    return True
+                raise AssertionError(
+                    f"{context}: unexpected Acquire for {address:#x} (want {block:#x})")
+        step(dc)
+        dc.refresh()
+    return False
+
+
+def store_word(dc, addr: int, word: int, mask: int, value: int, store_id: int,
+               context: str) -> dict:
+    """Drive one partial store inside a single 8B word and return its response."""
+    # `mask` bit i selects byte i (64 bytes); `data` byte i lives at bits 8*i.
+    # A word at offset `word` therefore shifts the data by 64*word bits but the
+    # mask by only 8*word bits.
+    dc.drive_store(addr, addr, value << (64 * word), mask << (8 * word),
+                   store_id=store_id)
+    accepted = False
+    for _ in range(6):
+        accepted = accepted or bool(dc._val(dc.store["req_ready"]))
+        step(dc)
+        dc.refresh()
+        if accepted:
+            break
+    dc.stop_store()
+    assert accepted, f"{context}: store not accepted"
+    return dc.wait_store_hit(16)
+
+
+def run_random(dc, seed: int, operations: int = 36) -> dict:
+    rng = random.Random(seed)
+    model = {"l2": {}, "pending": {}, "releases": {}, "retired": set()}
+    # Distinct sets only (consecutive 64B blocks map to consecutive sets): way
+    # replacement and the writeback-blocking contract are covered by the directed
+    # tests `test_dirty_eviction_releases_line`, `test_clean_eviction_releases_without_data`
+    # and `test_pending_release_blocks_remiss_until_drained`.  Mixing replacement
+    # into the random model would need a full PLRU model, which this generator
+    # deliberately avoids.
+    pool = [0x18000 + 0x40 * index for index in range(20)]
+    # Prime both sets through the model so the first accesses are genuine misses.
+    stats = {"loads": 0, "hits": 0, "stores": 0, "misses": 0, "replays": 0,
+             "evictions": 0}
+    for cycle in range(operations):
+        pump(dc, model, 1)     # drain a writeback that completed just now
+        live = [item for item in pool if block_of(item) not in model["retired"]]
+        assert live, "working set exhausted: no un-retired block left"
+        addr = rng.choice(live)
+        block = block_of(addr)
+        word = rng.randrange(8)
+        if rng.random() < 0.45:
+            mask = rng.choice((0x01, 0x03, 0x0F, 0x7F, 0xFF))
+            value = rng.getrandbits(64) & 0xFFFF_FFFF_FFFF_FFFF
+            for attempt in range(4):
+                response = store_word(dc, addr, word, mask, value,
+                                      store_id=(cycle % 60) + 1,
+                                      context=f"random store {cycle}.{attempt}")
+                assert response["hit"] or response["replay"], (cycle, response)
+                if response["hit"]:
+                    break
+                # A replay means the store was not applied: drain writebacks and
+                # retry the same request.
+                pump(dc, model, 6)
+            else:
+                raise AssertionError(f"store {cycle} replayed 4 times: {response}")
+            stats["stores"] += 1
+            for bit in range(8):
+                if (mask >> bit) & 1:
+                    model["pending"].setdefault(block, {})[word * 8 + bit] =\
+                        (value >> (8 * bit)) & 0xFF
+            if observe_miss(dc, model, block, f"store miss {cycle}"):
+                stats["misses"] += 1
+            pump(dc, model, 3)
+        else:
+            load_addr = block + 16 * (cycle % 4)   # 16B aligned, addr[3] = 0
+            response = dc.load_once(0, load_addr, load_addr,
+                                    context=f"random load {cycle}")
+            for retry in range(10):
+                if not (response["miss"] and not response["handled"]):
+                    break
+                # handled=0 means "replay": a writeback for this block may still be
+                # draining.  Keep the L2 side moving and issue the load again.
+                stats["replays"] += 1
+                pump(dc, model, 3)
+                response = dc.load_once(0, load_addr, load_addr,
+                                        context=f"random load retry {cycle}.{retry}")
+            if response["miss"]:
+                stats["misses"] += 1
+                assert response["handled"], (
+                    cycle, hex(block), response,
+                    "retired", sorted(hex(b) for b in model["retired"]),
+                    "releases", sorted(hex(k[2]) for k in model["releases"]))
+                service(dc, model, block, f"load miss {cycle}")
+                pump(dc, model, 2)
+                for _ in range(6):
+                    step(dc)
+                response = dc.load_once(0, load_addr, load_addr,
+                                        context=f"random reload {cycle}")
+                assert response["miss"] == 0, (cycle, response)
+            stats["loads"] += 1
+            if response["miss"] == 0:
+                stats["hits"] += 1
+            line = expected_line(model, block)
+            window = load_addr & 0x3F
+            expected = int.from_bytes(line[window:window + 8], "little")
+            actual = response["data"] & ((1 << 64) - 1)
+            assert actual == expected, (
+                f"random load {cycle} addr {load_addr:#x}: {actual:#x} != {expected:#x}"
+                f" (pending={model['pending'].get(block)})")
+            pump(dc, model, 2)
+    # Final drain so any trailing release is checked and acknowledged.
+    pump(dc, model, 8)
+    stats["evictions"] = len([1 for key in model["releases"] if key[2]])
+    return stats

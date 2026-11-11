@@ -1,6 +1,27 @@
 {
   "schema_version": 1,
-  "note": "仅供失败证据审计；不是pytest跳过、xfail或功能豁免。测试和严格参考不读取本文件。",
+  "note": "历史机器清单（旧基线 XiangShan 893e1580b705d81f113c30c7a05734e09a08050e；登记于 2026-10-18/19 逐轮回归和 2026-10-22 错误包），仅供失败证据审计和旧报告复现；其中 issues[].status 是登记时的旧状态，不表示当前 public-a0c2a26cb 的处理状态，也不是 pytest 跳过、xfail 或功能豁免。当前处置只引用 docs/bugs/open/ 与 docs/bugs/closed/ 的稳定 ID 记录；测试和严格参考不读取本文件。",
+  "historical_baseline": {
+    "name": "XiangShan kunminghu-v3 @ 893e1580b705d81f113c30c7a05734e09a08050e",
+    "scope": "2026-10-18/19 逐轮回归、2026-10-22 错误包及后续证据审计登记时的旧基线",
+    "status_semantics": "issues[].status 是登记时的旧状态；LRQ-STRICT-001 和 FWD-SQID-001 在旧基线为 open，在 public-a0c2a26cb 的当前处置见正式 closed 记录。"
+  },
+  "current_status_source": "docs/bugs/open/ 与 docs/bugs/closed/ 下的稳定 ID 记录；本文件不覆盖目录状态。",
+  "current_dispositions": {
+    "RAR-REL-001": "docs/bugs/open/RAR-REL-001.md",
+    "LQU-SID-001": "docs/bugs/open/LQU-SID-001.md",
+    "LQU-MMIO-IF-001": "docs/bugs/open/LQU-MMIO-IF-001.md",
+    "LRQ-STRICT-001": "docs/bugs/closed/LRQ-STRICT-001.md",
+    "FWD-ALIAS-001": "docs/bugs/open/FWD-ALIAS-001.md",
+    "FWD-SQID-001": "docs/bugs/closed/FWD-SQID-001.md",
+    "FWD-RANGE-001": "docs/bugs/open/FWD-RANGE-001.md",
+    "VSQ-REDIR-IF-001": "docs/bugs/open/VSQ-REDIR-IF-001.md",
+    "DEQ-WB-001": "docs/bugs/open/DEQ-WB-001.md",
+    "DEQ-SPLIT-WLINE-001": "docs/bugs/open/DEQ-SPLIT-WLINE-001.md",
+    "DEQ-ZERO-001": "docs/bugs/open/DEQ-ZERO-001.md",
+    "DEQ-FINISH-ORDER-001": "docs/bugs/open/DEQ-FINISH-ORDER-001.md",
+    "LSQ-BUS-OWNERSHIP-001": "docs/bugs/open/LSQ-BUS-OWNERSHIP-001.md"
+  },
   "issues": [
     {
       "id": "RAR-REL-001",

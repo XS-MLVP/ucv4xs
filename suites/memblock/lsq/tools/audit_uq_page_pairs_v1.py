@@ -16,7 +16,7 @@ from audit_native_case_probe_v1 import journal_streams, stable_run, xml_node
 from audit_native_contributor_scope_v1 import COMMAND_PATHS, contributors, same_summary
 from audit_store_strict_lifetimes_v1 import source_lines
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 FULL = "uq-page-contributor-regression-01"
 PREFIX_FULL = "store-prefix-contributor-regression-01"
 PAIRS = (
@@ -157,7 +157,7 @@ def audit_pair(dut, before, after, scenario, feature):
         hits = reference[kind]["missing"] & new[kind]["hit"]
         overlap[kind] = dict(regression15_missing_seen_in_directed_after=len(hits), point_set_SHA256=digest_keys(hits))
     report = dict(format="lsq-uq-page-pairs-evidence-v1", dut=dut, before_run=before, after_run=after,
-        contract="docs/contracts/uq-second-page-pairs.md", feature_id=feature, native_build_id=closure["native_build_id"],
+        contract="docs/spec/design/contracts/uq-second-page-pairs.md", feature_id=feature, native_build_id=closure["native_build_id"],
         baseline_tests=len(old_cases), after_tests=len(new_cases), added_nodes=sorted(added_nodes),
         source_aggregate=old_run["source"]["aggregate_SHA256"], raw_nonwrapper_metrics=closure["metrics"],
         target_second_page_paddr_high=dict(before_hit=sum(p["hit"] > 0 for p in old_target.values()), after_hit=sum(p["hit"] > 0 for p in new_target.values()), total=144,

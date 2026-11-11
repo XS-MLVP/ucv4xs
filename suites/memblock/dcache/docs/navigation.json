@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "current": [
+    "README.md",
+    "docs/README.md",
+    "docs/spec/design/README.md",
+    "docs/spec/design/hierarchy.md",
+    "docs/spec/design/l2-transport-contract.md",
+    "docs/spec/design/functional-points-duplicated-tag-array.md",
+    "docs/spec/design/functional-points-ctrl-unit.md",
+    "docs/spec/design/functional-points-miss-ready-gen.md",
+    "docs/spec/design/functional-points-counter-filter.md",
+    "docs/spec/design/functional-points-miss-track.md",
+    "docs/spec/design/functional-points-load-pipe.md",
+    "docs/spec/design/functional-points-banked-data-array.md",
+    "docs/spec/design/functional-points-main-pipe.md",
+    "docs/spec/design/functional-points-miss-queue.md",
+    "docs/spec/design/functional-points-probe-queue.md",
+    "docs/spec/design/functional-points-writeback-queue.md",
+    "docs/spec/design/functional-points-dcache.md",
+    "docs/spec/design/functional-points-dcache-wrapper.md",
+    "docs/spec/verification/README.md",
+    "docs/spec/verification/constraints.md",
+    "docs/spec/verification/evidence/README.md",
+    "docs/bugs/README.md"
+  ]
+}

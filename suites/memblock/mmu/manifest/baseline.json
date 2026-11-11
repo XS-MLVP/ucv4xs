@@ -397,7 +397,7 @@
   },
   "scope_note": "17 real RTL DUT suites: 395 PASS plus 13 checker/model selftests; no current XFAIL/SKIP. Not MMU/SoC or ISA acceptance. Open: fake-PTE fault/GPA, qualified no-fence liveness, targeted HFENCE.GVMA GPA, A/D/privilege crosses and functional residual sequences. MBIST/DFT excluded.",
   "soundness_review": {
-    "report": "docs/reports/verification-soundness-20261025.md",
+    "report": "docs/spec/verification/evidence/reports/verification-soundness-20261025.md",
     "status": "regression-complete-with-open-scope",
     "old_metrics": "historical, not reinterpreted as corrected-code metrics",
     "RTL": "not modified",
@@ -407,10 +407,10 @@
     },
     "dut_pass": 395,
     "checker_selftest_pass": 13,
-    "isa_report": "docs/reports/isa-confirmation-20261026.md",
-    "run_index": "docs/reports/evidence/soundness-20261025/final-runs.json",
-    "residuals": "docs/reports/evidence/soundness-20261025/final-residuals.json",
-    "source_drift": "docs/reports/evidence/soundness-20261025/source-drift-review.json",
+    "isa_report": "docs/spec/verification/evidence/reports/isa-confirmation-20261026.md",
+    "run_index": "docs/spec/verification/evidence/reports/evidence/soundness-20261025/final-runs.json",
+    "residuals": "docs/spec/verification/evidence/reports/evidence/soundness-20261025/final-residuals.json",
+    "source_drift": "docs/spec/verification/evidence/reports/evidence/soundness-20261025/source-drift-review.json",
     "review_date": "2026-10-26"
   },
   "historical_scope_note": "TLBFA is the ITLB storage leaf; TLBNonBlock uses independent TLBFA_1/TlbStorageWrapper_1 and is now separately verified. PTWRepeaterNB/PTWFilter are Frontend/MemBlock leaves. HPTW, PTW, PMP, Bitmap, BitmapCache, PtwCache and LLPTW have independent DUTs. L2TLBWrapper has an independent combination DUT. Closed in phase 2: TLBNonBlock, TLB GPA replay, Bitmap deny, L2TLB PMA/PMP interaction, PTW full_gvpn/normal allStage, HPTW accessFault reset observation, shared-leaf root-cause isolation. Still not claimed: LLPTW multi-allStage, L2TLB/L2TLBWrapper >2 outstanding (now pass with realistic memory latency), all-address sfence invalidation, Bitmap multi-miss/back-to-back, MBIST/DFT and physical way placement. No claim covers the whole MMU.",

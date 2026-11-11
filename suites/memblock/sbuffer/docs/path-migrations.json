@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "date": "2026-11-10",
+  "note": "Navigation only; original receipts retain their paths and hashes. No byte identity is implied.",
+  "paths": {
+    "sbuffer": "modules/sbuffer",
+    "sbuffer/env.py": "modules/sbuffer/env/__init__.py",
+    "sbuffer/driver.py": "modules/sbuffer/env/driver.py",
+    "sbuffer/ports.py": "modules/sbuffer/env/ports.py",
+    "tests/sbuffer": "modules/sbuffer/tests",
+    "sbuffer_data": "modules/sbuffer_data",
+    "sbuffer_data/env.py": "modules/sbuffer_data/env/__init__.py",
+    "sbuffer_data/ports.py": "modules/sbuffer_data/env/ports.py",
+    "tests/sbuffer_data": "modules/sbuffer_data/tests",
+    "tests/conftest.py": "conftest.py",
+    "tests/__init__.py": "modules/__init__.py",
+    "tests/checkers": "modules/sbuffer/tests/checkers",
+    "tests/checkers/test_transactions.py::test_data_transactions_reject_ambiguous_physical_port_priority": "modules/sbuffer_data/tests/checkers/test_transactions.py::test_data_transactions_reject_ambiguous_physical_port_priority",
+    "modules/sbuffer/tests/checkers/test_transactions.py::test_data_transactions_reject_ambiguous_physical_port_priority": "modules/sbuffer_data/tests/checkers/test_transactions.py::test_data_transactions_reject_ambiguous_physical_port_priority",
+    "tests/checkers/test_transactions.py::test_data_snapshot_does_not_retain_live_signal_references": "modules/sbuffer_data/tests/checkers/test_transactions.py::test_data_snapshot_does_not_retain_live_signal_references",
+    "modules/sbuffer/tests/checkers/test_transactions.py::test_data_snapshot_does_not_retain_live_signal_references": "modules/sbuffer_data/tests/checkers/test_transactions.py::test_data_snapshot_does_not_retain_live_signal_references",
+    "execution.py": "runtime/execution.py",
+    "native.py": "runtime/native.py",
+    "modules/__init__.py": "testbenches/__init__.py",
+    "modules/sbuffer": "testbenches/sbuffer",
+    "modules/sbuffer_data": "testbenches/sbuffer_data",
+    "runtime/__init__.py": "testbenches/shared/env/__init__.py",
+    "runtime/execution.py": "testbenches/shared/env/execution.py",
+    "runtime/native.py": "testbenches/shared/env/native.py"
+  }
+}

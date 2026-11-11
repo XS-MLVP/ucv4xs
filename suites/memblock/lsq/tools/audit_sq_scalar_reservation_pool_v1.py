@@ -102,7 +102,7 @@ def audit_pair(dut,before,after,scenario):
     domain=load(ROOT/"results"/BEFORE_FULL/"sq-scalar-reservation-domain-v1.json")
     assert domain["domain"]==DOMAIN and not domain["normal_full_core_producer_proven"] and all(domain["verification"].values())
     report=dict(format="lsq-sq-scalar-reservation-evidence-v1",dut=dut,before_run=before,after_run=after,
-        contract="docs/contracts/sq-scalar-reservation-pool.md",domain=DOMAIN,normal_full_core_producer_proven=False,
+        contract="docs/spec/design/contracts/sq-scalar-reservation-pool.md",domain=DOMAIN,normal_full_core_producer_proven=False,
         source_domain_evidence=f"results/{BEFORE_FULL}/sq-scalar-reservation-domain-v1.json",
         baseline_tests=len(old),after_tests=len(new),added_nodes=[added],source_aggregate=a["source"]["aggregate_SHA256"],
         native_build_id=closure["native_build_id"],raw_nonwrapper_metrics=closure["metrics"],cancel_count_targets=targets,

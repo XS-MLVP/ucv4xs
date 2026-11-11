@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=__import__('suites.memblock.lsu', fromlist=['ROOT']).ROOT
 RUN=ROOT/"results/failure-recheck-final-03"
 OUT=ROOT/"review/failure_recheck_20261026/coverage-functional"
 ORDER=["store_arbiter","store_trigger","store_delay","store_s0","store_s1","store_s2","store_s3","store_s4","new_store_unit","std_exe_unit","load_arbiter","load_trigger","load_datapath","load_s0","load_s1","load_s2","load_s3","load_s4","new_load_unit"]
@@ -87,7 +87,7 @@ def main():
     final=read(ROOT/"review/failure_recheck_20261026/final-audit.json")
     junit=list(ET.parse(RUN/"junit.xml").getroot().iter("testcase"))
     literals=defaultdict(list)
-    for path in sorted((ROOT/"tests").rglob("test_*.py")):
+    for path in sorted((ROOT/"testbenches").rglob("test_*.py")):
         tree=ast.parse(path.read_text())
         for n in ast.walk(tree):
             if isinstance(n,ast.FunctionDef):
@@ -173,7 +173,7 @@ def main():
             miss=int(tc.get('name').split('[')[1].split(']')[0]);failed=tc.find('failure') is not None
             spec_cases.append(dict(node=tc.get('classname')+'::'+tc.get('name'),miss=miss,
                 reached=True,checked=True,passed=not failed,expected=miss,actual=0,
-                evidence='JUnit and raw-port assertion in tests/load_s2/test_spec_prefetch_miss.py'))
+                evidence='JUnit and raw-port assertion in testbenches/load_s2/tests/test_spec_prefetch_miss.py'))
     assert len(spec_cases)==2 and sum(x['passed'] for x in spec_cases)==1
     result=dict(schema_version=1,run=str(RUN.relative_to(ROOT)),inputs_sha256=inputs,totals=totals,per_dut=per_dut,groups=groups,bins=bins,spec_cases=spec_cases,
         decisions=decisions,historical_evidence_decisions=history,
@@ -207,7 +207,7 @@ def main():
     report += ["","## 5. 历史记录的二元证据结论","","不能从缺日志推导没有RTL Bug。下面给出明确的是/否：是否足以裁定、是否确认RTL Bug、是否已排除RTL Bug；不把后一列的否当成确认有Bug。","","| run | FAIL观测数 | 证据足以裁定 | 确认RTL Bug | 已排除RTL Bug |","|---|---:|---|---|---|"]
     for h in history:
         report.append(f"| {h['run']} | {h['fail_observations']} | {yn(h['enough_evidence_for_rtl_vs_test_verdict'])} | {yn(h['confirmed_rtl_bug'])} | {yn(h['rtl_bug_ruled_out'])} |")
-    report += ["","前5个run共17次FAIL不能恢复逐nodeid根因；裁定证据是否充足=否。这不是‘Bug是否存在=否’。收集失败run在native DUT执行前失败，不能计成其RTL功能Bug。","","## 6. 可核对的数据文件","","- `review/failure_recheck_20261026/coverage-functional/data.json`：全部数据、输入SHA、分组和明确布尔字段。","- 同目录 `coverage-per-dut.csv`、`functional-bins.csv`、`bug-decisions.csv`、`historical-evidence-decisions.csv`：逐项原始数字。","- 同目录 `all-functional-bins.md`：每个普通/交叉bin完整名称、命中次数、门槛与达标是/否。","- `docs/bug-reports-20261026/README.md`：根因、源码、复现与证据限制。","","本次只生成展示数据，没有重跑已完成仿真，没有修改目标RTL、测试、覆盖bin或原结果目录。"]
+    report += ["","前5个run共17次FAIL不能恢复逐nodeid根因；裁定证据是否充足=否。这不是‘Bug是否存在=否’。收集失败run在native DUT执行前失败，不能计成其RTL功能Bug。","","## 6. 可核对的数据文件","","- `review/failure_recheck_20261026/coverage-functional/data.json`：全部数据、输入SHA、分组和明确布尔字段。","- 同目录 `coverage-per-dut.csv`、`functional-bins.csv`、`bug-decisions.csv`、`historical-evidence-decisions.csv`：逐项原始数字。","- 同目录 `all-functional-bins.md`：每个普通/交叉bin完整名称、命中次数、门槛与达标是/否。","- `docs/bugs/evidence/bug-reports-20261026/README.md`：根因、源码、复现与证据限制。","","本次只生成展示数据，没有重跑已完成仿真，没有修改目标RTL、测试、覆盖bin或原结果目录。"]
     report=[line.replace("分组依据原bin名前缀；store仲裁按实际coverpoint及交叉分类，不重新定义原分母。",
         "叶子按原bin前缀、store仲裁按实际coverpoint/交叉分组；父块按原bin语义做穷尽互斥映射。139个展示子组不是新增covergroup，不重新定义原分母。")
         .replace("修复列对日志缺失仅指后续采集，不能恢复旧日志。",
@@ -215,7 +215,7 @@ def main():
         .replace("收集失败run在native DUT执行前失败，不能计成其RTL功能Bug。",
                  "这些记录的报告处理结论为：证据不满足认定门槛，不计为确认Bug；并非宣告RTL无缺陷。收集失败run在native DUT执行前失败，不计成其RTL功能Bug。")
         for line in report]
-    path=ROOT/"docs/reports/coverage-functional-decisions-20261026.md"
+    path=ROOT/"docs/spec/verification/evidence/reports/coverage-functional-decisions-20261026.md"
     path.write_text(chr(10).join(report)+chr(10))
     assert len(per_dut)==19 and len(groups)==21 and all(b["sampled_goal_met"] for b in bins)
     assert len(bins)==totals["point_bins"]+totals["cross_bins"]

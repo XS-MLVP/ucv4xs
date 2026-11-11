@@ -4,16 +4,18 @@ from dataclasses import replace
 import hashlib
 import json
 from pathlib import Path
-import sys
 
 from audit_sq_initial import ROOT, sha
 
-sys.path.insert(0,str(ROOT/"tests"))
-from lsq_wrapper.normal_owners import NormalCboStore
-from lsq_wrapper.special_owners import SpecialStore
-from suites.memblock.lsq.lsq_wrapper.codec import encode, load_public_view, store_public_view
-from suites.memblock.lsq.lsq_wrapper.types import Address, Data, Inputs
-from suites.memblock.lsq.vlq.types import RobPtr
+from suites.memblock.lsq.testbenches.lsq_wrapper.tests.normal_owners import NormalCboStore
+from suites.memblock.lsq.testbenches.lsq_wrapper.tests.special_owners import SpecialStore
+from suites.memblock.lsq.testbenches.lsq_wrapper.env.codec import encode
+from suites.memblock.lsq.testbenches.lsq_wrapper.env.codec import load_public_view
+from suites.memblock.lsq.testbenches.lsq_wrapper.env.codec import store_public_view
+from suites.memblock.lsq.testbenches.lsq_wrapper.transactions import Address
+from suites.memblock.lsq.testbenches.lsq_wrapper.transactions import Data
+from suites.memblock.lsq.testbenches.lsq_wrapper.transactions import Inputs
+from suites.memblock.lsq.testbenches.vlq.transactions import RobPtr
 
 
 def main():
@@ -54,7 +56,7 @@ def main():
     output=ROOT/"results/static/lsq-normal-cbo-v1"
     output.mkdir(parents=True,exist_ok=True)
     report=dict(status="STATIC_ONLY_256_normal_CBO_adapter_profiles_and_seven_invalid_packages_checked",profiles=profiles,positive_profiles=256,rejected=reject,
-                source_sha256={str(p.relative_to(ROOT)):sha(p) for p in (Path(__file__),ROOT/"tests/lsq_wrapper/normal_owners.py",ROOT/"tests/lsq_wrapper/special_owners.py",ROOT/"lsq_wrapper/codec.py")},
+                source_sha256={str(p.relative_to(ROOT)):sha(p) for p in (Path(__file__),ROOT/"testbenches/lsq_wrapper/tests/normal_owners.py",ROOT/"testbenches/lsq_wrapper/tests/special_owners.py",ROOT/"testbenches/lsq_wrapper/env/codec.py")},
                 limits="No native DUT run, functionality, coverage, normal full-domain random acceptance or STRESS checked claim. This opt-in new actor is not yet wired into current frozen/running mixed/joint stimuli. It preserves original UID/ROB/SQ/value/opcode but derives real StoreUnit aligned16/QB/fullmask/wline for BOTH SQ and RAW views. Legacy interface actors and all historical results remain untouched; real tests and full independent producer/lifecycle gates remain required.")
     file=output/"report.json"
     if file.exists():assert json.loads(file.read_text())==report

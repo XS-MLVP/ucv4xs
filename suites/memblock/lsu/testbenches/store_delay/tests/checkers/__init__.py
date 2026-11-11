@@ -1,0 +1,1 @@
+"""StoreDelay checker self-tests."""

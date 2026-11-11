@@ -14,9 +14,9 @@ from pathlib import Path
 import shlex
 import subprocess
 import tempfile
-from suites.memblock.dcache.native import native_seed
+from suites.memblock.dcache.testbenches.shared.env.dut import native_seed
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.dcache', fromlist=['ROOT']).ROOT
 LOCK = __import__("ucv.runtime", fromlist=["toolchain"]).toolchain()
 TOFFEE = list(LOCK["toffee"]["runner_command"])
 VERILATOR_COVERAGE = LOCK["verilator"]["coverage_processor"]
@@ -26,7 +26,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--name", required=True)
     parser.add_argument("--workers", type=int, default=1)
-    parser.add_argument("tests", nargs="+")
+    parser.add_argument("tests", nargs="*", default=["testbenches"])
     args = parser.parse_args()
     if Path(args.name).name != args.name or args.name in (".", ".."):
         raise SystemExit("run name must be one fresh directory name")

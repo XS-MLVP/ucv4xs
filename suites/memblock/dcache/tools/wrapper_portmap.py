@@ -19,7 +19,7 @@ import json
 import re
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.dcache', fromlist=['ROOT']).ROOT
 SOC_RTL = (ucv_paths.soc_rtl_for(ROOT)).resolve()
 WRAPPER = SOC_RTL / "DCacheWrapper.sv"
 

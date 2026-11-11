@@ -1,0 +1,1 @@
+"""SbufferData checker self-tests."""

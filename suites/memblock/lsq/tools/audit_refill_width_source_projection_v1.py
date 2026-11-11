@@ -10,7 +10,7 @@ from audit_evidence_io import write_report
 from audit_coverage_points_v1 import sha256_file
 from audit_sq_head_permit_domain_v1 import source, evidence
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 OUT = ROOT / 'results/replay-cause-lifetimes-contributor-regression-02/refill-width-source-correction-v2.json'
 OLD_REPORTS = [
     'results/lrq-normal-metadata-after-02/normal-replay-metadata-evidence-v1.json',

@@ -25,7 +25,7 @@
       "severity": "reviewed_not_bug",
       "status": "closed_resolved",
       "summary": "（已解决）DCache 顶层冷 load refill 后不命中的问题，根因是 tag/meta SRAM 需要 256 拍清扫、GrantData 必须 size=6、load 响应只在 S2 采样。",
-      "evidence": "results/dc-final-05（15 passed）；results/mp-main-07 + results/mq-main-03 的 refill/install 行为；docs/reports/dcache-top-20261024.md §refill 根因。",
+      "evidence": "results/dc-final-05（15 passed）；results/mp-main-07 + results/mq-main-03 的 refill/install 行为；docs/spec/verification/evidence/dcache-top-20261024.md §refill 根因。",
       "impact": "refill 已可在 DCache 顶层闭环：AcquireBlock → 2×GrantData → 重放命中，数据逐字节一致。",
       "next": "无（保留记录供追溯）。"
     },

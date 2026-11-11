@@ -16,7 +16,7 @@ from audit_replay_cause_gain_attribution_v1 import audit as cause_gain_audit
 from audit_replay_cause_correction_equivalence_v1 import audit as correction_audit
 from audit_refill_width_source_projection_v1 import OUT as WIDTH_CORRECTION, audit as width_source_audit
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 UNIFIED = ROOT / 'results/lsq-progress-regression-15'
 INPUT = UNIFIED / 'Replay-cause-bit5-integration-input-guard-v1.json'
 POST = UNIFIED / 'Replay-cause-bit5-post-index-guard-v1.json'

@@ -12,7 +12,7 @@ from audit_gap_closure_v1 import native
 from audit_load_response_payload_v1 import FULL
 from audit_native_case_probe_v1 import journal_streams,stable_run
 
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=__import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 CONTROLS=(("lsq-codec-cache-baseline-01",False),("lsq-codec-cache-after-01",True),
           ("lsq-codec-cache-after-02",True),("lsq-codec-cache-baseline-02",False))
 
@@ -59,7 +59,7 @@ def audit():
         by_node={}
         for path in paths:
             item=load(path)
-            assert item["restored_all_aliases"] and item["implementation_SHA256"]==sha256_file(ROOT/"codec_cache.py")
+            assert item["restored_all_aliases"] and item["implementation_SHA256"]==sha256_file(ROOT/"testbenches/lsq_wrapper/env/codec_cache.py")
             assert len(item["rows"])==4
             assert all(row["hits"]>0 and row["misses"]>0 and row["retained_values"]<=row["capacity"]==64 for row in item["rows"])
             by_node[item["nodeid"]]=item
@@ -88,7 +88,7 @@ def audit():
     prior=load(ROOT/"results"/FULL/"load-response-payload-contributor-evidence-v1.json")
     frozen=prior["unchanged_generic_actor_SHA256"]
     assert all(sha256_file(ROOT/path)==digest for path,digest in frozen.items())
-    report=dict(format="lsq-runtime-performance-control-v1",contract="docs/contracts/lsq-runtime-summary-performance.md",
+    report=dict(format="lsq-runtime-performance-control-v1",contract="docs/spec/design/contracts/lsq-runtime-summary-performance.md",
         source_aggregate=source["aggregate_SHA256"],unit_tests=unit,profile_status=profile_status,rows=rows,
         measurement=dict(order=[name for name,_ in CONTROLS],profile_enabled=False,
             average_baseline_testcase_seconds=before,average_cached_testcase_seconds=after,

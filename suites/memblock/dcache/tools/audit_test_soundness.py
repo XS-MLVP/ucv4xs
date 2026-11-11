@@ -24,46 +24,46 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.dcache', fromlist=['ROOT']).ROOT
 
 # Tests that contain no `assert` themselves but delegate every check to a helper
 # that raises.  Each entry names the helper that must actually be called and why
 # the delegation is acceptable.  A test with no assert that is NOT listed here is
 # a hard finding: it may be an empty run.
 DELEGATION_ALLOWLIST = {
-    "tests/banked_data_array/test_banked_data_array.py::test_random_traffic":
+    "testbenches/banked_data_array/tests/test_banked_data_array.py::test_random_traffic":
         ("read_port/read_line", "compare the 8-bank window against the model"),
-    "tests/banked_data_array/test_banked_data_array.py::test_mask_class_matrix":
+    "testbenches/banked_data_array/tests/test_banked_data_array.py::test_mask_class_matrix":
         ("read_port", "window compared to the model after each write class"),
-    "tests/counter_filter/test_counter_filter.py::test_random_legal_traffic":
+    "testbenches/counter_filter/tests/test_counter_filter.py::test_random_legal_traffic":
         ("check_queries", "raises on any query/occupancy mismatch"),
-    "tests/duplicated_tag_array/test_duplicated_tag_array.py::test_set_independence_and_boundaries":
+    "testbenches/duplicated_tag_array/tests/test_duplicated_tag_array.py::test_set_independence_and_boundaries":
         ("read_every_set/read_all_ports", "raises on model mismatch per set"),
-    "tests/duplicated_tag_array/test_duplicated_tag_array.py::test_random_legal_traffic":
+    "testbenches/duplicated_tag_array/tests/test_duplicated_tag_array.py::test_random_legal_traffic":
         ("read/write", "raises on model mismatch per access"),
-    "tests/load_pipe/test_load_pipe.py::test_random_hits_and_misses":
+    "testbenches/load_pipe/tests/test_load_pipe.py::test_random_hits_and_misses":
         ("transaction", "raises on data/index/handled mismatch"),
-    "tests/load_pipe/test_load_pipe.py::test_outcome_way_matrix":
+    "testbenches/load_pipe/tests/test_load_pipe.py::test_outcome_way_matrix":
         ("transaction", "raises on data/index/handled mismatch"),
-    "tests/miss_ready_gen/test_miss_ready_gen.py::test_zero_vector_is_transparent":
+    "testbenches/miss_ready_gen/tests/test_miss_ready_gen.py::test_zero_vector_is_transparent":
         ("check", "raises on any valid/ready/payload mismatch"),
-    "tests/miss_ready_gen/test_miss_ready_gen.py::test_walking_bit_all_payload_fields":
+    "testbenches/miss_ready_gen/tests/test_miss_ready_gen.py::test_walking_bit_all_payload_fields":
         ("check", "raises on any valid/ready/payload mismatch"),
-    "tests/miss_ready_gen/test_miss_ready_gen.py::test_random_vectors":
+    "testbenches/miss_ready_gen/tests/test_miss_ready_gen.py::test_random_vectors":
         ("check", "raises on any valid/ready/payload mismatch"),
-    "tests/miss_track/test_miss_track.py::test_install_produces_resident_entry":
+    "testbenches/miss_track/tests/test_miss_track.py::test_install_produces_resident_entry":
         ("query", "raises unless the entry classifies as expected"),
-    "tests/miss_track/test_miss_track.py::test_alloc_pending_and_owner_retirement":
+    "testbenches/miss_track/tests/test_miss_track.py::test_alloc_pending_and_owner_retirement":
         ("query/cycle", "cycle compares spec; query raises on class mismatch"),
-    "tests/miss_track/test_miss_track.py::test_s2_hit_training":
+    "testbenches/miss_track/tests/test_miss_track.py::test_s2_hit_training":
         ("query", "raises unless the entry classifies as expected"),
-    "tests/miss_track/test_miss_track.py::test_invalidate_resident_and_not_pending":
+    "testbenches/miss_track/tests/test_miss_track.py::test_invalidate_resident_and_not_pending":
         ("query", "raises unless the entry classifies as expected"),
-    "tests/miss_track/test_miss_track.py::test_event_priority_and_coalescing":
+    "testbenches/miss_track/tests/test_miss_track.py::test_event_priority_and_coalescing":
         ("query", "raises unless the entry classifies as expected"),
-    "tests/miss_track/test_miss_track.py::test_random_traffic":
+    "testbenches/miss_track/tests/test_miss_track.py::test_random_traffic":
         ("cycle/query", "cycle compares every lane against the model"),
-    "tests/miss_track/test_miss_track.py::test_datapath_bit_sweep":
+    "testbenches/miss_track/tests/test_miss_track.py::test_datapath_bit_sweep":
         ("query", "raises unless the entry classifies as expected"),
 }
 
@@ -86,7 +86,7 @@ def collect_nodeids(pattern: str) -> set[str]:
     ids = set()
     for line in out.stdout.splitlines():
         line = line.strip()
-        if line.startswith("tests/") and "::" in line:
+        if line.startswith(("tests/", "testbenches/")) and "::" in line:
             ids.add(line.split(" ")[0])
     if not ids:
         detail = out.stdout[-800:] + "\n" + out.stderr[-800:]
@@ -189,7 +189,7 @@ def main() -> int:
     parser.add_argument("--json", default="manifest/test-soundness.json")
     args = parser.parse_args()
 
-    files = sorted((ROOT / "tests").rglob("test_*.py"))
+    files = sorted((ROOT / "testbenches").rglob("test_*.py"))
     reports = [scan_file(p) for p in files]
     markers = []
     for p in files:
@@ -198,7 +198,7 @@ def main() -> int:
             markers.append(m)
 
     tree_defs = sum(r["defs"] for r in reports)
-    collected = collect_nodeids("tests")
+    collected = collect_nodeids("testbenches")
     # nodeid → test name
     collected_names = sorted({nid.split("::")[-1] for nid in collected})
     defined_names = []
@@ -207,12 +207,12 @@ def main() -> int:
             if isinstance(d, (ast.FunctionDef, ast.AsyncFunctionDef)) and d.name.startswith("test_"):
                 defined_names.append(d.name)
 
-    wrapper_reimport = 25 if (ROOT / "tests/dcache_wrapper/test_wrapper_dcache_regression.py").is_file() else 0
+    wrapper_reimport = 25 if (ROOT / "testbenches/dcache_wrapper/tests/test_wrapper_dcache_regression.py").is_file() else 0
     findings = {
         "files": len(files),
         "collection_note": (
             f"{tree_defs} `def test_*` + {wrapper_reimport} tests re-collected in "
-            "tests/dcache_wrapper via importlib = the same 25 DCache scenarios run "
+            "testbenches/dcache_wrapper/tests via importlib = the same 25 DCache scenarios run "
             "against the wrapper DUT; no parametrize is used"),
         "defined_tests": tree_defs,
         "collected_nodeids": len(collected),

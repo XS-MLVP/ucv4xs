@@ -8,15 +8,21 @@ import re
 import shutil
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(ROOT))
-from suites.memblock.lsq.forward.types import Query, Translation
-from suites.memblock.lsq.psq.types import Address, Attributes, Data, SecondPage
-from suites.memblock.lsq.raw.types import SqPtr
-from suites.memblock.lsq.store_queue.decode import decode
-from suites.memblock.lsq.store_queue.types import Inputs, encode
-from suites.memblock.lsq.vlq.types import Redirect, RobPtr
-from suites.memblock.lsq.vsq.types import Dispatch
+from suites.memblock.lsq.testbenches.forward.transactions import Query
+from suites.memblock.lsq.testbenches.forward.transactions import Translation
+from suites.memblock.lsq.testbenches.psq.transactions import Address
+from suites.memblock.lsq.testbenches.psq.transactions import Attributes
+from suites.memblock.lsq.testbenches.psq.transactions import Data
+from suites.memblock.lsq.testbenches.psq.transactions import SecondPage
+from suites.memblock.lsq.testbenches.raw.transactions import SqPtr
+from suites.memblock.lsq.testbenches.store_queue.env.decode import decode
+from suites.memblock.lsq.testbenches.store_queue.transactions import Inputs
+from suites.memblock.lsq.testbenches.store_queue.transactions import encode
+from suites.memblock.lsq.testbenches.vlq.transactions import Redirect
+from suites.memblock.lsq.testbenches.vlq.transactions import RobPtr
+from suites.memblock.lsq.testbenches.vsq.transactions import Dispatch
 
 
 def sha(path):
@@ -58,8 +64,8 @@ def main():
             raise AssertionError("invalid actual pin width/domain accepted")
     out = ROOT / "results/sq-codec-static-01"
     out.mkdir(exist_ok=False)
-    files = (Path(__file__), ROOT / "store_queue/types.py", ROOT / "store_queue/decode.py", ROOT / "store_queue/ports.py",
-             ROOT / "psq/types.py", ROOT / "psq/decode.py", ROOT / "vsq/types.py")
+    files = (Path(__file__), ROOT / "testbenches/store_queue/transactions.py", ROOT / "testbenches/store_queue/env/decode.py", ROOT / "testbenches/store_queue/env/ports.py",
+             ROOT / "testbenches/psq/transactions.py", ROOT / "testbenches/psq/env/decode.py", ROOT / "testbenches/vsq/transactions.py")
     hashes = {}
     for path in files:
         dest = out / "source" / path.relative_to(ROOT)

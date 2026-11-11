@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(ROOT / 'tools'))
 from audit_evidence_io import write_report
 from audit_sq_head_permit_domain_v1 import source, evidence

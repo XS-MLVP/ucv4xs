@@ -1,0 +1,188 @@
+"""Load Picker-generated DUT packages for this project only.
+
+The Picker build uses memory-direct public-port access, no VPI and no internal
+signal configuration. The CLI-recorded Verilator seed keeps register init
+reproducible.
+"""
+from __future__ import annotations
+from suites.memblock.mmu import ROOT as _SUITE_ROOT
+
+import importlib.util
+import os
+from pathlib import Path
+import sys
+
+import xspcomm as xsp
+from toffee import as_xdata
+
+ROOT = _SUITE_ROOT
+
+
+def _load_package(directory: Path, alias: str):
+    directory = directory.resolve()
+    init = directory / "__init__.py"
+    if not init.is_file():
+        raise FileNotFoundError(
+            f"generated DUT package not found at {init}; build it with tools/build_dut.py"
+        )
+    module = sys.modules.get(alias)
+    if module is None:
+        spec = importlib.util.spec_from_file_location(
+            alias, init, submodule_search_locations=[str(directory)]
+        )
+        if spec is None or spec.loader is None:
+            raise ImportError(f"cannot load generated DUT package {directory}")
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[alias] = module
+        spec.loader.exec_module(module)
+    return module
+
+
+def _artifact_schema(directory: Path, module) -> Path:
+    """Return the schema of the artifact actually bound, not the request.
+
+    ``_load_package`` reuses a cached alias within one process. If the alias
+    was first loaded from another artifact directory, the class and the
+    requested schema path would belong to different builds. Reject that instead
+    of mixing native libraries; switching artifacts requires a fresh process.
+    """
+    module_file = getattr(module, "__file__", None)
+    if module_file is None:
+        raise RuntimeError(
+            f"cannot verify the generated DUT artifact for {directory}: "
+            "the loaded package exposes no __file__")
+    actual = Path(module_file).resolve().parent
+    if actual != directory:
+        raise RuntimeError(
+            f"cached generated DUT package mismatch: requested {directory} "
+            f"but the loaded package belongs to {actual}; run each artifact "
+            "in an isolated process")
+    return actual / "signals.json"
+
+
+def native_seed(seed: int | None = None) -> int:
+    """Resolve the default identically for native construction and receipts."""
+    if seed is None:
+        seed = int(os.environ.get("UCV_SEED", os.environ.get("MMU_VERILATOR_SEED", "1")))
+    if type(seed) is not int or not 0 <= seed <= 4294967295:
+        raise ValueError("native seed must be an integer in 0..4294967295")
+    return seed
+
+
+def _argv(seed: int | None):
+    return xsp.StringVector(["mmu-ut", f"+verilator+seed+{native_seed(seed)}"])
+
+
+def load_tlbfa_dut(seed: int | None = None):
+    directory = Path(os.environ.get("MMU_TLBFA_DUT_DIR", ROOT / "dut/tlbfa"))
+    module = _load_package(directory, "_tlbfa_picker_dut")
+    return module.DUTTlbfaDut, _argv(seed)
+
+
+def load_wrapper_dut(seed: int | None = None):
+    directory = Path(os.environ.get("MMU_WRAPPER_DUT_DIR", ROOT / "dut/wrapper"))
+    module = _load_package(directory, "_wrapper_picker_dut")
+    return module.DUTTlbStorageWrapperDut, _argv(seed)
+
+
+def load_tlb_dut(seed: int | None = None):
+    directory = Path(os.environ.get("MMU_TLB_DUT_DIR", ROOT / "dut/tlb"))
+    module = _load_package(directory, "_tlb_picker_dut")
+    return module.DUTTlbDut, _argv(seed)
+
+
+def load_l2mq_dut(seed: int | None = None):
+    directory = Path(os.environ.get("MMU_L2MQ_DUT_DIR", ROOT / "dut/l2mq"))
+    module = _load_package(directory, "_l2mq_picker_dut")
+    return module.DUTL2TlbMissQueueDut, _argv(seed)
+
+
+def load_l2pf_dut(seed: int | None = None):
+    directory = Path(os.environ.get("MMU_L2PF_DUT_DIR", ROOT / "dut/l2pf"))
+    module = _load_package(directory, "_l2pf_picker_dut")
+    return module.DUTL2TlbPrefetchDut, _argv(seed)
+
+
+def load_ptwrepeater_dut(seed: int | None = None):
+    directory = Path(os.environ.get("MMU_PTWREPEATER_DUT_DIR", ROOT / "dut/ptwrepeater"))
+    module = _load_package(directory, "_ptwrepeater_picker_dut")
+    return module.DUTPtwRepeaterNBDut, _argv(seed)
+
+
+def load_ptwfilter_dut(seed: int | None = None):
+    directory = Path(os.environ.get("MMU_PTWFILTER_DUT_DIR", ROOT / "dut/ptwfilter"))
+    module = _load_package(directory, "_ptwfilter_picker_dut")
+    return module.DUTPtwFilterDut, _argv(seed)
+
+
+def load_ptwcache_dut(seed: int | None = None):
+    directory = Path(os.environ.get("MMU_PTWCACHE_DUT_DIR", ROOT / "dut/ptwcache"))
+    module = _load_package(directory, "_ptwcache_picker_dut")
+    return module.DUTPtwCacheDut, _argv(seed)
+
+
+def load_llptw_dut(seed: int | None = None, *, with_schema: bool = False):
+    directory = Path(os.environ.get("MMU_LLPTW_DUT_DIR", ROOT / "dut/llptw")).resolve()
+    module = _load_package(directory, "_llptw_picker_dut")
+    if with_schema:
+        return module.DUTLlptwDut, _argv(seed), _artifact_schema(directory, module)
+    return module.DUTLlptwDut, _argv(seed)
+
+
+def load_pmp_dut(seed: int | None = None):
+    directory = Path(os.environ.get("MMU_PMP_DUT_DIR", ROOT / "dut/pmp"))
+    module = _load_package(directory, "_pmp_picker_dut")
+    return module.DUTPmpDut, _argv(seed)
+
+
+def load_bitmapcache_dut(seed: int | None = None):
+    directory = Path(os.environ.get("MMU_BITMAPCACHE_DUT_DIR", ROOT / "dut/bitmapcache"))
+    module = _load_package(directory, "_bitmapcache_picker_dut")
+    return module.DUTBitmapCacheDut, _argv(seed)
+
+
+def load_bitmap_dut(seed: int | None = None):
+    directory = Path(os.environ.get("MMU_BITMAP_DUT_DIR", ROOT / "dut/bitmap"))
+    module = _load_package(directory, "_bitmap_picker_dut")
+    return module.DUTBitmapDut, _argv(seed)
+
+
+def load_ptw_dut(seed: int | None = None, *, with_schema: bool = False):
+    directory = Path(os.environ.get("MMU_PTW_DUT_DIR", ROOT / "dut/ptw")).resolve()
+    module = _load_package(directory, "_ptw_picker_dut")
+    if with_schema:
+        return module.DUTPtwDut, _argv(seed), _artifact_schema(directory, module)
+    return module.DUTPtwDut, _argv(seed)
+
+
+def load_hptw_dut(seed: int | None = None):
+    directory = Path(os.environ.get("MMU_HPTW_DUT_DIR", ROOT / "dut/hptw"))
+    module = _load_package(directory, "_hptw_picker_dut")
+    return module.DUTHptwDut, _argv(seed)
+
+
+def load_tlbn_dut(seed: int | None = None):
+    directory = Path(os.environ.get("MMU_TLBN_DUT_DIR", ROOT / "dut/tlbn"))
+    module = _load_package(directory, "_tlbn_picker_dut")
+    return module.DUTTlbNonBlockDut, _argv(seed)
+
+
+def load_l2tlbwrapper_dut(seed: int | None = None):
+    directory = Path(os.environ.get("MMU_L2TLBWRAPPER_DUT_DIR", ROOT / "dut/l2tlbwrapper"))
+    module = _load_package(directory, "_l2tlbwrapper_picker_dut")
+    return module.DUTL2TlbWrapperDut, _argv(seed)
+
+
+def load_l2tlb_dut(seed: int | None = None):
+    directory = Path(os.environ.get("MMU_L2TLB_DUT_DIR", ROOT / "dut/l2tlb"))
+    module = _load_package(directory, "_l2tlb_picker_dut")
+    return module.DUTL2TlbDut, _argv(seed)
+
+
+def initialize_inputs(dut) -> None:
+    """Drive every generated top-level input to a defined idle value."""
+    for signal in vars(dut).values():
+        data = as_xdata(signal)
+        if hasattr(data, "IsInIO") and data.IsInIO() and not data.IsOutIO():
+            data.AsImmWrite()
+            data.Set(0)

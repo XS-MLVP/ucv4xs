@@ -125,7 +125,7 @@
     ],
     "historical_failures_fully_attributed": false,
     "independent_reached_checked_complete": false,
-    "report": "docs/bug-reports-20261026/README.md",
+    "report": "docs/bugs/evidence/bug-reports-20261026/README.md",
     "evidence": "review/failure_recheck_20261026/final-audit.json",
     "upstream_review": {
       "date": "2026-10-26",

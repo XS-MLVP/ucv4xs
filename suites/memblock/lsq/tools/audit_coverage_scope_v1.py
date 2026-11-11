@@ -9,7 +9,7 @@ from pathlib import Path
 
 from audit_coverage_points_v1 import analyzer_summary, digest_points, records, sha256_file
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 
 
 def counts(points):

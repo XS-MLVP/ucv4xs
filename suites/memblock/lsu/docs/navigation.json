@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "current": [
+    "docs/README.md",
+    "docs/spec/design/README.md",
+    "docs/spec/verification/README.md",
+    "docs/spec/verification/evidence/README.md",
+    "docs/bugs/README.md",
+    "testbenches/store_arbiter/README.md",
+    "testbenches/store_trigger/README.md",
+    "testbenches/store_delay/README.md",
+    "testbenches/store_s0/README.md",
+    "testbenches/store_s1/README.md",
+    "testbenches/store_s2/README.md",
+    "testbenches/store_s3/README.md",
+    "testbenches/store_s4/README.md",
+    "testbenches/new_store_unit/README.md",
+    "testbenches/std_exe_unit/README.md",
+    "testbenches/load_arbiter/README.md",
+    "testbenches/load_trigger/README.md",
+    "testbenches/load_datapath/README.md",
+    "testbenches/load_s0/README.md",
+    "testbenches/load_s1/README.md",
+    "testbenches/load_s2/README.md",
+    "testbenches/load_s3/README.md",
+    "testbenches/load_s4/README.md",
+    "testbenches/new_load_unit/README.md",
+    "testbenches/shared/README.md"
+  ]
+}

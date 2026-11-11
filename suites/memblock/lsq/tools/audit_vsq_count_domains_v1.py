@@ -15,7 +15,7 @@ from audit_evidence_io import write_report
 from audit_gap_closure_v1 import native
 from audit_vsq_recovery_boundaries_v1 import SOURCES, source_proof
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 
 
 @dataclass

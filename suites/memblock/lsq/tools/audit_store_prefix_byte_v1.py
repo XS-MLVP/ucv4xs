@@ -18,7 +18,7 @@ from audit_native_contributor_scope_v1 import COMMAND_PATHS, FULL as PREVIOUS, P
 from audit_store_payload_pool_v1 import audit_target
 from audit_store_strict_lifetimes_v1 import source_lines
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 WINDOWS = ((0, 63), (63, 127), (127, 191), (191, 254), (254, 256))
 FULL = "store-prefix-contributor-regression-01"
 PAIRS = (
@@ -124,7 +124,7 @@ def audit_pair(dut, prefix, scenario, feature):
                          point_set_SHA256=digest_keys(original[kind]["missing"] & new["points"][kind]["hit"])) for kind in original}
     assert old["line_all"] == new["line_all"] and old["line_hit"] <= new["line_hit"]
     report = dict(format="lsq-store-prefix-byte-evidence-v1", dut=dut, before_run=before, after_run=after,
-        contract="docs/contracts/store-prefix-byte-windows.md", baseline_tests=len(old["nodes"]), after_tests=len(new["nodes"]),
+        contract="docs/spec/design/contracts/store-prefix-byte-windows.md", baseline_tests=len(old["nodes"]), after_tests=len(new["nodes"]),
         source_aggregate=old["source"]["aggregate_SHA256"], native_build_id=closure["native_build_id"], raw_nonwrapper_metrics=closure["metrics"],
         low_window_vectors=dict(before_hit=sum(p["hit"] > 0 for p in old_low.values()), after_hit=756, total=756,
             target_point_set_SHA256=digest_keys({point_key(p) for p in new_low.values()}),

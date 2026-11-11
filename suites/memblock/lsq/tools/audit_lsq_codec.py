@@ -9,14 +9,20 @@ import re
 import shutil
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(ROOT))
 
-from suites.memblock.lsq.lsq_wrapper.codec import encode, ports
-from suites.memblock.lsq.lsq_wrapper.ports import decode
-from suites.memblock.lsq.lsq_wrapper.types import Address, Bus, Data, Dispatch, Inputs
-from suites.memblock.lsq.raw.types import SqPtr
-from suites.memblock.lsq.vlq.types import QueuePtr, RobPtr
+from suites.memblock.lsq.testbenches.lsq_wrapper.env.codec import encode
+from suites.memblock.lsq.testbenches.lsq_wrapper.env.codec import ports
+from suites.memblock.lsq.testbenches.lsq_wrapper.env.ports import decode
+from suites.memblock.lsq.testbenches.lsq_wrapper.transactions import Address
+from suites.memblock.lsq.testbenches.lsq_wrapper.transactions import Bus
+from suites.memblock.lsq.testbenches.lsq_wrapper.transactions import Data
+from suites.memblock.lsq.testbenches.lsq_wrapper.transactions import Dispatch
+from suites.memblock.lsq.testbenches.lsq_wrapper.transactions import Inputs
+from suites.memblock.lsq.testbenches.raw.transactions import SqPtr
+from suites.memblock.lsq.testbenches.vlq.transactions import QueuePtr
+from suites.memblock.lsq.testbenches.vlq.transactions import RobPtr
 
 
 def sha(path):
@@ -80,7 +86,7 @@ def audit():
             fake.append(name)
         else:
             raise AssertionError(("fake internal control became a wrapper input", name))
-    contract = ROOT / "docs/contracts/lsq-wrapper.md"
+    contract = ROOT / "docs/spec/design/contracts/lsq-wrapper.md"
     catalog = {}
     for line in contract.read_text().splitlines():
         if line.startswith("| LSQ-"):
@@ -93,7 +99,10 @@ def audit():
     assert all(sha(ROOT / "rtl/lsq_wrapper" / path) == digest for path, digest in source_record["files"].items())
     files = [Path(__file__), contract, ROOT / "manifest/duts.json", ROOT / "rtl/lsq_wrapper/source.json"]
     for family in ("lsq_wrapper", "load_queue", "store_queue", "psq", "replay"):
-        files.extend(path for path in (ROOT / family).glob("*.py") if path.name in ("types.py", "codec.py", "ports.py"))
+        base = ROOT / "testbenches" / family
+        files.append(base / "transactions.py")
+        files.extend(base / "env" / name for name in ("codec.py", "ports.py")
+                     if (base / "env" / name).is_file())
     dest = ROOT / "results/static/lsq-wrapper-codec-v1"
     report = dict(status="static_adapter_roundtrip_only_not_native_functional_acceptance", seed=20261018,
                   public_inputs=603, public_outputs=458, random_packets=256, varied_inputs=len(seen),

@@ -57,7 +57,7 @@
     "functional_coverage_closed": false,
     "all_planned_dut_status": "IN_PROGRESS",
     "verified_dut_keys": ["freelist_rar", "freelist_raw", "freelist_replay", "freelist_uncache", "cam_rar", "cam_raw", "cam_mask", "age_replay", "virtual_load_queue", "load_queue_raw", "uncache_entry_0", "uncache_entry_1", "uncache_entry_2", "uncache_entry_3", "uncache_entry_4", "uncache_entry_5", "uncache_entry_6", "uncache_entry_7", "uncache_entry_8", "uncache_entry_9", "uncache_entry_10", "uncache_entry_11", "uncache_entry_12", "uncache_entry_13", "uncache_entry_14", "uncache_entry_15"],
-    "evidence_reports": ["docs/reports/freelist-20261018.md", "docs/reports/cam-20261018.md", "docs/reports/age-20261018.md", "docs/reports/vlq-20261018.md", "docs/reports/rar-20261018.md", "docs/reports/raw-20261018.md", "docs/reports/uncache-entry-20261018.md"],
+    "evidence_reports": ["docs/spec/verification/evidence/reports/freelist-20261018.md", "docs/spec/verification/evidence/reports/cam-20261018.md", "docs/spec/verification/evidence/reports/age-20261018.md", "docs/spec/verification/evidence/reports/vlq-20261018.md", "docs/spec/verification/evidence/reports/rar-20261018.md", "docs/spec/verification/evidence/reports/raw-20261018.md", "docs/spec/verification/evidence/reports/uncache-entry-20261018.md"],
     "tested_not_accepted_dut_keys": ["load_queue_rar"],
     "known_issues": ["RAR-REL-001"],
     "scope_note": "已验证叶子模块不代表全部LSQ；整体功能覆盖仍未闭合，未运行完整LsqWrapper lint或集成仿真。"

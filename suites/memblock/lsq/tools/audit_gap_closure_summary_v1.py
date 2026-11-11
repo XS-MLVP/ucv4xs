@@ -9,7 +9,7 @@ from pathlib import Path
 
 from audit_evidence_io import write_report
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 
 
 def load(path: Path) -> dict:
@@ -135,7 +135,7 @@ def audit(name: str) -> dict:
                 verification=report["verification"],
             ))
             if report["feature_id"] == "LRQ-METADATA-BOUNDARY-REUSE":
-                closures[-1]["semantic_limit"] = "Historical two-single-allocation case proves boundary payloads, not same-slot reuse. Full public-slot lifecycle proof is in LRQ-CHECKPOINT-FULL-POOL-PUBLIC-REUSE and docs/contracts/replay-checkpoint-pool.md. Historical raw results are unchanged."
+                closures[-1]["semantic_limit"] = "Historical two-single-allocation case proves boundary payloads, not same-slot reuse. Full public-slot lifecycle proof is in LRQ-CHECKPOINT-FULL-POOL-PUBLIC-REUSE and docs/spec/design/contracts/replay-checkpoint-pool.md. Historical raw results are unchanged."
             if report["feature_id"] in ("LRQ-CHECKPOINT-FULL-POOL-PUBLIC-REUSE", "LQ-CHECKPOINT-FULL-POOL-PUBLIC-REUSE", "LSQ-CHECKPOINT-FULL-POOL-PUBLIC-REUSE"):
                 evidence_path = path.parent / "checkpoint-pool-evidence-v1.json"
                 evidence = load(evidence_path)

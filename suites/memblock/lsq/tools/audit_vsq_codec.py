@@ -7,11 +7,14 @@ from pathlib import Path
 import random
 import re
 
-from suites.memblock.lsq.raw.types import SqPtr
-from suites.memblock.lsq.vlq.types import Redirect, RobPtr
-from suites.memblock.lsq.vsq.types import Dispatch, Inputs, encode
+from suites.memblock.lsq.testbenches.raw.transactions import SqPtr
+from suites.memblock.lsq.testbenches.vlq.transactions import Redirect
+from suites.memblock.lsq.testbenches.vlq.transactions import RobPtr
+from suites.memblock.lsq.testbenches.vsq.transactions import Dispatch
+from suites.memblock.lsq.testbenches.vsq.transactions import Inputs
+from suites.memblock.lsq.testbenches.vsq.transactions import encode
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 
 
 def main():

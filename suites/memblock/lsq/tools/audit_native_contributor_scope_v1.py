@@ -14,7 +14,7 @@ from audit_gap_closure_v1 import digest_keys, native, point_key, point_sets
 from audit_native_case_probe_v1 import audit as audit_cases, journal_streams, stable_run, target_keys, xml_node
 from audit_store_strict_lifetimes_v1 import PAIRS, check_witness, source_lines, strict_targets
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 BASELINE = "lsq-progress-regression-15"
 PARTIAL = "store-strict-directory-regression-01"
 OMITTED = "lsq-native-case-omitted-contributors-01"

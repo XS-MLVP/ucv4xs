@@ -14,7 +14,7 @@ from audit_failure_preservation_v1 import pytest_status
 from audit_gap_closure_v1 import digest_keys, native, point_sets
 from coverage_audit import lcov
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 CASE = "test_all_slots_full_width_high_low_payload_lifetimes"
 PAIRS = (
     ("forward_module", "forward-payload-pool-baseline-02", "forward-payload-pool-after-02", "FWD-PAYLOAD.pool"),
@@ -118,7 +118,7 @@ def audit_pair(dut, before, after, scenario):
         hit = reference[kind]["missing"] & new["points"][kind]["hit"]
         overlap[kind] = dict(regression15_missing_seen_in_directed_after=len(hit), point_set_SHA256=digest_keys(hit))
     report = dict(format="lsq-store-payload-pool-evidence-v1", dut=dut, before_run=before, after_run=after,
-                  contract="docs/contracts/store-payload-pool.md", source_aggregate=old["source"]["aggregate_SHA256"],
+                  contract="docs/spec/design/contracts/store-payload-pool.md", source_aggregate=old["source"]["aggregate_SHA256"],
                   native_build_id=closure["native_build_id"], baseline_tests=len(old["nodes"]), after_tests=len(new["nodes"]),
                   raw_nonwrapper_metrics=closure["metrics"], target_domains=targets,
                   original_source_line_coverage=dict(before_hit=len(old["line_hit"]), after_hit=len(new["line_hit"]),

@@ -20,7 +20,7 @@ import json
 import re
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsu', fromlist=['ROOT']).ROOT
 EXPECTED_DUTS = 19
 EXPECTED_FAMILIES = {"store": 9, "load": 9, "std": 1}
 
@@ -103,9 +103,9 @@ def main() -> int:
             smoke = record.get("smoke") or {}
             if not smoke.get("passed"):
                 fail(errors, f"{key}: native smoke did not pass")
-        contract = ROOT / "docs/contracts" / (key.replace("_", "-") + ".md")
-        gap = ROOT / "docs/gaps" / (key + ".json")
-        tests = ROOT / "tests" / key
+        contract = ROOT / "docs/spec/design/contracts" / (key.replace("_", "-") + ".md")
+        gap = ROOT / "docs/spec/verification/gaps" / (key + ".json")
+        tests = ROOT / "testbenches" / key
         if not contract.is_file():
             fail(errors, f"{key}: missing contract {contract.relative_to(ROOT)}")
         if not gap.is_file():
@@ -135,7 +135,7 @@ def main() -> int:
                        "build": bool(build), "audited": key in audited})
 
     test_markers = re.compile(r"@pytest\.mark\.(xfail|skip)|pytest\.skip|pytest\.xfail")
-    for path in sorted((ROOT / "tests").rglob("test_*.py")):
+    for path in sorted((ROOT / "testbenches").rglob("test_*.py")):
         if test_markers.search(path.read_text()):
             fail(errors, f"skip/xfail marker in {path.relative_to(ROOT)}")
         for node in ast.walk(ast.parse(path.read_text())):

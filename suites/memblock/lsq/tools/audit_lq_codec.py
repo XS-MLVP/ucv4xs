@@ -7,15 +7,22 @@ from pathlib import Path
 import random
 import sys
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(ROOT))
 
-from suites.memblock.lsq.load_queue.codec import encode, ports
-from suites.memblock.lsq.load_queue.ports import decode
-from suites.memblock.lsq.load_queue.types import Bus, Bypass, Inputs, Load
-from suites.memblock.lsq.raw.types import SqPtr
-from suites.memblock.lsq.replay.types import Enqueue, Uop
-from suites.memblock.lsq.vlq.types import Dispatch, QueuePtr, RobPtr
+from suites.memblock.lsq.testbenches.load_queue.env.codec import encode
+from suites.memblock.lsq.testbenches.load_queue.env.codec import ports
+from suites.memblock.lsq.testbenches.load_queue.env.ports import decode
+from suites.memblock.lsq.testbenches.load_queue.transactions import Bus
+from suites.memblock.lsq.testbenches.load_queue.transactions import Bypass
+from suites.memblock.lsq.testbenches.load_queue.transactions import Inputs
+from suites.memblock.lsq.testbenches.load_queue.transactions import Load
+from suites.memblock.lsq.testbenches.raw.transactions import SqPtr
+from suites.memblock.lsq.testbenches.replay.transactions import Enqueue
+from suites.memblock.lsq.testbenches.replay.transactions import Uop
+from suites.memblock.lsq.testbenches.vlq.transactions import Dispatch
+from suites.memblock.lsq.testbenches.vlq.transactions import QueuePtr
+from suites.memblock.lsq.testbenches.vlq.transactions import RobPtr
 
 
 def sha(path):
@@ -78,7 +85,7 @@ def audit():
     report = dict(status="static_622_input_codec_and_independent_passive_decode_pass", samples=256,
                   inputs=len(spec["input"]), outputs=len(spec["output"]), all_inputs_varied=True, illegal_packets_rejected=rejected,
                   original_top_sha256=build["rtl"]["LoadQueue.sv"], original_closure_files=len(build["rtl"]),
-                  checked_files={str(p.relative_to(ROOT)): sha(p) for p in (Path(__file__), ROOT / "load_queue/types.py", ROOT / "load_queue/codec.py", ROOT / "load_queue/ports.py")},
+                  checked_files={str(p.relative_to(ROOT)): sha(p) for p in (Path(__file__), ROOT / "testbenches/load_queue/transactions.py", ROOT / "testbenches/load_queue/env/codec.py", ROOT / "testbenches/load_queue/env/ports.py")},
                   limits="Adapter widths/serialization only. Random raw encodings are not a legal traffic stream and give no DUT, lifecycle or functional coverage credit. All functional UT uses the real native DUT and managed X Reactor runner.")
     out = ROOT / "results/static/load-queue-codec-v1.json"
     out.parent.mkdir(exist_ok=True)

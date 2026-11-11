@@ -15,7 +15,7 @@ from audit_initial_branch_boundaries_v1 import initial_region
 from audit_load_raw_owners_v1 import FULL
 from audit_sq_head_permit_domain_v1 import source,evidence
 
-ROOT=Path(__file__).resolve().parents[1]
+ROOT=__import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT
 BITS=(23,19,15,7,6)
 PAYLOAD=re.compile(r'uop_\d+_exceptionVec_(23|19|15|7|6):(0->1|1->0)')
 
