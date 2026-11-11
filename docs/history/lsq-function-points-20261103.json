@@ -1,0 +1,265 @@
+{
+  "schema": 1,
+  "date": "2026-11-03",
+  "kind": "lsq-function-points-and-skill-refinement",
+  "baseline": {
+    "name": "public-a0c2a26cb",
+    "commit": "a0c2a26cbe3c862175174bad03a1a23c406315ed",
+    "source_cache_key": "f3ac6022d07c5c05d28869ac811f91038f9103677796dd6f051bd1981408be9b",
+    "generation_cache_key": "d7c6bc4d17651fc1bd92ac39c469410a6bb91215f46c1efcfaf1ec66a72e972d",
+    "authoritative_run": "/tmp/opencode/lsq-runs/full-a0c2a26cb-v3",
+    "authoritative_counts": {
+      "PASS": 2356,
+      "FAIL": 219,
+      "cases": 2575
+    },
+    "seed": 1
+  },
+  "new_products": [
+    {
+      "path": "suites/memblock/lsq/docs/contracts/instruction-source-mapping.md",
+      "kind": "contract",
+      "purpose": "instruction family -> LSQ entry/field -> in-layer / out-of-domain / unproven",
+      "claims": {
+        "amo_lr_sc": "out of domain: Dispatch.scala:741 filters isAMOVec; AtomicsUnit drives dcache.io.lsu.atomics",
+        "zicbop": "out of domain: Dispatch.scala:675-676 excludes LSUOpType.isPrefetch; NewLoadUnit software prefetch",
+        "fence": "out of domain: affects the suite only via sbuffer flush (MemBlock.scala:1178-1187)",
+        "cbo_encoding": "CboType clean=0 flush=1 inval=2 zero=3 (Opcode.scala:591-596, LSQCommon.scala:51-64)",
+        "amo_interface_obligation": "AtomicsUnit requires stIsEmpty (MemBlock.scala:1181-1182, :1225) - registered as GAP-AMO-OBLIGATION"
+      }
+    },
+    {
+      "path": "suites/memblock/lsq/docs/contracts/kind-outcome-matrix.md",
+      "kind": "contract",
+      "purpose": "8 transaction kinds x 6 response domains, each cell pass/fail/gap/na/out-of-domain with evidence"
+    },
+    {
+      "path": "suites/memblock/lsq/function_points.py",
+      "kind": "executable-ledger",
+      "purpose": "machine-readable form of the same matrix; validate() rejects missing rows, unevidenced pass/fail, gaps without missing/next"
+    },
+    {
+      "path": "suites/memblock/lsq/tests/meta/test_function_points.py",
+      "kind": "gate",
+      "markers": [
+        "selftest"
+      ],
+      "cases": 6,
+      "local_result": "6 passed",
+      "purpose": "iteration gate: adding a kind/outcome/instruction family without declaring coverage fails the suite"
+    }
+  ],
+  "ledger_summary": {
+    "cells": 48,
+    "pass": 23,
+    "fail": 2,
+    "gap": 4,
+    "na": 19,
+    "out_of_domain": 0
+  },
+  "actor_change": {
+    "file": "suites/memblock/lsq/tests/lsq_wrapper/mixed_owners.py",
+    "old_behaviour": "response = s['cache_resp'] or dict(denied=False, corrupt=False)",
+    "new_behaviour": [
+      "cbo (clean/flush/inval): denied/corrupt from s['cache_resp'] (the DCache response really drives them)",
+      "cbo.zero: asserted cache_resp is None and consumed, expected bits 0 (no DCache request)",
+      "io_store: denied=int(job['nderr']), corrupt=int(job['error']) from the real shared-bus response",
+      "s['fault'] keeps its original meaning (modelled Cache trap flow); bus faults recorded separately in s['bus_fault']"
+    ],
+    "cross_gap_registered": "GAP-IO-STORE-TRAP"
+  },
+  "runs": [
+    {
+      "output": "/tmp/opencode/lsq-mixedfix-full-20261103",
+      "selection": "tests/lsq_wrapper tests/normal_mixed tests/sq_endpoint tests/local_reset",
+      "seed": 1,
+      "workers": 12,
+      "counts": {
+        "PASS": 754,
+        "FAIL": 126
+      },
+      "source_sha256_before": "599af23e78462aba",
+      "source_sha256_after": "6f40619a582e5305",
+      "status": "INVALID",
+      "invalid_reason": "source changed during the run (function_points.py and tests/meta added); per AGENTS.md a run whose source_identity differs cannot be evidence"
+    },
+    {
+      "output": "/tmp/opencode/lsq-mixedfix-expect-only-20261103",
+      "selection": "10 MixedOwners-derived files, 100 nodes",
+      "seed": 1,
+      "workers": 8,
+      "counts": {
+        "PASS": 20,
+        "FAIL": 80
+      },
+      "source_sha256_before": "dc40e91f95e7e7a6",
+      "source_sha256_after": "f5219ba39174bdeb",
+      "status": "INVALID",
+      "invalid_reason": "mixed_owners.py was edited during the run; also contained two self-introduced secondary errors (cbo.zero expected to have a cache_resp; bus fault wired into the modelled trap flow)"
+    },
+    {
+      "output": "/tmp/opencode/lsq-mixedfix-v2-20261103",
+      "selection": "same 100 nodes",
+      "seed": 1,
+      "workers": 8,
+      "counts": {
+        "PASS": 39,
+        "FAIL": 61
+      },
+      "baseline_counts_same_selection": {
+        "PASS": 46,
+        "FAIL": 54
+      },
+      "source_sha256_before": "9f3555f9e0848d57",
+      "source_sha256_after": "9f3555f9e0848d57",
+      "status": "AUTHORITATIVE_FOR_ACTOR_CHANGE",
+      "pass_to_fail": 7,
+      "fail_to_pass": 0,
+      "pass_to_fail_nodes": [
+        "tests/lsq_wrapper/test_ldu_mixed.py::test_LDU_pipeline_original_eight_seeds_all_kinds_errors_recovery_and_fair_obligations[28929]",
+        "tests/lsq_wrapper/test_ldu_mixed.py::test_LDU_pipeline_original_eight_seeds_all_kinds_errors_recovery_and_fair_obligations[28933]",
+        "tests/lsq_wrapper/test_ldu_s3_mixed.py::test_LDU_S3_source_original_eight_seeds_full_kinds_errors_recovery_and_fair[28929]",
+        "tests/lsq_wrapper/test_ldu_s3_mixed.py::test_LDU_S3_source_original_eight_seeds_full_kinds_errors_recovery_and_fair[28933]",
+        "tests/lsq_wrapper/test_ldu_s4_mixed.py::test_LDU_S4_original_eight_seeds_full_kinds_errors_recovery_and_fair[28929]",
+        "tests/lsq_wrapper/test_ldu_s4_mixed.py::test_LDU_S4_original_eight_seeds_full_kinds_errors_recovery_and_fair[28933]",
+        "tests/normal_mixed/test_original_seeds.py::test_normal_producer_original_eight_types_weights_seeds_external_jobs_and_fair[28929]"
+      ],
+      "pass_to_fail_root_cause": "MMIO Store bus fault never reaches writeback: PhysicalStoreQueue exposes only io_toUncacheBuffer_resp_valid without resp_bits; DeqModule.sv:684-685 derives hasAccessFault/hasHardwareError from the DCache (CBO) path only",
+      "note": "all 54 pre-existing FAILs in this selection stay FAIL with unchanged verdicts; CBO clean/flush/inval fault cases still pass"
+    },
+    {
+      "output": "/tmp/opencode/lsq-mixedfix-v2b-20261103",
+      "selection": "tests/lsq_wrapper/test_ldu_joint_serial.py, test_ldu_s4_epochs.py, test_ldu_s4_precise_epochs.py, tests/sq_endpoint/test_wrapper_raw_boundary.py",
+      "seed": 1,
+      "workers": 8,
+      "counts": {
+        "PASS": 36,
+        "FAIL": 0
+      },
+      "source_sha256_before": "9f3555f9e0848d57",
+      "source_sha256_after": "9f3555f9e0848d57",
+      "nodeid_verdicts_identical_to_authoritative": true,
+      "status": "STABLE_CONTROL"
+    },
+    {
+      "output": "/tmp/opencode/lsq-audit-20261103g-mmiofault",
+      "purpose": "targeted probe for io_store x fault (unchanged this round)",
+      "counts": {
+        "PASS": 1,
+        "FAIL": 2
+      },
+      "status": "STABLE"
+    }
+  ],
+  "skill_changes": [
+    {
+      "file": "skills/design/behavior-equivalence.md",
+      "status": "applied",
+      "changes": [
+        "step 2 adds the response-result dimension",
+        "step 3 requires an error on both stimulus and response side",
+        "step 4 requires a per-cell kind x outcome matrix",
+        "step 6 requires backfilling matrix/mapping/nodeid together",
+        "new step 7: make the classification an executable ledger",
+        "output and acceptance sections require the matrix",
+        "closing note carries this round's counterexample"
+      ]
+    },
+    {
+      "file": "skills/design/traceability-and-implementation.md",
+      "status": "applied",
+      "changes": [
+        "step 4 requires input value domains and producer branches",
+        "template gains response_domain and input_value_domains",
+        "acceptance states that response-only controls are as mandatory as stimulus-only controls"
+      ]
+    },
+    {
+      "file": "skills/verification-completeness/SKILL.md",
+      "status": "applied",
+      "changes": [
+        "new section: four mandatory per-iteration checks (source mapping, kind x outcome matrix, unclassified list, executable gate)"
+      ]
+    },
+    {
+      "file": "skills/ucv4xs-workflow/SKILL.md",
+      "status": "applied",
+      "changes": [
+        "changing verification semantics requires updating the source mapping and matrix and running the ledger gate"
+      ]
+    },
+    {
+      "file": "skills/design/observation-precision.md",
+      "status": "applied",
+      "changes": [
+        "new section: three sources and their separate roles",
+        "step 1 becomes the three-question test per field",
+        "step 5 adds the 'source reads it, generated port lacks it' category",
+        "step 7 requires existence/absence probes so a boundary change reopens the verdict",
+        "output table gains source-writer and port-existence evidence columns",
+        "closing note carries the LSQ counterexample"
+      ]
+    },
+    {
+      "file": "skills/ucv4xs-workflow/SKILL.md",
+      "status": "applied",
+      "changes": [
+        "new rule: keep spec/Scala/generated-RTL roles separate when reading a field; never use implementation as spec"
+      ]
+    }
+  ],
+  "skill_recommendations_not_applied": [
+    "promote the ledger gate into a shared ucv check usable by every suite",
+    "surface matrix status in ucv report so a gap blocks a hardware PASS mechanically",
+    "auto-check that an out-of-domain claim has a functional-point row in the receiving block",
+    "ship a matrix template (column names and status vocabulary) with behavior-equivalence.md"
+  ],
+  "still_open": [
+    "GAP-6704 head/tail window",
+    "GAP-6688 threshold=0 configuration domain",
+    "GAP-PSQ-CREDIT deq credit modelling",
+    "GAP-AMO-OBLIGATION AMO sbuffer drain (MemBlock combination domain)",
+    "GAP-IO-STORE-TRAP io_store fault trap flow not modelled in the actor",
+    "GAP-SEG-VSTORE segmented vector store + AMO",
+    "3 post-edge credit-accounting nodes kept as real FAIL"
+  ],
+  "scope": "LSQ suite only, DefaultConfig, public-a0c2a26cb, seed 1; other nine suites were not rebuilt or regressed",
+  "three_way_reconciliation": {
+    "rule": "spec = only valid oracle; Scala = design intent; generated DUT/Picker = drivable and observable surface. A field read by Scala but absent from the generated port must be adjudicated as trimmed-with-reason or undriven(defect).",
+    "tool": "suites/memblock/lsq/tools/audit_scala_rtl_fields.py",
+    "modes": {
+      "--report": "shape-level diff for human triage",
+      "--strict": "validate manifest/critical-fields.json"
+    },
+    "manifest": "suites/memblock/lsq/manifest/critical-fields.json",
+    "gate": "suites/memblock/lsq/tests/meta/test_critical_fields.py (5 cases, all passing)",
+    "measured_report": {
+      "duts": 38,
+      "scala_only_shapes": 377,
+      "debug_or_diff": 62,
+      "needs_triage": 315,
+      "zero_diff_duts": [
+        "age_replay",
+        "unalign_queue"
+      ],
+      "note": "needs_triage items are NOT claimed as defects; sampled categories are constant-folding, unused leaf IO, Chisel aggregate members and naming remaps"
+    },
+    "decisive_hit": {
+      "dut": "deq_module",
+      "fields": [
+        "io_toUncacheBuffer_resp_bits_denied",
+        "io_toUncacheBuffer_resp_bits_corrupt"
+      ],
+      "meaning": "exactly the two fields NewStoreQueue.scala:1087/1095 read; absent because the producer drives nderr/error only",
+      "value": "the defect was mechanically visible before any stimulus existed"
+    },
+    "assertion_asymmetry": {
+      "scala_asserts_in_NewStoreQueue": 27,
+      "fatal_count_in_generated_sv": {
+        "PhysicalStoreQueue.sv": 0,
+        "DeqModule.sv": 0
+      },
+      "why": "--default-layer-specialization=disable drops the Chisel verification layer"
+    }
+  }
+}

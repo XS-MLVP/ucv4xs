@@ -1,0 +1,276 @@
+{
+  "schema": 1,
+  "date": "2026-11-06",
+  "kind": "lsq-interaction-semantics-and-cross-module-windows",
+  "baseline": {
+    "name": "public-a0c2a26cb",
+    "commit": "a0c2a26cbe3c862175174bad03a1a23c406315ed",
+    "source_cache_key": "f3ac6022d07c5c05d28869ac811f91038f9103677796dd6f051bd1981408be9b",
+    "generation_cache_key": "d7c6bc4d17651fc1bd92ac39c469410a6bb91215f46c1efcfaf1ec66a72e972d",
+    "previous_authoritative_run": "/tmp/opencode/lsq-runs/full-a0c2a26cb-v3",
+    "previous_counts": {
+      "PASS": 2356,
+      "FAIL": 219,
+      "cases": 2575
+    }
+  },
+  "new_products": [
+    {
+      "path": "suites/memblock/lsq/docs/contracts/interaction-semantics.md",
+      "kind": "contract",
+      "purpose": "8 cross-module boundaries (B1-B8) with initiator/consumer/handshake/backpressure/identity/completion, plus a window list",
+      "boundaries": {
+        "B1": "LsqWrapper <-> LoadQueue/StoreQueue (canAccept = lq && sq; load sqIdx bound at entry)",
+        "B2": "VirtualStoreQueue <-> PhysicalStoreQueue (triple-stage propagation, 4 pointer invariants at VSQ:323/327-329/323)",
+        "B3": "DeqModule <-> EnterSbufferQueue (cross16B needs both ready; credit decided by entry type :1323-1325)",
+        "B4": "DeqModule <-> UnalignQueue (second page released on writeSbufferWire.head.fire :1299)",
+        "B5": "PhysicalStoreQueue <-> ForwardModule (byte-level mask/data; hazard only from UQ :1632)",
+        "B6": "LoadQueue <-> RAR/RAW/Replay/Uncache/VLQ (LoadQueue.scala:237-304)",
+        "B7": "UncacheEntry <-> Uncache (Load reads nderr/error; Store reads undriven denied/corrupt)",
+        "B8": "LsqWrapper single-bus arbitration (selectLq by robIdx; NC outstanding stays idle)"
+      }
+    },
+    {
+      "path": "suites/memblock/lsq/tests/lsq_wrapper/test_interaction_windows.py",
+      "kind": "probe",
+      "cases": 8,
+      "purpose": "two windows, each with a legal control"
+    }
+  ],
+  "new_findings": [
+    {
+      "id": "IWL-UQ-SECOND-PAGE",
+      "status": "FAIL",
+      "scala": "NewStoreQueue.scala:1299 releases the UnalignQueue entry on writeSbufferWire.head.fire; :1632 feeds the page hazard from unalignQueue.forwardEntries",
+      "window": "after the first 16B fragment enters Sbuffer and before the second fragment is accepted, the older store's second-page bytes are in neither Sbuffer nor UnalignQueue, so ForwardModule has no hazard",
+      "probe": "test_second_page_must_stay_blocked_until_the_store_leaves_the_queue",
+      "result": {
+        "uq_held": "3/3 PASS (control: second page still in UQ, forwardInvalid=1)",
+        "uq_released": "3/3 FAIL (blocked=False, forwarded_ok=False, second_fragment_still_pending=True)"
+      },
+      "upstream": "#6822 (open PR) proposes headDeqPtr === sqIdx && io.sqDeqCnt.orR plus a PSQ fwdHold",
+      "root_cause_relation": "same root cause as #6822; different from the 11 historical roots and from #6813/#6833"
+    },
+    {
+      "id": "IWL-NC-CROSS16B",
+      "status": "RETRACTED",
+      "scala": "NewStoreQueue.scala:1448 asserts NC never crosses 16B; :1071-1080 emits a single 8-byte mask; the NC path bypasses writeToSbuffer so the high half is never emitted",
+      "window": "uncached Store whose vaddr crosses 16B",
+      "probe": "test_nc_store_must_not_silently_drop_the_half_that_crosses_16B",
+      "result": {
+        "nc_aligned": "PASS",
+        "nc_misaligned_with_upstream_exception": "PASS"
+      },
+      "reachability": "cross16Byte is derived only from vaddr/size (NewStoreUnit.scala:200) and assigned directly to toSqAddr.cross16Byte (:449), independent of memory type; so NC crossing 16B is a producible LSQ input",
+      "claim_boundary": "not a defect",
+      "root_cause_relation": "distinct from the 11 historical roots, from #6813 (cross-page second page) and from #6833 (uncache fault reporting / wline / synonym)",
+      "retraction": {
+        "reason": "illegal stimulus: the probe drove a misaligned NC store with hasException=0",
+        "upstream_guard": "NewStoreUnit.scala:633 am = !align && isScalar && isNC; :634 hasException = in.hasException || af || am",
+        "lsq_guard": "uncacheCanHandle requires !headCtrlEntry.hasException; hasExceptionSet -> ctrlEntries(i).hasException (NewStoreQueue.scala:1823-1848)",
+        "corrected_probe": {
+          "nc_aligned": "PASS, mask 0xff (8 bytes)",
+          "nc_misaligned_with_upstream_exception": "PASS, no request issued"
+        },
+        "conclusion": "LSQ behaves correctly; NewStoreQueue.scala:1448 is a defensive assertion already guaranteed by upstream",
+        "lesson": "before claiming a missing guard, confirm the producer already excludes the combination"
+      }
+    },
+    {
+      "id": "RETRACTION-20261106",
+      "status": "RETRACTED",
+      "what": "the earlier claim that uncached Store crossing 16B silently drops half the bytes",
+      "why_wrong": "probe used hasException=0 for a misaligned NC store, which upstream never produces",
+      "impact": "one FAIL node removed; no RTL defect",
+      "recorded_in": [
+        "docs/contracts/interaction-semantics.md section 10",
+        "docs/reports/interaction-probes-20261106.md section 3.2",
+        "skills/execution/legal-stimulus.md new section"
+      ]
+    }
+  ],
+  "ledger_extension": {
+    "file": "suites/memblock/lsq/function_points.py",
+    "added": "INTERACTION_WINDOWS (5 entries)",
+    "statuses": {
+      "IWL-VSQ-RETIRE": "gap",
+      "IWL-UQ-SECOND-PAGE": "fail",
+      "IWL-NC-CROSS16B": "pass (retracted from fail)",
+      "IWL-CREDIT-TYPE": "gap",
+      "IWL-PRECOMMIT-RETIRE": "pass"
+    },
+    "gate": "tests/meta/test_function_points.py extended by 3 cases (window declared, named in the contract doc, fail has a probe file); tests/meta now 14 cases, all passing"
+  },
+  "runs": [
+    {
+      "output": "/tmp/opencode/lsq-iwl-uq-20261106",
+      "purpose": "first UQ probe version",
+      "seed": 1,
+      "workers": 2,
+      "counts": {
+        "PASS": 3,
+        "FAIL": 3
+      },
+      "status": "INVALID",
+      "invalid_reason": "stimulus too weak: uq_released phase failed with 'cross-16B head never presented to Sbuffer port 0', i.e. the probe did not create the window; not a hardware verdict"
+    },
+    {
+      "output": "/tmp/opencode/lsq-iwl-uq2-20261106",
+      "purpose": "UQ probe after driving the ROB head",
+      "seed": 1,
+      "workers": 2,
+      "counts": {
+        "PASS": 3,
+        "FAIL": 3
+      },
+      "status": "INVALID",
+      "invalid_reason": "window-authenticity evidence not yet asserted; superseded by the run below"
+    },
+    {
+      "output": "/tmp/opencode/lsq-iwl-2-20261106",
+      "purpose": "first NC probe version",
+      "seed": 1,
+      "workers": 2,
+      "counts": {
+        "PASS": 4,
+        "FAIL": 4
+      },
+      "status": "INVALID",
+      "invalid_reason": "NC probe drove raw packets and reported 'no uncached request appeared'; replaced by the SpecialOwners-based probe"
+    },
+    {
+      "output": "/tmp/opencode/lsq-iwl-3-20261106",
+      "purpose": "final targeted probe run",
+      "seed": 1,
+      "workers": 2,
+      "counts": {
+        "PASS": 4,
+        "FAIL": 4
+      },
+      "cases": {
+        "uq_held-0/1/2": "PASS",
+        "uq_released-0/1/2": "FAIL",
+        "nc aligned-control": "PASS",
+        "nc cross16B": "FAIL"
+      },
+      "status": "AUTHORITATIVE_FOR_PROBES"
+    },
+    {
+      "output": "/tmp/opencode/lsq-full-20261106",
+      "purpose": "full LSQ regression on the current workspace",
+      "seed": 1,
+      "workers": 32,
+      "counts": {
+        "PASS": 2368,
+        "FAIL": 232,
+        "cases": 2600
+      },
+      "source_sha256_before": "6693f144373ce259d37b75349147bdc76d81ec8678cb3be762574d65a6f80364",
+      "source_sha256_after": "6693f144373ce259d37b75349147bdc76d81ec8678cb3be762574d65a6f80364",
+      "duration_seconds": 4785,
+      "run_status": "FAIL",
+      "status_note": "run_status FAIL means the suite has real failing nodes; the run itself completed with a stable source identity",
+      "comparison": {
+        "new_nodes": 25,
+        "new_nodes_pass": 19,
+        "new_nodes_fail": 6,
+        "pass_to_fail": 7,
+        "fail_to_pass": 0,
+        "removed_nodes": 0,
+        "arithmetic": "2356 + 19 - 7 = 2368 PASS; 219 + 7 + 6 = 232 FAIL; 2575 + 25 = 2600 cases; removed = 0",
+        "fail_breakdown": {
+          "unchanged_fail_from_previous_round": 219,
+          "pass_to_fail_same_root_cause_io_store_fault": 7,
+          "new_probe_fail": 6,
+          "sum": 232
+        }
+      },
+      "pass_to_fail_nodes": [
+        "tests/lsq_wrapper/test_ldu_mixed.py::test_LDU_pipeline_original_eight_seeds_all_kinds_errors_recovery_and_fair_obligations[28929]",
+        "tests/lsq_wrapper/test_ldu_mixed.py::test_LDU_pipeline_original_eight_seeds_all_kinds_errors_recovery_and_fair_obligations[28933]",
+        "tests/lsq_wrapper/test_ldu_s3_mixed.py::test_LDU_S3_source_original_eight_seeds_full_kinds_errors_recovery_and_fair[28929]",
+        "tests/lsq_wrapper/test_ldu_s3_mixed.py::test_LDU_S3_source_original_eight_seeds_full_kinds_errors_recovery_and_fair[28933]",
+        "tests/lsq_wrapper/test_ldu_s4_mixed.py::test_LDU_S4_original_eight_seeds_full_kinds_errors_recovery_and_fair[28929]",
+        "tests/lsq_wrapper/test_ldu_s4_mixed.py::test_LDU_S4_original_eight_seeds_full_kinds_errors_recovery_and_fair[28933]",
+        "tests/normal_mixed/test_original_seeds.py::test_normal_producer_original_eight_types_weights_seeds_external_jobs_and_fair[28929]"
+      ],
+      "pass_to_fail_cause": "carried over from the previous round's mixed_owners same-source expectation fix: these seeds now expect the real bus nderr/error and expose the io_store fault reporting defect. Not caused by this round's probes.",
+      "new_nodes_detail": "25 = 14 meta self-checks + 8 interaction-window cases + 3 uncached-store-fault cases",
+      "fail_distribution": {
+        "tests/lsq_wrapper": 98,
+        "tests/deq": 28,
+        "tests/forward": 19,
+        "tests/store_queue": 18,
+        "tests/psq": 17,
+        "tests/fail_review": 13,
+        "tests/load_queue": 9,
+        "tests/load_uncache": 8,
+        "tests/normal_mixed": 7,
+        "tests/rar": 7,
+        "tests/sq_endpoint": 6,
+        "tests/vsq": 2
+      },
+      "status": "SUPERSEDED",
+      "superseded_reason": "contained the retracted NC false positive (1 FAIL); superseded by -v2"
+    },
+    {
+      "output": "/tmp/opencode/lsq-full-20261106-v2",
+      "purpose": "full LSQ regression after retracting the NC false positive",
+      "role": "AUTHORITATIVE_FULL_RESULT",
+      "seed": 1,
+      "workers": 32,
+      "counts": {
+        "PASS": 2369,
+        "FAIL": 231,
+        "cases": 2600
+      },
+      "source_sha256_before": "8ede0b3b657b88a20fe20d0ecadc88932df0702b7417983dc4b53589fd563cc7",
+      "source_sha256_after": "8ede0b3b657b88a20fe20d0ecadc88932df0702b7417983dc4b53589fd563cc7",
+      "run_status": "FAIL",
+      "status_note": "run_status FAIL means the suite has real failing nodes; the run completed with a stable source identity",
+      "comparison": {
+        "new_nodes": 25,
+        "new_nodes_pass": 20,
+        "new_nodes_fail": 5,
+        "pass_to_fail": 7,
+        "fail_to_pass": 0,
+        "removed_nodes": 0,
+        "arithmetic": "2356 + 20 - 7 = 2369 PASS; 219 + 7 + 5 = 231 FAIL; 2575 + 25 = 2600 cases",
+        "fail_breakdown": {
+          "unchanged_fail_from_previous_round": 219,
+          "pass_to_fail_same_root_cause_io_store_fault": 7,
+          "new_probe_fail": 5,
+          "sum": 231
+        },
+        "diff_vs_v1": "only the two NC nodes changed: the old cross16B FAIL and its control were removed, replaced by nc_aligned PASS and nc_misaligned_with_upstream_exception PASS"
+      }
+    }
+  ],
+  "gates": {
+    "root_pytest": "268 passed",
+    "audit_suite_layout_strict": "lsq ok (169 feature files, 28 fixtures, transaction-boundary needs-adapter)",
+    "audit_skills_strict_check_framework": "errors: []",
+    "audit_assets": "errors: [] (132 DUT, 134685 historical entries)",
+    "lsq_meta_selftests": "14 passed",
+    "audit_scala_rtl_fields_strict": "0 problems"
+  },
+  "still_open": [
+    "IWL-VSQ-RETIRE: needs a real multi-register segmented vector store flow split followed by an AMO (upstream #6597 shape)",
+    "IWL-CREDIT-TYPE / GAP-PSQ-CREDIT: deq/model.py still computes credit from commitment bits instead of entry type",
+    "GAP-6704 head/tail window, GAP-6688 threshold=0 config domain, GAP-IO-STORE-TRAP, GAP-AMO-OBLIGATION, GAP-SEG-VSTORE",
+    "315 three-way reconciliation items still pending triage (not claimed as defects)",
+    "3 post-edge credit-accounting nodes remain real FAIL",
+    "whole-core consequence of IWL-NC-CROSS16B not established"
+  ],
+  "scope": "LSQ suite only, DefaultConfig, public-a0c2a26cb, seed 1; other nine suites were not rebuilt or regressed",
+  "skill_changes": [
+    {
+      "file": "skills/execution/legal-stimulus.md",
+      "status": "applied",
+      "changes": [
+        "new section: confirm the producer already excludes a combination before claiming a missing guard",
+        "carries the LSQ NC-cross16B false positive as the counterexample"
+      ]
+    }
+  ]
+}

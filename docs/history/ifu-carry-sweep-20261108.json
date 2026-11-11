@@ -1,0 +1,61 @@
+{
+  "date": "2026-11-08",
+  "suite": "ifu",
+  "baseline": "public-a0c2a26cb",
+  "commit": "a0c2a26cbe3c862175174bad03a1a23c406315ed",
+  "design": "DefaultConfig",
+  "purpose": "Expand the carry-position sweep to all odd positions and all four write-bank lanes, and make the R-13 GE case resident.",
+  "scope": "Verification side only. No RTL/Scala/generated RTL/baselines/dependencies change; no upstream submission; no push.",
+  "changes": {
+    "tests/ifu/test_ifu_fetch.py": "test_carry_position_and_instruction_class_sweep: size0 1..31 odd (16 values) x 7 non-control-flow classes x lead_rvi 0/1 (except size0=1 lead_rvi=1) = 217 cases; lane assertion now derives prefix instruction count.",
+    "tests/frontend_trigger/test_frontend_trigger.py": "Add resident test_tdata2_above_the_address_space_is_not_greater_for_greater_equal (R-13 GE).",
+    "docs": [
+      "docs/status.md IFU section",
+      "suites/frontend/ifu/README.md",
+      "suites/frontend/ifu/docs/exit-criteria.md",
+      "suites/frontend/ifu/verification_plan.json (R-09 evidence, R-13 evidence/next_action)"
+    ]
+  },
+  "runs": {
+    "seed1_full": {
+      "directory": "results/ifu-a0c2a26cb-carry-sweep-seed1-20261108",
+      "workers": 16,
+      "counts": {"PASS": 939, "FAIL": 6},
+      "nodeid": 945
+    },
+    "seed2_targeted": {
+      "directory": "results/ifu-a0c2a26cb-carry-sweep-seed2-20261108",
+      "selection": ["tests/ifu", "tests/uncache_unit", "tests/frontend_trigger"],
+      "workers": 16,
+      "counts": {"PASS": 350, "FAIL": 4},
+      "nodeid": 354
+    }
+  },
+  "failures": [
+    "R-13: test_tdata2_above_the_address_space_cannot_equal_a_fetch_pc",
+    "R-13: test_tdata2_above_the_address_space_is_greater_for_less_than",
+    "R-13: test_tdata2_above_the_address_space_is_not_greater_for_greater_equal",
+    "R-14: test_random_windows_match_the_model (137/254/406/477/529)",
+    "R-14: test_carried_upper_half_cannot_acquire_block_one_ownership[upper-half-low11]",
+    "R-14: test_recovered_half_instruction_keeps_its_completing_ftq_block[upper-half-low11]"
+  ],
+  "previous_authoritative": {
+    "directory": "results/ifu-a0c2a26cb-closeout-seed1-authoritative-20261108",
+    "counts": {"PASS": 778, "FAIL": 5},
+    "nodeid": 783
+  },
+  "delta": {
+    "deleted_nodeids": 0,
+    "sweep_replaced": {"old": 56, "new": 217},
+    "new_ge_fail": 1,
+    "pass_delta": 161,
+    "fail_delta": 1
+  },
+  "gates": {
+    "root_tests": "272 passed",
+    "layout_strict": "exit 0",
+    "skills_strict": "exit 0",
+    "assets": "PASS, 12 suites / 137 DUT / 5016 files",
+    "transaction_boundary": "exit 1 (other suites' existing debt; ifu row no-static-leak-found)"
+  }
+}

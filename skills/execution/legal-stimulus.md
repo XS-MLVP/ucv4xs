@@ -17,6 +17,25 @@
 
 生产者来源及版本、准入规则位置、构造序列、driver/monitor 采样点、实际 fire/UID、合法与非法对照的 nodeid/结果，以及生产可达或端口压力的范围标记。
 
+## 判"缺保护"前先确认上游是否已排除该组合
+
+发现某条断言/检查"看起来没有保护"时，先回到生产者确认该组合是否根本不允许到达本层。
+典型形态：本层有一条防御性 `assert`/`XSError`，而上游早已用异常、许可或类型位把输入挡掉。
+
+反例（2026-11-06，LSQ）：本层 `NewStoreQueue.scala:1448` 有
+`XSError(... nc && headCross16B, "NC request should not cross 16B")`，请求组帧又只发一个
+8 字节 mask。看上去像"跨 16B 会丢高半"，实测也确实观察到 mask 只覆盖 4/8 字节。
+但上游 `NewStoreUnit.scala:633` 有 `am = !align && isScalar && isNC`，非对齐的 NC 标量
+store 直接置 `storeAddrMisaligned`，`hasException=1` 让本层的 `uncacheCanHandle` 拒绝。
+初版探针按 `hasException=0` 驱动，属于非法激励，把"实现拒绝不了的非法输入"误判成缺陷。
+
+检查清单：
+
+1. 该输入在本层合同里是合法的吗？上游有哪些位（异常、许可、类型、对齐）会排除它？
+2. 如果上游会排除，本层的断言是**防御性**的——它存在是为了在集成错误时炸，不是正常路径。
+3. 探针要么按合法域驱动（并期望正常行为），要么显式驱动"上游已标记"的形态（并期望本层拒绝）。
+4. 两者都不能用"喂非法输入看它出什么"来主张缺陷。
+
 ## 如何验收
 
 合法 fixture 可通过准入并到达目标状态；错误编码/未知键能在约定边界被发现。要求最终接受的用例在零接受时失败；允许拒绝的用例则验证拒绝条件和副作用，不机械要求接受。
@@ -24,12 +43,12 @@
 案例：[十二类踩坑 P01](../../docs/lessons/rtl-verification-soundness-20261026.md)。配套：[checker 与完成性](checker-and-runtime.md)。
 生产者合法域和叶子端口压力可使用显式不同入口，但后者不能豁免宽度/所有权/采样/oracle，
 也不能冒称CSR可达。反向还要保留合法边界对照，防止准入过严（例如最后一个trigger的chain
-位并非被CSR强制0），见[IFU触发器合同](../../suites/frontend/ifu/docs/transaction-adapters.md#producer与端口域压力不能混为一谈)。
+位并非被CSR强制0），见[IFU触发器合同](../../suites/frontend/ifu/docs/spec/verification/transaction-adapters.md#producer与端口域压力不能混为一谈)。
 只检查size/mask的最大值并不能证明生产可达：non-taken长度也可能有完整fall-through的
 等式约束。应从实际选择该字段的producer分支逐项推导，并用合法历史和原端口压力对照；
-见[IFU生产者反证与carry模型修复](../../suites/frontend/ifu/docs/bugs/instr-boundary-carry-ftq-owner.md#后续生产者复核原可达性论证不充分)。
+见[IFU生产者反证与carry模型修复](../../suites/frontend/ifu/docs/bugs/open/instr-boundary-carry-ftq-owner.md#后续生产者复核原可达性论证不充分)。
 该案例收紧了原可达性结论但保留旧FAIL；后续producer类型也不能把之前端口域的carry
 或fake reply晋升为完整生产历史，来源须随数据和身份跨事务传播。
 事务若同时携带原始字节和派生oracle描述，必须逐项绑定两者；不能仅校验字段各自位宽。
 应从实际待驱动字节独立步进起始、宽度、PC/身份及计数，再校验冗余描述；跨事务carry的
-低半还须绑定前一个实际输入UID。见[IFU输入描述对账](../../suites/frontend/ifu/docs/observation-coverage.md#3-完成性--账本)。
+低半还须绑定前一个实际输入UID。见[IFU输入描述对账](../../suites/frontend/ifu/docs/spec/verification/observation-coverage.md#3-完成性--账本)。

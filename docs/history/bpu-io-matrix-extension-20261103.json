@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "date": "2026-11-03",
+  "kind": "bpu-input-history-output-matrix-extension",
+  "status": "SELECTED_MATRIX_COMPLETE_WITH_RETAINED_RESIDUALS",
+  "baseline": {
+    "name": "public-a0c2a26cb",
+    "commit": "a0c2a26cbe3c862175174bad03a1a23c406315ed",
+    "previous": "public-893e1580b",
+    "previous_commit": "893e1580b705d81f113c30c7a05734e09a08050e",
+    "design_config": "DefaultConfig",
+    "duts": ["bpu", "abtb", "ittage", "mbtb", "ras", "sc", "tage", "ubtb", "uras", "utage"],
+    "rtl_config_tool_lock_changes": false
+  },
+  "scope": "BPU input/history x response-domain matrix extension and selected sensitivity regression; not a full BPU rerun or hardware signoff",
+  "source": {
+    "sha256": "f22dc87a82699c270acc19450b0f1392be17bf2b4e06e9506238ecbfb076b24e",
+    "source_stable_in_both_runs": true,
+    "delivery_evidence": "/tmp/opencode/bpu-io-matrix-20261103/delivery-evidence.json",
+    "delivery_evidence_sha256": "ce747f1649d1b5368f410949bbdef69565ac69487d9f399ebe500a7a9385d01a"
+  },
+  "matrix": {
+    "feature_points_added": ["BPU-MBTB-033", "BPU-MBTB-034", "BPU-INT-114"],
+    "parameter_instances": 73,
+    "distinct_semantic_classes": 65,
+    "cold_region_aliases_not_credited": 8,
+    "functional_cells": {"pass": 15, "gap": 21, "out-of-domain": 9},
+    "source_mapping": "suites/frontend/bpu/coverage/io_matrix.py",
+    "machine_gate": "suites/frontend/bpu/tests/framework/test_bpu_io_matrix.py",
+    "new_functional_groups": [
+      "kunminghu_v3.mbtb.payload-matrix.reached",
+      "kunminghu_v3.mbtb.payload-matrix.checked",
+      "kunminghu_v3.mbtb.residency-matrix.reached",
+      "kunminghu_v3.mbtb.residency-matrix.checked",
+      "kunminghu_v3.bpu.guard-outcomes.reached",
+      "kunminghu_v3.bpu.guard-outcomes.checked",
+      "kunminghu_v3.ras.guard-lifetime.reached",
+      "kunminghu_v3.ras.guard-lifetime.checked"
+    ]
+  },
+  "collection": {
+    "before": 42632,
+    "after": 42804,
+    "added": 172,
+    "deleted": 0,
+    "added_by_scope": {"bpu": 18, "pure": 92, "mbtb": 56, "ras": 6},
+    "old_relative_order_preserved": true,
+    "audit": "/tmp/opencode/bpu-io-matrix-20261103/collection-delivery.json",
+    "audit_sha256": "6cebcbc657aec01348395a4dad823f199e58cb41b9b5c834e109cd281ca874cf"
+  },
+  "runs": [
+    {
+      "output": "results/bpu-io-matrix-seed1-v4-20261103",
+      "seed": 1,
+      "counts": {"PASS": 1155, "FAIL": 14, "XFAIL": 1},
+      "counts_by_scope": {"bpu": {"PASS": 54}, "pure": {"PASS": 1022}, "mbtb": {"PASS": 67, "FAIL": 9}, "ras": {"PASS": 12, "FAIL": 5, "XFAIL": 1}},
+      "native_instances": 148,
+      "all_172_added_nodes_pass": true,
+      "old_834_sensitive_nodes_pass": true,
+      "old_15_nonpass_verdict_and_first_error_preserved": true,
+      "integrity_audit_sha256": "87015c0db2c08a409a1cce969d6b0b855fdf4fcc171b8631bff69c25f898f799",
+      "io_matrix_audit_sha256": "1d09aa42642d69b597148bd1dedccc40650d856ff6da93146713e62c3c489fff"
+    },
+    {
+      "output": "results/bpu-io-matrix-seed2-v4-20261103",
+      "seed": 2,
+      "counts": {"PASS": 1155, "FAIL": 14, "XFAIL": 1},
+      "counts_by_scope": {"bpu": {"PASS": 54}, "pure": {"PASS": 1022}, "mbtb": {"PASS": 67, "FAIL": 9}, "ras": {"PASS": 12, "FAIL": 5, "XFAIL": 1}},
+      "native_instances": 148,
+      "all_172_added_nodes_pass": true,
+      "old_834_sensitive_nodes_pass": true,
+      "old_15_nonpass_verdict_and_first_error_preserved": true,
+      "integrity_audit_sha256": "c15a04d0b1aac36b8a6f1ccf0cc45107b50cb7d342e9c0c72f3025fae3a1f260",
+      "io_matrix_audit_sha256": "d2f55b93e11607772f183efc8db5719df1764806f76115f717c34528f86cb1dd"
+    }
+  ],
+  "checks": {
+    "root_tests": {"result": "268 passed", "log": "/tmp/opencode/bpu-io-matrix-20261103/root-tests-final.log", "sha256": "1295fb6bc7cc1a8da5c02240d5e5053de907b352cff273742ad98401a7e6c7e8"},
+    "asset_audit": {"result": "PASS", "log": "/tmp/opencode/bpu-io-matrix-20261103/assets-delivery.log"},
+    "layout_audit": {"result": "PASS", "log": "/tmp/opencode/bpu-io-matrix-20261103/layout-delivery.log"},
+    "skills_and_framework_audit": {"result": "PASS", "log": "/tmp/opencode/bpu-io-matrix-20261103/skills-delivery.log"},
+    "strict_transaction_boundary": {"result": "exit 1", "bpu_owner_infrastructure_debt": 24, "disposition": "Existing debt retained; no waiver or scope expansion."}
+  },
+  "residuals": [
+    {"id": "BPU-UPGRADE-OBS-01", "blocking": true, "status": "open", "next": "Observe public prediction target/perfMeta at a real FTQ consumer with an independent oracle."},
+    {"id": "BPU-UPGRADE-SEM-01", "blocking": true, "status": "open", "next": "Resolve the retained 14 FAIL/1 XFAIL and other historical non-PASS by legal producer history and independent contract."},
+    {"id": "BPU-UPGRADE-SCOPE-01", "blocking": true, "status": "open", "next": "Construct complete FTQ/IFU histories for producer reachability and noncanonical guard pressure."},
+    {"id": "MATRIX-GAPS", "blocking": true, "status": "open", "count": 21, "next": "补定向 pending/read/reset/disable、活跃预测器、容量和 S2/S3 竞争实验，不替换既有证据。"},
+    {"id": "MATRIX-OUT-OF-DOMAIN", "blocking": false, "status": "open", "count": 9, "next": "在 IFU/ICache/MMU 层验证 bus error/refill/translation 结果，不归入 BPU。"}
+  ],
+  "acceptance": "The requested matrix enrichment and selected real-DUT regression are complete and audited. This does not certify the hardware, full BPU, or whole FTQ; real FAIL/XFAIL and open residuals remain. No release or push performed."
+}

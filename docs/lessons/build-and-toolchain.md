@@ -13,16 +13,17 @@
 | 各 DUT 的 top、导出类和构建选择 | 各工程 `ucv.json`，例如 [Sbuffer](../../suites/memblock/sbuffer/ucv.json) | 随工程维护模块边界 |
 | 已做过的重建与差异检查 | [结构重建记录](../history/structure-update-20261027.json)、[公开 RTL 差异](../history/public-rtl-rebuild-comparison.json) | 将结论绑定到对应产物与哈希 |
 
-生成 RTL、FIRRTL、原生库、完整编译日志及波形保留在忽略目录或外部证据存储。Git 保存配方、版本、补丁、经验和必要的来源凭据。历史 BPU 的 [DUT 重建记录](../../suites/frontend/bpu/docs/dut-rebuild.md) 及各工程 `tools/` 中的构建脚本也已保留；当前统一入口是 `ucv`。
+生成 RTL、FIRRTL、原生库、完整编译日志及波形保留在忽略目录或外部证据存储。Git 保存配方、版本、补丁、经验和必要的来源凭据。历史 BPU 的 [DUT 重建记录](../../suites/frontend/bpu/docs/guides/dut-rebuild.md) 及各工程 `tools/` 中的构建脚本也已保留；当前统一入口是 `ucv`。
 
 ## 当前完整构建入口
 
 在仓库根目录执行。宿主依赖及项目内安装要求见 [README](../../README.md)，镜像和 internal 源码接入见 [本地配置](../local-configuration.md)。
+首次使用推荐[BPU 单 DUT 教程](../tutorials/bpu-first-ut.md)。下列为显式从源码完整生成：
 
 ```sh
-PYTHONPATH=src python3.12 -m ucv setup --jobs 8
-.venv/bin/ucv doctor public --require-unified-baseline
-.venv/bin/ucv prepare public --require-unified-baseline --jobs 8
+PYTHONPATH=src python3.12 -m ucv setup --profile full --jobs 8
+.venv/bin/ucv doctor public --stage generate --require-unified-baseline
+.venv/bin/ucv prepare public --rtl-source source --require-unified-baseline --jobs 8
 .venv/bin/ucv build public --require-unified-baseline --jobs 8
 ```
 
@@ -34,7 +35,9 @@ PYTHONPATH=src python3.12 -m ucv setup --jobs 8
 .venv/bin/ucv build sbuffer --dut sbuffer_data --jobs 4
 ```
 
-`--dut` 使用工程配方中的键。VAGQ 通过本地配置提供 internal 来源后单独执行 `ucv prepare vagq` / `ucv build vagq`。`full` 当前含两个不同基线，严格统一基线检查会按设计拒绝该集合。
+`--dut` 使用工程配方中的键。VAGQ 通过本地配置提供 internal 来源后单独执行
+`ucv prepare vagq --rtl-source source` / `ucv build vagq`。
+`full` 当前含两个不同基线，严格统一基线检查会按设计拒绝该集合。
 
 ## 已遇到的具体问题与保留的处理
 
@@ -47,7 +50,7 @@ PYTHONPATH=src python3.12 -m ucv setup --jobs 8
 | Verilator 5.052 将 trace 初始化拆成多个调用，旧 Picker 解析会丢失 scope | 锁定并应用 trace 调用图补丁；未知拆分调用报错；保留顺序变化与旧格式检查 | [Picker 补丁](../../dependencies/patches/picker-trace-callgraph.patch)、[对应测试](../../tests/test_picker_trace.py) |
 | 宽信号的 trace 表达式必须按实际 32-bit word 读取，并保持实时性、边界和只读约束 | xcomm 锁定补丁处理宽字读取，保留原生检查 | [xcomm 补丁](../../dependencies/patches/xcomm-wide-trace-word.patch)、[对应测试](../../tests/test_xcomm_wide_trace.py) |
 | Picker 将 Python 保留字端口直接输出成属性语法 | 构建时只修正 Python 绑定为 `getattr` / `setattr`，记录修正前后哈希；RTL 和信号名保持原样 | [repair_python_keywords](../../src/ucv/build.py) |
-| 可执行文件、模板、Python wrapper 和原生库来自不同安装，可能出现 ABI 或 memory-direct 不匹配 | 使用项目内 `.venv/` 与 `.tools/`；核对锁定工具，并在独立进程检查 ABI 3、coverage protocol 5、信号配置基址、行覆盖能力及复位/步进/结束 | [旧 BPU 重建经验](../../suites/frontend/bpu/docs/dut-rebuild.md)、[setup.py](../../src/ucv/setup.py)、[build.py](../../src/ucv/build.py) |
+| 可执行文件、模板、Python wrapper 和原生库来自不同安装，可能出现 ABI 或 memory-direct 不匹配 | 使用项目内 `.venv/` 与 `.tools/`；核对锁定工具，并在独立进程检查 ABI 3、coverage protocol 5、信号配置基址、行覆盖能力及复位/步进/结束 | [旧 BPU 重建经验](../../suites/frontend/bpu/docs/guides/dut-rebuild.md)、[setup.py](../../src/ucv/setup.py)、[build.py](../../src/ucv/build.py) |
 | 上游把 Python 分发名从 `pytoffee`/`xspcomm` 改为 `uc-toffee`/`uc-xcomm`，旧安装与新安装会同时提供同一导入包 | 先卸载旧分发，再按锁定的 `distribution` 安装；setuptools-scm 版本环境变量和 CMake 版本参数跟随新分发名；pytest 插件用 `toffee._pytest_outcomes`。升级流程见[待审核方法](../../skills/pending/dependency-upgrade-and-capability-audit.md) | `dependencies/versions.json`、[runtime.py](../../src/ucv/runtime.py)、[setup.py](../../src/ucv/setup.py) |
 | 升级工具锁后仍拿旧 DUT 的 PASS/收据解释新工具链 | 工具锁参与缓存身份；升级后按需重建并冒烟，未重建的 DUT 明确写“未验证”。2026-10-30 仅重建 `bpu/ubtb` 与 `icache/waylookup` | [阶段状态](../status.md)、[布局审计案例](suite-layout-audit-20261030.md) |
 | 仓库搬家后，旧虚拟环境、CMake 状态和原生二进制可能带原绝对路径 | 在新目录建立环境并重新构建原生包。2026-10-27 搬迁保留旧环境到 `.history/`，新原生包单独构建；该轮完整 RTL 缓存经哈希核对复用 | [搬迁与重建记录](../history/structure-update-20261027.json) |
@@ -63,6 +66,7 @@ PYTHONPATH=src python3.12 -m ucv setup --jobs 8
 |---|---|
 | 安装 | `.tools/setup.log`、`.tools/receipt.json`、`.tools/installed-python.txt` |
 | 源码与子模块 | `.cache/logs/source-<key>.log`、`.cache/logs/submodule-*.log`、源码检出中的 `.ucv-source.json` |
+| release RTL | `.cache/releases/<key>/release.json`、包内 `BUILD-PARAMETERS.json` 与 `SHA256SUMS` |
 | Chisel → RTL | `.cache/generated/<key>/generate.log`、`generation.json`；包含实际命令和 RTL 文件哈希 |
 | DUT 闭包 | `.cache/duts/<key>/rtl/source.json`、`filelist.f` |
 | Picker / Verilator | `.cache/duts/<key>/build.log`、`smoke.log`、`build.json`、`dut/provenance.json` |
@@ -75,7 +79,7 @@ PYTHONPATH=src python3.12 -m ucv setup --jobs 8
 ## 历史来源
 
 - [soc-split 原始生成说明](../history/build-notes/soc-split.original.md)：原文件逐字节保存，旧命令、目录、计数与状态保留原意；[来源哈希](../history/build-notes/source-notes.json)。
-- [BPU DUT 重建与工具链记录](../../suites/frontend/bpu/docs/dut-rebuild.md)：保留历次工具组合、memory-direct 迁移与重建经历；其中旧绝对路径和旧框架命令只用于溯源。
+- [BPU DUT 重建与工具链记录](../../suites/frontend/bpu/docs/guides/dut-rebuild.md)：保留历次工具组合、memory-direct 迁移与重建经历；其中旧绝对路径和旧框架命令只用于溯源。
 - [2026-10-27 结构重建记录](../history/structure-update-20261027.json)：记录 122 个 DUT 的构建和冒烟，以及当轮使用的共享 RTL 缓存与本地归档。
 
 本页整理构建方法与已有经验，没有新增一轮硬件构建或验收。

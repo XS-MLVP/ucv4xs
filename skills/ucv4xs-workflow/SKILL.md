@@ -10,25 +10,39 @@ description: 维护 ucv4xs 香山单元测试仓库的基线、构建编排和�
 ## 按任务选择入口
 
 - 仅查看工程或继承：`PYTHONPATH=src python3.12 -m ucv list public --require-unified-baseline`；不需要为阅读配置启动完整构建。
+- 查资源或初始化：`./scripts/ucv info <suite> --dut <dut>`、`ucv init`；由工具生成地图和骨架。
+- 只读源码/写规格：`ucv prepare <suite> --source-only`；不安装仿真工具，不生成 RTL。
+- 资料维护：按[现有主题原位更新](../../docs/how-to/maintain-docs.md)，用 `ucv check` 检查路径，运行统计由 `ucv report` 提供。设计/验证 spec 使用工程结构。
+- 工程规格放 `docs/spec/{design,verification}/`，问题放 `docs/bugs/{open,closed}/`；README
+  是当前摘要入口，`ucv docs <suite> --write` 生成问题汇总与 DUT/shared README 工作入口。稳定 ID
+  与各基线证据保存在同一问题记录，Git 固定迭代；不为每轮新增泛化历史目录。通用要求不
+  硬编码具体设计。
 - 安装、编译或定位工具问题：读取 [编译构建经验](../../docs/lessons/build-and-toolchain.md)。实际配置以 `baselines/`、`dependencies/` 和工程 `ucv.json` 为准。
 - 修改源码版本或 override：读取 [基线规则](../../docs/baselines.md)，建立完整命名基线，并在根、分组或整个工程引用。
 - 接入镜像、internal 源码或旧证据：读取 [本地配置](../../docs/local-configuration.md)，只在 `.ucv/local.json` 保存机器路径。
 - 修改验证语义：先查该工程的功能合同与 [经验来源](../../docs/lessons/README.md)；构建成功不能替代用例判定。
+- 功能点、实现关联及未证明范围沿用既有规格正文；真实缺陷进入 `docs/bugs/`，配置、
+  观察和集成边界留在规格中。工程根的 `verification_plan.json` 已删除，不恢复或改名
+  重建；历史报告、日期记录与哈希清单中的旧提及保留原字节。
 
 ## 构建和回归
 
-从根目录使用以下入口，按当前任务选择需要的阶段和集合：
+从根目录使用以下入口，按当前任务选择需要的阶段和集合。下面是 **BPU/MainBTB 示例**：
 
 ```sh
-PYTHONPATH=src python3.12 -m ucv setup --jobs 8
-.venv/bin/ucv doctor public --require-unified-baseline
-.venv/bin/ucv prepare public --require-unified-baseline --jobs 8
-.venv/bin/ucv build sbuffer --dut sbuffer_data --jobs 4
-.venv/bin/ucv run sbuffer --workers 1 -- tests/sbuffer_data/test_sbuffer_data.py::test_reset_initializes_masks_and_idle_is_stable
+./scripts/ucv prepare bpu --dut mbtb --rtl-source release
+./scripts/ucv setup --profile runtime --jobs 2
+.venv/bin/ucv doctor bpu --stage run
+.venv/bin/ucv build bpu --dut mbtb --jobs 2
+.venv/bin/ucv run bpu --dut mbtb --workers 1 -- testbenches/mbtb/tests/testcase/test_reset.py::test_reset_completes_before_cold_lookup
 .venv/bin/ucv report
 ```
 
 `--jobs` 和 `--workers` 按宿主资源及任务范围选择；`run` 的 `--` 后传 pytest 选择条件。每次回归使用新结果目录。公开集合统一验收启用严格基线检查；当前 `full` 含 internal VAGQ，混合基线会被该检查拒绝。
+
+本机完整生成使用 `setup --profile full` 和 `prepare --rtl-source source`；默认 auto
+只复用核验过的本机生成或下载锁定 release，无匹配包时明确报错。release 导入写
+`release.json`，不伪造生成收据。新用户逐步操作见[BPU 教程](../../docs/tutorials/bpu-first-ut.md)。
 
 保持“完整香山 DefaultConfig → RTL → DUT 闭包 → Picker → UT”的链路。各工程按实际优化后端口适配；不添加单 DUT 的源码/配置 override 或 BPU 独立生成入口。缓存中的生成、闭包和构建凭据保存实际命令及哈希；出现不一致先定位输入，避免直接修改生成物绕过校验。
 
@@ -85,20 +99,59 @@ UNCERTAIN 插件为 `toffee._pytest_outcomes`，选项形如 `--toffee-output`�
 
 ## 修改工程与公共工具
 
-新增工程在相应 `suites/<group>/` 下建立工程根 Python 包、pytest 根、tests/ 和 ucv.json，
-并在根注册。导入名为 suites.<group>.<suite>；不再添加 *verify 或 common 外壳。
+新增工程/DUT 使用 `ucv init`。新工程使用 workspace schema2，生成 `testbenches/<dut>/`
+下的环境、事务、测试与 README，规格和问题保留工程 docs。现有十二工程的统一布局与
+适用范围见[统一目录规范](../../docs/reference/module-layout.md#schema-版本与本轮范围)。
+`ucv docs --write` 更新 DUT 与已有 shared 的独立入口，`ucv check` 按 schema 强制校验。
+schema2 导入名为 `suites.<group>.<suite>.testbenches.<testbench>`；工程根保持 Python 包与唯一 pytest 根。
 每个 DUT 配方声明真实 RTL top 和 Python 导出类。领域模型与检查器留在工程中，公共层
-负责路径、基线、调度和报告。共享实现按 native/harness、runtime、drivers、monitors、
-pytest_plugins 等职责命名，DUT 专属代码不能因“共享”名义搬入工程根。
+负责路径、基线、调度和报告。DUT 顶层的集成模型和用例归该 DUT；参数化复用通过
+`workspace.json` 的 `duts.<name>.testbench` 字段显式登记，`info` 显示 `testbench`。
+schema2 配方 `tests` 为 `["testbenches"]`，`pytest.ini` 使用 `testpaths = testbenches`。
+工程根、实现包层与集中资料层级按规范使用封闭白名单，检查实际磁盘条目及类型，
+不忽略空目录、旧缓存目录或隐藏目录。固定层级的符号链接仅允许工程根 `XiangShan`；
+`dut/rtl/results` 为工具管理的本地产物位置。`ucv init` 给已有工程增加 DUT 前也检查
+布局，违规时不写入新骨架。清理残留先核对活动占用，保留归档路径与哈希清单，再执行
+`ucv check full`；不通过新增例外目录绕过约束。
 
-结构检查与语义验收分开：当前 fixture 集中在 `tests/conftest.py`，共享插件
-`ucv.pytest_selftest` 提供自检分类。物理映射归 DUT 的 ports/bundle 层，只有确实跨 DUT
-共享时才进入明确职责模块；不创建 common/pins.py。P.p_* / P.io(...) 只是旧接口
+`testbenches/shared/` 只放实际跨 DUT 共享的组件，与 DUT 同用 env、transactions、model、
+checker、coverage、tests 六职责且同名同义。tests 为目录，其余按需选文件或同名包；
+不造空壳。shared 是保留名，无独立 DUT/top/本地原生库；实现不得反向导入具体 DUT 或
+工程 tools，shared/tests 可以检查集成引用。单 DUT 专用内容回归其 DUT。
+BPU 的通用绑定/驱动/监视器归 `shared/env/{bundle,driver,monitor}`，loader 登记
+`testbenches/shared/env/dut.py`，通用 pytest 插件归 `shared/env/pytest_plugins/`，覆盖与
+native/exports/local_guards 支持归 `shared/coverage/`；顶层 plain_sampler、replay、timing
+分别归 bpu 的 env/bundle、coverage、tests/scenarios，完整路径见目录规范。
+
+结构检查与语义验收分开：fixtures/pytest 插件在工程唯一 `conftest.py` 显式注册。
+DUT 专用 fixture 与参数生成放 `testbenches/<testbench>/tests/fixtures.py` 或 tests 内插件，
+离线汇总与审计命令放 tools；用例与自检分别归所属 DUT 或 shared 的 tests。
+共享插件 `ucv.pytest_selftest` 提供自检分类。物理映射归 DUT 的 ports/bundle 层，只有确实
+跨 DUT 共享时才进入 shared 的相应职责；不创建 common/pins.py。P.p_* / P.io(...) 只是旧接口
 兼容别名，不是事务抽象，不能用消除 io_* 字面量证明迁移完成。事务 API、采样/所有权和
 独立 checker 仍须按[正式分层方法](../execution/package-layout.md)逐项验收。
 待审核的[迁移边界复核](../pending/pin-schema-and-suite-migration.md)记录本轮反例。
 
-变更构建语义时同步缓存身份。公共工具或工具补丁变更运行根 `tests/`；工程语义变更运行相关用例与必要对照。文档和配置查看只做相应检查，不默认重跑十工程。
+变更构建语义时同步缓存身份。公共工具或工具补丁变更运行根 `tests/`；工程语义变更运行相关用例与必要对照。文档和配置查看只做相应检查，不默认重跑各工程全量仿真。
+
+修改验证语义（增删类别、改期望、补观测点）时，同时更新工程内的
+**指令/事务来源映射**与**类别 × 响应结果域矩阵**，并跑该矩阵的可执行自检；
+矩阵或来源映射缺行、`gap` 没有"缺什么 + 怎么补"，按未完成处理，不算覆盖提升。
+LSQ 的实例见 [指令映射](../../suites/memblock/lsq/docs/spec/design/contracts/instruction-source-mapping.md)、
+[kind × outcome 矩阵](../../suites/memblock/lsq/docs/spec/design/contracts/kind-outcome-matrix.md)与
+`suites/memblock/lsq/testbenches/lsq_wrapper/coverage/function_points.py` +
+`suites/memblock/lsq/testbenches/lsq_wrapper/tests/meta/test_function_points.py`。
+
+**读字段时三层分开，不要用实现当规格。** 语义与期望答案只从 ISA/协议/接口合同来；
+设计意图（状态机有哪些态、字段想表达什么）从 Scala 读；能驱动/能观测的端口面从生成
+RTL/Picker 读。每读一个字段同时回答"规格要求 / 源码谁写 / 生成端口在不在"，第三问为
+"否"必须判定为"被裁剪且有理由"或"未驱动（缺陷）"。注意生成阶段会丢弃 verification
+layer（`--default-layer-specialization=disable` 后 `.sv` 里 `$fatal` 可能为 0），所以
+源码里的 `assert` 不能指望被 DTU 触发。方法见
+[观察点精度](../design/observation-precision.md#三个来源各管一段先分清再看字段)，
+LSQ 的机械对账见 `suites/memblock/lsq/tools/audit_scala_rtl_fields.py`
+（`--report` 分诊、`--strict` 校验
+[`manifest/critical-fields.json`](../../suites/memblock/lsq/manifest/critical-fields.json)）。
 
 ```sh
 python3.12 scripts/audit-assets.py
@@ -117,7 +170,7 @@ python3.12 scripts/audit-assets.py
 需要对外提供某基线的 RTL 时，发布的是**该 commit 的完整香山**，不是某个模块的闭包；
 模块级 UT 结论只是这份 RTL 的一条验证记录，不改变包的范围。
 
-1. 用 `ucv prepare` 生成的整芯片缓存（`.cache/generated/<key>/rtl`）作为来源，不要
+1. 用 `ucv prepare --rtl-source source` 生成的整芯片缓存（`.cache/generated/<key>/rtl`）作为来源，不要
    从 DUT 闭包拼装。核对 `generation.json` 的 baseline commit 与生成命令。
 2. 打包 `*.sv`、`*.v` 和 **firtool 自带的 `filelist.f`**。`filelist.f` 是权威编译入口
    （依赖顺序，顶层在末行），不要用 `*.sv` 通配替代；也不要手改它——部分条目带 `./`

@@ -1,7 +1,7 @@
 # 案例：ResolveQueue 100% 行覆盖下的分支槽溢出
 
 日期：2026-10-29。基线：`public-893e1580b` + DefaultConfig。证据：
-[缺陷记录](../../suites/frontend/ftq/docs/bugs/resolve-queue-branch-overflow.md)、
+[缺陷记录](../../suites/frontend/ftq/docs/bugs/open/resolve-queue-branch-overflow.md)、
 运行 `suites/frontend/ftq/results/ftq-final-20261029`。
 
 ## 原问题

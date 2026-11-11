@@ -67,7 +67,7 @@ MainBTB当前源码身份为
 | `suites/frontend/ifu/` | 七DUT当前适配已核验；保留R-13两FAIL、R-14三FAIL及R-09 UNCERTAIN。后续仍可补新合同/组合反证，不能改历史为PASS |
 | `suites/frontend/ftq/` | 三DUT当前事务链、采样、输入来源、收尾已核验；完整905PASS/2XFAIL，两个严格容量XFAIL保留 |
 | `suites/frontend/bpu/` | PHR/共享pipeline及MainBTB已取得多轮来源与生命周期修复；其他DUT、剩余API/调度组合与24处功能owner访问继续审计。九条MainBTB反例不豁免 |
-| `suites/frontend/icache/` | DataBank/MetaBank本轮迁移与非零模拟SRAM控制已有生产实现/正反控制；完整API/调度组合与更多直接采样/身份反证尚未全部签核，其余九DUT继续迁移。见[合同](../suites/frontend/icache/docs/metabank-transaction-adaptation.md) |
+| `suites/frontend/icache/` | DataBank/MetaBank本轮迁移与非零模拟SRAM控制已有生产实现/正反控制；完整API/调度组合与更多直接采样/身份反证尚未全部签核，其余九DUT继续迁移。见[合同](../suites/frontend/icache/docs/spec/verification/transactions/metabank-transaction-adaptation.md) |
 | `suites/memblock/sbuffer/` | 原排空来源修复、双DUTDriver/Monitor与静态边界已有证据；managed context正文捕获比较错误后的收尾风险仅源码审计，尚无本轮native red/修复，接手先补正反控制 |
 | `suites/memblock/{dcache,lsq,lsu,mmu}/` | 已修种子/部分事务子链；剩余pin/signal/owner耦合与完整逐DUT事务审计继续，不由旧完整功能结果替代 |
 | `suites/vector/vagq/` | external internal源码/产物边界保持；需独立来源配置，继续32处owner及pin/signal耦合审计，不把internal证据加入公共Git |

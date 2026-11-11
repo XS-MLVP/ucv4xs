@@ -315,17 +315,17 @@ remaining_limit: 还没有证明什么
 
 以下是经验来源，不是新一轮仿真结果，也不是各模块共同签核。各报告存在后续修订时，优先看其明确的二次裁决和限制；历史 XFAIL 口径不迁移为 LSU 策略。
 
-[^lsq-fp]: [LSQ：假阳性复核](../../suites/memblock/lsq/docs/bug-reports-20261022/12-false-positive-review.md)，尤其是 producer 约束、CBO 包、不可撤回许可及工具异常的分离。
-[^lsq-source]: [LSQ：同源审计](../../suites/memblock/lsq/docs/reports/same-source-audit-20261022.md)，用于身份、转发及独立参考的经验来源；不迁移具体结论。
-[^mmu]: [MMU：验证可信度复核](../../suites/memblock/mmu/docs/reports/verification-soundness-20261025.md)，包括环境误报撤回、collection、XFAIL、固定 oracle、覆盖口径和未闭环项。
-[^icache-errors]: [ICache：错误复核](../../suites/frontend/icache/docs/error-review.md)，包括软预取窗口静音、未接受请求副作用及断言被裁剪。
-[^icache-lessons]: [ICache：验证经验](../../suites/frontend/icache/docs/verification-lessons.md)，尤其是有界放行、组合、检查器过严/死字段/死开关和握手计数。
-[^lsu-missed]: [LSU：为什么没检查到](../../suites/memblock/lsu/docs/bug-reports-20261026/06-why-missed.md)，保留同源期望、非区分性断言和可观测性边界。
-[^lsu-fn]: [LSU：假阴性复核](../../suites/memblock/lsu/docs/bug-reports-20261026/03-false-negative-review.md)。
-[^lsu-coverage]: [LSU：覆盖与证据复核](../../suites/memblock/lsu/docs/bug-reports-20261026/04-coverage-and-evidence-review.md)。
-[^sbuffer-audit]: [Sbuffer：独立审计](../../suites/memblock/sbuffer/docs/reports/independent-audit-20261024.md)。
-[^sbuffer-recheck]: [Sbuffer：二次裁决](../../suites/memblock/sbuffer/docs/reports/bug-recheck-20261024.md)，优先用于区分正式用例假通过、helper 缺口、扰动实验和真实 RTL 问题。
-[^dcache]: [DCache：功能点复核](../../suites/memblock/dcache/docs/reports/functional-point-audit-20261025.md)，用于文档/断言不一致的经验；与实现相符本身不构成独立规范证明。
+[^lsq-fp]: [LSQ：假阳性复核](../../suites/memblock/lsq/docs/bugs/evidence/bug-reports-20261022/12-false-positive-review.md)，尤其是 producer 约束、CBO 包、不可撤回许可及工具异常的分离。
+[^lsq-source]: [LSQ：同源审计](../../suites/memblock/lsq/docs/spec/verification/evidence/reports/same-source-audit-20261022.md)，用于身份、转发及独立参考的经验来源；不迁移具体结论。
+[^mmu]: [MMU：验证可信度复核](../../suites/memblock/mmu/docs/spec/verification/evidence/reports/verification-soundness-20261025.md)，包括环境误报撤回、collection、XFAIL、固定 oracle、覆盖口径和未闭环项。
+[^icache-errors]: [ICache：错误复核](../../suites/frontend/icache/docs/spec/verification/error-review.md)，包括软预取窗口静音、未接受请求副作用及断言被裁剪。
+[^icache-lessons]: [ICache：验证经验](../../suites/frontend/icache/docs/spec/verification/lessons/verification-lessons.md)，尤其是有界放行、组合、检查器过严/死字段/死开关和握手计数。
+[^lsu-missed]: [LSU：为什么没检查到](../../suites/memblock/lsu/docs/bugs/evidence/bug-reports-20261026/06-why-missed.md)，保留同源期望、非区分性断言和可观测性边界。
+[^lsu-fn]: [LSU：假阴性复核](../../suites/memblock/lsu/docs/bugs/evidence/bug-reports-20261026/03-false-negative-review.md)。
+[^lsu-coverage]: [LSU：覆盖与证据复核](../../suites/memblock/lsu/docs/bugs/evidence/bug-reports-20261026/04-coverage-and-evidence-review.md)。
+[^sbuffer-audit]: [Sbuffer：独立审计](../../suites/memblock/sbuffer/docs/spec/verification/evidence/independent-audit-20261024.md)。
+[^sbuffer-recheck]: [Sbuffer：二次裁决](../../suites/memblock/sbuffer/docs/spec/verification/evidence/bug-recheck-20261024.md)，优先用于区分正式用例假通过、helper 缺口、扰动实验和真实 RTL 问题。
+[^dcache]: [DCache：功能点复核](../../suites/memblock/dcache/docs/spec/verification/evidence/functional-point-audit-20261025.md)，用于文档/断言不一致的经验；与实现相符本身不构成独立规范证明。
 [^vagq]: [VAGQ：先修参考，再复核 RTL 的外部证据入口](README.md#vagq-external-evidence)（`history://vagq/results/vagq-reference-repair-rtl-rereview-20261020-v2/README.md`），用于显式身份绑定、协议/架构入口分离及回归不等于全体验收。
 
 **最终要迁移的不是十二条口号，而是十二种“错误发生时会拦住它”的具体检查。** 谁实施、放在哪里、什么反例能证明它有效，比再写一遍“覆盖要充分、模型要独立”更重要。

@@ -1,0 +1,580 @@
+{
+ "schema": 1,
+ "date": "2026-11-08",
+ "kind": "icache-open-items-closing",
+ "scope": {
+  "suite": "suites/frontend/icache",
+  "baseline": "public-a0c2a26cb",
+  "commit": "a0c2a26cbe3c862175174bad03a1a23c406315ed",
+  "design_config": "DefaultConfig",
+  "rtl_modified": false,
+  "upstream_contact": false,
+  "pushed": false
+ },
+ "dispositions": {
+  "ICACHE-012": {
+   "nodeid": "icache::tests/icache/testcase/test_prefetch_wfi_ecc.py::test_software_prefetch_warms_the_requested_line",
+   "before": "XPASS(strict)",
+   "after": "PASS",
+   "action": "removed strict xfail; assertions unchanged; nodeid unchanged",
+   "basis": "upstream 4b9f938b7 (#6691) deleted stale vSetIdx register and ICache-top selection",
+   "red_green_control": "tests/icache/scoreboard/test_hint_install_control.py (selftest, 2 cases)"
+  },
+  "ICACHE-030": {
+   "nodeid": "icache::tests/icache/testcase/test_prefetch_wfi_ecc.py::test_pending_soft_prefetch_does_not_process_an_unaccepted_ftq_issue",
+   "before": "XFAIL(strict)",
+   "after": "PASS (interface-migration contract)",
+   "action": "rewritten with public API; nodeid kept",
+   "basis": "successor FTQ PrefetchQueue; ICache obligation = unaccepted issue must not reach memory",
+   "old_record": "docs/error-review.md 1.2"
+  },
+  "WAYLOOKUP-020": {
+   "nodeid": "icache::tests/waylookup/testcase/test_flush.py::test_flush_in_the_write_cycle_discards_the_entry_and_its_exception",
+   "before": "XFAIL(strict)",
+   "after": "XFAIL(strict)",
+   "action": "kept; added defect document",
+   "basis": "ICacheWayLookup.sv byte-identical to 893e1580b (sha256 6433fed2ff7d5defc2b4977469334ffa858c480df5c6e2ba4773dbb3f9b08ce9)",
+   "defect_doc": "suites/frontend/icache/docs/bugs/waylookup-flush-cancelled-write-exception.md",
+   "fix_decision": "reported to user"
+  }
+ },
+ "transaction_audit": {
+  "before": {
+   "suite_total": 6,
+   "icache_row": "needs-adapter",
+   "detail": "6 owner accesses in the unreachable ICACHE-030 body (soft_driver x2, _pref_payload x1, ftq_pref_driver x2, ports x1)"
+  },
+  "after": {
+   "suite_total": 0,
+   "icache_row": "no-static-leak-found"
+  },
+  "global_gate": {
+   "command": ".venv/bin/python scripts/audit-suite-layout.py --strict --require-transaction-boundary",
+   "exit": 1,
+   "icache_ok": true,
+   "remaining_other_suites": {
+    "bpu_owner": 24,
+    "lsq_pin": 1073,
+    "lsq_signal": 1,
+    "lsq_owner": 121,
+    "mmu_pin": 29,
+    "mmu_signal": 382,
+    "mmu_owner": 53,
+    "dcache_pin": 2,
+    "dcache_signal": 87,
+    "lsu_pin": 140,
+    "vagq_pin": 179,
+    "vagq_signal": 9,
+    "vagq_owner": 32
+   },
+   "note": "other suites not modified by constraint; global closure not claimed"
+  }
+ },
+ "regression": {
+  "seed1": {
+   "output": "results/ucv-icache-close2-seed1-20261108",
+   "seed": 1,
+   "workers": 8,
+   "source": "094d33884e5a1873999ad5c4f2e3dd491e734bddbb152b5f92b01086febe2511",
+   "source_after": "094d33884e5a1873999ad5c4f2e3dd491e734bddbb152b5f92b01086febe2511",
+   "counts": {
+    "PASS": 572,
+    "XFAIL": 1
+   },
+   "nodeids": 573,
+   "hardware_nodeids": 571,
+   "exit": 0,
+   "selftest_nodes": 2
+  },
+  "seed2": {
+   "output": "results/ucv-icache-close2-seed2-20261108",
+   "seed": 2,
+   "workers": 8,
+   "source": "094d33884e5a1873999ad5c4f2e3dd491e734bddbb152b5f92b01086febe2511",
+   "source_after": "094d33884e5a1873999ad5c4f2e3dd491e734bddbb152b5f92b01086febe2511",
+   "counts": {
+    "PASS": 572,
+    "XFAIL": 1
+   },
+   "nodeids": 573,
+   "hardware_nodeids": 571,
+   "exit": 0,
+   "selftest_nodes": 2
+  },
+  "diff_vs_previous": {
+   "removed": 0,
+   "added_hardware": 0,
+   "added_selftest": 2,
+   "changed": {
+    "ICACHE-012": "XPASS->PASS",
+    "ICACHE-030": "XFAIL->PASS"
+   },
+   "unchanged": 569
+  },
+  "seed1_equals_seed2": true,
+  "intermediate_runs": [
+   "results/ucv-icache-close-seed1-20261108",
+   "results/ucv-icache-close-seed2-20261108"
+  ],
+  "intermediate_note": "pre-selftest source (b571469a, 570 PASS/1 XFAIL, 571 nodes); superseded by close2 runs"
+ },
+ "coverage": {
+  "tool": "suites/frontend/icache/tools/coverage_breakdown.py + coverage_ledger.py",
+  "run": "results/ucv-icache-close2-seed1-20261108/icache",
+  "per_dut_seed1": {
+   "metabank": {
+    "line": {
+     "total": 10,
+     "covered": 10
+    },
+    "branch": {
+     "total": 304,
+     "covered": 301
+    },
+    "toggle": {
+     "total": 12672,
+     "covered": 12415
+    }
+   },
+   "dataarray": {
+    "line": {
+     "total": 32,
+     "covered": 32
+    },
+    "branch": {
+     "total": 334,
+     "covered": 322
+    },
+    "toggle": {
+     "total": 52852,
+     "covered": 50266
+    }
+   },
+   "mainpipe": {
+    "line": {
+     "total": 5,
+     "covered": 5
+    },
+    "branch": {
+     "total": 156,
+     "covered": 155
+    },
+    "toggle": {
+     "total": 14240,
+     "covered": 13941
+    }
+   },
+   "waylookup": {
+    "line": {
+     "total": 227,
+     "covered": 227
+    },
+    "branch": {
+     "total": 796,
+     "covered": 667
+    },
+    "toggle": {
+     "total": 10382,
+     "covered": 10283
+    }
+   },
+   "databank": {
+    "line": {
+     "total": 7,
+     "covered": 7
+    },
+    "branch": {
+     "total": 46,
+     "covered": 44
+    },
+    "toggle": {
+     "total": 6822,
+     "covered": 6641
+    }
+   },
+   "icache": {
+    "line": {
+     "total": 854,
+     "covered": 788
+    },
+    "branch": {
+     "total": 6480,
+     "covered": 5514
+    },
+    "toggle": {
+     "total": 139880,
+     "covered": 91200
+    }
+   },
+   "prefetchpipe": {
+    "line": {
+     "total": 3,
+     "covered": 3
+    },
+    "branch": {
+     "total": 142,
+     "covered": 140
+    },
+    "toggle": {
+     "total": 5758,
+     "covered": 5554
+    }
+   },
+   "replacer": {
+    "line": {
+     "total": 515,
+     "covered": 515
+    },
+    "branch": {
+     "total": 4102,
+     "covered": 3845
+    },
+    "toggle": {
+     "total": 3248,
+     "covered": 3238
+    }
+   },
+   "missunit": {
+    "line": {
+     "total": 33,
+     "covered": 33
+    },
+    "branch": {
+     "total": 298,
+     "covered": 282
+    },
+    "toggle": {
+     "total": 16770,
+     "covered": 16229
+    }
+   },
+   "mshr": {
+    "line": {
+     "total": 2,
+     "covered": 2
+    },
+    "branch": {
+     "total": 8,
+     "covered": 7
+    },
+    "toggle": {
+     "total": 666,
+     "covered": 654
+    }
+   },
+   "metaarray": {
+    "line": {
+     "total": 19,
+     "covered": 19
+    },
+    "branch": {
+     "total": 602,
+     "covered": 591
+    },
+    "toggle": {
+     "total": 26786,
+     "covered": 25843
+    }
+   }
+  },
+  "per_dut_seed2": {
+   "metabank": {
+    "line": {
+     "total": 10,
+     "covered": 10
+    },
+    "branch": {
+     "total": 304,
+     "covered": 301
+    },
+    "toggle": {
+     "total": 12672,
+     "covered": 12408
+    }
+   },
+   "dataarray": {
+    "line": {
+     "total": 32,
+     "covered": 32
+    },
+    "branch": {
+     "total": 334,
+     "covered": 322
+    },
+    "toggle": {
+     "total": 52852,
+     "covered": 50274
+    }
+   },
+   "mainpipe": {
+    "line": {
+     "total": 5,
+     "covered": 5
+    },
+    "branch": {
+     "total": 156,
+     "covered": 154
+    },
+    "toggle": {
+     "total": 14240,
+     "covered": 13908
+    }
+   },
+   "waylookup": {
+    "line": {
+     "total": 227,
+     "covered": 227
+    },
+    "branch": {
+     "total": 796,
+     "covered": 667
+    },
+    "toggle": {
+     "total": 10382,
+     "covered": 10283
+    }
+   },
+   "databank": {
+    "line": {
+     "total": 7,
+     "covered": 7
+    },
+    "branch": {
+     "total": 46,
+     "covered": 44
+    },
+    "toggle": {
+     "total": 6822,
+     "covered": 6634
+    }
+   },
+   "icache": {
+    "line": {
+     "total": 854,
+     "covered": 788
+    },
+    "branch": {
+     "total": 6480,
+     "covered": 5258
+    },
+    "toggle": {
+     "total": 139880,
+     "covered": 91211
+    }
+   },
+   "prefetchpipe": {
+    "line": {
+     "total": 3,
+     "covered": 3
+    },
+    "branch": {
+     "total": 142,
+     "covered": 140
+    },
+    "toggle": {
+     "total": 5758,
+     "covered": 5556
+    }
+   },
+   "replacer": {
+    "line": {
+     "total": 515,
+     "covered": 515
+    },
+    "branch": {
+     "total": 4102,
+     "covered": 3845
+    },
+    "toggle": {
+     "total": 3248,
+     "covered": 3238
+    }
+   },
+   "missunit": {
+    "line": {
+     "total": 33,
+     "covered": 33
+    },
+    "branch": {
+     "total": 298,
+     "covered": 282
+    },
+    "toggle": {
+     "total": 16770,
+     "covered": 16229
+    }
+   },
+   "mshr": {
+    "line": {
+     "total": 2,
+     "covered": 2
+    },
+    "branch": {
+     "total": 8,
+     "covered": 7
+    },
+    "toggle": {
+     "total": 666,
+     "covered": 654
+    }
+   },
+   "metaarray": {
+    "line": {
+     "total": 19,
+     "covered": 19
+    },
+    "branch": {
+     "total": 602,
+     "covered": 591
+    },
+    "toggle": {
+     "total": 26786,
+     "covered": 25844
+    }
+   }
+  },
+  "integrated": {
+   "seed1": {
+    "line": [
+     788,
+     854
+    ],
+    "branch": [
+     5514,
+     6480
+    ],
+    "toggle": [
+     91200,
+     139880
+    ]
+   },
+   "seed2": {
+    "line": [
+     788,
+     854
+    ],
+    "branch": [
+     5258,
+     6480
+    ],
+    "toggle": [
+     91211,
+     139880
+    ]
+   }
+  },
+  "ledger_seed1": {
+   "uncovered": {
+    "line": 66,
+    "branch": 966,
+    "toggle": 48680
+   },
+   "module_covered": {
+    "line": 64,
+    "branch": 530,
+    "toggle": 35470
+   },
+   "open": {
+    "line": 2,
+    "branch": 436,
+    "toggle": 13210
+   }
+  },
+  "open_branch_categories": {
+   "replacer_mux_else": 257,
+   "waylookup_mux_else": 129,
+   "mshr_arbiter_arm": 8,
+   "ctrlunit_write_wait": 2,
+   "initial_reset_else": 40
+  },
+  "open_line": {
+   "ICacheCtrlUnit.sv": [
+    159,
+    161
+   ],
+   "class": "dead injection-write arms"
+  },
+  "toggle_classes": {
+   "payload": 10286,
+   "other": 2654,
+   "control": 262,
+   "storage": 8
+  },
+  "ctrlunit": {
+   "closed": "204 (previous round)",
+   "open": [
+    184,
+    209,
+    234
+   ],
+   "proof": "read and write ready both derive from SRAMTemplate _resetState; the only window with write.ready low also blocks read, so the FSM cannot enter the write state; reset forces iState=0. 234 is the initial-block reset else.",
+   "probes": [
+    "fence.i during injection: 204 else hit, 184/209 zero",
+    "post-reset sweep injection (reset(sweep=8)): 204 else 114, 184/209 zero"
+   ]
+  },
+  "seed_effect": {
+   "seed1_minus_seed2_branch": 256,
+   "all_in": "ICacheReplacer.sv second touch-port arms (+1 MainPipeDut.v)",
+   "same_seed2": {
+    "new": [
+     5258,
+     6480
+    ],
+    "old_baseline": [
+     5265,
+     6488
+    ],
+    "note": "different point set due to RTL change; essentially flat"
+   },
+   "conclusion": "seed 1 increment is random-stimulus difference, not a baseline/closing gain"
+  }
+ },
+ "commands": [
+  ".venv/bin/ucv run icache --workers 8 --seed 1 --require-unified-baseline --output results/ucv-icache-close2-seed1-20261108",
+  ".venv/bin/ucv run icache --workers 8 --seed 2 --require-unified-baseline --output results/ucv-icache-close2-seed2-20261108",
+  ".venv/bin/python suites/frontend/icache/tools/coverage_breakdown.py results/ucv-icache-close2-seed1-20261108/icache --json ...",
+  ".venv/bin/python suites/frontend/icache/tools/coverage_ledger.py results/ucv-icache-close2-seed1-20261108/icache --json ...",
+  ".venv/bin/python -m pytest -q tests",
+  ".venv/bin/python scripts/audit-suite-layout.py --strict",
+  ".venv/bin/python scripts/audit-skills.py --strict --check-framework",
+  "python3.12 scripts/audit-assets.py",
+  ".venv/bin/python scripts/audit-suite-layout.py --strict --require-transaction-boundary"
+ ],
+ "residuals": [
+  "WAYLOOKUP-020 real RTL defect remains (strict XFAIL); fix decision with user",
+  "ICacheCtrlUnit 184/209 structurally unreachable per source guard, 234 initial-reset else: open points kept in denominator",
+  "toggle 13210 open (payload/other majority); control 262 not driven by legal stimulus yet",
+  "FTQ PrefetchQueue behaviour not verified in this suite",
+  "global transaction-boundary gate exit 1 from other suites; ICache row clean"
+ ],
+ "gates": {
+  "root_pytest": {
+   "command": ".venv/bin/python -m pytest -q tests",
+   "result": "272 passed",
+   "exit": 0
+  },
+  "audit_suite_layout_strict": {
+   "command": ".venv/bin/python scripts/audit-suite-layout.py --strict",
+   "exit": 0,
+   "icache_row": "ok"
+  },
+  "audit_skills_strict_check_framework": {
+   "command": ".venv/bin/python scripts/audit-skills.py --strict --check-framework",
+   "exit": 0
+  },
+  "audit_assets": {
+   "command": "python3.12 scripts/audit-assets.py",
+   "exit": 1,
+   "error": "ibuffer: missing README.md",
+   "attribution": "unrelated untracked suite suites/frontend/ibuffer created by another session on 2026-11-08; not touched by this goal; ICache assets pass"
+  },
+  "strict_transaction_boundary": {
+   "command": ".venv/bin/python scripts/audit-suite-layout.py --strict --require-transaction-boundary",
+   "exit": 1,
+   "icache_row": "0 owner accesses, no-static-leak-found",
+   "global_reason": "other suites still carry debt (bpu 24, lsq 1073+1+121, mmu 29+382+53, dcache 2+87, lsu 140, vagq 179+9+32)",
+   "claim": "ICache row closed; global closure NOT claimed"
+  }
+ }
+}

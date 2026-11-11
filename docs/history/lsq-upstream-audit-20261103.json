@@ -1,0 +1,265 @@
+{
+  "schema": 1,
+  "date": "2026-11-03",
+  "kind": "lsq-upstream-audit-and-model-appropriateness-review",
+  "baseline": {
+    "name": "public-a0c2a26cb",
+    "commit": "a0c2a26cbe3c862175174bad03a1a23c406315ed",
+    "source_cache_key": "f3ac6022d07c5c05d28869ac811f91038f9103677796dd6f051bd1981408be9b",
+    "generation_cache_key": "d7c6bc4d17651fc1bd92ac39c469410a6bb91215f46c1efcfaf1ec66a72e972d",
+    "authoritative_run": "/tmp/opencode/lsq-runs/full-a0c2a26cb-v3",
+    "authoritative_counts": {
+      "PASS": 2356,
+      "FAIL": 219,
+      "cases": 2575
+    },
+    "seed": 1,
+    "workers": 32
+  },
+  "upstream": {
+    "repository": "https://github.com/OpenXiangShan/XiangShan.git",
+    "branch": "kunminghu-v3",
+    "observed_tip": "2145ba1c95fe2d7862416dfd2766da3fef207a8b",
+    "fetched": "2026-11-03",
+    "commits_after_baseline": 10,
+    "lsqueue_commits_after_baseline": [
+      {
+        "commit": "43fe084b3f2ffae21fa3b66ba77131432295cea7",
+        "title": "fix(StoreQueue): fix cross16B unalign forward mask (#6718)",
+        "merged": true,
+        "local_fail_family": "FWD-RANGE-001 / cross-word mask fold-back",
+        "local_fail_nodes": 28,
+        "local_fail_nodes_direct_mask": 24,
+        "local_fail_nodes_seeded_family": 4
+      },
+      {
+        "commit": "d3472986bd83b849f1bf7f91a1554cdef420934c",
+        "title": "fix(StoreQueue): fix judgement of `MdpHit` when `waitSqidx` is retired (#6714)",
+        "merged": true,
+        "local_fail_family": "retired MDP target kept as out-of-range wait",
+        "local_fail_nodes": 4
+      },
+      {
+        "commit": "dc7eb7338a863f24f9f0894559ecddae42a7b8a6",
+        "title": "fix(StoreQueue): wait for CBO zero enqueue before flushing (#6762)",
+        "merged": true,
+        "local_fail_family": "DEQ-ZERO-001 / CBO.zero exits writeZero on a foreign FIFO handshake",
+        "local_fail_nodes": 2
+      }
+    ],
+    "preimages_confirmed_in_locked_source": [
+      "NewStoreQueue.scala:639 s2OutMask = ParallelLookUp(...) & s2LoadMaskEnd (no boundary mask)",
+      "NewStoreQueue.scala:584 s2MdpHitOutOfRange without !s2MdpTargetRetired",
+      "NewStoreQueue.scala:980 CboState.writeZero exits on io.writeToSbuffer.req.head.fire"
+    ],
+    "open_items_reviewed": [
+      {
+        "item": "#6704",
+        "state": "open issue",
+        "local": "coverage gap: head/tail window not reachable by memory_owners.write()"
+      },
+      {
+        "item": "#6229 / #6312",
+        "state": "open issue/PR",
+        "local": "covered by independent forward-byte property (3 FAIL)"
+      },
+      {
+        "item": "#6634",
+        "state": "open PR",
+        "local": "covered by independent exception-owner property (2 FAIL)"
+      },
+      {
+        "item": "#6688 / #6697",
+        "state": "open issue/PR",
+        "local": "out of configuration domain (DUT threshold fixed at 12)"
+      },
+      {
+        "item": "#6775",
+        "state": "open issue",
+        "local": "out of domain: needs LoadUnit/TLB"
+      },
+      {
+        "item": "#6813",
+        "state": "open issue",
+        "local": "out of domain for module UT: second-page visibility needs DCache/LDU"
+      },
+      {
+        "item": "#6822",
+        "state": "open PR",
+        "local": "UQ two-slot contract only; second-page load visibility out of domain"
+      },
+      {
+        "item": "#6833",
+        "state": "open PR",
+        "local": "item 3 covered by DEQ-SPLIT-WLINE-001 (7 wline FAIL); item 1 newly covered by this audit (2 FAIL); items 2/4 same family as #6704/#6822"
+      },
+      {
+        "item": "#6773",
+        "state": "open PR",
+        "local": "covered: LQU-SID-001 (29 nodes) and RAR-REL-001 (19 nodes)"
+      },
+      {
+        "item": "#6830",
+        "state": "open PR",
+        "local": "performance domain, not covered"
+      },
+      {
+        "item": "#6770",
+        "state": "open PR",
+        "local": "same family as #6704/#6718, not separately reproduced"
+      },
+      {
+        "item": "#6817",
+        "state": "open PR",
+        "local": "HPM counter domain, not covered"
+      },
+      {
+        "item": "#6652 / #6653",
+        "state": "open PR",
+        "local": "out of domain: vector STD issue in backend"
+      },
+      {
+        "item": "#6597",
+        "state": "open issue",
+        "local": "VSQ retirePtr assertion; not reproduced with current flows-only stimulus"
+      },
+      {
+        "item": "#6826",
+        "state": "open PR",
+        "local": "out of domain: memBackTypeMM is a driven input in this suite, its derivation lives in StoreUnit/LSU"
+      },
+      {
+        "item": "#6827",
+        "state": "open PR",
+        "local": "out of domain: difftest-only event, RTL unchanged"
+      },
+      {
+        "item": "#6832",
+        "state": "open PR",
+        "local": "out of domain/not covered: StoreUnit/LDU and two-stage TLB combinations; the two-slot UQ contract has no one-half-fault case"
+      }
+    ],
+    "open_items_count": 17
+  },
+  "runs": [
+    {
+      "output": "/tmp/opencode/lsq-audit-20261103a",
+      "purpose": "re-run failing nodes for #6714/#6718/#6762/#6833-3 plus controls",
+      "seed": 1,
+      "workers": 8,
+      "counts": {
+        "PASS": 13,
+        "FAIL": 23
+      },
+      "source_sha256_before": "3ac24c7a63482531eb00581909b46b3bcb33a93b05b39d1e2c45c58c8238482a",
+      "source_sha256_after": "3ac24c7a63482531eb00581909b46b3bcb33a93b05b39d1e2c45c58c8238482a",
+      "nodeid_verdicts_identical_to_authoritative": true
+    },
+    {
+      "output": "/tmp/opencode/lsq-audit-20261103b-nc",
+      "purpose": "first targeted batch after driving real PSQ entry type into DeqControl",
+      "seed": 1,
+      "workers": 8,
+      "counts": {
+        "PASS": 60,
+        "FAIL": 17
+      },
+      "source_sha256_before": "38ccb8bad1a6d3885e45de24a8c100702d65ca2c5c912c8f79abeaaaf9771f39",
+      "source_sha256_after": "38ccb8bad1a6d3885e45de24a8c100702d65ca2c5c912c8f79abeaaaf9771f39",
+      "nodeid_verdicts_identical_to_authoritative": true
+    },
+    {
+      "output": "/tmp/opencode/lsq-audit-20261103c-ncfault",
+      "status": "DISCARDED_DRAFT",
+      "reason": "probe used a coverage scenario name absent from the wrapper contract; harness error, not a hardware verdict"
+    },
+    {
+      "output": "/tmp/opencode/lsq-audit-20261103d-ncfault",
+      "status": "DISCARDED_DRAFT",
+      "reason": "probe read a non-existent pin name (P.io double prefix); harness error, not a hardware verdict"
+    },
+    {
+      "output": "/tmp/opencode/lsq-audit-20261103e-ncfault",
+      "status": "DISCARDED_DRAFT",
+      "reason": "NC premise corrected: the NC store leaves waitReqAck on idResp and never reaches the data-response writeback path; the MMIO variant is the valid probe"
+    },
+    {
+      "output": "/tmp/opencode/lsq-audit-20261103f-psq-sq",
+      "purpose": "targeted verification after driving real PSQ entry type into DeqControl",
+      "seed": 1,
+      "workers": 8,
+      "counts": {
+        "PASS": 125,
+        "FAIL": 35
+      },
+      "source_sha256_before": "9825c9df1a5050656bad4297c7d31c416b6c698741d3971b2c4df751ffc162b7",
+      "source_sha256_after": "9825c9df1a5050656bad4297c7d31c416b6c698741d3971b2c4df751ffc162b7",
+      "nodeid_verdicts_identical_to_authoritative": true
+    },
+    {
+      "output": "/tmp/opencode/lsq-audit-20261103g-mmiofault",
+      "purpose": "new MMIO/uncached Store bus-fault coverage",
+      "seed": 1,
+      "workers": 2,
+      "counts": {
+        "PASS": 1,
+        "FAIL": 2
+      },
+      "source_sha256_before": "dde28fdf3e0c20e59e17be05997f4502565c7279bf61ca3d6692836bae5667da",
+      "source_sha256_after": "dde28fdf3e0c20e59e17be05997f4502565c7279bf61ca3d6692836bae5667da",
+      "cases": {
+        "benign-control": "PASS",
+        "nderr-access-fault": "FAIL: writeback exceptionVec_7 = 0",
+        "error-hardware-error": "FAIL: writeback exceptionVec_19 = 0"
+      }
+    },
+    {
+      "output": "/tmp/opencode/lsq-audit-20261103h-diff-targeted",
+      "purpose": "targeted regression over the modules touched by the latest LSQ commit 10e0f63",
+      "selection": [
+        "tests/deq",
+        "tests/load_queue",
+        "tests/load_uncache",
+        "tests/fail_review",
+        "tests/normal_mixed"
+      ],
+      "seed": 1,
+      "workers": 8,
+      "counts": {
+        "PASS": 416,
+        "FAIL": 64
+      },
+      "source_sha256_before": "dde28fdf3e0c20e59e17be05997f4502565c7279bf61ca3d6692836bae5667da",
+      "source_sha256_after": "dde28fdf3e0c20e59e17be05997f4502565c7279bf61ca3d6692836bae5667da",
+      "nodeid_verdicts_identical_to_authoritative": true,
+      "note": "480 selected nodeids, all present in the authoritative run, zero verdict changes"
+    }
+  ],
+  "model_changes": [
+    {
+      "file": "suites/memblock/lsq/psq/model.py",
+      "change": "DeqControl now carries the real cache_operation/memory_type of the same head entry",
+      "effect_on_verdicts": "none",
+      "evidence": "/tmp/opencode/lsq-audit-20261103f-psq-sq",
+      "remaining_gap": "deq/model.py still does not model the Sbuffer-credit requirement of cacheable deq-window entries"
+    },
+    {
+      "file": "suites/memblock/lsq/tests/lsq_wrapper/mixed_owners.py",
+      "change": "none (documented only)",
+      "effect_on_verdicts": "none",
+      "finding": "the shared actor derives MMIO Store writeback faults from cache_resp only, so random bus nderr/error on an io_store is expected as benign; same-source blind spot for the RTL behaviour the new probe catches",
+      "next": "switch the expectation to int(job['nderr'])/int(job['error']) in a separate漏检-fix round and re-verify the PASS->FAIL set"
+    }
+  ],
+  "new_tests": [
+    "suites/memblock/lsq/tests/lsq_wrapper/test_uncache_store_fault.py"
+  ],
+  "still_open": [
+    "3 post-edge credit-accounting nodes kept as real FAIL",
+    "#6704 head/tail window has no mandatory stimulus",
+    "#6688 threshold=0 configuration domain not built",
+    "cross-page second-page load visibility belongs to the whole-core domain",
+    "psq/deq credit-requirement modelling gap"
+  ],
+  "scope": "LSQ suite only, DefaultConfig, public-a0c2a26cb, seed 1; the other nine suites were not rebuilt or regressed on this baseline in this audit"
+}

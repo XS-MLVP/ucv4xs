@@ -35,36 +35,44 @@ producer/consumer 合同，以及工程内已有的参考布局；不需要先�
 
 ## 推荐目录
 
-以一个工程一个 pytest 根、每个 DUT 一个 agent 为默认：
+目录职责、单文件/子包选择、README 与 schema 适用范围见
+[testbench 目录规范](../../docs/reference/module-layout.md)。这里说明运行时的分层方法。
+以 schema2 的一个工程一个 pytest 根、每个 DUT 在其 `testbenches/<dut>/` 内有明确的
+agent/环境身份为例：
 
 ```text
 suites/<group>/<suite>/
 ├── __init__.py              # 唯一导入命名空间及 ROOT，不创建 DUT
-├── native.py / harness.py   # 小工程的原生资源边界；复杂时用 runtime/
-├── drivers/                 # 仅真正跨 DUT 的共享驱动机制（可无）
-├── monitors/                # 仅真正跨 DUT 的共享采样机制（可无）
-├── pytest_plugins/          # 项目级插件；小工程可用 fixtures.py（可无）
-├── <dut>/
-│   ├── agent.py             # 或 agent/main.py，按复杂度选，不强制空角色目录
-│   ├── ports.py             # 或 bundle/ports.py：逻辑名到真实端口
-│   ├── driver.py            # 事务编码、发射、保持与撤销
-│   ├── monitor.py           # 合同采样与不可变事务解码
-│   ├── checker.py / model.py # 独立 oracle/性质比较，不产生激励
-│   └── types.py             # 事务合法域、单位、身份
-├── tests/
-│   ├── conftest.py           # 每 DUT 一个 agent fixture，子目录共享
-│   └── <dut>/test_*.py       # 只调用 agent 事务 API
-├── tools/                    # 回归、覆盖率合并、追溯等工程入口（可无）
+├── testbenches/<dut>/
+│   ├── README.md             # 工具生成的规格、实现、用例、命令和问题入口
+│   ├── transactions.py       # 或 transactions/；事务合法域、单位、身份
+│   ├── env.py                # 或 env/，内部组织 agent、ports、driver、monitor
+│   ├── checker.py / model.py # 或同名子包；独立 oracle/性质比较
+│   ├── coverage.py           # 按需：行为覆盖
+│   └── tests/                # 功能用例、自检、scenarios/ 场景复用
+├── testbenches/shared/       # 真正跨 DUT 组件，同用上述六职责及独立 README
+├── conftest.py               # 唯一 fixture / pytest 插件注册入口
+├── tools/                    # 离线汇总、审计等工程命令（可无）
 ├── ucv.json                  # DUT 配方：真实 top、导出类、测试根
-├── pytest.ini                # feature / rtl_defect / selftest 等标记
+├── pytest.ini                # testpaths = testbenches；feature / rtl_defect / selftest 等标记
 └── docs/                     # 责任边界、功能点、追溯、残余、证据
 ```
 
-不创建泛化的 common 包；共享机制按职责命名，没有共享行为就不要造目录。多 DUT 层次每个真实实例一个
-`<dut>/` 子包，父模块组合用例只使用各子 agent 或父 agent，不复制子模块的编码逻辑。
+shared 与 DUT 同名职责同义，只有真正跨 DUT 复用的组件才进 shared；单 DUT 实现归所属
+`testbenches/<dut>/`。双方根只放六类职责，不放 `agent/`、`conftest.py` 或 `pytest.ini`；
+tests 为目录，其余按需用文件或同名包，不创建空壳。同一参数化实现的多个实例可以共用
+代码、规格和参数化 fixture，通过配方与 `workspace.json` 的 `duts.<name>.testbench`
+明确身份。父模块组合用例属于父 DUT，使用各子 agent 或父 agent，不复制子模块的编码逻辑。
 
-工程根自身是 `suites.<group>.<suite>` 包，例如
-`from suites.memblock.lsq.deq.agent import PsqAgent`。不保留 *verify 包名兼容别名，
+`shared` 是保留名，不登记为 DUT，没有独立 top 或本地原生库。共享实现不得反向 import
+具体 DUT 或工程 tools；shared/tests 可检查集成引用。通用加载器、绑定、驱动、采样与插件
+归 shared/env，共同事务、独立参考计算、比较、覆盖分别归 transactions/model/checker/coverage。
+DUT 专用参数生成放其 tests/插件，通用插件放 shared/env/pytest_plugins，由工程唯一 conftest
+注册；离线审计与汇总命令放 tools。
+
+工程根自身是 `suites.<group>.<suite>` 包。BPU 使用
+`suites.frontend.bpu.testbenches.mbtb`；LSQ 示例为
+`from suites.memblock.lsq.testbenches.deq.env.agent import PsqAgent`。不保留 *verify 包名兼容别名，
 不使用 import common 或 import deq。运行器显式提供仓库根导入路径；可编辑安装后
 也可从其他 cwd 导入。ROOT 从工程 __init__.py 解析，不按移动后的目录深度猜 parents[n]。
 当前六个工程的 legacy_pins.py 只是兼容字段，仍需事务适配；不以去掉 common 证明
@@ -101,7 +109,7 @@ suites/<group>/<suite>/
 6. **agent 收口。** agent 只暴露事务方法、快照读取和必要的精确对齐接口
    （如 `drive_*` / `finish_*`、`resolve_cycle`）。测试中出现物理引脚名、`.pins`、
    `.dut`，就说明抽象漏了。
-7. **fixture 集中在 pytest 根。** 每 DUT 一个 function-scoped fixture，负责
+7. **fixture 在工程 conftest.py 显式注册。** 每 DUT 一个 function-scoped fixture，负责
    DUT、Execution、agent 和覆盖率文件；不要在每个子目录复制同名 fixture。子目录
    需要特殊构造时，应在 agent 上加方法，而不是另起一套驱动。
    这是本仓库的默认，不是 pytest 的合法性限制。多个 DUT 可以由参数化工厂覆盖，单个
@@ -123,12 +131,13 @@ suites/<group>/<suite>/
 
 ## 如何验收
 
-- `tests/` 下的功能用例不再出现 `.pins`、`.dut`、物理引脚字符串或驱动编码调用；
+- 所属 testbench 的 `tests/` 功能用例不再出现 `.pins`、`.dut`、物理引脚字符串或驱动编码调用；
   测试只调用 agent 方法并断言事务。编码/绑定的自检可以单独保留，但标 `selftest`，
    不计硬件功能 credit。可用如下命令核对（命中应为 0；自检文件单独说明）：
 
   ```sh
-  grep -rnE '\.(pins|dut)\.|io_[A-Za-z]' tests --include='*.py'
+   # 在 schema2 工程根运行，替换 <testbench> 为实际实现名
+   grep -rnE '\.(pins|dut)\.|io_[A-Za-z]' testbenches/<testbench>/tests --include='*.py'
   ```
   此 grep 只能发现部分泄漏；P.p_*、P.io(...) 仍然是引脚级耦合，不能靠改名绕过。
   当前静态审计用 `--require-transaction-boundary` 单列它们；零命中也不能替代采样、
@@ -146,7 +155,8 @@ suites/<group>/<suite>/
 - 关闭 monitor 后，依赖它的功能用例必须失败或缺少输入，不能静默通过。
 - 从一条 PASS 能追到事务、driver 调用、monitor 采样和 checker 比较；从一条 FAIL
   能回到具体层，而不是只看到 pytest 栈。
-- 新增 DUT 时只增加一个 `<dut>/` 子包和 fixture，不改其他 DUT 的编码逻辑。
+- 新增 DUT 时登记真实 top、资源与测试选择，并接入独立子包或明确的共享参数化实现；
+  不改其他 DUT 的编码逻辑，不为每个生成实例复制子包和 fixture。
 
 ## 常见坑
 
@@ -172,11 +182,11 @@ suites/<group>/<suite>/
 
 ## 案例
 
-- FTQ 的三个 DUT（`ResolveQueue`、`CommitQueue`、`Ftq`）按本布局落地，测试不再直接
+- FTQ 的三个 DUT（`ResolveQueue`、`CommitQueue`、`Ftq`）采用同样的事务分层，测试不再直接
   操作引脚；结构与约束见
-  [FTQ 验证包结构](../../suites/frontend/ftq/docs/architecture.md)。
+  [FTQ 验证包结构](../../suites/frontend/ftq/docs/spec/verification/architecture.md)。
 - BPU 的 RAS/UBTB 等模块提供同构的 `agent/bundle/driver/monitor/checker` 参考实现，
-  见 `suites/frontend/bpu/ras/` 与 `suites/frontend/bpu/ubtb/`。
+  见 `suites/frontend/bpu/testbenches/ras/` 与 `suites/frontend/bpu/testbenches/ubtb/`。
 - 引脚绑定、缺端口默认 0、复位随机化等“静默变绿”案例见
   [IFU 环境完整性案例](../../docs/lessons/ifu-harness-integrity-20261029.md)。
 

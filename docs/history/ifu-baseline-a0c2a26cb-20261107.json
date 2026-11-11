@@ -1,0 +1,398 @@
+{
+  "format": "ifu-baseline-reconciliation",
+  "version": 1,
+  "generated_at": "2026-11-07",
+  "scope": "IFU / DefaultConfig / public-a0c2a26cb only",
+  "baseline": {
+    "name": "public-a0c2a26cb",
+    "commit": "a0c2a26cbe3c862175174bad03a1a23c406315ed",
+    "design_config": "DefaultConfig",
+    "num_cores": 1,
+    "top": "top.TopMain",
+    "source_cache": "f3ac6022d07c5c05d28869ac811f91038f9103677796dd6f051bd1981408be9b",
+    "commits_since_previous": 63
+  },
+  "previous_baseline": {
+    "name": "public-893e1580b",
+    "commit": "893e1580b705d81f113c30c7a05734e09a08050e",
+    "authoritative_run": "results/ucv-goal-ifu-semantic-integrated-20261101",
+    "counts": {
+      "PASS": 719,
+      "FAIL": 5,
+      "UNCERTAIN": 1
+    },
+    "nodes": 725
+  },
+  "commands": [
+    ".venv/bin/ucv prepare ifu --require-unified-baseline --jobs 8",
+    ".venv/bin/ucv build ifu --require-unified-baseline --jobs 8",
+    ".venv/bin/ucv run ifu --workers 16 --seed 1 --require-unified-baseline --output results/ifu-a0c2a26cb-full-seed1-final5-20261107",
+    ".venv/bin/ucv run ifu --workers 16 --seed 2 --require-unified-baseline --output results/ifu-a0c2a26cb-seed2-target-final3-20261107 -- tests/ifu tests/uncache_unit tests/frontend_trigger",
+    ".venv/bin/python suites/frontend/ifu/tools/coverage_report.py --manifest results/ifu-a0c2a26cb-full-seed1-final5-20261107/ifu/manifest.json --output results/ifu-a0c2a26cb-full-seed1-final5-20261107/coverage.json --markdown results/ifu-a0c2a26cb-full-seed1-final5-20261107/coverage.md",
+    ".venv/bin/python suites/frontend/ifu/tools/coverage_summary.py --report results/ifu-a0c2a26cb-full-seed1-final5-20261107/coverage.json --run-id '2026-11-07 public-a0c2a26cb 完整 seed1（16 workers）' --output results/ifu-a0c2a26cb-full-seed1-final5-20261107/coverage-summary.json --markdown suites/frontend/ifu/docs/coverage-summary.md"
+  ],
+  "tools": {
+    "toffee": "f57150021791535d4b2fd01056c106f0cad53177 (uc-toffee 2.1.0)",
+    "picker": "4dd442c4a80c92549381e417c608836e3b78a8e9",
+    "xcomm": "2e4a4a99293360c2a642025000c6948b24cf8e88 (1.1.1)",
+    "verilator": "5.052"
+  },
+  "build": {
+    "instr_boundary": {
+      "top": "InstrBoundary",
+      "cache_key": "246b6169f5c9d7f6c8be273cb251a73a6eec1eace9ba689058cc157d1c147469",
+      "smoke": "PASS",
+      "rtl": {
+        "InstrBoundary.sv": "cc9ed7cbdea5b4c26f99eb3dda50e71d74f0486b1a76895945d093e7a1fa196f"
+      },
+      "outputs": {
+        "__init__.py": "39e04c62cb148899241a075e63a98a0ef4ed824a263cabda1c75a54fee855a4a",
+        "signals.json": "7c8ca4cc622bd53523356c09de73cdb09eb43d924b4d5dcddfd142b80f34ce49",
+        "InstrBoundaryDut_offset.yaml": "86793fe6113585cb07f5b0149f16143d5732ba6ff00004d4a469505dfb2329ac",
+        "_UT_InstrBoundaryDut.so": "078df3e5139f2cb45f6fa88febfe3d47f4de759a44b5d203b80ac9f122737c0b",
+        "libUTInstrBoundaryDut.so": "9f96c730e410a4400ce06683a15cffac16fc4d2b45c54d8f251add40e5ee933a"
+      },
+      "completed_at": "2026-11-07T08:27:42.221759+00:00"
+    },
+    "ifu": {
+      "top": "Ifu",
+      "cache_key": "55712d4ce9dc0d11b36e77dfef4c6c0692997e8adb65a5f9444e599b7a493243",
+      "smoke": "PASS",
+      "rtl": {
+        "FrontendTrigger.sv": "6de38b9e80ef5347bde9b030a97f00d4193bfe6ad1bbc1e0f6a831cda49d1b62",
+        "Ifu.sv": "841ff01f807a8f88c5c4149f5a135a67c5c49155aa034e3c5767d5e6562a4eff",
+        "IfuPerfAnalysis.sv": "0225d579ea581c99925b8deea0e22026508bb0c600d837c68b8ffe67c4063e61",
+        "IfuUncacheUnit.sv": "2e933be02a40383766ac20fa4a064c5a96c3392a67dee2b07b2495ed96533934",
+        "InstrBoundary.sv": "cc9ed7cbdea5b4c26f99eb3dda50e71d74f0486b1a76895945d093e7a1fa196f",
+        "PredChecker.sv": "f5353839457897a789c52a5bad44f5ddce30030aa2fc4f90d3dedab4bc8fadf6",
+        "RvcExpander.sv": "2f6e424c86429d3b1f34cace14a4a832233896fbfb04fedffeada8c4bc42ee58"
+      },
+      "outputs": {
+        "__init__.py": "d13ea97bb919f1576fc3cdacb72925ff546527a1ce7493a702cc583dc1527d85",
+        "signals.json": "bf41ebe79720988c0380deed311e42d4b0e982d5fb60c09b176cc75feb3215d0",
+        "IfuDut_offset.yaml": "c7e1b0377cf29a713370369a165d58b59852873f46864494e785d35975ddc2be",
+        "_UT_IfuDut.so": "66ff9d043a570fb556573e00f599fadd47bed2d64a8e8d838d8113fa2b50a87e",
+        "libUTIfuDut.so": "fc454f2e40b7baa66a4dbdd5be0abe6e8325a19fb24fad5cbaee7c182c5c93ac"
+      },
+      "completed_at": "2026-11-07T08:33:22.359765+00:00"
+    },
+    "uncache_unit": {
+      "top": "IfuUncacheUnit",
+      "cache_key": "69f933deea530072ea15e8b269b68f385cc7273f2c32a36c4f45d8efd84a466e",
+      "smoke": "PASS",
+      "rtl": {
+        "IfuUncacheUnit.sv": "2e933be02a40383766ac20fa4a064c5a96c3392a67dee2b07b2495ed96533934"
+      },
+      "outputs": {
+        "__init__.py": "74b48e32cdd8a8c84c95735d49bc082c9967e2afd4f39e72bc4936ab5b4986d0",
+        "signals.json": "8ae27b54016f439122def96d7e2f230b54ef17d10e68298c17a6215b274a25e7",
+        "IfuUncacheUnitDut_offset.yaml": "6665e241ee3717c55f6152afe05eb133784a959c6b17a32642305c99a4053d09",
+        "_UT_IfuUncacheUnitDut.so": "91c76b9dfb42514a2aaf48bc9a0053f8c460d68ebf21f17624f6e1fe5915b324",
+        "libUTIfuUncacheUnitDut.so": "dd3df70f3466e2b46189839816d132acbebce321b1c119a2f1ad185b66f6708c"
+      },
+      "completed_at": "2026-11-07T08:27:59.757723+00:00"
+    },
+    "perf_analysis": {
+      "top": "IfuPerfAnalysis",
+      "cache_key": "7374b2e695e8571deb9ddacbe353936260be1c7d4ea2f772be77ceb2ceadfb70",
+      "smoke": "PASS",
+      "rtl": {
+        "IfuPerfAnalysis.sv": "0225d579ea581c99925b8deea0e22026508bb0c600d837c68b8ffe67c4063e61"
+      },
+      "outputs": {
+        "__init__.py": "0ac2d4e770da8b1eb11170040a14b0024b9b20b3cc30c21ef2ba78670402537f",
+        "signals.json": "774bda98817a42868975ef04a6eda02a1b09c0309aacf363eeb5c65afd019046",
+        "IfuPerfAnalysisDut_offset.yaml": "552f6f13dcce1018309c1308df7042ea451f31b38d5000c1959556778c3d07c7",
+        "_UT_IfuPerfAnalysisDut.so": "1f44871f98d627f7ad795a9f98a91805e42ecd90f25965ddc32762b42ab9843a",
+        "libUTIfuPerfAnalysisDut.so": "7ced0061333409c37f58252b678190c38307d9f21c03cb54a8854e23585ba4fa"
+      },
+      "completed_at": "2026-11-07T08:28:27.445675+00:00"
+    },
+    "pred_checker": {
+      "top": "PredChecker",
+      "cache_key": "7ed5411857184ffefb1b440aad1d517cfbcbe1d0a75fbe93249af38760e65df2",
+      "smoke": "PASS",
+      "rtl": {
+        "PredChecker.sv": "f5353839457897a789c52a5bad44f5ddce30030aa2fc4f90d3dedab4bc8fadf6"
+      },
+      "outputs": {
+        "__init__.py": "69695aaf53e355da29bafec7cff006a27eb2eb4335d724ea1406cff31e1ada45",
+        "signals.json": "23da6d99027523b0a90d555129ee44ddc6bdd3156325f28a8fa1511b4676e695",
+        "PredCheckerDut_offset.yaml": "c1b2e3cbe3d51e095ad4f70591ad136b2d38aeae924611d46ff2106e0ee4aa6c",
+        "_UT_PredCheckerDut.so": "0c16a6445fed3cf9bfa012b81583848f7e724ed4b80cc0852c648185f9f6ba90",
+        "libUTPredCheckerDut.so": "2bf3522ba32b19f2ff06cb8d580b6402b187165947dc2ee9a3db4f9c29c841c4"
+      },
+      "completed_at": "2026-11-07T08:28:08.460494+00:00"
+    },
+    "rvc_expander": {
+      "top": "RvcExpander",
+      "cache_key": "a9bad6e5fe2032608cb3167e500b28e63bb6b84ba42bdd3c8b526da5c3c88bac",
+      "smoke": "PASS",
+      "rtl": {
+        "RvcExpander.sv": "2f6e424c86429d3b1f34cace14a4a832233896fbfb04fedffeada8c4bc42ee58"
+      },
+      "outputs": {
+        "__init__.py": "df0767fb178a4d3e8425c5e94cdaa1db9cf6109d1d3d0d3113f484474739f9b9",
+        "signals.json": "0f1c38fa2970539138b0b138f3293520f3b59cd8a8d605e5e10d48a53efb058e",
+        "RvcExpanderDut_offset.yaml": "1902c2a6b7540531bdbce3758ad36ac32fac0221fa1be05c4a575a3010aa4788",
+        "_UT_RvcExpanderDut.so": "7f1289f9f483f4622228aca2c8ab6b2f21fdf8fbd503290d23e3386905876803",
+        "libUTRvcExpanderDut.so": "13ac95d5b3107fd9fd7bc8195a112d165a9b55a13ecdebad659d0e0ecd48118a"
+      },
+      "completed_at": "2026-11-07T08:27:37.298489+00:00"
+    },
+    "frontend_trigger": {
+      "top": "FrontendTrigger",
+      "cache_key": "ab0911a7b12d4317f8164b8c36b4a9f3126fb5252f41759e48ceef2ff1ba5cbf",
+      "smoke": "PASS",
+      "rtl": {
+        "FrontendTrigger.sv": "6de38b9e80ef5347bde9b030a97f00d4193bfe6ad1bbc1e0f6a831cda49d1b62"
+      },
+      "outputs": {
+        "__init__.py": "7222aafe4ce8aead68f03c686dc6d1f387361ea5e207ed2650354b0625255b26",
+        "signals.json": "cd436af898540aa28661c154775a61692b5cb3e2595f2fb046750fbb6f58c784",
+        "FrontendTriggerDut_offset.yaml": "2cc0af6fc701ecdb679c270bc1117bc3dbd81646dbca5127e56e22b89552c2a3",
+        "_UT_FrontendTriggerDut.so": "413e6aa2c204d7a86406831ae4f3f444e54f24408b9ec24b642d7bff61ec8199",
+        "libUTFrontendTriggerDut.so": "a95cb2883f47abd382ad73f374ce27f19ee90535f7337e2a4003d16b0deaa296"
+      },
+      "completed_at": "2026-11-07T08:28:28.298664+00:00"
+    }
+  },
+  "runs": {
+    "seed1_full": {
+      "output": "results/ifu-a0c2a26cb-full-seed1-final5-20261107",
+      "seed": 1,
+      "workers": 16,
+      "counts": {
+        "PASS": 721,
+        "FAIL": 5,
+        "UNCERTAIN": 1
+      },
+      "nodes": 727,
+      "source_sha256": "4ed5e61e954db6477e1076867e1a51443248bf79f4ef907793e716136380d629",
+      "git_commit": "c13ee6fbb48f8b7eff19d1945393416822fe48ee",
+      "removed_nodeids": [
+        "tests/framework/test_ifu_agent.py::test_width_changes_are_explicit_migration_errors[io_toFtq_wbRedirect_bits_pc-51]"
+      ],
+      "added_nodeids": [
+        "tests/framework/test_ifu_agent.py::test_width_changes_are_explicit_migration_errors[io_toFtq_wbRedirect_bits_pc-50]",
+        "tests/ifu/test_ifu_guard_handoff.py::test_guard_bit_distinguishes_two_pcs_with_equal_low_bits",
+        "tests/ifu/test_ifu_guard_handoff.py::test_second_block_redirect_keeps_the_guard_bit"
+      ],
+      "verdict_changes": {},
+      "non_pass": {
+        "tests/frontend_trigger/test_frontend_trigger.py::test_tdata2_above_the_address_space_cannot_equal_a_fetch_pc": "FAIL",
+        "tests/frontend_trigger/test_frontend_trigger.py::test_tdata2_above_the_address_space_is_greater_for_less_than": "FAIL",
+        "tests/ifu/test_ifu_fetch.py::test_instruction_split_across_two_fetch_windows_is_assembled": "UNCERTAIN",
+        "tests/ifu/test_ifu_fetch.py::test_recovered_half_instruction_keeps_its_completing_ftq_block[upper-half-low11]": "FAIL",
+        "tests/instr_boundary/test_instr_boundary.py::test_carried_upper_half_cannot_acquire_block_one_ownership[upper-half-low11]": "FAIL",
+        "tests/instr_boundary/test_instr_boundary.py::test_random_windows_match_the_model": "FAIL"
+      },
+      "feature_report": {
+        "hardware": {
+          "planned": 56,
+          "PASS": 47,
+          "FAIL": 9
+        },
+        "environment": {
+          "planned": 5,
+          "PASS": 5
+        },
+        "residual_summary": {
+          "total": 14,
+          "blocking": 2,
+          "open": 2
+        }
+      }
+    },
+    "seed2_target": {
+      "output": "results/ifu-a0c2a26cb-seed2-target-final3-20261107",
+      "seed": 2,
+      "workers": 16,
+      "selection": [
+        "tests/ifu",
+        "tests/uncache_unit",
+        "tests/frontend_trigger"
+      ],
+      "counts": {
+        "PASS": 132,
+        "FAIL": 3,
+        "UNCERTAIN": 1
+      },
+      "nodes": 136,
+      "source_sha256": "4ed5e61e954db6477e1076867e1a51443248bf79f4ef907793e716136380d629",
+      "same_source_as_seed1": true,
+      "verdict_vs_seed1_subset": "identical",
+      "non_pass": {
+        "tests/frontend_trigger/test_frontend_trigger.py::test_tdata2_above_the_address_space_cannot_equal_a_fetch_pc": "FAIL",
+        "tests/frontend_trigger/test_frontend_trigger.py::test_tdata2_above_the_address_space_is_greater_for_less_than": "FAIL",
+        "tests/ifu/test_ifu_fetch.py::test_instruction_split_across_two_fetch_windows_is_assembled": "UNCERTAIN",
+        "tests/ifu/test_ifu_fetch.py::test_recovered_half_instruction_keeps_its_completing_ftq_block[upper-half-low11]": "FAIL"
+      }
+    }
+  },
+  "coverage": {
+    "source_report": "results/ifu-a0c2a26cb-full-seed1-final5-20261107/coverage.json",
+    "source_report_sha256": "91fa5638c83131971b3bd78330baef5614610ae0fa5d2a2e2794146735dba158",
+    "DUTFrontendTriggerDut": {
+      "line": 100.0,
+      "branch": 99.35897435897436,
+      "toggle_bin": 95.23928839889751,
+      "toggle_bits": 95.28940115259333,
+      "uncovered_lines": 0,
+      "uncovered_branches": [
+        "if (reset) begin"
+      ]
+    },
+    "DUTInstrBoundaryDut": {
+      "line": 100.0,
+      "branch": 99.35064935064935,
+      "toggle_bin": 91.75774134790528,
+      "toggle_bits": 91.80327868852459,
+      "uncovered_lines": 0,
+      "uncovered_branches": [
+        "io_req_ifuData_blockSel[0] ? 5'(5'h0 - io_req_fetchBlock_0_size[4:0]) : 5'h0;"
+      ]
+    },
+    "DUTIfuUncacheUnitDut": {
+      "line": 100.0,
+      "branch": 93.75,
+      "toggle_bin": 100.0,
+      "toggle_bits": 100.0,
+      "uncovered_lines": 0,
+      "uncovered_branches": [
+        "if (reset) begin"
+      ]
+    },
+    "DUTPredCheckerDut": {
+      "line": 100.0,
+      "branch": 95.83333333333333,
+      "toggle_bin": 99.99374921865233,
+      "toggle_bits": 100.0,
+      "uncovered_lines": 0,
+      "uncovered_branches": [
+        "if (reset)"
+      ]
+    },
+    "DUTRvcExpanderDut": {
+      "line": 100.0,
+      "branch": 100.0,
+      "toggle_bin": 95.89041095890411,
+      "toggle_bits": 97.26027397260275,
+      "uncovered_lines": 0,
+      "uncovered_branches": []
+    },
+    "DUTIfuPerfAnalysisDut": {
+      "line": 100.0,
+      "branch": 95.45454545454545,
+      "toggle_bin": 17.391304347826086,
+      "toggle_bits": 17.391304347826086,
+      "uncovered_lines": 0,
+      "uncovered_branches": [
+        "if (reset) begin"
+      ]
+    },
+    "DUTIfuDut": {
+      "line": 100.0,
+      "branch": 99.69733656174334,
+      "toggle_bin": 88.5529405027773,
+      "toggle_bits": 92.05749298516864,
+      "uncovered_lines": 0,
+      "uncovered_branches": [
+        "if (reset) begin",
+        "select_35 ? s2_fetchBlock_1_ftqIdx_flag : s2_fetchBlock_0_ftqIdx_flag;",
+        "select_35 ? s2_fetchBlock_1_ftqIdx_value : s2_fetchBlock_0_ftqIdx_value;",
+        "_rvcExpanders_35_io_ill ? 32'h0 : _rvcExpanders_35_io_out_bits;",
+        "? _GEN_3[s1_alignedInstrVec_0_index]"
+      ]
+    }
+  },
+  "rtl_diff": {
+    "changed": [
+      "Ifu.sv"
+    ],
+    "identical": [
+      "RvcExpander.sv",
+      "InstrBoundary.sv",
+      "PredChecker.sv",
+      "IfuUncacheUnit.sv",
+      "FrontendTrigger.sv",
+      "IfuPerfAnalysis.sv"
+    ],
+    "ifu_sv_changes": [
+      "io_toFtq_wbRedirect_bits_pc 50->51 wires",
+      "checkFlushWb startAddr := wbAlignFetchBlock.startVAddr (drop toUInt(VAddrBits-1,0))",
+      "uncacheFlushWb pc := s2_fetchBlock(0).startVAddr (drop toUInt(VAddrBits-1,0))"
+    ],
+    "scala_ifu_changed": [
+      "Ifu.scala (2 truncations removed)"
+    ],
+    "scala_commits_touching_frontend": [
+      "b716aade5 fix(core): carry true PC guard bit (#6751)",
+      "4b9f938b7 feat(frontend): enhanced iprefetch part 1 (#6691)",
+      "05f65879a fix(mbtb): allow MBTB allocation for hidden VBTB branches (#6750)",
+      "4381195af fix(tlb): fixed the freeze caused by the needGpa (#5610)"
+    ],
+    "ifu_input_surface": "unchanged (80 inputs, widths identical)",
+    "parent_closure": "Ifu closure keeps the six real leaf .sv files; no Python model substitution",
+    "ifu_closure_evidence": {
+      "filelist": [
+        "FrontendTrigger.sv",
+        "Ifu.sv",
+        "IfuPerfAnalysis.sv",
+        "IfuUncacheUnit.sv",
+        "InstrBoundary.sv",
+        "PredChecker.sv",
+        "RvcExpander.sv"
+      ],
+      "flattened_dut_lines": 16883,
+      "signals_schema": {
+        "io_toFtq_wbRedirect_bits_pc": {
+          "High": 50,
+          "Low": 0
+        },
+        "io_fromICache_req_bits_info_0_startVAddr_addr": {
+          "High": 49,
+          "Low": 0
+        }
+      },
+      "note": "parent DUT compiled from all six leaf .sv plus Ifu.sv; no Python model substitution"
+    }
+  },
+  "residual_recheck": {
+    "R-13": {
+      "status": "open-blocking",
+      "reproduction": "FrontendTrigger.sv byte-identical; EQ tdata2=2^50+pc hits lane 10, LT tdata2=2^50 misses all 36 lanes",
+      "nodeids": [
+        "tests/frontend_trigger/test_frontend_trigger.py::test_tdata2_above_the_address_space_cannot_equal_a_fetch_pc",
+        "tests/frontend_trigger/test_frontend_trigger.py::test_tdata2_above_the_address_space_is_greater_for_less_than"
+      ]
+    },
+    "R-14": {
+      "status": "open-blocking",
+      "reproduction": "InstrBoundary.sv byte-identical; same 600-sample indices (137,254,406,477,529) with is_cross_block[0] expected 0 actual 1; top-level ftq[0][1] expected 32 actual 33",
+      "nodeids": [
+        "tests/instr_boundary/test_instr_boundary.py::test_random_windows_match_the_model",
+        "tests/instr_boundary/test_instr_boundary.py::test_carried_upper_half_cannot_acquire_block_one_ownership[upper-half-low11]",
+        "tests/ifu/test_ifu_fetch.py::test_recovered_half_instruction_keeps_its_completing_ftq_block[upper-half-low11]"
+      ]
+    },
+    "R-09": {
+      "status": "accepted-limited (UNCERTAIN)",
+      "reproduction": "still the only UNCERTAIN; InstrBoundary carry rules unchanged; no new carry-position case added",
+      "nodeids": [
+        "tests/ifu/test_ifu_fetch.py::test_instruction_split_across_two_fetch_windows_is_assembled"
+      ]
+    },
+    "R-08": {
+      "status": "resolved",
+      "evidence": "port 51 bits; cached/uncache/second-block positive controls and bit50-only discriminating pair PASS; pc[50] toggles 0->1 and 1->0"
+    }
+  },
+  "gates": {
+    "root_pytest": "268 passed",
+    "asset_audit": "PASS (4904 source files, 10 suites, 132 DUTs)",
+    "layout_strict": "exit 0",
+    "skills_strict": "exit 0",
+    "transaction_boundary": "exit 1 preserved; ifu row no-static-leak-found"
+  }
+}

@@ -16,8 +16,13 @@
 - [工程根命名空间重构，2026-10-31](suite-namespace-refactor-20261031.md)：删除十工程 *verify/common 外壳，修复 runner、资源锚点、安装包、反向依赖，逐 nodeid 对账与真实回归结果。
 - [提交后语义修复，2026-11-01](semantic-boundary-repair-20261101.md)：检查点提交/推送、默认多 worker 收集与 cwd、原生别名审计盲区、接受与完成身份的正反对照。
 - [事务边界与已登记漏检修复，2026-11-01](transaction-boundary-repair-20261101.md)：Sbuffer 双 DUT 的框架 Driver/Monitor、零接受/超时、写回 UID 与响应/重试、同字节竞争和 CMO 生产者时序；LSQ 显式 fixture 合同。
-- [全仓事务/迁移适配目标，2026-11-01（进行中）](transaction-goal-20261101.md)：十工程/132 DUT 的完整范围、冻结基线、IFU 逐 DUT 适配与未完成项；不沿用旧目标的过强完成结论。
+- [事务适配历史复盘，2026-11-01/02](transaction-goal-20261101.md)：当时十工程/132 DUT 的冻结范围、适配反例与修正证据；正文的目标状态和待办属于当时检查点，当前范围见[阶段状态](../status.md)。
 - [LSQ 基线升级回归，2026-11-02/03](lsq-baseline-regression-20261103.md)：新基线 prepare/build/完整回归；上游修复、模型滞后、缺陷仍在三分类；引脚适配边界；"照抄 RTL 不是优雅更新"的四种实测反例。
+- [LSQ 上游核查与模型审核，2026-11-03](../../suites/memblock/lsq/docs/spec/verification/evidence/reports/upstream-audit-20261103.md)：基线后 10 个上游提交的逐条判定、3 个已合并 LSQ 修复与本地 FAIL 的映射、未合并 Issue/PR 的覆盖矩阵，以及新补的 MMIO Store 总线故障反例。
+- [LSQ 功能点补齐与 SKILL 细化，2026-11-03](../../suites/memblock/lsq/docs/spec/verification/evidence/reports/function-points-and-skill-20261103.md)：指令来源映射与 kind×outcome 矩阵、可执行功能点账本、共享 actor 同源期望修复（7 条 PASS→FAIL 同一根因），以及由此落地的 SKILL 四处细化。
+- [LSQ 交互语义与跨模块窗口，2026-11-06](../../suites/memblock/lsq/docs/spec/verification/evidence/reports/interaction-probes-20261106.md)：8 条跨模块边界的握手/背压/身份/完成语义、5 条交互窗口账本；两个探针各带合法对照，复现第二页前递窗口（#6822 同根因）与 NC 跨 16B 请求只覆盖半数字节。
+- [BPU 新基线验证更新，2026-11-03](../../suites/frontend/bpu/docs/spec/verification/evidence/runs/baseline-update-a0c2a26cb.md)：真实 guard、第五槽来源与学习语义，双 seed 关键链、十 DUT 完整回归、历史验证债务及覆盖分析边界；适配交付不等于硬件全绿。
+- [BPU 输入/历史 × 输出矩阵扩展，2026-11-03](../../suites/frontend/bpu/docs/spec/verification/coverage/io-matrix-extension-20261103.md)：按 skill 建立来源映射、结果域矩阵、未分类项和可执行 reached/checked 门禁；65个语义类、73个实例的定向真实DUT回归及保留 gap。
 - [跨模块假阴性总结，2026-10-26](false-negatives-20261026.md)：案例矩阵、状态快照、诊断树和历史证据；它不是 skill 方法正文。
 
 旧 skill 名称仅保留短导航以兼容已有引用。方法文件可按路径读取，不代表已向工具注册或自动加载。新仓库的维护规则见 [维护与验收](../maintenance.md)。
@@ -26,15 +31,15 @@
 
 | 工程 | 已保留的经验入口 | 主要内容 |
 |---|---|---|
-| BPU | [语义参考模型](../../suites/frontend/bpu/docs/semantic-reference-models.md)、[scoreboard 设计](../../suites/frontend/bpu/docs/scoreboard-design.md)、[缺陷与输入合同](../../suites/frontend/bpu/docs/bugs/README.md) | 预测事务身份、反馈归属、独立期望与缺陷边界 |
-| ICache | [验证经验](../../suites/frontend/icache/docs/verification-lessons.md)、[错误复核](../../suites/frontend/icache/docs/error-review.md) | 跨路径组合、过宽放行、死字段与观察点缺失 |
-| FTQ | [功能点与语义](../../suites/frontend/ftq/docs/functional-points.md)、[覆盖率闭环](../../suites/frontend/ftq/docs/coverage-analysis-20261030.md)、[分支槽溢出案例](ftq-resolve-capacity-20261029.md) | 自底向上层次、物理槽/来源枚举、100% 行覆盖下的容量缺陷、合法激励与不变量 |
-| IFU | [功能点语义](../../suites/frontend/ifu/docs/functional-points.md)、[覆盖率闭环](../../suites/frontend/ifu/docs/coverage-loop.md)、[环境完整性案例](ifu-harness-integrity-20261029.md) | 自底向上六子模块+顶层组合、规范级参考模型、未覆盖分支的结构性证明、复位随机化/删除端口/端口宽度截窄的静默通过 |
-| LSQ | [同源审计](../../suites/memblock/lsq/docs/reports/same-source-audit-20261022.md)、[假阳性复核](../../suites/memblock/lsq/docs/bug-reports-20261022/12-false-positive-review.md)、[新基线回归](lsq-baseline-regression-20261103.md) | 独立模型、程序年龄与物理槽位、真实生产者约束；基线升级后的三分类与适配边界 |
-| DCache | [功能点审计](../../suites/memblock/dcache/docs/reports/functional-point-audit-20261025.md)、[防误报漏检复核](../../suites/memblock/dcache/docs/reports/soundness-recheck-20261026.md) | 功能点与实际断言对账、缺陷与检查器问题分离 |
-| MMU | [验证可信度复核](../../suites/memblock/mmu/docs/reports/verification-soundness-20261025.md)、[上游漏检案例](mmu-upstream-escapes-20261029.md) | 并发采样、旧归因撤回、错误 oracle、组合/检查点缺口；上游探针仍在外部历史工作区 |
-| Sbuffer | [独立审计](../../suites/memblock/sbuffer/docs/reports/independent-audit-20261024.md)、[二次裁决](../../suites/memblock/sbuffer/docs/reports/bug-recheck-20261024.md) | 空跑、排空超时、同字节竞争与检查器扰动 |
-| LSU | [为什么没检查到](../../suites/memblock/lsu/docs/bug-reports-20261026/06-why-missed.md)、[复核总入口](../../suites/memblock/lsu/docs/bug-reports-20261026/README.md) | 同源期望、取消副作用、组合遗漏与覆盖结论边界 |
+| BPU | [语义参考模型](../../suites/frontend/bpu/docs/spec/verification/architecture/semantic-reference-models.md)、[scoreboard 设计](../../suites/frontend/bpu/docs/spec/verification/architecture/scoreboard-design.md)、[缺陷与输入合同](../../suites/frontend/bpu/docs/bugs/README.md) | 预测事务身份、反馈归属、独立期望与缺陷边界 |
+| ICache | [验证经验](../../suites/frontend/icache/docs/spec/verification/lessons/verification-lessons.md)、[错误复核](../../suites/frontend/icache/docs/spec/verification/error-review.md) | 跨路径组合、过宽放行、死字段与观察点缺失 |
+| FTQ | [功能点与语义](../../suites/frontend/ftq/docs/spec/design/functional-points.md)、[覆盖率闭环](../../suites/frontend/ftq/docs/spec/verification/coverage/coverage-analysis-20261030.md)、[分支槽溢出案例](ftq-resolve-capacity-20261029.md) | 自底向上层次、物理槽/来源枚举、100% 行覆盖下的容量缺陷、合法激励与不变量 |
+| IFU | [功能点语义](../../suites/frontend/ifu/docs/spec/design/functional-points.md)、[覆盖率闭环](../../suites/frontend/ifu/docs/spec/verification/coverage/coverage-loop.md)、[环境完整性案例](ifu-harness-integrity-20261029.md) | 自底向上六子模块+顶层组合、规范级参考模型、未覆盖分支的结构性证明、复位随机化/删除端口/端口宽度截窄的静默通过 |
+| LSQ | [同源审计](../../suites/memblock/lsq/docs/spec/verification/evidence/reports/same-source-audit-20261022.md)、[假阳性复核](../../suites/memblock/lsq/docs/bugs/evidence/bug-reports-20261022/12-false-positive-review.md)、[新基线回归](lsq-baseline-regression-20261103.md)、[上游核查与模型审核](../../suites/memblock/lsq/docs/spec/verification/evidence/reports/upstream-audit-20261103.md) | 独立模型、程序年龄与物理槽位、真实生产者约束；基线升级后的三分类与适配边界；上游修复/未修 Issue 的覆盖矩阵 |
+| DCache | [功能点审计](../../suites/memblock/dcache/docs/spec/verification/evidence/functional-point-audit-20261025.md)、[防误报漏检复核](../../suites/memblock/dcache/docs/spec/verification/evidence/soundness-recheck-20261026.md) | 功能点与实际断言对账、缺陷与检查器问题分离 |
+| MMU | [验证可信度复核](../../suites/memblock/mmu/docs/spec/verification/evidence/reports/verification-soundness-20261025.md)、[上游漏检案例](mmu-upstream-escapes-20261029.md) | 并发采样、旧归因撤回、错误 oracle、组合/检查点缺口；上游探针仍在外部历史工作区 |
+| Sbuffer | [独立审计](../../suites/memblock/sbuffer/docs/spec/verification/evidence/independent-audit-20261024.md)、[二次裁决](../../suites/memblock/sbuffer/docs/spec/verification/evidence/bug-recheck-20261024.md) | 空跑、排空超时、同字节竞争与检查器扰动 |
+| LSU | [为什么没检查到](../../suites/memblock/lsu/docs/bugs/evidence/bug-reports-20261026/06-why-missed.md)、[复核总入口](../../suites/memblock/lsu/docs/bugs/evidence/bug-reports-20261026/README.md) | 同源期望、取消副作用、组合遗漏与覆盖结论边界 |
 | VAGQ | [外部复盘入口](#vagq-external-evidence)、[验证工程](../../suites/vector/vagq/README.md) | 架构与协议层级、参考修正、XFAIL 解遮罩 |
 
 ## 历史路径对照

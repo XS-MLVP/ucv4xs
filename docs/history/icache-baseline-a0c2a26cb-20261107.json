@@ -1,0 +1,468 @@
+{
+ "schema": 1,
+ "date": "2026-11-07",
+ "kind": "icache-baseline-adaptation-and-regression",
+ "scope": {
+  "suite": "suites/frontend/icache",
+  "duts": [
+   "waylookup",
+   "replacer",
+   "mshr",
+   "databank",
+   "metabank",
+   "metaarray",
+   "dataarray",
+   "missunit",
+   "mainpipe",
+   "prefetchpipe",
+   "icache"
+  ],
+  "baseline": "public-a0c2a26cb",
+  "commit": "a0c2a26cbe3c862175174bad03a1a23c406315ed",
+  "design_config": "DefaultConfig",
+  "rtl_modified": false,
+  "pushed": false
+ },
+ "upstream_delta": {
+  "previous_baseline": "public-893e1580b",
+  "previous_commit": "893e1580b705d81f113c30c7a05734e09a08050e",
+  "icache_commits": 1,
+  "commit": "4b9f938b7 feat(frontend): enhanced iprefetch part 1 (#6691)",
+  "scala_files_changed": [
+   "src/main/scala/xiangshan/frontend/icache/Bundles.scala",
+   "src/main/scala/xiangshan/frontend/icache/ICache.scala",
+   "src/main/scala/xiangshan/frontend/icache/ICacheImp.scala",
+   "src/main/scala/xiangshan/frontend/icache/ICacheMissUnit.scala",
+   "src/main/scala/xiangshan/frontend/icache/ICacheMshr.scala",
+   "src/main/scala/xiangshan/frontend/icache/ICachePrefetchPipe.scala"
+  ],
+  "other_frontend_files_changed": [
+   "src/main/scala/xiangshan/frontend/Bundles.scala",
+   "src/main/scala/xiangshan/frontend/Frontend.scala",
+   "src/main/scala/xiangshan/frontend/ftq/Bundles.scala",
+   "src/main/scala/xiangshan/frontend/ftq/Ftq.scala",
+   "src/main/scala/xiangshan/frontend/ftq/FtqParameters.scala",
+   "src/main/scala/xiangshan/frontend/ftq/IfuRedirectReceiver.scala",
+   "src/main/scala/xiangshan/frontend/ftq/PrefetchQueue.scala (new)",
+   "src/main/scala/xiangshan/frontend/ftq/PrefetchQueuePtr.scala (new)"
+  ],
+  "interface_changes": [
+   "ICache top: io.softPrefetchReq[3] removed; software prefetch is delivered by the FTQ on fromFtq.toPrefetch with source=Sw",
+   "PrefetchReqBundle: Bool isSoftPrefetch replaced by PrefetchSource enum (0=Fdip in stream, 1=Sw)",
+   "ICacheImp: softPrefetchValid merge deleted; prefetcher.io.fromFtq <> io.fromFtq.toPrefetch",
+   "ICacheMshr: constructor isFetch replaced by id-derived isFetch; input invalid renamed finish",
+   "ICacheMissUnit: prefetch arbiter now connected after the fetch arms; responseLatency histogram moved here",
+   "ICache: TileLink client sourceId range NumFetchMshr+NumPrefetchMshr+1 -> NumAllMshr",
+   "ICachePrefetchPipe: source.inStream replaces !isSoftPrefetch in the flush/enqueue/write gates; new assert req(1) inStream implies req(0) inStream"
+  ],
+  "contract_verdicts": [
+   "ICACHE-012 (stale vSetIdx): fixed upstream; the stale register no longer exists and the FTQ builds vSetIdx from the queue entry address",
+   "ICACHE-030 (soft prefetch merged into an unaccepted FTQ issue): fixed upstream by deleting the merge; stimulus is no longer constructible on this DUT",
+   "WAYLOOKUP-020: RTL file byte-identical (sha256 6433fed2...b08ce9); real defect still present",
+   "PREFETCHPIPE-006/012: still valid, restated in terms of source.inStream",
+   "ICACHE-029: per-LDU hint ports moved to the FTQ queue; ICache-side obligation is the queued Sw hint channel"
+  ]
+ },
+ "build": {
+  "prepare": "ucv prepare icache --require-unified-baseline -> 11/11 PREPARED",
+  "build": "ucv build icache --require-unified-baseline --jobs 12 -> 11/11 BUILT + SMOKE PASS",
+  "source_cache_key": "f3ac6022d07c5c05d28869ac811f91038f9103677796dd6f051bd1981408be9b",
+  "generation_cache_key": "d7c6bc4d17651fc1bd92ac39c469410a6bb91215f46c1efcfaf1ec66a72e972d",
+  "baseline_manifest_sha256": "f7108f9598952f8dd4181cafed315bc081f8f3fbea57fc7e67af77e5bca67f91",
+  "tools": {
+   "toffee_commit": "f57150021791535d4b2fd01056c106f0cad53177",
+   "picker_commit": "4dd442c4a80c92549381e417c608836e3b78a8e9",
+   "xcomm_commit": "2e4a4a99293360c2a642025000c6948b24cf8e88",
+   "verilator": "5.052"
+  },
+  "duts": {
+   "waylookup": {
+    "cache_key": "411c652486bb07d01d01a1f5b5769b7ac53b3f5d0f6be5c362419af906ca0847",
+    "rtl_files": 1,
+    "rtl_set_sha256": "b3f3bd082c17674e1ba0ac116015ed07e41c874239bc8c81b104cf625d096984",
+    "native_set_sha256": "d81b7c21216c92571f6f67cc164284fe055877e8b55dfc67e9282ecaed07b3bc"
+   },
+   "replacer": {
+    "cache_key": "916db7974ffc858a1da06354acf1fbd376d009ce85d44e55c6280f651d4e153a",
+    "rtl_files": 1,
+    "rtl_set_sha256": "82c954db64ca262ce3ef12b418c855c56467933bc4f0fce096771f67574e5fb6",
+    "native_set_sha256": "f75e989a77693eaf1d1b0ec891a46c40310916ae9373a27ae3d6494a283c83ad"
+   },
+   "mshr": {
+    "cache_key": "bfb24a65b894f9283210627eadcd9da668ba70eb177273de6793cc9e66815a2e",
+    "rtl_files": 1,
+    "rtl_set_sha256": "830a77464bfef209e9c6b4327f5b62439b0189bdc3878d0b2d2301c24c95d295",
+    "native_set_sha256": "7cf12544449ecd149753b4d0db1b914cdde9173221c5607011f22a5759dc0ffb"
+   },
+   "databank": {
+    "cache_key": "812bcde944ba66d68e8ce2029ab10bccccdb473a778a10e55e4296eee89a8eec",
+    "rtl_files": 5,
+    "rtl_set_sha256": "9d5c205fa6da06defa06d9d444dd6178b62bbbad1f2eeb7cdcf84c458b01fa9a",
+    "native_set_sha256": "ae134a31f3bca4bad4941c50ab356f9d269b386c1a9f51a50b831446163d1ac6"
+   },
+   "metabank": {
+    "cache_key": "34aef9414234d6e21c8a742eed73ce8078f2f152315d1ae3b1a3b56d1eadb0fe",
+    "rtl_files": 8,
+    "rtl_set_sha256": "02c19d54c67833f1a3fa85f85a3107c78e5033b610528de018e9d3831db31420",
+    "native_set_sha256": "c7f64c246043c6e2f7e53b828daecb5a95c59e951aea6d62494c9a592c87f946"
+   },
+   "metaarray": {
+    "cache_key": "cfd6468ba38d6ac04a4e19f4e256082e23614fefefc1ed476f0eb1d9f3d5ce23",
+    "rtl_files": 13,
+    "rtl_set_sha256": "6e88cf4c66550e7390d48fc1fd0574921a6d6949c55d322003d2486ffb2a067c",
+    "native_set_sha256": "b560d7158ce3879c2cf55c8ee0b71b6cf741a32aaa842e52bc837c778c805998"
+   },
+   "dataarray": {
+    "cache_key": "83911fbb13d00a616ac08d158d6f3ccff42192dbeb98b1eab8dfc911e54e9ae0",
+    "rtl_files": 23,
+    "rtl_set_sha256": "b5ab45d27bdf2ec342975dd2856a2e9df85d3bb22870c05674e676a0cdc16d0e",
+    "native_set_sha256": "7da7f422e069cc4cb510153bf5b499e01e99e3524fdd44e1664c1fb16c06bcc5"
+   },
+   "missunit": {
+    "cache_key": "a930a0388e6930bcb634f115e48e857bbed065e0c0b3054bde704c89f4e011a4",
+    "rtl_files": 20,
+    "rtl_set_sha256": "bfe34a18fe767aa132c775b85b5ce1ab5bf539d9a93ee0b9bf01494f94344fdd",
+    "native_set_sha256": "1481b29ba2d05396df9341f2ccd269f5588feeca3984df483f5ccbbb287acda2"
+   },
+   "mainpipe": {
+    "cache_key": "c1da41ca5a70bb6131ed163939cf4bbf2b297eca0e83f020d5ebf87d7aad678c",
+    "rtl_files": 2,
+    "rtl_set_sha256": "fc3ff6541252ff1721241206c2f01815243fe70001447682627955a834309bb3",
+    "native_set_sha256": "77cd712bfde6b1725fe1a816b01ce08b04f0259a7f559778f3185f34ace9d18f"
+   },
+   "prefetchpipe": {
+    "cache_key": "67327dccf41c0e4ba77d6ae52e0ed9b208ff536a6cdc532b7500dbeda2642be6",
+    "rtl_files": 2,
+    "rtl_set_sha256": "f3e39401d4056d2a7ebacdb1b2cd4a7b0941d7daf58531a7c62ed92218acabc2",
+    "native_set_sha256": "2d03096546349c662dbc4824c7f58962eaec190e38d6b1038fc0ef588c401a1a"
+   },
+   "icache": {
+    "cache_key": "487f3c5f0a2ca2f755272b63e0bae31f9afa05ab611b647e2250141aa070556a",
+    "rtl_files": 65,
+    "rtl_set_sha256": "fb8f79495edeb2e5440c1d8d6ac4d97da2ce287a5a485eec273a1c7a4816e277",
+    "native_set_sha256": "776ac00aabda378083ae082e1ffd7c5a952ab3b3c8ff509da03d75ddaabde170"
+   }
+  }
+ },
+ "regression": {
+  "old_authoritative": {
+   "output": "results/ucv-collaboration-checkpoint-icache-full-20261102",
+   "seed": 2,
+   "workers": 2,
+   "source": "b48dc54b08a3febfc7d0ba54f867e6a95efe15e1689d04419fcaa8f8a473d4b2",
+   "counts": {
+    "PASS": 567,
+    "XFAIL": 3
+   },
+   "nodeids": 570
+  },
+  "new_seed1": {
+   "output": "results/ucv-icache-a0c2a26cb-final4-seed1-20261107",
+   "seed": 1,
+   "workers": 8,
+   "source": "0476d33578a07b2baaedc6e83055d959cd19cca2280eea7d36155f017bc6f24b",
+   "source_after": "0476d33578a07b2baaedc6e83055d959cd19cca2280eea7d36155f017bc6f24b",
+   "counts": {
+    "PASS": 568,
+    "XFAIL": 2,
+    "XPASS": 1
+   },
+   "nodeids": 571
+  },
+  "new_seed2": {
+   "output": "results/ucv-icache-a0c2a26cb-final4-seed2-20261107",
+   "seed": 2,
+   "workers": 8,
+   "source": "0476d33578a07b2baaedc6e83055d959cd19cca2280eea7d36155f017bc6f24b",
+   "source_after": "0476d33578a07b2baaedc6e83055d959cd19cca2280eea7d36155f017bc6f24b",
+   "counts": {
+    "PASS": 568,
+    "XFAIL": 2,
+    "XPASS": 1
+   },
+   "nodeids": 571
+  },
+  "diff": {
+   "removed": 0,
+   "added": 1,
+   "unchanged": 569,
+   "changed": 1
+  },
+  "added_nodes": [
+   {
+    "nodeid": "icache::tests/icache/testcase/test_prefetch_wfi_ecc.py::test_ecc_injection_waits_for_the_arrays_across_a_flush",
+    "status": "PASS"
+   }
+  ],
+  "changed_nodes": [
+   {
+    "nodeid": "icache::tests/icache/testcase/test_prefetch_wfi_ecc.py::test_software_prefetch_warms_the_requested_line",
+    "old": "XFAIL",
+    "new": "XPASS",
+    "class": "upstream-fix",
+    "cause": "4b9f938b7 (#6691) deleted the stale register and the ICache-top merge",
+    "note": "strict XFAIL marker retained per constraint; strict XPASS makes the run exit non-zero"
+   }
+  ],
+  "retained_non_pass": [
+   {
+    "nodeid": "icache::tests/icache/testcase/test_prefetch_wfi_ecc.py::test_pending_soft_prefetch_does_not_process_an_unaccepted_ftq_issue",
+    "status": "XFAIL",
+    "class": "interface-retired",
+    "note": "the softPrefetchValid merge no longer exists; the test reaches an explicit xfail before building the old stimulus; strict marker retained"
+   },
+   {
+    "nodeid": "icache::tests/waylookup/testcase/test_flush.py::test_flush_in_the_write_cycle_discards_the_entry_and_its_exception",
+    "status": "XFAIL",
+    "class": "real-rtl-defect",
+    "note": "ICacheWayLookup.sv is byte-identical to the previous baseline (sha256 6433fed2...b08ce9); WAYLOOKUP-020 still holds"
+   }
+  ],
+  "fail_error": 0,
+  "icache_012_model_control": {
+   "green": "hint installed in its own set 0xC0: demand fetch hits, no acquire (PASS)",
+   "red": "hint recorded in the stale set 0: model predicts refill 704 while the DUT hits, test FAILS",
+   "purpose": "proves the ICACHE-012 XPASS is discriminating and not a vacuous assertion",
+   "note": "temporary control file deleted after the run; not part of the suite"
+  }
+ },
+ "transaction_migration": {
+  "owner_accesses_before": {
+   "total": 329,
+   "icache": 80,
+   "prefetchpipe": 94,
+   "waylookup": 41,
+   "dataarray": 31,
+   "missunit": 23,
+   "metaarray": 20,
+   "mshr": 17,
+   "replacer": 17,
+   "mainpipe": 6
+  },
+  "owner_accesses_after": {
+   "total": 6,
+   "icache": 6
+  },
+  "retired_mechanism": "public typed agent API: tick(), set_* input levels, typed hazard transactions (complete_while_flushing, refill_while_flushing, issue_read/finish_write, begin_ecc_injection), typed oracle queries (expect/commit/is_resident/resident_way/expected_victim/record_hint_fill) and geometry queries (set_count/way_count/bank_count/fetch_mshr_count/depth)",
+  "residual": "6 accesses remain in the ICACHE-030 test body, which is unreachable: the test xfails before constructing the retired softPrefetch stimulus; the marker and nodeid are kept",
+  "strengthened_assertions": [
+   "missunit: entry valid/issued checks now use the published wfi_safe contract instead of the checker's private entries",
+   "waylookup: fill loops now stop on the RTL's write.ready and exception stall is checked on the RTL level, not on the model",
+   "mshr: way capture is asserted only through info.way (published), not model.state"
+  ],
+  "boundary": "migration is verified by 569 unchanged nodeid judgments on the same source; no RTL, no checker loosening"
+ },
+ "coverage": {
+  "tool": "suites/frontend/icache/tools/coverage_breakdown.py + coverage_ledger.py",
+  "run": "results/ucv-icache-a0c2a26cb-final4-seed1-20261107/icache",
+  "per_dut_seed1": {
+   "waylookup": {
+    "line": [
+     227,
+     227
+    ],
+    "branch": [
+     667,
+     796
+    ],
+    "toggle": [
+     10283,
+     10382
+    ]
+   },
+   "replacer": {
+    "line": [
+     515,
+     515
+    ],
+    "branch": [
+     3845,
+     4102
+    ],
+    "toggle": [
+     3238,
+     3248
+    ]
+   },
+   "mshr": {
+    "line": [
+     2,
+     2
+    ],
+    "branch": [
+     7,
+     8
+    ],
+    "toggle": [
+     654,
+     666
+    ]
+   },
+   "databank": {
+    "line": [
+     7,
+     7
+    ],
+    "branch": [
+     44,
+     46
+    ],
+    "toggle": [
+     6641,
+     6822
+    ]
+   },
+   "metabank": {
+    "line": [
+     10,
+     10
+    ],
+    "branch": [
+     301,
+     304
+    ],
+    "toggle": [
+     12415,
+     12672
+    ]
+   },
+   "metaarray": {
+    "line": [
+     19,
+     19
+    ],
+    "branch": [
+     591,
+     602
+    ],
+    "toggle": [
+     25843,
+     26786
+    ]
+   },
+   "dataarray": {
+    "line": [
+     32,
+     32
+    ],
+    "branch": [
+     322,
+     334
+    ],
+    "toggle": [
+     50266,
+     52852
+    ]
+   },
+   "missunit": {
+    "line": [
+     33,
+     33
+    ],
+    "branch": [
+     282,
+     298
+    ],
+    "toggle": [
+     16229,
+     16770
+    ]
+   },
+   "mainpipe": {
+    "line": [
+     5,
+     5
+    ],
+    "branch": [
+     155,
+     156
+    ],
+    "toggle": [
+     13941,
+     14240
+    ]
+   },
+   "prefetchpipe": {
+    "line": [
+     3,
+     3
+    ],
+    "branch": [
+     140,
+     142
+    ],
+    "toggle": [
+     5554,
+     5758
+    ]
+   },
+   "icache": {
+    "line": [
+     788,
+     854
+    ],
+    "branch": [
+     5514,
+     6480
+    ],
+    "toggle": [
+     91200,
+     139880
+    ]
+   }
+  },
+  "integrated_ledger_seed1": {
+   "uncovered": {
+    "line": 66,
+    "branch": 966,
+    "toggle": 48680
+   },
+   "module_covered": {
+    "line": 64,
+    "branch": 530,
+    "toggle": 35470
+   },
+   "open": {
+    "line": 2,
+    "branch": 436,
+    "toggle": 13210
+   }
+  },
+  "open_branch_composition": {
+   "ICacheReplacer.sv": 257,
+   "ICacheWayLookup.sv": 129,
+   "Arbiter5_MshrAcquireBundle.sv": 8,
+   "ICacheCtrlUnit.sv": 3,
+   "one initial-reset/declaration arm in each of 39 other files": 39
+  },
+  "open_line": {
+   "ICacheCtrlUnit.sv": [
+    159,
+    161
+   ],
+   "note": "dead injection-write arms (read/write mutual exclusion)"
+  },
+  "ctrlunit_branch_closed": {
+   "line": 204,
+   "by": "test_ecc_injection_waits_for_the_arrays_across_a_flush",
+   "old_open_branches": 437,
+   "new_open_branches": 436
+  },
+  "still_open_ctrlunit_branches": {
+   "184": "write-completion arm while the array is busy",
+   "209": "same condition in the state update",
+   "234": "injection start/keep arm",
+   "attribution": "requires the array write-ready low while the control unit is in its write state; a full-row sweep also invalidates the line before that state (observed terminal NotFound), so this configuration cannot present it"
+  },
+  "seed_effect": {
+   "note": "the old authoritative run was seed 2; at the same seed the integrated branch coverage is 5258/6480 (new) vs 5265/6488 (old, different point set), i.e. the large branch delta seen at seed 1 is stimulus-driven, not a baseline improvement"
+  }
+ },
+ "gates": {
+  "pytest_tests": "268 passed (root .venv/bin/python -m pytest -q tests)",
+  "audit_suite_layout_strict": "PASS exit 0",
+  "audit_skills_strict_check_framework": "PASS exit 0",
+  "audit_assets": "PASS exit 0, 0 errors",
+  "strict_transaction_boundary": "exit 1 retained: icache 6 owner accesses (retired ICACHE-030 body), bpu 24, lsq 121, mmu 53, vagq 32; dcache/lsu pin/signal debt unchanged"
+ }
+}
