@@ -1,5 +1,6 @@
 """Keep hardware verdicts separate from migration acceptance. MPL-2.0."""
 from collections import Counter
+import json
 from pathlib import Path
 from .common import read, write, file_hash
 
@@ -54,6 +55,15 @@ def report(directory,compare=None):
                 artifacts.append({'suite':task['suite'],'scope':task['scope'],**item})
     residuals=[];residual_gaps=[]
     for suite in run['suites']:
+        # Historical runs retain their frozen residual semantics. New runs use
+        # the canonical issue snapshot; unresolved current-baseline issues must
+        # not disappear from acceptance when a separate plan file is retired.
+        if suite.get('acceptance_source')=='issue-records':
+            for issue in suite.get('bugs',[]):
+                version=next((v for v in reversed(issue.get('versions',[]))
+                              if v['baseline']==suite['baseline']),None)
+                if issue['state']=='open' and (version is None or version['status']!='closed'):
+                    gaps.append(f"Open issue {issue['id']} ({suite['suite']}): {issue['title']}")
         for row in suite.get('residuals',[]):
             residuals.append({'suite':suite['suite'],**row})
             if row.get('blocking') and row.get('acceptance')=='open':
@@ -85,10 +95,15 @@ def report(directory,compare=None):
                 'nodeid':identity.partition('::')[2],**row}
                for identity,row in sorted(uncertainties.items())]
     result={'run':str(directory),'run_status':run['status'],'hardware_verdict':hardware,
+            'selected_duts':run.get('selected_duts'),
+            'verification_source':run.get('source',{}).get('sha256'),
+            'selection':{'duts':run.get('selected_duts'),'pytest_args':run.get('pytest_args'),
+                         'seed':run.get('seed'),'collect_only':run.get('collect_only')},
             'migration_acceptance':'NOT_CERTIFIED','counts':dict(counts),
             'suites':{s:dict(c) for s,c in suites.items()},'baselines':run['suites'],
             'mixed_baseline':run['mixed_baseline'],'gaps':gaps,'cases':cases,
             'residuals':residuals,
+            'bugs':{s['suite']:s['bugs'] for s in run['suites'] if 'bugs' in s},
             'uncertain':uncertain,
             'declared_incomplete':declared_incomplete,
             'incomplete_summary':{'declared':len(declared_incomplete),
@@ -101,21 +116,36 @@ def report(directory,compare=None):
             'coverage_reports':[str(p.relative_to(directory)) for p in directory.rglob('*')
                                  if p.is_file() and p.name in {'coverage.json','coverage.html','index.html'}]}
     if compare:
+        from .documents import compare_issues
         prior=read(Path(compare)/'summary.json')
         old=prior['cases']
         before={s['suite']:s['baseline_fingerprint'] for s in prior['baselines']}
         after={s['suite']:s['baseline_fingerprint'] for s in result['baselines']}
+        source_before=prior.get('verification_source')
+        source_after=result['verification_source']
         result['comparison']={'same_baseline_suites':[s for s in before if before[s]==after.get(s)],
             'changed_baseline_suites':[s for s in before if s in after and before[s]!=after[s]],
             'added':sorted(cases.keys()-old.keys()),'removed':sorted(old.keys()-cases.keys()),
-            'changed':{k:{'before':old[k],'after':cases[k]} for k in cases.keys() & old.keys() if cases[k]!=old[k]}}
+             'changed':{k:{'before':old[k],'after':cases[k]} for k in cases.keys() & old.keys() if cases[k]!=old[k]},
+             'bugs':compare_issues(prior['baselines'],result['baselines']),
+             'same_verification_source':source_before==source_after if source_before and source_after else None,
+             'selection_before':prior.get('selection'),'selection_after':result['selection']}
     write(directory/'summary.json',result)
     lines=[f"Run: {directory.name}",f"Hardware verdict: {hardware}",
            'Migration/rebuild acceptance: NOT_CERTIFIED (requires acceptance evidence)',
            'Baseline: '+('MIXED' if run['mixed_baseline'] else 'UNIFIED'),'',
-           '| Suite | Baseline | Inherited from | Counts |','|---|---|---|---|']
+            '| Suite | Baseline | Inherited from | Counts |','|---|---|---|---|']
     for suite in run['suites']:
         lines.append(f"| {suite['suite']} | {suite['baseline']} | {suite['inherited_from']} | {dict(suites.get(suite['suite'],{}))} |")
+    if run.get('selected_duts'):lines+=['','Selected DUTs: '+str(run['selected_duts'])]
+    if result['bugs']:
+        lines+=['','Bug records (snapshot at run start; not inferred from case verdicts):']
+        for suite, rows in result['bugs'].items():
+            lines.append(f"- {suite}: {sum(r['state']=='open' for r in rows)} open / "
+                         f"{sum(r['state']=='closed' for r in rows)} closed")
+    if compare:
+        lines+=['','Comparison (record and case differences; not automatic fix certification):',
+                '```json', json.dumps(result['comparison'],ensure_ascii=False,indent=2), '```']
     lines+=['','Verification gaps:',*['- '+g for g in gaps]]
     if residuals:
         summary_counts=result['residual_summary']

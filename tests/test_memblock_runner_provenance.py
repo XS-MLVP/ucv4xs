@@ -25,7 +25,8 @@ def runner(monkeypatch, tmp_path, suite):
         toffee=dict(runner_command=['stub-toffee']),
         verilator=dict(coverage_processor='stub-coverage')))
     module = importlib.import_module(f'suites.memblock.{suite}.tools.run')
-    native = importlib.import_module(f'suites.memblock.{suite}.native')
+    loader = 'dut' if suite == 'dcache' else 'native'
+    native = importlib.import_module(f'suites.memblock.{suite}.testbenches.shared.env.{loader}')
     fake_package(monkeypatch, native)
     monkeypatch.setattr(module, 'ROOT', tmp_path)
     for name in ('pytest.ini', 'manifest/toolchain.json', 'manifest/lsu-rtl.sha256'):

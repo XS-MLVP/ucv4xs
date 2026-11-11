@@ -26,11 +26,11 @@ def test_suite_root_is_the_package_and_resource_anchor(directory):
 
 
 def test_multiple_suite_implementations_import_outside_checkout(tmp_path):
-    modules=['suites.frontend.bpu.ports.bindings','suites.frontend.ftq.ports',
-             'suites.frontend.icache.runtime.dut','suites.frontend.ifu.harness',
-             'suites.memblock.lsq.native','suites.memblock.mmu.native',
-             'suites.memblock.dcache.native','suites.memblock.lsu.native',
-             'suites.memblock.sbuffer.native','suites.vector.vagq.runtime']
+    modules=['suites.frontend.bpu.testbenches.shared.env.bundle.bindings','suites.frontend.ftq.testbenches.shared.env.ports',
+             'suites.frontend.icache.testbenches.shared.env.dut','suites.frontend.ifu.testbenches.shared.env.harness',
+             'suites.memblock.lsq.testbenches.shared.env.dut','suites.memblock.mmu.testbenches.shared.env.native',
+             'suites.memblock.dcache.testbenches.shared.env.dut','suites.memblock.lsu.testbenches.shared.env.native',
+             'suites.memblock.sbuffer.testbenches.shared.env.native','suites.vector.vagq.testbenches.shared.env.control']
     code='''import importlib,json,sys
 modules=json.loads(sys.argv[1])
 for name in modules: importlib.import_module(name)
@@ -60,19 +60,22 @@ def test_implementation_never_imports_test_support():
     offenders=[]
     for directory in SUITES:
         for path in suite_python_sources(directory):
-            if set(path.relative_to(directory).parts) & {'tests','tools'}:
+            if path.name=='conftest.py' or set(path.relative_to(directory).parts) & {'tests','tools'}:
                 continue
             for node in ast.walk(ast.parse(path.read_text())):
-                if isinstance(node,ast.ImportFrom) and (node.module or '').startswith('tests.'):
-                    offenders.append(f'{path}:{node.lineno}:{node.module}')
+                imports=([node.module or ''] if isinstance(node,ast.ImportFrom) else
+                         [alias.name for alias in node.names] if isinstance(node,ast.Import) else [])
+                for name in imports:
+                    if 'tests' in name.split('.'):
+                        offenders.append(f'{path}:{node.lineno}:{name}')
     assert offenders==[]
 
 
 def test_native_inventories_do_not_collide_in_one_process():
-    from suites.memblock.dcache import inventory as dcache
-    from suites.memblock.lsu import inventory as lsu
-    from suites.memblock.dcache import native as dcache_native
-    from suites.memblock.lsu import native as lsu_native
+    from suites.memblock.dcache.testbenches.shared.env import inventory as dcache
+    from suites.memblock.lsu.testbenches.shared.env import inventory as lsu
+    from suites.memblock.dcache.testbenches.shared.env import dut as dcache_native
+    from suites.memblock.lsu.testbenches.shared.env import native as lsu_native
     assert dcache_native.DUTS is dcache.DUTS
     assert lsu_native.DUTS is lsu.DUTS
     assert dcache.DUTS is not lsu.DUTS

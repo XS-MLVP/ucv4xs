@@ -51,7 +51,9 @@ def audit(root):
     for suite in suites:
         for name in ('pytest.ini','README.md','ucv.json'):
             if not (suite.path/name).is_file():errors.append(f'{suite.name}: missing {name}')
-        if not (suite.path/'tests').is_dir():errors.append(f'{suite.name}: missing test root')
+        from ucv.layout import problems
+        from ucv.workspace import metadata
+        errors.extend(f'{suite.name}: {message}' for message in problems(suite,metadata(suite)))
     return {'status':'FAIL' if errors else 'PASS','source_files':len(files),
             'suites':len(suites),'duts':sum(len(s.recipe['duts']) for s in suites),
             'historical_evidence_entries':total,'errors':errors}

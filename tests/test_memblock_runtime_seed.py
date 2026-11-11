@@ -3,10 +3,10 @@ from types import SimpleNamespace
 
 import pytest
 
-from suites.memblock.dcache import native as dcache
-from suites.memblock.lsu import native as lsu
-from suites.memblock.mmu import native as mmu
-from suites.memblock.sbuffer import native as sbuffer
+from suites.memblock.dcache.testbenches.shared.env import dut as dcache
+from suites.memblock.lsu.testbenches.shared.env import native as lsu
+from suites.memblock.mmu.testbenches.shared.env import native as mmu
+from suites.memblock.sbuffer.testbenches.shared.env import native as sbuffer
 
 MODULES=(dcache,lsu,mmu,sbuffer)
 LEGACY={dcache:'DCACHE_VERILATOR_SEED',lsu:'LSU_VERILATOR_SEED',
@@ -21,7 +21,7 @@ LOADERS=(
 
 def label(case):
     module,load,args=case
-    return module.__name__.split('.')[-2]+'.'+(args[0] if args else load.__name__)
+    return module.__name__.split('.')[2]+'.'+(args[0] if args else load.__name__)
 
 
 def fake_package(monkeypatch,module):
@@ -50,7 +50,7 @@ def test_all_native_loader_defaults_use_the_current_cli_seed_per_call(monkeypatc
         assert cls(argv).arguments[-1]==f'+verilator+seed+{seed}'
 
 
-@pytest.mark.parametrize('module',MODULES,ids=lambda m:m.__name__.split('.')[-2])
+@pytest.mark.parametrize('module',MODULES,ids=lambda m:m.__name__.split('.')[2])
 @pytest.mark.parametrize('explicit', (None,0,4294967295))
 def test_native_seed_default_legacy_fallback_and_explicit_override(monkeypatch,module,explicit):
     fake_package(monkeypatch,module)

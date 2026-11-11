@@ -215,14 +215,7 @@ def test_ifu_feature_reports_consume_complete_case_outcomes(tmp_path,workers):
 
     pytest.importorskip('toffee.outcomes',reason='requires uc-toffee >= 2.1 with UNCERTAIN')
     source=Path(__file__).resolve().parents[1]
-    write(tmp_path/'verification_plan.json',{'version':1,'features':[
-        {'id':f'IFU-TOP-00{index}','component':'Ifu',
-         'title':f'contract {index}','description':'independent evidence classification'}
-        for index in (1,2,3)],'residuals':[
-            {'id':'R-09','behavior':'not every field observed','category':'unproven-scope',
-             'evidence':'test_partial','owner':'test','next_action':'add observation',
-             'blocking':False,'acceptance':'accepted-limited'}]})
-    (tmp_path/'conftest.py').write_text('pytest_plugins=("suites.frontend.ifu.pytest_plugin",)\n')
+    (tmp_path/'conftest.py').write_text('pytest_plugins=("suites.frontend.ifu.testbenches.shared.env.pytest_plugins.features",)\n')
     test=tmp_path/'test_feature.py'
     test.write_text('''
 import pytest
@@ -253,3 +246,24 @@ def test_error(broken_teardown): assert True
     manifest=json.loads((tmp_path/'toffee/manifest.json').read_text())
     assert manifest['tests']=={'PASS':1,'UNCERTAIN':1,'ERROR':1}
     assert feature_report['consistency_errors']==[]
+
+
+@pytest.mark.parametrize('state,version,case,current,expected',[
+    ('open','open','PASS',True,'INCOMPLETE'),
+    ('open','unverified','PASS',True,'INCOMPLETE'),
+    ('closed','closed','PASS',True,'PASS'),
+    ('open','open','FAIL',True,'FAIL'),
+    ('open','open','PASS',False,'PASS')])
+def test_issue_snapshot_controls_new_run_acceptance(tmp_path,state,version,case,current,expected):
+    write(tmp_path/'run.json',{'status':case,'mixed_baseline':False,'suites':[
+        {'suite':'demo','baseline':'b','inherited_from':'ucv.json',
+         **({'acceptance_source':'issue-records'} if current else {}),'bugs':[
+            {'id':'ISSUE-1','title':'Consumer contract pending','state':state,
+             'versions':[{'baseline':'b','status':version}]}]}],
+        'tasks':[{'suite':'demo','scope':'suite','cases':'cases.json'}]})
+    write(tmp_path/'cases.json',{'cases':{'test_x.py::test_x':{'verdict':case}},
+        'collected':['test_x.py::test_x'],'collect_only':False})
+    value=report(tmp_path)
+    assert value['hardware_verdict']==expected
+    assert value['counts']=={case:1}
+    assert bool(value['gaps'])==(current and state=='open')

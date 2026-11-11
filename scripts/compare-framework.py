@@ -17,6 +17,7 @@ import uuid
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'src'))
 from ucv.common import execute,file_hash,now,read,write
 from ucv.config import Project
+from ucv.workspace import metadata
 
 def main():
     parser=argparse.ArgumentParser()
@@ -67,7 +68,8 @@ def main():
             # receipt reader changes in this disposable copy: old flat artifacts
             # have no ucv generated-closure receipt. No model/checker is changed.
             write(target/'replay-inputs.json',{k:v['sha256'] for k,v in files.items() if k.startswith('rtl/')})
-            path=target/'native.py';text=path.read_text()
+            loader=metadata(suite)['loader']
+            path=target/loader;text=path.read_text()
             a=text.index('def verify_rtl():');b=text.index('\n\ndef public_signals',a)
             text=text[:a]+'''def verify_rtl():
     from ucv.common import read, file_hash
@@ -76,28 +78,29 @@ def main():
             raise RuntimeError(f'Frozen framework-comparison input changed: {relative}')
 '''+text[b:]
             path.write_text(text)
-            record['inputs'][suite.name]['input_boundary_adapter']={'path':'native.py','sha256':file_hash(path),
+            record['inputs'][suite.name]['input_boundary_adapter']={'path':loader,'sha256':file_hash(path),
                 'purpose':'Validate the exact historical flat RTL hashes instead of new generated-closure receipt layout'}
         env=project.environment()
         env.update(PYTHONPATH=os.pathsep.join([str(root/'src'),str(view),str(target)]),
                    UCV_SEED='1',PYTHONHASHSEED='1')
         flags=['-q','-p','no:cacheprovider','-p','ucv.pytest_plugin','-c',str(target/'pytest.ini'),
                '--rootdir='+str(target),'--durations=10']
+        test_paths=[target/p for p in (read(target/'ucv.json')['tests'] if (target/'ucv.json').is_file() else ['tests'])]
         if suite.name=='bpu':
             index=output/'bpu-partition.json';env['UCV_CASE_DIR']=str(output/'collection/bpu')
-            execute([root/'.venv/bin/python','-m','pytest',target/'tests',*flags,'--collect-only',
+            execute([root/'.venv/bin/python','-m','pytest',*test_paths,*flags,'--collect-only',
                      '--bpu-write-partition',index],cwd=target,env=env,log=output/'logs/bpu-collection.log')
             for scope in dict.fromkeys(row['scope'] for row in read(index)['cases']):
-                tasks.append((suite.name,scope,target,{**env,'BPUVERIFY_DUT_SCOPE':scope},
+                tasks.append((suite.name,scope,target,test_paths,{**env,'BPUVERIFY_DUT_SCOPE':scope},
                     [*flags,'--bpu-dut-scope',scope,'--bpu-partition-index',str(index),
                      '--bpu-partition-sha256',file_hash(index)]))
-        else:tasks.append((suite.name,'suite',target,env,flags))
+        else:tasks.append((suite.name,'suite',target,test_paths,env,flags))
     width=min(len(tasks),8,args.workers);per=max(1,args.workers//width)
     write(output/'framework-run.json',record)
     def one(task):
-        name,scope,target,env,flags=task;label=name+'-'+scope
+        name,scope,target,test_paths,env,flags=task;label=name+'-'+scope
         env={**env,'UCV_CASE_DIR':str(output/'cases'/label)}
-        result=execute([root/'.venv/bin/python','-m','toffee','run',target/'tests','--workers',str(per),
+        result=execute([root/'.venv/bin/python','-m','toffee','run',*test_paths,'--workers',str(per),
              '--output',output/label,'--native-coverage-tool',root/'.tools/verilator/bin/verilator_coverage',*flags],
              cwd=target,env=env,log=output/'logs'/(label+'.log'),check=False)
         print(label,result.returncode,flush=True)

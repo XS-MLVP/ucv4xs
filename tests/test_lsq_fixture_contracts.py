@@ -8,7 +8,7 @@ import sys
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-CONFT = ROOT / 'suites/memblock/lsq/tests/conftest.py'
+CONFT = ROOT / 'suites/memblock/lsq/conftest.py'
 
 
 def test_primary_lsq_fixtures_do_not_dispatch_by_test_path():
@@ -18,7 +18,7 @@ def test_primary_lsq_fixtures_do_not_dispatch_by_test_path():
     assert 'raw' in functions and 'replay' in functions
     assert not {'root_raw', 'root_replay', '_test_path', 'lsq'} & functions.keys()
     registration = next(node for node in tree.body if isinstance(node, ast.ImportFrom)
-                        and node.module == 'suites.memblock.lsq.lsq_wrapper.fixtures')
+                        and node.module == 'suites.memblock.lsq.testbenches.lsq_wrapper.tests.fixtures')
     assert ('wrapper_lsq', 'lsq') in {(item.name, item.asname) for item in registration.names}
     # Dynamic access to the Toffee registration hook is unrelated to selecting
     # an oracle and remains allowed in dut_factory.
@@ -34,7 +34,7 @@ def test_primary_lsq_fixtures_do_not_dispatch_by_test_path():
 ])
 def test_alternate_contracts_are_explicit_test_dependencies(directory, expected):
     found = set()
-    for path in (CONFT.parent / directory).glob('test_*.py'):
+    for path in (CONFT.parent / 'testbenches/lsq_wrapper/tests' / directory).glob('test_*.py'):
         for node in ast.walk(ast.parse(path.read_text())):
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name.startswith('test_'):
                 args = {arg.arg for arg in node.args.args}
@@ -58,7 +58,7 @@ def local_reset_lsq(): return 'retained-external-model'
     tree = ast.parse(CONFT.read_text())
     # Freeze the actual root import alias, substituting only its module path.
     alias = next(node for node in tree.body if isinstance(node, ast.ImportFrom)
-                 and node.module == 'suites.memblock.lsq.lsq_wrapper.fixtures')
+                 and node.module == 'suites.memblock.lsq.testbenches.lsq_wrapper.tests.fixtures')
     imported = [item for item in alias.names if item.name == 'wrapper_lsq'][0]
     (tmp_path / 'conftest.py').write_text(
         f'from sentinel_models import {imported.name} as {imported.asname}, sq_lsq, local_reset_lsq\n')

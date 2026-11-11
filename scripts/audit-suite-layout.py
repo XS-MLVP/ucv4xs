@@ -19,23 +19,100 @@ must not make the transaction report green.
 Functional access to an owner's driver/ports/model/monitor or private encoding
 and timing helpers is separate infrastructure coupling, even without physical
 field names. This remains a conservative syntax report, not a dataflow proof.
+
+Explicit pytest selftest markers are reported separately, as are the existing
+selftest directories. Mixed files keep unmarked tests and helpers in the
+functional scan. Classification is visible in JSON and needs semantic review;
+neither a marker nor coverage=False proves that a test is a genuine self-check.
 """
 from __future__ import annotations
 
 import argparse
 import ast
+import copy
 import json
 from pathlib import Path
 import sys
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT/'src'))
 SELECT_DIRS = {'bundle', 'drivers', 'monitors', 'scoreboard', 'model', 'framework',
                'diagnostics', 'checkers', 'selftest', 'tools'}
 OWNER_SUFFIXES = ('_agent', '_env', '_dut', '_harness')
 LEGACY_PACKAGES = {name+'verify' for name in
                    ('bpu','ftq','icache','ifu','dcache','lsq','lsu','mmu','sbuffer','vagq')}
 SOURCE_SKIP = {'dut','rtl','results','XiangShan','__pycache__','.pytest_cache'}
+
+
+def source_tree(path):
+    return path if isinstance(path, ast.AST) else ast.parse(path.read_text(encoding='utf-8'))
+
+
+def selftest_scopes(tree):
+    """Partition literal pytest classifications without importing test code.
+
+    Only the canonical pytest.mark.selftest spelling is recognized. Dynamic
+    marker expressions stay in the functional scan. Helpers in a mixed module
+    or class stay there too, even if a marked test happens to call them.
+    """
+    def marked(value):
+        if isinstance(value, (ast.List, ast.Tuple)):
+            return any(marked(item) for item in value.elts)
+        if isinstance(value, ast.Call):
+            value = value.func
+        return (isinstance(value, ast.Attribute) and value.attr == 'selftest'
+                and isinstance(value.value, ast.Attribute) and value.value.attr == 'mark'
+                and isinstance(value.value.value, ast.Name) and value.value.value.id == 'pytest')
+
+    def scope_marker(body):
+        assignments = []
+        for node in body:
+            targets = (node.targets if isinstance(node, ast.Assign) else
+                       [node.target] if isinstance(node, ast.AnnAssign) else [])
+            references = [child for child in ast.walk(node)
+                          if isinstance(child, ast.Name) and child.id == 'pytestmark']
+            if references:
+                # Reassignment, augmented/conditional or computed markers are
+                # not sufficient evidence for excluding a scope. Reads could
+                # hand the list to mutating code; del/clear also remove marks.
+                if (len(references) != 1
+                        or not isinstance(references[0].ctx, ast.Store)
+                        or not any(target is references[0] for target in targets)):
+                    return False
+                assignments.append(node.value)
+        return len(assignments) == 1 and marked(assignments[0])
+
+    classified = []
+
+    def partition(node, prefix=''):
+        name = prefix + getattr(node, 'name', '<module>')
+        is_test = (isinstance(node, ast.Module)
+                   or isinstance(node, ast.ClassDef) and node.name.startswith('Test')
+                   or isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name.startswith('test_'))
+        if is_test and (any(marked(item) for item in getattr(node, 'decorator_list', []))
+                        or isinstance(node, (ast.Module, ast.ClassDef)) and scope_marker(node.body)):
+            classified.append({'scope': name, 'line': getattr(node, 'lineno', 1),
+                               'reason': 'explicit-selftest-marker'})
+            return None, node
+        if not isinstance(node, (ast.Module, ast.ClassDef)):
+            return node, None
+        feature, selftest = copy.copy(node), copy.copy(node)
+        feature.body, selftest.body = [], []
+        for child in node.body:
+            ordinary, control = partition(child, '' if isinstance(node, ast.Module) else name + '.')
+            if ordinary is not None:
+                feature.body.append(ordinary)
+            if control is not None:
+                selftest.body.append(control)
+        return feature, selftest if selftest.body else None
+
+    feature, selftest = partition(tree)
+    empty = ast.Module(body=[], type_ignores=[])
+    if selftest is not None and selftest is not tree:
+        # Keep imported P aliases visible to the physical-field detector.
+        selftest.body = [node for node in tree.body if isinstance(node, (ast.Import, ast.ImportFrom))] + selftest.body
+    return feature or empty, selftest or empty, classified
 
 
 def namespace_problems(suite_root):
@@ -61,7 +138,7 @@ def namespace_problems(suite_root):
 
 def pin_accesses(path):
     """Count actual expressions, including aliases that hide physical names."""
-    tree = ast.parse(path.read_text(encoding='utf-8'))
+    tree = source_tree(path)
     aliases = {'P'}
     for node in ast.walk(tree):
         if isinstance(node, ast.ImportFrom) and (node.module or '').endswith(('.pins', '.legacy_pins')):
@@ -91,7 +168,7 @@ def signal_accesses(path):
     This is a conservative syntax check, not dataflow or protocol certification.
     Keep the locations visible so unusual user-defined methods can be reviewed.
     """
-    tree=ast.parse(path.read_text(encoding='utf-8'))
+    tree=source_tree(path)
     operations={'Set','U','Get','AsImmWrite','AsRiseWrite','IsInIO','IsOutIO',
                 'RefreshComb','Step','GetKeys','GetXClock'}
     handles={'raw_dut','xport','xclock'}
@@ -111,7 +188,7 @@ def component_accesses(path):
     fields are not an agent's mutable checker state. Owner names follow the
     fixture convention; this check cannot certify arbitrary dynamic aliases.
     """
-    tree=ast.parse(path.read_text(encoding='utf-8'))
+    tree=source_tree(path)
     owners={'agent','env','harness','dut'}
     owners.update(node.id for node in ast.walk(tree)
                   if isinstance(node,ast.Name) and is_owner(node.id))
@@ -165,7 +242,7 @@ def suite_entries():
         recipe = json.loads(recipe_path.read_text(encoding='utf-8'))
         if 'suite' not in recipe:
             continue
-        tests = recipe.get('tests') or ['tests']
+        tests = recipe.get('tests') or ['modules']
         if len(tests) != 1:
             raise SystemExit(f'{recipe_path}: expected exactly one tests root')
         suite_root = recipe_path.parent
@@ -177,16 +254,20 @@ def is_owner(name):
     return name.endswith(OWNER_SUFFIXES)
 
 
-def root_fixtures(path):
+def root_fixtures(path, seen=None):
     """Statically visible fixture entries, NOT a per-DUT ownership proof.
 
     Root conftests are registration tables: every fixture function, every
     ``agent_fixture``/``dut_fixture`` assignment and every import from a
-    project ``fixtures`` module is a candidate registration entry. This may
+    project ``fixtures`` module is a candidate registration entry. Literal
+    pytest_plugins declarations are followed without importing the plugins. This may
     include session helpers and cannot establish per-DUT ownership.
     """
-    if not path.is_file():
+    seen=set() if seen is None else seen
+    path=path.resolve()
+    if path in seen or not path.is_file():
         return set()
+    seen.add(path)
     tree = ast.parse(path.read_text(encoding='utf-8'))
     names = set()
 
@@ -198,6 +279,22 @@ def root_fixtures(path):
         return False
 
     for node in tree.body:
+        targets=(node.targets if isinstance(node,ast.Assign) else
+                 [node.target] if isinstance(node,ast.AnnAssign) else [])
+        if any(isinstance(target,ast.Name) and target.id=='pytest_plugins' for target in targets):
+            try:
+                plugins=ast.literal_eval(node.value)
+            except (ValueError,TypeError):
+                plugins=[]
+            if isinstance(plugins,str):plugins=[plugins]
+            if isinstance(plugins,(list,tuple)):
+                for plugin in plugins:
+                    if not isinstance(plugin,str) or not all(part.isidentifier() for part in plugin.split('.')):
+                        continue
+                    candidate=ROOT.joinpath(*plugin.split('.'))
+                    candidate=(candidate/'__init__.py') if candidate.is_dir() else candidate.with_suffix('.py')
+                    if candidate.resolve().is_relative_to(ROOT.resolve()):
+                        names.update(root_fixtures(candidate,seen))
         if isinstance(node, ast.Assign):
             for target in node.targets:
                 if isinstance(target, ast.Name) and (is_owner(target.id) or assigned(node.value)):
@@ -223,7 +320,7 @@ def root_fixtures(path):
 def native_access(path):
     """Return real native DUT/pin attribute accesses, ignoring prose."""
     try:
-        tree = ast.parse(path.read_text(encoding='utf-8'))
+        tree = source_tree(path)
     except SyntaxError as error:
         return [f'syntax error: {error}']
     hits = set()
@@ -237,7 +334,7 @@ def native_access(path):
 
 
 def audit(suite, suite_root, pytest_root, tests_root):
-    root_conftest = tests_root / 'conftest.py'
+    root_conftest = suite_root / 'conftest.py'
     conftests = sorted(path for path in suite_root.rglob('conftest.py')
                        if 'results' not in path.parts)
     nested = [path for path in conftests if path.resolve() != root_conftest.resolve()]
@@ -248,28 +345,51 @@ def audit(suite, suite_root, pytest_root, tests_root):
     pin_level_cases = []
     signal_level_cases = []
     component_level_cases = []
+    selftest_cases = []
     feature_cases = 0
     if tests_root.is_dir():
         for path in tests_root.rglob('test_*.py'):
             relative = path.relative_to(tests_root)
-            if any(part in SELECT_DIRS for part in relative.parts[:-1]):
+            tree = source_tree(path)
+            shared = tests_root.name=='testbenches' and relative.parts[:2]==('shared','tests')
+            if shared or any(part in SELECT_DIRS for part in relative.parts[:-1]):
+                controls = tree
+                feature = ast.Module(body=[], type_ignores=[])
+                classifications = [{'scope': '<module>', 'line': 1,
+                                    'reason': 'shared-tests' if shared else 'selftest-directory'}]
+            else:
+                feature, controls, classifications = selftest_scopes(tree)
+            if classifications:
+                selftest_cases.append({'path': str(path.relative_to(suite_root)),
+                    'classifications': classifications, 'pin_fields': pin_accesses(controls),
+                    'signal_operations': signal_accesses(controls),
+                    'component_accesses': component_accesses(controls),
+                    'native_accesses': native_access(controls)})
+            if not feature.body:
                 continue
             feature_cases += 1
-            fields = pin_accesses(path)
+            fields = pin_accesses(feature)
             pin_fields += sum(fields.values())
             if any(fields.values()):
                 pin_level_cases.append({'path': str(path.relative_to(suite_root)), **fields})
-            signals=signal_accesses(path)
+            signals=signal_accesses(feature)
             if signals:
                 signal_level_cases.append({'path':str(path.relative_to(suite_root)),'hits':signals})
-            components=component_accesses(path)
+            components=component_accesses(feature)
             if components:
                 component_level_cases.append({'path':str(path.relative_to(suite_root)),'hits':components})
-            hits = native_access(path)
+            hits = native_access(feature)
             if hits:
                 direct.append({'path': str(path.relative_to(suite_root)), 'hits': hits})
     pytest_ini = suite_root / 'pytest.ini'
     selftest = pytest_ini.is_file() and 'selftest:' in pytest_ini.read_text(encoding='utf-8')
+    layout_issues=[]
+    if (suite_root/'ucv.json').is_file():
+        from ucv.layout import problems
+        from ucv.config import Project
+        from ucv.workspace import metadata
+        target=Project(ROOT).suite(suite)
+        layout_issues=problems(target,metadata(target))
     return {
         'suite': suite,
         'tests_root': str(tests_root.relative_to(suite_root)),
@@ -288,9 +408,11 @@ def audit(suite, suite_root, pytest_root, tests_root):
         'signal_operations': sum(len(case['hits']) for case in signal_level_cases),
         'component_level_cases': component_level_cases,
         'component_accesses': sum(len(case['hits']) for case in component_level_cases),
+        'selftest_cases': selftest_cases,
         'transaction_boundary': 'needs-adapter' if pin_fields or direct or signal_level_cases or component_level_cases else 'no-static-leak-found',
         'namespace': '.'.join(suite_root.relative_to(ROOT).parts),
         'namespace_issues': namespace_problems(suite_root),
+        'layout_issues':layout_issues,
     }
 
 
@@ -307,6 +429,7 @@ def violations(row, *, require_transaction_boundary=False):
     if not row['selftest_marker']:
         problems.append('no selftest marker')
     problems.extend(row.get('namespace_issues',[]))
+    problems.extend(row.get('layout_issues',[]))
     if require_transaction_boundary and row['pin_fields']:
         problems.append(f"{row['pin_fields']} pin-level expressions require transaction adapters")
     if require_transaction_boundary and row.get('signal_operations'):
@@ -337,8 +460,8 @@ def main(argv=None):
         args.json.parent.mkdir(parents=True, exist_ok=True)
         args.json.write_text(json.dumps({'suites': rows}, indent=2, ensure_ascii=False) + '\n',
                              encoding='utf-8')
-    print('| suite | feature files | fixture entries | extra conftest | env/pytest | native access files | pin expressions | signal operations | owner infrastructure | selftest | transaction boundary | structural status |')
-    print('|---|---:|---:|---:|---:|---:|---:|---:|---:|---|---|---|')
+    print('| suite | feature files | fixture entries | extra conftest | env/pytest | native access files | pin expressions | signal operations | owner infrastructure | selftest files | selftest | transaction boundary | structural status |')
+    print('|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|---|---|')
     failed = False
     for row in rows:
         problems = violations(row, require_transaction_boundary=args.require_transaction_boundary)
@@ -346,7 +469,8 @@ def main(argv=None):
         print(f"| {row['suite']} | {row['feature_testcases']} | {len(row['root_owner_fixtures'])} | "
               f"{len(row['nested_conftests'])} | {row['env_pytest_count']} | "
               f"{len(row['direct_access_cases'])} | {row['pin_fields']} | {row['signal_operations']} | "
-              f"{row['component_accesses']} | "
+               f"{row['component_accesses']} | "
+               f"{len(row['selftest_cases'])} | "
               f"{'yes' if row['selftest_marker'] else 'no'} | "
               f"{row['transaction_boundary']} | "
               f"{'; '.join(problems) or 'ok'} |")

@@ -76,6 +76,49 @@ def generation_spec(baseline):
     # fields are legacy schema slots, never configurable generation overrides.
     return {'baseline':baseline,'generation':'soc','dut':None,'overlay':None}
 
+def rtl_path(project, baseline):
+    """Read-only location: prefer an existing local generation, then a release."""
+    generated = project.root/'.cache/generated'/digest(generation_spec(baseline))
+    if (generated/'generation.json').is_file():
+        return generated/'rtl'
+    from .releases import release_directory, release_spec
+    registry = project.root/'baselines/rtl-releases.json'
+    if registry.is_file() and baseline['name'] in read(registry).get('releases',{}):
+        return release_directory(project,baseline)/release_spec(project,baseline)['package']/'rtl'
+    return generated/'rtl'
+
+def obtain_rtl(project, suite, mode='auto', archive=None):
+    if mode not in {'auto','release','source'}:
+        raise UcvError('Unknown RTL source: '+mode)
+    generated = project.root/'.cache/generated'/digest(generation_spec(suite.baseline))
+    if mode=='source' or (mode=='auto' and not archive and (generated/'generation.json').is_file()):
+        if archive:raise UcvError('--archive requires --rtl-source release')
+        rtl = generate(project,suite)
+        # A previously imported release is another claim about this exact design.
+        from .releases import release_directory, fetch_release
+        registry = project.root/'baselines/rtl-releases.json'
+        if registry.is_file() and suite.baseline['name'] in read(registry).get('releases',{}):
+            imported = release_directory(project,suite.baseline)
+            if (imported/'release.json').is_file():
+                released = fetch_release(project,suite.baseline)
+                compare_rtl(generated,released)
+        return rtl, {'kind':'source','receipt':str(generated/'generation.json')}
+    from .releases import fetch_release, release_directory, release_spec
+    rtl = fetch_release(project,suite.baseline,archive)
+    # If both providers exist, do not let different bytes masquerade as one baseline.
+    if (generated/'generation.json').is_file():
+        generate(project,suite)
+        compare_rtl(generated,rtl)
+    return rtl, {'kind':'release','release':release_spec(project,suite.baseline),
+                 'receipt':str(release_directory(project,suite.baseline)/'release.json')}
+
+def compare_rtl(generated, released):
+    expected = read(generated/'generation.json')['rtl']
+    actual = {str(p.relative_to(released)):file_hash(p) for p in released.rglob('*')
+              if p.is_file() and p.suffix in {'.sv','.v','.vh','.svh'}}
+    if expected != actual:
+        raise UcvError('Released RTL differs from local generation: '+str(generated))
+
 def generate(project, suite):
     baseline = suite.baseline
     spec = generation_spec(baseline)

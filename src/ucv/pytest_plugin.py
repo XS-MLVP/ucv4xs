@@ -1,6 +1,7 @@
 """Lossless collection and verdict receipts, independent of coverage. MPL-2.0."""
 from collections import Counter
 import os
+import json
 from pathlib import Path
 import random
 import pytest
@@ -42,7 +43,10 @@ def pytest_configure(config):
     random.seed(int(os.environ.get('UCV_SEED','1')))
 
 def pytest_collection_modifyitems(config,items):
+    roots=[Path(p).resolve() for p in json.loads(os.environ.get('UCV_TEST_ROOTS','[]'))]
     for item in items:
+        if roots and not any(Path(item.path).resolve().is_relative_to(root) for root in roots):
+            raise pytest.UsageError(f'{item.nodeid}: explicit test is outside the selected DUT test roots')
         if item.get_closest_marker('incomplete') is not None:
             raise pytest.UsageError(
                 f'{item.nodeid}: use toffee @pytest.mark.uncertain(reason=..., reference=...); '
