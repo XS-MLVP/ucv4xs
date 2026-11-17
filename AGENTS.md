@@ -11,11 +11,12 @@
 - 工作空间用 `ucv info/init/prepare/check` 管理，运行汇总用 `ucv report` 生成。优先更新已有主题；临时分析留在结果目录。使用文档遵循 [文档维护](docs/how-to/maintain-docs.md)，设计/验证 spec 按工程规格组织。
 - 工程规格统一放 `docs/spec/{design,verification}/`，问题放 `docs/bugs/{open,closed}/`；README 负责当前汇总和入口，问题索引用 `ucv docs <suite> --write` 生成。同一问题保留稳定 ID、各基线结论和处置证据；工程不新增泛化 history 目录。通用工具要求使用工程/DUT 参数，具体设计只用于明确标注的示例。
 - 功能点、合同与未证明范围维护在既有规格正文；真实缺陷与配置/观察/集成边界分别说明。工程根的 `verification_plan.json` 已删除，不恢复或改名重建替代计划文件；历史提及和哈希清单保持原字节。
+- 模块树是管理主轴，持久身份与版本观察在根配置引用的模块目录中；用 `ucv modules list/check/diff/apply` 维护，源码移动或改名不重算 ID，缺失不自动删除或退役。DUT＋合同承担技术绑定与验收，suite 组织代码维护与执行。`ucv docs --write` 生成逐 DUT 工作索引；负责人、当前工作、下一步、阻塞与证据沿用合同正文或关联任务。未认领项不从历史表格猜负责人；资产数量和标签通过率不代表合同完成率。
 
 ## 结构边界
 
-- 公共编排放在 `src/ucv/`，不导入工程领域模型。十二工程统一使用 workspace schema2：`suites/<group>/<suite>/testbenches/<dut>/` 放 DUT 实现和 tests，`testbenches/shared/` 放真正跨 DUT 复用的组件。双方同用 env、transactions、model、checker、coverage、tests 六职责；除 tests 为目录外，按需选文件或同名包，不造空壳。规格和问题集中在 docs/。
-- 新工程/DUT 用 `ucv init` 生成，`ucv docs --write` 生成 DUT 与 shared 的独立工作入口，`ucv check` 强制校验结构。schema2 以 `duts.<name>.testbench` 显式关联实现；参数化 DUT 可共用实现。schema1 兼容边界与本轮范围见 [testbench 目录规范](docs/reference/module-layout.md#schema-版本与本轮范围)。
+- 公共编排放在 `src/ucv/`，不导入工程领域模型。所有工程统一使用 workspace schema2：`suites/<group>/<suite>/testbenches/<dut>/` 放 DUT 实现和 tests，`testbenches/shared/` 放真正跨 DUT 复用的组件。双方同用 env、transactions、model、checker、coverage、tests 六职责；除 tests 为目录外，按需选文件或同名包，不造空壳。规格和问题集中在 docs/。
+- 新工程/DUT 用 `ucv init --module-id <id>` 生成，每个 DUT 独立 testbench、测试根和选跑入口；同一模块族不合并实现包，真实复用按职责提取到 shared。`ucv docs --write` 生成 DUT 与 shared 的工作入口，`ucv check` 校验结构及模块关联。schema2 的 `testbench` 一对一关联 DUT，`module_id` 关联管理身份；schema1 兼容边界见 [testbench 目录规范](docs/reference/module-layout.md#schema-版本与本轮范围)。
 - shared 与 DUT 的同名职责语义一致；单 DUT 专用代码归该 DUT。shared 实现不得反向导入具体 DUT 或工程 tools；shared/tests 可检查集成引用。shared 是保留名，不是 DUT，不登记独立 top 或本地原生库。工程唯一 conftest.py 注册 fixtures/pytest 插件；DUT 专用参数生成归其 tests/插件，离线汇总与审计命令归 tools/。
 - 工程根、实现包层与集中资料层级采用按 schema 的封闭白名单；额外空目录、缓存残留目录、隐藏目录和未授权符号链接同样报错。允许项统一定义在 `ucv.layout`，不为个别工程放宽；归档旧目录前确认无活动占用并记录清单。
 - 工程根直接作为 `suites.<group>.<suite>` Python 包；不新建 *verify/common 外壳，不用通用顶级短导入。共享代码按职责命名，工程 ROOT 从包入口解析；安装包不携带 DUT/RTL/结果。

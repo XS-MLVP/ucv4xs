@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "current": [
+    "README.md",
+    "docs/README.md",
+    "docs/spec/design/README.md",
+    "docs/spec/verification/README.md",
+    "docs/bugs/README.md",
+    "docs/spec/design/icache_ctrl_buffer.md",
+    "docs/spec/verification/icache_ctrl_buffer.md",
+    "testbenches/icache_ctrl_buffer/README.md",
+    "docs/spec/design/icache_buffer.md",
+    "docs/spec/verification/icache_buffer.md",
+    "testbenches/icache_buffer/README.md",
+    "docs/spec/design/instr_uncache_buffer.md",
+    "docs/spec/verification/instr_uncache_buffer.md",
+    "testbenches/instr_uncache_buffer/README.md",
+    "docs/spec/design/frontend_bridge.md",
+    "docs/spec/verification/frontend_bridge.md",
+    "testbenches/frontend_bridge/README.md"
+  ]
+}

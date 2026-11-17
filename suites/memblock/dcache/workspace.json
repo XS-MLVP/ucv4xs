@@ -20,7 +20,26 @@
       "tests": [
         "testbenches/duplicated_tag_array/tests"
       ],
-      "environment": "testbenches/duplicated_tag_array/env/__init__.py"
+      "environment": "testbenches/duplicated_tag_array/env/__init__.py",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "DuplicatedTagArray",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_dcache.dcache.tagArray",
+        "direct_parents": [
+          {
+            "parent": "DCache",
+            "instance": "tagArray",
+            "line": 23254
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/dcache/meta/TagArray.scala",
+          "line": 120
+        }
+      },
+      "module_id": "M-612885eced0d"
     },
     "ctrl_unit": {
       "design_spec": [
@@ -39,7 +58,26 @@
       "tests": [
         "testbenches/ctrl_unit/tests"
       ],
-      "environment": "testbenches/ctrl_unit/env/__init__.py"
+      "environment": "testbenches/ctrl_unit/env/__init__.py",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "CtrlUnit",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_dcache.dcache.cacheCtrlOpt",
+        "direct_parents": [
+          {
+            "parent": "DCache",
+            "instance": "cacheCtrlOpt",
+            "line": 22425
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/dcache/CtrlUnit.scala",
+          "line": 82
+        }
+      },
+      "module_id": "M-a21be63fad68"
     },
     "miss_ready_gen": {
       "design_spec": [
@@ -57,7 +95,26 @@
       "tests": [
         "testbenches/miss_ready_gen/tests"
       ],
-      "environment": "testbenches/miss_ready_gen/env/__init__.py"
+      "environment": "testbenches/miss_ready_gen/env/__init__.py",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MissReadyGen",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_dcache.dcache.missReadyGen",
+        "direct_parents": [
+          {
+            "parent": "DCache",
+            "instance": "missReadyGen",
+            "line": 26407
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/dcache/DCacheWrapper.scala",
+          "line": 974
+        }
+      },
+      "module_id": "M-3f0912cafb8d"
     },
     "counter_filter": {
       "design_spec": [
@@ -76,7 +133,26 @@
       "tests": [
         "testbenches/counter_filter/tests"
       ],
-      "environment": "testbenches/counter_filter/env/__init__.py"
+      "environment": "testbenches/counter_filter/env/__init__.py",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "CounterFilter",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_dcache.dcache.counterFilter",
+        "direct_parents": [
+          {
+            "parent": "DCache",
+            "instance": "counterFilter",
+            "line": 23394
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/prefetch/FDP.scala",
+          "line": 60
+        }
+      },
+      "module_id": "M-84bc721f0720"
     },
     "miss_track": {
       "design_spec": [
@@ -95,7 +171,26 @@
       "tests": [
         "testbenches/miss_track/tests"
       ],
-      "environment": "testbenches/miss_track/env/__init__.py"
+      "environment": "testbenches/miss_track/env/__init__.py",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MissTrack",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_dcache.dcache.misstrack",
+        "direct_parents": [
+          {
+            "parent": "DCache",
+            "instance": "misstrack",
+            "line": 26296
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/dcache/loadpipe/MissTrack.scala",
+          "line": 124
+        }
+      },
+      "module_id": "M-fb2291bdf3b8"
     },
     "load_pipe": {
       "design_spec": [
@@ -114,7 +209,36 @@
       "tests": [
         "testbenches/load_pipe/tests"
       ],
-      "environment": "testbenches/load_pipe/env/__init__.py"
+      "environment": "testbenches/load_pipe/env/__init__.py",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "LoadPipe",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_dcache.dcache.ldu_0",
+        "direct_parents": [
+          {
+            "parent": "DCache",
+            "instance": "ldu_0",
+            "line": 23419
+          },
+          {
+            "parent": "DCache",
+            "instance": "ldu_1",
+            "line": 23573
+          },
+          {
+            "parent": "DCache",
+            "instance": "ldu_2",
+            "line": 23727
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/dcache/loadpipe/LoadPipe.scala",
+          "line": 34
+        }
+      },
+      "module_id": "M-9aa6a705bc79"
     },
     "banked_data_array": {
       "design_spec": [
@@ -133,7 +257,26 @@
       "tests": [
         "testbenches/banked_data_array/tests"
       ],
-      "environment": "testbenches/banked_data_array/env/__init__.py"
+      "environment": "testbenches/banked_data_array/env/__init__.py",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "BankedDataArray",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_dcache.dcache.bankedDataArray",
+        "direct_parents": [
+          {
+            "parent": "DCache",
+            "instance": "bankedDataArray",
+            "line": 22518
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/dcache/data/BankedDataArray.scala",
+          "line": 669
+        }
+      },
+      "module_id": "M-164d930c3dd1"
     },
     "main_pipe": {
       "design_spec": [
@@ -152,7 +295,26 @@
       "tests": [
         "testbenches/main_pipe/tests"
       ],
-      "environment": "testbenches/main_pipe/env/__init__.py"
+      "environment": "testbenches/main_pipe/env/__init__.py",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MainPipe",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_dcache.dcache.mainPipe",
+        "direct_parents": [
+          {
+            "parent": "DCache",
+            "instance": "mainPipe",
+            "line": 23881
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/dcache/mainpipe/MainPipe.scala",
+          "line": 142
+        }
+      },
+      "module_id": "M-80a958549bc8"
     },
     "miss_queue": {
       "design_spec": [
@@ -171,7 +333,26 @@
       "tests": [
         "testbenches/miss_queue/tests"
       ],
-      "environment": "testbenches/miss_queue/env/__init__.py"
+      "environment": "testbenches/miss_queue/env/__init__.py",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MissQueue",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_dcache.dcache.missQueue",
+        "direct_parents": [
+          {
+            "parent": "DCache",
+            "instance": "missQueue",
+            "line": 25072
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/dcache/mainpipe/MissQueue.scala",
+          "line": 1195
+        }
+      },
+      "module_id": "M-bc050d8dbb1d"
     },
     "probe_queue": {
       "design_spec": [
@@ -190,7 +371,26 @@
       "tests": [
         "testbenches/probe_queue/tests"
       ],
-      "environment": "testbenches/probe_queue/env/__init__.py"
+      "environment": "testbenches/probe_queue/env/__init__.py",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "ProbeQueue",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_dcache.dcache.probeQueue",
+        "direct_parents": [
+          {
+            "parent": "DCache",
+            "instance": "probeQueue",
+            "line": 25881
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/dcache/mainpipe/Probe.scala",
+          "line": 128
+        }
+      },
+      "module_id": "M-cb55e11eca91"
     },
     "writeback_queue": {
       "design_spec": [
@@ -209,7 +409,26 @@
       "tests": [
         "testbenches/writeback_queue/tests"
       ],
-      "environment": "testbenches/writeback_queue/env/__init__.py"
+      "environment": "testbenches/writeback_queue/env/__init__.py",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "WritebackQueue",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_dcache.dcache.wb",
+        "direct_parents": [
+          {
+            "parent": "DCache",
+            "instance": "wb",
+            "line": 25907
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/dcache/mainpipe/WritebackQueue.scala",
+          "line": 311
+        }
+      },
+      "module_id": "M-641d9419cbdc"
     },
     "dcache": {
       "design_spec": [
@@ -230,7 +449,26 @@
       "tests": [
         "testbenches/dcache/tests"
       ],
-      "environment": "testbenches/dcache/env/__init__.py"
+      "environment": "testbenches/dcache/env/__init__.py",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "DCache",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_dcache.dcache",
+        "direct_parents": [
+          {
+            "parent": "DCacheWrapper",
+            "instance": "dcache",
+            "line": 1225
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/dcache/DCacheWrapper.scala",
+          "line": 1045
+        }
+      },
+      "module_id": "M-1653fa53feec"
     },
     "dcache_wrapper": {
       "design_spec": [
@@ -250,7 +488,58 @@
       "tests": [
         "testbenches/dcache_wrapper/tests"
       ],
-      "environment": "testbenches/dcache_wrapper/env/__init__.py"
+      "environment": "testbenches/dcache_wrapper/env/__init__.py",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "DCacheWrapper",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_dcache",
+        "direct_parents": [
+          {
+            "parent": "MemBlock",
+            "instance": "inner_dcache",
+            "line": 6402
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/dcache/DCacheWrapper.scala",
+          "line": 1984
+        }
+      },
+      "module_id": "M-d1c62c859108"
+    },
+    "uncache": {
+      "testbench": "uncache",
+      "design_spec": "docs/spec/design/uncache.md",
+      "verification_spec": "docs/spec/verification/uncache.md",
+      "environment": "testbenches/uncache/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/cache/dcache/Uncache.scala"
+      ],
+      "tests": [
+        "testbenches/uncache/tests"
+      ],
+      "smoke": "testbenches/uncache/tests/test_uncache_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Uncache",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_uncache",
+        "direct_parents": [
+          {
+            "parent": "MemBlock",
+            "instance": "inner_uncache",
+            "line": 7826
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/dcache/Uncache.scala",
+          "line": 204
+        }
+      },
+      "module_id": "M-d7aefc469829"
     }
   }
 }

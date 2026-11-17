@@ -7,7 +7,7 @@ from suites.memblock.lsq.testbenches.vlq.transactions import Redirect
 from suites.memblock.lsq.testbenches.vlq.transactions import RobPtr
 from suites.memblock.lsq.testbenches.vsq.transactions import Dispatch
 from suites.memblock.lsq.testbenches.vsq.transactions import Inputs
-from suites.memblock.lsq.testbenches.uncache_entry.model import is_younger
+from suites.memblock.lsq.testbenches.shared.model.uncache_entry import is_younger
 
 
 @dataclass(frozen=True)

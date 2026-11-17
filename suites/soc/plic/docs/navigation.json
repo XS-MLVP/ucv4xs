@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "current": [
+    "docs/spec/design/plic_source.md",
+    "docs/spec/verification/plic_source.md",
+    "testbenches/plic_source/README.md",
+    "docs/spec/design/plic_fan_in.md",
+    "docs/spec/verification/plic_fan_in.md",
+    "testbenches/plic_fan_in/README.md",
+    "docs/spec/design/level_gateway.md",
+    "docs/spec/verification/level_gateway.md",
+    "testbenches/level_gateway/README.md",
+    "docs/spec/design/int_buffer.md",
+    "docs/spec/verification/int_buffer.md",
+    "testbenches/int_buffer/README.md",
+    "README.md",
+    "docs/README.md",
+    "docs/spec/design/README.md",
+    "docs/spec/verification/README.md",
+    "docs/bugs/README.md",
+    "docs/spec/design/plic.md",
+    "docs/spec/verification/plic.md",
+    "testbenches/plic/README.md"
+  ]
+}

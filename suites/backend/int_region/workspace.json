@@ -1,0 +1,617 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "duts": {
+    "region": {
+      "testbench": "region",
+      "design_spec": "docs/spec/design/region.md",
+      "verification_spec": "docs/spec/verification/region.md",
+      "environment": "testbenches/region/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/Region.scala"
+      ],
+      "tests": [
+        "testbenches/region/tests"
+      ],
+      "smoke": "testbenches/region/tests/test_region_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Region",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_intRegion",
+        "direct_parents": [
+          {
+            "parent": "Backend",
+            "instance": "inner_intRegion",
+            "line": 14185
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/Region.scala",
+          "line": 40
+        }
+      },
+      "module_id": "M-804041bb7253"
+    },
+    "data_path": {
+      "testbench": "data_path",
+      "design_spec": "docs/spec/design/data_path.md",
+      "verification_spec": "docs/spec/verification/data_path.md",
+      "environment": "testbenches/data_path/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/datapath/DataPath.scala"
+      ],
+      "tests": [
+        "testbenches/data_path/tests"
+      ],
+      "smoke": "testbenches/data_path/tests/test_data_path_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "DataPath",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_intRegion.intDataPath",
+        "direct_parents": [
+          {
+            "parent": "Region",
+            "instance": "intDataPath",
+            "line": 12938
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/datapath/DataPath.scala",
+          "line": 26
+        }
+      },
+      "module_id": "M-7f5a511fdee7"
+    },
+    "exu_block": {
+      "testbench": "exu_block",
+      "design_spec": "docs/spec/design/exu_block.md",
+      "verification_spec": "docs/spec/verification/exu_block.md",
+      "environment": "testbenches/exu_block/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/exu/ExuBlock.scala"
+      ],
+      "tests": [
+        "testbenches/exu_block/tests"
+      ],
+      "smoke": "testbenches/exu_block/tests/test_exu_block_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "ExuBlock",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_intRegion.intExuBlock",
+        "direct_parents": [
+          {
+            "parent": "Region",
+            "instance": "intExuBlock",
+            "line": 16653
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/exu/ExuBlock.scala",
+          "line": 18
+        }
+      },
+      "module_id": "M-d6d1dc2240c2"
+    },
+    "iq_alu_i2f_brh_njmp": {
+      "testbench": "iq_alu_i2f_brh_njmp",
+      "design_spec": "docs/spec/design/iq_alu_i2f_brh_njmp.md",
+      "verification_spec": "docs/spec/verification/iq_alu_i2f_brh_njmp.md",
+      "environment": "testbenches/iq_alu_i2f_brh_njmp/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/issue/IssueQueue.scala"
+      ],
+      "tests": [
+        "testbenches/iq_alu_i2f_brh_njmp/tests"
+      ],
+      "smoke": "testbenches/iq_alu_i2f_brh_njmp/tests/test_issue_queue_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IssueQueueAluI2fBrhNjmp",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_intRegion.issueQueueALU2BJU2_AluI2fBrhNjmp",
+        "direct_parents": [
+          {
+            "parent": "Region",
+            "instance": "issueQueueALU2BJU2_AluI2fBrhNjmp",
+            "line": 7602
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/issue/IssueQueue.scala",
+          "line": 70
+        }
+      },
+      "module_id": "M-9ad908657fe6"
+    },
+    "iq_alu_csr_fence_link_brh_njmp": {
+      "testbench": "iq_alu_csr_fence_link_brh_njmp",
+      "design_spec": "docs/spec/design/iq_alu_csr_fence_link_brh_njmp.md",
+      "verification_spec": "docs/spec/verification/iq_alu_csr_fence_link_brh_njmp.md",
+      "environment": "testbenches/iq_alu_csr_fence_link_brh_njmp/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/issue/IssueQueue.scala"
+      ],
+      "tests": [
+        "testbenches/iq_alu_csr_fence_link_brh_njmp/tests"
+      ],
+      "smoke": "testbenches/iq_alu_csr_fence_link_brh_njmp/tests/test_iq_alu_csr_fence_link_brh_njmp_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IssueQueueAluCsrFenceLinkBrhNjmp",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_intRegion.issueQueueALU0BJU0_AluCsrFenceLinkBrhNjmp",
+        "direct_parents": [
+          {
+            "parent": "Region",
+            "instance": "issueQueueALU0BJU0_AluCsrFenceLinkBrhNjmp",
+            "line": 6471
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/issue/IssueQueue.scala",
+          "line": 70
+        }
+      },
+      "module_id": "M-769b7855bdbf"
+    },
+    "iq_alu_div_brh_njmp": {
+      "testbench": "iq_alu_div_brh_njmp",
+      "design_spec": "docs/spec/design/iq_alu_div_brh_njmp.md",
+      "verification_spec": "docs/spec/verification/iq_alu_div_brh_njmp.md",
+      "environment": "testbenches/iq_alu_div_brh_njmp/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/issue/IssueQueue.scala"
+      ],
+      "tests": [
+        "testbenches/iq_alu_div_brh_njmp/tests"
+      ],
+      "smoke": "testbenches/iq_alu_div_brh_njmp/tests/test_iq_alu_div_brh_njmp_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IssueQueueAluDivBrhNjmp",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_intRegion.issueQueueALU1BJU1_AluDivBrhNjmp",
+        "direct_parents": [
+          {
+            "parent": "Region",
+            "instance": "issueQueueALU1BJU1_AluDivBrhNjmp",
+            "line": 7040
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/issue/IssueQueue.scala",
+          "line": 70
+        }
+      },
+      "module_id": "M-8d1f65d56988"
+    },
+    "iq_alu_bku_vset": {
+      "testbench": "iq_alu_bku_vset",
+      "design_spec": "docs/spec/design/iq_alu_bku_vset.md",
+      "verification_spec": "docs/spec/verification/iq_alu_bku_vset.md",
+      "environment": "testbenches/iq_alu_bku_vset/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/issue/IssueQueue.scala"
+      ],
+      "tests": [
+        "testbenches/iq_alu_bku_vset/tests"
+      ],
+      "smoke": "testbenches/iq_alu_bku_vset/tests/test_iq_alu_bku_vset_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IssueQueueAluBkuVset",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_intRegion.issueQueueALU3_AluBkuVset",
+        "direct_parents": [
+          {
+            "parent": "Region",
+            "instance": "issueQueueALU3_AluBkuVset",
+            "line": 8181
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/issue/IssueQueue.scala",
+          "line": 70
+        }
+      },
+      "module_id": "M-62b38b4610cf"
+    },
+    "iq_alu_mul": {
+      "testbench": "iq_alu_mul",
+      "design_spec": "docs/spec/design/iq_alu_mul.md",
+      "verification_spec": "docs/spec/verification/iq_alu_mul.md",
+      "environment": "testbenches/iq_alu_mul/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/issue/IssueQueue.scala"
+      ],
+      "tests": [
+        "testbenches/iq_alu_mul/tests"
+      ],
+      "smoke": "testbenches/iq_alu_mul/tests/test_iq_alu_mul_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IssueQueueAluMul",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_intRegion.issueQueueALU4_AluMul",
+        "direct_parents": [
+          {
+            "parent": "Region",
+            "instance": "issueQueueALU4_AluMul",
+            "line": 8696
+          },
+          {
+            "parent": "Region",
+            "instance": "issueQueueALU5_AluMul",
+            "line": 9167
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/issue/IssueQueue.scala",
+          "line": 70
+        }
+      },
+      "module_id": "M-fbc2a15e9f53"
+    },
+    "iq_ldu": {
+      "testbench": "iq_ldu",
+      "design_spec": "docs/spec/design/iq_ldu.md",
+      "verification_spec": "docs/spec/verification/iq_ldu.md",
+      "environment": "testbenches/iq_ldu/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/issue/IssueQueue.scala"
+      ],
+      "tests": [
+        "testbenches/iq_ldu/tests"
+      ],
+      "smoke": "testbenches/iq_ldu/tests/test_iq_ldu_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IssueQueueLdu",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_intRegion.issueQueueLDU0_Ldu",
+        "direct_parents": [
+          {
+            "parent": "Region",
+            "instance": "issueQueueLDU0_Ldu",
+            "line": 9638
+          },
+          {
+            "parent": "Region",
+            "instance": "issueQueueLDU1_Ldu",
+            "line": 10165
+          },
+          {
+            "parent": "Region",
+            "instance": "issueQueueLDU2_Ldu",
+            "line": 10692
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/issue/IssueQueue.scala",
+          "line": 70
+        }
+      },
+      "module_id": "M-c7982a61717c"
+    },
+    "iq_sta_mou": {
+      "testbench": "iq_sta_mou",
+      "design_spec": "docs/spec/design/iq_sta_mou.md",
+      "verification_spec": "docs/spec/verification/iq_sta_mou.md",
+      "environment": "testbenches/iq_sta_mou/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/issue/IssueQueue.scala"
+      ],
+      "tests": [
+        "testbenches/iq_sta_mou/tests"
+      ],
+      "smoke": "testbenches/iq_sta_mou/tests/test_iq_sta_mou_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IssueQueueStaMou",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_intRegion.issueQueueSTA0_StaMou",
+        "direct_parents": [
+          {
+            "parent": "Region",
+            "instance": "issueQueueSTA0_StaMou",
+            "line": 11219
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/issue/IssueQueue.scala",
+          "line": 70
+        }
+      },
+      "module_id": "M-13a123ef7a53"
+    },
+    "iq_sta_mou_1": {
+      "testbench": "iq_sta_mou_1",
+      "design_spec": "docs/spec/design/iq_sta_mou_1.md",
+      "verification_spec": "docs/spec/verification/iq_sta_mou_1.md",
+      "environment": "testbenches/iq_sta_mou_1/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/issue/IssueQueue.scala"
+      ],
+      "tests": [
+        "testbenches/iq_sta_mou_1/tests"
+      ],
+      "smoke": "testbenches/iq_sta_mou_1/tests/test_iq_sta_mou_1_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IssueQueueStaMou_1",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_intRegion.issueQueueSTA1_StaMou",
+        "direct_parents": [
+          {
+            "parent": "Region",
+            "instance": "issueQueueSTA1_StaMou",
+            "line": 11654
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/issue/IssueQueue.scala",
+          "line": 70
+        }
+      },
+      "module_id": "M-13a123ef7a53"
+    },
+    "iq_std_moud": {
+      "testbench": "iq_std_moud",
+      "design_spec": "docs/spec/design/iq_std_moud.md",
+      "verification_spec": "docs/spec/verification/iq_std_moud.md",
+      "environment": "testbenches/iq_std_moud/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/issue/IssueQueue.scala"
+      ],
+      "tests": [
+        "testbenches/iq_std_moud/tests"
+      ],
+      "smoke": "testbenches/iq_std_moud/tests/test_iq_std_moud_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IssueQueueStdMoud",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_intRegion.issueQueueSTD0_StdMoud",
+        "direct_parents": [
+          {
+            "parent": "Region",
+            "instance": "issueQueueSTD0_StdMoud",
+            "line": 12100
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/issue/IssueQueue.scala",
+          "line": 70
+        }
+      },
+      "module_id": "M-fd3c6d666b59"
+    },
+    "iq_std_moud_1": {
+      "testbench": "iq_std_moud_1",
+      "design_spec": "docs/spec/design/iq_std_moud_1.md",
+      "verification_spec": "docs/spec/verification/iq_std_moud_1.md",
+      "environment": "testbenches/iq_std_moud_1/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/issue/IssueQueue.scala"
+      ],
+      "tests": [
+        "testbenches/iq_std_moud_1/tests"
+      ],
+      "smoke": "testbenches/iq_std_moud_1/tests/test_iq_std_moud_1_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IssueQueueStdMoud_1",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_intRegion.issueQueueSTD1_StdMoud",
+        "direct_parents": [
+          {
+            "parent": "Region",
+            "instance": "issueQueueSTD1_StdMoud",
+            "line": 12518
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/issue/IssueQueue.scala",
+          "line": 70
+        }
+      },
+      "module_id": "M-fd3c6d666b59"
+    },
+    "connect_variant": {
+      "testbench": "connect_variant",
+      "design_spec": "docs/spec/design/connect_variant.md",
+      "verification_spec": "docs/spec/verification/connect_variant.md",
+      "environment": "testbenches/connect_variant/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/datapath/NewPipelineConnect.scala"
+      ],
+      "tests": [
+        "testbenches/connect_variant/tests"
+      ],
+      "smoke": "testbenches/connect_variant/tests/test_connect_variant_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "NewPipelineConnectPipe",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_intRegion.pipeToALU0",
+        "direct_parents": [
+          {
+            "parent": "Region",
+            "instance": "pipeToALU0",
+            "line": 19174
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/datapath/NewPipelineConnect.scala",
+          "line": 22
+        }
+      },
+      "module_id": "M-21cb684fc9ce"
+    },
+    "connect_variant_1": {
+      "testbench": "connect_variant_1",
+      "design_spec": "docs/spec/design/connect_variant_1.md",
+      "verification_spec": "docs/spec/verification/connect_variant_1.md",
+      "environment": "testbenches/connect_variant_1/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/datapath/NewPipelineConnect.scala"
+      ],
+      "tests": [
+        "testbenches/connect_variant_1/tests"
+      ],
+      "smoke": "testbenches/connect_variant_1/tests/test_connect_variant_1_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "NewPipelineConnectPipe_1",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_intRegion.pipeToBJU0",
+        "direct_parents": [
+          {
+            "parent": "Region",
+            "instance": "pipeToBJU0",
+            "line": 19230
+          },
+          {
+            "parent": "Region",
+            "instance": "pipeToBJU1",
+            "line": 19344
+          },
+          {
+            "parent": "Region",
+            "instance": "pipeToBJU2",
+            "line": 19471
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/datapath/NewPipelineConnect.scala",
+          "line": 22
+        }
+      },
+      "module_id": "M-21cb684fc9ce"
+    },
+    "connect_variant_2": {
+      "testbench": "connect_variant_2",
+      "design_spec": "docs/spec/design/connect_variant_2.md",
+      "verification_spec": "docs/spec/verification/connect_variant_2.md",
+      "environment": "testbenches/connect_variant_2/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/datapath/NewPipelineConnect.scala"
+      ],
+      "tests": [
+        "testbenches/connect_variant_2/tests"
+      ],
+      "smoke": "testbenches/connect_variant_2/tests/test_connect_variant_2_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "NewPipelineConnectPipe_2",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_intRegion.pipeToALU1",
+        "direct_parents": [
+          {
+            "parent": "Region",
+            "instance": "pipeToALU1",
+            "line": 19306
+          },
+          {
+            "parent": "Region",
+            "instance": "pipeToALU4",
+            "line": 19597
+          },
+          {
+            "parent": "Region",
+            "instance": "pipeToALU5",
+            "line": 19639
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/datapath/NewPipelineConnect.scala",
+          "line": 22
+        }
+      },
+      "module_id": "M-21cb684fc9ce"
+    },
+    "connect_variant_4": {
+      "testbench": "connect_variant_4",
+      "design_spec": "docs/spec/design/connect_variant_4.md",
+      "verification_spec": "docs/spec/verification/connect_variant_4.md",
+      "environment": "testbenches/connect_variant_4/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/datapath/NewPipelineConnect.scala"
+      ],
+      "tests": [
+        "testbenches/connect_variant_4/tests"
+      ],
+      "smoke": "testbenches/connect_variant_4/tests/test_connect_variant_4_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "NewPipelineConnectPipe_4",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_intRegion.pipeToALU2",
+        "direct_parents": [
+          {
+            "parent": "Region",
+            "instance": "pipeToALU2",
+            "line": 19420
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/datapath/NewPipelineConnect.scala",
+          "line": 22
+        }
+      },
+      "module_id": "M-21cb684fc9ce"
+    },
+    "connect_variant_6": {
+      "testbench": "connect_variant_6",
+      "design_spec": "docs/spec/design/connect_variant_6.md",
+      "verification_spec": "docs/spec/verification/connect_variant_6.md",
+      "environment": "testbenches/connect_variant_6/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/datapath/NewPipelineConnect.scala"
+      ],
+      "tests": [
+        "testbenches/connect_variant_6/tests"
+      ],
+      "smoke": "testbenches/connect_variant_6/tests/test_connect_variant_6_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "NewPipelineConnectPipe_6",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_intRegion.pipeToALU3",
+        "direct_parents": [
+          {
+            "parent": "Region",
+            "instance": "pipeToALU3",
+            "line": 19547
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/datapath/NewPipelineConnect.scala",
+          "line": 22
+        }
+      },
+      "module_id": "M-21cb684fc9ce"
+    }
+  }
+}

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from tools.traceability import audit
+from suites.frontend.ftq.tools.traceability import audit
 
 
 @pytest.mark.selftest

@@ -1,0 +1,39 @@
+"""Single-DUT fixture; implementation imports are deferred until setup."""
+import json
+
+import pytest
+from toffee import DriveStable, Execution, RisingEdge, SamplingMonitor, XCommClockBackend
+
+from suites.memblock.lsq import ROOT
+
+SPEC = json.loads((ROOT / "manifest/duts.json").read_text())["duts"]["uncache_entry_8"]
+
+
+@pytest.fixture(params=("uncache_entry_8",), ids=("uncache_entry_8",))
+async def uncache_entry_8(request, dut_factory):
+    if request.param != "uncache_entry_8":
+        raise ValueError("uncache_entry_8 fixture cannot load another DUT")
+    from suites.memblock.lsq.testbenches.uncache_entry_8.coverage import FunctionalCoverage as EntryCoverage
+    from suites.memblock.lsq.testbenches.uncache_entry_8.env.driver import EntryDriver
+    from suites.memblock.lsq.testbenches.uncache_entry_8.env import EntryEnv
+    from suites.memblock.lsq.testbenches.uncache_entry_8.model import UncacheEntryModel
+    from suites.memblock.lsq.testbenches.uncache_entry_8.env.ports import Ports as EntryPorts
+
+    key, spec = request.param, SPEC
+    dut = dut_factory.create(key)
+    ports = EntryPorts(dut, spec)
+    model = UncacheEntryModel(spec)
+    coverage = EntryCoverage(key, spec, request.node.nodeid)
+    before = SamplingMonitor(DriveStable(dut.clock), capture=ports.sample, capacity=8)
+    after = SamplingMonitor(RisingEdge(dut.clock), capture=ports.sample, capacity=8)
+    driver = EntryDriver(ports)
+    backend = XCommClockBackend(dut.GetXClock())
+    try:
+        with dut_factory.journal(f"{key}.jsonl") as trace:
+            async with Execution(backend, max_batch_ticks=16) as execution:
+                async with driver, before.start(execution), after.start(execution):
+                    env = EntryEnv(key, spec, driver, before, after, model, coverage, trace)
+                    await env.reset()
+                    yield env
+    finally:
+        backend.close()

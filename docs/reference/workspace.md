@@ -10,9 +10,10 @@
 |---|---|
 | `list [SELECTION…] [--json]` | 列出 DUT 键、有效基线和继承来源；不构建或导入 native |
 | `info <suite> [--dut KEY] [--json]` | 只读资源地图，Python 标准库，无安装要求 |
-| `init SUITE --group GROUP --dut KEY --top TOP --export-name CLASS` | 新工程创建 schema2 的 `testbenches/<dut>/` 最小骨架；已有工程按其 schema 新增 DUT，保护已有文件 |
-| `check <suite> [--json]` | workspace、testbench 结构、README/问题汇总时效和当前文档路径检查；无 native 导入 |
-| `docs <suite> [--json] [--write]` | 无 --write 时计算问题汇总与工作入口状态；--write 更新 bugs/README.md 与 DUT/shared README 的生成区块 |
+| `init SUITE --group GROUP --dut KEY --top TOP --export-name CLASS [--module-id ID]` | 每个新 DUT 独立最小骨架；配置模块目录时 module-id 必填；已有工程沿用 schema 并保护已有文件 |
+| `modules list/check/adopt/diff/apply` | 模块身份、层次、逐 DUT 关联与离线增量维护；[完整参数与 JSON 契约](modules.md) |
+| `check <suite> [--json]` | workspace、testbench 结构、DUT 工作索引/README/问题汇总时效和当前文档路径检查；无 native 导入 |
+| `docs <suite> [--json] [--write]` | 预览 DUT 工作索引与问题汇总；--write 刷新验证规格首页、bugs/README.md 与 DUT/shared README 的生成区块 |
 | `prepare <suite> --source-only` | 精确源码与子模块获取；需要 Git |
 | `prepare/build <suite> --rtl-source auto\|release\|source` | RTL 提供方选择；默认 auto |
 | `prepare/build … --archive PATH --rtl-source release` | 导入匹配锁定 SHA-256 的本地附件 |
@@ -36,12 +37,12 @@
 | `--collect-only` | 仍检查运行工具、导入测试与 internal 来源；不是无需环境的源码扫描 |
 | `--archive PATH` | 仅与 `--rtl-source release` 同用，文件须匹配锁定附件哈希 |
 | `--source-only` | 仅 `prepare`；不能再指定 RTL 来源或 --archive |
-| `--json` | 仅 `list/info/check/docs/doctor`；report 本来输出 JSON 汇总，无此选项 |
+| `--json` | `list/info/check/docs/doctor` 和 modules 子命令；report 本来输出 JSON 汇总，无此选项 |
 
 ### 选择器与参数转发
 
 `list/info/check/docs/doctor/prepare/build/run` 支持多个工程、分组或集合选择器，
-省略时选 `public`。`setup/init/report` 不接受这些集合选择器或统一基线选项。
+省略时选 `public`。`setup/init/report/modules` 不接受这些集合选择器或统一基线选项。
 
 | 选择器 | 含义 |
 |---|---|
@@ -68,7 +69,7 @@ fixture / pytest 插件注册入口，`pytest.ini` 以 `testbenches` 为收集�
 
 ## workspace.json
 
-十二工程与新工程的 `workspace.json` 使用 `schema: 2`；版本兼容和本轮范围见
+所有工程的 `workspace.json` 使用 `schema: 2`；版本兼容和本轮范围见
 [目录规范](module-layout.md#schema-版本与本轮范围)。`duts` 的键必须已在工程 `ucv.json` 登记。
 导航元数据独立于构建配方，调整文档路径不改变构建缓存身份。
 顶层 `fixtures` 必须指向工程 `conftest.py`；可选 `loader` 指向实际 DUT 加载入口，
@@ -78,15 +79,24 @@ BPU 为 `testbenches/shared/env/dut.py`。workspace 的 schema 与配方 `ucv.js
 
 | 字段 | 类型 | 含义 |
 |---|---|---|
-| `testbench` | 字符串 | 必填的实现包名；init 生成与 DUT 同名的值，多个 DUT 可显式共用同一实现；`shared` 为保留名 |
+| `testbench` | 字符串 | 必填的独立实现包名；schema2 中与 DUT 一对一，init 生成与 DUT 同名的值；`shared` 为保留名 |
+| `module_id` | 字符串 | 当前 DUT 关联的持久模块 ID；配置模块目录时必填；同 ID 不决定实现复用 |
 | `design_spec` | 路径或路径列表 | 默认 docs/spec/design/<dut>.md，其次该目录 README.md |
 | `verification_spec` | 路径或路径列表 | 默认 docs/spec/verification/<dut>.md，其次该目录 README.md |
 | `environment` | 路径或路径列表 | 实现包内查找顺序为 `env/agent/main.py`、`env/agent.py`、`env/__init__.py`、`env.py`；登记路径须位于本 testbench 的 `env/` 内或为其 `env.py` |
 | `chisel` | 路径列表 | 相对基线源码根；在线 URL 使用所属仓库的锁定 commit，递归子模块取最深匹配项 |
 | `tests` | 路径列表 | 工程相对测试根，默认 `testbenches/<testbench>/tests`；登记路径须位于本 testbench 的 `tests/` 内 |
 | `smoke` | 字符串 | 一个具体 pytest nodeid，工程相对路径 |
+| `binding` | 可选对象 | 一次基线的设计身份观察：`observed_baseline`、`observed_top`、`availability`、`verification_state`、`sample_instance`、`direct_parents`、`declaration`；由 info/docs 展示，不参与构建或改变基线 |
 
-`testbench` 只合并实现和测试；每个 DUT 的真实 top、Python 导出名和基线仍从 `ucv.json`
+`verification_state` 的现有观察值为 `scaffold`（骨架）和 `existing-unrevalidated`
+（已有资产，观察基线待复验）；它不是运行状态，也不是完成度。`observed_baseline` 与
+有效基线不同则显示旧观察需重核，缺失记录显示未登记。`availability=absent` 明示历史
+top 缺失。`docs` 的 JSON 回执含 `work_index` 的路径、DUT 数量及生成区块是否最新。
+工作索引位于既有 `docs/spec/verification/README.md`，生成区块之外的合同、负责人和
+工作说明保留；每个参数变体各占一行，shared 没有独立验收行。
+
+`testbench` 只关联本 DUT 的实现和测试；每个 DUT 的真实 top、Python 导出名和基线仍从 `ucv.json`
 解析，产物路径从缓存身份解析。`design_spec` / `verification_spec` 至少登记工程
 `docs/spec` 中的入口。`info` 的“已存在”只说明文件存在；构建/运行时才校验哈希与凭据。
 schema2 的 `info` 输出使用 `testbench` 字段，并在存在 shared 时链接其独立 README。
@@ -94,6 +104,8 @@ schema2 的 `info` 输出使用 `testbench` 字段，并在存在 shared 时链�
 验证设计时，在 `design_spec` / `verification_spec` 的路径列表中直接登记这些材料，并注明
 各自适用基线；工程 README 作为总览。生成模块或参数变体的
 `chisel` 指向真实定义和实例化位置，生成名称与源码的对应关系写在所属规格中。
+`binding` 是人工/工具核对的带版本观察；`absent` 表示该次生成缺少历史 top，`present`
+只说明该次生成存在。切换基线后须重查，不能以观察记录覆盖配方或冒充构建/功能验收。
 
 `check` 对未登记的 `chisel` 发出提示；已有对应源码缓存时，登记文件缺失是错误。
 源码缓存尚未准备时，仅提示路径未作本地核对，仍可使用固定版本在线链接；需要本地
@@ -101,8 +113,8 @@ schema2 的 `info` 输出使用 `testbench` 字段，并在存在 shared 时链�
 `check` 要求显式登记环境与测试入口，同时拒绝缺失或过期的 DUT/shared README 和未登记
 实现目录；各 README 用 `ucv docs <suite> --write` 刷新。
 
-`tests` 约束文件/目录范围，不会筛选共享 fixture 的参数变体。同一文件覆盖多个 DUT 时，
-应传入带参数的完整 nodeid，或选择实际需要的全部 DUT，使构建核验覆盖本次加载对象。
+`tests` 约束文件/目录范围，不会修改 fixture 参数；独立 DUT fixture 应固定自身硬件变体。
+联合场景须选择实际需要的全部 DUT，使构建核验覆盖本次加载对象。
 schema2 按 DUT 默认选择时同时包含存在的 `testbenches/shared/tests`；显式 pytest 路径或
 nodeid 仍限定实际选择，共享自检不得借此隐式加载未选中的原生 DUT。
 

@@ -66,7 +66,9 @@ def _module_markers(tree: ast.Module) -> tuple[list[str], bool]:
 
 def test_functions() -> list[dict[str, object]]:
     rows = []
-    for path in sorted((ROOT / "testbenches").rglob("test_*.py")):
+    paths = (path for name in ('ftq', 'resolve_queue', 'commit_queue')
+             for path in (ROOT / 'testbenches' / name).rglob('test_*.py'))
+    for path in sorted(paths):
         tree = ast.parse(path.read_text())
         module_features, module_selftest = _module_markers(tree)
         for node in ast.walk(tree):

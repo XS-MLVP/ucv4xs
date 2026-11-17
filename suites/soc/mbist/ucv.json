@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "suite": "mbist",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "mbist_pipe_frontend": {
+      "top": "MbistPipeFrontend",
+      "export_name": "MbistPipeFrontendDut"
+    },
+    "mbist_pipe_mem_blk": {
+      "top": "MbistPipeMemBlk",
+      "export_name": "MbistPipeMemBlkDut"
+    },
+    "mbist_intf_frontend": {
+      "top": "MbistIntfFrontend",
+      "export_name": "MbistIntfFrontendDut"
+    },
+    "mbist_intf_l2": {
+      "top": "MbistIntfL2",
+      "export_name": "MbistIntfL2Dut"
+    },
+    "mbist_intf_mem_blk": {
+      "top": "MbistIntfMemBlk",
+      "export_name": "MbistIntfMemBlkDut"
+    },
+    "mbist_pipe_l2_prefetcher": {
+      "top": "MbistPipeL2Prefetcher",
+      "export_name": "MbistPipeL2PrefetcherDut"
+    },
+    "l2_cache_pipeline": {
+      "top": "L2Cache",
+      "export_name": "L2CacheDut"
+    },
+    "l2_slice0_pipeline": {
+      "top": "L2Slice",
+      "export_name": "L2SliceDut"
+    },
+    "mbist_pipe_sms": {
+      "top": "MbistPipeSms",
+      "export_name": "MbistPipeSmsDut"
+    },
+    "l2_slice1_pipeline": {
+      "top": "L2Slice_1",
+      "export_name": "L2Slice_1Dut"
+    },
+    "l2_slice2_pipeline": {
+      "top": "L2Slice_2",
+      "export_name": "L2Slice_2Dut"
+    },
+    "l2_slice3_pipeline": {
+      "top": "L2Slice_3",
+      "export_name": "L2Slice_3Dut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "testbenches"
+  ],
+  "process_isolation": "suite"
+}

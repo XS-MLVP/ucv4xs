@@ -55,7 +55,7 @@ class _Agent:
 
 
 def _request(outcome, phase='call'):
-    return SimpleNamespace(config=SimpleNamespace(_ifu_phases={
+    return SimpleNamespace(config=SimpleNamespace(_ucv_feature_phases={
         'test': {phase: {'outcome': outcome}}} if outcome is not None else {}),
         node=SimpleNamespace(nodeid='test'))
 

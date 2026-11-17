@@ -1,7 +1,6 @@
 {
   "schema": 2,
   "fixtures": "conftest.py",
-  "loader": "testbenches/shared/env/harness.py",
   "duts": {
     "resolve_queue": {
       "design_spec": [
@@ -24,7 +23,26 @@
         "testbenches/resolve_queue/tests"
       ],
       "testbench": "resolve_queue",
-      "environment": "testbenches/resolve_queue/env/agent/main.py"
+      "environment": "testbenches/resolve_queue/env/agent/main.py",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "ResolveQueue",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_ftq.resolveQueue",
+        "direct_parents": [
+          {
+            "parent": "Ftq",
+            "instance": "resolveQueue",
+            "line": 115142
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/ftq/ResolveQueue.scala",
+          "line": 29
+        }
+      },
+      "module_id": "M-178f53a68df2"
     },
     "commit_queue": {
       "design_spec": [
@@ -41,13 +59,22 @@
         "docs/spec/verification/reports/baseline-adaptation-a0c2a26cb.md"
       ],
       "chisel": [
-        "src/main/scala/xiangshan/frontend/ftq/CommitQueue.scala"
+        "src/main/scala/xiangshan/frontend/ftq/Ftq.scala"
       ],
       "tests": [
         "testbenches/commit_queue/tests"
       ],
       "testbench": "commit_queue",
-      "environment": "testbenches/commit_queue/env/agent/main.py"
+      "environment": "testbenches/commit_queue/env/agent/main.py",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "CommitQueue",
+        "verification_state": "existing-unrevalidated",
+        "availability": "absent",
+        "reason": "当前完整 DefaultConfig 源码与生成 RTL 中无此模块；保留历史实现，未改绑替代模块。",
+        "historical_source": "src/main/scala/xiangshan/frontend/ftq/CommitQueue.scala"
+      },
+      "module_id": "M-db19f556e6e1"
     },
     "ftq": {
       "design_spec": [
@@ -70,7 +97,26 @@
         "testbenches/ftq/tests"
       ],
       "testbench": "ftq",
-      "environment": "testbenches/ftq/env/agent/main.py"
+      "environment": "testbenches/ftq/env/agent/main.py",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Ftq",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_ftq",
+        "direct_parents": [
+          {
+            "parent": "Frontend",
+            "instance": "inner_ftq",
+            "line": 10640
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/ftq/Ftq.scala",
+          "line": 65
+        }
+      },
+      "module_id": "M-cdf073824eca"
     }
   }
 }

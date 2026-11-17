@@ -1,5 +1,43 @@
 # LSU Verification Spec
 
+<!-- ucv:work-index:start -->
+
+## DUT 工作索引
+
+由 `ucv docs --write` 从配方与 workspace 生成；每行是一个 DUT 的合同入口。
+当前工程基线：`public-e716c7658`。接入观察不代表验证进度或验收结果。
+
+负责人、当前工作、下一步、阻塞与验收证据维护在对应合同正文或关联任务中；
+未认领不推断负责人；各 DUT 独立实现、选跑与验收。
+
+| DUT / RTL top | 接入观察 | 验证合同 | 工作入口 |
+|---|---|---|---|
+| `store_arbiter` / `Arbiter3_StoreStageIO` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/store_arbiter/README.md) |
+| `store_trigger` / `MemTrigger_3` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/store_trigger/README.md) |
+| `store_delay` / `DelayPipeline` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/store_delay/README.md) |
+| `store_s0` / `StoreUnitS0` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/store_s0/README.md) |
+| `store_s1` / `StoreUnitS1` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/store_s1/README.md) |
+| `store_s2` / `StoreUnitS2` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/store_s2/README.md) |
+| `store_s3` / `StoreUnitS3` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/store_s3/README.md) |
+| `store_s4` / `StoreUnitS4` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/store_s4/README.md) |
+| `new_store_unit` / `NewStoreUnit` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/new_store_unit/README.md) |
+| `std_exe_unit` / `StdExeUnit` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/std_exe_unit/README.md) |
+| `load_arbiter` / `Arbiter7_LoadStageIO` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/load_arbiter/README.md) |
+| `load_trigger` / `MemTrigger` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/load_trigger/README.md) |
+| `load_datapath` / `LoadUnitDataPath` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/load_datapath/README.md) |
+| `load_s0` / `LoadUnitS0` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/load_s0/README.md) |
+| `load_s1` / `LoadUnitS1` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/load_s1/README.md) |
+| `load_s2` / `LoadUnitS2` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/load_s2/README.md) |
+| `load_s3` / `LoadUnitS3` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/load_s3/README.md) |
+| `load_s4` / `LoadUnitS4` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/load_s4/README.md) |
+| `new_load_unit` / `NewLoadUnit` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/new_load_unit/README.md) |
+| `select_oldest` / `SelectOldest` | 骨架；合同与环境待实现 | [范围、工作与完成条件](select_oldest.md) | [实现、用例与命令](../../../testbenches/select_oldest/README.md) |
+| `dummy_dpic_wrapper` / `DummyDPICWrapper_LrScEvent` | 骨架；合同与环境待实现 | [范围、工作与完成条件](dummy_dpic_wrapper.md) | [实现、用例与命令](../../../testbenches/dummy_dpic_wrapper/README.md) |
+| `atomics` / `AtomicsUnit` | 骨架；合同与环境待实现 | [范围、工作与完成条件](atomics.md) | [实现、用例与命令](../../../testbenches/atomics/README.md) |
+| `memblock` / `MemBlock` | 骨架；合同与环境待实现 | [范围、工作与完成条件](memblock.md) | [实现、用例与命令](../../../testbenches/memblock/README.md) |
+
+<!-- ucv:work-index:end -->
+
 状态：验证侧当前索引。历史结论绑定各自源码提交；当前基线的局部适配与实测见 §2.2，完整工程尚未验收。
 
 ## 1. 范围与基线

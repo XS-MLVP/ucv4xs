@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "suite": "ctrl",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "ctrl_block": {
+      "top": "CtrlBlock",
+      "export_name": "CtrlBlockDut"
+    },
+    "dispatch": {
+      "top": "Dispatch",
+      "export_name": "DispatchDut"
+    },
+    "rename": {
+      "top": "Rename",
+      "export_name": "RenameDut"
+    },
+    "pipe_group_connect": {
+      "top": "PipeGroupConnect",
+      "export_name": "PipeGroupConnectDut"
+    },
+    "rob": {
+      "top": "Rob",
+      "export_name": "RobDut"
+    },
+    "decode_stage": {
+      "top": "DecodeStage",
+      "export_name": "DecodeStageDut"
+    },
+    "lsq_enq_ctrl": {
+      "top": "LsqEnqCtrl",
+      "export_name": "LsqEnqCtrlDut"
+    },
+    "mem_ctrl": {
+      "top": "MemCtrl",
+      "export_name": "MemCtrlDut"
+    },
+    "fusion_decoder": {
+      "top": "FusionDecoder",
+      "export_name": "FusionDecoderDut"
+    },
+    "pipeline_connect_pipe": {
+      "top": "PipelineConnectPipe",
+      "export_name": "PipelineConnectPipeDut"
+    },
+    "redirect_generator": {
+      "top": "RedirectGenerator",
+      "export_name": "RedirectGeneratorDut"
+    },
+    "trace": {
+      "top": "Trace",
+      "export_name": "TraceDut"
+    },
+    "sync_data_module_template_backend_pc_64_entry": {
+      "top": "SyncDataModuleTemplate_BackendPC_64entry",
+      "export_name": "SyncDataModuleTemplateBackendPc64EntryDut"
+    },
+    "gpa_mem": {
+      "top": "GPAMem",
+      "export_name": "GpaMemDut"
+    },
+    "h_perf_counter": {
+      "top": "HPerfCounter",
+      "export_name": "HPerfCounterDut"
+    },
+    "perf_events_module": {
+      "top": "perfEventsModule",
+      "export_name": "PerfEventsModuleDut"
+    },
+    "top_down_gen": {
+      "top": "TopDownGen",
+      "export_name": "TopDownGenDut"
+    },
+    "backend": {
+      "top": "Backend",
+      "export_name": "BackendDut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "testbenches"
+  ],
+  "process_isolation": "suite"
+}

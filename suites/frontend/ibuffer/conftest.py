@@ -1,13 +1,8 @@
-"""IBuffer pytest root: register the only suite-level pytest plugins.
-
-Each DUT owns its agent fixture in ``tests/fixtures.py``; the shared feature
-plugin aggregates collected feature labels.  This file is the single literal
-registration table and contains no second discovery tree.
-"""
+"""Register this verification package's fixtures and reports."""
 
 pytest_plugins = (
-    "suites.frontend.ibuffer.testbenches.ibuffer.tests.fixtures",
     "suites.frontend.ibuffer.testbenches.vtype_gen.tests.fixtures",
-    "suites.frontend.ibuffer.testbenches.shared.env.pytest_plugins.features",
+    "suites.frontend.ibuffer.testbenches.ibuffer.tests.fixtures",
+    "ucv.pytest_features",
     "ucv.pytest_selftest",
 )

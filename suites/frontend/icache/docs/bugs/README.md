@@ -8,13 +8,13 @@
 
 由 `ucv docs --write` 生成；目录表示当前处理状态，版本结论见各记录。
 
-当前工程基线：`public-a0c2a26cb`。未复验项不继承历史通过结论。
+当前工程基线：`public-e716c7658`。未复验项不继承历史通过结论。
 
 ## 未解决（1）
 
 | ID | 问题 | 类型 | 本基线结论 | 关闭原因 |
 |---|---|---|---|---|
-| [WAYLOOKUP-020](open/waylookup-flush-cancelled-write-exception.md) | WayLookup 在 flush 同拍取消写时仍锁存异常并阻塞后续写 | rtl | 未解决 | — |
+| [WAYLOOKUP-020](open/waylookup-flush-cancelled-write-exception.md) | WayLookup 在 flush 同拍取消写时仍锁存异常并阻塞后续写 | rtl | 未登记复验 | — |
 
 ## 已关闭（0）
 

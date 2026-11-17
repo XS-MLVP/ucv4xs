@@ -17,7 +17,7 @@ from ucv.common import UcvError
 def audit(root):
     root = Path(root).resolve()
     project = Project(root)
-    suites = project.select(['full'])
+    suites = [project.suite(name) for name in project.config['suites']]
     listed = subprocess.check_output(['git','-C',str(root),'ls-files','-z','--cached','--others','--exclude-standard'])
     files = sorted(set(listed.decode().split('\0'))-{''})
     errors = []

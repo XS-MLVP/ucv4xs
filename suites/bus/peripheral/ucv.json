@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "suite": "peripheral",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "mem_misc": {
+      "top": "MemMisc",
+      "export_name": "MemMiscDut"
+    },
+    "axi4_deinterleaver": {
+      "top": "AXI4Deinterleaver",
+      "export_name": "Axi4DeinterleaverDut"
+    },
+    "axi4_id_indexer": {
+      "top": "AXI4IdIndexer",
+      "export_name": "Axi4IdIndexerDut"
+    },
+    "tlfifo_fixer": {
+      "top": "TLFIFOFixer",
+      "export_name": "TlfifoFixerDut"
+    },
+    "tl_fragmenter": {
+      "top": "TLFragmenter",
+      "export_name": "TlFragmenterDut"
+    },
+    "queue": {
+      "top": "Queue2_TLBundleA",
+      "export_name": "QueueDut"
+    },
+    "repeater": {
+      "top": "Repeater",
+      "export_name": "RepeaterDut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "testbenches"
+  ],
+  "process_isolation": "suite"
+}

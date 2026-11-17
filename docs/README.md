@@ -1,6 +1,6 @@
 # 使用文档
 
-仓库与发行包名为 **ucv4xs**，命令和 Python 包名为 **ucv**。当前十二工程统一使用
+仓库与发行包名为 **ucv4xs**，命令和 Python 包名为 **ucv**。所有工程统一使用
 `testbenches/` 布局；使用文档说明如何操作，实际适配范围、失败和未验证项看
 [当前状态](status.md)，不能从教程或结构检查推断硬件通过。
 
@@ -31,6 +31,7 @@
 
 - [目录与文件职责](reference/repository-layout.md)：根目录、工程目录、本地环境与产物的区别。
 - [ucv 工作空间参考](reference/workspace.md)：CLI 参数、默认值、配置字段、收据与退出码。
+- [模块身份与增量维护](reference/modules.md)：已采用的模块树、持久 ID、变化对账、历史承接与 per-DUT 初始化。
 - [工程与 testbench 目录规范](reference/module-layout.md)：schema2、六职责、shared 边界及目录白名单。
 
 ## 解释：理解设计取舍与结论边界
@@ -48,7 +49,9 @@
 - **工程资料**：先看工程 `README.md`，或执行 `./scripts/ucv info <suite> --dut <dut>`；
   设计/验证规格在工程 `docs/spec/{design,verification}/`，问题在 `docs/bugs/{open,closed}/`。
 - **DUT 工作入口**：`testbenches/<testbench>/README.md`；已有 shared 包另有独立 README。
-  `ucv docs <suite> --write` 只刷新工作入口与问题汇总的生成区块，不生成验证结论。
+  工程 `docs/spec/verification/README.md` 提供逐 DUT 工作索引；`ucv docs <suite> --write`
+  刷新该索引、工作入口与问题汇总的生成区块，不生成验证结论。认领与验收方式见
+  [验证工作管理](architecture.md#验证工作如何管理)。
 - **经验与复盘**：[经验索引](lessons/README.md)；保留各案例的日期、基线和适用范围。
 - **历史来源**：`docs/history/` 和外部运行存储。旧引用可通过
   [`navigation.json`](navigation.json) 的 `relocations` 找到当前页面；位置映射不是字节或执行身份相同的证明。

@@ -3,7 +3,7 @@
 import pytest
 
 from dataclasses import replace
-from suites.memblock.lsq.testbenches.uncache_entry.transactions import RobPtr
+from suites.memblock.lsq.testbenches.shared.transactions.uncache_entry import RobPtr
 from suites.memblock.lsq.testbenches.load_uncache.env.sequences import allocate_batch
 from suites.memblock.lsq.testbenches.load_uncache.env.sequences import fill
 from suites.memblock.lsq.testbenches.load_uncache.env.sequences import red

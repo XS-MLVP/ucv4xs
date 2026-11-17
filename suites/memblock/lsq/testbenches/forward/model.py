@@ -71,15 +71,22 @@ class ForwardModel:
         start, end = query.vaddr % 16, query.vaddr % 16 + byte_count(query.size) - 1
         for slot, ptr in job.older:
             store = inp.stores[slot]
-            same = store.vaddr // 16 == query.vaddr // 16
-            following = store.cross_word and store.vaddr // 4096 == query.vaddr // 4096 and store.vaddr // 16 + 1 == query.vaddr // 16
+            # The 16B-coordinate match is page-local and deliberately ignores the
+            # virtual page tag; the tag only gates actual VA forwarding. That is
+            # what keeps a physical alias visible to the PA-match set (and thus
+            # forces replay) instead of silently dropping it from both sets.
+            store_word = (store.vaddr % 4096) // 16
+            load_word = (query.vaddr % 4096) // 16
+            same = store_word == load_word
+            following = store.cross_word and store_word + 1 == load_word
+            tag_match = store.vaddr // 4096 == query.vaddr // 4096
             line = store.cache_operation and store.vaddr // 64 == query.vaddr // 64
             relative_start = start + (16 if following else 0)
             relative_end = end + (16 if following else 0)
             overlaps = store.vaddr % 16 <= relative_end and store.vaddr % 16 + store.length - 1 >= relative_start
             if store.address_ready and overlaps:
                 potential.append(slot)
-                if same or following or line:
+                if ((same or following) and tag_match) or line:
                     virtual.append(slot)
         chosen = virtual[-1] if virtual else None
         selected = inp.stores[chosen] if chosen is not None else None
@@ -120,9 +127,24 @@ class ForwardModel:
                 pointer("bits_addrInvalid_bits_", SqPtr.encode(sq_serial(query.sq) - 1) if query.strict else query.wait_sq)
             if data_invalid:
                 pointer("bits_dataInvalid_bits_", answer.source_sq)
+            # forwardMask/forwardData are indexed by the load's own 16B word.
+            # Resolve each byte to an absolute address and ask the selected
+            # store for its offset there. Subtracting modulo 16 would wrap a
+            # cross-16B store's other half back into this word and fabricate
+            # forwarded bytes that the store never wrote.
+            load_word_base = query.vaddr // 16 * 16
             for byte in range(16):
-                relative = (byte - (store.vaddr % 16 if store else 0)) % 16
-                forwarded = store is not None and start <= byte <= end and bool(store.mask >> relative & 1)
+                relative = 0
+                if store is None or not start <= byte <= min(end, 15):
+                    forwarded = False
+                elif store.cache_operation:
+                    # CBO acts on a whole line; the store-relative byte index is
+                    # the hardware's rotate domain, not a linear byte range.
+                    relative = (byte - store.vaddr % 16) % 16
+                    forwarded = bool(store.mask >> relative & 1)
+                else:
+                    relative = load_word_base + byte - store.vaddr
+                    forwarded = 0 <= relative < store.length and bool(store.mask >> relative & 1)
                 result[prefix + f"bits_forwardMask_{byte}"] = int(forwarded)
                 if forwarded and not data_invalid:
                     result[prefix + f"bits_forwardData_{byte}"] = store.data >> (8 * relative) & 255

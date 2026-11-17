@@ -20,7 +20,27 @@
       "tests": [
         "testbenches/store_arbiter/tests"
       ],
-      "testbench": "store_arbiter"
+      "testbench": "store_arbiter",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Arbiter3_StoreStageIO",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_StoreUnit_0.s0.RequestSources_arb",
+        "direct_parents": [
+          {
+            "parent": "StoreUnitS0",
+            "instance": "RequestSources_arb",
+            "line": 343
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/chisel3/util/Arbiter.scala",
+          "line": 149
+        },
+        "source_location_kind": "locked-dependency"
+      },
+      "module_id": "M-a6ff604f4bc6"
     },
     "store_trigger": {
       "design_spec": [
@@ -33,13 +53,32 @@
       ],
       "environment": "testbenches/store_trigger/env/__init__.py",
       "chisel": [
-        "src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala",
-        "src/main/scala/xiangshan/backend/fu/NewCSR/Debug.scala"
+        "src/main/scala/xiangshan/backend/fu/NewCSR/Debug.scala",
+        "src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala"
       ],
       "tests": [
         "testbenches/store_trigger/tests"
       ],
-      "testbench": "store_trigger"
+      "testbench": "store_trigger",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MemTrigger_3",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_StoreUnit_0.s1.storeTrigger",
+        "direct_parents": [
+          {
+            "parent": "StoreUnitS1",
+            "instance": "storeTrigger",
+            "line": 370
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/fu/NewCSR/Debug.scala",
+          "line": 301
+        }
+      },
+      "module_id": "M-ec422b4f2cf1"
     },
     "store_delay": {
       "design_spec": [
@@ -57,7 +96,26 @@
       "tests": [
         "testbenches/store_delay/tests"
       ],
-      "testbench": "store_delay"
+      "testbench": "store_delay",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "DelayPipeline",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_StoreUnit_0.s3.delayPipe",
+        "direct_parents": [
+          {
+            "parent": "StoreUnitS3",
+            "instance": "delayPipe",
+            "line": 235
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala",
+          "line": 950
+        }
+      },
+      "module_id": "M-4402a830c5a7"
     },
     "store_s0": {
       "design_spec": [
@@ -75,7 +133,26 @@
       "tests": [
         "testbenches/store_s0/tests"
       ],
-      "testbench": "store_s0"
+      "testbench": "store_s0",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "StoreUnitS0",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_StoreUnit_0.s0",
+        "direct_parents": [
+          {
+            "parent": "NewStoreUnit",
+            "instance": "s0",
+            "line": 379
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala",
+          "line": 38
+        }
+      },
+      "module_id": "M-2d0b670002f2"
     },
     "store_s1": {
       "design_spec": [
@@ -93,7 +170,26 @@
       "tests": [
         "testbenches/store_s1/tests"
       ],
-      "testbench": "store_s1"
+      "testbench": "store_s1",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "StoreUnitS1",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_StoreUnit_0.s1",
+        "direct_parents": [
+          {
+            "parent": "NewStoreUnit",
+            "instance": "s1",
+            "line": 482
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala",
+          "line": 255
+        }
+      },
+      "module_id": "M-20738672d1f1"
     },
     "store_s2": {
       "design_spec": [
@@ -111,7 +207,26 @@
       "tests": [
         "testbenches/store_s2/tests"
       ],
-      "testbench": "store_s2"
+      "testbench": "store_s2",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "StoreUnitS2",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_StoreUnit_0.s2",
+        "direct_parents": [
+          {
+            "parent": "NewStoreUnit",
+            "instance": "s2",
+            "line": 678
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala",
+          "line": 547
+        }
+      },
+      "module_id": "M-5ea324cadfcd"
     },
     "store_s3": {
       "design_spec": [
@@ -129,7 +244,26 @@
       "tests": [
         "testbenches/store_s3/tests"
       ],
-      "testbench": "store_s3"
+      "testbench": "store_s3",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "StoreUnitS3",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_StoreUnit_0.s3",
+        "direct_parents": [
+          {
+            "parent": "NewStoreUnit",
+            "instance": "s3",
+            "line": 744
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala",
+          "line": 710
+        }
+      },
+      "module_id": "M-59a14fcbb242"
     },
     "store_s4": {
       "design_spec": [
@@ -147,7 +281,26 @@
       "tests": [
         "testbenches/store_s4/tests"
       ],
-      "testbench": "store_s4"
+      "testbench": "store_s4",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "StoreUnitS4",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_StoreUnit_0.s4",
+        "direct_parents": [
+          {
+            "parent": "NewStoreUnit",
+            "instance": "s4",
+            "line": 862
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala",
+          "line": 837
+        }
+      },
+      "module_id": "M-6a8c511609e3"
     },
     "new_store_unit": {
       "design_spec": [
@@ -166,7 +319,31 @@
       "tests": [
         "testbenches/new_store_unit/tests"
       ],
-      "testbench": "new_store_unit"
+      "testbench": "new_store_unit",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "NewStoreUnit",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_StoreUnit_0",
+        "direct_parents": [
+          {
+            "parent": "MemBlock",
+            "instance": "inner_StoreUnit_0",
+            "line": 13033
+          },
+          {
+            "parent": "MemBlock",
+            "instance": "inner_StoreUnit_1",
+            "line": 13323
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala",
+          "line": 891
+        }
+      },
+      "module_id": "M-8d00d813687a"
     },
     "std_exe_unit": {
       "design_spec": [
@@ -185,7 +362,31 @@
       "tests": [
         "testbenches/std_exe_unit/tests"
       ],
-      "testbench": "std_exe_unit"
+      "testbench": "std_exe_unit",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "StdExeUnit",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_stdExeUnits_0",
+        "direct_parents": [
+          {
+            "parent": "MemBlock",
+            "instance": "inner_stdExeUnits_0",
+            "line": 13614
+          },
+          {
+            "parent": "MemBlock",
+            "instance": "inner_stdExeUnits_1",
+            "line": 13661
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/pipeline/StdExeUnit.scala",
+          "line": 44
+        }
+      },
+      "module_id": "M-225c419ab1d3"
     },
     "load_arbiter": {
       "design_spec": [
@@ -204,7 +405,27 @@
       "tests": [
         "testbenches/load_arbiter/tests"
       ],
-      "testbench": "load_arbiter"
+      "testbench": "load_arbiter",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Arbiter7_LoadStageIO",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_LoadUnit_0.s0.RequestSources_arb",
+        "direct_parents": [
+          {
+            "parent": "LoadUnitS0",
+            "instance": "RequestSources_arb",
+            "line": 664
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/chisel3/util/Arbiter.scala",
+          "line": 149
+        },
+        "source_location_kind": "locked-dependency"
+      },
+      "module_id": "M-45c66ebfa257"
     },
     "load_trigger": {
       "design_spec": [
@@ -217,13 +438,32 @@
       ],
       "environment": "testbenches/load_trigger/env/__init__.py",
       "chisel": [
-        "src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala",
-        "src/main/scala/xiangshan/backend/fu/NewCSR/Debug.scala"
+        "src/main/scala/xiangshan/backend/fu/NewCSR/Debug.scala",
+        "src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala"
       ],
       "tests": [
         "testbenches/load_trigger/tests"
       ],
-      "testbench": "load_trigger"
+      "testbench": "load_trigger",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MemTrigger",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_LoadUnit_0.s1.loadTrigger",
+        "direct_parents": [
+          {
+            "parent": "LoadUnitS1",
+            "instance": "loadTrigger",
+            "line": 664
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/fu/NewCSR/Debug.scala",
+          "line": 301
+        }
+      },
+      "module_id": "M-ec422b4f2cf1"
     },
     "load_datapath": {
       "design_spec": [
@@ -241,7 +481,26 @@
       "tests": [
         "testbenches/load_datapath/tests"
       ],
-      "testbench": "load_datapath"
+      "testbench": "load_datapath",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "LoadUnitDataPath",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_LoadUnit_0.dataPath",
+        "direct_parents": [
+          {
+            "parent": "NewLoadUnit",
+            "instance": "dataPath",
+            "line": 3640
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala",
+          "line": 1896
+        }
+      },
+      "module_id": "M-15011442e5e6"
     },
     "load_s0": {
       "design_spec": [
@@ -259,7 +518,26 @@
       "tests": [
         "testbenches/load_s0/tests"
       ],
-      "testbench": "load_s0"
+      "testbench": "load_s0",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "LoadUnitS0",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_LoadUnit_0.s0",
+        "direct_parents": [
+          {
+            "parent": "NewLoadUnit",
+            "instance": "s0",
+            "line": 1204
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala",
+          "line": 43
+        }
+      },
+      "module_id": "M-45aba3ae8302"
     },
     "load_s1": {
       "design_spec": [
@@ -277,7 +555,26 @@
       "tests": [
         "testbenches/load_s1/tests"
       ],
-      "testbench": "load_s1"
+      "testbench": "load_s1",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "LoadUnitS1",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_LoadUnit_0.s1",
+        "direct_parents": [
+          {
+            "parent": "NewLoadUnit",
+            "instance": "s1",
+            "line": 1682
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala",
+          "line": 498
+        }
+      },
+      "module_id": "M-0f0825d66ada"
     },
     "load_s2": {
       "design_spec": [
@@ -295,7 +592,26 @@
       "tests": [
         "testbenches/load_s2/tests"
       ],
-      "testbench": "load_s2"
+      "testbench": "load_s2",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "LoadUnitS2",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_LoadUnit_0.s2",
+        "direct_parents": [
+          {
+            "parent": "NewLoadUnit",
+            "instance": "s2",
+            "line": 2166
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala",
+          "line": 804
+        }
+      },
+      "module_id": "M-8f3e6788f0fa"
     },
     "load_s3": {
       "design_spec": [
@@ -313,7 +629,26 @@
       "tests": [
         "testbenches/load_s3/tests"
       ],
-      "testbench": "load_s3"
+      "testbench": "load_s3",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "LoadUnitS3",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_LoadUnit_0.s3",
+        "direct_parents": [
+          {
+            "parent": "NewLoadUnit",
+            "instance": "s3",
+            "line": 2795
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala",
+          "line": 1291
+        }
+      },
+      "module_id": "M-a1d82e1689e0"
     },
     "load_s4": {
       "design_spec": [
@@ -331,7 +666,26 @@
       "tests": [
         "testbenches/load_s4/tests"
       ],
-      "testbench": "load_s4"
+      "testbench": "load_s4",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "LoadUnitS4",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_LoadUnit_0.s4",
+        "direct_parents": [
+          {
+            "parent": "NewLoadUnit",
+            "instance": "s4",
+            "line": 3519
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala",
+          "line": 1874
+        }
+      },
+      "module_id": "M-c75f0c109668"
     },
     "new_load_unit": {
       "design_spec": [
@@ -350,7 +704,169 @@
       "tests": [
         "testbenches/new_load_unit/tests"
       ],
-      "testbench": "new_load_unit"
+      "testbench": "new_load_unit",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "NewLoadUnit",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_LoadUnit_0",
+        "direct_parents": [
+          {
+            "parent": "MemBlock",
+            "instance": "inner_LoadUnit_0",
+            "line": 9247
+          },
+          {
+            "parent": "MemBlock",
+            "instance": "inner_LoadUnit_1",
+            "line": 10509
+          },
+          {
+            "parent": "MemBlock",
+            "instance": "inner_LoadUnit_2",
+            "line": 11771
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala",
+          "line": 2063
+        }
+      },
+      "module_id": "M-be6f7d028e66"
+    },
+    "select_oldest": {
+      "testbench": "select_oldest",
+      "design_spec": "docs/spec/design/select_oldest.md",
+      "verification_spec": "docs/spec/verification/select_oldest.md",
+      "environment": "testbenches/select_oldest/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/MemCommon.scala"
+      ],
+      "tests": [
+        "testbenches/select_oldest/tests"
+      ],
+      "smoke": "testbenches/select_oldest/tests/test_select_oldest_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "SelectOldest",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_exceptionInfoGen.s1Oldest_s1SelectOldestGroup_0",
+        "direct_parents": [
+          {
+            "parent": "ExceptionInfoGen",
+            "instance": "s1Oldest_s1SelectOldestGroup_0",
+            "line": 981
+          },
+          {
+            "parent": "ExceptionInfoGen",
+            "instance": "s1Oldest_s1SelectOldestGroup_1",
+            "line": 1165
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/MemCommon.scala",
+          "line": 195
+        }
+      },
+      "module_id": "M-671f5fc29366"
+    },
+    "dummy_dpic_wrapper": {
+      "testbench": "dummy_dpic_wrapper",
+      "design_spec": "docs/spec/design/dummy_dpic_wrapper.md",
+      "verification_spec": "docs/spec/verification/dummy_dpic_wrapper.md",
+      "environment": "testbenches/dummy_dpic_wrapper/env.py",
+      "chisel": [
+        "difftest/src/main/scala/DPIC.scala"
+      ],
+      "tests": [
+        "testbenches/dummy_dpic_wrapper/tests"
+      ],
+      "smoke": "testbenches/dummy_dpic_wrapper/tests/test_dummy_dpic_wrapper_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "DummyDPICWrapper_LrScEvent",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_atomicsUnit.difftest_lrsc_1",
+        "direct_parents": [
+          {
+            "parent": "AtomicsUnit",
+            "instance": "difftest_lrsc_1",
+            "line": 829
+          }
+        ],
+        "declaration": {
+          "path": "difftest/src/main/scala/DPIC.scala",
+          "line": 370
+        }
+      },
+      "module_id": "M-fdae5d8b74c4"
+    },
+    "atomics": {
+      "testbench": "atomics",
+      "design_spec": "docs/spec/design/atomics.md",
+      "verification_spec": "docs/spec/verification/atomics.md",
+      "environment": "testbenches/atomics/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/pipeline/AtomicsUnit.scala"
+      ],
+      "tests": [
+        "testbenches/atomics/tests"
+      ],
+      "smoke": "testbenches/atomics/tests/test_atomics_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "AtomicsUnit",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_atomicsUnit",
+        "direct_parents": [
+          {
+            "parent": "MemBlock",
+            "instance": "inner_atomicsUnit",
+            "line": 13708
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/pipeline/AtomicsUnit.scala",
+          "line": 39
+        }
+      },
+      "module_id": "M-2f996077143c"
+    },
+    "memblock": {
+      "testbench": "memblock",
+      "design_spec": "docs/spec/design/memblock.md",
+      "verification_spec": "docs/spec/verification/memblock.md",
+      "environment": "testbenches/memblock/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/MemBlock.scala"
+      ],
+      "tests": [
+        "testbenches/memblock/tests"
+      ],
+      "smoke": "testbenches/memblock/tests/test_memblock_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MemBlock",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock",
+        "direct_parents": [
+          {
+            "parent": "XSCore",
+            "instance": "memBlock",
+            "line": 5003
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/MemBlock.scala",
+          "line": 1635
+        }
+      },
+      "module_id": "M-a7f85b428b18"
     }
   }
 }

@@ -22,6 +22,9 @@
     "docs/spec/verification/README.md",
     "docs/spec/verification/constraints.md",
     "docs/spec/verification/evidence/README.md",
-    "docs/bugs/README.md"
+    "docs/bugs/README.md",
+    "docs/spec/design/uncache.md",
+    "docs/spec/verification/uncache.md",
+    "testbenches/uncache/README.md"
   ]
 }

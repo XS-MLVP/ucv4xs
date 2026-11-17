@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "current": [
+    "docs/spec/design/timer.md",
+    "docs/spec/verification/timer.md",
+    "testbenches/timer/README.md",
+    "docs/spec/design/time_async.md",
+    "docs/spec/verification/time_async.md",
+    "testbenches/time_async/README.md",
+    "README.md",
+    "docs/README.md",
+    "docs/spec/design/README.md",
+    "docs/spec/verification/README.md",
+    "docs/bugs/README.md",
+    "docs/spec/design/syscnt.md",
+    "docs/spec/verification/syscnt.md",
+    "testbenches/syscnt/README.md"
+  ]
+}

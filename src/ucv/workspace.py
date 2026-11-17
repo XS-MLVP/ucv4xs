@@ -7,7 +7,7 @@ from urllib.parse import quote, unquote
 
 from .common import UcvError, contained, lock, read, write
 from .sources import source_key
-from .layout import layout_names, testbench_name, testbench_path, problems, refresh_readmes, relocated
+from .layout import layout_names, testbench_name, testbench_path, problems, refresh_readmes, relocated_paths
 
 
 def metadata(suite):
@@ -24,6 +24,10 @@ def metadata(suite):
     for key, row in value['duts'].items():
         if not isinstance(row,dict):
             raise UcvError(f'{suite.name}/{key}: workspace entry must be an object')
+        if 'module_id' in row:
+            from .modules import identifier
+            if not identifier(row['module_id']):
+                raise UcvError(f'{suite.name}/{key}: invalid persistent module_id')
         testbench_name(key,row,value['schema'])
         for role in ('design_spec','verification_spec','environment','chisel','tests'):
             if role not in row:continue
@@ -34,8 +38,12 @@ def metadata(suite):
         if 'smoke' in row and (not isinstance(row['smoke'],str) or not row['smoke']):
             raise UcvError(f'{suite.name}/{key}: invalid smoke nodeid')
     if value['schema']==2:
+        owners={}
         for key in suite.recipe['duts']:
-            testbench_name(key,value['duts'].get(key,{}),value['schema'])
+            name=testbench_name(key,value['duts'].get(key,{}),value['schema'])
+            if name in owners:
+                raise UcvError(f'{suite.name}: each DUT requires an independent testbench; {owners[name]} and {key} share {name}')
+            owners[name]=key
     return value
 
 
@@ -85,6 +93,10 @@ def info(project, suite, duts=None):
     meta = metadata(suite)
     _,field=layout_names(meta)
     source = project.root / '.cache/sources' / source_key(suite.baseline)
+    module_index = {}
+    if project.config.get('modules'):
+        from .modules import load
+        module_index = {row['module_id']:row for row in load(project)['modules']}
     rows = []
     for key in selected_duts(suite, duts):
         spec = suite.recipe['duts'][key]
@@ -135,7 +147,11 @@ def info(project, suite, duts=None):
             commands['build']+=' --rtl-source source'
         if entry.get('smoke'):
             commands['smoke'] = commands['run'] + ' -- ' + shlex.quote(entry['smoke'])
-        rows.append({'dut': key, field:testbench_name(key,entry,meta['schema']), **spec, 'resources': resources, 'commands': commands})
+        rows.append({'dut': key, field:testbench_name(key,entry,meta['schema']), **spec,
+                     **({'module_id':entry['module_id'], 'module_name':module_index.get(entry['module_id'],{}).get('name')}
+                        if 'module_id' in entry else {}),
+                     **({'binding': entry['binding']} if 'binding' in entry else {}),
+                     'resources': resources, 'commands': commands})
     documents={role:str(suite.path/path) for role,path in
                [('overview','docs/README.md'),('bugs','docs/bugs/README.md')]
                if (suite.path/path).is_file()}
@@ -150,6 +166,20 @@ def markdown(value):
     lines.append('')
     for row in value['duts']:
         lines += [f"## {row['dut']} ({row['top']} → {row['export_name']})", '']
+        if row.get('module_id'):
+            lines.append(f"- 模块身份：`{row['module_id']}` — {row.get('module_name') or '待核对'}；用 `ucv modules list` 查看树。")
+        binding = row.get('binding')
+        if isinstance(binding, dict):
+            from .documents import binding_observation
+            lines.append('- 接入观察（非验收状态）：'+binding_observation(row,value['baseline'],row['top']))
+            lines.append('- 登记绑定观察（非构建凭据）：' +
+                         f"{binding.get('observed_baseline', '未登记')} / " +
+                         f"{binding.get('observed_top', '未登记')} / " +
+                         f"{binding.get('availability', '未登记')}")
+            if binding.get('sample_instance'):
+                lines.append(f"- 实例样本：`{binding['sample_instance']}`")
+            if binding.get('reason'):
+                lines.append(f"- 绑定边界：{binding['reason']}")
         for role, resources in row['resources'].items():
             if not resources:
                 lines.append(f'- {role}: 待在 workspace.json 登记')
@@ -166,6 +196,11 @@ def check(project, suites):
     """Structural checks only; never mark design or verification semantics approved."""
     errors, notices, inventory = [], [], []
     bug_records=[]
+    if project.config.get('modules'):
+        from .modules import check as check_modules
+        module_check=check_modules(project,suites)
+        errors.extend(module_check['errors'])
+        notices.extend(module_check['notices'])
     for suite in suites:
         value = info(project, suite)
         meta=metadata(suite)
@@ -209,8 +244,10 @@ def check(project, suites):
         for legacy in (suite.path/'docs/bugs').glob('*.md'):
             if legacy.name!='README.md':
                 notices.append(f'{suite.name}: unclassified issue/support page: {legacy.relative_to(suite.path)}')
-        from .documents import refresh_index
+        from .documents import refresh_index, refresh_work_index
         try:
+            if not refresh_work_index(project,suite,meta)['current']:
+                errors.append(f'{suite.name}: stale DUT work index; run ucv docs {suite.name} --write')
             result=refresh_index(project,suite)
             bug_records.append({'suite':suite.name,'issues':result['issues']})
             if (suite.path/'docs/bugs/README.md').is_file() and not result['index_current']:
@@ -253,8 +290,13 @@ def check(project, suites):
                 target = unquote(target.split('#')[0])
                 resolved=(path.parent/target).resolve()
                 if target and not resolved.exists():
-                    if resolved.is_relative_to(root) and relocated(root,str(resolved.relative_to(root))).exists():
+                    if (resolved.is_relative_to(root)
+                            and all(p.exists() for p in relocated_paths(root,str(resolved.relative_to(root))))):
                         notices.append(f'{name}: historical path relocated: {target}')
+                        continue
+                    if (root != project.root and resolved.is_relative_to(project.root)
+                            and all(p.exists() for p in relocated_paths(project.root,str(resolved.relative_to(project.root))))):
+                        notices.append(f'{name}: historical repository path relocated: {target}')
                         continue
                     parts=set(Path(target).parts)
                     generated={'.cache','.tools','.venv','.history','.ucv','results','rtl','dut','XiangShan','XiangShan-internal'}
@@ -269,19 +311,29 @@ def check(project, suites):
             'errors': errors, 'notices': notices, 'documents': inventory, 'bugs':bug_records}
 
 
-def initialize(project, name, group, dut, top, export_name):
+def initialize(project, name, group, dut, top, export_name, module_id=None):
     """Create a real suite skeleton; existing directories are never overwritten."""
     for label, value in [('suite',name), ('group',group), ('dut',dut), ('top',top), ('export_name',export_name)]:
         if not value or not re.fullmatch(r'[A-Za-z_]\w*', value) or keyword.iskeyword(value):
             raise UcvError(f'{label} must be an explicit identifier')
-    with lock(project.root/'.cache/locks/init'):
+    with lock(project.root/'.cache/locks/init'), lock(project.root/'.cache/locks/modules'):
         config = read(project.root/'ucv.json')
+        # Another caller may have adopted a catalog or registered a suite since
+        # this Project was constructed. All preflight reads use the locked state.
+        project.config = config
         existing = name in config['suites']
         path = contained(project.root, config['suites'][name] if existing else f'suites/{group}/{name}')
         if existing and path.parent.name != group:
             raise UcvError('Existing suite belongs to another group')
         if not existing and path.exists():
             raise UcvError('Refusing to overwrite existing directory: '+str(path))
+        if project.config.get('modules') or module_id is not None:
+            from .modules import init_identity
+            baseline_name = config.get('baseline')
+            for directory in (project.root/'suites',path.parent,path):
+                if (directory/'ucv.json').is_file():
+                    baseline_name = read(directory/'ucv.json').get('baseline',baseline_name)
+            init_identity(project,module_id,top,project.baseline(baseline_name))
         recipe = read(path/'ucv.json') if existing else {
             'schema':1,'suite':name,'generation':'soc','closure':'module-dependencies',
             'duts':{},'pytest_root':'.','tests':['testbenches'],'process_isolation':'suite'}
@@ -310,6 +362,9 @@ def initialize(project, name, group, dut, top, export_name):
                 '## 行为要求、时序与并发\n\n为每条要求分配稳定 ID；记录 reset/redirect/异常及不变量。\n\n'
                 '## 依据与待确认问题\n\nTODO：规格来源、设计 owner 与 review 结论。\n',
             f'docs/spec/verification/{dut}.md': f'# {top} — Verification spec\n\n状态：草稿，尚未实现验证。\n\n'
+                '## 工作跟踪\n\n负责人：待认领。当前工作：确认验证合同与完成条件。\n'
+                '下一步：补齐合法输入、独立预期和观察边界，再实现环境。\n'
+                '阻塞：合同与实现尚未建立。验收证据：尚无。\n\n'
                 '## 范围与假设\n\nTODO\n\n## 要求到验证项\n\n'
                 '| 设计要求 ID | 场景与合法前态 | 独立预期依据 | 观察与 checker | 用例/覆盖 |\n'
                 '|---|---|---|---|---|\n\n## 完成条件与缺口\n\nTODO\n',
@@ -337,7 +392,7 @@ def initialize(project, name, group, dut, top, export_name):
                     'docs/spec/verification，再实现 testbenches/<dut>/ 中的事务环境和显式失败占位用例。\n',
                 'pytest.ini':'[pytest]\nasyncio_mode = auto\nasyncio_default_fixture_loop_scope = function\n'
                     'testpaths = testbenches\nmarkers =\n    selftest: environment checks, not hardware credit\n',
-                'conftest.py':'"""Register testbench-owned fixtures here; keep one suite pytest root."""\npytest_plugins = ("ucv.pytest_selftest",)\n'})
+                'conftest.py':'"""Register testbench-owned fixtures here; keep one suite pytest root."""\nimport pytest\n\npytest_plugins = ("ucv.pytest_selftest",)\n\n\n@pytest.fixture\ndef dut_fixture():\n    """Replace with the real owner fixture bound to the generated DUT."""\n    pytest.fail("TODO: bind the generated DUT and register its owner fixture")\n'})
         if not (path/directory/'__init__.py').exists():files[directory+'/__init__.py']=''
         # Preflight the whole DUT boundary, including unregistered user work.
         for candidate in (path/base,path/dut):
@@ -364,6 +419,8 @@ def initialize(project, name, group, dut, top, export_name):
             'verification_spec':f'docs/spec/verification/{dut}.md','environment':f'{base}/env.py',
             'chisel':[], 'tests':[f'{base}/tests'],
             'smoke':f'{base}/tests/test_{dut}_smoke.py::test_smoke'}
+        if module_id is not None:
+            workspace['duts'][dut]['module_id'] = module_id
         write(path/'ucv.json',recipe)
         write(path/'workspace.json',workspace)
         nav['current']=list(dict.fromkeys([*nav['current'], 'README.md', *overview,
@@ -375,4 +432,6 @@ def initialize(project, name, group, dut, top, export_name):
             write(project.root/'ucv.json',config)
             project.config=config
         refresh_readmes(project,project.suite(name),workspace,write=True)
+        from .documents import refresh_work_index
+        refresh_work_index(project,project.suite(name),workspace,write=True)
         return str(path)

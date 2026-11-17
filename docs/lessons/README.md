@@ -6,6 +6,7 @@
 ## 从哪里开始
 
 - [编译、构建与工具链经验](build-and-toolchain.md)：完整构建入口、已遇到的工具问题、补丁、搬迁重建及日志位置。
+- [模块切分与跨基线维护，2026-11-17](module-splitting-and-maintenance-20261117.md)：模块树与代码包的区别、参数族与父级验收、CommitQueue/TLBNonBlock 缺失、路径派生 ID 的局限及增量维护方法。
 
 - [按阶段/问题选方法](../../skills/README.md)：每篇说明输入、怎么做、产出和验收；不只检查“是否完整”。
 - [十二类踩坑案例](rtl-verification-soundness-20261026.md)：原手册的历史案例、错误判断、修正建议与来源，正文保留。
@@ -18,6 +19,7 @@
 - [事务边界与已登记漏检修复，2026-11-01](transaction-boundary-repair-20261101.md)：Sbuffer 双 DUT 的框架 Driver/Monitor、零接受/超时、写回 UID 与响应/重试、同字节竞争和 CMO 生产者时序；LSQ 显式 fixture 合同。
 - [事务适配历史复盘，2026-11-01/02](transaction-goal-20261101.md)：当时十工程/132 DUT 的冻结范围、适配反例与修正证据；正文的目标状态和待办属于当时检查点，当前范围见[阶段状态](../status.md)。
 - [LSQ 基线升级回归，2026-11-02/03](lsq-baseline-regression-20261103.md)：新基线 prepare/build/完整回归；上游修复、模型滞后、缺陷仍在三分类；引脚适配边界；"照抄 RTL 不是优雅更新"的四种实测反例。
+- [把参考模型期望当成硬件事实，2026-11-13](model-expectation-not-hardware-truth-20261113.md)：FAIL 不等于 RTL 错、断言元组读反、先有结论再找解释；用物理字节交集复核 #839/#840，定位并修正 Forward 参考模型的两处坐标缺陷；剩余 6 项属另一根因。
 - [LSQ 上游核查与模型审核，2026-11-03](../../suites/memblock/lsq/docs/spec/verification/evidence/reports/upstream-audit-20261103.md)：基线后 10 个上游提交的逐条判定、3 个已合并 LSQ 修复与本地 FAIL 的映射、未合并 Issue/PR 的覆盖矩阵，以及新补的 MMIO Store 总线故障反例。
 - [LSQ 功能点补齐与 SKILL 细化，2026-11-03](../../suites/memblock/lsq/docs/spec/verification/evidence/reports/function-points-and-skill-20261103.md)：指令来源映射与 kind×outcome 矩阵、可执行功能点账本、共享 actor 同源期望修复（7 条 PASS→FAIL 同一根因），以及由此落地的 SKILL 四处细化。
 - [LSQ 交互语义与跨模块窗口，2026-11-06](../../suites/memblock/lsq/docs/spec/verification/evidence/reports/interaction-probes-20261106.md)：8 条跨模块边界的握手/背压/身份/完成语义、5 条交互窗口账本；两个探针各带合法对照，复现第二页前递窗口（#6822 同根因）与 NC 跨 16B 请求只覆盖半数字节。

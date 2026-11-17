@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "suite": "vec_region",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "region": {
+      "top": "VecRegionModule",
+      "export_name": "VecRegionModuleDut"
+    },
+    "vf_reg_file": {
+      "top": "VfRegFile",
+      "export_name": "VfRegFileDut"
+    },
+    "wb_data_path": {
+      "top": "WbDataPath",
+      "export_name": "WbDataPathDut"
+    },
+    "vl_reg_file": {
+      "top": "VlRegFile",
+      "export_name": "VlRegFileDut"
+    },
+    "wb_fu_busy_table": {
+      "top": "WbFuBusyTable",
+      "export_name": "WbFuBusyTableDut"
+    },
+    "nf_mapped_elem_idx": {
+      "top": "NfMappedElemIdx",
+      "export_name": "NfMappedElemIdxDut"
+    },
+    "get_e8_offset_in_vreg": {
+      "top": "GetE8OffsetInVreg",
+      "export_name": "GetE8OffsetInVregDut"
+    },
+    "exception_merge": {
+      "top": "VecExcpDataMergeModule",
+      "export_name": "VecExcpDataMergeModuleDut"
+    },
+    "iq_vialu_vimac_vmove_vfcvt_vfmac": {
+      "top": "IssueQueueVialuVimacVmoveVfcvtVfmac",
+      "export_name": "IssueQueueVialuVimacVmoveVfcvtVfmacDut"
+    },
+    "iq_vialu_vidiv_vfmac_vfdiv": {
+      "top": "IssueQueueVialuVidivVfmacVfdiv",
+      "export_name": "IssueQueueVialuVidivVfmacVfdivDut"
+    },
+    "iq_vialu": {
+      "top": "IssueQueueVialu",
+      "export_name": "IssueQueueVialuDut"
+    },
+    "iq_vialu_1": {
+      "top": "IssueQueueVialu_1",
+      "export_name": "IssueQueueVialu_1Dut"
+    },
+    "iq_vstd": {
+      "top": "IssueQueueVstd",
+      "export_name": "IssueQueueVstdDut"
+    },
+    "pipe_vialu_vimac_vmove_vfcvt_vfmac": {
+      "top": "IssuePipeVialuVimacVmoveVfcvtVfmac",
+      "export_name": "IssuePipeVialuVimacVmoveVfcvtVfmacDut"
+    },
+    "pipe_vialu_vidiv_vfmac_vfdiv": {
+      "top": "IssuePipeVialuVidivVfmacVfdiv",
+      "export_name": "IssuePipeVialuVidivVfmacVfdivDut"
+    },
+    "pipe_vialu": {
+      "top": "IssuePipeVialu",
+      "export_name": "IssuePipeVialuDut"
+    },
+    "pipe_vialu_1": {
+      "top": "IssuePipeVialu_1",
+      "export_name": "IssuePipeVialu_1Dut"
+    },
+    "pipe_vstd": {
+      "top": "IssuePipeVstd",
+      "export_name": "IssuePipeVstdDut"
+    },
+    "pipe_vstd_1": {
+      "top": "IssuePipeVstd_1",
+      "export_name": "IssuePipeVstd_1Dut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "testbenches"
+  ],
+  "process_isolation": "suite"
+}

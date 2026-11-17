@@ -1,0 +1,262 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "duts": {
+    "axi4_aplic": {
+      "testbench": "axi4_aplic",
+      "design_spec": "docs/spec/design/axi4_aplic.md",
+      "verification_spec": "docs/spec/verification/axi4_aplic.md",
+      "environment": "testbenches/axi4_aplic/env.py",
+      "chisel": [
+        "ChiselAIA/src/main/scala/APLIC.scala"
+      ],
+      "tests": [
+        "testbenches/axi4_aplic/tests"
+      ],
+      "smoke": "testbenches/axi4_aplic/tests/test_axi4_aplic_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "AXI4APLIC",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.nocMisc.aplic",
+        "direct_parents": [
+          {
+            "parent": "MemMisc",
+            "instance": "aplic",
+            "line": 4104
+          }
+        ],
+        "declaration": {
+          "path": "ChiselAIA/src/main/scala/APLIC.scala",
+          "line": 411
+        }
+      },
+      "module_id": "M-028c9dc02e37"
+    },
+    "aplic": {
+      "testbench": "aplic",
+      "design_spec": "docs/spec/design/aplic.md",
+      "verification_spec": "docs/spec/verification/aplic.md",
+      "environment": "testbenches/aplic/env.py",
+      "chisel": [
+        "ChiselAIA/src/main/scala/APLIC.scala"
+      ],
+      "tests": [
+        "testbenches/aplic/tests"
+      ],
+      "smoke": "testbenches/aplic/tests/test_aplic_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "APLIC",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.nocMisc.aplic.aplic",
+        "direct_parents": [
+          {
+            "parent": "AXI4APLIC",
+            "instance": "aplic",
+            "line": 569
+          }
+        ],
+        "declaration": {
+          "path": "ChiselAIA/src/main/scala/APLIC.scala",
+          "line": 104
+        }
+      },
+      "module_id": "M-5029dfe344a0"
+    },
+    "axi_reg_imsic": {
+      "testbench": "axi_reg_imsic",
+      "design_spec": "docs/spec/design/axi_reg_imsic.md",
+      "verification_spec": "docs/spec/verification/axi_reg_imsic.md",
+      "environment": "testbenches/axi_reg_imsic/env.py",
+      "chisel": [
+        "ChiselAIA/src/main/scala/IMSIC.scala"
+      ],
+      "tests": [
+        "testbenches/axi_reg_imsic/tests"
+      ],
+      "smoke": "testbenches/axi_reg_imsic/tests/test_axi_reg_imsic_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "AXIRegIMSIC",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.imsic_bus_tops.axi_reg_imsic.axireg",
+        "direct_parents": [
+          {
+            "parent": "AXIRegIMSIC_WRAP",
+            "instance": "axireg",
+            "line": 49
+          }
+        ],
+        "declaration": {
+          "path": "ChiselAIA/src/main/scala/IMSIC.scala",
+          "line": 832
+        }
+      },
+      "module_id": "M-be82dc00b4b4"
+    },
+    "axi4_map": {
+      "testbench": "axi4_map",
+      "design_spec": "docs/spec/design/axi4_map.md",
+      "verification_spec": "docs/spec/verification/axi4_map.md",
+      "environment": "testbenches/axi4_map/env.py",
+      "chisel": [
+        "ChiselAIA/src/main/scala/common.scala"
+      ],
+      "tests": [
+        "testbenches/axi4_map/tests"
+      ],
+      "smoke": "testbenches/axi4_map/tests/test_axi4_map_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "AXI4Map",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.map",
+        "direct_parents": [
+          {
+            "parent": "XSTop",
+            "instance": "map",
+            "line": 1646
+          }
+        ],
+        "declaration": {
+          "path": "ChiselAIA/src/main/scala/common.scala",
+          "line": 280
+        }
+      },
+      "module_id": "M-83c5f0254b6e"
+    },
+    "imsic_bus": {
+      "testbench": "imsic_bus",
+      "design_spec": "docs/spec/design/imsic_bus.md",
+      "verification_spec": "docs/spec/verification/imsic_bus.md",
+      "environment": "testbenches/imsic_bus/env.py",
+      "chisel": [
+        "src/main/scala/device/imsic_axi_top.scala"
+      ],
+      "tests": [
+        "testbenches/imsic_bus/tests"
+      ],
+      "smoke": "testbenches/imsic_bus/tests/test_imsic_bus_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "imsic_bus_top",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.imsic_bus_tops",
+        "direct_parents": [
+          {
+            "parent": "XSTop",
+            "instance": "imsic_bus_tops",
+            "line": 1554
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/device/imsic_axi_top.scala",
+          "line": 80
+        }
+      },
+      "module_id": "M-301bc6939bd7"
+    },
+    "axi_reg_imsic_wrap": {
+      "testbench": "axi_reg_imsic_wrap",
+      "design_spec": "docs/spec/design/axi_reg_imsic_wrap.md",
+      "verification_spec": "docs/spec/verification/axi_reg_imsic_wrap.md",
+      "environment": "testbenches/axi_reg_imsic_wrap/env.py",
+      "chisel": [
+        "ChiselAIA/src/main/scala/IMSIC.scala"
+      ],
+      "tests": [
+        "testbenches/axi_reg_imsic_wrap/tests"
+      ],
+      "smoke": "testbenches/axi_reg_imsic_wrap/tests/test_axi_reg_imsic_wrap_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "AXIRegIMSIC_WRAP",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.imsic_bus_tops.axi_reg_imsic",
+        "direct_parents": [
+          {
+            "parent": "imsic_bus_top",
+            "instance": "axi_reg_imsic",
+            "line": 169
+          }
+        ],
+        "declaration": {
+          "path": "ChiselAIA/src/main/scala/IMSIC.scala",
+          "line": 720
+        }
+      },
+      "module_id": "M-6ae4da1b948d"
+    },
+    "imsic_wrap": {
+      "testbench": "imsic_wrap",
+      "design_spec": "docs/spec/design/imsic_wrap.md",
+      "verification_spec": "docs/spec/verification/imsic_wrap.md",
+      "environment": "testbenches/imsic_wrap/env.py",
+      "chisel": [
+        "ChiselAIA/src/main/scala/IMSIC.scala"
+      ],
+      "tests": [
+        "testbenches/imsic_wrap/tests"
+      ],
+      "smoke": "testbenches/imsic_wrap/tests/test_imsic_wrap_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IMSIC_WRAP",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_intRegion.intExuBlock.exuALU0_AluCsrFenceLink.csr.imsic",
+        "direct_parents": [
+          {
+            "parent": "CSR",
+            "instance": "imsic",
+            "line": 1552
+          }
+        ],
+        "declaration": {
+          "path": "ChiselAIA/src/main/scala/IMSIC.scala",
+          "line": 461
+        }
+      },
+      "module_id": "M-e5ee6c7e4cbe"
+    },
+    "imsic": {
+      "testbench": "imsic",
+      "design_spec": "docs/spec/design/imsic.md",
+      "verification_spec": "docs/spec/verification/imsic.md",
+      "environment": "testbenches/imsic/env.py",
+      "chisel": [
+        "ChiselAIA/src/main/scala/IMSIC.scala"
+      ],
+      "tests": [
+        "testbenches/imsic/tests"
+      ],
+      "smoke": "testbenches/imsic/tests/test_imsic_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IMSIC",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_intRegion.intExuBlock.exuALU0_AluCsrFenceLink.csr.imsic.imsic",
+        "direct_parents": [
+          {
+            "parent": "IMSIC_WRAP",
+            "instance": "imsic",
+            "line": 27
+          }
+        ],
+        "declaration": {
+          "path": "ChiselAIA/src/main/scala/IMSIC.scala",
+          "line": 163
+        }
+      },
+      "module_id": "M-6346fcd41f21"
+    }
+  }
+}

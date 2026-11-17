@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "current": [
+    "docs/spec/design/axi4_deinterleaver.md",
+    "docs/spec/verification/axi4_deinterleaver.md",
+    "testbenches/axi4_deinterleaver/README.md",
+    "docs/spec/design/axi4_id_indexer.md",
+    "docs/spec/verification/axi4_id_indexer.md",
+    "testbenches/axi4_id_indexer/README.md",
+    "docs/spec/design/tlfifo_fixer.md",
+    "docs/spec/verification/tlfifo_fixer.md",
+    "testbenches/tlfifo_fixer/README.md",
+    "docs/spec/design/tl_fragmenter.md",
+    "docs/spec/verification/tl_fragmenter.md",
+    "testbenches/tl_fragmenter/README.md",
+    "docs/spec/design/queue.md",
+    "docs/spec/verification/queue.md",
+    "testbenches/queue/README.md",
+    "docs/spec/design/repeater.md",
+    "docs/spec/verification/repeater.md",
+    "testbenches/repeater/README.md",
+    "README.md",
+    "docs/README.md",
+    "docs/spec/design/README.md",
+    "docs/spec/verification/README.md",
+    "docs/bugs/README.md",
+    "docs/spec/design/mem_misc.md",
+    "docs/spec/verification/mem_misc.md",
+    "testbenches/mem_misc/README.md"
+  ]
+}

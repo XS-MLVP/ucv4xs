@@ -17,6 +17,11 @@
 - 当前问题目录为 **17 open / 2 closed**。`FWD-SQID-001`、`LRQ-STRICT-001` 已依据 `public-a0c2a26cb` 的完整回归记录和进入基线的上游提交关闭；旧基线 `893e1580…` 版本仍为 open，历史 FAIL 和旧报告保留。正式记录见 [FWD-SQID-001](../../bugs/closed/FWD-SQID-001.md)、[LRQ-STRICT-001](../../bugs/closed/LRQ-STRICT-001.md)。
 - 本文只描述当前仍需执行的验证范围和顺序，不把任何历史 PASS、覆盖百分比或已关闭单项当成整体验收。
 
+FreeList、CAM 和 UncacheEntry 的 23 个 DUT 均使用独立的 `testbenches/<dut>/` 环境、
+事务、参考计算、检查/覆盖及测试。原场景按 DUT 参数一对一拆分，保留其参数 ID、随机种子
+和标记；唯一 suite `conftest.py` 显式注册每个单 DUT fixture，选跑入口见生成工作索引与
+`workspace.json`。父级已有的参考组件复用由 `shared` 承接，单个子 DUT 通过仍不能替代父级验收。
+
 ## 2. 范围与真实层次
 
 验证根为工程 `suites/memblock/lsq`（历史文档中的旧根 `memblock-hash/lsq/` 已迁移；旧路径映射见 `docs/navigation.json` 的 `relocations`）。验证对象是 `LsqWrapper` 的真实 RTL 子树：内部子块、Load/Store 分支和整体分别建立独立 DUT 与证据，不直接以整块 smoke 代替分层验证。
@@ -182,7 +187,7 @@ L3 保留 LsqWrapper 全部真实子块。外部代理模拟 dispatch/ROB、LDU/
 运行门禁：补齐本工程工具/ABI/coverage 锁；原生 DUT 真正可导入、实例化、初始化、走时钟，不只看导出退出码。
 
 - 子块：每个必需功能点既 reached 又 checked；定向和合法随机通过，日志/种子可复现；原生行/分支分母与缺口有说明，无点不算 100%。
-- 变体：四个 FreeList 不能只测一个；UncacheEntry 共用模型但需检查全部实际 ID 的路由特化和关键边界。
+- 变体：四个 FreeList 不能只测一个；UncacheEntry 各 DUT 独立维护同源拆分的模型，仍需检查全部实际 ID 的路由特化和关键边界。
 - 组合：进入父块验收前完成必需下级的合同与单测；保留回归，增加真实连接检查与并发。
 - 整体：INT 场景有独立证据，所有必需子块/分支通过；缺失端口或未实现能力列未覆盖，不以高行覆盖抵消。
 - 产物：每次运行独立 results 目录，记录测试/功能点、种子、波形策略、RTL/导出包/工具版本和覆盖分母。

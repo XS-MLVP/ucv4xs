@@ -1,0 +1,102 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "duts": {
+    "syscnt": {
+      "testbench": "syscnt",
+      "design_spec": "docs/spec/design/syscnt.md",
+      "verification_spec": "docs/spec/verification/syscnt.md",
+      "environment": "testbenches/syscnt/env.py",
+      "chisel": [
+        "src/main/scala/device/SYSCNT.scala"
+      ],
+      "tests": [
+        "testbenches/syscnt/tests"
+      ],
+      "smoke": "testbenches/syscnt/tests/test_syscnt_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "SYSCNT",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.nocMisc.syscnt",
+        "direct_parents": [
+          {
+            "parent": "MemMisc",
+            "instance": "syscnt",
+            "line": 3864
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/device/SYSCNT.scala",
+          "line": 72
+        }
+      },
+      "module_id": "M-21f9a0ba2ded"
+    },
+    "timer": {
+      "testbench": "timer",
+      "design_spec": "docs/spec/design/timer.md",
+      "verification_spec": "docs/spec/verification/timer.md",
+      "environment": "testbenches/timer/env.py",
+      "chisel": [
+        "src/main/scala/device/TIMER.scala"
+      ],
+      "tests": [
+        "testbenches/timer/tests"
+      ],
+      "smoke": "testbenches/timer/tests/test_timer_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "TIMER",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.nocMisc.timer",
+        "direct_parents": [
+          {
+            "parent": "MemMisc",
+            "instance": "timer",
+            "line": 4448
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/device/TIMER.scala",
+          "line": 78
+        }
+      },
+      "module_id": "M-5541397f7e25"
+    },
+    "time_async": {
+      "testbench": "time_async",
+      "design_spec": "docs/spec/design/time_async.md",
+      "verification_spec": "docs/spec/verification/time_async.md",
+      "environment": "testbenches/time_async/env.py",
+      "chisel": [
+        "src/main/scala/device/TimeAsync.scala"
+      ],
+      "tests": [
+        "testbenches/time_async/tests"
+      ],
+      "smoke": "testbenches/time_async/tests/test_time_async_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "TimeAsync",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.nocMisc.syscnt.timeasync",
+        "direct_parents": [
+          {
+            "parent": "SYSCNT",
+            "instance": "timeasync",
+            "line": 256
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/device/TimeAsync.scala",
+          "line": 29
+        }
+      },
+      "module_id": "M-3a1659965b58"
+    }
+  }
+}

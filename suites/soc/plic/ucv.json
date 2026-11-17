@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "suite": "plic",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "plic": {
+      "top": "TLPLIC",
+      "export_name": "TLPLICDut"
+    },
+    "plic_source": {
+      "top": "LazyModule",
+      "export_name": "LazyModuleDut"
+    },
+    "plic_fan_in": {
+      "top": "PLICFanIn",
+      "export_name": "PlicFanInDut"
+    },
+    "level_gateway": {
+      "top": "LevelGateway",
+      "export_name": "LevelGatewayDut"
+    },
+    "int_buffer": {
+      "top": "IntBuffer",
+      "export_name": "IntBufferDut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "testbenches"
+  ],
+  "process_isolation": "suite"
+}

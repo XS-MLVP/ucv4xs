@@ -1,0 +1,38 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "duts": {
+    "frontend": {
+      "testbench": "frontend",
+      "design_spec": "docs/spec/design/frontend.md",
+      "verification_spec": "docs/spec/verification/frontend.md",
+      "environment": "testbenches/frontend/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/frontend/Frontend.scala"
+      ],
+      "tests": [
+        "testbenches/frontend/tests"
+      ],
+      "smoke": "testbenches/frontend/tests/test_frontend_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Frontend",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend",
+        "direct_parents": [
+          {
+            "parent": "XSCore",
+            "instance": "frontend",
+            "line": 1655
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/Frontend.scala",
+          "line": 106
+        }
+      },
+      "module_id": "M-dd221641bb03"
+    }
+  }
+}

@@ -14,10 +14,10 @@ def main(argv=None):
     sub=parser.add_subparsers(dest='command',required=True)
     for name in ('list','info','check','docs','doctor','prepare','build','run'):
         p=sub.add_parser(name)
-        p.add_argument('selection',nargs='*',help='suite, group, public (default), or full')
+        p.add_argument('selection',nargs='*',help='suite, group, or configured profile (default: public)')
         p.add_argument('--require-unified-baseline',action='store_true')
         if name in {'list','info','check','docs','doctor'}:p.add_argument('--json',action='store_true')
-        if name=='docs':p.add_argument('--write',action='store_true',help='refresh generated bug indexes and testbench work entrances')
+        if name=='docs':p.add_argument('--write',action='store_true',help='refresh DUT work indexes, bug indexes and testbench entrances')
         if name in {'info','prepare','build','run'}:p.add_argument('--dut',action='append')
         if name=='doctor':p.add_argument('--stage',choices=('source','rtl','run','generate'),default='run')
         if name in {'prepare','build'}:
@@ -36,6 +36,18 @@ def main(argv=None):
     p=sub.add_parser('init')
     p.add_argument('suite');p.add_argument('--group',required=True);p.add_argument('--dut',required=True)
     p.add_argument('--top',required=True);p.add_argument('--export-name',required=True)
+    p.add_argument('--module-id',help='persistent module identity; each DUT still gets its own testbench')
+    p=sub.add_parser('modules',help='persistent module tree and offline baseline reconciliation')
+    actions=p.add_subparsers(dest='module_action',required=True)
+    for name in ('list','check','adopt','diff','apply'):
+        action=actions.add_parser(name)
+        action.add_argument('--json',action='store_true')
+        if name in {'adopt','diff','apply'}:
+            action.add_argument('observations',type=Path)
+            action.add_argument('--output',type=Path,help='save a new report file; existing files are protected')
+        if name in {'diff','apply'}:action.add_argument('--decisions',type=Path)
+        if name=='adopt':action.add_argument('--catalog',default='docs/modules.json')
+        if name=='apply':action.add_argument('--expect',required=True,help='plan_sha256 from the reviewed diff')
     p=sub.add_parser('report');p.add_argument('directory',type=Path,nargs='?');p.add_argument('--compare',type=Path)
     raw=list(sys.argv[1:] if argv is None else argv)
     forwarded=[]
@@ -51,7 +63,30 @@ def main(argv=None):
             print(setup(project,args.jobs,args.profile));return 0
         if args.command=='init':
             from .workspace import initialize
-            print(initialize(project,args.suite,args.group,args.dut,args.top,args.export_name));return 0
+            print(initialize(project,args.suite,args.group,args.dut,args.top,args.export_name,args.module_id));return 0
+        if args.command=='modules':
+            from . import modules
+            if args.module_action=='list':
+                print(json.dumps(modules.load(project),ensure_ascii=False,indent=2) if args.json else modules.tree(project))
+                return 0
+            if args.module_action=='check':
+                result=modules.check(project)
+            else:
+                if args.output and (args.output.exists() or args.output.is_symlink()):
+                    raise UcvError('Refusing to overwrite report: '+str(args.output))
+                observed=read(args.observations)
+                if args.module_action=='adopt':
+                    result=modules.adopt(project,observed,args.catalog)
+                else:
+                    decisions=read(args.decisions) if args.decisions else None
+                    result=(modules.diff(project,observed,decisions) if args.module_action=='diff' else
+                            modules.apply(project,observed,decisions,args.expect))
+                if args.output:
+                    args.output.parent.mkdir(parents=True,exist_ok=True)
+                    with args.output.open('x') as stream:
+                        stream.write(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+            print(json.dumps(result,ensure_ascii=False,indent=2))
+            return int(result['status'] in {'FAIL','NEEDS_REVIEW'})
         if args.command=='report':
             from .report import report
             path=args.directory or Path(read(project.root/'.ucv/last-run.json')['path'])
@@ -60,7 +95,7 @@ def main(argv=None):
             return 0 if result['hardware_verdict'] in {'PASS','UNCERTAIN'} else 1
         suites=project.select(args.selection,args.require_unified_baseline)
         if args.command=='docs':
-            from .documents import refresh_index
+            from .documents import refresh_index, refresh_work_index
             from .layout import layout_names, refresh_readmes
             from .workspace import metadata
             values=[refresh_index(project,s,args.write) for s in suites]
@@ -68,7 +103,10 @@ def main(argv=None):
                 meta=metadata(suite)
                 directory,_=layout_names(meta)
                 row[directory]=refresh_readmes(project,suite,meta,args.write)
-                row['updated']=row['updated'] or any(p['updated'] for p in row[directory])
+                work=refresh_work_index(project,suite,meta,args.write)
+                row['work_index']={k:v for k,v in work.items() if k!='markdown'}
+                row['updated']=row['updated'] or work['updated'] or any(p['updated'] for p in row[directory])
+                row['markdown']=work['markdown']+'\n\n'+row['markdown']
             if args.json:print(json.dumps([{k:v for k,v in row.items() if k!='markdown'} for row in values],ensure_ascii=False,indent=2))
             elif args.write:
                 for row in values:print(f"{row['suite']}: {'UPDATED' if row['updated'] else 'CURRENT'} {row['path']}")

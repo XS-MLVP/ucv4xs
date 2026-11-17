@@ -53,6 +53,10 @@ DUT：`PMP`（`rtl/pmp`），最终 run `pmp-final-02`，11 用例 PASS。
 
 ## 3. BitmapCache
 
+当前实现入口：[BitmapCache 独立 testbench](../../../../testbenches/bitmapcache/README.md)。
+BC 的环境、字节选择模型/checker、覆盖与 12 个既有场景均归该 DUT；真实 smoke 是
+`test_refill_then_hit_selects_byte`。
+
 DUT：`BitmapCache`（`rtl/bitmapcache`），最终 run `bitmapcache-final-06`，12 用例 PASS。
 
 | ID | 功能点 | 关键行为 |
@@ -69,6 +73,11 @@ DUT：`BitmapCache`（`rtl/bitmapcache`），最终 run `bitmapcache-final-06`�
 结构分支未覆盖（9 行 + 24 branch），已分类为 DFT/SRAM 结构。
 
 ## 4. Bitmap
+
+当前实现入口：[Bitmap 独立 testbench](../../../../testbenches/bitmap/README.md)。
+BM 的环境/responder、BmReq、PPN 合并模型、完成 checker、覆盖和 19 个既有场景均归该 DUT；
+真实 smoke 是 `test_cache_hit_pass_and_fail`。下面的日期运行结论保留原证据边界；
+当前场景及旧误报归因以[可信度复核](../evidence/reports/verification-soundness-20261025.md)为准。
 
 DUT：`Bitmap`（`rtl/bitmap`），最终 run `bitmap-final-06`，16 PASS + 1 XFAIL。
 功能覆盖 100%（cache_hit/cache_miss/pmp_fail/refill/wakeup/flush/multi + level 0..3）。

@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "suite": "debug",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "tl_debug_module": {
+      "top": "TLDebugModule",
+      "export_name": "TlDebugModuleDut"
+    },
+    "debug_transport_module_jtag": {
+      "top": "DebugTransportModuleJTAG",
+      "export_name": "DebugTransportModuleJtagDut"
+    },
+    "debug_module": {
+      "top": "DebugModule",
+      "export_name": "DebugModuleDut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "testbenches"
+  ],
+  "process_isolation": "suite"
+}

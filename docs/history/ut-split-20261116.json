@@ -1,0 +1,2177 @@
+{
+  "date": "2026-11-16",
+  "scope": "suite/DUT organization and hardware binding; no hardware acceptance",
+  "baseline": "public-e716c7658",
+  "generation_receipt_sha256": "91dda5eb841499e1c1690e0d724b78701fc2eb2fb8f24f95f0a4999923f2c741",
+  "source_snapshot": {
+    "path": "results/ut-split-20261116/before-source.tar.gz",
+    "sha256": "0a1aea631d3f8226bbebd37bddfb04ece301ac1865d1b603f537158efbc09968"
+  },
+  "prior_duts_retained": 266,
+  "new_duts": 70,
+  "counts": {
+    "bpu": {
+      "duts": 10,
+      "testbenches": 10
+    },
+    "icache": {
+      "duts": 11,
+      "testbenches": 11
+    },
+    "lsq": {
+      "duts": 38,
+      "testbenches": 18
+    },
+    "dcache": {
+      "duts": 14,
+      "testbenches": 14
+    },
+    "mmu": {
+      "duts": 22,
+      "testbenches": 20
+    },
+    "sbuffer": {
+      "duts": 2,
+      "testbenches": 2
+    },
+    "lsu": {
+      "duts": 23,
+      "testbenches": 23
+    },
+    "vagq": {
+      "duts": 12,
+      "testbenches": 11
+    },
+    "ncb": {
+      "duts": 20,
+      "testbenches": 20
+    },
+    "l2": {
+      "duts": 34,
+      "testbenches": 34
+    },
+    "debug": {
+      "duts": 3,
+      "testbenches": 3
+    },
+    "mbist": {
+      "duts": 12,
+      "testbenches": 12
+    },
+    "fetch": {
+      "duts": 20,
+      "testbenches": 20
+    },
+    "ctrl": {
+      "duts": 18,
+      "testbenches": 18
+    },
+    "int_region": {
+      "duts": 18,
+      "testbenches": 18
+    },
+    "fp_region": {
+      "duts": 13,
+      "testbenches": 13
+    },
+    "vec_region": {
+      "duts": 19,
+      "testbenches": 19
+    },
+    "prefetch": {
+      "duts": 4,
+      "testbenches": 4
+    },
+    "llc": {
+      "duts": 17,
+      "testbenches": 17
+    },
+    "peripheral": {
+      "duts": 7,
+      "testbenches": 7
+    },
+    "aia": {
+      "duts": 8,
+      "testbenches": 8
+    },
+    "plic": {
+      "duts": 5,
+      "testbenches": 5
+    },
+    "timer": {
+      "duts": 3,
+      "testbenches": 3
+    },
+    "clock_reset": {
+      "duts": 3,
+      "testbenches": 3
+    }
+  },
+  "unavailable_current_tops": [
+    "mmu/tlbn",
+    "fetch/commit_queue"
+  ],
+  "dut_migrations": [
+    {
+      "old_suite": "bpu",
+      "old_dut": "bpu",
+      "suite": "bpu",
+      "dut": "bpu"
+    },
+    {
+      "old_suite": "bpu",
+      "old_dut": "abtb",
+      "suite": "bpu",
+      "dut": "abtb"
+    },
+    {
+      "old_suite": "bpu",
+      "old_dut": "ittage",
+      "suite": "bpu",
+      "dut": "ittage"
+    },
+    {
+      "old_suite": "bpu",
+      "old_dut": "mbtb",
+      "suite": "bpu",
+      "dut": "mbtb"
+    },
+    {
+      "old_suite": "bpu",
+      "old_dut": "ras",
+      "suite": "bpu",
+      "dut": "ras"
+    },
+    {
+      "old_suite": "bpu",
+      "old_dut": "sc",
+      "suite": "bpu",
+      "dut": "sc"
+    },
+    {
+      "old_suite": "bpu",
+      "old_dut": "tage",
+      "suite": "bpu",
+      "dut": "tage"
+    },
+    {
+      "old_suite": "bpu",
+      "old_dut": "ubtb",
+      "suite": "bpu",
+      "dut": "ubtb"
+    },
+    {
+      "old_suite": "bpu",
+      "old_dut": "uras",
+      "suite": "bpu",
+      "dut": "uras"
+    },
+    {
+      "old_suite": "bpu",
+      "old_dut": "utage",
+      "suite": "bpu",
+      "dut": "utage"
+    },
+    {
+      "old_suite": "ftq",
+      "old_dut": "resolve_queue",
+      "suite": "fetch",
+      "dut": "resolve_queue"
+    },
+    {
+      "old_suite": "ftq",
+      "old_dut": "commit_queue",
+      "suite": "fetch",
+      "dut": "commit_queue"
+    },
+    {
+      "old_suite": "ftq",
+      "old_dut": "ftq",
+      "suite": "fetch",
+      "dut": "ftq"
+    },
+    {
+      "old_suite": "icache",
+      "old_dut": "waylookup",
+      "suite": "icache",
+      "dut": "waylookup"
+    },
+    {
+      "old_suite": "icache",
+      "old_dut": "replacer",
+      "suite": "icache",
+      "dut": "replacer"
+    },
+    {
+      "old_suite": "icache",
+      "old_dut": "mshr",
+      "suite": "icache",
+      "dut": "mshr"
+    },
+    {
+      "old_suite": "icache",
+      "old_dut": "databank",
+      "suite": "icache",
+      "dut": "databank"
+    },
+    {
+      "old_suite": "icache",
+      "old_dut": "metabank",
+      "suite": "icache",
+      "dut": "metabank"
+    },
+    {
+      "old_suite": "icache",
+      "old_dut": "metaarray",
+      "suite": "icache",
+      "dut": "metaarray"
+    },
+    {
+      "old_suite": "icache",
+      "old_dut": "dataarray",
+      "suite": "icache",
+      "dut": "dataarray"
+    },
+    {
+      "old_suite": "icache",
+      "old_dut": "missunit",
+      "suite": "icache",
+      "dut": "missunit"
+    },
+    {
+      "old_suite": "icache",
+      "old_dut": "mainpipe",
+      "suite": "icache",
+      "dut": "mainpipe"
+    },
+    {
+      "old_suite": "icache",
+      "old_dut": "prefetchpipe",
+      "suite": "icache",
+      "dut": "prefetchpipe"
+    },
+    {
+      "old_suite": "icache",
+      "old_dut": "icache",
+      "suite": "icache",
+      "dut": "icache"
+    },
+    {
+      "old_suite": "ifu",
+      "old_dut": "rvc_expander",
+      "suite": "fetch",
+      "dut": "rvc_expander"
+    },
+    {
+      "old_suite": "ifu",
+      "old_dut": "instr_boundary",
+      "suite": "fetch",
+      "dut": "instr_boundary"
+    },
+    {
+      "old_suite": "ifu",
+      "old_dut": "pred_checker",
+      "suite": "fetch",
+      "dut": "pred_checker"
+    },
+    {
+      "old_suite": "ifu",
+      "old_dut": "uncache_unit",
+      "suite": "fetch",
+      "dut": "uncache_unit"
+    },
+    {
+      "old_suite": "ifu",
+      "old_dut": "frontend_trigger",
+      "suite": "fetch",
+      "dut": "frontend_trigger"
+    },
+    {
+      "old_suite": "ifu",
+      "old_dut": "perf_analysis",
+      "suite": "fetch",
+      "dut": "perf_analysis"
+    },
+    {
+      "old_suite": "ifu",
+      "old_dut": "ifu",
+      "suite": "fetch",
+      "dut": "ifu"
+    },
+    {
+      "old_suite": "ibuffer",
+      "old_dut": "vtype_gen",
+      "suite": "fetch",
+      "dut": "vtype_gen"
+    },
+    {
+      "old_suite": "ibuffer",
+      "old_dut": "ibuffer",
+      "suite": "fetch",
+      "dut": "ibuffer"
+    },
+    {
+      "old_suite": "instr_uncache",
+      "old_dut": "instr_uncache_entry",
+      "suite": "fetch",
+      "dut": "instr_uncache_entry"
+    },
+    {
+      "old_suite": "instr_uncache",
+      "old_dut": "instr_uncache_resp_arbiter",
+      "suite": "fetch",
+      "dut": "instr_uncache_resp_arbiter"
+    },
+    {
+      "old_suite": "instr_uncache",
+      "old_dut": "instr_uncache",
+      "suite": "fetch",
+      "dut": "instr_uncache"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "freelist_rar",
+      "suite": "lsq",
+      "dut": "freelist_rar"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "freelist_raw",
+      "suite": "lsq",
+      "dut": "freelist_raw"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "freelist_replay",
+      "suite": "lsq",
+      "dut": "freelist_replay"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "freelist_uncache",
+      "suite": "lsq",
+      "dut": "freelist_uncache"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "cam_rar",
+      "suite": "lsq",
+      "dut": "cam_rar"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "cam_raw",
+      "suite": "lsq",
+      "dut": "cam_raw"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "cam_mask",
+      "suite": "lsq",
+      "dut": "cam_mask"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "age_replay",
+      "suite": "lsq",
+      "dut": "age_replay"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "virtual_load_queue",
+      "suite": "lsq",
+      "dut": "virtual_load_queue"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "load_queue_rar",
+      "suite": "lsq",
+      "dut": "load_queue_rar"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "load_queue_raw",
+      "suite": "lsq",
+      "dut": "load_queue_raw"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "load_queue_uncache",
+      "suite": "lsq",
+      "dut": "load_queue_uncache"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "load_queue_replay",
+      "suite": "lsq",
+      "dut": "load_queue_replay"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "enter_sbuffer_queue",
+      "suite": "lsq",
+      "dut": "enter_sbuffer_queue"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "unalign_queue",
+      "suite": "lsq",
+      "dut": "unalign_queue"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "forward_module",
+      "suite": "lsq",
+      "dut": "forward_module"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "virtual_store_queue",
+      "suite": "lsq",
+      "dut": "virtual_store_queue"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "deq_module",
+      "suite": "lsq",
+      "dut": "deq_module"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "physical_store_queue",
+      "suite": "lsq",
+      "dut": "physical_store_queue"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "store_queue",
+      "suite": "lsq",
+      "dut": "store_queue"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "load_queue",
+      "suite": "lsq",
+      "dut": "load_queue"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "lsq_wrapper",
+      "suite": "lsq",
+      "dut": "lsq_wrapper"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "uncache_entry_0",
+      "suite": "lsq",
+      "dut": "uncache_entry_0"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "uncache_entry_1",
+      "suite": "lsq",
+      "dut": "uncache_entry_1"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "uncache_entry_2",
+      "suite": "lsq",
+      "dut": "uncache_entry_2"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "uncache_entry_3",
+      "suite": "lsq",
+      "dut": "uncache_entry_3"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "uncache_entry_4",
+      "suite": "lsq",
+      "dut": "uncache_entry_4"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "uncache_entry_5",
+      "suite": "lsq",
+      "dut": "uncache_entry_5"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "uncache_entry_6",
+      "suite": "lsq",
+      "dut": "uncache_entry_6"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "uncache_entry_7",
+      "suite": "lsq",
+      "dut": "uncache_entry_7"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "uncache_entry_8",
+      "suite": "lsq",
+      "dut": "uncache_entry_8"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "uncache_entry_9",
+      "suite": "lsq",
+      "dut": "uncache_entry_9"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "uncache_entry_10",
+      "suite": "lsq",
+      "dut": "uncache_entry_10"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "uncache_entry_11",
+      "suite": "lsq",
+      "dut": "uncache_entry_11"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "uncache_entry_12",
+      "suite": "lsq",
+      "dut": "uncache_entry_12"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "uncache_entry_13",
+      "suite": "lsq",
+      "dut": "uncache_entry_13"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "uncache_entry_14",
+      "suite": "lsq",
+      "dut": "uncache_entry_14"
+    },
+    {
+      "old_suite": "lsq",
+      "old_dut": "uncache_entry_15",
+      "suite": "lsq",
+      "dut": "uncache_entry_15"
+    },
+    {
+      "old_suite": "dcache",
+      "old_dut": "duplicated_tag_array",
+      "suite": "dcache",
+      "dut": "duplicated_tag_array"
+    },
+    {
+      "old_suite": "dcache",
+      "old_dut": "ctrl_unit",
+      "suite": "dcache",
+      "dut": "ctrl_unit"
+    },
+    {
+      "old_suite": "dcache",
+      "old_dut": "miss_ready_gen",
+      "suite": "dcache",
+      "dut": "miss_ready_gen"
+    },
+    {
+      "old_suite": "dcache",
+      "old_dut": "counter_filter",
+      "suite": "dcache",
+      "dut": "counter_filter"
+    },
+    {
+      "old_suite": "dcache",
+      "old_dut": "miss_track",
+      "suite": "dcache",
+      "dut": "miss_track"
+    },
+    {
+      "old_suite": "dcache",
+      "old_dut": "load_pipe",
+      "suite": "dcache",
+      "dut": "load_pipe"
+    },
+    {
+      "old_suite": "dcache",
+      "old_dut": "banked_data_array",
+      "suite": "dcache",
+      "dut": "banked_data_array"
+    },
+    {
+      "old_suite": "dcache",
+      "old_dut": "main_pipe",
+      "suite": "dcache",
+      "dut": "main_pipe"
+    },
+    {
+      "old_suite": "dcache",
+      "old_dut": "miss_queue",
+      "suite": "dcache",
+      "dut": "miss_queue"
+    },
+    {
+      "old_suite": "dcache",
+      "old_dut": "probe_queue",
+      "suite": "dcache",
+      "dut": "probe_queue"
+    },
+    {
+      "old_suite": "dcache",
+      "old_dut": "writeback_queue",
+      "suite": "dcache",
+      "dut": "writeback_queue"
+    },
+    {
+      "old_suite": "dcache",
+      "old_dut": "dcache",
+      "suite": "dcache",
+      "dut": "dcache"
+    },
+    {
+      "old_suite": "dcache",
+      "old_dut": "dcache_wrapper",
+      "suite": "dcache",
+      "dut": "dcache_wrapper"
+    },
+    {
+      "old_suite": "dcache",
+      "old_dut": "uncache",
+      "suite": "dcache",
+      "dut": "uncache"
+    },
+    {
+      "old_suite": "mmu",
+      "old_dut": "tlbfa",
+      "suite": "mmu",
+      "dut": "tlbfa"
+    },
+    {
+      "old_suite": "mmu",
+      "old_dut": "wrapper",
+      "suite": "mmu",
+      "dut": "wrapper"
+    },
+    {
+      "old_suite": "mmu",
+      "old_dut": "tlb",
+      "suite": "mmu",
+      "dut": "tlb"
+    },
+    {
+      "old_suite": "mmu",
+      "old_dut": "l2mq",
+      "suite": "mmu",
+      "dut": "l2mq"
+    },
+    {
+      "old_suite": "mmu",
+      "old_dut": "l2pf",
+      "suite": "mmu",
+      "dut": "l2pf"
+    },
+    {
+      "old_suite": "mmu",
+      "old_dut": "ptwrepeater",
+      "suite": "mmu",
+      "dut": "ptwrepeater"
+    },
+    {
+      "old_suite": "mmu",
+      "old_dut": "ptwfilter",
+      "suite": "mmu",
+      "dut": "ptwfilter"
+    },
+    {
+      "old_suite": "mmu",
+      "old_dut": "ptw",
+      "suite": "mmu",
+      "dut": "ptw"
+    },
+    {
+      "old_suite": "mmu",
+      "old_dut": "pmp",
+      "suite": "mmu",
+      "dut": "pmp"
+    },
+    {
+      "old_suite": "mmu",
+      "old_dut": "bitmap",
+      "suite": "mmu",
+      "dut": "bitmap"
+    },
+    {
+      "old_suite": "mmu",
+      "old_dut": "bitmapcache",
+      "suite": "mmu",
+      "dut": "bitmapcache"
+    },
+    {
+      "old_suite": "mmu",
+      "old_dut": "ptwcache",
+      "suite": "mmu",
+      "dut": "ptwcache"
+    },
+    {
+      "old_suite": "mmu",
+      "old_dut": "llptw",
+      "suite": "mmu",
+      "dut": "llptw"
+    },
+    {
+      "old_suite": "mmu",
+      "old_dut": "tlbn",
+      "suite": "mmu",
+      "dut": "tlbn"
+    },
+    {
+      "old_suite": "mmu",
+      "old_dut": "l2tlbwrapper",
+      "suite": "mmu",
+      "dut": "l2tlbwrapper"
+    },
+    {
+      "old_suite": "mmu",
+      "old_dut": "l2tlb",
+      "suite": "mmu",
+      "dut": "l2tlb"
+    },
+    {
+      "old_suite": "mmu",
+      "old_dut": "hptw",
+      "suite": "mmu",
+      "dut": "hptw"
+    },
+    {
+      "old_suite": "mmu",
+      "old_dut": "ptwfilter_entry",
+      "suite": "mmu",
+      "dut": "ptwfilter_entry"
+    },
+    {
+      "old_suite": "sbuffer",
+      "old_dut": "sbuffer_data",
+      "suite": "sbuffer",
+      "dut": "sbuffer_data"
+    },
+    {
+      "old_suite": "sbuffer",
+      "old_dut": "sbuffer",
+      "suite": "sbuffer",
+      "dut": "sbuffer"
+    },
+    {
+      "old_suite": "lsu",
+      "old_dut": "store_arbiter",
+      "suite": "lsu",
+      "dut": "store_arbiter"
+    },
+    {
+      "old_suite": "lsu",
+      "old_dut": "store_trigger",
+      "suite": "lsu",
+      "dut": "store_trigger"
+    },
+    {
+      "old_suite": "lsu",
+      "old_dut": "store_delay",
+      "suite": "lsu",
+      "dut": "store_delay"
+    },
+    {
+      "old_suite": "lsu",
+      "old_dut": "store_s0",
+      "suite": "lsu",
+      "dut": "store_s0"
+    },
+    {
+      "old_suite": "lsu",
+      "old_dut": "store_s1",
+      "suite": "lsu",
+      "dut": "store_s1"
+    },
+    {
+      "old_suite": "lsu",
+      "old_dut": "store_s2",
+      "suite": "lsu",
+      "dut": "store_s2"
+    },
+    {
+      "old_suite": "lsu",
+      "old_dut": "store_s3",
+      "suite": "lsu",
+      "dut": "store_s3"
+    },
+    {
+      "old_suite": "lsu",
+      "old_dut": "store_s4",
+      "suite": "lsu",
+      "dut": "store_s4"
+    },
+    {
+      "old_suite": "lsu",
+      "old_dut": "new_store_unit",
+      "suite": "lsu",
+      "dut": "new_store_unit"
+    },
+    {
+      "old_suite": "lsu",
+      "old_dut": "std_exe_unit",
+      "suite": "lsu",
+      "dut": "std_exe_unit"
+    },
+    {
+      "old_suite": "lsu",
+      "old_dut": "load_arbiter",
+      "suite": "lsu",
+      "dut": "load_arbiter"
+    },
+    {
+      "old_suite": "lsu",
+      "old_dut": "load_trigger",
+      "suite": "lsu",
+      "dut": "load_trigger"
+    },
+    {
+      "old_suite": "lsu",
+      "old_dut": "load_datapath",
+      "suite": "lsu",
+      "dut": "load_datapath"
+    },
+    {
+      "old_suite": "lsu",
+      "old_dut": "load_s0",
+      "suite": "lsu",
+      "dut": "load_s0"
+    },
+    {
+      "old_suite": "lsu",
+      "old_dut": "load_s1",
+      "suite": "lsu",
+      "dut": "load_s1"
+    },
+    {
+      "old_suite": "lsu",
+      "old_dut": "load_s2",
+      "suite": "lsu",
+      "dut": "load_s2"
+    },
+    {
+      "old_suite": "lsu",
+      "old_dut": "load_s3",
+      "suite": "lsu",
+      "dut": "load_s3"
+    },
+    {
+      "old_suite": "lsu",
+      "old_dut": "load_s4",
+      "suite": "lsu",
+      "dut": "load_s4"
+    },
+    {
+      "old_suite": "lsu",
+      "old_dut": "new_load_unit",
+      "suite": "lsu",
+      "dut": "new_load_unit"
+    },
+    {
+      "old_suite": "vagq",
+      "old_dut": "AddrGen",
+      "suite": "vagq",
+      "dut": "AddrGen"
+    },
+    {
+      "old_suite": "vagq",
+      "old_dut": "MaskGen",
+      "suite": "vagq",
+      "dut": "MaskGen"
+    },
+    {
+      "old_suite": "vagq",
+      "old_dut": "MergeCtrl",
+      "suite": "vagq",
+      "dut": "MergeCtrl"
+    },
+    {
+      "old_suite": "vagq",
+      "old_dut": "NewPipelineConnectPipe",
+      "suite": "vagq",
+      "dut": "NewPipelineConnectPipe"
+    },
+    {
+      "old_suite": "vagq",
+      "old_dut": "NewPipelineConnectPipe_3",
+      "suite": "vagq",
+      "dut": "NewPipelineConnectPipe_3"
+    },
+    {
+      "old_suite": "vagq",
+      "old_dut": "OrderedPermitCtrl",
+      "suite": "vagq",
+      "dut": "OrderedPermitCtrl"
+    },
+    {
+      "old_suite": "vagq",
+      "old_dut": "SplitCtrl",
+      "suite": "vagq",
+      "dut": "SplitCtrl"
+    },
+    {
+      "old_suite": "vagq",
+      "old_dut": "StoreDataCtrl",
+      "suite": "vagq",
+      "dut": "StoreDataCtrl"
+    },
+    {
+      "old_suite": "vagq",
+      "old_dut": "VAGQ",
+      "suite": "vagq",
+      "dut": "VAGQ"
+    },
+    {
+      "old_suite": "vagq",
+      "old_dut": "VAGQArbiter",
+      "suite": "vagq",
+      "dut": "VAGQArbiter"
+    },
+    {
+      "old_suite": "vagq",
+      "old_dut": "VAGQEntryTable",
+      "suite": "vagq",
+      "dut": "VAGQEntryTable"
+    },
+    {
+      "old_suite": "vagq",
+      "old_dut": "VAGQManager",
+      "suite": "vagq",
+      "dut": "VAGQManager"
+    },
+    {
+      "old_suite": "backend_exec",
+      "old_dut": "fp_reg_file",
+      "suite": "fp_region",
+      "dut": "fp_reg_file"
+    },
+    {
+      "old_suite": "backend_exec",
+      "old_dut": "dummy_dpic_wrapper",
+      "suite": "fp_region",
+      "dut": "dummy_dpic_wrapper"
+    },
+    {
+      "old_suite": "backend_exec",
+      "old_dut": "issue_queue",
+      "suite": "fp_region",
+      "dut": "iq_falu_fmul_fcvt_fcmp"
+    },
+    {
+      "old_suite": "backend_exec",
+      "old_dut": "issue_pipe",
+      "suite": "fp_region",
+      "dut": "pipe_falu_fmul_fcvt_fcmp"
+    },
+    {
+      "old_suite": "backend_exec",
+      "old_dut": "vf_reg_file",
+      "suite": "vec_region",
+      "dut": "vf_reg_file"
+    },
+    {
+      "old_suite": "backend_exec",
+      "old_dut": "flt_wb_data_path",
+      "suite": "fp_region",
+      "dut": "flt_wb_data_path"
+    },
+    {
+      "old_suite": "backend_exec",
+      "old_dut": "wb_data_path",
+      "suite": "vec_region",
+      "dut": "wb_data_path"
+    },
+    {
+      "old_suite": "backend_exec",
+      "old_dut": "vl_reg_file",
+      "suite": "vec_region",
+      "dut": "vl_reg_file"
+    },
+    {
+      "old_suite": "backend_exec",
+      "old_dut": "wb_fu_busy_table",
+      "suite": "vec_region",
+      "dut": "wb_fu_busy_table"
+    },
+    {
+      "old_suite": "backend_ctrl",
+      "old_dut": "dispatch",
+      "suite": "ctrl",
+      "dut": "dispatch"
+    },
+    {
+      "old_suite": "backend_ctrl",
+      "old_dut": "rename",
+      "suite": "ctrl",
+      "dut": "rename"
+    },
+    {
+      "old_suite": "backend_ctrl",
+      "old_dut": "pipe_group_connect",
+      "suite": "ctrl",
+      "dut": "pipe_group_connect"
+    },
+    {
+      "old_suite": "backend_ctrl",
+      "old_dut": "rob",
+      "suite": "ctrl",
+      "dut": "rob"
+    },
+    {
+      "old_suite": "backend_ctrl",
+      "old_dut": "decode_stage",
+      "suite": "ctrl",
+      "dut": "decode_stage"
+    },
+    {
+      "old_suite": "backend_ctrl",
+      "old_dut": "lsq_enq_ctrl",
+      "suite": "ctrl",
+      "dut": "lsq_enq_ctrl"
+    },
+    {
+      "old_suite": "backend_ctrl",
+      "old_dut": "mem_ctrl",
+      "suite": "ctrl",
+      "dut": "mem_ctrl"
+    },
+    {
+      "old_suite": "backend_ctrl",
+      "old_dut": "fusion_decoder",
+      "suite": "ctrl",
+      "dut": "fusion_decoder"
+    },
+    {
+      "old_suite": "backend_ctrl",
+      "old_dut": "pipeline_connect_pipe",
+      "suite": "ctrl",
+      "dut": "pipeline_connect_pipe"
+    },
+    {
+      "old_suite": "backend_ctrl",
+      "old_dut": "redirect_generator",
+      "suite": "ctrl",
+      "dut": "redirect_generator"
+    },
+    {
+      "old_suite": "backend_ctrl",
+      "old_dut": "trace",
+      "suite": "ctrl",
+      "dut": "trace"
+    },
+    {
+      "old_suite": "backend_ctrl",
+      "old_dut": "sync_data_module_template_backend_pc_64_entry",
+      "suite": "ctrl",
+      "dut": "sync_data_module_template_backend_pc_64_entry"
+    },
+    {
+      "old_suite": "backend_ctrl",
+      "old_dut": "gpa_mem",
+      "suite": "ctrl",
+      "dut": "gpa_mem"
+    },
+    {
+      "old_suite": "backend_issue",
+      "old_dut": "data_path",
+      "suite": "int_region",
+      "dut": "data_path"
+    },
+    {
+      "old_suite": "backend_issue",
+      "old_dut": "exu_block",
+      "suite": "int_region",
+      "dut": "exu_block"
+    },
+    {
+      "old_suite": "backend_issue",
+      "old_dut": "fp_rf_read_arbiter",
+      "suite": "fp_region",
+      "dut": "fp_rf_read_arbiter"
+    },
+    {
+      "old_suite": "backend_issue",
+      "old_dut": "issue_queue",
+      "suite": "int_region",
+      "dut": "iq_alu_i2f_brh_njmp"
+    },
+    {
+      "old_suite": "backend_issue",
+      "old_dut": "nf_mapped_elem_idx",
+      "suite": "vec_region",
+      "dut": "nf_mapped_elem_idx"
+    },
+    {
+      "old_suite": "backend_issue",
+      "old_dut": "get_e8_offset_in_vreg",
+      "suite": "vec_region",
+      "dut": "get_e8_offset_in_vreg"
+    },
+    {
+      "old_suite": "mem_misc",
+      "old_dut": "pmp_checker",
+      "suite": "mmu",
+      "dut": "pmp_checker"
+    },
+    {
+      "old_suite": "mem_misc",
+      "old_dut": "lazy_module",
+      "suite": "plic",
+      "dut": "plic_source"
+    },
+    {
+      "old_suite": "mem_misc",
+      "old_dut": "aplic",
+      "suite": "aia",
+      "dut": "aplic"
+    },
+    {
+      "old_suite": "mem_misc",
+      "old_dut": "axi4_deinterleaver",
+      "suite": "peripheral",
+      "dut": "axi4_deinterleaver"
+    },
+    {
+      "old_suite": "mem_misc",
+      "old_dut": "axi4_id_indexer",
+      "suite": "peripheral",
+      "dut": "axi4_id_indexer"
+    },
+    {
+      "old_suite": "mem_misc",
+      "old_dut": "plic_fan_in",
+      "suite": "plic",
+      "dut": "plic_fan_in"
+    },
+    {
+      "old_suite": "mem_misc",
+      "old_dut": "chi_logger",
+      "suite": "llc",
+      "dut": "chi_logger"
+    },
+    {
+      "old_suite": "mem_misc",
+      "old_dut": "tlfifo_fixer",
+      "suite": "peripheral",
+      "dut": "tlfifo_fixer"
+    },
+    {
+      "old_suite": "mem_misc",
+      "old_dut": "tl_fragmenter",
+      "suite": "peripheral",
+      "dut": "tl_fragmenter"
+    },
+    {
+      "old_suite": "mem_misc",
+      "old_dut": "axi_reg_imsic",
+      "suite": "aia",
+      "dut": "axi_reg_imsic"
+    },
+    {
+      "old_suite": "mem_misc",
+      "old_dut": "queue",
+      "suite": "peripheral",
+      "dut": "queue"
+    },
+    {
+      "old_suite": "mem_misc",
+      "old_dut": "repeater",
+      "suite": "peripheral",
+      "dut": "repeater"
+    },
+    {
+      "old_suite": "mem_misc",
+      "old_dut": "axi4_map",
+      "suite": "aia",
+      "dut": "axi4_map"
+    },
+    {
+      "old_suite": "mem_misc",
+      "old_dut": "level_gateway",
+      "suite": "plic",
+      "dut": "level_gateway"
+    },
+    {
+      "old_suite": "ncb",
+      "old_dut": "ncb_transaction_queue",
+      "suite": "ncb",
+      "dut": "ncb_transaction_queue"
+    },
+    {
+      "old_suite": "ncb",
+      "old_dut": "ncb_transaction_payload",
+      "suite": "ncb",
+      "dut": "ncb_transaction_payload"
+    },
+    {
+      "old_suite": "ncb",
+      "old_dut": "ncb_upstream_txdat",
+      "suite": "ncb",
+      "dut": "ncb_upstream_txdat"
+    },
+    {
+      "old_suite": "ncb",
+      "old_dut": "ncb_upstream_rxreq",
+      "suite": "ncb",
+      "dut": "ncb_upstream_rxreq"
+    },
+    {
+      "old_suite": "ncb",
+      "old_dut": "ncb_transaction_age_matrix",
+      "suite": "ncb",
+      "dut": "ncb_transaction_age_matrix"
+    },
+    {
+      "old_suite": "ncb",
+      "old_dut": "ncb_upstream_txrsp",
+      "suite": "ncb",
+      "dut": "ncb_upstream_txrsp"
+    },
+    {
+      "old_suite": "ncb",
+      "old_dut": "ncb_downstream_w",
+      "suite": "ncb",
+      "dut": "ncb_downstream_w"
+    },
+    {
+      "old_suite": "ncb",
+      "old_dut": "ncb_downstream_aw",
+      "suite": "ncb",
+      "dut": "ncb_downstream_aw"
+    },
+    {
+      "old_suite": "ncb",
+      "old_dut": "ncb_downstream_ar",
+      "suite": "ncb",
+      "dut": "ncb_downstream_ar"
+    },
+    {
+      "old_suite": "ncb",
+      "old_dut": "ncb_upstream_rxdat",
+      "suite": "ncb",
+      "dut": "ncb_upstream_rxdat"
+    },
+    {
+      "old_suite": "ncb",
+      "old_dut": "ncb_downstream_r",
+      "suite": "ncb",
+      "dut": "ncb_downstream_r"
+    },
+    {
+      "old_suite": "ncb",
+      "old_dut": "ncb_order_address_cam",
+      "suite": "ncb",
+      "dut": "ncb_order_address_cam"
+    },
+    {
+      "old_suite": "ncb",
+      "old_dut": "ncb_transaction_free_list",
+      "suite": "ncb",
+      "dut": "ncb_transaction_free_list"
+    },
+    {
+      "old_suite": "ncb",
+      "old_dut": "ncb_downstream_b",
+      "suite": "ncb",
+      "dut": "ncb_downstream_b"
+    },
+    {
+      "old_suite": "ncb",
+      "old_dut": "chi_link_active_manager_rx",
+      "suite": "ncb",
+      "dut": "chi_link_active_manager_rx"
+    },
+    {
+      "old_suite": "ncb",
+      "old_dut": "chi_link_active_manager_tx",
+      "suite": "ncb",
+      "dut": "chi_link_active_manager_tx"
+    },
+    {
+      "old_suite": "llc_link",
+      "old_dut": "rn_xbar",
+      "suite": "llc",
+      "dut": "rn_xbar"
+    },
+    {
+      "old_suite": "llc_link",
+      "old_dut": "mem_unit",
+      "suite": "llc",
+      "dut": "mem_unit"
+    },
+    {
+      "old_suite": "llc_link",
+      "old_dut": "mmio_diverger",
+      "suite": "llc",
+      "dut": "mmio_diverger"
+    },
+    {
+      "old_suite": "llc_link",
+      "old_dut": "response_unit",
+      "suite": "llc",
+      "dut": "response_unit"
+    },
+    {
+      "old_suite": "llc_link",
+      "old_dut": "mmio_merger",
+      "suite": "llc",
+      "dut": "mmio_merger"
+    },
+    {
+      "old_suite": "llc_link",
+      "old_dut": "sn_xbar",
+      "suite": "llc",
+      "dut": "sn_xbar"
+    },
+    {
+      "old_suite": "llc_link",
+      "old_dut": "transmitter_link_monitor",
+      "suite": "llc",
+      "dut": "transmitter_link_monitor"
+    },
+    {
+      "old_suite": "llc_link",
+      "old_dut": "receiver_link_monitor",
+      "suite": "llc",
+      "dut": "receiver_link_monitor"
+    },
+    {
+      "old_suite": "llc_link",
+      "old_dut": "refill_unit",
+      "suite": "llc",
+      "dut": "refill_unit"
+    },
+    {
+      "old_suite": "llc_link",
+      "old_dut": "rn_link_monitor",
+      "suite": "llc",
+      "dut": "rn_link_monitor"
+    },
+    {
+      "old_suite": "llc_link",
+      "old_dut": "snoop_unit",
+      "suite": "llc",
+      "dut": "snoop_unit"
+    },
+    {
+      "old_suite": "llc_link",
+      "old_dut": "sn_link_monitor",
+      "suite": "llc",
+      "dut": "sn_link_monitor"
+    },
+    {
+      "old_suite": "llc_link",
+      "old_dut": "rxreq",
+      "suite": "llc",
+      "dut": "rxreq"
+    },
+    {
+      "old_suite": "llc_link",
+      "old_dut": "txsnp",
+      "suite": "llc",
+      "dut": "txsnp"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "request_arb",
+      "suite": "l2",
+      "dut": "request_arb"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "mshr_ctl",
+      "suite": "l2",
+      "dut": "mshr_ctl"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "directory",
+      "suite": "l2",
+      "dut": "directory"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "rxsnp",
+      "suite": "l2",
+      "dut": "rxsnp"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "request_buffer",
+      "suite": "l2",
+      "dut": "request_buffer"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "arbiter",
+      "suite": "l2",
+      "dut": "arbiter"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "sink_c",
+      "suite": "l2",
+      "dut": "sink_c"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "mbist_pipe_l2_prefetcher",
+      "suite": "mbist",
+      "dut": "mbist_pipe_l2_prefetcher"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "grant_buffer",
+      "suite": "l2",
+      "dut": "grant_buffer"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "p_best_offset_prefetch",
+      "suite": "l2",
+      "dut": "p_best_offset_prefetch"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "txdat",
+      "suite": "l2",
+      "dut": "txdat"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "cdp_prefetcher",
+      "suite": "l2",
+      "dut": "cdp_prefetcher"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "v_best_offset_prefetch",
+      "suite": "l2",
+      "dut": "v_best_offset_prefetch"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "l1_prefetcher",
+      "suite": "prefetch",
+      "dut": "l1_prefetcher"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "data_storage",
+      "suite": "l2",
+      "dut": "data_storage"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "txreq",
+      "suite": "l2",
+      "dut": "txreq"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "sms_prefetcher",
+      "suite": "prefetch",
+      "dut": "sms_prefetcher"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "l2_cache",
+      "suite": "mbist",
+      "dut": "l2_cache_pipeline"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "mmio_bridge_entry",
+      "suite": "l2",
+      "dut": "mmio_bridge_entry"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "txrsp",
+      "suite": "l2",
+      "dut": "txrsp"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "spec_miss_a_buffer",
+      "suite": "l2",
+      "dut": "spec_miss_a_buffer"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "decoupled2_l_credit",
+      "suite": "l2",
+      "dut": "decoupled2_l_credit"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "sink_a",
+      "suite": "l2",
+      "dut": "sink_a"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "l2_slice",
+      "suite": "mbist",
+      "dut": "l2_slice0_pipeline"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "h_perf_counter",
+      "suite": "ctrl",
+      "dut": "h_perf_counter"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "bus_error_unit",
+      "suite": "l2",
+      "dut": "bus_error_unit"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "rxdat",
+      "suite": "l2",
+      "dut": "rxdat"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "stash_prefetcher",
+      "suite": "l2",
+      "dut": "stash_prefetcher"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "queue",
+      "suite": "l2",
+      "dut": "queue"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "l_credit2_decoupled",
+      "suite": "l2",
+      "dut": "l_credit2_decoupled"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "mbist_pipe_sms",
+      "suite": "mbist",
+      "dut": "mbist_pipe_sms"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "berti_prefetcher",
+      "suite": "prefetch",
+      "dut": "berti_prefetcher"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "rxrsp",
+      "suite": "l2",
+      "dut": "rxrsp"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "prefetch_controller",
+      "suite": "l2",
+      "dut": "prefetch_controller"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "mshr_buffer",
+      "suite": "l2",
+      "dut": "mshr_buffer"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "prefetch_receiver",
+      "suite": "l2",
+      "dut": "prefetch_receiver"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "perf_events_module",
+      "suite": "ctrl",
+      "dut": "perf_events_module"
+    },
+    {
+      "old_suite": "l2",
+      "old_dut": "int_buffer",
+      "suite": "plic",
+      "dut": "int_buffer"
+    },
+    {
+      "old_suite": "clock",
+      "old_dut": "timer",
+      "suite": "timer",
+      "dut": "timer"
+    },
+    {
+      "old_suite": "clock",
+      "old_dut": "top_down_gen",
+      "suite": "ctrl",
+      "dut": "top_down_gen"
+    },
+    {
+      "old_suite": "clock",
+      "old_dut": "reset_gen",
+      "suite": "clock_reset",
+      "dut": "reset_gen"
+    },
+    {
+      "old_suite": "clock",
+      "old_dut": "time_async",
+      "suite": "timer",
+      "dut": "time_async"
+    },
+    {
+      "old_suite": "clock",
+      "old_dut": "async_reset_synchronizer_shift_reg_w1_d3_i0",
+      "suite": "clock_reset",
+      "dut": "async_reset_synchronizer_shift_reg_w1_d3_i0"
+    },
+    {
+      "old_suite": "debug",
+      "old_dut": "tl_debug_module",
+      "suite": "debug",
+      "dut": "tl_debug_module"
+    },
+    {
+      "old_suite": "debug",
+      "old_dut": "debug_transport_module_jtag",
+      "suite": "debug",
+      "dut": "debug_transport_module_jtag"
+    },
+    {
+      "old_suite": "frontend_bridge",
+      "old_dut": "icache_ctrl_buffer",
+      "suite": "fetch",
+      "dut": "icache_ctrl_buffer"
+    },
+    {
+      "old_suite": "frontend_bridge",
+      "old_dut": "icache_buffer",
+      "suite": "fetch",
+      "dut": "icache_buffer"
+    },
+    {
+      "old_suite": "frontend_bridge",
+      "old_dut": "instr_uncache_buffer",
+      "suite": "fetch",
+      "dut": "instr_uncache_buffer"
+    },
+    {
+      "old_suite": "mbist",
+      "old_dut": "mbist_pipe_frontend",
+      "suite": "mbist",
+      "dut": "mbist_pipe_frontend"
+    },
+    {
+      "old_suite": "mbist",
+      "old_dut": "mbist_pipe_mem_blk",
+      "suite": "mbist",
+      "dut": "mbist_pipe_mem_blk"
+    },
+    {
+      "old_suite": "mbist",
+      "old_dut": "mbist_intf_frontend",
+      "suite": "mbist",
+      "dut": "mbist_intf_frontend"
+    },
+    {
+      "old_suite": "mbist",
+      "old_dut": "mbist_intf_l2",
+      "suite": "mbist",
+      "dut": "mbist_intf_l2"
+    },
+    {
+      "old_suite": "mbist",
+      "old_dut": "mbist_intf_mem_blk",
+      "suite": "mbist",
+      "dut": "mbist_intf_mem_blk"
+    },
+    {
+      "old_suite": "memblock_misc",
+      "old_dut": "select_oldest",
+      "suite": "lsu",
+      "dut": "select_oldest"
+    },
+    {
+      "old_suite": "memblock_misc",
+      "old_dut": "dummy_dpic_wrapper",
+      "suite": "lsu",
+      "dut": "dummy_dpic_wrapper"
+    }
+  ],
+  "additions": {
+    "fetch": [
+      [
+        "frontend",
+        "Frontend"
+      ],
+      [
+        "frontend_bridge",
+        "FrontendBridge"
+      ]
+    ],
+    "ctrl": [
+      [
+        "ctrl_block",
+        "CtrlBlock"
+      ],
+      [
+        "backend",
+        "Backend"
+      ]
+    ],
+    "int_region": [
+      [
+        "region",
+        "Region"
+      ],
+      [
+        "iq_alu_csr_fence_link_brh_njmp",
+        "IssueQueueAluCsrFenceLinkBrhNjmp"
+      ],
+      [
+        "iq_alu_div_brh_njmp",
+        "IssueQueueAluDivBrhNjmp"
+      ],
+      [
+        "iq_alu_bku_vset",
+        "IssueQueueAluBkuVset"
+      ],
+      [
+        "iq_alu_mul",
+        "IssueQueueAluMul"
+      ],
+      [
+        "iq_ldu",
+        "IssueQueueLdu"
+      ],
+      [
+        "iq_sta_mou",
+        "IssueQueueStaMou"
+      ],
+      [
+        "iq_sta_mou_1",
+        "IssueQueueStaMou_1"
+      ],
+      [
+        "iq_std_moud",
+        "IssueQueueStdMoud"
+      ],
+      [
+        "iq_std_moud_1",
+        "IssueQueueStdMoud_1"
+      ],
+      [
+        "connect_variant",
+        "NewPipelineConnectPipe"
+      ],
+      [
+        "connect_variant_1",
+        "NewPipelineConnectPipe_1"
+      ],
+      [
+        "connect_variant_2",
+        "NewPipelineConnectPipe_2"
+      ],
+      [
+        "connect_variant_4",
+        "NewPipelineConnectPipe_4"
+      ],
+      [
+        "connect_variant_6",
+        "NewPipelineConnectPipe_6"
+      ]
+    ],
+    "fp_region": [
+      [
+        "region",
+        "FltRegionModule"
+      ],
+      [
+        "iq_falu_fmul_fdiv",
+        "IssueQueueFaluFmulFdiv"
+      ],
+      [
+        "iq_falu_fmul_fdiv_1",
+        "IssueQueueFaluFmulFdiv_1"
+      ],
+      [
+        "iq_falu_fmul",
+        "IssueQueueFaluFmul"
+      ],
+      [
+        "pipe_falu_fmul_fdiv",
+        "IssuePipeFaluFmulFdiv"
+      ],
+      [
+        "pipe_falu_fmul_fdiv_1",
+        "IssuePipeFaluFmulFdiv_1"
+      ],
+      [
+        "pipe_falu_fmul",
+        "IssuePipeFaluFmul"
+      ]
+    ],
+    "vec_region": [
+      [
+        "region",
+        "VecRegionModule"
+      ],
+      [
+        "exception_merge",
+        "VecExcpDataMergeModule"
+      ],
+      [
+        "iq_vialu_vimac_vmove_vfcvt_vfmac",
+        "IssueQueueVialuVimacVmoveVfcvtVfmac"
+      ],
+      [
+        "iq_vialu_vidiv_vfmac_vfdiv",
+        "IssueQueueVialuVidivVfmacVfdiv"
+      ],
+      [
+        "iq_vialu",
+        "IssueQueueVialu"
+      ],
+      [
+        "iq_vialu_1",
+        "IssueQueueVialu_1"
+      ],
+      [
+        "iq_vstd",
+        "IssueQueueVstd"
+      ],
+      [
+        "pipe_vialu_vimac_vmove_vfcvt_vfmac",
+        "IssuePipeVialuVimacVmoveVfcvtVfmac"
+      ],
+      [
+        "pipe_vialu_vidiv_vfmac_vfdiv",
+        "IssuePipeVialuVidivVfmacVfdiv"
+      ],
+      [
+        "pipe_vialu",
+        "IssuePipeVialu"
+      ],
+      [
+        "pipe_vialu_1",
+        "IssuePipeVialu_1"
+      ],
+      [
+        "pipe_vstd",
+        "IssuePipeVstd"
+      ],
+      [
+        "pipe_vstd_1",
+        "IssuePipeVstd_1"
+      ]
+    ],
+    "prefetch": [
+      [
+        "prefetcher",
+        "PrefetcherWrapper"
+      ]
+    ],
+    "lsu": [
+      [
+        "atomics",
+        "AtomicsUnit"
+      ],
+      [
+        "memblock",
+        "MemBlock"
+      ]
+    ],
+    "mmu": [
+      [
+        "dtlb_load",
+        "TLB_1"
+      ],
+      [
+        "dtlb_store",
+        "TLB_2"
+      ],
+      [
+        "dtlb_prefetch",
+        "TLB_3"
+      ]
+    ],
+    "l2": [
+      [
+        "coupled_l2",
+        "CoupledL2"
+      ],
+      [
+        "l2top",
+        "L2Top"
+      ],
+      [
+        "slice0",
+        "Slice"
+      ],
+      [
+        "slice1",
+        "Slice_1"
+      ],
+      [
+        "slice2",
+        "Slice_2"
+      ],
+      [
+        "slice3",
+        "Slice_3"
+      ]
+    ],
+    "llc": [
+      [
+        "open_llc",
+        "OpenLLC"
+      ],
+      [
+        "slice",
+        "Slice_4"
+      ]
+    ],
+    "ncb": [
+      [
+        "llc_bridge",
+        "OpenNCB"
+      ],
+      [
+        "mmio_bridge",
+        "OpenNCB_1"
+      ],
+      [
+        "llc_core",
+        "NCB200"
+      ],
+      [
+        "mmio_core",
+        "NCB200_1"
+      ]
+    ],
+    "peripheral": [
+      [
+        "mem_misc",
+        "MemMisc"
+      ]
+    ],
+    "aia": [
+      [
+        "axi4_aplic",
+        "AXI4APLIC"
+      ],
+      [
+        "imsic_bus",
+        "imsic_bus_top"
+      ],
+      [
+        "axi_reg_imsic_wrap",
+        "AXIRegIMSIC_WRAP"
+      ],
+      [
+        "imsic_wrap",
+        "IMSIC_WRAP"
+      ],
+      [
+        "imsic",
+        "IMSIC"
+      ]
+    ],
+    "plic": [
+      [
+        "plic",
+        "TLPLIC"
+      ]
+    ],
+    "debug": [
+      [
+        "debug_module",
+        "DebugModule"
+      ]
+    ],
+    "timer": [
+      [
+        "syscnt",
+        "SYSCNT"
+      ]
+    ],
+    "clock_reset": [
+      [
+        "clock_gate",
+        "ClockGate"
+      ]
+    ],
+    "mbist": [
+      [
+        "l2_slice1_pipeline",
+        "L2Slice_1"
+      ],
+      [
+        "l2_slice2_pipeline",
+        "L2Slice_2"
+      ],
+      [
+        "l2_slice3_pipeline",
+        "L2Slice_3"
+      ]
+    ]
+  },
+  "archived_workspaces": [
+    {
+      "suite": "ftq",
+      "path": "results/ut-split-20261116/legacy-workspaces/ftq"
+    },
+    {
+      "suite": "ifu",
+      "path": "results/ut-split-20261116/legacy-workspaces/ifu"
+    },
+    {
+      "suite": "ibuffer",
+      "path": "results/ut-split-20261116/legacy-workspaces/ibuffer"
+    },
+    {
+      "suite": "instr_uncache",
+      "path": "results/ut-split-20261116/legacy-workspaces/instr_uncache"
+    },
+    {
+      "suite": "backend_exec",
+      "path": "results/ut-split-20261116/legacy-workspaces/backend_exec"
+    },
+    {
+      "suite": "backend_ctrl",
+      "path": "results/ut-split-20261116/legacy-workspaces/backend_ctrl"
+    },
+    {
+      "suite": "backend_issue",
+      "path": "results/ut-split-20261116/legacy-workspaces/backend_issue"
+    },
+    {
+      "suite": "mem_misc",
+      "path": "results/ut-split-20261116/legacy-workspaces/mem_misc"
+    },
+    {
+      "suite": "llc_link",
+      "path": "results/ut-split-20261116/legacy-workspaces/llc_link"
+    },
+    {
+      "suite": "clock",
+      "path": "results/ut-split-20261116/legacy-workspaces/clock"
+    },
+    {
+      "suite": "frontend_bridge",
+      "path": "results/ut-split-20261116/legacy-workspaces/frontend_bridge"
+    },
+    {
+      "suite": "memblock_misc",
+      "path": "results/ut-split-20261116/legacy-workspaces/memblock_misc"
+    }
+  ],
+  "evidence": "results/ut-split-20261116; previous results preserve original baseline and verdict",
+  "legacy_import_record": "docs/history/kmh-ut-import-20261113.json is historical; its covered_by/name-only grouping claims are not acceptance evidence",
+  "additional_archives": [
+    {
+      "from": "suites/clock",
+      "to": "results/ut-split-20261116/retired-group-packages/clock"
+    },
+    {
+      "from": "suites/debug",
+      "to": "results/ut-split-20261116/retired-group-packages/debug"
+    },
+    {
+      "from": "suites/mbist",
+      "to": "results/ut-split-20261116/retired-group-packages/mbist"
+    },
+    {
+      "from": "suites/frontend/fetch/testbenches/shared/env/ifu/pytest_plugins",
+      "to": "results/ut-split-20261116/superseded-plugins/ifu"
+    },
+    {
+      "from": "suites/frontend/fetch/testbenches/shared/env/ibuffer/pytest_plugins",
+      "to": "results/ut-split-20261116/superseded-plugins/ibuffer"
+    },
+    {
+      "from": "suites/frontend/fetch/testbenches/shared/env/instr_uncache/pytest_plugins",
+      "to": "results/ut-split-20261116/superseded-plugins/instr_uncache"
+    }
+  ],
+  "archived_inventory": {
+    "path": "results/ut-split-20261116/archived-files.json",
+    "sha256": "728eef3570f96e6084899a212618161f39ba77370035f11e5871c24e574ec7bd",
+    "entries": 278,
+    "note": "原始 symlink 及迁移前解析位置已记录；搬迁后的相对链接可能不可用，不能当作当前构建入口。"
+  },
+  "current_collection_comparison": {
+    "old_fetch_nodes": 2024,
+    "new_fetch_nodes": 2029,
+    "removed": 0,
+    "parameter_marker_fixture_differences_after_namespace_normalization": 0,
+    "report": "results/ut-split-20261116/collection-identity-normalized-diff.json"
+  },
+  "frozen_evidence": {
+    "checked": 532,
+    "changed": 0,
+    "report": "results/ut-split-20261116/source-preservation.json"
+  },
+  "offline_selfchecks": {
+    "selected": 942,
+    "passed": 940,
+    "failed": 2,
+    "log": "results/ut-split-20261116/fetch-offline.log",
+    "failures": [
+      "IFU signals.json 尚未重新生成",
+      "InstrUncache RTL 闭包尚未重新准备"
+    ]
+  },
+  "verification": {
+    "root_tests": {
+      "passed": 299,
+      "log": "results/ut-split-20261116/root-tests-final.log"
+    },
+    "structural_checks": {
+      "status": "PASS",
+      "scope": "all 24 suites",
+      "log_index": "results/ut-split-20261116/checks.json"
+    },
+    "managed_collection": {
+      "status": "BLOCKED",
+      "reason": "Pinned toffee source checkout changed",
+      "actual_commit": "3eefe7e42f7db5c28338a94eab7c9a3e17f98173",
+      "locked_commit": "f57150021791535d4b2fd01056c106f0cad53177",
+      "log": "results/ut-split-20261116/collect-all.log"
+    },
+    "direct_collection": {
+      "suites_collected": 22,
+      "nodes": 6595,
+      "blocked_suites": [
+        "bpu",
+        "icache"
+      ],
+      "reason": "same Toffee identity check",
+      "summary": "results/ut-split-20261116/direct-collection/summary.json"
+    },
+    "hardware_build_smoke_functional_coverage": "not run by this structural migration",
+    "audit": {
+      "retained_duts_exact_recipes": 266,
+      "available_public_bindings": 322,
+      "absent_public_bindings": [
+        "fetch/commit_queue",
+        "mmu/tlbn"
+      ],
+      "frozen_unchanged": 532,
+      "suites": 24,
+      "duts": 336,
+      "testbenches": 313
+    }
+  }
+}

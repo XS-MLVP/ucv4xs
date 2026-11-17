@@ -1,5 +1,8 @@
 # FTQ 设计规格
 
+> 本文保留 `public-a0c2a26cb` 的合同与结论边界；当前 `public-e716c7658` 中 CommitQueue
+> 已不再独立生成。当前映射与待适配范围见[本页当前绑定](#当前硬件绑定观察)。
+
 状态：**待设计 owner 确认**。本页由现有接口合同、生成 RTL 可观察结构和工程验证记录
 归纳；未取得独立设计签核，不能当作完整微架构规格。具体行为要求以
 [功能点](functional-points.md)和[责任边界](requirements-boundary.md)的稳定 ID 为准。
@@ -66,3 +69,21 @@ redirect PC 扩为 51 位 GuardedVAddr。
 - `R-06` 的第二个 fetch block 异常标记在现有 PNR/重定向合同下未构造出合法序列，
   保留为分析项，见[残余](../verification/residuals.md)。
 - 上游差分只覆盖到锁定 commit 的 FTQ 路径；不据此外推其他前端模块。
+
+## 当前硬件绑定观察
+
+2026-11-16 观察：`public-e716c7658 / DefaultConfig`，单核、CHI E.b、OpenLLC，
+含 `--fpga-platform --reset-gen`。源码位置来自锁定源码及完整生成注解，
+实例为实际 RTL 样本；全部直接父实例见 workspace。数字后缀不是跨基线稳定身份。
+
+| DUT | 配方 top | Chisel 定义/生成位置 | RTL 实例样本 |
+|---|---|---|---|
+| `resolve_queue` | `ResolveQueue` | `src/main/scala/xiangshan/frontend/ftq/ResolveQueue.scala:29` | `XSTop.core_with_l2.core.frontend.inner_ftq.resolveQueue` |
+| `commit_queue` | `CommitQueue` | 当前缺失；保留历史合同 | `—` |
+| `ftq` | `Ftq` | `src/main/scala/xiangshan/frontend/ftq/Ftq.scala:65` | `XSTop.core_with_l2.core.frontend.inner_ftq` |
+
+这些观察不证明端口兼容、独立预期成立或硬件通过；当前工作与验收范围见
+[验证合同](../verification/README.md)。历史报告按原基线解释。
+
+**CommitQueue：** 当前源码和完整 RTL 无该 top；Ftq 的提交指针/元数据逻辑位于
+`Ftq.scala`。旧配方、实现和测试保留；先审查父级提交合同，不能直接改绑其他模块。

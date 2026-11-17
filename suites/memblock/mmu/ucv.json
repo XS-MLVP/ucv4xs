@@ -71,6 +71,26 @@
     "hptw": {
       "top": "HPTW",
       "export_name": "HptwDut"
+    },
+    "ptwfilter_entry": {
+      "top": "PTWFilterEntry",
+      "export_name": "PtwfilterEntryDut"
+    },
+    "pmp_checker": {
+      "top": "PMPChecker",
+      "export_name": "PmpCheckerDut"
+    },
+    "dtlb_load": {
+      "top": "TLB_1",
+      "export_name": "TLB_1Dut"
+    },
+    "dtlb_store": {
+      "top": "TLB_2",
+      "export_name": "TLB_2Dut"
+    },
+    "dtlb_prefetch": {
+      "top": "TLB_3",
+      "export_name": "TLB_3Dut"
     }
   },
   "pytest_root": ".",

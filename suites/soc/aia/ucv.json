@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "suite": "aia",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "axi4_aplic": {
+      "top": "AXI4APLIC",
+      "export_name": "AXI4APLICDut"
+    },
+    "aplic": {
+      "top": "APLIC",
+      "export_name": "AplicDut"
+    },
+    "axi_reg_imsic": {
+      "top": "AXIRegIMSIC",
+      "export_name": "AxiRegImsicDut"
+    },
+    "axi4_map": {
+      "top": "AXI4Map",
+      "export_name": "Axi4MapDut"
+    },
+    "imsic_bus": {
+      "top": "imsic_bus_top",
+      "export_name": "imsic_bus_topDut"
+    },
+    "axi_reg_imsic_wrap": {
+      "top": "AXIRegIMSIC_WRAP",
+      "export_name": "AXIRegIMSIC_WRAPDut"
+    },
+    "imsic_wrap": {
+      "top": "IMSIC_WRAP",
+      "export_name": "IMSIC_WRAPDut"
+    },
+    "imsic": {
+      "top": "IMSIC",
+      "export_name": "IMSICDut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "testbenches"
+  ],
+  "process_isolation": "suite"
+}

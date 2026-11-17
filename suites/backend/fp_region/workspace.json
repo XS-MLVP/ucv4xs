@@ -1,0 +1,427 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "duts": {
+    "region": {
+      "testbench": "region",
+      "design_spec": "docs/spec/design/region.md",
+      "verification_spec": "docs/spec/verification/region.md",
+      "environment": "testbenches/region/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/float/FltRegionModule.scala"
+      ],
+      "tests": [
+        "testbenches/region/tests"
+      ],
+      "smoke": "testbenches/region/tests/test_region_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "FltRegionModule",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_fpRegion",
+        "direct_parents": [
+          {
+            "parent": "Backend",
+            "instance": "inner_fpRegion",
+            "line": 12278
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/float/FltRegionModule.scala",
+          "line": 59
+        }
+      },
+      "module_id": "M-00fbf360b100"
+    },
+    "fp_reg_file": {
+      "testbench": "fp_reg_file",
+      "design_spec": "docs/spec/design/fp_reg_file.md",
+      "verification_spec": "docs/spec/verification/fp_reg_file.md",
+      "environment": "testbenches/fp_reg_file/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/regfile/Regfile.scala"
+      ],
+      "tests": [
+        "testbenches/fp_reg_file/tests"
+      ],
+      "smoke": "testbenches/fp_reg_file/tests/test_fp_reg_file_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "FpRegFile",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_fpRegion.fpRegFile",
+        "direct_parents": [
+          {
+            "parent": "FltRegionModule",
+            "instance": "fpRegFile",
+            "line": 5558
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/regfile/Regfile.scala",
+          "line": 67
+        }
+      },
+      "module_id": "M-7d52f90d93bc"
+    },
+    "dummy_dpic_wrapper": {
+      "testbench": "dummy_dpic_wrapper",
+      "design_spec": "docs/spec/design/dummy_dpic_wrapper.md",
+      "verification_spec": "docs/spec/verification/dummy_dpic_wrapper.md",
+      "environment": "testbenches/dummy_dpic_wrapper/env.py",
+      "chisel": [
+        "difftest/src/main/scala/DPIC.scala"
+      ],
+      "tests": [
+        "testbenches/dummy_dpic_wrapper/tests"
+      ],
+      "smoke": "testbenches/dummy_dpic_wrapper/tests/test_dummy_dpic_wrapper_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "DummyDPICWrapper_PhyFpRegState",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_fpRegion.difftest_pregs_frf_1",
+        "direct_parents": [
+          {
+            "parent": "FltRegionModule",
+            "instance": "difftest_pregs_frf_1",
+            "line": 6964
+          }
+        ],
+        "declaration": {
+          "path": "difftest/src/main/scala/DPIC.scala",
+          "line": 370
+        }
+      },
+      "module_id": "M-22a54aaef4a4"
+    },
+    "iq_falu_fmul_fcvt_fcmp": {
+      "testbench": "iq_falu_fmul_fcvt_fcmp",
+      "design_spec": "docs/spec/design/iq_falu_fmul_fcvt_fcmp.md",
+      "verification_spec": "docs/spec/verification/iq_falu_fmul_fcvt_fcmp.md",
+      "environment": "testbenches/iq_falu_fmul_fcvt_fcmp/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/float/FltIssueQueue.scala"
+      ],
+      "tests": [
+        "testbenches/iq_falu_fmul_fcvt_fcmp/tests"
+      ],
+      "smoke": "testbenches/iq_falu_fmul_fcvt_fcmp/tests/test_issue_queue_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IssueQueueFaluFmulFcvtFcmp",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_fpRegion.issueQueues",
+        "direct_parents": [
+          {
+            "parent": "FltRegionModule",
+            "instance": "issueQueues",
+            "line": 2463
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/float/FltIssueQueue.scala",
+          "line": 22
+        }
+      },
+      "module_id": "M-e664a5f0bfa1"
+    },
+    "pipe_falu_fmul_fcvt_fcmp": {
+      "testbench": "pipe_falu_fmul_fcvt_fcmp",
+      "design_spec": "docs/spec/design/pipe_falu_fmul_fcvt_fcmp.md",
+      "verification_spec": "docs/spec/verification/pipe_falu_fmul_fcvt_fcmp.md",
+      "environment": "testbenches/pipe_falu_fmul_fcvt_fcmp/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/float/FltIssuePipe.scala"
+      ],
+      "tests": [
+        "testbenches/pipe_falu_fmul_fcvt_fcmp/tests"
+      ],
+      "smoke": "testbenches/pipe_falu_fmul_fcvt_fcmp/tests/test_issue_pipe_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IssuePipeFaluFmulFcvtFcmp",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_fpRegion.issuePipes",
+        "direct_parents": [
+          {
+            "parent": "FltRegionModule",
+            "instance": "issuePipes",
+            "line": 4330
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/float/FltIssuePipe.scala",
+          "line": 26
+        }
+      },
+      "module_id": "M-3b37f1f3a9c4"
+    },
+    "flt_wb_data_path": {
+      "testbench": "flt_wb_data_path",
+      "design_spec": "docs/spec/design/flt_wb_data_path.md",
+      "verification_spec": "docs/spec/verification/flt_wb_data_path.md",
+      "environment": "testbenches/flt_wb_data_path/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/float/FltWbDataPath.scala"
+      ],
+      "tests": [
+        "testbenches/flt_wb_data_path/tests"
+      ],
+      "smoke": "testbenches/flt_wb_data_path/tests/test_flt_wb_data_path_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "FltWbDataPath",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_fpRegion.fpWbDataPath",
+        "direct_parents": [
+          {
+            "parent": "FltRegionModule",
+            "instance": "fpWbDataPath",
+            "line": 5499
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/float/FltWbDataPath.scala",
+          "line": 12
+        }
+      },
+      "module_id": "M-74f2aeee0d82"
+    },
+    "fp_rf_read_arbiter": {
+      "testbench": "fp_rf_read_arbiter",
+      "design_spec": "docs/spec/design/fp_rf_read_arbiter.md",
+      "verification_spec": "docs/spec/verification/fp_rf_read_arbiter.md",
+      "environment": "testbenches/fp_rf_read_arbiter/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/datapath/RFReadArbiter.scala"
+      ],
+      "tests": [
+        "testbenches/fp_rf_read_arbiter/tests"
+      ],
+      "smoke": "testbenches/fp_rf_read_arbiter/tests/test_fp_rf_read_arbiter_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "FpRFReadArbiter",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_fpRegion.fltRFReadArbiter",
+        "direct_parents": [
+          {
+            "parent": "FltRegionModule",
+            "instance": "fltRFReadArbiter",
+            "line": 5928
+          },
+          {
+            "parent": "DataPath",
+            "instance": "fpRFReadArbiter",
+            "line": 5795
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/datapath/RFReadArbiter.scala",
+          "line": 268
+        }
+      },
+      "module_id": "M-b6468240deb5"
+    },
+    "iq_falu_fmul_fdiv": {
+      "testbench": "iq_falu_fmul_fdiv",
+      "design_spec": "docs/spec/design/iq_falu_fmul_fdiv.md",
+      "verification_spec": "docs/spec/verification/iq_falu_fmul_fdiv.md",
+      "environment": "testbenches/iq_falu_fmul_fdiv/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/float/FltIssueQueue.scala"
+      ],
+      "tests": [
+        "testbenches/iq_falu_fmul_fdiv/tests"
+      ],
+      "smoke": "testbenches/iq_falu_fmul_fdiv/tests/test_iq_falu_fmul_fdiv_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IssueQueueFaluFmulFdiv",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_fpRegion.issueQueues_1",
+        "direct_parents": [
+          {
+            "parent": "FltRegionModule",
+            "instance": "issueQueues_1",
+            "line": 2922
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/float/FltIssueQueue.scala",
+          "line": 22
+        }
+      },
+      "module_id": "M-39e1c978705e"
+    },
+    "iq_falu_fmul_fdiv_1": {
+      "testbench": "iq_falu_fmul_fdiv_1",
+      "design_spec": "docs/spec/design/iq_falu_fmul_fdiv_1.md",
+      "verification_spec": "docs/spec/verification/iq_falu_fmul_fdiv_1.md",
+      "environment": "testbenches/iq_falu_fmul_fdiv_1/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/float/FltIssueQueue.scala"
+      ],
+      "tests": [
+        "testbenches/iq_falu_fmul_fdiv_1/tests"
+      ],
+      "smoke": "testbenches/iq_falu_fmul_fdiv_1/tests/test_iq_falu_fmul_fdiv_1_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IssueQueueFaluFmulFdiv_1",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_fpRegion.issueQueues_2",
+        "direct_parents": [
+          {
+            "parent": "FltRegionModule",
+            "instance": "issueQueues_2",
+            "line": 3405
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/float/FltIssueQueue.scala",
+          "line": 22
+        }
+      },
+      "module_id": "M-39e1c978705e"
+    },
+    "iq_falu_fmul": {
+      "testbench": "iq_falu_fmul",
+      "design_spec": "docs/spec/design/iq_falu_fmul.md",
+      "verification_spec": "docs/spec/verification/iq_falu_fmul.md",
+      "environment": "testbenches/iq_falu_fmul/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/float/FltIssueQueue.scala"
+      ],
+      "tests": [
+        "testbenches/iq_falu_fmul/tests"
+      ],
+      "smoke": "testbenches/iq_falu_fmul/tests/test_iq_falu_fmul_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IssueQueueFaluFmul",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_fpRegion.issueQueues_3",
+        "direct_parents": [
+          {
+            "parent": "FltRegionModule",
+            "instance": "issueQueues_3",
+            "line": 3888
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/float/FltIssueQueue.scala",
+          "line": 22
+        }
+      },
+      "module_id": "M-69630a85e10b"
+    },
+    "pipe_falu_fmul_fdiv": {
+      "testbench": "pipe_falu_fmul_fdiv",
+      "design_spec": "docs/spec/design/pipe_falu_fmul_fdiv.md",
+      "verification_spec": "docs/spec/verification/pipe_falu_fmul_fdiv.md",
+      "environment": "testbenches/pipe_falu_fmul_fdiv/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/float/FltIssuePipe.scala"
+      ],
+      "tests": [
+        "testbenches/pipe_falu_fmul_fdiv/tests"
+      ],
+      "smoke": "testbenches/pipe_falu_fmul_fdiv/tests/test_pipe_falu_fmul_fdiv_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IssuePipeFaluFmulFdiv",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_fpRegion.issuePipes_1",
+        "direct_parents": [
+          {
+            "parent": "FltRegionModule",
+            "instance": "issuePipes_1",
+            "line": 4627
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/float/FltIssuePipe.scala",
+          "line": 26
+        }
+      },
+      "module_id": "M-fb04a06b6a66"
+    },
+    "pipe_falu_fmul_fdiv_1": {
+      "testbench": "pipe_falu_fmul_fdiv_1",
+      "design_spec": "docs/spec/design/pipe_falu_fmul_fdiv_1.md",
+      "verification_spec": "docs/spec/verification/pipe_falu_fmul_fdiv_1.md",
+      "environment": "testbenches/pipe_falu_fmul_fdiv_1/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/float/FltIssuePipe.scala"
+      ],
+      "tests": [
+        "testbenches/pipe_falu_fmul_fdiv_1/tests"
+      ],
+      "smoke": "testbenches/pipe_falu_fmul_fdiv_1/tests/test_pipe_falu_fmul_fdiv_1_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IssuePipeFaluFmulFdiv_1",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_fpRegion.issuePipes_2",
+        "direct_parents": [
+          {
+            "parent": "FltRegionModule",
+            "instance": "issuePipes_2",
+            "line": 4919
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/float/FltIssuePipe.scala",
+          "line": 26
+        }
+      },
+      "module_id": "M-fb04a06b6a66"
+    },
+    "pipe_falu_fmul": {
+      "testbench": "pipe_falu_fmul",
+      "design_spec": "docs/spec/design/pipe_falu_fmul.md",
+      "verification_spec": "docs/spec/verification/pipe_falu_fmul.md",
+      "environment": "testbenches/pipe_falu_fmul/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/float/FltIssuePipe.scala"
+      ],
+      "tests": [
+        "testbenches/pipe_falu_fmul/tests"
+      ],
+      "smoke": "testbenches/pipe_falu_fmul/tests/test_pipe_falu_fmul_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IssuePipeFaluFmul",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_fpRegion.issuePipes_3",
+        "direct_parents": [
+          {
+            "parent": "FltRegionModule",
+            "instance": "issuePipes_3",
+            "line": 5211
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/float/FltIssuePipe.scala",
+          "line": 26
+        }
+      },
+      "module_id": "M-4d0d54e1aeba"
+    }
+  }
+}

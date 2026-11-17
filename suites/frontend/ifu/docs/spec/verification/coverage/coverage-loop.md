@@ -7,7 +7,7 @@
 
 ## 2026-11-08 收口覆盖对账（`public-a0c2a26cb` / DefaultConfig）
 
-运行：`ucv run ifu --workers 16 --seed 1 --require-unified-baseline
+运行：`ucv run fetch --workers 16 --seed 1 --require-unified-baseline
 --output results/ifu-a0c2a26cb-closeout-seed1-authoritative-20261108`（778 PASS / 5 FAIL /
 0 UNCERTAIN，783 nodeid）。完整 `coverage.json` 源报告 sha256
 `759342f4ffa32b252e4189b668b7ff0556b1f6244fbf270d5dcdf964fd259acc`。
@@ -58,7 +58,7 @@ NOT_RUN。`IFU-TOP-011` 的两个用例现在都 PASS，其 FAIL 判定只来自
 
 ## 2026-11-07 新基线覆盖对账（`public-a0c2a26cb` / DefaultConfig）
 
-运行：`ucv run ifu --workers 16 --seed 1 --require-unified-baseline
+运行：`ucv run fetch --workers 16 --seed 1 --require-unified-baseline
 --output results/ifu-a0c2a26cb-full-seed1-final5-20261107`（721 PASS / 5 FAIL /
 1 UNCERTAIN，727 nodeid）。完整 `coverage.json` 源报告 sha256
 `91fa5638c83131971b3bd78330baef5614610ae0fa5d2a2e2794146735dba158`。
@@ -111,9 +111,9 @@ line/branch/toggle 命中数、分母与第三轮相同。只有 carry 用例从
 
 ## 第三轮结果（历史：`results/20261030T022604Z-107cb685`）
 
-运行：`ucv run ifu --workers 1` → `ifu: FAIL (exit 1)`，144 PASS、**2 FAIL**、**1 INCOMPLETE**；
+运行：`ucv run fetch --workers 1` → `ifu: FAIL (exit 1)`，144 PASS、**2 FAIL**、**1 INCOMPLETE**；
 功能点报告 **硬件 53/55 PASS + 1 FAIL（`IFU-TR-002`）+ 1 INCOMPLETE（`IFU-TOP-011`）、验证环境 5/5 PASS**，两者分开统计
-（`suites/frontend/ifu/results/feature-points.json` 的 `summaries`）。
+（合并后为 `suites/frontend/ifu/results/feature-points.json` 的 `summaries`；保留 IFU 功能 ID）。
 
 | DUT | line | branch | toggle bin | 曾变化位 |
 |---|---|---|---|---|
@@ -390,9 +390,9 @@ CSR 暴露 64 位可写字段。该失败保留为 FAIL，不登记 XFAIL。其�
 
 ```sh
 # 1) 构建（缓存命中时直接校验哈希）
-.venv/bin/ucv build ifu --jobs 8
+.venv/bin/ucv build fetch --jobs 8
 # 2) 运行并产出 toffee 原生覆盖率清单
-.venv/bin/ucv run ifu --workers 1
+.venv/bin/ucv run fetch --workers 1
 # 3) 行/分支/toggle 报告（始终在仓库根，替换本次 run 目录）
 .venv-uc-toffee/bin/python suites/frontend/ifu/tools/coverage_report.py \
   --manifest results/<run>/ifu/manifest.json \

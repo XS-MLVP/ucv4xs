@@ -68,55 +68,6 @@ class PFCoverage:
         self.pf.sample({"event": event, "s2xlate": s2, "next_line": next_line_kind}, details=False)
 
 
-REPEATER_DEFINITION = CoverGroupDef(
-    "ptwrepeater",
-    (
-        CoverPointDef("event", {"accept": Bin.values("accept"), "issue": Bin.values("issue"),
-                                "response": Bin.values("response"), "flush": Bin.values("flush")},
-                      description="请求接收、向 PTW 发出、响应持有和 flush 取消。"),
-        CoverPointDef("stage", {str(v): Bin.values(v) for v in range(4)},
-                      description="透传的翻译阶段编码。"),
-        CoverPointDef("hold", {"held": Bin.values("held"), "released": Bin.values("released")},
-                      description="PTW 响应在输出未 ready 时保持，ready 后释放。"),
-    ),
-    description="PTWRepeaterNB 单条非阻塞重复/保持。",
-)
-
-FILTER_DEFINITION = CoverGroupDef(
-    "ptwfilter",
-    (
-        CoverPointDef("event", {"enqueue": Bin.values("enqueue"), "issue": Bin.values("issue"),
-                                "match_resp": Bin.values("match_resp"),
-                                "mismatch_resp": Bin.values("mismatch_resp"),
-                                "merge": Bin.values("merge"), "flush": Bin.values("flush"),
-                                "full": Bin.values("full")},
-                      description="入队、向 PTW 发出、匹配/不匹配响应、重复合并、flush 和满。"),
-        CoverPointDef("stage", {str(v): Bin.values(v) for v in range(4)},
-                      description="待处理请求的翻译阶段编码。"),
-        CoverPointDef("getgpa", {"set": Bin.values("set"), "clear": Bin.values("clear")},
-                      description="请求的 getGpa 属性在响应中透传。"),
-    ),
-    description="PTWFilter 8 项待处理队列与响应匹配。",
-)
-
-
-class RepeaterCoverage:
-    def __init__(self) -> None:
-        self.group = REPEATER_DEFINITION.instantiate("ptwrepeater")
-
-    def sample(self, event: str, stage: int = 0, hold: str = "released") -> None:
-        self.group.sample({"event": event, "stage": stage, "hold": hold}, details=False)
-
-
-class FilterCoverage:
-    def __init__(self) -> None:
-        self.group = FILTER_DEFINITION.instantiate("ptwfilter")
-
-    def sample(self, event: str, stage: int = 0, getgpa: int = 0) -> None:
-        self.group.sample({"event": event, "stage": stage,
-                           "getgpa": "set" if getgpa else "clear"}, details=False)
-
-
 L2TLB_DEFINITION = CoverGroupDef(
     "l2tlb",
     (
@@ -235,60 +186,6 @@ class PtwCoverage:
 
     def sample(self, event: str, page: str = "4k", hint: str = "none") -> None:
         self.group.sample({"event": event, "page": page, "hint": hint}, details=False)
-
-
-BITMAPCACHE_DEFINITION = CoverGroupDef(
-    "bitmapcache",
-    (
-        CoverPointDef("event", {"refill": Bin.values("refill"), "hit": Bin.values("hit"),
-                                "miss": Bin.values("miss"), "clear": Bin.values("clear"),
-                                "flush": Bin.values("flush")},
-                      description="bitmap cache 回填、命中、缺失、BCLEAR 和 flush。"),
-        CoverPointDef("byte", {str(v): Bin.values(v) for v in range(8)},
-                      description="命中时按 PPN 低 3 位选择数据字节。"),
-        CoverPointDef("order", {str(v): Bin.values(v) for v in range(8)},
-                      description="请求 order 原样返回。"),
-    ),
-    description="BitmapCache 64 位位图字缓存语义。",
-)
-
-
-class BitmapCacheCoverage:
-    def __init__(self) -> None:
-        self.group = BITMAPCACHE_DEFINITION.instantiate("bitmapcache")
-
-    def sample(self, event: str, byte: int = 0, order: int = 0) -> None:
-        self.group.sample({"event": event, "byte": byte, "order": order},
-                          details=False)
-
-
-BITMAP_DEFINITION = CoverGroupDef(
-    "bitmap",
-    (
-        CoverPointDef("event", {"cache_hit": Bin.values("cache_hit"),
-                                "cache_miss": Bin.values("cache_miss"),
-                                "pmp_fail": Bin.values("pmp_fail"),
-                                "refill": Bin.values("refill"),
-                                "wakeup": Bin.values("wakeup"),
-                                "flush": Bin.values("flush"),
-                                "multi": Bin.values("multi")},
-                      description="bitmap 检查的缓存命中/缺失、PMP 故障、回填、wakeup、flush 和多请求。"),
-        CoverPointDef("level", {str(v): Bin.values(v) for v in range(4)},
-                      description="页表级别决定 effective PPN 的 VPN 合并方式。"),
-        CoverPointDef("result", {"pass": Bin.values("pass"), "fail": Bin.values("fail")},
-                      description="bitmap 检查通过或失败。"),
-    ),
-    description="Bitmap 位图检查语义。",
-)
-
-
-class BitmapCoverage:
-    def __init__(self) -> None:
-        self.group = BITMAP_DEFINITION.instantiate("bitmap")
-
-    def sample(self, event: str, level: int = 0, result: str = "pass") -> None:
-        self.group.sample({"event": event, "level": level, "result": result},
-                          details=False)
 
 
 PMP_DEFINITION = CoverGroupDef(

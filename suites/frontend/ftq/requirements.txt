@@ -1,2 +1,0 @@
-# Install the repository environment with: python3 -m ucv setup
-# FTQ verification uses the shared uc-toffee/picker environment.

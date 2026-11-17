@@ -114,3 +114,25 @@ DefaultConfig；实际选用版本由 `ucv info bpu` 给出。现有材料包含
 
 规格变更使用 Git review；review 结论关联稳定行为/功能 ID 和适用基线。运行结果由
 `ucv report` 提供，本页维护设计要求本身。
+## 当前切分与 Chisel / RTL 映射
+
+本表是 **2026-11-16** 的设计身份核对，基线 `public-e716c7658`，完整 commit `e716c765824900ff78816b92ac827fd4aa2cab35`。配置为 DefaultConfig、单核、CHI E.b、OpenLLC，含 `--fpga-platform --reset-gen`。
+
+Chisel 位置来自该次 FIRRTL 源位置注解，并与源码核对；RTL 实例来自生成模块中的实际实例声明。表中实例为可定位样本，全部直接父实例见 workspace.json。数字后缀只属于该基线，不是稳定逻辑身份；同一个 RTL 类型可能有多个实例。
+
+沿用既有工程功能合同；本表补充当前源码、生成名与实际放置位置。
+
+| DUT | 当前配方 top | Chisel 定义/生成位置（相对源码根） | RTL 实例样本 | 接入状态 |
+|---|---|---|---|---|
+| `bpu` | `Bpu` | `src/main/scala/xiangshan/frontend/bpu/Bpu.scala:49` | `XSTop.core_with_l2.core.frontend.inner_bpu` | 已有实现；新基线未验收 |
+| `abtb` | `AheadBtb` | `src/main/scala/xiangshan/frontend/bpu/abtb/AheadBtb.scala:32` | `XSTop.core_with_l2.core.frontend.inner_bpu.abtb` | 已有实现；新基线未验收 |
+| `ittage` | `Ittage` | `src/main/scala/xiangshan/frontend/bpu/ittage/Ittage.scala:44` | `XSTop.core_with_l2.core.frontend.inner_bpu.ittage` | 已有实现；新基线未验收 |
+| `mbtb` | `MainBtb` | `src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtb.scala:30` | `XSTop.core_with_l2.core.frontend.inner_bpu.mbtb` | 已有实现；新基线未验收 |
+| `ras` | `Ras` | `src/main/scala/xiangshan/frontend/bpu/ras/Ras.scala:42` | `XSTop.core_with_l2.core.frontend.inner_bpu.ras` | 已有实现；新基线未验收 |
+| `sc` | `Sc` | `src/main/scala/xiangshan/frontend/bpu/sc/Sc.scala:40` | `XSTop.core_with_l2.core.frontend.inner_bpu.sc` | 已有实现；新基线未验收 |
+| `tage` | `Tage` | `src/main/scala/xiangshan/frontend/bpu/tage/Tage.scala:36` | `XSTop.core_with_l2.core.frontend.inner_bpu.tage` | 已有实现；新基线未验收 |
+| `ubtb` | `MicroBtb` | `src/main/scala/xiangshan/frontend/bpu/ubtb/MicroBtb.scala:30` | `XSTop.core_with_l2.core.frontend.inner_bpu.ubtb` | 已有实现；新基线未验收 |
+| `uras` | `MicroRas` | `src/main/scala/xiangshan/frontend/bpu/ras/MicroRas.scala:41` | `XSTop.core_with_l2.core.frontend.inner_bpu.uras` | 已有实现；新基线未验收 |
+| `utage` | `MicroTage` | `src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala:36` | `XSTop.core_with_l2.core.frontend.inner_bpu.utage` | 已有实现；新基线未验收 |
+
+这些映射不证明接口向后兼容、硬件等价或功能覆盖；历史规格和报告沿用原日期及基线。构建、冒烟、功能、覆盖分别验收。公共 NewPipelineConnectPipe 与 internal VAGQ 同名模块没有互相覆盖结论。

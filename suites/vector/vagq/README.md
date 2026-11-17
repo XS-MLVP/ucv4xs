@@ -1,7 +1,7 @@
 # VAGQ 验证工程
 
 包含 12 个独立 DUT，统一使用 toffee。验证源码位于 `testbenches/<testbench>/`：
-11 个实现包对应 12 个 DUT，两个 pipeline DUT 共用参数化实现。配方保留 schema 1，
+12 个实现包一对一对应 12 个 DUT，两个 pipeline DUT 各有独立 payload、环境与测试。配方保留 schema 1，
 `workspace.json` 使用 schema 2。完整配方见 `ucv.json`；VAGQ 通过本地来源接入
 internal 基线，与其他公开工程的 `public-*` 基线不同，混合基线集合会被统一基线检查拒绝。
 
@@ -20,6 +20,10 @@ ucv run vagq --workers 8
 - [Verification spec](docs/spec/verification/README.md)：验证分层、场景矩阵、当前记录和未关闭项。
 - [问题记录](docs/bugs/README.md)：当前 open/closed 状态；不复制 internal 源码或证据。
 - `./scripts/ucv info vagq --dut <key>`：逐 DUT 显示 testbench 实现/测试入口和 internal 基线源码相对路径。
+- 两个 pipeline 的独立入口：[NewPipelineConnectPipe](testbenches/NewPipelineConnectPipe/README.md)、
+  [NewPipelineConnectPipe_3](testbenches/NewPipelineConnectPipe_3/README.md)。
+- [启动隔离自检](testbenches/shared/tests/test_dut_startup.py)：合成元数据收集、fixture 延迟读取、
+  单 DUT / 联合 DUT 的 RTL 收据校验；属于无 native 的环境检查。
 
 ## 状态边界
 

@@ -4,7 +4,6 @@ from dataclasses import dataclass
 from suites.vector.vagq.testbenches.arbiter.checker import Checker
 from suites.vector.vagq.testbenches.arbiter.coverage import Coverage
 from suites.vector.vagq.testbenches.arbiter.env import probe
-from suites.vector.vagq.testbenches.arbiter.model import observe
 from suites.vector.vagq.testbenches.arbiter.transactions import Beat
 
 
@@ -23,6 +22,8 @@ class Env:
 
     def cycle(self, beat: Beat):
         """Present one combinational beat and compare the routed result."""
+        from suites.vector.vagq.testbenches.arbiter.model import observe
+
         self.ports.inputs.drive(probe.encode(beat))
         actual = self.sample()
         expected = observe(beat)

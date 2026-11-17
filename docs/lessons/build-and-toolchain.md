@@ -6,8 +6,8 @@
 
 | 内容 | 仓库位置 | 用途 |
 |---|---|---|
-| 源码、递归子模块、生成配置和生成工具版本 | [baselines/](../../baselines/) | 确定本轮实际硬件输入 |
-| toffee、Picker、xcomm、Verilator 版本及工具补丁 | [版本清单](../../dependencies/versions.json)、[Python 依赖](../../dependencies/python.txt)、[patches/](../../dependencies/patches/) | 在项目内安装一致的工具链 |
+| 源码、递归子模块、生成配置和生成工具版本 | [baselines/](../../baselines) | 确定本轮实际硬件输入 |
+| toffee、Picker、xcomm、Verilator 版本及工具补丁 | [版本清单](../../dependencies/versions.json)、[Python 依赖](../../dependencies/python.txt)、[patches/](../../dependencies/patches) | 在项目内安装一致的工具链 |
 | 安装与源码生成 | [setup.py](../../src/ucv/setup.py)、[sources.py](../../src/ucv/sources.py) | 获取精确版本、安装、Chisel 到 RTL |
 | 闭包提取、Picker 导出与独立进程冒烟 | [build.py](../../src/ucv/build.py) | 从完整 RTL 构建各 DUT |
 | 各 DUT 的 top、导出类和构建选择 | 各工程 `ucv.json`，例如 [Sbuffer](../../suites/memblock/sbuffer/ucv.json) | 随工程维护模块边界 |
@@ -52,6 +52,7 @@ PYTHONPATH=src python3.12 -m ucv setup --profile full --jobs 8
 | Picker 将 Python 保留字端口直接输出成属性语法 | 构建时只修正 Python 绑定为 `getattr` / `setattr`，记录修正前后哈希；RTL 和信号名保持原样 | [repair_python_keywords](../../src/ucv/build.py) |
 | 可执行文件、模板、Python wrapper 和原生库来自不同安装，可能出现 ABI 或 memory-direct 不匹配 | 使用项目内 `.venv/` 与 `.tools/`；核对锁定工具，并在独立进程检查 ABI 3、coverage protocol 5、信号配置基址、行覆盖能力及复位/步进/结束 | [旧 BPU 重建经验](../../suites/frontend/bpu/docs/guides/dut-rebuild.md)、[setup.py](../../src/ucv/setup.py)、[build.py](../../src/ucv/build.py) |
 | 上游把 Python 分发名从 `pytoffee`/`xspcomm` 改为 `uc-toffee`/`uc-xcomm`，旧安装与新安装会同时提供同一导入包 | 先卸载旧分发，再按锁定的 `distribution` 安装；setuptools-scm 版本环境变量和 CMake 版本参数跟随新分发名；pytest 插件用 `toffee._pytest_outcomes`。升级流程见[待审核方法](../../skills/pending/dependency-upgrade-and-capability-audit.md) | `dependencies/versions.json`、[runtime.py](../../src/ucv/runtime.py)、[setup.py](../../src/ucv/setup.py) |
+| Toffee 安装版本号正确，但依赖检出已切到开发分支，安装包还包含锁定源码中没有的旧文件 | 核对 HEAD、工作树和完整安装文件集合；保全开发检出与旧安装包，从锁定 commit 的干净检出构建 wheel 重装，再比较文件集合与逐文件哈希。开发改动使用独立运行环境；环境修复仍需独立构建/冒烟与有限用例验证 | [运行环境核验](../status.md#运行环境)、[本地 Toffee 开发环境](../local-configuration.md#本地-toffee-开发环境) |
 | 升级工具锁后仍拿旧 DUT 的 PASS/收据解释新工具链 | 工具锁参与缓存身份；升级后按需重建并冒烟，未重建的 DUT 明确写“未验证”。2026-10-30 仅重建 `bpu/ubtb` 与 `icache/waylookup` | [阶段状态](../status.md)、[布局审计案例](suite-layout-audit-20261030.md) |
 | 仓库搬家后，旧虚拟环境、CMake 状态和原生二进制可能带原绝对路径 | 在新目录建立环境并重新构建原生包。2026-10-27 搬迁保留旧环境到 `.history/`，新原生包单独构建；该轮完整 RTL 缓存经哈希核对复用 | [搬迁与重建记录](../history/structure-update-20261027.json) |
 | 只看到编译返回成功或目录存在，就把半成品当成可用 DUT | 检查 Python 入口、signals、offset 和两份原生库，再运行独立进程冒烟；失败包保留到 `failed-dut-*`，无成功凭据不能命中成功构建 | [build.py](../../src/ucv/build.py) |

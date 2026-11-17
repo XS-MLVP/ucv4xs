@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "suite": "clock_reset",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "clock_gate": {
+      "top": "ClockGate",
+      "export_name": "ClockGateDut"
+    },
+    "reset_gen": {
+      "top": "ResetGen",
+      "export_name": "ResetGenDut"
+    },
+    "async_reset_synchronizer_shift_reg_w1_d3_i0": {
+      "top": "AsyncResetSynchronizerShiftReg_w1_d3_i0",
+      "export_name": "AsyncResetSynchronizerShiftRegW1D3I0Dut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "testbenches"
+  ],
+  "process_isolation": "suite"
+}

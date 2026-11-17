@@ -20,7 +20,26 @@
         "testbenches/waylookup/tests"
       ],
       "environment": "testbenches/waylookup/env/agent/main.py",
-      "testbench": "waylookup"
+      "testbench": "waylookup",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "ICacheWayLookup",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_icache.wayLookup",
+        "direct_parents": [
+          {
+            "parent": "ICache",
+            "instance": "wayLookup",
+            "line": 2201
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/icache/ICacheWayLookup.scala",
+          "line": 30
+        }
+      },
+      "module_id": "M-698a3f431ec1"
     },
     "replacer": {
       "design_spec": [
@@ -38,7 +57,26 @@
         "testbenches/replacer/tests"
       ],
       "environment": "testbenches/replacer/env/agent/main.py",
-      "testbench": "replacer"
+      "testbench": "replacer",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "ICacheReplacer",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_icache.replacer",
+        "direct_parents": [
+          {
+            "parent": "ICache",
+            "instance": "replacer",
+            "line": 1940
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/icache/ICacheReplacer.scala",
+          "line": 24
+        }
+      },
+      "module_id": "M-579d564d5c9d"
     },
     "mshr": {
       "design_spec": [
@@ -56,7 +94,26 @@
         "testbenches/mshr/tests"
       ],
       "environment": "testbenches/mshr/env/agent/main.py",
-      "testbench": "mshr"
+      "testbench": "mshr",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "ICacheMshr",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_icache.missUnit.allMshr_0",
+        "direct_parents": [
+          {
+            "parent": "ICacheMissUnit",
+            "instance": "allMshr_0",
+            "line": 767
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/icache/ICacheMshr.scala",
+          "line": 28
+        }
+      },
+      "module_id": "M-532d259c1ece"
     },
     "databank": {
       "design_spec": [
@@ -75,7 +132,26 @@
         "testbenches/databank/tests"
       ],
       "environment": "testbenches/databank/env/agent/main.py",
-      "testbench": "databank"
+      "testbench": "databank",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "ICacheDataBank",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_icache.dataArray.banks_0",
+        "direct_parents": [
+          {
+            "parent": "ICacheDataArray",
+            "instance": "banks_0",
+            "line": 761
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/icache/ICacheDataBank.scala",
+          "line": 24
+        }
+      },
+      "module_id": "M-5e217b910dcf"
     },
     "metabank": {
       "design_spec": [
@@ -94,7 +170,26 @@
         "testbenches/metabank/tests"
       ],
       "environment": "testbenches/metabank/env/agent/main.py",
-      "testbench": "metabank"
+      "testbench": "metabank",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "ICacheMetaInterleavedBank",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_icache.metaArray.banks_0",
+        "direct_parents": [
+          {
+            "parent": "ICacheMetaArray",
+            "instance": "banks_0",
+            "line": 210
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/icache/ICacheMetaInterleavedBank.scala",
+          "line": 24
+        }
+      },
+      "module_id": "M-8db161f5b426"
     },
     "metaarray": {
       "design_spec": [
@@ -112,7 +207,26 @@
         "testbenches/metaarray/tests"
       ],
       "environment": "testbenches/metaarray/env/agent/main.py",
-      "testbench": "metaarray"
+      "testbench": "metaarray",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "ICacheMetaArray",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_icache.metaArray",
+        "direct_parents": [
+          {
+            "parent": "ICache",
+            "instance": "metaArray",
+            "line": 907
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/icache/ICacheMetaArray.scala",
+          "line": 24
+        }
+      },
+      "module_id": "M-d74980b20bdf"
     },
     "dataarray": {
       "design_spec": [
@@ -130,7 +244,26 @@
         "testbenches/dataarray/tests"
       ],
       "environment": "testbenches/dataarray/env/agent/main.py",
-      "testbench": "dataarray"
+      "testbench": "dataarray",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "ICacheDataArray",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_icache.dataArray",
+        "direct_parents": [
+          {
+            "parent": "ICache",
+            "instance": "dataArray",
+            "line": 1066
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/icache/ICacheDataArray.scala",
+          "line": 22
+        }
+      },
+      "module_id": "M-f743df8d6e72"
     },
     "missunit": {
       "design_spec": [
@@ -148,7 +281,26 @@
         "testbenches/missunit/tests"
       ],
       "environment": "testbenches/missunit/env/agent/main.py",
-      "testbench": "missunit"
+      "testbench": "missunit",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "ICacheMissUnit",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_icache.missUnit",
+        "direct_parents": [
+          {
+            "parent": "ICache",
+            "instance": "missUnit",
+            "line": 1854
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/icache/ICacheMissUnit.scala",
+          "line": 31
+        }
+      },
+      "module_id": "M-c6cc6e689638"
     },
     "mainpipe": {
       "design_spec": [
@@ -166,7 +318,26 @@
         "testbenches/mainpipe/tests"
       ],
       "environment": "testbenches/mainpipe/env/agent/main.py",
-      "testbench": "mainpipe"
+      "testbench": "mainpipe",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "ICacheMainPipe",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_icache.mainPipe",
+        "direct_parents": [
+          {
+            "parent": "ICache",
+            "instance": "mainPipe",
+            "line": 1490
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/icache/ICacheMainPipe.scala",
+          "line": 37
+        }
+      },
+      "module_id": "M-ce1d94264e3c"
     },
     "prefetchpipe": {
       "design_spec": [
@@ -184,7 +355,26 @@
         "testbenches/prefetchpipe/tests"
       ],
       "environment": "testbenches/prefetchpipe/env/agent/main.py",
-      "testbench": "prefetchpipe"
+      "testbench": "prefetchpipe",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "ICachePrefetchPipe",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_icache.prefetcher",
+        "direct_parents": [
+          {
+            "parent": "ICache",
+            "instance": "prefetcher",
+            "line": 1959
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/icache/ICachePrefetchPipe.scala",
+          "line": 34
+        }
+      },
+      "module_id": "M-ff054d7c732e"
     },
     "icache": {
       "design_spec": [
@@ -197,14 +387,33 @@
         "docs/spec/verification/error-review.md"
       ],
       "chisel": [
-        "src/main/scala/xiangshan/frontend/icache/ICache.scala",
-        "src/main/scala/xiangshan/frontend/icache/ICacheImp.scala"
+        "src/main/scala/xiangshan/frontend/icache/ICacheImp.scala",
+        "src/main/scala/xiangshan/frontend/icache/ICache.scala"
       ],
       "tests": [
         "testbenches/icache/tests"
       ],
       "environment": "testbenches/icache/env/agent/main.py",
-      "testbench": "icache"
+      "testbench": "icache",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "ICache",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_icache",
+        "direct_parents": [
+          {
+            "parent": "Frontend",
+            "instance": "inner_icache",
+            "line": 2908
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/icache/ICacheImp.scala",
+          "line": 39
+        }
+      },
+      "module_id": "M-d34ee177cb24"
     }
   }
 }

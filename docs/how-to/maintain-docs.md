@@ -71,6 +71,9 @@ DUT 的 `testbenches/<testbench>/README.md` 是 schema2 的工作入口：链接
 | 设计要求、接口与时序 | 工程 docs/spec/design | 按设计工程结构，设计/验证共同 review |
 | 验证场景、判定依据和完成条件 | 工程 docs/spec/verification、既有功能点文档与合同 | 稳定 ID、维护关联；按验证工程结构 |
 | DUT/testbench/源码/环境资源地图 | 配方 + workspace.json | `ucv info` 生成 |
+| 模块身份、管理树与版本观察 | 根配置引用的模块目录；workspace 的 module_id 关联 DUT | `ucv modules list/check/diff/apply`；[维护契约](../reference/modules.md)，不承载功能完成率 |
+| DUT 工作入口清单 | 既有 docs/spec/verification/README.md 的生成区块 | `ucv docs --write` 生成；不计算合同完成率 |
+| 工作认领、下一步、阻塞与验收证据 | 所属验证合同正文或关联任务 | 按 DUT＋合同维护；未知负责人写待认领 |
 | 实际执行状态、计数和覆盖 | 运行收据与产物 | `ucv report` 生成到结果目录 |
 | 问题及处置 | docs/bugs/open 或 closed 中的单一记录 | 编号不变，保留各基线结论和证据 |
 | 重要设计决定 | 对应规格的依据章节 | 记录决定、适用版本、review 与原依据 |

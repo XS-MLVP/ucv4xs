@@ -53,3 +53,18 @@
   `R-SRC-OUT-OF-RANGE`、`R-COV-INIT`、`R-COV-TOOL`、`R-COV-TOGGLE` 为非阻塞边界。
 - 其他配置若把 flush 接实，或改变 `nMmioEntry`/`MmioBusWidth`/PMA 上限/生成哈希，
   当前分类失效，必须重跑并单独标注。
+
+## 当前硬件绑定观察
+
+2026-11-16 观察：`public-e716c7658 / DefaultConfig`，单核、CHI E.b、OpenLLC，
+含 `--fpga-platform --reset-gen`。源码位置来自锁定源码及完整生成注解，
+实例为实际 RTL 样本；全部直接父实例见 workspace。数字后缀不是跨基线稳定身份。
+
+| DUT | 配方 top | Chisel 定义/生成位置 | RTL 实例样本 |
+|---|---|---|---|
+| `instr_uncache_entry` | `InstrUncacheEntry` | `src/main/scala/xiangshan/frontend/instruncache/InstrUncacheEntry.scala:31` | `XSTop.core_with_l2.core.frontend.inner_instrUncache.entries_0` |
+| `instr_uncache_resp_arbiter` | `Arbiter1_InstrUncacheResp` | `src/main/scala/chisel3/util/Arbiter.scala:149` | `XSTop.core_with_l2.core.frontend.inner_instrUncache.respArbiter` |
+| `instr_uncache` | `InstrUncache` | `src/main/scala/xiangshan/frontend/instruncache/InstrUncacheImp.scala:28` | `XSTop.core_with_l2.core.frontend.inner_instrUncache` |
+
+这些观察不证明端口兼容、独立预期成立或硬件通过；当前工作与验收范围见
+[验证合同](../verification/README.md)。历史报告按原基线解释。

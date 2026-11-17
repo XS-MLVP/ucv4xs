@@ -1,5 +1,5 @@
 """Legal traffic construction, independent of the expected output calculation."""
-from suites.memblock.lsq.testbenches.uncache_entry.transactions import RobPtr
+from suites.memblock.lsq.testbenches.shared.transactions.uncache_entry import RobPtr
 
 
 def red(rob, self_flush=False, valid=True):

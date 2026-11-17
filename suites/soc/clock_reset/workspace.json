@@ -1,0 +1,307 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "duts": {
+    "clock_gate": {
+      "testbench": "clock_gate",
+      "design_spec": "docs/spec/design/clock_gate.md",
+      "verification_spec": "docs/spec/verification/clock_gate.md",
+      "environment": "testbenches/clock_gate/env.py",
+      "chisel": [
+        "utility/src/main/scala/utility/ClockGate.scala"
+      ],
+      "tests": [
+        "testbenches/clock_gate/tests"
+      ],
+      "smoke": "testbenches/clock_gate/tests/test_clock_gate_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "ClockGate",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.backend.inner_intRegion.intExuBlock.exuALU0_AluCsrFenceLink.ClockGate",
+        "direct_parents": [
+          {
+            "parent": "ExeUnitImp_2",
+            "instance": "ClockGate",
+            "line": 181
+          },
+          {
+            "parent": "MbistClockGateCell",
+            "instance": "CG",
+            "line": 11
+          },
+          {
+            "parent": "ExeUnitImp_7",
+            "instance": "ClockGate",
+            "line": 249
+          },
+          {
+            "parent": "PtwCache",
+            "instance": "ClockGate",
+            "line": 44416
+          },
+          {
+            "parent": "PtwCache",
+            "instance": "ClockGate_1",
+            "line": 44424
+          },
+          {
+            "parent": "ExeUnitImp",
+            "instance": "ClockGate",
+            "line": 1446
+          },
+          {
+            "parent": "ExeUnitImp",
+            "instance": "ClockGate_1",
+            "line": 1452
+          },
+          {
+            "parent": "MbistClockGateCell_255",
+            "instance": "CG",
+            "line": 16
+          },
+          {
+            "parent": "ExeUnitImp_6",
+            "instance": "ClockGate",
+            "line": 318
+          },
+          {
+            "parent": "BitmapCache",
+            "instance": "ClockGate",
+            "line": 842
+          },
+          {
+            "parent": "ExeUnitImp_4",
+            "instance": "ClockGate",
+            "line": 302
+          }
+        ],
+        "declaration": {
+          "path": "utility/src/main/scala/utility/ClockGate.scala",
+          "line": 24
+        }
+      },
+      "module_id": "M-4173a16b51b6"
+    },
+    "reset_gen": {
+      "testbench": "reset_gen",
+      "design_spec": "docs/spec/design/reset_gen.md",
+      "verification_spec": "docs/spec/verification/reset_gen.md",
+      "environment": "testbenches/reset_gen/env.py",
+      "chisel": [
+        "utility/src/main/scala/utility/ResetGen.scala"
+      ],
+      "tests": [
+        "testbenches/reset_gen/tests"
+      ],
+      "smoke": "testbenches/reset_gen/tests/test_reset_gen_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "ResetGen",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.reset_sync_resetSync",
+        "direct_parents": [
+          {
+            "parent": "MemBlock",
+            "instance": "inner_resetGen",
+            "line": 23829
+          },
+          {
+            "parent": "MemBlock",
+            "instance": "inner_resetGen_1",
+            "line": 23837
+          },
+          {
+            "parent": "MemBlock",
+            "instance": "resetGen",
+            "line": 24159
+          },
+          {
+            "parent": "XSTop",
+            "instance": "reset_sync_resetSync",
+            "line": 2051
+          },
+          {
+            "parent": "XSTop",
+            "instance": "jtag_reset_sync_resetSync",
+            "line": 2059
+          },
+          {
+            "parent": "XSTop",
+            "instance": "ref_reset_sync_resetSync",
+            "line": 2126
+          },
+          {
+            "parent": "XSTop",
+            "instance": "resetGen",
+            "line": 3029
+          },
+          {
+            "parent": "XSTop",
+            "instance": "resetGen_1",
+            "line": 3037
+          },
+          {
+            "parent": "Frontend",
+            "instance": "resetGen",
+            "line": 15219
+          },
+          {
+            "parent": "L2Top",
+            "instance": "resetGen",
+            "line": 2759
+          },
+          {
+            "parent": "Backend",
+            "instance": "inner_resetGen",
+            "line": 18856
+          },
+          {
+            "parent": "Backend",
+            "instance": "inner_resetGen_1",
+            "line": 18864
+          },
+          {
+            "parent": "Backend",
+            "instance": "inner_resetGen_2",
+            "line": 18872
+          },
+          {
+            "parent": "Backend",
+            "instance": "resetGen",
+            "line": 18987
+          }
+        ],
+        "declaration": {
+          "path": "utility/src/main/scala/utility/ResetGen.scala",
+          "line": 28
+        }
+      },
+      "module_id": "M-466d9f52baab"
+    },
+    "async_reset_synchronizer_shift_reg_w1_d3_i0": {
+      "testbench": "async_reset_synchronizer_shift_reg_w1_d3_i0",
+      "design_spec": "docs/spec/design/async_reset_synchronizer_shift_reg_w1_d3_i0.md",
+      "verification_spec": "docs/spec/verification/async_reset_synchronizer_shift_reg_w1_d3_i0.md",
+      "environment": "testbenches/async_reset_synchronizer_shift_reg_w1_d3_i0/env.py",
+      "chisel": [
+        "rocket-chip/src/main/scala/util/SynchronizerReg.scala"
+      ],
+      "tests": [
+        "testbenches/async_reset_synchronizer_shift_reg_w1_d3_i0/tests"
+      ],
+      "smoke": "testbenches/async_reset_synchronizer_shift_reg_w1_d3_i0/tests/test_async_reset_synchronizer_shift_reg_w1_d3_i0_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "AsyncResetSynchronizerShiftReg_w1_d3_i0",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.nocMisc.syscnt.update_sync_chain",
+        "direct_parents": [
+          {
+            "parent": "AsyncQueueSink_2",
+            "instance": "widx_widx_gray",
+            "line": 106
+          },
+          {
+            "parent": "AsyncQueueSink_1",
+            "instance": "widx_widx_gray",
+            "line": 108
+          },
+          {
+            "parent": "TLDebugModuleInner",
+            "instance": "hartIsInResetSync_0_debug_hartReset_0",
+            "line": 5168
+          },
+          {
+            "parent": "AXIRegIMSIC",
+            "instance": "msi_vld_ack_soc_chain",
+            "line": 393
+          },
+          {
+            "parent": "TLDebugModuleInnerAsync",
+            "instance": "dmactive_synced_dmactive_synced_dmactiveSync",
+            "line": 172
+          },
+          {
+            "parent": "AsyncQueueSource_1",
+            "instance": "ridx_ridx_gray",
+            "line": 122
+          },
+          {
+            "parent": "IMSICGateWay",
+            "instance": "msi_vld_req_cpu_chain",
+            "line": 100
+          },
+          {
+            "parent": "AsyncValidSync",
+            "instance": "io_out_source_valid_0",
+            "line": 8
+          },
+          {
+            "parent": "AsyncQueueSource_2",
+            "instance": "ridx_ridx_gray",
+            "line": 124
+          },
+          {
+            "parent": "TimeAsync",
+            "instance": "time_vld_chain",
+            "line": 93
+          },
+          {
+            "parent": "AsyncQueueSink",
+            "instance": "widx_widx_gray",
+            "line": 107
+          },
+          {
+            "parent": "AsyncQueueSource",
+            "instance": "ridx_ridx_gray",
+            "line": 119
+          },
+          {
+            "parent": "SYSCNT",
+            "instance": "update_sync_chain",
+            "line": 220
+          },
+          {
+            "parent": "SYSCNT",
+            "instance": "stop_sync_chain",
+            "line": 226
+          },
+          {
+            "parent": "SYSCNT",
+            "instance": "freqidx_req_rtc_chain",
+            "line": 232
+          },
+          {
+            "parent": "SYSCNT",
+            "instance": "time_sw_req_rtc_chain",
+            "line": 238
+          },
+          {
+            "parent": "SYSCNT",
+            "instance": "time_sw_update_bus_chain",
+            "line": 244
+          },
+          {
+            "parent": "SYSCNT",
+            "instance": "inc_update_bus_chain",
+            "line": 250
+          },
+          {
+            "parent": "TLDebugModuleOuterAsync",
+            "instance": "dmactiveAck_dmactiveAckSync",
+            "line": 216
+          }
+        ],
+        "declaration": {
+          "path": "rocket-chip/src/main/scala/util/SynchronizerReg.scala",
+          "line": 80
+        }
+      },
+      "module_id": "M-f3a68aedce0b"
+    }
+  }
+}

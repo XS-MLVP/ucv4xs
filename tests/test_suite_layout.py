@@ -24,8 +24,13 @@ def test_every_suite_passes_the_layout_contract():
 
 def test_layout_audit_sees_every_registered_suite():
     assert {row['suite'] for row in audit_rows()} == {
-        'bpu', 'ftq', 'icache', 'ifu', 'ibuffer', 'instr_uncache', 'dcache',
+        'bpu', 'ftq', 'ifu', 'ibuffer', 'instr_uncache', 'frontend_top',
+        'frontend_bridge', 'icache', 'dcache',
         'lsq', 'lsu', 'mmu', 'sbuffer', 'vagq',
+        # Major contracts and retained component scaffolds; see public_all/all.
+        'ctrl', 'int_region', 'fp_region', 'vec_region', 'prefetch',
+        'ncb', 'llc', 'l2', 'peripheral',
+        'aia', 'plic', 'timer', 'clock_reset', 'debug', 'mbist',
     }
 
 
@@ -46,8 +51,7 @@ def queue_env(): pass
     assert AUDIT.root_fixtures(root) == {'cache_agent', 'queue_env'}
 
 
-@pytest.mark.parametrize('suite', ['bpu', 'ftq', 'icache', 'ifu', 'ibuffer',
-                                   'instr_uncache',
+@pytest.mark.parametrize('suite', ['bpu', 'ftq', 'ifu', 'ibuffer', 'instr_uncache', 'icache',
                                    'dcache', 'lsq', 'lsu', 'mmu', 'sbuffer', 'vagq'])
 def test_audit_separates_structure_from_transaction_boundary(suite):
     """Report current debt without requiring it to remain in future code."""

@@ -205,6 +205,10 @@ def problems(suite, meta):
             if not any(contained(root,v).is_relative_to(root/'docs/spec'/folder) for v in values):
                 errors.append(f'{dut}: {role} must link the suite docs/spec/{folder}')
     shared=root/'testbenches/shared'
+    if schema==2:
+        for module,duts in owners.items():
+            if len(duts)>1:
+                errors.append(f'{module}: each DUT requires an independent testbench; shared by '+', '.join(duts))
     if schema==2 and (shared.exists() or shared.is_symlink()):owners['shared']=[]
     for module,duts in owners.items():
         base=root/directory/module
@@ -237,29 +241,64 @@ def problems(suite, meta):
     return errors
 
 
-def relocated_name(root, name):
-    """Navigate a frozen path/nodeid; this does not establish receipt equivalence."""
+def relocated_names(root, name):
+    """All successors of a frozen path/nodeid, without assigning result credit.
+
+    Schema 1 maps one path to one successor. Schema 2 also permits a nonempty
+    list when a former implementation was split between independent owners.
+    Exact node IDs take precedence over file/directory prefixes.
+    """
     manifest=root/'docs/path-migrations.json'
-    if not manifest.is_file():return name
+    contained(root,name.split('::')[0])
+    if not manifest.is_file():return [name]
     value=read(manifest)
-    if (not isinstance(value,dict) or value.get('schema')!=1 or not isinstance(value.get('paths'),dict)
-            or any(not isinstance(k,str) or not k or not isinstance(v,str) or not v
+    def valid_destination(destination):
+        if isinstance(destination,str):return bool(destination.strip())
+        return (value.get('schema')==2 and isinstance(destination,list) and bool(destination)
+                and all(isinstance(item,str) and item.strip() for item in destination)
+                and len(destination)==len(set(destination)))
+    if (not isinstance(value,dict) or type(value.get('schema')) is not int
+            or value['schema'] not in {1,2} or not isinstance(value.get('paths'),dict)
+            or any(not isinstance(k,str) or not k.strip() or not valid_destination(v)
                    for k,v in value['paths'].items())):
         raise UcvError('Invalid path migration map: '+str(manifest))
     paths=sorted(value['paths'].items(),key=lambda item:len(item[0]),reverse=True)
-    visited=set()
-    while True:
+
+    def resolve(current, visited):
         for old,new in paths:
-            if (name==old or name.startswith((old+'/',old+'::'))
-                    or ('::' in old and name.startswith(old+'['))):
+            if (current==old or current.startswith((old+'/',old+'::'))
+                    or ('::' in old and current.startswith(old+'['))):
                 # Reusing a migration source is a cycle, including a growing
                 # prefix such as a -> a/subdir that never repeats a full name.
                 if old in visited:raise UcvError('Path migration cycle: '+str(manifest)+': '+old)
-                visited.add(old)
-                name=new+name[len(old):]
-                contained(root,name.split('::')[0])
-                break
-        else:return name
+                results=[]
+                for target in [new] if isinstance(new,str) else new:
+                    successor=target+current[len(old):]
+                    contained(root,successor.split('::')[0])
+                    if isinstance(new,list) and len(new)>1 and target==old:
+                        # One owner can keep the original file while other
+                        # owners receive independent copies. Only an explicit
+                        # retained branch terminates; indirect cycles still fail.
+                        results.append(successor)
+                    else:
+                        results.extend(resolve(successor,visited|{old}))
+                return list(dict.fromkeys(results))
+        return [current]
+
+    return resolve(name,set())
+
+
+def relocated_name(root, name):
+    """Resolve a unique successor; never guess which split DUT owns a result."""
+    names=relocated_names(root,name)
+    if len(names)!=1:
+        raise UcvError('Ambiguous path migration: '+name+' -> '+', '.join(names))
+    return names[0]
+
+
+def relocated_paths(root, name):
+    """Return every successor file/directory for documentation navigation."""
+    return list(dict.fromkeys(contained(root,n.split('::')[0]) for n in relocated_names(root,name)))
 
 
 def relocated(root, name):

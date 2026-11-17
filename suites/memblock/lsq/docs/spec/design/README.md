@@ -63,3 +63,53 @@ LsqWrapper
 - **未证明**：向量首次路由是否真能以向量形式发起（`NMIX-INSTR`）；跨页 Store 第二页在 UQ 释放后的整核可见性（[IWL-UQ-SECOND-PAGE](../verification/README.md)）；`ColdDownThreshold=0` 参数域（`GAP-6688`）；AMO 与 Sbuffer 排空的 MemBlock 组合义务（`GAP-AMO-OBLIGATION`）。
 - **接口边界而非正常流量**：`LQU-MMIO-IF-001`、`VSQ-REDIR-IF-001` 只证明声明的接口压力；不扩大为合法 ROB/Backend 流量可达。
 - 设计行为需要变更时，应先更新合同、证据范围和受影响功能 ID，再修改 RTL 或测试；本目录不修改 RTL。
+## 当前切分与 Chisel / RTL 映射
+
+本表是 **2026-11-16** 的设计身份核对，基线 `public-e716c7658`，完整 commit `e716c765824900ff78816b92ac827fd4aa2cab35`。配置为 DefaultConfig、单核、CHI E.b、OpenLLC，含 `--fpga-platform --reset-gen`。
+
+Chisel 位置来自该次 FIRRTL 源位置注解，并与源码核对；RTL 实例来自生成模块中的实际实例声明。表中实例为可定位样本，全部直接父实例见 workspace.json。数字后缀只属于该基线，不是稳定逻辑身份；同一个 RTL 类型可能有多个实例。
+
+沿用既有工程功能合同；本表补充当前源码、生成名与实际放置位置。
+
+| DUT | 当前配方 top | Chisel 定义/生成位置（相对源码根） | RTL 实例样本 | 接入状态 |
+|---|---|---|---|---|
+| `freelist_rar` | `FreeList` | `src/main/scala/xiangshan/mem/lsqueue/FreeList.scala:25` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.loadQueueRAR.freeList` | 已有实现；新基线未验收 |
+| `freelist_raw` | `FreeList_1` | `src/main/scala/xiangshan/mem/lsqueue/FreeList.scala:25` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.loadQueueRAW.freeList` | 已有实现；新基线未验收 |
+| `freelist_replay` | `FreeList_2` | `src/main/scala/xiangshan/mem/lsqueue/FreeList.scala:25` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.loadQueueReplay.freeList` | 已有实现；新基线未验收 |
+| `freelist_uncache` | `FreeList_3` | `src/main/scala/xiangshan/mem/lsqueue/FreeList.scala:25` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.freeList` | 已有实现；新基线未验收 |
+| `cam_rar` | `LqPAddrModule` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueData.scala:136` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.loadQueueRAR.paddrModule` | 已有实现；新基线未验收 |
+| `cam_raw` | `LqPAddrModule_1` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueData.scala:136` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.loadQueueRAW.paddrModule` | 已有实现；新基线未验收 |
+| `cam_mask` | `LqMaskModule` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueData.scala:210` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.loadQueueRAW.maskModule` | 已有实现；新基线未验收 |
+| `age_replay` | `AgeDetector_36` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueReplay.scala:113` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.loadQueueReplay.ageOldest_age` | 已有实现；新基线未验收 |
+| `virtual_load_queue` | `VirtualLoadQueue` | `src/main/scala/xiangshan/mem/lsqueue/VirtualLoadQueue.scala:35` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.virtualLoadQueue` | 已有实现；新基线未验收 |
+| `load_queue_rar` | `LoadQueueRAR` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueRAR.scala:29` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.loadQueueRAR` | 已有实现；新基线未验收 |
+| `load_queue_raw` | `LoadQueueRAW` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueRAW.scala:32` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.loadQueueRAW` | 已有实现；新基线未验收 |
+| `load_queue_uncache` | `LoadQueueUncache` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala:268` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer` | 已有实现；新基线未验收 |
+| `load_queue_replay` | `LoadQueueReplay` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueReplay.scala:211` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.loadQueueReplay` | 已有实现；新基线未验收 |
+| `enter_sbuffer_queue` | `EnterSbufferQueue` | `src/main/scala/xiangshan/mem/lsqueue/NewStoreQueue.scala:749` | `XSTop.core_with_l2.core.memBlock.inner_lsq.storeQueue.physicalQueue.deqModule.dataQueue` | 已有实现；新基线未验收 |
+| `unalign_queue` | `UnalignQueue` | `src/main/scala/xiangshan/mem/lsqueue/NewStoreQueue.scala:1500` | `XSTop.core_with_l2.core.memBlock.inner_lsq.storeQueue.physicalQueue.unalignQueue` | 已有实现；新基线未验收 |
+| `forward_module` | `ForwardModule` | `src/main/scala/xiangshan/mem/lsqueue/NewStoreQueue.scala:256` | `XSTop.core_with_l2.core.memBlock.inner_lsq.storeQueue.physicalQueue.forwardModule` | 已有实现；新基线未验收 |
+| `virtual_store_queue` | `VirtualStoreQueue` | `src/main/scala/xiangshan/mem/lsqueue/VirtualStoreQueue.scala:43` | `XSTop.core_with_l2.core.memBlock.inner_lsq.storeQueue.virtualStoreQueue` | 已有实现；新基线未验收 |
+| `deq_module` | `DeqModule` | `src/main/scala/xiangshan/mem/lsqueue/NewStoreQueue.scala:869` | `XSTop.core_with_l2.core.memBlock.inner_lsq.storeQueue.physicalQueue.deqModule` | 已有实现；新基线未验收 |
+| `physical_store_queue` | `PhysicalStoreQueue` | `src/main/scala/xiangshan/mem/lsqueue/NewStoreQueue.scala:1702` | `XSTop.core_with_l2.core.memBlock.inner_lsq.storeQueue.physicalQueue` | 已有实现；新基线未验收 |
+| `store_queue` | `StoreQueue` | `src/main/scala/xiangshan/mem/lsqueue/NewStoreQueue.scala:2198` | `XSTop.core_with_l2.core.memBlock.inner_lsq.storeQueue` | 已有实现；新基线未验收 |
+| `load_queue` | `LoadQueue` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueue.scala:165` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue` | 已有实现；新基线未验收 |
+| `lsq_wrapper` | `LsqWrapper` | `src/main/scala/xiangshan/mem/lsqueue/LSQWrapper.scala:87` | `XSTop.core_with_l2.core.memBlock.inner_lsq` | 已有实现；新基线未验收 |
+| `uncache_entry_0` | `UncacheEntry` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala:34` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_0` | 已有实现；新基线未验收 |
+| `uncache_entry_1` | `UncacheEntry_1` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala:34` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_1` | 已有实现；新基线未验收 |
+| `uncache_entry_2` | `UncacheEntry_2` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala:34` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_2` | 已有实现；新基线未验收 |
+| `uncache_entry_3` | `UncacheEntry_3` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala:34` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_3` | 已有实现；新基线未验收 |
+| `uncache_entry_4` | `UncacheEntry_4` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala:34` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_4` | 已有实现；新基线未验收 |
+| `uncache_entry_5` | `UncacheEntry_5` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala:34` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_5` | 已有实现；新基线未验收 |
+| `uncache_entry_6` | `UncacheEntry_6` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala:34` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_6` | 已有实现；新基线未验收 |
+| `uncache_entry_7` | `UncacheEntry_7` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala:34` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_7` | 已有实现；新基线未验收 |
+| `uncache_entry_8` | `UncacheEntry_8` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala:34` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_8` | 已有实现；新基线未验收 |
+| `uncache_entry_9` | `UncacheEntry_9` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala:34` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_9` | 已有实现；新基线未验收 |
+| `uncache_entry_10` | `UncacheEntry_10` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala:34` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_10` | 已有实现；新基线未验收 |
+| `uncache_entry_11` | `UncacheEntry_11` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala:34` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_11` | 已有实现；新基线未验收 |
+| `uncache_entry_12` | `UncacheEntry_12` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala:34` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_12` | 已有实现；新基线未验收 |
+| `uncache_entry_13` | `UncacheEntry_13` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala:34` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_13` | 已有实现；新基线未验收 |
+| `uncache_entry_14` | `UncacheEntry_14` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala:34` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_14` | 已有实现；新基线未验收 |
+| `uncache_entry_15` | `UncacheEntry_15` | `src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala:34` | `XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_15` | 已有实现；新基线未验收 |
+
+这些映射不证明接口向后兼容、硬件等价或功能覆盖；历史规格和报告沿用原日期及基线。构建、冒烟、功能、覆盖分别验收。公共 NewPipelineConnectPipe 与 internal VAGQ 同名模块没有互相覆盖结论。

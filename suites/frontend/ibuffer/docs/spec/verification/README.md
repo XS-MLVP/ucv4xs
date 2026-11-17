@@ -1,7 +1,35 @@
 # IBuffer / VTypeGen 验证规格
 
-状态：`public-a0c2a26cb` / DefaultConfig 的双 seed 验收已闭环；`NOT_CERTIFIED` 是因为
-本工程不是 Frontend/芯片验收，而不是本层有未解释的失败。本页是当前验证入口。
+<!-- ucv:work-index:start -->
+
+## DUT 工作索引
+
+由 `ucv docs --write` 从配方与 workspace 生成；每行是一个 DUT 的合同入口。
+当前工程基线：`public-e716c7658`。接入观察不代表验证进度或验收结果。
+
+负责人、当前工作、下一步、阻塞与验收证据维护在对应合同正文或关联任务中；
+未认领不推断负责人；各 DUT 独立实现、选跑与验收。
+
+| DUT / RTL top | 接入观察 | 验证合同 | 工作入口 |
+|---|---|---|---|
+| `vtype_gen` / `VTypeGen` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/vtype_gen/README.md) |
+| `ibuffer` / `IBuffer` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/ibuffer/README.md) |
+
+<!-- ucv:work-index:end -->
+
+## 当前工作（public-e716c7658）
+
+负责人：`ibuffer`、`vtype_gen` 各自 **待认领**。两个 DUT 共用本包加载和采样机制，
+合同、实际选择和验收结论分别维护。
+
+当前工作与下一步：核对当前位宽、lane 合法域及 vtype 行为合同，按 DUT 适配并重新执行
+合法/错误对照和功能回归。阻塞：新基线接口兼容与原生构建尚未核验，工具身份问题见
+[全仓状态](../../../../../../docs/status.md)。当前基线验收证据尚无。
+
+## 历史验证范围（public-a0c2a26cb）
+
+`public-a0c2a26cb` / DefaultConfig 的双 seed 本层验收已闭环；当时的 `NOT_CERTIFIED`
+表示不是 Frontend/芯片验收。以下结论和完成条件仅对该历史基线成立。
 
 ## 范围与假设
 
@@ -14,7 +42,7 @@
 - 工程根的 `verification_plan.json` 已删除；下方功能点数字属于原双 seed 回归，
   当前运行的标签统计只覆盖实际收集集合。
 
-## 当前结果
+## 历史结果
 
 | 项 | 结果 |
 |---|---|

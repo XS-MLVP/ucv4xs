@@ -7,9 +7,9 @@ are retained by arrival time, and the outgoing selection owns a snapshot.
 from collections import deque
 from dataclasses import asdict, dataclass, replace
 
-from suites.memblock.lsq.testbenches.freelist.model import FreeListModel
-from suites.memblock.lsq.testbenches.freelist.transactions import Observation
-from suites.memblock.lsq.testbenches.uncache_entry.model import is_younger
+from suites.memblock.lsq.testbenches.shared.model.freelist import FreeListModel
+from suites.memblock.lsq.testbenches.shared.transactions.freelist import Observation
+from suites.memblock.lsq.testbenches.shared.model.uncache_entry import is_younger
 from suites.memblock.lsq.testbenches.replay.transactions import Cause
 from suites.memblock.lsq.testbenches.replay.transactions import Enqueue
 from suites.memblock.lsq.testbenches.replay.transactions import Inputs

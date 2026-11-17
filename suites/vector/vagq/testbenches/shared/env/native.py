@@ -4,7 +4,6 @@ import ucv.runtime as ucv_paths
 No clock stepping, dynamic source adaptation, reference state or coverage collector.
 """
 from contextlib import contextmanager
-from hashlib import sha256
 import importlib
 import json
 from pathlib import Path
@@ -14,16 +13,28 @@ from suites.vector.vagq.testbenches.shared.env.control import validate_binding
 from suites.vector.vagq.testbenches.shared.env.control import validate_runtime
 
 
-def verify_rtl():
+def verify_rtl(*modules):
+    """Verify the selected roots; no arguments explicitly audits the whole suite.
+
+    Joint-DUT scenarios pass every participating root before opening the first
+    instance. A single instance must not require unrelated build products.
+    """
     from ucv.common import read, file_hash
     from ucv.config import Project
-    project=Project(); suite=project.suite('vagq')
-    for key in suite.recipe['duts']:
-        receipt=read(ROOT/'rtl'/key/'source.json')
+    project = Project()
+    suite = project.suite('vagq')
+    selected = modules or tuple(suite.recipe['duts'])
+    for key in selected:
+        if key not in suite.recipe['duts']:
+            raise ValueError(f'Unknown VAGQ DUT: {key}')
+    for key in selected:
+        receipt = read(ROOT / 'rtl' / key / 'source.json')
         if receipt['baseline'] != suite.baseline:
-            raise RuntimeError('VAGQ RTL baseline differs from effective baseline')
+            raise RuntimeError(f'VAGQ RTL baseline differs from effective baseline: {key}')
+        if not receipt['files']:
+            raise RuntimeError(f'VAGQ RTL receipt has no files: {key}')
         for name, expected in receipt['files'].items():
-            if file_hash(ROOT/'rtl'/key/name) != expected:
+            if file_hash(ROOT / 'rtl' / key / name) != expected:
                 raise RuntimeError(f'VAGQ RTL changed: {key}/{name}')
 
 
@@ -45,7 +56,7 @@ def public_signals(dut, module, widths):
 def open_dut(module, output, *, clocked=False, register=None):
     """Construct/reset-initialize one actual generated DUT and always Finish it."""
     validate_runtime()
-    verify_rtl()
+    verify_rtl(module)
     binding = importlib.import_module('dut.' + module)
     validate_binding(binding.xsp)
     cls = getattr(binding, 'DUT' + module + 'Dut')

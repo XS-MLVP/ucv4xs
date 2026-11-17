@@ -1,0 +1,149 @@
+{
+  "schema": 1,
+  "suite": "l2",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "request_arb": {
+      "top": "RequestArb",
+      "export_name": "RequestArbDut"
+    },
+    "mshr_ctl": {
+      "top": "MSHRCtl",
+      "export_name": "MshrCtlDut"
+    },
+    "directory": {
+      "top": "Directory",
+      "export_name": "DirectoryDut"
+    },
+    "rxsnp": {
+      "top": "RXSNP",
+      "export_name": "RxsnpDut"
+    },
+    "request_buffer": {
+      "top": "RequestBuffer",
+      "export_name": "RequestBufferDut"
+    },
+    "arbiter": {
+      "top": "Arbiter16_CHIDAT",
+      "export_name": "ArbiterDut"
+    },
+    "sink_c": {
+      "top": "SinkC",
+      "export_name": "SinkCDut"
+    },
+    "grant_buffer": {
+      "top": "GrantBuffer",
+      "export_name": "GrantBufferDut"
+    },
+    "p_best_offset_prefetch": {
+      "top": "PBestOffsetPrefetch",
+      "export_name": "PBestOffsetPrefetchDut"
+    },
+    "txdat": {
+      "top": "TXDAT",
+      "export_name": "TxdatDut"
+    },
+    "cdp_prefetcher": {
+      "top": "CDPPrefetcher",
+      "export_name": "CdpPrefetcherDut"
+    },
+    "v_best_offset_prefetch": {
+      "top": "VBestOffsetPrefetch",
+      "export_name": "VBestOffsetPrefetchDut"
+    },
+    "data_storage": {
+      "top": "DataStorage",
+      "export_name": "DataStorageDut"
+    },
+    "txreq": {
+      "top": "TXREQ",
+      "export_name": "TxreqDut"
+    },
+    "mmio_bridge_entry": {
+      "top": "MMIOBridgeEntry",
+      "export_name": "MmioBridgeEntryDut"
+    },
+    "txrsp": {
+      "top": "TXRSP",
+      "export_name": "TxrspDut"
+    },
+    "spec_miss_a_buffer": {
+      "top": "SpecMissABuffer",
+      "export_name": "SpecMissABufferDut"
+    },
+    "decoupled2_l_credit": {
+      "top": "Decoupled2LCredit",
+      "export_name": "Decoupled2LCreditDut"
+    },
+    "sink_a": {
+      "top": "SinkA",
+      "export_name": "SinkADut"
+    },
+    "bus_error_unit": {
+      "top": "BusErrorUnit",
+      "export_name": "BusErrorUnitDut"
+    },
+    "rxdat": {
+      "top": "RXDAT",
+      "export_name": "RxdatDut"
+    },
+    "stash_prefetcher": {
+      "top": "StashPrefetcher",
+      "export_name": "StashPrefetcherDut"
+    },
+    "queue": {
+      "top": "Queue4_PrefetchTrain",
+      "export_name": "QueueDut"
+    },
+    "l_credit2_decoupled": {
+      "top": "LCredit2Decoupled",
+      "export_name": "LCredit2DecoupledDut"
+    },
+    "rxrsp": {
+      "top": "RXRSP",
+      "export_name": "RxrspDut"
+    },
+    "prefetch_controller": {
+      "top": "PrefetchController",
+      "export_name": "PrefetchControllerDut"
+    },
+    "mshr_buffer": {
+      "top": "MSHRBuffer",
+      "export_name": "MshrBufferDut"
+    },
+    "prefetch_receiver": {
+      "top": "PrefetchReceiver",
+      "export_name": "PrefetchReceiverDut"
+    },
+    "coupled_l2": {
+      "top": "CoupledL2",
+      "export_name": "CoupledL2Dut"
+    },
+    "l2top": {
+      "top": "L2Top",
+      "export_name": "L2TopDut"
+    },
+    "slice0": {
+      "top": "Slice",
+      "export_name": "SliceDut"
+    },
+    "slice1": {
+      "top": "Slice_1",
+      "export_name": "Slice_1Dut"
+    },
+    "slice2": {
+      "top": "Slice_2",
+      "export_name": "Slice_2Dut"
+    },
+    "slice3": {
+      "top": "Slice_3",
+      "export_name": "Slice_3Dut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "testbenches"
+  ],
+  "process_isolation": "suite"
+}

@@ -206,7 +206,7 @@ def test_ucv_run_exit_code_keeps_uncertainty_and_integrity_separate(
 
 
 @pytest.mark.parametrize('workers',[1,2])
-def test_ifu_feature_reports_consume_complete_case_outcomes(tmp_path,workers):
+def test_feature_reports_consume_complete_case_outcomes(tmp_path,workers):
     import json
     import os
     from pathlib import Path
@@ -215,7 +215,10 @@ def test_ifu_feature_reports_consume_complete_case_outcomes(tmp_path,workers):
 
     pytest.importorskip('toffee.outcomes',reason='requires uc-toffee >= 2.1 with UNCERTAIN')
     source=Path(__file__).resolve().parents[1]
-    (tmp_path/'conftest.py').write_text('pytest_plugins=("suites.frontend.ifu.testbenches.shared.env.pytest_plugins.features",)\n')
+    # Keep nested pytest discovery local even with --basetemp inside a checkout.
+    # Otherwise its feature report can escape this fixture into the repo results.
+    (tmp_path/'pytest.ini').write_text('[pytest]\n')
+    (tmp_path/'conftest.py').write_text('pytest_plugins=("ucv.pytest_features",)\n')
     test=tmp_path/'test_feature.py'
     test.write_text('''
 import pytest
@@ -231,6 +234,13 @@ def test_partial(): assert True
 @pytest.mark.feature("IFU-TOP-003")
 @pytest.mark.uncertain(reason="not every field observed", reference="R-09")
 def test_error(broken_teardown): assert True
+@pytest.mark.feature("IBUF-TOP-001")
+def test_ibuffer(): assert True
+@pytest.mark.feature("INC-TOP-001")
+def test_uncache(): assert True
+@pytest.mark.feature("DEMO-ENV-001")
+@pytest.mark.selftest
+def test_fixture_control(): assert True
 ''')
     env={**os.environ,'PYTHONPATH':str(source),'PYTEST_DISABLE_PLUGIN_AUTOLOAD':'1'}
     result=subprocess.run([sys.executable,'-m','toffee','run',str(test),
@@ -239,12 +249,19 @@ def test_error(broken_teardown): assert True
     assert result.returncode==1,result.stdout+result.stderr
     feature_report=json.loads((tmp_path/'results/feature-points.json').read_text())
     features=feature_report['features']
-    assert [row['status'] for row in features]==['PASS','UNCERTAIN','ERROR']
-    assert features[1]['tests'][0]['uncertain']=={
+    by_id={row['id']:row for row in features}
+    assert {key:row['status'] for key,row in by_id.items()}=={
+        'IFU-TOP-001':'PASS','IFU-TOP-002':'UNCERTAIN','IFU-TOP-003':'ERROR',
+        'IBUF-TOP-001':'PASS','INC-TOP-001':'PASS','DEMO-ENV-001':'PASS'}
+    assert feature_report['format']=='ucv-feature-report'
+    assert feature_report['scope']=='collected-test-markers'
+    assert by_id['IFU-TOP-002']['tests'][0]['uncertain']=={
         'reason':'not every field observed','reference':'R-09'}
-    assert 'uncertain' not in features[2]['tests'][0]
+    assert 'uncertain' not in by_id['IFU-TOP-003']['tests'][0]
+    assert feature_report['summaries']['environment']['planned']==1
+    assert feature_report['summaries']['hardware']['planned']==5
     manifest=json.loads((tmp_path/'toffee/manifest.json').read_text())
-    assert manifest['tests']=={'PASS':1,'UNCERTAIN':1,'ERROR':1}
+    assert manifest['tests']=={'PASS':4,'UNCERTAIN':1,'ERROR':1}
     assert feature_report['consistency_errors']==[]
 
 

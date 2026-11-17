@@ -79,6 +79,22 @@
     "new_load_unit": {
       "top": "NewLoadUnit",
       "export_name": "NewLoadUnitDut"
+    },
+    "select_oldest": {
+      "top": "SelectOldest",
+      "export_name": "SelectOldestDut"
+    },
+    "dummy_dpic_wrapper": {
+      "top": "DummyDPICWrapper_LrScEvent",
+      "export_name": "DummyDpicWrapperDut"
+    },
+    "atomics": {
+      "top": "AtomicsUnit",
+      "export_name": "AtomicsUnitDut"
+    },
+    "memblock": {
+      "top": "MemBlock",
+      "export_name": "MemBlockDut"
     }
   },
   "pytest_root": ".",

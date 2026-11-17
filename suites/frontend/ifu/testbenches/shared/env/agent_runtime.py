@@ -24,7 +24,7 @@ async def agent_runtime(request, agent):
         if not await manager.__aexit__(*sys.exc_info()):
             raise
     else:
-        phases = getattr(request.config, '_ifu_phases', {}).get(request.node.nodeid, {})
+        phases = getattr(request.config, '_ucv_feature_phases', {}).get(request.node.nodeid, {})
         nonpassing = any(phases.get(phase, {}).get('outcome') in {'failed', 'skipped'}
                          for phase in ('setup', 'call'))
         if nonpassing:

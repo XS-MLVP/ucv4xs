@@ -24,7 +24,26 @@
       "chisel": [
         "src/main/scala/xiangshan/cache/mmu/TLBStorage.scala"
       ],
-      "testbench": "tlbfa"
+      "testbench": "tlbfa",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "TLBFA",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_itlb.entries.page_itlb_storage_fa",
+        "direct_parents": [
+          {
+            "parent": "TlbStorageWrapper",
+            "instance": "page_itlb_storage_fa",
+            "line": 314
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/mmu/TLBStorage.scala",
+          "line": 26
+        }
+      },
+      "module_id": "M-6bdb43c82992"
     },
     "wrapper": {
       "design_spec": [
@@ -44,7 +63,26 @@
         "src/main/scala/xiangshan/cache/mmu/TLBStorage.scala",
         "src/main/scala/xiangshan/cache/mmu/TLB.scala"
       ],
-      "testbench": "wrapper"
+      "testbench": "wrapper",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "TlbStorageWrapper",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_itlb.entries",
+        "direct_parents": [
+          {
+            "parent": "TLB",
+            "instance": "entries",
+            "line": 1054
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/mmu/TLBStorage.scala",
+          "line": 339
+        }
+      },
+      "module_id": "M-e8e1b1bb2b5b"
     },
     "tlb": {
       "design_spec": [
@@ -64,7 +102,26 @@
         "src/main/scala/xiangshan/cache/mmu/TLB.scala",
         "src/main/scala/xiangshan/frontend/Frontend.scala"
       ],
-      "testbench": "tlb"
+      "testbench": "tlb",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "TLB",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_itlb",
+        "direct_parents": [
+          {
+            "parent": "Frontend",
+            "instance": "inner_itlb",
+            "line": 14162
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/mmu/TLB.scala",
+          "line": 44
+        }
+      },
+      "module_id": "M-ae5b9e186177"
     },
     "l2mq": {
       "design_spec": [
@@ -84,7 +141,26 @@
         "src/main/scala/xiangshan/cache/mmu/L2TLBMissQueue.scala",
         "src/main/scala/xiangshan/cache/mmu/L2TLB.scala"
       ],
-      "testbench": "l2mq"
+      "testbench": "l2mq",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "L2TlbMissQueue",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_ptw.ptw.missQueue",
+        "direct_parents": [
+          {
+            "parent": "L2TLB",
+            "instance": "missQueue",
+            "line": 12385
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/mmu/L2TLBMissQueue.scala",
+          "line": 40
+        }
+      },
+      "module_id": "M-90a1edd3f240"
     },
     "l2pf": {
       "design_spec": [
@@ -104,7 +180,26 @@
         "src/main/scala/xiangshan/cache/mmu/L2TlbPrefetch.scala",
         "src/main/scala/xiangshan/cache/mmu/L2TLB.scala"
       ],
-      "testbench": "l2pf"
+      "testbench": "l2pf",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "L2TlbPrefetch",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_ptw.ptw.prefetch",
+        "direct_parents": [
+          {
+            "parent": "L2TLB",
+            "instance": "prefetch",
+            "line": 19636
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/mmu/L2TlbPrefetch.scala",
+          "line": 32
+        }
+      },
+      "module_id": "M-d325679d0bb8"
     },
     "ptwrepeater": {
       "design_spec": [
@@ -123,7 +218,32 @@
       "chisel": [
         "src/main/scala/xiangshan/cache/mmu/Repeater.scala"
       ],
-      "testbench": "ptwrepeater"
+      "testbench": "ptwrepeater",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "PTWRepeaterNB",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_itlbRepeater2",
+        "direct_parents": [
+          {
+            "parent": "MemBlock",
+            "instance": "inner_itlbRepeater3",
+            "line": 18376
+          },
+          {
+            "parent": "Frontend",
+            "instance": "inner_itlbRepeater2",
+            "line": 14591
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/mmu/Repeater.scala",
+          "line": 90
+        }
+      },
+      "module_id": "M-476c05f9fe7c",
+      "smoke": "testbenches/ptwrepeater/tests/test_ptwrepeater.py::test_request_to_ptw_and_response_hold"
     },
     "ptwfilter": {
       "design_spec": [
@@ -134,15 +254,35 @@
         "docs/spec/verification/README.md",
         "docs/spec/verification/evidence/reports/l2-filter-repeater-20261024.md"
       ],
-      "environment": "testbenches/ptwrepeater/env/ptw.py",
+      "environment": "testbenches/ptwfilter/env/ptw.py",
       "tests": [
-        "testbenches/ptwrepeater/tests",
-        "testbenches/ptwrepeater/tests/test_ptwfilter.py"
+        "testbenches/ptwfilter/tests",
+        "testbenches/ptwfilter/tests/test_ptwfilter.py"
       ],
       "chisel": [
         "src/main/scala/xiangshan/cache/mmu/Repeater.scala"
       ],
-      "testbench": "ptwrepeater"
+      "testbench": "ptwfilter",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "PTWFilter",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_itlbRepeater1",
+        "direct_parents": [
+          {
+            "parent": "Frontend",
+            "instance": "inner_itlbRepeater1",
+            "line": 14345
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/mmu/Repeater.scala",
+          "line": 465
+        }
+      },
+      "module_id": "M-58e09c3763d4",
+      "smoke": "testbenches/ptwfilter/tests/test_ptwfilter.py::test_single_request_issue_match_and_release"
     },
     "ptw": {
       "design_spec": [
@@ -165,7 +305,26 @@
         "src/main/scala/xiangshan/cache/mmu/PageTableWalker.scala",
         "src/main/scala/xiangshan/cache/mmu/L2TLB.scala"
       ],
-      "testbench": "ptw"
+      "testbench": "ptw",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "PTW",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_ptw.ptw.ptw",
+        "direct_parents": [
+          {
+            "parent": "L2TLB",
+            "instance": "ptw",
+            "line": 13086
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/mmu/PageTableWalker.scala",
+          "line": 104
+        }
+      },
+      "module_id": "M-b4c97703ad89"
     },
     "pmp": {
       "design_spec": [
@@ -186,7 +345,36 @@
         "src/main/scala/xiangshan/cache/mmu/L2TLB.scala",
         "src/main/scala/xiangshan/mem/MemBlock.scala"
       ],
-      "testbench": "pmp"
+      "testbench": "pmp",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "PMP",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_pmp",
+        "direct_parents": [
+          {
+            "parent": "MemBlock",
+            "instance": "inner_pmp",
+            "line": 18509
+          },
+          {
+            "parent": "Frontend",
+            "instance": "inner_pmp",
+            "line": 12691
+          },
+          {
+            "parent": "L2TLB",
+            "instance": "pmp",
+            "line": 9291
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/fu/PMP.scala",
+          "line": 345
+        }
+      },
+      "module_id": "M-943c432defd5"
     },
     "bitmap": {
       "design_spec": [
@@ -206,7 +394,27 @@
         "src/main/scala/xiangshan/cache/mmu/BitmapCheck.scala",
         "src/main/scala/xiangshan/cache/mmu/L2TLB.scala"
       ],
-      "testbench": "bitmap"
+      "testbench": "bitmap",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Bitmap",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_ptw.ptw.bitmap",
+        "direct_parents": [
+          {
+            "parent": "L2TLB",
+            "instance": "bitmap",
+            "line": 12233
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/mmu/BitmapCheck.scala",
+          "line": 104
+        }
+      },
+      "module_id": "M-2770571682a1",
+      "smoke": "testbenches/bitmap/tests/test_bitmap.py::test_cache_hit_pass_and_fail"
     },
     "bitmapcache": {
       "design_spec": [
@@ -217,16 +425,36 @@
         "docs/spec/verification/README.md",
         "docs/spec/verification/evidence/reports/l2-midblocks-20261024.md"
       ],
-      "environment": "testbenches/bitmap/env/bitmap.py",
+      "environment": "testbenches/bitmapcache/env/bitmap.py",
       "tests": [
-        "testbenches/bitmap/tests",
-        "testbenches/bitmap/tests/test_bitmapcache.py"
+        "testbenches/bitmapcache/tests",
+        "testbenches/bitmapcache/tests/test_bitmapcache.py"
       ],
       "chisel": [
         "src/main/scala/xiangshan/cache/mmu/BitmapCheck.scala",
         "src/main/scala/xiangshan/cache/mmu/L2TLB.scala"
       ],
-      "testbench": "bitmap"
+      "testbench": "bitmapcache",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "BitmapCache",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_ptw.ptw.bitmapcache",
+        "direct_parents": [
+          {
+            "parent": "L2TLB",
+            "instance": "bitmapcache",
+            "line": 12316
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/mmu/BitmapCheck.scala",
+          "line": 401
+        }
+      },
+      "module_id": "M-57460b639a61",
+      "smoke": "testbenches/bitmapcache/tests/test_bitmapcache.py::test_refill_then_hit_selects_byte"
     },
     "ptwcache": {
       "design_spec": [
@@ -246,7 +474,26 @@
         "src/main/scala/xiangshan/cache/mmu/PageTableCache.scala",
         "src/main/scala/xiangshan/cache/mmu/L2TLB.scala"
       ],
-      "testbench": "ptwcache"
+      "testbench": "ptwcache",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "PtwCache",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_ptw.ptw.cache",
+        "direct_parents": [
+          {
+            "parent": "L2TLB",
+            "instance": "cache",
+            "line": 12408
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/mmu/PageTableCache.scala",
+          "line": 204
+        }
+      },
+      "module_id": "M-0bd071c56f9e"
     },
     "llptw": {
       "design_spec": [
@@ -268,7 +515,26 @@
         "src/main/scala/xiangshan/cache/mmu/PageTableWalker.scala",
         "src/main/scala/xiangshan/cache/mmu/L2TLB.scala"
       ],
-      "testbench": "llptw"
+      "testbench": "llptw",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "LLPTW",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_ptw.ptw.llptw",
+        "direct_parents": [
+          {
+            "parent": "L2TLB",
+            "instance": "llptw",
+            "line": 13623
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/mmu/PageTableWalker.scala",
+          "line": 800
+        }
+      },
+      "module_id": "M-9dc85483845e"
     },
     "tlbn": {
       "design_spec": [
@@ -288,7 +554,15 @@
         "src/main/scala/xiangshan/cache/mmu/TLB.scala",
         "src/main/scala/xiangshan/mem/MemBlock.scala"
       ],
-      "testbench": "tlbn"
+      "testbench": "tlbn",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "TLBNonBlock",
+        "verification_state": "existing-unrevalidated",
+        "availability": "absent",
+        "reason": "当前完整 DefaultConfig 源码与生成 RTL 中无此模块；保留历史实现，未改绑替代模块。"
+      },
+      "module_id": "M-eeb716740ed3"
     },
     "l2tlbwrapper": {
       "design_spec": [
@@ -308,7 +582,26 @@
         "src/main/scala/xiangshan/cache/mmu/L2TLB.scala",
         "src/main/scala/xiangshan/mem/MemBlock.scala"
       ],
-      "testbench": "l2tlbwrapper"
+      "testbench": "l2tlbwrapper",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "L2TLBWrapper",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_ptw",
+        "direct_parents": [
+          {
+            "parent": "MemBlock",
+            "instance": "inner_ptw",
+            "line": 8212
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/mmu/L2TLB.scala",
+          "line": 1260
+        }
+      },
+      "module_id": "M-0ad48d45bc2f"
     },
     "l2tlb": {
       "design_spec": [
@@ -328,7 +621,26 @@
       "chisel": [
         "src/main/scala/xiangshan/cache/mmu/L2TLB.scala"
       ],
-      "testbench": "l2tlb"
+      "testbench": "l2tlb",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "L2TLB",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_ptw.ptw",
+        "direct_parents": [
+          {
+            "parent": "L2TLBWrapper",
+            "instance": "ptw",
+            "line": 584
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/mmu/L2TLB.scala",
+          "line": 48
+        }
+      },
+      "module_id": "M-302e424f800d"
     },
     "hptw": {
       "design_spec": [
@@ -348,7 +660,226 @@
         "src/main/scala/xiangshan/cache/mmu/PageTableWalker.scala",
         "src/main/scala/xiangshan/cache/mmu/L2TLB.scala"
       ],
-      "testbench": "hptw"
+      "testbench": "hptw",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "HPTW",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_ptw.ptw.hptw",
+        "direct_parents": [
+          {
+            "parent": "L2TLB",
+            "instance": "hptw",
+            "line": 13529
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/mmu/PageTableWalker.scala",
+          "line": 1387
+        }
+      },
+      "module_id": "M-b328ad36efa5"
+    },
+    "ptwfilter_entry": {
+      "testbench": "ptwfilter_entry",
+      "design_spec": "docs/spec/design/ptwfilter_entry.md",
+      "verification_spec": "docs/spec/verification/ptwfilter_entry.md",
+      "environment": "testbenches/ptwfilter_entry/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/cache/mmu/Repeater.scala"
+      ],
+      "tests": [
+        "testbenches/ptwfilter_entry/tests"
+      ],
+      "smoke": "testbenches/ptwfilter_entry/tests/test_ptwfilter_entry_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "PTWFilterEntry",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_dtlbRepeater.load_filter_load_entry",
+        "direct_parents": [
+          {
+            "parent": "PTWNewFilter",
+            "instance": "load_filter_load_entry",
+            "line": 499
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/mmu/Repeater.scala",
+          "line": 169
+        }
+      },
+      "module_id": "M-27259dccb84a"
+    },
+    "pmp_checker": {
+      "testbench": "pmp_checker",
+      "design_spec": "docs/spec/design/pmp_checker.md",
+      "verification_spec": "docs/spec/verification/pmp_checker.md",
+      "environment": "testbenches/pmp_checker/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/backend/fu/PMP.scala"
+      ],
+      "tests": [
+        "testbenches/pmp_checker/tests"
+      ],
+      "smoke": "testbenches/pmp_checker/tests/test_pmp_checker_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "PMPChecker",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.nocMisc.pma.PMPChecker",
+        "direct_parents": [
+          {
+            "parent": "TLPMA",
+            "instance": "PMPChecker",
+            "line": 1980
+          },
+          {
+            "parent": "TLPMA",
+            "instance": "PMPChecker_1",
+            "line": 2471
+          },
+          {
+            "parent": "Frontend",
+            "instance": "inner_PMPChecker",
+            "line": 13180
+          },
+          {
+            "parent": "Frontend",
+            "instance": "inner_PMPChecker_1",
+            "line": 13671
+          },
+          {
+            "parent": "L2TLB",
+            "instance": "PMPChecker",
+            "line": 9778
+          },
+          {
+            "parent": "L2TLB",
+            "instance": "PMPChecker_1",
+            "line": 10269
+          },
+          {
+            "parent": "L2TLB",
+            "instance": "PMPChecker_2",
+            "line": 10760
+          },
+          {
+            "parent": "L2TLB",
+            "instance": "PMPChecker_3",
+            "line": 11251
+          },
+          {
+            "parent": "L2TLB",
+            "instance": "PMPChecker_4",
+            "line": 11742
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/fu/PMP.scala",
+          "line": 562
+        }
+      },
+      "module_id": "M-d029f33aaf88"
+    },
+    "dtlb_load": {
+      "testbench": "dtlb_load",
+      "design_spec": "docs/spec/design/dtlb_load.md",
+      "verification_spec": "docs/spec/verification/dtlb_load.md",
+      "environment": "testbenches/dtlb_load/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/cache/mmu/TLB.scala"
+      ],
+      "tests": [
+        "testbenches/dtlb_load/tests"
+      ],
+      "smoke": "testbenches/dtlb_load/tests/test_dtlb_load_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "TLB_1",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_dtlb_ld_tlb_ld",
+        "direct_parents": [
+          {
+            "parent": "MemBlock",
+            "instance": "inner_dtlb_ld_tlb_ld",
+            "line": 16736
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/mmu/TLB.scala",
+          "line": 44
+        }
+      },
+      "module_id": "M-8d0d9d09a016"
+    },
+    "dtlb_store": {
+      "testbench": "dtlb_store",
+      "design_spec": "docs/spec/design/dtlb_store.md",
+      "verification_spec": "docs/spec/verification/dtlb_store.md",
+      "environment": "testbenches/dtlb_store/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/cache/mmu/TLB.scala"
+      ],
+      "tests": [
+        "testbenches/dtlb_store/tests"
+      ],
+      "smoke": "testbenches/dtlb_store/tests/test_dtlb_store_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "TLB_2",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_dtlb_st_tlb_st",
+        "direct_parents": [
+          {
+            "parent": "MemBlock",
+            "instance": "inner_dtlb_st_tlb_st",
+            "line": 17168
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/mmu/TLB.scala",
+          "line": 44
+        }
+      },
+      "module_id": "M-eb6dbf2d79a1"
+    },
+    "dtlb_prefetch": {
+      "testbench": "dtlb_prefetch",
+      "design_spec": "docs/spec/design/dtlb_prefetch.md",
+      "verification_spec": "docs/spec/verification/dtlb_prefetch.md",
+      "environment": "testbenches/dtlb_prefetch/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/cache/mmu/TLB.scala"
+      ],
+      "tests": [
+        "testbenches/dtlb_prefetch/tests"
+      ],
+      "smoke": "testbenches/dtlb_prefetch/tests/test_dtlb_prefetch_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "TLB_3",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_dtlb_prefetch_tlb_prefetch",
+        "direct_parents": [
+          {
+            "parent": "MemBlock",
+            "instance": "inner_dtlb_prefetch_tlb_prefetch",
+            "line": 17446
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/cache/mmu/TLB.scala",
+          "line": 44
+        }
+      },
+      "module_id": "M-5d010f536091"
     }
   }
 }

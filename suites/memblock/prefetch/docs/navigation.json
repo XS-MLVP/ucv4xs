@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "current": [
+    "docs/spec/design/l1_prefetcher.md",
+    "docs/spec/verification/l1_prefetcher.md",
+    "testbenches/l1_prefetcher/README.md",
+    "docs/spec/design/sms_prefetcher.md",
+    "docs/spec/verification/sms_prefetcher.md",
+    "testbenches/sms_prefetcher/README.md",
+    "docs/spec/design/berti_prefetcher.md",
+    "docs/spec/verification/berti_prefetcher.md",
+    "testbenches/berti_prefetcher/README.md",
+    "README.md",
+    "docs/README.md",
+    "docs/spec/design/README.md",
+    "docs/spec/verification/README.md",
+    "docs/bugs/README.md",
+    "docs/spec/design/prefetcher.md",
+    "docs/spec/verification/prefetcher.md",
+    "testbenches/prefetcher/README.md"
+  ]
+}

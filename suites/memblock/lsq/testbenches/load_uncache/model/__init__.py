@@ -7,18 +7,18 @@ That distinction deliberately does NOT reproduce the RTL's stale SID routing.
 from dataclasses import asdict, dataclass, replace
 from functools import cmp_to_key
 
-from suites.memblock.lsq.testbenches.freelist.model import FreeListModel
-from suites.memblock.lsq.testbenches.freelist.transactions import Observation
-from suites.memblock.lsq.testbenches.uncache_entry.model import UncacheEntryModel
-from suites.memblock.lsq.testbenches.uncache_entry.model import is_younger
-from suites.memblock.lsq.testbenches.uncache_entry.transactions import IdResponse
-from suites.memblock.lsq.testbenches.uncache_entry.transactions import Inputs
-from suites.memblock.lsq.testbenches.uncache_entry.transactions import QueuePtr
-from suites.memblock.lsq.testbenches.uncache_entry.transactions import Redirect
-from suites.memblock.lsq.testbenches.uncache_entry.transactions import Request
-from suites.memblock.lsq.testbenches.uncache_entry.transactions import Response
-from suites.memblock.lsq.testbenches.uncache_entry.transactions import RobPtr
-from suites.memblock.lsq.testbenches.uncache_entry.transactions import SOURCE_EXCEPTION_BITS
+from suites.memblock.lsq.testbenches.shared.model.freelist import FreeListModel
+from suites.memblock.lsq.testbenches.shared.transactions.freelist import Observation
+from suites.memblock.lsq.testbenches.shared.model.uncache_entry import UncacheEntryModel
+from suites.memblock.lsq.testbenches.shared.model.uncache_entry import is_younger
+from suites.memblock.lsq.testbenches.shared.transactions.uncache_entry import IdResponse
+from suites.memblock.lsq.testbenches.shared.transactions.uncache_entry import Inputs
+from suites.memblock.lsq.testbenches.shared.transactions.uncache_entry import QueuePtr
+from suites.memblock.lsq.testbenches.shared.transactions.uncache_entry import Redirect
+from suites.memblock.lsq.testbenches.shared.transactions.uncache_entry import Request
+from suites.memblock.lsq.testbenches.shared.transactions.uncache_entry import Response
+from suites.memblock.lsq.testbenches.shared.transactions.uncache_entry import RobPtr
+from suites.memblock.lsq.testbenches.shared.transactions.uncache_entry import SOURCE_EXCEPTION_BITS
 from suites.memblock.lsq.testbenches.raw.transactions import FtqPtr
 from suites.memblock.lsq.testbenches.load_uncache.env.probe import LoadRequest
 

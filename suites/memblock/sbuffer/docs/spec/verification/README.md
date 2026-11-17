@@ -1,5 +1,22 @@
 # Sbuffer Verification spec
 
+<!-- ucv:work-index:start -->
+
+## DUT 工作索引
+
+由 `ucv docs --write` 从配方与 workspace 生成；每行是一个 DUT 的合同入口。
+当前工程基线：`public-e716c7658`。接入观察不代表验证进度或验收结果。
+
+负责人、当前工作、下一步、阻塞与验收证据维护在对应合同正文或关联任务中；
+未认领不推断负责人；各 DUT 独立实现、选跑与验收。
+
+| DUT / RTL top | 接入观察 | 验证合同 | 工作入口 |
+|---|---|---|---|
+| `sbuffer_data` / `SbufferData` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/sbuffer_data/README.md) |
+| `sbuffer` / `Sbuffer` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/sbuffer/README.md) |
+
+<!-- ucv:work-index:end -->
+
 状态：**现有验证资产的统一入口，完整性待审查**。设计要求见 [Design spec](../design/README.md)。
 
 最近统一入口记录绑定 `public-893e1580b` / DefaultConfig、`results/ucv-sbuffer-20261031`

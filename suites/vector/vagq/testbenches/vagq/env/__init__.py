@@ -1,16 +1,19 @@
 """Small explicit environment composing driver, model, checker and coverage."""
 from dataclasses import dataclass, field
+from typing import TYPE_CHECKING
 
-from suites.vector.vagq.testbenches.vagq.checker import Checker
 from suites.vector.vagq.testbenches.vagq.coverage import Coverage
 from suites.vector.vagq.testbenches.vagq.env.driver import Driver
-from suites.vector.vagq.testbenches.vagq.model import IntegrationModel
 from suites.vector.vagq.testbenches.vagq.env.probe import bind
 from suites.vector.vagq.testbenches.vagq.env.probe import decode
 from suites.vector.vagq.testbenches.vagq.transactions import AddrPacket
 from suites.vector.vagq.testbenches.vagq.transactions import AdmissionStatus
 from suites.vector.vagq.testbenches.vagq.transactions import Beat
 from suites.vector.vagq.testbenches.vagq.transactions import DataPacket
+
+if TYPE_CHECKING:
+    from suites.vector.vagq.testbenches.vagq.checker import Checker
+    from suites.vector.vagq.testbenches.vagq.model import IntegrationModel
 
 
 @dataclass
@@ -19,8 +22,8 @@ class Env:
     ports: object
     sample: object
     driver: Driver
-    model: IntegrationModel
-    checker: Checker
+    model: 'IntegrationModel'
+    checker: 'Checker'
     coverage: Coverage
     check_enabled: bool = True
     _sample_cycle: int = 0
@@ -28,11 +31,16 @@ class Env:
 
     @classmethod
     def create(cls, dut):
+        from suites.vector.vagq.testbenches.vagq.checker import Checker
+        from suites.vector.vagq.testbenches.vagq.model import IntegrationModel
+
         ports, sample = bind(dut)
         return cls(dut, ports, sample, Driver(dut, ports),
                    IntegrationModel(), Checker(), Coverage())
 
     def reset(self):
+        from suites.vector.vagq.testbenches.vagq.model import IntegrationModel
+
         self.driver.reset_dut()
         self.model = IntegrationModel()
         self.coverage.reset()

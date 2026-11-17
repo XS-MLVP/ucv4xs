@@ -1,6 +1,6 @@
 # IBuffer / VTypeGen 文档
 
-当前摘要、构建与运行入口见[工程 README](../README.md)。本工程只验证 `IBuffer` 及其
+当前摘要、构建与运行入口见[工程 README](spec/verification/suite-overview.md)。本工程只验证 `IBuffer` 及其
 真实子模块 `VTypeGen`；不是 Frontend、FTQ、ICache 或芯片验收。
 工程根的 `verification_plan.json` 已删除；功能点与实现关联沿用既有功能点文档和合同，
 配置/观察边界见退出标准，真实缺陷及复验状态见问题索引。历史报告中的计划统计保持原义。

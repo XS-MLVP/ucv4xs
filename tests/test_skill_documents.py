@@ -12,7 +12,8 @@ def test_project_skill_entries_and_references_are_valid():
     result = AUDIT.audit()
     assert result['errors'] == []
     assert len(result['entrypoints']) == 3
-    assert len(result['pending_drafts']) == 4
+    assert len(result['pending_drafts']) == 5
+    assert 'module-identity-and-lifecycle' in {row['name'] for row in result['pending_drafts']}
 
 
 def test_skill_audit_rejects_metadata_and_broken_links(tmp_path):

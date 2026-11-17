@@ -1,6 +1,6 @@
 # FTQ 文档
 
-当前摘要、构建与运行入口见[工程 README](../README.md)。本目录只保留设计规格、
+当前摘要、构建与运行入口见[工程 README](spec/verification/suite-overview.md)。本目录只保留设计规格、
 验证规格和问题记录；完整运行结果、波形与生成 RTL 留在忽略目录。
 
 ## 当前边界

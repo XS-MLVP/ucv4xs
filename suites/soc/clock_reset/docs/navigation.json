@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "current": [
+    "docs/spec/design/reset_gen.md",
+    "docs/spec/verification/reset_gen.md",
+    "testbenches/reset_gen/README.md",
+    "docs/spec/design/async_reset_synchronizer_shift_reg_w1_d3_i0.md",
+    "docs/spec/verification/async_reset_synchronizer_shift_reg_w1_d3_i0.md",
+    "testbenches/async_reset_synchronizer_shift_reg_w1_d3_i0/README.md",
+    "README.md",
+    "docs/README.md",
+    "docs/spec/design/README.md",
+    "docs/spec/verification/README.md",
+    "docs/bugs/README.md",
+    "docs/spec/design/clock_gate.md",
+    "docs/spec/verification/clock_gate.md",
+    "testbenches/clock_gate/README.md"
+  ]
+}

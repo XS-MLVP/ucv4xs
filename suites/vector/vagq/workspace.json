@@ -19,7 +19,8 @@
         "src/main/scala/xiangshan/backend/vector/vagq/AddrGen.scala",
         "src/main/scala/xiangshan/backend/vector/vagq/SplitCtrl.scala"
       ],
-      "testbench": "addrgen"
+      "testbench": "addrgen",
+      "module_id": "M-6df147195f4c"
     },
     "MaskGen": {
       "design_spec": [
@@ -37,7 +38,8 @@
         "src/main/scala/xiangshan/backend/vector/vagq/MaskGen.scala",
         "src/main/scala/xiangshan/backend/vector/vagq/EntryTable.scala"
       ],
-      "testbench": "maskgen"
+      "testbench": "maskgen",
+      "module_id": "M-123d989762e8"
     },
     "MergeCtrl": {
       "design_spec": [
@@ -55,7 +57,8 @@
         "src/main/scala/xiangshan/backend/vector/vagq/MergeCtrl.scala",
         "src/main/scala/xiangshan/backend/vector/vagq/Vagq.scala"
       ],
-      "testbench": "merge"
+      "testbench": "merge",
+      "module_id": "M-ffe4859b4780"
     },
     "NewPipelineConnectPipe": {
       "design_spec": [
@@ -65,15 +68,17 @@
         "docs/spec/verification/README.md",
         "docs/spec/verification/evidence/README.md"
       ],
-      "environment": "testbenches/pipeline/env/__init__.py",
+      "environment": "testbenches/NewPipelineConnectPipe/env/__init__.py",
       "tests": [
-        "testbenches/pipeline/tests"
+        "testbenches/NewPipelineConnectPipe/tests"
       ],
       "chisel": [
         "src/main/scala/xiangshan/backend/datapath/NewPipelineConnect.scala",
         "src/main/scala/xiangshan/backend/vector/vagq/Vagq.scala"
       ],
-      "testbench": "pipeline"
+      "testbench": "NewPipelineConnectPipe",
+      "smoke": "testbenches/NewPipelineConnectPipe/tests/testcase/test_pipes.py::test_full_payload_pipe_contract",
+      "module_id": "M-4110a665bb93"
     },
     "NewPipelineConnectPipe_3": {
       "design_spec": [
@@ -83,15 +88,17 @@
         "docs/spec/verification/README.md",
         "docs/spec/verification/evidence/README.md"
       ],
-      "environment": "testbenches/pipeline/env/__init__.py",
+      "environment": "testbenches/NewPipelineConnectPipe_3/env/__init__.py",
       "tests": [
-        "testbenches/pipeline/tests"
+        "testbenches/NewPipelineConnectPipe_3/tests"
       ],
       "chisel": [
         "src/main/scala/xiangshan/backend/datapath/NewPipelineConnect.scala",
         "src/main/scala/xiangshan/backend/vector/vagq/Vagq.scala"
       ],
-      "testbench": "pipeline"
+      "testbench": "NewPipelineConnectPipe_3",
+      "smoke": "testbenches/NewPipelineConnectPipe_3/tests/testcase/test_pipes.py::test_compact_payload_pipe_contract",
+      "module_id": "M-4110a665bb93"
     },
     "OrderedPermitCtrl": {
       "design_spec": [
@@ -109,7 +116,8 @@
         "src/main/scala/xiangshan/backend/vector/vagq/OrderedPermitCtrl.scala",
         "src/main/scala/xiangshan/backend/vector/vagq/Vagq.scala"
       ],
-      "testbench": "ordered"
+      "testbench": "ordered",
+      "module_id": "M-2af0514b6e7c"
     },
     "SplitCtrl": {
       "design_spec": [
@@ -127,7 +135,8 @@
         "src/main/scala/xiangshan/backend/vector/vagq/SplitCtrl.scala",
         "src/main/scala/xiangshan/backend/vector/vagq/Vagq.scala"
       ],
-      "testbench": "split"
+      "testbench": "split",
+      "module_id": "M-b4eb5084d365"
     },
     "StoreDataCtrl": {
       "design_spec": [
@@ -145,7 +154,8 @@
         "src/main/scala/xiangshan/backend/vector/vagq/StoreDataCtrl.scala",
         "src/main/scala/xiangshan/backend/vector/vagq/Vagq.scala"
       ],
-      "testbench": "storedata"
+      "testbench": "storedata",
+      "module_id": "M-6ac43c271e90"
     },
     "VAGQ": {
       "design_spec": [
@@ -163,7 +173,8 @@
         "src/main/scala/xiangshan/backend/vector/vagq/Vagq.scala",
         "src/main/scala/xiangshan/backend/Backend.scala"
       ],
-      "testbench": "vagq"
+      "testbench": "vagq",
+      "module_id": "M-8d89c4e59a80"
     },
     "VAGQArbiter": {
       "design_spec": [
@@ -181,7 +192,8 @@
         "src/main/scala/xiangshan/backend/vector/vagq/VAGQArbiter.scala",
         "src/main/scala/xiangshan/backend/vector/vagq/Vagq.scala"
       ],
-      "testbench": "arbiter"
+      "testbench": "arbiter",
+      "module_id": "M-5a0bc33dea04"
     },
     "VAGQEntryTable": {
       "design_spec": [
@@ -199,7 +211,8 @@
         "src/main/scala/xiangshan/backend/vector/vagq/EntryTable.scala",
         "src/main/scala/xiangshan/backend/vector/vagq/Vagq.scala"
       ],
-      "testbench": "entrytable"
+      "testbench": "entrytable",
+      "module_id": "M-795a1c986a61"
     },
     "VAGQManager": {
       "design_spec": [
@@ -217,7 +230,8 @@
         "src/main/scala/xiangshan/backend/vector/vagq/VAGQManager.scala",
         "src/main/scala/xiangshan/backend/vector/VecOrderQueue.scala"
       ],
-      "testbench": "manager"
+      "testbench": "manager",
+      "module_id": "M-2d12a24539a8"
     }
   }
 }

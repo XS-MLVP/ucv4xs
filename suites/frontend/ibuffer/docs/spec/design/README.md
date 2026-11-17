@@ -53,3 +53,17 @@ DefaultConfig：`VLEN=128`、`ELEN=64`、`IBuffer Size=48`、`NumWriteBank=4`、
 - 单异常组和 IFU padding lane 32..35 不是合法激励；见 `R-EXC-SINGLE`、`R-LANE-PAD`。
 - 本层不证明 Frontend redirect/FTQ/ICache 交互、真实 CSR vtype 写入、其他配置或芯片
   验收。
+
+## 当前硬件绑定观察
+
+2026-11-16 观察：`public-e716c7658 / DefaultConfig`，单核、CHI E.b、OpenLLC，
+含 `--fpga-platform --reset-gen`。源码位置来自锁定源码及完整生成注解，
+实例为实际 RTL 样本；全部直接父实例见 workspace。数字后缀不是跨基线稳定身份。
+
+| DUT | 配方 top | Chisel 定义/生成位置 | RTL 实例样本 |
+|---|---|---|---|
+| `vtype_gen` | `VTypeGen` | `src/main/scala/xiangshan/backend/decode/VTypeGen.scala:17` | `XSTop.core_with_l2.core.frontend.inner_ibuffer.vtypeGen` |
+| `ibuffer` | `IBuffer` | `src/main/scala/xiangshan/frontend/ibuffer/IBuffer.scala:41` | `XSTop.core_with_l2.core.frontend.inner_ibuffer` |
+
+这些观察不证明端口兼容、独立预期成立或硬件通过；当前工作与验收范围见
+[验证合同](../verification/README.md)。历史报告按原基线解释。

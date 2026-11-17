@@ -24,7 +24,26 @@
         "testbenches/bpu/tests"
       ],
       "environment": "testbenches/bpu/env/agent/main.py",
-      "testbench": "bpu"
+      "testbench": "bpu",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Bpu",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_bpu",
+        "direct_parents": [
+          {
+            "parent": "Frontend",
+            "instance": "inner_bpu",
+            "line": 3751
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/bpu/Bpu.scala",
+          "line": 49
+        }
+      },
+      "module_id": "M-74e2aead4f8f"
     },
     "abtb": {
       "design_spec": [
@@ -45,7 +64,26 @@
         "testbenches/abtb/tests"
       ],
       "environment": "testbenches/abtb/env/agent/main.py",
-      "testbench": "abtb"
+      "testbench": "abtb",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "AheadBtb",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_bpu.abtb",
+        "direct_parents": [
+          {
+            "parent": "Bpu",
+            "instance": "abtb",
+            "line": 7824
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/bpu/abtb/AheadBtb.scala",
+          "line": 32
+        }
+      },
+      "module_id": "M-cc08250c8cda"
     },
     "ittage": {
       "design_spec": [
@@ -66,7 +104,26 @@
         "testbenches/ittage/tests"
       ],
       "environment": "testbenches/ittage/env/agent/main.py",
-      "testbench": "ittage"
+      "testbench": "ittage",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Ittage",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_bpu.ittage",
+        "direct_parents": [
+          {
+            "parent": "Bpu",
+            "instance": "ittage",
+            "line": 15484
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/bpu/ittage/Ittage.scala",
+          "line": 44
+        }
+      },
+      "module_id": "M-34b8665fb538"
     },
     "mbtb": {
       "design_spec": [
@@ -90,7 +147,26 @@
       ],
       "smoke": "testbenches/mbtb/tests/testcase/test_reset.py::test_reset_completes_before_cold_lookup",
       "environment": "testbenches/mbtb/env/agent/main.py",
-      "testbench": "mbtb"
+      "testbench": "mbtb",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MainBtb",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_bpu.mbtb",
+        "direct_parents": [
+          {
+            "parent": "Bpu",
+            "instance": "mbtb",
+            "line": 8799
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/bpu/mbtb/MainBtb.scala",
+          "line": 30
+        }
+      },
+      "module_id": "M-f37ad88df266"
     },
     "ras": {
       "design_spec": [
@@ -113,7 +189,26 @@
         "testbenches/ras/tests"
       ],
       "environment": "testbenches/ras/env/agent/main.py",
-      "testbench": "ras"
+      "testbench": "ras",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Ras",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_bpu.ras",
+        "direct_parents": [
+          {
+            "parent": "Bpu",
+            "instance": "ras",
+            "line": 19288
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/bpu/ras/Ras.scala",
+          "line": 42
+        }
+      },
+      "module_id": "M-dfce31f10b54"
     },
     "sc": {
       "design_spec": [
@@ -134,7 +229,26 @@
         "testbenches/sc/tests"
       ],
       "environment": "testbenches/sc/env/agent/main.py",
-      "testbench": "sc"
+      "testbench": "sc",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Sc",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_bpu.sc",
+        "direct_parents": [
+          {
+            "parent": "Bpu",
+            "instance": "sc",
+            "line": 18265
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/bpu/sc/Sc.scala",
+          "line": 40
+        }
+      },
+      "module_id": "M-d150190cd4a2"
     },
     "tage": {
       "design_spec": [
@@ -155,7 +269,26 @@
         "testbenches/tage/tests"
       ],
       "environment": "testbenches/tage/env/agent/main.py",
-      "testbench": "tage"
+      "testbench": "tage",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Tage",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_bpu.tage",
+        "direct_parents": [
+          {
+            "parent": "Bpu",
+            "instance": "tage",
+            "line": 10500
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/bpu/tage/Tage.scala",
+          "line": 36
+        }
+      },
+      "module_id": "M-d5501b83d3df"
     },
     "ubtb": {
       "design_spec": [
@@ -176,7 +309,26 @@
         "testbenches/ubtb/tests"
       ],
       "environment": "testbenches/ubtb/env/agent/main.py",
-      "testbench": "ubtb"
+      "testbench": "ubtb",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MicroBtb",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_bpu.ubtb",
+        "direct_parents": [
+          {
+            "parent": "Bpu",
+            "instance": "ubtb",
+            "line": 7687
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/bpu/ubtb/MicroBtb.scala",
+          "line": 30
+        }
+      },
+      "module_id": "M-34003e31ad90"
     },
     "uras": {
       "design_spec": [
@@ -198,7 +350,26 @@
         "testbenches/uras/tests"
       ],
       "environment": "testbenches/uras/env/agent/main.py",
-      "testbench": "uras"
+      "testbench": "uras",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MicroRas",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_bpu.uras",
+        "direct_parents": [
+          {
+            "parent": "Bpu",
+            "instance": "uras",
+            "line": 19740
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/bpu/ras/MicroRas.scala",
+          "line": 41
+        }
+      },
+      "module_id": "M-d84f34118e0e"
     },
     "utage": {
       "design_spec": [
@@ -221,7 +392,26 @@
         "testbenches/utage/tests"
       ],
       "environment": "testbenches/utage/env/agent/main.py",
-      "testbench": "utage"
+      "testbench": "utage",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MicroTage",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_bpu.utage",
+        "direct_parents": [
+          {
+            "parent": "Bpu",
+            "instance": "utage",
+            "line": 8287
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/bpu/utage/MicroTage.scala",
+          "line": 36
+        }
+      },
+      "module_id": "M-e444c60ab648"
     }
   }
 }

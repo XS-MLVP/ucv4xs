@@ -7,7 +7,10 @@
 根 `tests/test_frontend_runtime_seed.py` 核验实际构造参数及构造间环境变化；历史 CLI
 seed 标注不等于当时已使用该原生 seed。该修复不改变 RTL/native 构建或已知 XFAIL 判定。
 
-## 当前结论
+## 绑定与历史结论
+
+当前有效基线为根配置的 `public-e716c7658`，模块来源见[设计索引](docs/spec/design/README.md)。
+以下为原基线已执行结果，2026-11-16 的切分没有重新进行 ICache 硬件验收。
 
 基线 `public-a0c2a26cb` / DefaultConfig / 单核。2026-11-08 收口：11/11 DUT 完成
 prepare/build/冒烟，seed 1 与 seed 2 完整回归均为 **572 PASS / 1 XFAIL，exit 0**

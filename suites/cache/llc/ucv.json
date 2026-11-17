@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "suite": "llc",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "open_llc": {
+      "top": "OpenLLC",
+      "export_name": "OpenLLCDut"
+    },
+    "chi_logger": {
+      "top": "CHILogger",
+      "export_name": "ChiLoggerDut"
+    },
+    "rn_xbar": {
+      "top": "RNXbar",
+      "export_name": "RnXbarDut"
+    },
+    "mem_unit": {
+      "top": "MemUnit",
+      "export_name": "MemUnitDut"
+    },
+    "mmio_diverger": {
+      "top": "MMIODiverger",
+      "export_name": "MmioDivergerDut"
+    },
+    "response_unit": {
+      "top": "ResponseUnit",
+      "export_name": "ResponseUnitDut"
+    },
+    "mmio_merger": {
+      "top": "MMIOMerger",
+      "export_name": "MmioMergerDut"
+    },
+    "sn_xbar": {
+      "top": "SNXbar",
+      "export_name": "SnXbarDut"
+    },
+    "transmitter_link_monitor": {
+      "top": "TransmitterLinkMonitor",
+      "export_name": "TransmitterLinkMonitorDut"
+    },
+    "receiver_link_monitor": {
+      "top": "ReceiverLinkMonitor",
+      "export_name": "ReceiverLinkMonitorDut"
+    },
+    "refill_unit": {
+      "top": "RefillUnit",
+      "export_name": "RefillUnitDut"
+    },
+    "rn_link_monitor": {
+      "top": "RNLinkMonitor",
+      "export_name": "RnLinkMonitorDut"
+    },
+    "snoop_unit": {
+      "top": "SnoopUnit",
+      "export_name": "SnoopUnitDut"
+    },
+    "sn_link_monitor": {
+      "top": "SNLinkMonitor",
+      "export_name": "SnLinkMonitorDut"
+    },
+    "rxreq": {
+      "top": "RXREQ",
+      "export_name": "RxreqDut"
+    },
+    "txsnp": {
+      "top": "TXSNP",
+      "export_name": "TxsnpDut"
+    },
+    "slice": {
+      "top": "Slice_4",
+      "export_name": "Slice_4Dut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "testbenches"
+  ],
+  "process_isolation": "suite"
+}

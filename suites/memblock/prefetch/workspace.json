@@ -1,0 +1,134 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "duts": {
+    "prefetcher": {
+      "testbench": "prefetcher",
+      "design_spec": "docs/spec/design/prefetcher.md",
+      "verification_spec": "docs/spec/verification/prefetcher.md",
+      "environment": "testbenches/prefetcher/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/prefetch/PrefetcherWrapper.scala"
+      ],
+      "tests": [
+        "testbenches/prefetcher/tests"
+      ],
+      "smoke": "testbenches/prefetcher/tests/test_prefetcher_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "PrefetcherWrapper",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_prefetcher",
+        "direct_parents": [
+          {
+            "parent": "MemBlock",
+            "instance": "inner_prefetcher",
+            "line": 23447
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/prefetch/PrefetcherWrapper.scala",
+          "line": 81
+        }
+      },
+      "module_id": "M-d9cd8d65225a"
+    },
+    "l1_prefetcher": {
+      "testbench": "l1_prefetcher",
+      "design_spec": "docs/spec/design/l1_prefetcher.md",
+      "verification_spec": "docs/spec/verification/l1_prefetcher.md",
+      "environment": "testbenches/l1_prefetcher/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/prefetch/L1PrefetchComponent.scala"
+      ],
+      "tests": [
+        "testbenches/l1_prefetcher/tests"
+      ],
+      "smoke": "testbenches/l1_prefetcher/tests/test_l1_prefetcher_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "L1Prefetcher",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_prefetcher.streamStrideOpt",
+        "direct_parents": [
+          {
+            "parent": "PrefetcherWrapper",
+            "instance": "streamStrideOpt",
+            "line": 592
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/prefetch/L1PrefetchComponent.scala",
+          "line": 995
+        }
+      },
+      "module_id": "M-e7090c6a0cd1"
+    },
+    "sms_prefetcher": {
+      "testbench": "sms_prefetcher",
+      "design_spec": "docs/spec/design/sms_prefetcher.md",
+      "verification_spec": "docs/spec/verification/sms_prefetcher.md",
+      "environment": "testbenches/sms_prefetcher/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/prefetch/SMSPrefetcher.scala"
+      ],
+      "tests": [
+        "testbenches/sms_prefetcher/tests"
+      ],
+      "smoke": "testbenches/sms_prefetcher/tests/test_sms_prefetcher_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "SMSPrefetcher",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_prefetcher.smsOpt",
+        "direct_parents": [
+          {
+            "parent": "PrefetcherWrapper",
+            "instance": "smsOpt",
+            "line": 472
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/prefetch/SMSPrefetcher.scala",
+          "line": 1123
+        }
+      },
+      "module_id": "M-fd57a36da181"
+    },
+    "berti_prefetcher": {
+      "testbench": "berti_prefetcher",
+      "design_spec": "docs/spec/design/berti_prefetcher.md",
+      "verification_spec": "docs/spec/verification/berti_prefetcher.md",
+      "environment": "testbenches/berti_prefetcher/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/prefetch/Berti.scala"
+      ],
+      "tests": [
+        "testbenches/berti_prefetcher/tests"
+      ],
+      "smoke": "testbenches/berti_prefetcher/tests/test_berti_prefetcher_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "BertiPrefetcher",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_prefetcher.bertiOpt",
+        "direct_parents": [
+          {
+            "parent": "PrefetcherWrapper",
+            "instance": "bertiOpt",
+            "line": 718
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/prefetch/Berti.scala",
+          "line": 1025
+        }
+      },
+      "module_id": "M-196b6d3d71d1"
+    }
+  }
+}

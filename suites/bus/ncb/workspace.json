@@ -1,0 +1,656 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "duts": {
+    "ncb_transaction_queue": {
+      "testbench": "ncb_transaction_queue",
+      "design_spec": "docs/spec/design/ncb_transaction_queue.md",
+      "verification_spec": "docs/spec/verification/ncb_transaction_queue.md",
+      "environment": "testbenches/ncb_transaction_queue/env.py",
+      "chisel": [
+        "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBTransactionQueue.scala"
+      ],
+      "tests": [
+        "testbenches/ncb_transaction_queue/tests"
+      ],
+      "smoke": "testbenches/ncb_transaction_queue/tests/test_ncb_transaction_queue_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "NCBTransactionQueue",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_llcBridge_opt.uNCB200.uTransactionQueue",
+        "direct_parents": [
+          {
+            "parent": "NCB200",
+            "instance": "uTransactionQueue",
+            "line": 8634
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBTransactionQueue.scala",
+          "line": 30
+        }
+      },
+      "module_id": "M-4167fbe74e12"
+    },
+    "ncb_transaction_payload": {
+      "testbench": "ncb_transaction_payload",
+      "design_spec": "docs/spec/design/ncb_transaction_payload.md",
+      "verification_spec": "docs/spec/verification/ncb_transaction_payload.md",
+      "environment": "testbenches/ncb_transaction_payload/env.py",
+      "chisel": [
+        "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBTransactionPayload.scala"
+      ],
+      "tests": [
+        "testbenches/ncb_transaction_payload/tests"
+      ],
+      "smoke": "testbenches/ncb_transaction_payload/tests/test_ncb_transaction_payload_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "NCBTransactionPayload",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_llcBridge_opt.uNCB200.uTransactionPayload",
+        "direct_parents": [
+          {
+            "parent": "NCB200",
+            "instance": "uTransactionPayload",
+            "line": 13176
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBTransactionPayload.scala",
+          "line": 30
+        }
+      },
+      "module_id": "M-4e5aff6a8f56"
+    },
+    "ncb_upstream_txdat": {
+      "testbench": "ncb_upstream_txdat",
+      "design_spec": "docs/spec/design/ncb_upstream_txdat.md",
+      "verification_spec": "docs/spec/verification/ncb_upstream_txdat.md",
+      "environment": "testbenches/ncb_upstream_txdat/env.py",
+      "chisel": [
+        "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBUpstreamTXDAT.scala"
+      ],
+      "tests": [
+        "testbenches/ncb_upstream_txdat/tests"
+      ],
+      "smoke": "testbenches/ncb_upstream_txdat/tests/test_ncb_upstream_txdat_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "NCBUpstreamTXDAT",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_llcBridge_opt.uNCB200.uTXDAT",
+        "direct_parents": [
+          {
+            "parent": "NCB200",
+            "instance": "uTXDAT",
+            "line": 18391
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBUpstreamTXDAT.scala",
+          "line": 60
+        }
+      },
+      "module_id": "M-24029a972679"
+    },
+    "ncb_upstream_rxreq": {
+      "testbench": "ncb_upstream_rxreq",
+      "design_spec": "docs/spec/design/ncb_upstream_rxreq.md",
+      "verification_spec": "docs/spec/verification/ncb_upstream_rxreq.md",
+      "environment": "testbenches/ncb_upstream_rxreq/env.py",
+      "chisel": [
+        "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBUpstreamRXREQ.scala"
+      ],
+      "tests": [
+        "testbenches/ncb_upstream_rxreq/tests"
+      ],
+      "smoke": "testbenches/ncb_upstream_rxreq/tests/test_ncb_upstream_rxreq_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "NCBUpstreamRXREQ",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_llcBridge_opt.uNCB200.uRXREQ",
+        "direct_parents": [
+          {
+            "parent": "NCB200",
+            "instance": "uRXREQ",
+            "line": 15703
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBUpstreamRXREQ.scala",
+          "line": 127
+        }
+      },
+      "module_id": "M-30c16756308f"
+    },
+    "ncb_transaction_age_matrix": {
+      "testbench": "ncb_transaction_age_matrix",
+      "design_spec": "docs/spec/design/ncb_transaction_age_matrix.md",
+      "verification_spec": "docs/spec/verification/ncb_transaction_age_matrix.md",
+      "environment": "testbenches/ncb_transaction_age_matrix/env.py",
+      "chisel": [
+        "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBTransactionAgeMatrix.scala"
+      ],
+      "tests": [
+        "testbenches/ncb_transaction_age_matrix/tests"
+      ],
+      "smoke": "testbenches/ncb_transaction_age_matrix/tests/test_ncb_transaction_age_matrix_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "NCBTransactionAgeMatrix",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_llcBridge_opt.uNCB200.uTransactionAgeMatrix",
+        "direct_parents": [
+          {
+            "parent": "NCB200",
+            "instance": "uTransactionAgeMatrix",
+            "line": 8053
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBTransactionAgeMatrix.scala",
+          "line": 20
+        }
+      },
+      "module_id": "M-c12f082b465b"
+    },
+    "ncb_upstream_txrsp": {
+      "testbench": "ncb_upstream_txrsp",
+      "design_spec": "docs/spec/design/ncb_upstream_txrsp.md",
+      "verification_spec": "docs/spec/verification/ncb_upstream_txrsp.md",
+      "environment": "testbenches/ncb_upstream_txrsp/env.py",
+      "chisel": [
+        "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBUpstreamTXRSP.scala"
+      ],
+      "tests": [
+        "testbenches/ncb_upstream_txrsp/tests"
+      ],
+      "smoke": "testbenches/ncb_upstream_txrsp/tests/test_ncb_upstream_txrsp_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "NCBUpstreamTXRSP",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_llcBridge_opt.uNCB200.uTXRSP",
+        "direct_parents": [
+          {
+            "parent": "NCB200",
+            "instance": "uTXRSP",
+            "line": 17621
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBUpstreamTXRSP.scala",
+          "line": 55
+        }
+      },
+      "module_id": "M-c3a7a12eb97f"
+    },
+    "ncb_downstream_w": {
+      "testbench": "ncb_downstream_w",
+      "design_spec": "docs/spec/design/ncb_downstream_w.md",
+      "verification_spec": "docs/spec/verification/ncb_downstream_w.md",
+      "environment": "testbenches/ncb_downstream_w/env.py",
+      "chisel": [
+        "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBDownstreamW.scala"
+      ],
+      "tests": [
+        "testbenches/ncb_downstream_w/tests"
+      ],
+      "smoke": "testbenches/ncb_downstream_w/tests/test_ncb_downstream_w_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "NCBDownstreamW",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_llcBridge_opt.uNCB200.uW",
+        "direct_parents": [
+          {
+            "parent": "NCB200",
+            "instance": "uW",
+            "line": 20277
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBDownstreamW.scala",
+          "line": 49
+        }
+      },
+      "module_id": "M-69d7980b5d96"
+    },
+    "ncb_downstream_aw": {
+      "testbench": "ncb_downstream_aw",
+      "design_spec": "docs/spec/design/ncb_downstream_aw.md",
+      "verification_spec": "docs/spec/verification/ncb_downstream_aw.md",
+      "environment": "testbenches/ncb_downstream_aw/env.py",
+      "chisel": [
+        "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBDownstreamAW.scala"
+      ],
+      "tests": [
+        "testbenches/ncb_downstream_aw/tests"
+      ],
+      "smoke": "testbenches/ncb_downstream_aw/tests/test_ncb_downstream_aw_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "NCBDownstreamAW",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_llcBridge_opt.uNCB200.uAW",
+        "direct_parents": [
+          {
+            "parent": "NCB200",
+            "instance": "uAW",
+            "line": 19814
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBDownstreamAW.scala",
+          "line": 44
+        }
+      },
+      "module_id": "M-775b055dc71a"
+    },
+    "ncb_downstream_ar": {
+      "testbench": "ncb_downstream_ar",
+      "design_spec": "docs/spec/design/ncb_downstream_ar.md",
+      "verification_spec": "docs/spec/verification/ncb_downstream_ar.md",
+      "environment": "testbenches/ncb_downstream_ar/env.py",
+      "chisel": [
+        "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBDownstreamAR.scala"
+      ],
+      "tests": [
+        "testbenches/ncb_downstream_ar/tests"
+      ],
+      "smoke": "testbenches/ncb_downstream_ar/tests/test_ncb_downstream_ar_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "NCBDownstreamAR",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_llcBridge_opt.uNCB200.uAR",
+        "direct_parents": [
+          {
+            "parent": "NCB200",
+            "instance": "uAR",
+            "line": 20869
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBDownstreamAR.scala",
+          "line": 44
+        }
+      },
+      "module_id": "M-5b4aeff00957"
+    },
+    "ncb_upstream_rxdat": {
+      "testbench": "ncb_upstream_rxdat",
+      "design_spec": "docs/spec/design/ncb_upstream_rxdat.md",
+      "verification_spec": "docs/spec/verification/ncb_upstream_rxdat.md",
+      "environment": "testbenches/ncb_upstream_rxdat/env.py",
+      "chisel": [
+        "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBUpstreamRXDAT.scala"
+      ],
+      "tests": [
+        "testbenches/ncb_upstream_rxdat/tests"
+      ],
+      "smoke": "testbenches/ncb_upstream_rxdat/tests/test_ncb_upstream_rxdat_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "NCBUpstreamRXDAT",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_llcBridge_opt.uNCB200.uRXDAT",
+        "direct_parents": [
+          {
+            "parent": "NCB200",
+            "instance": "uRXDAT",
+            "line": 17045
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBUpstreamRXDAT.scala",
+          "line": 56
+        }
+      },
+      "module_id": "M-b963d3c23e0f"
+    },
+    "ncb_downstream_r": {
+      "testbench": "ncb_downstream_r",
+      "design_spec": "docs/spec/design/ncb_downstream_r.md",
+      "verification_spec": "docs/spec/verification/ncb_downstream_r.md",
+      "environment": "testbenches/ncb_downstream_r/env.py",
+      "chisel": [
+        "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBDownstreamR.scala"
+      ],
+      "tests": [
+        "testbenches/ncb_downstream_r/tests"
+      ],
+      "smoke": "testbenches/ncb_downstream_r/tests/test_ncb_downstream_r_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "NCBDownstreamR",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_llcBridge_opt.uNCB200.uR",
+        "direct_parents": [
+          {
+            "parent": "NCB200",
+            "instance": "uR",
+            "line": 21331
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBDownstreamR.scala",
+          "line": 52
+        }
+      },
+      "module_id": "M-024942bce9df"
+    },
+    "ncb_order_address_cam": {
+      "testbench": "ncb_order_address_cam",
+      "design_spec": "docs/spec/design/ncb_order_address_cam.md",
+      "verification_spec": "docs/spec/verification/ncb_order_address_cam.md",
+      "environment": "testbenches/ncb_order_address_cam/env.py",
+      "chisel": [
+        "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBOrderAddressCAM.scala"
+      ],
+      "tests": [
+        "testbenches/ncb_order_address_cam/tests"
+      ],
+      "smoke": "testbenches/ncb_order_address_cam/tests/test_ncb_order_address_cam_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "NCBOrderAddressCAM",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_llcBridge_opt.uNCB200.uOrderAddressCAM",
+        "direct_parents": [
+          {
+            "parent": "NCB200",
+            "instance": "uOrderAddressCAM",
+            "line": 7518
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBOrderAddressCAM.scala",
+          "line": 29
+        }
+      },
+      "module_id": "M-a62c86b960c7"
+    },
+    "ncb_transaction_free_list": {
+      "testbench": "ncb_transaction_free_list",
+      "design_spec": "docs/spec/design/ncb_transaction_free_list.md",
+      "verification_spec": "docs/spec/verification/ncb_transaction_free_list.md",
+      "environment": "testbenches/ncb_transaction_free_list/env.py",
+      "chisel": [
+        "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBTransactionFreeList.scala"
+      ],
+      "tests": [
+        "testbenches/ncb_transaction_free_list/tests"
+      ],
+      "smoke": "testbenches/ncb_transaction_free_list/tests/test_ncb_transaction_free_list_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "NCBTransactionFreeList",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_llcBridge_opt.uNCB200.uTransactionFreeList",
+        "direct_parents": [
+          {
+            "parent": "NCB200",
+            "instance": "uTransactionFreeList",
+            "line": 7789
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBTransactionFreeList.scala",
+          "line": 23
+        }
+      },
+      "module_id": "M-0a7ef1ae9f11"
+    },
+    "ncb_downstream_b": {
+      "testbench": "ncb_downstream_b",
+      "design_spec": "docs/spec/design/ncb_downstream_b.md",
+      "verification_spec": "docs/spec/verification/ncb_downstream_b.md",
+      "environment": "testbenches/ncb_downstream_b/env.py",
+      "chisel": [
+        "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBDownstreamB.scala"
+      ],
+      "tests": [
+        "testbenches/ncb_downstream_b/tests"
+      ],
+      "smoke": "testbenches/ncb_downstream_b/tests/test_ncb_downstream_b_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "NCBDownstreamB",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_llcBridge_opt.uNCB200.uB",
+        "direct_parents": [
+          {
+            "parent": "NCB200",
+            "instance": "uB",
+            "line": 20796
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/OpenNCB/src/main/scala/openncb/logical/NCBDownstreamB.scala",
+          "line": 47
+        }
+      },
+      "module_id": "M-513b1115b8ed"
+    },
+    "chi_link_active_manager_rx": {
+      "testbench": "chi_link_active_manager_rx",
+      "design_spec": "docs/spec/design/chi_link_active_manager_rx.md",
+      "verification_spec": "docs/spec/verification/chi_link_active_manager_rx.md",
+      "environment": "testbenches/chi_link_active_manager_rx/env.py",
+      "chisel": [
+        "XSCache/OpenNCB/src/main/scala/openncb/logical/chi/CHILinkActiveManagerRX.scala"
+      ],
+      "tests": [
+        "testbenches/chi_link_active_manager_rx/tests"
+      ],
+      "smoke": "testbenches/chi_link_active_manager_rx/tests/test_chi_link_active_manager_rx_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "CHILinkActiveManagerRX",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_llcBridge_opt.uNCB200.uLinkActiveRX",
+        "direct_parents": [
+          {
+            "parent": "NCB200_1",
+            "instance": "uLinkActiveRX",
+            "line": 3876
+          },
+          {
+            "parent": "NCB200",
+            "instance": "uLinkActiveRX",
+            "line": 7498
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/OpenNCB/src/main/scala/openncb/logical/chi/CHILinkActiveManagerRX.scala",
+          "line": 10
+        }
+      },
+      "module_id": "M-88eb88c61789"
+    },
+    "chi_link_active_manager_tx": {
+      "testbench": "chi_link_active_manager_tx",
+      "design_spec": "docs/spec/design/chi_link_active_manager_tx.md",
+      "verification_spec": "docs/spec/verification/chi_link_active_manager_tx.md",
+      "environment": "testbenches/chi_link_active_manager_tx/env.py",
+      "chisel": [
+        "XSCache/OpenNCB/src/main/scala/openncb/logical/chi/CHILinkActiveManagerTX.scala"
+      ],
+      "tests": [
+        "testbenches/chi_link_active_manager_tx/tests"
+      ],
+      "smoke": "testbenches/chi_link_active_manager_tx/tests/test_chi_link_active_manager_tx_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "CHILinkActiveManagerTX",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_llcBridge_opt.uNCB200.uLinkActiveTX",
+        "direct_parents": [
+          {
+            "parent": "NCB200_1",
+            "instance": "uLinkActiveTX",
+            "line": 3886
+          },
+          {
+            "parent": "NCB200",
+            "instance": "uLinkActiveTX",
+            "line": 7508
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/OpenNCB/src/main/scala/openncb/logical/chi/CHILinkActiveManagerTX.scala",
+          "line": 10
+        }
+      },
+      "module_id": "M-bf5be3ab5155"
+    },
+    "llc_bridge": {
+      "testbench": "llc_bridge",
+      "design_spec": "docs/spec/design/llc_bridge.md",
+      "verification_spec": "docs/spec/verification/llc_bridge.md",
+      "environment": "testbenches/llc_bridge/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/openLLC/utils/OpenNCB.scala"
+      ],
+      "tests": [
+        "testbenches/llc_bridge/tests"
+      ],
+      "smoke": "testbenches/llc_bridge/tests/test_llc_bridge_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "OpenNCB",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_llcBridge_opt",
+        "direct_parents": [
+          {
+            "parent": "XSTop",
+            "instance": "chi_llcBridge_opt",
+            "line": 1446
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/openLLC/utils/OpenNCB.scala",
+          "line": 46
+        }
+      },
+      "module_id": "M-5be039d2c67f"
+    },
+    "mmio_bridge": {
+      "testbench": "mmio_bridge",
+      "design_spec": "docs/spec/design/mmio_bridge.md",
+      "verification_spec": "docs/spec/verification/mmio_bridge.md",
+      "environment": "testbenches/mmio_bridge/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/openLLC/utils/OpenNCB.scala"
+      ],
+      "tests": [
+        "testbenches/mmio_bridge/tests"
+      ],
+      "smoke": "testbenches/mmio_bridge/tests/test_mmio_bridge_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "OpenNCB_1",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_mmioBridge_opt",
+        "direct_parents": [
+          {
+            "parent": "XSTop",
+            "instance": "chi_mmioBridge_opt",
+            "line": 1499
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/openLLC/utils/OpenNCB.scala",
+          "line": 46
+        }
+      },
+      "module_id": "M-5be039d2c67f"
+    },
+    "llc_core": {
+      "testbench": "llc_core",
+      "design_spec": "docs/spec/design/llc_core.md",
+      "verification_spec": "docs/spec/verification/llc_core.md",
+      "environment": "testbenches/llc_core/env.py",
+      "chisel": [
+        "XSCache/OpenNCB/src/main/scala/openncb/NCB200.scala"
+      ],
+      "tests": [
+        "testbenches/llc_core/tests"
+      ],
+      "smoke": "testbenches/llc_core/tests/test_llc_core_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "NCB200",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_llcBridge_opt.uNCB200",
+        "direct_parents": [
+          {
+            "parent": "OpenNCB",
+            "instance": "uNCB200",
+            "line": 83
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/OpenNCB/src/main/scala/openncb/NCB200.scala",
+          "line": 18
+        }
+      },
+      "module_id": "M-80b05df2f17f"
+    },
+    "mmio_core": {
+      "testbench": "mmio_core",
+      "design_spec": "docs/spec/design/mmio_core.md",
+      "verification_spec": "docs/spec/verification/mmio_core.md",
+      "environment": "testbenches/mmio_core/env.py",
+      "chisel": [
+        "XSCache/OpenNCB/src/main/scala/openncb/NCB200.scala"
+      ],
+      "tests": [
+        "testbenches/mmio_core/tests"
+      ],
+      "smoke": "testbenches/mmio_core/tests/test_mmio_core_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "NCB200_1",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_mmioBridge_opt.uNCB200",
+        "direct_parents": [
+          {
+            "parent": "OpenNCB_1",
+            "instance": "uNCB200",
+            "line": 85
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/OpenNCB/src/main/scala/openncb/NCB200.scala",
+          "line": 18
+        }
+      },
+      "module_id": "M-80b05df2f17f"
+    }
+  }
+}

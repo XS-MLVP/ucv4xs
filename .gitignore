@@ -1,26 +1,49 @@
-.venv/
+# Project-local environments, tools, configuration and backups.
+.venv*/
 .tools/
 .cache/
 .ucv/
 .history/
+.env
+.env.*
+!.env.example
+!.env.template
+
+# Generated workspace assets and test output.
 results/
 **/results/
 **/rtl/
 **/dut/
 **/__pycache__/
 **/.pytest_cache/
-*.pyc
+**/.mypy_cache/
+**/.ruff_cache/
+*.py[cod]
+.coverage
+.coverage.*
+htmlcov/
+
+# Native build products, RTL and waveforms.
+*.o
+*.a
 *.so
 *.so.*
+*.dylib
 *.fst
 *.vcd
 *.dat
 *.fir
 *.sv
 *.v
+*.svh
+*.vh
+
+# Python packaging output.
 *.egg-info/
 build/
 dist/
+*.whl
 
 # Generated compatibility source entry resolved by ucv prepare.
 XiangShan
+XiangShan-internal

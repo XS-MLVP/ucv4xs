@@ -15,100 +15,16 @@ from types import SimpleNamespace
 
 import pytest
 
-from suites.memblock.mmu.testbenches.bitmap.env.bitmap import BitmapEnv
 from suites.memblock.mmu.testbenches.l2tlb.env.l2tlb import L2TlbEnv
 from suites.memblock.mmu.testbenches.llptw.env.llptw import LlptwEnv
 from suites.memblock.mmu.testbenches.ptw.env.ptw_walker import PtwEnv
 from suites.memblock.mmu.testbenches.ptwcache.env.ptwcache import CacheReq, PtwCacheEnv
-from suites.memblock.mmu.testbenches.ptwrepeater.env.ptw import FilterEnv, Req, RepeaterEnv
 from suites.memblock.mmu.testbenches.tlb.env import TlbEnv
 from suites.memblock.mmu.testbenches.tlbn.env import TlbNonBlockEnv
 
+from suites.memblock.mmu.testbenches.shared.tests.transaction_helpers import READY_CASES, Signal, _dut
+
 pytestmark = pytest.mark.selftest
-
-READY_CASES = ((1, 1), (1, 0), (0, 1), (0, 0))
-
-
-class Signal:
-    def __init__(self, value: int = 0) -> None:
-        self.value = value
-
-    def Set(self, value: int) -> None:
-        self.value = value
-
-
-def _dut() -> SimpleNamespace:
-    return SimpleNamespace(RefreshComb=lambda: None)
-
-
-def _install_ready_cycle(env, signal, before: int, after: int,
-                         fires: list[bool]) -> None:
-    async def edge() -> None:
-        fires.append(bool(signal.value and env.req_ready.value))
-        signal.value = after
-
-    env.edge = edge
-    env.req_ready.value = before
-
-
-async def test_offer_acceptance_is_the_same_cycle_fire():
-    """0->1 must not report fire and 1->0 must not report a miss.
-
-    The same node also replays the repeater's own request/handshake phase with
-    a real ``RepeaterEnv`` over fake signals, so the helper names used by the
-    structural-stress case must be actual class methods that drive the frozen
-    per-edge levels.
-    """
-    for env_type, attrs, signal_name in (
-            (FilterEnv, ("req_valid", "req_vpn", "req_s2", "req_getgpa"),
-             "req_valid"),
-            (RepeaterEnv, ("req_valid", "req_vpn", "req_s2"), "req_valid")):
-        for before, after in READY_CASES:
-            env = env_type.__new__(env_type)
-            for name in attrs:
-                setattr(env, name, Signal())
-            env.req_ready = Signal(before)
-            env.dut = _dut()
-            fires: list[bool] = []
-            _install_ready_cycle(env, getattr(env, signal_name), before, after, fires)
-            if env_type is FilterEnv:
-                reported = await env.offer_request(Req(0x20000))
-            else:
-                reported = await env.offer_second_request(0x20000)
-            assert reported is fires[0], (env_type.__name__, before, after)
-
-    for name in ("set_ptw_ready", "begin_request_stream", "stream_request",
-                 "end_request_stream"):
-        assert callable(getattr(RepeaterEnv, name, None)), (
-            f"RepeaterEnv.{name} must be a real method")
-
-    env = RepeaterEnv.__new__(RepeaterEnv)
-    env.req_valid = Signal()
-    env.req_vpn = Signal()
-    env.req_s2 = Signal()
-    env.req_ready = Signal(1)
-    env.resp_ready = Signal(0)
-    env.ptw_ready = Signal(0)
-    env.dut = _dut()
-    levels: list[tuple[int, int, int]] = []
-
-    async def edge() -> None:
-        levels.append((env.ptw_ready.value, env.resp_ready.value,
-                       env.req_valid.value))
-
-    env.edge = edge
-    for endpoint in (1, 0):
-        env.req_valid.Set(endpoint)
-        env.set_ptw_ready(0)
-        env.set_resp_ready(1)
-        env.begin_request_stream()
-        env.stream_request((1 << 38) - 1 if endpoint else 0,
-                           3 if endpoint else 0)
-        await env.edge()
-        await env.end_request_stream()
-        await env.accept_ptw()
-    # Frozen trace rows for each endpoint: request, release, PTW accept.
-    assert levels == [(0, 1, 1), (0, 1, 0), (1, 1, 0)] * 2, levels
 
 
 async def test_cache_offer_acceptance_is_the_same_cycle_fire():
@@ -241,20 +157,6 @@ async def test_tlbn_issue_rejects_bad_port_before_any_write():
             assert entry["req"]["valid"].value == 0
 
 
-def test_response_snapshot_does_not_expose_live_state():
-    env = BitmapEnv.__new__(BitmapEnv)
-    env.resp = {name: Signal(value) for name, value in
-                (("valid", 1), ("cf", 1), ("id", 7))}
-    env.cfs = [Signal(1), Signal(0), Signal(1)]
-    snap = env.response_snapshot()
-    assert snap == {"valid": 1, "cf": 1, "id": 7, "cfs": [1, 0, 1]}
-    snap["cfs"][0] = 0
-    snap["valid"] = 0
-    assert env.cfs[0].value == 1 and env.resp["valid"].value == 1
-    again = env.response_snapshot()
-    assert again is not snap and again["cfs"] is not snap["cfs"]
-
-
 def test_nested_response_snapshot_copies_inner_dicts_and_lists():
     env = PtwCacheEnv.__new__(PtwCacheEnv)
     env.resp = {
@@ -280,59 +182,6 @@ def test_storage_invalid_way_count_is_vacancy_count():
     assert env.storage_invalid_way_count() == 1
     env.model.storage.tlbfa.valid = [1] * 48
     assert env.storage_invalid_way_count() == 0
-
-
-def test_structural_ptw_response_is_a_named_channel_operation():
-    env = FilterEnv.__new__(FilterEnv)
-    env.ptw_resp_pins = {name: Signal() for name in
-                         ("s2xlate", "s1_entry_tag", "s1_entry_ppn",
-                          "s2_entry_tag", "s2_entry_ppn", "s1_entry_asid")}
-    env.ptw_resp_valid = Signal()
-    env.dut = _dut()
-    env.drive_structural_ptw_response(
-        s2xlate=3, s1_entry_tag=7, s1_entry_ppn=9, s2_entry_tag=11,
-        s2_entry_ppn=13)
-    assert env.ptw_resp_pins["s1_entry_asid"].value == 0
-    assert {name for name, pin in env.ptw_resp_pins.items() if pin.value} == {
-        "s2xlate", "s1_entry_tag", "s1_entry_ppn", "s2_entry_tag",
-        "s2_entry_ppn"}
-    # Unspecified leaves keep their current stress value; filling selected
-    # payload bits must not silently drop the rest of the all-ones endpoint.
-    for name in ("s1_entry_asid", "s2xlate", "s1_entry_tag", "s1_entry_ppn",
-                 "s2_entry_tag", "s2_entry_ppn"):
-        env.ptw_resp_pins[name].Set(1)
-    env.drive_structural_ptw_response(s2xlate=0)
-    assert env.ptw_resp_pins["s2xlate"].value == 0
-    assert all(env.ptw_resp_pins[name].value == 1 for name in
-               ("s1_entry_asid", "s1_entry_tag", "s1_entry_ppn",
-                "s2_entry_tag", "s2_entry_ppn"))
-    # Releasing valid keeps the payload stress levels.
-    env.drive_ptw_response_valid(1)
-    env.clear_ptw_response()
-    assert env.ptw_resp_valid.value == 0
-    assert env.ptw_resp_pins["s1_entry_asid"].value == 1
-    assert env.ptw_resp_pins["s2_entry_ppn"].value == 1
-    # Same contract on the bitmap response channel: dropping valid must not
-    # clear the unrelated cf stress bit.
-    bitmap_env = PtwEnv.__new__(PtwEnv)
-    bitmap_env.bitmap = {"resp_valid": Signal(), "resp_cf": Signal()}
-    bitmap_env.dut = _dut()
-    bitmap_env.drive_structural_bitmap_resp(1, cf=1)
-    assert (bitmap_env.bitmap["resp_valid"].value,
-            bitmap_env.bitmap["resp_cf"].value) == (1, 1)
-    bitmap_env.drive_structural_bitmap_resp(0)
-    assert (bitmap_env.bitmap["resp_valid"].value,
-            bitmap_env.bitmap["resp_cf"].value) == (0, 1)
-    # A rejected level must not partially drive the channel: validation runs
-    # before any Set, so both valid and the untouched cf keep their values.
-    with pytest.raises(ValueError):
-        bitmap_env.drive_structural_bitmap_resp(1, cf=2)
-    assert (bitmap_env.bitmap["resp_valid"].value,
-            bitmap_env.bitmap["resp_cf"].value) == (0, 1)
-    with pytest.raises(ValueError):
-        bitmap_env.drive_structural_bitmap_resp(2)
-    assert (bitmap_env.bitmap["resp_valid"].value,
-            bitmap_env.bitmap["resp_cf"].value) == (0, 1)
 
 
 def test_ptw_hptw_queue_takes_named_fields_not_an_open_dict():
