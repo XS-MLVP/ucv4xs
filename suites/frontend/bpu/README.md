@@ -1,5 +1,8 @@
 # BPU 验证工程
 
+当前有效基线为根配置的 `public-e716c7658`；[设计索引](docs/spec/design/README.md)补充当前
+Chisel / RTL 实例映射。本文历史检查点沿用各自基线，不因目录拆分转记为新基线已验收。
+
 ## 第一次使用
 
 从[MainBTB 第一个 UT](../../../docs/tutorials/bpu-first-ut.md)开始。

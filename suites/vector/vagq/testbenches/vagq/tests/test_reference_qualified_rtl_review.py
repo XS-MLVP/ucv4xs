@@ -18,10 +18,8 @@ from suites.vector.vagq.testbenches.maskgen.env.flow_fixture import wide_flow
 from suites.vector.vagq.testbenches.maskgen.env.probe import bind_maskgen
 from suites.vector.vagq.testbenches.maskgen.env.reference import MaskRequest
 from suites.vector.vagq.testbenches.shared.env.native import open_dut
+from suites.vector.vagq.testbenches.shared.env.native import verify_rtl
 from suites.vector.vagq.testbenches.split.model import State
-from suites.vector.vagq.testbenches.split.env.native import NativeSplit
-from suites.vector.vagq.testbenches.split.env.probe import bind
-from suites.vector.vagq.testbenches.split.env.probe import encode
 from suites.vector.vagq.testbenches.split.transactions import Beat
 from suites.vector.vagq.testbenches.split.transactions import Entry
 
@@ -57,6 +55,9 @@ def _single_request(observation):
 @pytest.mark.parametrize('case', ('wide_zero_mask', 'wide_tail_control', 'nonzero_first', 'index_bank_control', 'size_rounding_control'))
 def test_split_requests_against_independent_stream_and_bank_binding(case, native_registration, tmp_path):
     _reference_is_qualified()
+    verify_rtl('MaskGen', 'SplitCtrl')
+    from suites.vector.vagq.testbenches.split.env.native import NativeSplit
+
     if case == 'size_rounding_control':
         metadata = dict(elemBase=0, startFieldOffset=0, startByteOffset=0, elemValidMask=0x1001)
         active = 1
@@ -172,6 +173,9 @@ def test_maskgen_sparse_ownership_against_independent_wide_byte_stream(native_re
 @pytest.mark.parametrize('special', (False, True), ids=('nonsegment_control', 'special7_contract'))
 def test_response_ack_must_not_complete_an_unissued_element(special, native_registration, tmp_path):
     _reference_is_qualified()
+    verify_rtl('MaskGen', 'SplitCtrl')
+    from suites.vector.vagq.testbenches.split.env.native import NativeSplit
+
     nf = 6 if special else 0
     request = MaskRequest(0xFFFF, 0, 2, 0, 4, 0, 0, 0, 0, nf)
     with open_dut('MaskGen', tmp_path, register=native_registration) as producer:

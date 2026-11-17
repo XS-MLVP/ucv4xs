@@ -1,7 +1,7 @@
 from dataclasses import asdict, dataclass, replace
 import json
 
-from suites.memblock.lsq.testbenches.uncache_entry.model import is_younger
+from suites.memblock.lsq.testbenches.shared.model.uncache_entry import is_younger
 
 from suites.memblock.lsq.testbenches.raw.transactions import FtqPtr
 from suites.memblock.lsq.testbenches.raw.transactions import SqPtr

@@ -25,6 +25,19 @@
     "testbenches/load_s3/README.md",
     "testbenches/load_s4/README.md",
     "testbenches/new_load_unit/README.md",
-    "testbenches/shared/README.md"
+    "testbenches/shared/README.md",
+    "docs/spec/design/select_oldest.md",
+    "docs/spec/verification/select_oldest.md",
+    "testbenches/select_oldest/README.md",
+    "docs/spec/design/dummy_dpic_wrapper.md",
+    "docs/spec/verification/dummy_dpic_wrapper.md",
+    "testbenches/dummy_dpic_wrapper/README.md",
+    "README.md",
+    "docs/spec/design/atomics.md",
+    "docs/spec/verification/atomics.md",
+    "testbenches/atomics/README.md",
+    "docs/spec/design/memblock.md",
+    "docs/spec/verification/memblock.md",
+    "testbenches/memblock/README.md"
   ]
 }

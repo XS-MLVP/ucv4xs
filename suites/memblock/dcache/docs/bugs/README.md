@@ -18,23 +18,23 @@
 
 由 `ucv docs --write` 生成；目录表示当前处理状态，版本结论见各记录。
 
-当前工程基线：`public-a0c2a26cb`。未复验项不继承历史通过结论。
+当前工程基线：`public-e716c7658`。未复验项不继承历史通过结论。
 
 ## 未解决（2）
 
 | ID | 问题 | 类型 | 本基线结论 | 关闭原因 |
 |---|---|---|---|---|
-| [CF-DEQUEUE-PIPELINE-NO-RESET](open/CF-DEQUEUE-PIPELINE-NO-RESET.md) | 短复位后 CounterFilter 出队流水可能永久偏移 FIFO 指针 | rtl | 未复验 | — |
-| [MQ-STORE-MERGE-DATA-PENDING](open/MQ-STORE-MERGE-DATA-PENDING.md) | 同一 cache line 第二笔部分 store 合并后字节丢失 | rtl | 未复验 | — |
+| [CF-DEQUEUE-PIPELINE-NO-RESET](open/CF-DEQUEUE-PIPELINE-NO-RESET.md) | 短复位后 CounterFilter 出队流水可能永久偏移 FIFO 指针 | rtl | 未登记复验 | — |
+| [MQ-STORE-MERGE-DATA-PENDING](open/MQ-STORE-MERGE-DATA-PENDING.md) | 同一 cache line 第二笔部分 store 合并后字节丢失 | rtl | 未登记复验 | — |
 
 ## 已关闭（5）
 
 | ID | 问题 | 类型 | 本基线结论 | 关闭原因 |
 |---|---|---|---|---|
-| [BDA-DUPLICATED-BANK-ADDR](closed/BDA-DUPLICATED-BANK-ADDR.md) | bank 0..15 使用 addr_dup 是 duplicated query 设计，不是地址缺陷 | investigation | 未复验 | invalid |
-| [BDA-ECC-DELAYED-FLAG](closed/BDA-ECC-DELAYED-FLAG.md) | 未初始化 SRAM 行的 ECC 告警被误判为编解码缺陷 | investigation | 未复验 | invalid |
-| [DCACHE-DENIED-ERROR-PADDR-ZERO](closed/DCACHE-DENIED-ERROR-PADDR-ZERO.md) | L2 denied/corrupt 的 io_error.paddr 只保留 vaddr[11:0] | investigation | 未复验 | invalid |
-| [DCACHE-REEVICT-BLOCK-REJECTED](closed/DCACHE-REEVICT-BLOCK-REJECTED.md) | Release 未接受时同 block 的 miss 被拒是写回阻塞契约 | investigation | 未复验 | invalid |
-| [DCACHE-REFILL-NOT-RESIDENT](closed/DCACHE-REFILL-NOT-RESIDENT.md) | 冷 load refill 后不命中（原 RTL 指控不成立，当前基线未复验） | verification | 未复验 | invalid |
+| [BDA-DUPLICATED-BANK-ADDR](closed/BDA-DUPLICATED-BANK-ADDR.md) | bank 0..15 使用 addr_dup 是 duplicated query 设计，不是地址缺陷 | investigation | 未登记复验 | invalid |
+| [BDA-ECC-DELAYED-FLAG](closed/BDA-ECC-DELAYED-FLAG.md) | 未初始化 SRAM 行的 ECC 告警被误判为编解码缺陷 | investigation | 未登记复验 | invalid |
+| [DCACHE-DENIED-ERROR-PADDR-ZERO](closed/DCACHE-DENIED-ERROR-PADDR-ZERO.md) | L2 denied/corrupt 的 io_error.paddr 只保留 vaddr[11:0] | investigation | 未登记复验 | invalid |
+| [DCACHE-REEVICT-BLOCK-REJECTED](closed/DCACHE-REEVICT-BLOCK-REJECTED.md) | Release 未接受时同 block 的 miss 被拒是写回阻塞契约 | investigation | 未登记复验 | invalid |
+| [DCACHE-REFILL-NOT-RESIDENT](closed/DCACHE-REFILL-NOT-RESIDENT.md) | 冷 load refill 后不命中（原 RTL 指控不成立，当前基线未复验） | verification | 未登记复验 | invalid |
 
 <!-- ucv:bugs:end -->

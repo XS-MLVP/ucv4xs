@@ -37,5 +37,5 @@
   "tests": [
     "testbenches"
   ],
-  "process_isolation": "suite"
+  "process_isolation": "dut"
 }

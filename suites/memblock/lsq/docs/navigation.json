@@ -6,9 +6,7 @@
     "docs/spec/verification/README.md",
     "docs/spec/verification/plan.md",
     "docs/spec/verification/evidence/README.md",
-    "docs/bugs/README.md"
-  ],
-  "relocations": {
-    "docs/spec/verification/plan.md": "docs/spec/verification/evidence/plan-progress-20261018-20261019.md"
-  }
+    "docs/bugs/README.md",
+    "README.md"
+  ]
 }

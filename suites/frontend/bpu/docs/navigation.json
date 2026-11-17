@@ -19,13 +19,5 @@
     "docs/spec/design/scala-interactions-20261106.md",
     "docs/spec/verification/README.md",
     "docs/bugs/README.md"
-  ],
-  "relocations": {
-    "docs/mbtb-transaction-contract.md": "docs/spec/verification/contracts/mbtb-transaction-contract.md",
-    "docs/pipeline-transaction-contract.md": "docs/spec/verification/contracts/pipeline-transaction-contract.md",
-    "docs/phr-transaction-contract.md": "docs/spec/verification/contracts/phr-transaction-contract.md",
-    "docs/scala-interactions-20261106.md": "docs/spec/design/scala-interactions-20261106.md",
-    "docs/behavior-coverage-design.json": "docs/spec/verification/coverage/behavior-coverage-design.json",
-    "docs/behavior-scenarios.json": "docs/spec/verification/functional/behavior-scenarios.json"
-  }
+  ]
 }

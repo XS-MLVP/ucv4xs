@@ -152,7 +152,7 @@ UQ 释放后即消失——与 B4 是同一窗口。
 | LoadQueueRAR | `:237-241`：`release`、`ldWbPtr`、`validCount`、`rarNukeQuery` | `release` 与 `ldWbPtr` 同拍；`release2Cycle.valid := RegNext(io.release.valid)` 造成一拍错位 | `covered`（`testbenches/rar/*`，含 7 条真实 FAIL：`RAR-REL-001`） |
 | LoadQueueRAW | `:246-250`：`storeIn`=STA、`stAddrReadySqPtr`、`rawNukeQuery`、`mdpTrain` | RAW 冲突依赖 SQ 地址就绪，不是数据 | `covered`（`testbenches/raw/*` 59 例） |
 | LoadQueueReplay | `:292-304`：`enq`=LDU ldin、`replay`、`loadWakeup`、SQ 四个 ready 向量、`sqDeqPtr`、`ldWbPtr` | 入队按 S3 原因；bank 选择 `min(slot)` | `covered`（`testbenches/replay/tests/*` 137 例，含 3 条 post-edge 残余 FAIL） |
-| LoadQueueUncache | `:268-284`、`:275-283`：`req` 逐 lane、`bypass`、`rollback` | 16 个 entry + freeList + 两级 RR 仲裁；SID 复用会覆盖未消费数据 | `covered`（`testbenches/uncache_entry/*` 400 例、`testbenches/load_uncache/*`，含 `LQU-SID-001` 29 条真实 FAIL） |
+| LoadQueueUncache | `:268-284`、`:275-283`：`req` 逐 lane、`bypass`、`rollback` | 16 个 entry + freeList + 两级 RR 仲裁；SID 复用会覆盖未消费数据 | `covered`（`testbenches/uncache_entry_*/tests` 400 例、`testbenches/load_uncache/*`，含 `LQU-SID-001` 29 条真实 FAIL） |
 
 **RAW 的 `mdpTrain` 出域**：只用于 BPU 训练，LSQ 内部不消费。
 

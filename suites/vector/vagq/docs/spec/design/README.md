@@ -30,8 +30,8 @@
 | `MergeCtrl` | MergeCtrl | merge-read、旧 vd 合并、response/ack/nack/exception 和 writeback | [testbenches/merge/model.py](../../../testbenches/merge/model.py)、[testbenches/merge/tests](../../../testbenches/merge/tests) |
 | `StoreDataCtrl` | StoreDataCtrl | 两槽 store data、VRF 读、SQ 起始偏移和 EEW 重复 | [testbenches/storedata/model.py](../../../testbenches/storedata/model.py)、[testbenches/storedata/tests](../../../testbenches/storedata/tests) |
 | `OrderedPermitCtrl` | OrderedPermitCtrl | ordered load 的 per-entry permit、handoff 和 redirect 清理 | [testbenches/ordered/model.py](../../../testbenches/ordered/model.py)、[testbenches/ordered/tests](../../../testbenches/ordered/tests) |
-| `NewPipelineConnectPipe` | NewPipelineConnectPipe | 单槽 decoupled 流水，承载完整 LSU metadata | [testbenches/pipeline/model.py](../../../testbenches/pipeline/model.py)、[testbenches/pipeline/env/specs.py](../../../testbenches/pipeline/env/specs.py)、[testbenches/pipeline/tests](../../../testbenches/pipeline/tests) |
-| `NewPipelineConnectPipe_3` | NewPipelineConnectPipe_3 | 单槽 decoupled 流水，承载紧凑 issueMask payload | [testbenches/pipeline/model.py](../../../testbenches/pipeline/model.py)、[testbenches/pipeline/env/specs.py](../../../testbenches/pipeline/env/specs.py)、[testbenches/pipeline/tests](../../../testbenches/pipeline/tests) |
+| `NewPipelineConnectPipe` | NewPipelineConnectPipe | 单槽 decoupled 流水，承载完整 LSU metadata | [model.py](../../../testbenches/NewPipelineConnectPipe/model.py)、[env/specs.py](../../../testbenches/NewPipelineConnectPipe/env/specs.py)、[tests](../../../testbenches/NewPipelineConnectPipe/tests) |
+| `NewPipelineConnectPipe_3` | NewPipelineConnectPipe_3 | 单槽 decoupled 流水，承载紧凑 issueMask payload | [model.py](../../../testbenches/NewPipelineConnectPipe_3/model.py)、[env/specs.py](../../../testbenches/NewPipelineConnectPipe_3/env/specs.py)、[tests](../../../testbenches/NewPipelineConnectPipe_3/tests) |
 
 源码路径和导出名由 [ucv.json](../../../ucv.json) 与 `ucv info vagq` 提供；internal
 源码检出是外部接入的忽略目录，不在 Git 中。
@@ -60,8 +60,10 @@ internal 源码、生成 RTL 或实现细节。
 | `VAGQManager` | `src/main/scala/xiangshan/backend/vector/vagq/VAGQManager.scala` | `VecOrderQueue.scala`（不由 VAGQ 顶层实例化） |
 
 `NewPipelineConnectPipe` 与 `NewPipelineConnectPipe_3` 的生成名来自同一 Chisel 类在
-不同 payload 类型上的两次特化；Python 侧分别在 `testbenches/pipeline/env/specs.py` 以 `PIPE1`/`PIPE3`
-绑定端口，不能用同名类猜测 `_3` 的实现。
+不同 payload 类型上的两次特化；Python 侧分别在
+`testbenches/NewPipelineConnectPipe/env/specs.py`（`PIPE1`）与
+`testbenches/NewPipelineConnectPipe_3/env/specs.py`（`PIPE3`）绑定端口，各自维护独立实现，
+不能用同名类猜测 `_3` 的实现。
 
 ## 2. 公共接口与合法输入
 

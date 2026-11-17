@@ -36,6 +36,10 @@
 
 ## PTWRepeaterNB（Frontend/MemBlock 的 PTW 请求重复器）
 
+当前实现入口：[PTWRepeaterNB 独立 testbench](../../../../testbenches/ptwrepeater/README.md)。
+RPT 的环境、透传期望/checker、覆盖与场景均归该 DUT；其真实 smoke 是
+`test_request_to_ptw_and_response_hold`。
+
 真实实例：`Frontend.sv:inner_itlbRepeater2`、`MemBlock.sv:inner_itlbRepeater3`。
 
 | ID | 功能点 | 关键行为 |
@@ -48,6 +52,10 @@
 | RPT-06 | 全 0/全 1 payload 位保持 | 数据位压力测试下响应的 tag/PPN 与驱动值一致 |
 
 ## PTWFilter（Frontend ITLB 的 8 项 PTW 待处理过滤器）
+
+当前实现入口：[PTWFilter 独立 testbench](../../../../testbenches/ptwfilter/README.md)。
+FIL 的 Req、响应构造、环境/checker、覆盖和 14 个既有场景均归该 DUT；其真实 smoke 是
+`test_single_request_issue_match_and_release`。当前实现归属不更新下述历史运行的基线或结论。
 
 真实实例：`Frontend.sv:inner_itlbRepeater1`。它不是 L2TLB 内部实例，不能由 L2TLB
 顶层结果代替。

@@ -1,0 +1,231 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "duts": {
+    "mem_misc": {
+      "testbench": "mem_misc",
+      "design_spec": "docs/spec/design/mem_misc.md",
+      "verification_spec": "docs/spec/verification/mem_misc.md",
+      "environment": "testbenches/mem_misc/env.py",
+      "chisel": [
+        "src/main/scala/system/SoC.scala"
+      ],
+      "tests": [
+        "testbenches/mem_misc/tests"
+      ],
+      "smoke": "testbenches/mem_misc/tests/test_mem_misc_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MemMisc",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.nocMisc",
+        "direct_parents": [
+          {
+            "parent": "XSTop",
+            "instance": "nocMisc",
+            "line": 973
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/system/SoC.scala",
+          "line": 507
+        }
+      },
+      "module_id": "M-5d7235e8cc99"
+    },
+    "axi4_deinterleaver": {
+      "testbench": "axi4_deinterleaver",
+      "design_spec": "docs/spec/design/axi4_deinterleaver.md",
+      "verification_spec": "docs/spec/verification/axi4_deinterleaver.md",
+      "environment": "testbenches/axi4_deinterleaver/env.py",
+      "chisel": [
+        "rocket-chip/src/main/scala/amba/axi4/Deinterleaver.scala"
+      ],
+      "tests": [
+        "testbenches/axi4_deinterleaver/tests"
+      ],
+      "smoke": "testbenches/axi4_deinterleaver/tests/test_axi4_deinterleaver_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "AXI4Deinterleaver",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.nocMisc.axi4deint",
+        "direct_parents": [
+          {
+            "parent": "MemMisc",
+            "instance": "axi4deint",
+            "line": 2285
+          }
+        ],
+        "declaration": {
+          "path": "rocket-chip/src/main/scala/amba/axi4/Deinterleaver.scala",
+          "line": 44
+        }
+      },
+      "module_id": "M-a0c5db66d614"
+    },
+    "axi4_id_indexer": {
+      "testbench": "axi4_id_indexer",
+      "design_spec": "docs/spec/design/axi4_id_indexer.md",
+      "verification_spec": "docs/spec/verification/axi4_id_indexer.md",
+      "environment": "testbenches/axi4_id_indexer/env.py",
+      "chisel": [
+        "rocket-chip/src/main/scala/amba/axi4/IdIndexer.scala"
+      ],
+      "tests": [
+        "testbenches/axi4_id_indexer/tests"
+      ],
+      "smoke": "testbenches/axi4_id_indexer/tests/test_axi4_id_indexer_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "AXI4IdIndexer",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.nocMisc.axi4index",
+        "direct_parents": [
+          {
+            "parent": "MemMisc",
+            "instance": "axi4index",
+            "line": 2143
+          }
+        ],
+        "declaration": {
+          "path": "rocket-chip/src/main/scala/amba/axi4/IdIndexer.scala",
+          "line": 59
+        }
+      },
+      "module_id": "M-2689d503d28b"
+    },
+    "tlfifo_fixer": {
+      "testbench": "tlfifo_fixer",
+      "design_spec": "docs/spec/design/tlfifo_fixer.md",
+      "verification_spec": "docs/spec/verification/tlfifo_fixer.md",
+      "environment": "testbenches/tlfifo_fixer/env.py",
+      "chisel": [
+        "rocket-chip/src/main/scala/tilelink/FIFOFixer.scala"
+      ],
+      "tests": [
+        "testbenches/tlfifo_fixer/tests"
+      ],
+      "smoke": "testbenches/tlfifo_fixer/tests/test_tlfifo_fixer_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "TLFIFOFixer",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.nocMisc.fixer",
+        "direct_parents": [
+          {
+            "parent": "MemMisc",
+            "instance": "fixer",
+            "line": 3406
+          }
+        ],
+        "declaration": {
+          "path": "rocket-chip/src/main/scala/tilelink/FIFOFixer.scala",
+          "line": 44
+        }
+      },
+      "module_id": "M-f268119f9cb9"
+    },
+    "tl_fragmenter": {
+      "testbench": "tl_fragmenter",
+      "design_spec": "docs/spec/design/tl_fragmenter.md",
+      "verification_spec": "docs/spec/verification/tl_fragmenter.md",
+      "environment": "testbenches/tl_fragmenter/env.py",
+      "chisel": [
+        "rocket-chip/src/main/scala/tilelink/Fragmenter.scala"
+      ],
+      "tests": [
+        "testbenches/tl_fragmenter/tests"
+      ],
+      "smoke": "testbenches/tl_fragmenter/tests/test_tl_fragmenter_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "TLFragmenter",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.nocMisc.fragmenter",
+        "direct_parents": [
+          {
+            "parent": "MemMisc",
+            "instance": "fragmenter",
+            "line": 4320
+          }
+        ],
+        "declaration": {
+          "path": "rocket-chip/src/main/scala/tilelink/Fragmenter.scala",
+          "line": 84
+        }
+      },
+      "module_id": "M-1967d428442d"
+    },
+    "queue": {
+      "testbench": "queue",
+      "design_spec": "docs/spec/design/queue.md",
+      "verification_spec": "docs/spec/verification/queue.md",
+      "environment": "testbenches/queue/env.py",
+      "chisel": [
+        "rocket-chip/src/main/scala/tilelink/Buffer.scala"
+      ],
+      "tests": [
+        "testbenches/queue/tests"
+      ],
+      "smoke": "testbenches/queue/tests/test_queue_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Queue2_TLBundleA",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.nocMisc.llc_to_peripheral_buffer_0.nodeOut_a_q",
+        "direct_parents": [
+          {
+            "parent": "TLBuffer",
+            "instance": "nodeOut_a_q",
+            "line": 60
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/chisel3/util/Queue.scala",
+          "line": 60
+        },
+        "source_location_kind": "locked-dependency"
+      },
+      "module_id": "M-461801bf715c"
+    },
+    "repeater": {
+      "testbench": "repeater",
+      "design_spec": "docs/spec/design/repeater.md",
+      "verification_spec": "docs/spec/verification/repeater.md",
+      "environment": "testbenches/repeater/env.py",
+      "chisel": [
+        "rocket-chip/src/main/scala/util/Repeater.scala"
+      ],
+      "tests": [
+        "testbenches/repeater/tests"
+      ],
+      "smoke": "testbenches/repeater/tests/test_repeater_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Repeater",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.nocMisc.widget.repeated_repeater",
+        "direct_parents": [
+          {
+            "parent": "TLWidthWidget",
+            "instance": "repeated_repeater",
+            "line": 200
+          }
+        ],
+        "declaration": {
+          "path": "rocket-chip/src/main/scala/util/Repeater.scala",
+          "line": 10
+        }
+      },
+      "module_id": "M-5e7dda61c986"
+    }
+  }
+}

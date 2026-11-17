@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "suite": "prefetch",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "prefetcher": {
+      "top": "PrefetcherWrapper",
+      "export_name": "PrefetcherWrapperDut"
+    },
+    "l1_prefetcher": {
+      "top": "L1Prefetcher",
+      "export_name": "L1PrefetcherDut"
+    },
+    "sms_prefetcher": {
+      "top": "SMSPrefetcher",
+      "export_name": "SmsPrefetcherDut"
+    },
+    "berti_prefetcher": {
+      "top": "BertiPrefetcher",
+      "export_name": "BertiPrefetcherDut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "testbenches"
+  ],
+  "process_isolation": "suite"
+}

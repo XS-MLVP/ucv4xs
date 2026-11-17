@@ -1,5 +1,42 @@
 # MMU Verification Spec
 
+<!-- ucv:work-index:start -->
+
+## DUT 工作索引
+
+由 `ucv docs --write` 从配方与 workspace 生成；每行是一个 DUT 的合同入口。
+当前工程基线：`public-e716c7658`。接入观察不代表验证进度或验收结果。
+
+负责人、当前工作、下一步、阻塞与验收证据维护在对应合同正文或关联任务中；
+未认领不推断负责人；各 DUT 独立实现、选跑与验收。
+
+| DUT / RTL top | 接入观察 | 验证合同 | 工作入口 |
+|---|---|---|---|
+| `tlbfa` / `TLBFA` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/tlbfa/README.md) |
+| `wrapper` / `TlbStorageWrapper` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/wrapper/README.md) |
+| `tlb` / `TLB` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/tlb/README.md) |
+| `l2mq` / `L2TlbMissQueue` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/l2mq/README.md) |
+| `l2pf` / `L2TlbPrefetch` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/l2pf/README.md) |
+| `ptwrepeater` / `PTWRepeaterNB` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/ptwrepeater/README.md) |
+| `ptwfilter` / `PTWFilter` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/ptwfilter/README.md) |
+| `ptw` / `PTW` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/ptw/README.md) |
+| `pmp` / `PMP` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/pmp/README.md) |
+| `bitmap` / `Bitmap` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/bitmap/README.md) |
+| `bitmapcache` / `BitmapCache` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/bitmapcache/README.md) |
+| `ptwcache` / `PtwCache` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/ptwcache/README.md) |
+| `llptw` / `LLPTW` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/llptw/README.md) |
+| `tlbn` / `TLBNonBlock` | 当前 top 缺失；历史资产待重新定界 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/tlbn/README.md) |
+| `l2tlbwrapper` / `L2TLBWrapper` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/l2tlbwrapper/README.md) |
+| `l2tlb` / `L2TLB` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/l2tlb/README.md) |
+| `hptw` / `HPTW` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/hptw/README.md) |
+| `ptwfilter_entry` / `PTWFilterEntry` | 骨架；合同与环境待实现 | [范围、工作与完成条件](ptwfilter_entry.md) | [实现、用例与命令](../../../testbenches/ptwfilter_entry/README.md) |
+| `pmp_checker` / `PMPChecker` | 骨架；合同与环境待实现 | [范围、工作与完成条件](pmp_checker.md) | [实现、用例与命令](../../../testbenches/pmp_checker/README.md) |
+| `dtlb_load` / `TLB_1` | 骨架；合同与环境待实现 | [范围、工作与完成条件](dtlb_load.md) | [实现、用例与命令](../../../testbenches/dtlb_load/README.md) |
+| `dtlb_store` / `TLB_2` | 骨架；合同与环境待实现 | [范围、工作与完成条件](dtlb_store.md) | [实现、用例与命令](../../../testbenches/dtlb_store/README.md) |
+| `dtlb_prefetch` / `TLB_3` | 骨架；合同与环境待实现 | [范围、工作与完成条件](dtlb_prefetch.md) | [实现、用例与命令](../../../testbenches/dtlb_prefetch/README.md) |
+
+<!-- ucv:work-index:end -->
+
 状态：验证侧当前索引。2026-11-11 已完成本轮已审查适配范围的独立验收，**不等于整体 MMU/ISA 认证**。
 
 ## 1. 范围与基线

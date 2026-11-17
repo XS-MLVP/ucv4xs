@@ -1,8 +1,38 @@
 # InstrUncache 验证规格
 
-状态：三个 DUT 的单元可达行为在 `public-a0c2a26cb` / DefaultConfig 上通过双 seed
-回归；整体仍为 **INCOMPLETE**，因为 `FRONTEND-FLUSH-CONNECT` 的 flush 设计决定没有
-owner 签字，也没有 Frontend 级集成验证。本页是当前验证入口。
+<!-- ucv:work-index:start -->
+
+## DUT 工作索引
+
+由 `ucv docs --write` 从配方与 workspace 生成；每行是一个 DUT 的合同入口。
+当前工程基线：`public-e716c7658`。接入观察不代表验证进度或验收结果。
+
+负责人、当前工作、下一步、阻塞与验收证据维护在对应合同正文或关联任务中；
+未认领不推断负责人；各 DUT 独立实现、选跑与验收。
+
+| DUT / RTL top | 接入观察 | 验证合同 | 工作入口 |
+|---|---|---|---|
+| `instr_uncache_entry` / `InstrUncacheEntry` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/instr_uncache_entry/README.md) |
+| `instr_uncache_resp_arbiter` / `Arbiter1_InstrUncacheResp` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/instr_uncache_resp_arbiter/README.md) |
+| `instr_uncache` / `InstrUncache` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/instr_uncache/README.md) |
+
+<!-- ucv:work-index:end -->
+
+## 当前工作（public-e716c7658）
+
+负责人：三个 DUT **待认领**；按 Entry、响应仲裁器、顶层合同分别记录责任人与证据。
+当前工作：重新核对单 outstanding、请求/响应与 WFI 合同及当前裁剪端口，随后按 DUT
+适配环境、建立新基线原生资源并复验。工具身份和缺失闭包见[全仓状态](../../../../../../docs/status.md)。
+
+阻塞：当前基线硬件验收证据尚无；[FRONTEND-FLUSH-CONNECT](../../bugs/open/FRONTEND-FLUSH-CONNECT.md)
+继续承接设计确认缺口。其 Frontend 集成验证任务链接
+[frontend_top/frontend 合同](../../../../frontend_top/docs/spec/verification/frontend.md)，
+保留单一问题记录，完成本包单元用例不自动关闭该问题。
+
+## 历史验证范围（public-a0c2a26cb）
+
+三个 DUT 的单元可达行为曾在 `public-a0c2a26cb` / DefaultConfig 上通过双 seed 回归；
+当时整体仍为 **INCOMPLETE**，因为 flush 设计决定没有 owner 签字，也没有 Frontend 集成验证。
 
 ## 范围与假设
 
@@ -14,7 +44,7 @@ owner 签字，也没有 Frontend 级集成验证。本页是当前验证入口�
 - 功能要求与实现关联见[功能点](../design/functional-points.md)和[设计合同](../design/contracts.md)。
   工程根的 `verification_plan.json` 已删除，历史报告中的功能点统计保持原运行含义。
 
-## 当前结果
+## 历史结果（2026-11-08）
 
 | 项 | 结果 |
 |---|---|

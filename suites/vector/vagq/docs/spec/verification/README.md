@@ -1,5 +1,32 @@
 # VAGQ Verification spec
 
+<!-- ucv:work-index:start -->
+
+## DUT 工作索引
+
+由 `ucv docs --write` 从配方与 workspace 生成；每行是一个 DUT 的合同入口。
+当前工程基线：`internal-d4566d58a`。接入观察不代表验证进度或验收结果。
+
+负责人、当前工作、下一步、阻塞与验收证据维护在对应合同正文或关联任务中；
+未认领不推断负责人；各 DUT 独立实现、选跑与验收。
+
+| DUT / RTL top | 接入观察 | 验证合同 | 工作入口 |
+|---|---|---|---|
+| `AddrGen` / `AddrGen` | 未登记接入观察；查合同与运行证据 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/addrgen/README.md) |
+| `MaskGen` / `MaskGen` | 未登记接入观察；查合同与运行证据 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/maskgen/README.md) |
+| `MergeCtrl` / `MergeCtrl` | 未登记接入观察；查合同与运行证据 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/merge/README.md) |
+| `NewPipelineConnectPipe` / `NewPipelineConnectPipe` | 未登记接入观察；查合同与运行证据 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/NewPipelineConnectPipe/README.md) |
+| `NewPipelineConnectPipe_3` / `NewPipelineConnectPipe_3` | 未登记接入观察；查合同与运行证据 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/NewPipelineConnectPipe_3/README.md) |
+| `OrderedPermitCtrl` / `OrderedPermitCtrl` | 未登记接入观察；查合同与运行证据 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/ordered/README.md) |
+| `SplitCtrl` / `SplitCtrl` | 未登记接入观察；查合同与运行证据 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/split/README.md) |
+| `StoreDataCtrl` / `StoreDataCtrl` | 未登记接入观察；查合同与运行证据 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/storedata/README.md) |
+| `VAGQ` / `VAGQ` | 未登记接入观察；查合同与运行证据 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/vagq/README.md) |
+| `VAGQArbiter` / `VAGQArbiter` | 未登记接入观察；查合同与运行证据 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/arbiter/README.md) |
+| `VAGQEntryTable` / `VAGQEntryTable` | 未登记接入观察；查合同与运行证据 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/entrytable/README.md) |
+| `VAGQManager` / `VAGQManager` | 未登记接入观察；查合同与运行证据 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/manager/README.md) |
+
+<!-- ucv:work-index:end -->
+
 状态：**现有验证资产的统一入口，完整性待审查**。本页是 12 个 DUT 的**共享逐 DUT
 验证资料入口**：`workspace.json` 对每个 VAGQ DUT 的 `verification_spec` 都指向本页，
 §2.1 按 DUT 链接已有公开参考模型、模型/协议测试和独立预期依据。这些链接指向验证实现与
@@ -44,8 +71,8 @@ RVV/ISA 与公开协议为准。VAGQ 适用 internal `d4566d58a5ace1f6a5df4409b3
 | `MergeCtrl` | [testbenches/merge/model.py](../../../testbenches/merge/model.py) | [testbenches/merge/tests](../../../testbenches/merge/tests) | old vd 合并、ack/nack/exception |
 | `StoreDataCtrl` | [testbenches/storedata/model.py](../../../testbenches/storedata/model.py) | [testbenches/storedata/tests](../../../testbenches/storedata/tests) | 两槽 store data、SQ 偏移、EEW |
 | `OrderedPermitCtrl` | [testbenches/ordered/model.py](../../../testbenches/ordered/model.py) | [testbenches/ordered/tests](../../../testbenches/ordered/tests) | per-entry permit 与 handoff |
-| `NewPipelineConnectPipe` | [testbenches/pipeline/model.py](../../../testbenches/pipeline/model.py)、[testbenches/pipeline/env/specs.py](../../../testbenches/pipeline/env/specs.py)（`PIPE1`） | [testbenches/pipeline/tests](../../../testbenches/pipeline/tests) | 完整 LSU metadata payload |
-| `NewPipelineConnectPipe_3` | [testbenches/pipeline/model.py](../../../testbenches/pipeline/model.py)、[testbenches/pipeline/env/specs.py](../../../testbenches/pipeline/env/specs.py)（`PIPE3`） | [testbenches/pipeline/tests](../../../testbenches/pipeline/tests) | 紧凑 `issueMask` payload；生成名映射见 Design spec |
+| `NewPipelineConnectPipe` | [model.py](../../../testbenches/NewPipelineConnectPipe/model.py)、[env/specs.py](../../../testbenches/NewPipelineConnectPipe/env/specs.py)（`PIPE1`） | [tests](../../../testbenches/NewPipelineConnectPipe/tests) | 完整 LSU metadata payload；独立 fixture `pipeline_env` |
+| `NewPipelineConnectPipe_3` | [model.py](../../../testbenches/NewPipelineConnectPipe_3/model.py)、[env/specs.py](../../../testbenches/NewPipelineConnectPipe_3/env/specs.py)（`PIPE3`） | [tests](../../../testbenches/NewPipelineConnectPipe_3/tests) | 紧凑 `issueMask` payload；独立 fixture `pipeline3_env`；生成名映射见 Design spec |
 
 命名形如 `testbenches/<dut>/tests/test_model.py`、`test_reference.py`、`test_encoding.py` 的文件
 承载纯模型/参考检查；`testbenches/<dut>/tests/testcase/` 承载真实 native DUT 协议。模型 PASS 不
@@ -110,7 +137,8 @@ release ready 当作本拍 `beat` 传入会与快照携带的当前证据冲突�
   [env/waveform.py](../../../testbenches/vagq/env/waveform.py)；Arbiter 生成 payload
   leaf/宽度由 [env/schema.py](../../../testbenches/arbiter/env/schema.py) 提供。
 - 纯编码/模型/checker 自检保留物理字段断言时显式标记 `selftest`：
-  `pipeline/tests/test_encoding.py`、`arbiter/tests/test_model.py`、`vagq/tests/test_model.py`。
+  `NewPipelineConnectPipe/tests/test_encoding.py`、`NewPipelineConnectPipe_3/tests/test_encoding.py`、
+  `arbiter/tests/test_model.py`、`vagq/tests/test_model.py`。
   它们不贡献硬件功能 credit。编码自检使用独立物理期望常量（`P.p_in_bits_pc` 等），
   不从被测 `Spec.fields` 推导期望，交换 pc/vaddr wire 时必须失败。
 - 结构随机扫描的引脚级机制集中在
@@ -119,6 +147,28 @@ release ready 当作本拍 `beat` 传入会与快照携带的当前证据冲突�
   EntryTable、OrderedPermitCtrl 的合法生命周期扫描仍走各自公开 env，并保持非自检分类。
 - 组件环境提供 `assert_clean()`/`assert_coverage()`（Manager 另有 `checked_cycles`、
   `checked_count`、`override_comparison()`），功能用例不再直接查询 checker 内部状态。
+
+### 2.4 单 DUT 启动与身份合同
+
+- 工程根显式注册各 DUT 的 fixtures；注册 Arbiter、EntryTable、Merge、Split、StoreData、
+  VAGQ fixture 时不导入会读取 `signals.json` 的环境，实际请求 fixture 时才加载。
+  单独收集各 DUT 测试根只需该 DUT 的元数据；联合场景的额外环境在执行场景时加载。
+- Arbiter/VAGQ 的环境装配延迟导入模型，避免模型单文件选跑依赖其它 fixture 的导入顺序；
+  离线 campaign 工具只在 `main()` 中导入 VAGQ 场景，借用其 JSON 写入函数不会加载顶层元数据。
+- [shared/env/native.py](../../../testbenches/shared/env/native.py) 的 `open_dut(module, ...)`
+  在导入 native binding 前校验该 module 的 RTL 收据、有效基线与逐文件哈希；缺失、空文件
+  清单或哈希/基线错误必须失败。runtime 与 binding 的身份检查仍在原加载链上。
+- `verify_rtl(*modules)` 支持显式联合检查，无参数是显式全工程检查。已有
+  [MaskGen→SplitCtrl 联合审计](../../../testbenches/vagq/tests/test_reference_qualified_rtl_review.py)
+  在打开第一个 DUT 前检查两个参与者，每次 `open_dut` 仍检查自身身份。
+- 两个 pipeline 各保留原 payload 位宽、编码映射、before/after checker、覆盖组和协议步骤，
+  原 10 个节点分配为每 DUT 5 个；原 fixture 名称与参数 ID 保留。各自 `Beat`/`State` 的
+  默认 payload 专属于本 DUT；原 native 场景显式按对应 spec 构造 payload 的行为保持一致。
+- [shared/tests/test_dut_startup.py](../../../testbenches/shared/tests/test_dut_startup.py) 是新增
+  `selftest`：子进程只准备选中 DUT 的合成元数据，拦截其它 DUT 的读取与真实 native 访问；
+  通过合成收据验证单 DUT、联合 DUT、全工程检查及错误身份拒绝。该控制不提供硬件功能或
+  当前工具锁定环境的通过结论。迁移收集对账与离线结果位于
+  `results/per-dut-migration-20261117/vagq/`；原历史日期、失败与未验证范围继续保留。
 
 ## 3. 场景矩阵与覆盖计划
 

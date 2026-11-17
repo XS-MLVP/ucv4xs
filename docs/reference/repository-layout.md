@@ -10,8 +10,12 @@
 ucv4xs/
 ├── src/ucv/                    # 公共编排、配置、构建、运行与报告
 ├── suites/                     # 验证工程；不是额外的 *verify 外壳
-│   ├── frontend/{bpu,ftq,icache,ifu,ibuffer,instr_uncache}/
-│   ├── memblock/{lsq,dcache,mmu,sbuffer,lsu}/
+│   ├── frontend/{bpu,ftq,ifu,ibuffer,instr_uncache,icache,frontend_top}/
+│   ├── backend/{ctrl,int_region,fp_region,vec_region}/
+│   ├── memblock/{lsq,dcache,mmu,sbuffer,lsu,prefetch,frontend_bridge}/
+│   ├── cache/{l2,llc}/
+│   ├── bus/{ncb,peripheral}/
+│   ├── soc/{aia,plic,debug,timer,clock_reset,mbist}/
 │   └── vector/vagq/
 ├── baselines/                  # 完整命名基线和 RTL release 锁
 ├── dependencies/               # Python/原生工具版本与工具补丁
@@ -19,7 +23,7 @@ ucv4xs/
 ├── tests/                      # 公共 ucv 与工具补丁的自检
 ├── skills/                     # 项目工作流、验证方法与审查规范
 ├── docs/                       # 使用文档、当前状态、经验和来源索引
-├── ucv.json                    # 根默认基线、工程注册、public/full 集合
+├── ucv.json                    # 根默认基线、工程注册与集合
 ├── pyproject.toml              # 发行包、依赖 Python 版本与 ucv 命令入口
 ├── ucv.local.example.json      # 本地配置示例，不是当前机器配置
 ├── README.md                   # 项目入口
@@ -32,7 +36,7 @@ ucv4xs/
 
 ## 工程内
 
-下列 `<testbench>` 是实现包名，通常与 DUT 同名；多个参数化 DUT 可显式共用实现。
+下列 `<testbench>` 是每个 DUT 独占的实现包名，初始化时与 DUT 同名；同族变体各有独立实现与测试根。
 允许的职责按需创建，不要求所有 DUT 都有六个实体目录。
 
 ```text

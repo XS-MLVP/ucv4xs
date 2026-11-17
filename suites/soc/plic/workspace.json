@@ -1,0 +1,501 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "duts": {
+    "plic": {
+      "testbench": "plic",
+      "design_spec": "docs/spec/design/plic.md",
+      "verification_spec": "docs/spec/verification/plic.md",
+      "environment": "testbenches/plic/env.py",
+      "chisel": [
+        "rocket-chip/src/main/scala/devices/tilelink/Plic.scala"
+      ],
+      "tests": [
+        "testbenches/plic/tests"
+      ],
+      "smoke": "testbenches/plic/tests/test_plic_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "TLPLIC",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.nocMisc.plic",
+        "direct_parents": [
+          {
+            "parent": "MemMisc",
+            "instance": "plic",
+            "line": 3889
+          }
+        ],
+        "declaration": {
+          "path": "rocket-chip/src/main/scala/devices/tilelink/Plic.scala",
+          "line": 127
+        }
+      },
+      "module_id": "M-d9daa0c80f94"
+    },
+    "plic_source": {
+      "testbench": "plic_source",
+      "design_spec": "docs/spec/design/plic_source.md",
+      "verification_spec": "docs/spec/verification/plic_source.md",
+      "environment": "testbenches/plic_source/env.py",
+      "chisel": [
+        "src/main/scala/system/SoC.scala"
+      ],
+      "tests": [
+        "testbenches/plic_source/tests"
+      ],
+      "smoke": "testbenches/plic_source/tests/test_lazy_module_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "LazyModule",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.nocMisc.plicSource",
+        "direct_parents": [
+          {
+            "parent": "MemMisc",
+            "instance": "plicSource",
+            "line": 3974
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/system/SoC.scala",
+          "line": 455
+        }
+      },
+      "module_id": "M-8e7ad1db4150"
+    },
+    "plic_fan_in": {
+      "testbench": "plic_fan_in",
+      "design_spec": "docs/spec/design/plic_fan_in.md",
+      "verification_spec": "docs/spec/verification/plic_fan_in.md",
+      "environment": "testbenches/plic_fan_in/env.py",
+      "chisel": [
+        "rocket-chip/src/main/scala/devices/tilelink/Plic.scala"
+      ],
+      "tests": [
+        "testbenches/plic_fan_in/tests"
+      ],
+      "smoke": "testbenches/plic_fan_in/tests/test_plic_fan_in_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "PLICFanIn",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.nocMisc.plic.fanin",
+        "direct_parents": [
+          {
+            "parent": "TLPLIC",
+            "instance": "fanin",
+            "line": 2042
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "fanin_1",
+            "line": 2121
+          }
+        ],
+        "declaration": {
+          "path": "rocket-chip/src/main/scala/devices/tilelink/Plic.scala",
+          "line": 332
+        }
+      },
+      "module_id": "M-7254cb430f31"
+    },
+    "level_gateway": {
+      "testbench": "level_gateway",
+      "design_spec": "docs/spec/design/level_gateway.md",
+      "verification_spec": "docs/spec/verification/level_gateway.md",
+      "environment": "testbenches/level_gateway/env.py",
+      "chisel": [
+        "rocket-chip/src/main/scala/devices/tilelink/Plic.scala"
+      ],
+      "tests": [
+        "testbenches/level_gateway/tests"
+      ],
+      "smoke": "testbenches/level_gateway/tests/test_level_gateway_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "LevelGateway",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.nocMisc.plic.gateways_gateway",
+        "direct_parents": [
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway",
+            "line": 1522
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_1",
+            "line": 1530
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_2",
+            "line": 1538
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_3",
+            "line": 1546
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_4",
+            "line": 1554
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_5",
+            "line": 1562
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_6",
+            "line": 1570
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_7",
+            "line": 1578
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_8",
+            "line": 1586
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_9",
+            "line": 1594
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_10",
+            "line": 1602
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_11",
+            "line": 1610
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_12",
+            "line": 1618
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_13",
+            "line": 1626
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_14",
+            "line": 1634
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_15",
+            "line": 1642
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_16",
+            "line": 1650
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_17",
+            "line": 1658
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_18",
+            "line": 1666
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_19",
+            "line": 1674
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_20",
+            "line": 1682
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_21",
+            "line": 1690
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_22",
+            "line": 1698
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_23",
+            "line": 1706
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_24",
+            "line": 1714
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_25",
+            "line": 1722
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_26",
+            "line": 1730
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_27",
+            "line": 1738
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_28",
+            "line": 1746
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_29",
+            "line": 1754
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_30",
+            "line": 1762
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_31",
+            "line": 1770
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_32",
+            "line": 1778
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_33",
+            "line": 1786
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_34",
+            "line": 1794
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_35",
+            "line": 1802
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_36",
+            "line": 1810
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_37",
+            "line": 1818
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_38",
+            "line": 1826
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_39",
+            "line": 1834
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_40",
+            "line": 1842
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_41",
+            "line": 1850
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_42",
+            "line": 1858
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_43",
+            "line": 1866
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_44",
+            "line": 1874
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_45",
+            "line": 1882
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_46",
+            "line": 1890
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_47",
+            "line": 1898
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_48",
+            "line": 1906
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_49",
+            "line": 1914
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_50",
+            "line": 1922
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_51",
+            "line": 1930
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_52",
+            "line": 1938
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_53",
+            "line": 1946
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_54",
+            "line": 1954
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_55",
+            "line": 1962
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_56",
+            "line": 1970
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_57",
+            "line": 1978
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_58",
+            "line": 1986
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_59",
+            "line": 1994
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_60",
+            "line": 2002
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_61",
+            "line": 2010
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_62",
+            "line": 2018
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_63",
+            "line": 2026
+          },
+          {
+            "parent": "TLPLIC",
+            "instance": "gateways_gateway_64",
+            "line": 2034
+          }
+        ],
+        "declaration": {
+          "path": "rocket-chip/src/main/scala/devices/tilelink/Plic.scala",
+          "line": 26
+        }
+      },
+      "module_id": "M-40d6b64db132"
+    },
+    "int_buffer": {
+      "testbench": "int_buffer",
+      "design_spec": "docs/spec/design/int_buffer.md",
+      "verification_spec": "docs/spec/verification/int_buffer.md",
+      "environment": "testbenches/int_buffer/env.py",
+      "chisel": [
+        "utility/src/main/scala/utility/IntBuffer.scala"
+      ],
+      "tests": [
+        "testbenches/int_buffer/tests"
+      ],
+      "smoke": "testbenches/int_buffer/tests/test_int_buffer_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IntBuffer",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.intBuffer",
+        "direct_parents": [
+          {
+            "parent": "XSTop",
+            "instance": "intBuffer",
+            "line": 2045
+          },
+          {
+            "parent": "XSTile",
+            "instance": "intBuffer_2",
+            "line": 2163
+          },
+          {
+            "parent": "L2Top",
+            "instance": "inner_intBuffer",
+            "line": 1871
+          }
+        ],
+        "declaration": {
+          "path": "utility/src/main/scala/utility/IntBuffer.scala",
+          "line": 13
+        }
+      },
+      "module_id": "M-16ca140ffe10"
+    }
+  }
+}

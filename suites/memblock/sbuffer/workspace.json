@@ -19,7 +19,26 @@
       "tests": [
         "testbenches/sbuffer_data/tests"
       ],
-      "environment": "testbenches/sbuffer_data/env/__init__.py"
+      "environment": "testbenches/sbuffer_data/env/__init__.py",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "SbufferData",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_sbuffer.dataModule",
+        "direct_parents": [
+          {
+            "parent": "Sbuffer",
+            "instance": "dataModule",
+            "line": 16940
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/sbuffer/Sbuffer.scala",
+          "line": 97
+        }
+      },
+      "module_id": "M-0ba2bfdd9f18"
     },
     "sbuffer": {
       "design_spec": [
@@ -38,7 +57,26 @@
       "tests": [
         "testbenches/sbuffer/tests"
       ],
-      "environment": "testbenches/sbuffer/env/__init__.py"
+      "environment": "testbenches/sbuffer/env/__init__.py",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Sbuffer",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_sbuffer",
+        "direct_parents": [
+          {
+            "parent": "MemBlock",
+            "instance": "inner_sbuffer",
+            "line": 16312
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/sbuffer/Sbuffer.scala",
+          "line": 191
+        }
+      },
+      "module_id": "M-d349aa1c1c32"
     }
   }
 }

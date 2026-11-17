@@ -35,7 +35,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--seed", type=int, default=1)
-    parser.add_argument("selection", nargs="*", default=["testbenches"])
+    parser.add_argument("selection", nargs="*", default=[f"testbenches/{name}/tests" for name in DUTS])
     args = parser.parse_args()
     output = args.output.resolve()
     if output.exists():

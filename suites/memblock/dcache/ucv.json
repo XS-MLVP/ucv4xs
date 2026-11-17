@@ -55,6 +55,10 @@
     "dcache_wrapper": {
       "top": "DCacheWrapper",
       "export_name": "DcacheWrapperDut"
+    },
+    "uncache": {
+      "top": "Uncache",
+      "export_name": "UncacheDut"
     }
   },
   "pytest_root": ".",

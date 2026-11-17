@@ -1,0 +1,1316 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "duts": {
+    "request_arb": {
+      "testbench": "request_arb",
+      "design_spec": "docs/spec/design/request_arb.md",
+      "verification_spec": "docs/spec/verification/request_arb.md",
+      "environment": "testbenches/request_arb/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/RequestArb.scala"
+      ],
+      "tests": [
+        "testbenches/request_arb/tests"
+      ],
+      "smoke": "testbenches/request_arb/tests/test_request_arb_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "RequestArb",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.slices_0.reqArb",
+        "direct_parents": [
+          {
+            "parent": "Slice_3",
+            "instance": "reqArb",
+            "line": 4784
+          },
+          {
+            "parent": "Slice_2",
+            "instance": "reqArb",
+            "line": 4784
+          },
+          {
+            "parent": "Slice",
+            "instance": "reqArb",
+            "line": 4784
+          },
+          {
+            "parent": "Slice_1",
+            "instance": "reqArb",
+            "line": 4784
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/RequestArb.scala",
+          "line": 29
+        }
+      },
+      "module_id": "M-c010adb45e13"
+    },
+    "mshr_ctl": {
+      "testbench": "mshr_ctl",
+      "design_spec": "docs/spec/design/mshr_ctl.md",
+      "verification_spec": "docs/spec/verification/mshr_ctl.md",
+      "environment": "testbenches/mshr_ctl/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/MSHRCtl.scala"
+      ],
+      "tests": [
+        "testbenches/mshr_ctl/tests"
+      ],
+      "smoke": "testbenches/mshr_ctl/tests/test_mshr_ctl_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MSHRCtl",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.slices_0.mshrCtl",
+        "direct_parents": [
+          {
+            "parent": "Slice_2",
+            "instance": "mshrCtl",
+            "line": 8610
+          },
+          {
+            "parent": "Slice",
+            "instance": "mshrCtl",
+            "line": 8610
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/MSHRCtl.scala",
+          "line": 32
+        }
+      },
+      "module_id": "M-10306e133a94"
+    },
+    "directory": {
+      "testbench": "directory",
+      "design_spec": "docs/spec/design/directory.md",
+      "verification_spec": "docs/spec/verification/directory.md",
+      "environment": "testbenches/directory/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/Directory.scala"
+      ],
+      "tests": [
+        "testbenches/directory/tests"
+      ],
+      "smoke": "testbenches/directory/tests/test_directory_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Directory",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.slices_0.directory",
+        "direct_parents": [
+          {
+            "parent": "Slice",
+            "instance": "directory",
+            "line": 3793
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/Directory.scala",
+          "line": 133
+        }
+      },
+      "module_id": "M-1318d7bf94fa"
+    },
+    "rxsnp": {
+      "testbench": "rxsnp",
+      "design_spec": "docs/spec/design/rxsnp.md",
+      "verification_spec": "docs/spec/verification/rxsnp.md",
+      "environment": "testbenches/rxsnp/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/RXSNP.scala"
+      ],
+      "tests": [
+        "testbenches/rxsnp/tests"
+      ],
+      "smoke": "testbenches/rxsnp/tests/test_rxsnp_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "RXSNP",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.slices_0.rxsnp",
+        "direct_parents": [
+          {
+            "parent": "Slice_3",
+            "instance": "rxsnp",
+            "line": 3168
+          },
+          {
+            "parent": "Slice_2",
+            "instance": "rxsnp",
+            "line": 3168
+          },
+          {
+            "parent": "Slice",
+            "instance": "rxsnp",
+            "line": 3168
+          },
+          {
+            "parent": "Slice_1",
+            "instance": "rxsnp",
+            "line": 3168
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/RXSNP.scala",
+          "line": 29
+        }
+      },
+      "module_id": "M-e5acc80ae226"
+    },
+    "request_buffer": {
+      "testbench": "request_buffer",
+      "design_spec": "docs/spec/design/request_buffer.md",
+      "verification_spec": "docs/spec/verification/request_buffer.md",
+      "environment": "testbenches/request_buffer/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/RequestBuffer.scala"
+      ],
+      "tests": [
+        "testbenches/request_buffer/tests"
+      ],
+      "smoke": "testbenches/request_buffer/tests/test_request_buffer_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "RequestBuffer",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.slices_0.reqBuf",
+        "direct_parents": [
+          {
+            "parent": "Slice_3",
+            "instance": "reqBuf",
+            "line": 8210
+          },
+          {
+            "parent": "Slice_2",
+            "instance": "reqBuf",
+            "line": 8210
+          },
+          {
+            "parent": "Slice",
+            "instance": "reqBuf",
+            "line": 8210
+          },
+          {
+            "parent": "Slice_1",
+            "instance": "reqBuf",
+            "line": 8210
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/RequestBuffer.scala",
+          "line": 72
+        }
+      },
+      "module_id": "M-208ae61adffb"
+    },
+    "arbiter": {
+      "testbench": "arbiter",
+      "design_spec": "docs/spec/design/arbiter.md",
+      "verification_spec": "docs/spec/verification/arbiter.md",
+      "environment": "testbenches/arbiter/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/MMIOBridge.scala"
+      ],
+      "tests": [
+        "testbenches/arbiter/tests"
+      ],
+      "smoke": "testbenches/arbiter/tests/test_arbiter_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Arbiter16_CHIDAT",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.mmioBridge.mmio_txdat_arb",
+        "direct_parents": [
+          {
+            "parent": "MMIOBridge",
+            "instance": "mmio_txdat_arb",
+            "line": 2226
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/chisel3/util/Arbiter.scala",
+          "line": 149
+        },
+        "source_location_kind": "locked-dependency"
+      },
+      "module_id": "M-073bd47f3791"
+    },
+    "sink_c": {
+      "testbench": "sink_c",
+      "design_spec": "docs/spec/design/sink_c.md",
+      "verification_spec": "docs/spec/verification/sink_c.md",
+      "environment": "testbenches/sink_c/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/SinkC.scala"
+      ],
+      "tests": [
+        "testbenches/sink_c/tests"
+      ],
+      "smoke": "testbenches/sink_c/tests/test_sink_c_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "SinkC",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.slices_0.sinkC",
+        "direct_parents": [
+          {
+            "parent": "Slice_3",
+            "instance": "sinkC",
+            "line": 2287
+          },
+          {
+            "parent": "Slice_2",
+            "instance": "sinkC",
+            "line": 2287
+          },
+          {
+            "parent": "Slice",
+            "instance": "sinkC",
+            "line": 2287
+          },
+          {
+            "parent": "Slice_1",
+            "instance": "sinkC",
+            "line": 2287
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/SinkC.scala",
+          "line": 36
+        }
+      },
+      "module_id": "M-ea8e9bd30415"
+    },
+    "grant_buffer": {
+      "testbench": "grant_buffer",
+      "design_spec": "docs/spec/design/grant_buffer.md",
+      "verification_spec": "docs/spec/verification/grant_buffer.md",
+      "environment": "testbenches/grant_buffer/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/GrantBuffer.scala"
+      ],
+      "tests": [
+        "testbenches/grant_buffer/tests"
+      ],
+      "smoke": "testbenches/grant_buffer/tests/test_grant_buffer_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "GrantBuffer",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.slices_0.grantBuf",
+        "direct_parents": [
+          {
+            "parent": "Slice_3",
+            "instance": "grantBuf",
+            "line": 2504
+          },
+          {
+            "parent": "Slice_2",
+            "instance": "grantBuf",
+            "line": 2504
+          },
+          {
+            "parent": "Slice",
+            "instance": "grantBuf",
+            "line": 2504
+          },
+          {
+            "parent": "Slice_1",
+            "instance": "grantBuf",
+            "line": 2504
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/GrantBuffer.scala",
+          "line": 59
+        }
+      },
+      "module_id": "M-e00805948183"
+    },
+    "p_best_offset_prefetch": {
+      "testbench": "p_best_offset_prefetch",
+      "design_spec": "docs/spec/design/p_best_offset_prefetch.md",
+      "verification_spec": "docs/spec/verification/p_best_offset_prefetch.md",
+      "environment": "testbenches/p_best_offset_prefetch/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/prefetch/BestOffsetPrefetch.scala"
+      ],
+      "tests": [
+        "testbenches/p_best_offset_prefetch/tests"
+      ],
+      "smoke": "testbenches/p_best_offset_prefetch/tests/test_p_best_offset_prefetch_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "PBestOffsetPrefetch",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.prefetcher.pbop",
+        "direct_parents": [
+          {
+            "parent": "Prefetcher",
+            "instance": "pbop",
+            "line": 753
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/prefetch/BestOffsetPrefetch.scala",
+          "line": 1209
+        }
+      },
+      "module_id": "M-8af4b636f75e"
+    },
+    "txdat": {
+      "testbench": "txdat",
+      "design_spec": "docs/spec/design/txdat.md",
+      "verification_spec": "docs/spec/verification/txdat.md",
+      "environment": "testbenches/txdat/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/TXDAT.scala"
+      ],
+      "tests": [
+        "testbenches/txdat/tests"
+      ],
+      "smoke": "testbenches/txdat/tests/test_txdat_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "TXDAT",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.slices_0.txdat",
+        "direct_parents": [
+          {
+            "parent": "Slice_3",
+            "instance": "txdat",
+            "line": 2878
+          },
+          {
+            "parent": "Slice_2",
+            "instance": "txdat",
+            "line": 2878
+          },
+          {
+            "parent": "Slice",
+            "instance": "txdat",
+            "line": 2878
+          },
+          {
+            "parent": "Slice_1",
+            "instance": "txdat",
+            "line": 2878
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/TXDAT.scala",
+          "line": 34
+        }
+      },
+      "module_id": "M-6b6702798ad2"
+    },
+    "cdp_prefetcher": {
+      "testbench": "cdp_prefetcher",
+      "design_spec": "docs/spec/design/cdp_prefetcher.md",
+      "verification_spec": "docs/spec/verification/cdp_prefetcher.md",
+      "environment": "testbenches/cdp_prefetcher/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/prefetch/CDP.scala"
+      ],
+      "tests": [
+        "testbenches/cdp_prefetcher/tests"
+      ],
+      "smoke": "testbenches/cdp_prefetcher/tests/test_cdp_prefetcher_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "CDPPrefetcher",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.prefetcher.cdp",
+        "direct_parents": [
+          {
+            "parent": "Prefetcher",
+            "instance": "cdp",
+            "line": 1120
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/prefetch/CDP.scala",
+          "line": 1319
+        }
+      },
+      "module_id": "M-90c00edbb784"
+    },
+    "v_best_offset_prefetch": {
+      "testbench": "v_best_offset_prefetch",
+      "design_spec": "docs/spec/design/v_best_offset_prefetch.md",
+      "verification_spec": "docs/spec/verification/v_best_offset_prefetch.md",
+      "environment": "testbenches/v_best_offset_prefetch/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/prefetch/BestOffsetPrefetch.scala"
+      ],
+      "tests": [
+        "testbenches/v_best_offset_prefetch/tests"
+      ],
+      "smoke": "testbenches/v_best_offset_prefetch/tests/test_v_best_offset_prefetch_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "VBestOffsetPrefetch",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.prefetcher.vbop",
+        "direct_parents": [
+          {
+            "parent": "Prefetcher",
+            "instance": "vbop",
+            "line": 974
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/prefetch/BestOffsetPrefetch.scala",
+          "line": 1101
+        }
+      },
+      "module_id": "M-4d8ce75cc034"
+    },
+    "data_storage": {
+      "testbench": "data_storage",
+      "design_spec": "docs/spec/design/data_storage.md",
+      "verification_spec": "docs/spec/verification/data_storage.md",
+      "environment": "testbenches/data_storage/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/DataStorage.scala"
+      ],
+      "tests": [
+        "testbenches/data_storage/tests"
+      ],
+      "smoke": "testbenches/data_storage/tests/test_data_storage_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "DataStorage",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.slices_0.dataStorage",
+        "direct_parents": [
+          {
+            "parent": "Slice",
+            "instance": "dataStorage",
+            "line": 4675
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/DataStorage.scala",
+          "line": 50
+        }
+      },
+      "module_id": "M-a3019d1e8b48"
+    },
+    "txreq": {
+      "testbench": "txreq",
+      "design_spec": "docs/spec/design/txreq.md",
+      "verification_spec": "docs/spec/verification/txreq.md",
+      "environment": "testbenches/txreq/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/TXREQ.scala"
+      ],
+      "tests": [
+        "testbenches/txreq/tests"
+      ],
+      "smoke": "testbenches/txreq/tests/test_txreq_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "TXREQ",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.slices_0.txreq",
+        "direct_parents": [
+          {
+            "parent": "Slice_3",
+            "instance": "txreq",
+            "line": 2800
+          },
+          {
+            "parent": "Slice_2",
+            "instance": "txreq",
+            "line": 2800
+          },
+          {
+            "parent": "Slice",
+            "instance": "txreq",
+            "line": 2800
+          },
+          {
+            "parent": "Slice_1",
+            "instance": "txreq",
+            "line": 2800
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/TXREQ.scala",
+          "line": 33
+        }
+      },
+      "module_id": "M-e0b23a0966c2"
+    },
+    "mmio_bridge_entry": {
+      "testbench": "mmio_bridge_entry",
+      "design_spec": "docs/spec/design/mmio_bridge_entry.md",
+      "verification_spec": "docs/spec/verification/mmio_bridge_entry.md",
+      "environment": "testbenches/mmio_bridge_entry/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/MMIOBridge.scala"
+      ],
+      "tests": [
+        "testbenches/mmio_bridge_entry/tests"
+      ],
+      "smoke": "testbenches/mmio_bridge_entry/tests/test_mmio_bridge_entry_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MMIOBridgeEntry",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.mmioBridge.entries_0",
+        "direct_parents": [
+          {
+            "parent": "MMIOBridge",
+            "instance": "entries_0",
+            "line": 860
+          },
+          {
+            "parent": "MMIOBridge",
+            "instance": "entries_1",
+            "line": 926
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/MMIOBridge.scala",
+          "line": 69
+        }
+      },
+      "module_id": "M-07226b6d6309"
+    },
+    "txrsp": {
+      "testbench": "txrsp",
+      "design_spec": "docs/spec/design/txrsp.md",
+      "verification_spec": "docs/spec/verification/txrsp.md",
+      "environment": "testbenches/txrsp/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/TXRSP.scala"
+      ],
+      "tests": [
+        "testbenches/txrsp/tests"
+      ],
+      "smoke": "testbenches/txrsp/tests/test_txrsp_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "TXRSP",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.slices_0.txrsp",
+        "direct_parents": [
+          {
+            "parent": "Slice_3",
+            "instance": "txrsp",
+            "line": 3115
+          },
+          {
+            "parent": "Slice_2",
+            "instance": "txrsp",
+            "line": 3115
+          },
+          {
+            "parent": "Slice",
+            "instance": "txrsp",
+            "line": 3115
+          },
+          {
+            "parent": "Slice_1",
+            "instance": "txrsp",
+            "line": 3115
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/TXRSP.scala",
+          "line": 33
+        }
+      },
+      "module_id": "M-799f65c77553"
+    },
+    "spec_miss_a_buffer": {
+      "testbench": "spec_miss_a_buffer",
+      "design_spec": "docs/spec/design/spec_miss_a_buffer.md",
+      "verification_spec": "docs/spec/verification/spec_miss_a_buffer.md",
+      "environment": "testbenches/spec_miss_a_buffer/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/SpecMissABuffer.scala"
+      ],
+      "tests": [
+        "testbenches/spec_miss_a_buffer/tests"
+      ],
+      "smoke": "testbenches/spec_miss_a_buffer/tests/test_spec_miss_a_buffer_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "SpecMissABuffer",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l1_l2_fabric.buffer",
+        "direct_parents": [
+          {
+            "parent": "CustomL1L2Fabric",
+            "instance": "buffer",
+            "line": 1638
+          },
+          {
+            "parent": "CustomL1L2Fabric",
+            "instance": "buffer_1",
+            "line": 1778
+          },
+          {
+            "parent": "CustomL1L2Fabric",
+            "instance": "buffer_2",
+            "line": 1918
+          },
+          {
+            "parent": "CustomL1L2Fabric",
+            "instance": "buffer_3",
+            "line": 2058
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/SpecMissABuffer.scala",
+          "line": 14
+        }
+      },
+      "module_id": "M-9c9cb7655858"
+    },
+    "decoupled2_l_credit": {
+      "testbench": "decoupled2_l_credit",
+      "design_spec": "docs/spec/design/decoupled2_l_credit.md",
+      "verification_spec": "docs/spec/verification/decoupled2_l_credit.md",
+      "environment": "testbenches/decoupled2_l_credit/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/xscache/chi/LinkLayer.scala"
+      ],
+      "tests": [
+        "testbenches/decoupled2_l_credit/tests"
+      ],
+      "smoke": "testbenches/decoupled2_l_credit/tests/test_decoupled2_l_credit_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Decoupled2LCredit",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.linkMonitor_1.Decoupled2LCredit_txreq",
+        "direct_parents": [
+          {
+            "parent": "LinkMonitor",
+            "instance": "Decoupled2LCredit_txreq",
+            "line": 307
+          },
+          {
+            "parent": "TransmitterLinkMonitor",
+            "instance": "Decoupled2LCredit_txreq",
+            "line": 259
+          },
+          {
+            "parent": "SNLinkMonitor",
+            "instance": "Decoupled2LCredit_txreq",
+            "line": 216
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/xscache/chi/LinkLayer.scala",
+          "line": 256
+        }
+      },
+      "module_id": "M-34fd83a68963"
+    },
+    "sink_a": {
+      "testbench": "sink_a",
+      "design_spec": "docs/spec/design/sink_a.md",
+      "verification_spec": "docs/spec/verification/sink_a.md",
+      "environment": "testbenches/sink_a/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/SinkA.scala"
+      ],
+      "tests": [
+        "testbenches/sink_a/tests"
+      ],
+      "smoke": "testbenches/sink_a/tests/test_sink_a_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "SinkA",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.slices_0.sinkA",
+        "direct_parents": [
+          {
+            "parent": "Slice_3",
+            "instance": "sinkA",
+            "line": 2248
+          },
+          {
+            "parent": "Slice_2",
+            "instance": "sinkA",
+            "line": 2248
+          },
+          {
+            "parent": "Slice",
+            "instance": "sinkA",
+            "line": 2248
+          },
+          {
+            "parent": "Slice_1",
+            "instance": "sinkA",
+            "line": 2248
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/SinkA.scala",
+          "line": 30
+        }
+      },
+      "module_id": "M-afa00c8416fe"
+    },
+    "bus_error_unit": {
+      "testbench": "bus_error_unit",
+      "design_spec": "docs/spec/design/bus_error_unit.md",
+      "verification_spec": "docs/spec/verification/bus_error_unit.md",
+      "environment": "testbenches/bus_error_unit/env.py",
+      "chisel": [
+        "rocket-chip/src/main/scala/tile/BusErrorUnit.scala"
+      ],
+      "tests": [
+        "testbenches/bus_error_unit/tests"
+      ],
+      "smoke": "testbenches/bus_error_unit/tests/test_bus_error_unit_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "BusErrorUnit",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_beu",
+        "direct_parents": [
+          {
+            "parent": "L2Top",
+            "instance": "inner_beu",
+            "line": 1743
+          }
+        ],
+        "declaration": {
+          "path": "rocket-chip/src/main/scala/tile/BusErrorUnit.scala",
+          "line": 49
+        }
+      },
+      "module_id": "M-2f4b7cb0807c"
+    },
+    "rxdat": {
+      "testbench": "rxdat",
+      "design_spec": "docs/spec/design/rxdat.md",
+      "verification_spec": "docs/spec/verification/rxdat.md",
+      "environment": "testbenches/rxdat/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/RXDAT.scala"
+      ],
+      "tests": [
+        "testbenches/rxdat/tests"
+      ],
+      "smoke": "testbenches/rxdat/tests/test_rxdat_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "RXDAT",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.slices_0.rxdat",
+        "direct_parents": [
+          {
+            "parent": "Slice_3",
+            "instance": "rxdat",
+            "line": 3736
+          },
+          {
+            "parent": "Slice_2",
+            "instance": "rxdat",
+            "line": 3736
+          },
+          {
+            "parent": "Slice",
+            "instance": "rxdat",
+            "line": 3736
+          },
+          {
+            "parent": "Slice_1",
+            "instance": "rxdat",
+            "line": 3736
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/RXDAT.scala",
+          "line": 27
+        }
+      },
+      "module_id": "M-8fbfe12c21db"
+    },
+    "stash_prefetcher": {
+      "testbench": "stash_prefetcher",
+      "design_spec": "docs/spec/design/stash_prefetcher.md",
+      "verification_spec": "docs/spec/verification/stash_prefetcher.md",
+      "environment": "testbenches/stash_prefetcher/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/prefetch/StashPrefetcher.scala"
+      ],
+      "tests": [
+        "testbenches/stash_prefetcher/tests"
+      ],
+      "smoke": "testbenches/stash_prefetcher/tests/test_stash_prefetcher_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "StashPrefetcher",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.prefetcher.stashPrefetcher",
+        "direct_parents": [
+          {
+            "parent": "Prefetcher",
+            "instance": "stashPrefetcher",
+            "line": 644
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/prefetch/StashPrefetcher.scala",
+          "line": 98
+        }
+      },
+      "module_id": "M-6b67f0e62d76"
+    },
+    "queue": {
+      "testbench": "queue",
+      "design_spec": "docs/spec/design/queue.md",
+      "verification_spec": "docs/spec/verification/queue.md",
+      "environment": "testbenches/queue/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/prefetch/Prefetcher.scala"
+      ],
+      "tests": [
+        "testbenches/queue/tests"
+      ],
+      "smoke": "testbenches/queue/tests/test_queue_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Queue4_PrefetchTrain",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.prefetcher.vbop_train_buf",
+        "direct_parents": [
+          {
+            "parent": "Prefetcher",
+            "instance": "vbop_train_buf",
+            "line": 1399
+          },
+          {
+            "parent": "Prefetcher",
+            "instance": "pbop_train_buf",
+            "line": 1430
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/chisel3/util/Queue.scala",
+          "line": 60
+        },
+        "source_location_kind": "locked-dependency"
+      },
+      "module_id": "M-9e6e1d19fbc2"
+    },
+    "l_credit2_decoupled": {
+      "testbench": "l_credit2_decoupled",
+      "design_spec": "docs/spec/design/l_credit2_decoupled.md",
+      "verification_spec": "docs/spec/verification/l_credit2_decoupled.md",
+      "environment": "testbenches/l_credit2_decoupled/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/xscache/chi/LinkLayer.scala"
+      ],
+      "tests": [
+        "testbenches/l_credit2_decoupled/tests"
+      ],
+      "smoke": "testbenches/l_credit2_decoupled/tests/test_l_credit2_decoupled_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "LCredit2Decoupled",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.linkMonitor.LCredit2Decoupled_rxsnp",
+        "direct_parents": [
+          {
+            "parent": "LinkMonitor",
+            "instance": "LCredit2Decoupled_rxsnp",
+            "line": 404
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/xscache/chi/LinkLayer.scala",
+          "line": 131
+        }
+      },
+      "module_id": "M-ba5f0b952b70"
+    },
+    "rxrsp": {
+      "testbench": "rxrsp",
+      "design_spec": "docs/spec/design/rxrsp.md",
+      "verification_spec": "docs/spec/verification/rxrsp.md",
+      "environment": "testbenches/rxrsp/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/RXRSP.scala"
+      ],
+      "tests": [
+        "testbenches/rxrsp/tests"
+      ],
+      "smoke": "testbenches/rxrsp/tests/test_rxrsp_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "RXRSP",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.slices_0.rxrsp",
+        "direct_parents": [
+          {
+            "parent": "Slice_3",
+            "instance": "rxrsp",
+            "line": 3764
+          },
+          {
+            "parent": "Slice_2",
+            "instance": "rxrsp",
+            "line": 3764
+          },
+          {
+            "parent": "Slice",
+            "instance": "rxrsp",
+            "line": 3764
+          },
+          {
+            "parent": "Slice_1",
+            "instance": "rxrsp",
+            "line": 3764
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/RXRSP.scala",
+          "line": 27
+        }
+      },
+      "module_id": "M-e71f932aaf22"
+    },
+    "prefetch_controller": {
+      "testbench": "prefetch_controller",
+      "design_spec": "docs/spec/design/prefetch_controller.md",
+      "verification_spec": "docs/spec/verification/prefetch_controller.md",
+      "environment": "testbenches/prefetch_controller/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/prefetch/PrefetchController.scala"
+      ],
+      "tests": [
+        "testbenches/prefetch_controller/tests"
+      ],
+      "smoke": "testbenches/prefetch_controller/tests/test_prefetch_controller_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "PrefetchController",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.prefetcher.prefetchController",
+        "direct_parents": [
+          {
+            "parent": "Prefetcher",
+            "instance": "prefetchController",
+            "line": 606
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/prefetch/PrefetchController.scala",
+          "line": 55
+        }
+      },
+      "module_id": "M-191b930d279a"
+    },
+    "mshr_buffer": {
+      "testbench": "mshr_buffer",
+      "design_spec": "docs/spec/design/mshr_buffer.md",
+      "verification_spec": "docs/spec/verification/mshr_buffer.md",
+      "environment": "testbenches/mshr_buffer/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/MSHRBuffer.scala"
+      ],
+      "tests": [
+        "testbenches/mshr_buffer/tests"
+      ],
+      "smoke": "testbenches/mshr_buffer/tests/test_mshr_buffer_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MSHRBuffer",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.slices_0.refillBuf",
+        "direct_parents": [
+          {
+            "parent": "Slice_3",
+            "instance": "refillBuf",
+            "line": 4754
+          },
+          {
+            "parent": "Slice_2",
+            "instance": "refillBuf",
+            "line": 4754
+          },
+          {
+            "parent": "Slice",
+            "instance": "refillBuf",
+            "line": 4754
+          },
+          {
+            "parent": "Slice_1",
+            "instance": "refillBuf",
+            "line": 4754
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/MSHRBuffer.scala",
+          "line": 40
+        }
+      },
+      "module_id": "M-b055b8dc767b"
+    },
+    "prefetch_receiver": {
+      "testbench": "prefetch_receiver",
+      "design_spec": "docs/spec/design/prefetch_receiver.md",
+      "verification_spec": "docs/spec/verification/prefetch_receiver.md",
+      "environment": "testbenches/prefetch_receiver/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/prefetch/PrefetchReceiver.scala"
+      ],
+      "tests": [
+        "testbenches/prefetch_receiver/tests"
+      ],
+      "smoke": "testbenches/prefetch_receiver/tests/test_prefetch_receiver_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "PrefetchReceiver",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.prefetcher.pfRcv",
+        "direct_parents": [
+          {
+            "parent": "Prefetcher",
+            "instance": "pfRcv",
+            "line": 1281
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/prefetch/PrefetchReceiver.scala",
+          "line": 36
+        }
+      },
+      "module_id": "M-689ee6454274"
+    },
+    "coupled_l2": {
+      "testbench": "coupled_l2",
+      "design_spec": "docs/spec/design/coupled_l2.md",
+      "verification_spec": "docs/spec/verification/coupled_l2.md",
+      "environment": "testbenches/coupled_l2/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/CoupledL2.scala"
+      ],
+      "tests": [
+        "testbenches/coupled_l2/tests"
+      ],
+      "smoke": "testbenches/coupled_l2/tests/test_coupled_l2_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "CoupledL2",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache",
+        "direct_parents": [
+          {
+            "parent": "L2Top",
+            "instance": "inner_l2cache",
+            "line": 1877
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/CoupledL2.scala",
+          "line": 425
+        }
+      },
+      "module_id": "M-618e2a53f4bf"
+    },
+    "l2top": {
+      "testbench": "l2top",
+      "design_spec": "docs/spec/design/l2top.md",
+      "verification_spec": "docs/spec/verification/l2top.md",
+      "environment": "testbenches/l2top/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/L2Top.scala"
+      ],
+      "tests": [
+        "testbenches/l2top/tests"
+      ],
+      "smoke": "testbenches/l2top/tests/test_l2top_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "L2Top",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top",
+        "direct_parents": [
+          {
+            "parent": "XSTile",
+            "instance": "l2top",
+            "line": 1264
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/L2Top.scala",
+          "line": 416
+        }
+      },
+      "module_id": "M-1f51ba548479"
+    },
+    "slice0": {
+      "testbench": "slice0",
+      "design_spec": "docs/spec/design/slice0.md",
+      "verification_spec": "docs/spec/verification/slice0.md",
+      "environment": "testbenches/slice0/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/Slice.scala"
+      ],
+      "tests": [
+        "testbenches/slice0/tests"
+      ],
+      "smoke": "testbenches/slice0/tests/test_slice0_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Slice",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.slices_0",
+        "direct_parents": [
+          {
+            "parent": "CoupledL2",
+            "instance": "slices_0",
+            "line": 3066
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/Slice.scala",
+          "line": 31
+        }
+      },
+      "module_id": "M-a6982f38929b"
+    },
+    "slice1": {
+      "testbench": "slice1",
+      "design_spec": "docs/spec/design/slice1.md",
+      "verification_spec": "docs/spec/verification/slice1.md",
+      "environment": "testbenches/slice1/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/Slice.scala"
+      ],
+      "tests": [
+        "testbenches/slice1/tests"
+      ],
+      "smoke": "testbenches/slice1/tests/test_slice1_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Slice_1",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.slices_1",
+        "direct_parents": [
+          {
+            "parent": "CoupledL2",
+            "instance": "slices_1",
+            "line": 3636
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/Slice.scala",
+          "line": 31
+        }
+      },
+      "module_id": "M-a6982f38929b"
+    },
+    "slice2": {
+      "testbench": "slice2",
+      "design_spec": "docs/spec/design/slice2.md",
+      "verification_spec": "docs/spec/verification/slice2.md",
+      "environment": "testbenches/slice2/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/Slice.scala"
+      ],
+      "tests": [
+        "testbenches/slice2/tests"
+      ],
+      "smoke": "testbenches/slice2/tests/test_slice2_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Slice_2",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.slices_2",
+        "direct_parents": [
+          {
+            "parent": "CoupledL2",
+            "instance": "slices_2",
+            "line": 4207
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/Slice.scala",
+          "line": 31
+        }
+      },
+      "module_id": "M-a6982f38929b"
+    },
+    "slice3": {
+      "testbench": "slice3",
+      "design_spec": "docs/spec/design/slice3.md",
+      "verification_spec": "docs/spec/verification/slice3.md",
+      "environment": "testbenches/slice3/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/coupledL2/Slice.scala"
+      ],
+      "tests": [
+        "testbenches/slice3/tests"
+      ],
+      "smoke": "testbenches/slice3/tests/test_slice3_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Slice_3",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.slices_3",
+        "direct_parents": [
+          {
+            "parent": "CoupledL2",
+            "instance": "slices_3",
+            "line": 4778
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/coupledL2/Slice.scala",
+          "line": 31
+        }
+      },
+      "module_id": "M-a6982f38929b"
+    }
+  }
+}

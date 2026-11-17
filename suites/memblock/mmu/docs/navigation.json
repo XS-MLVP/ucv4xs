@@ -18,6 +18,25 @@
     "docs/spec/verification/functional-points/functional-points-l2tlbwrapper.md",
     "docs/spec/verification/functional-points/functional-points-hptw.md",
     "docs/spec/verification/evidence/README.md",
-    "docs/bugs/README.md"
+    "docs/bugs/README.md",
+    "docs/spec/design/ptwfilter_entry.md",
+    "docs/spec/verification/ptwfilter_entry.md",
+    "testbenches/ptwfilter_entry/README.md",
+    "docs/spec/design/pmp_checker.md",
+    "docs/spec/verification/pmp_checker.md",
+    "testbenches/pmp_checker/README.md",
+    "docs/spec/design/dtlb_load.md",
+    "docs/spec/verification/dtlb_load.md",
+    "testbenches/dtlb_load/README.md",
+    "docs/spec/design/dtlb_store.md",
+    "docs/spec/verification/dtlb_store.md",
+    "testbenches/dtlb_store/README.md",
+    "docs/spec/design/dtlb_prefetch.md",
+    "docs/spec/verification/dtlb_prefetch.md",
+    "testbenches/dtlb_prefetch/README.md",
+    "testbenches/ptwrepeater/README.md",
+    "testbenches/ptwfilter/README.md",
+    "testbenches/bitmap/README.md",
+    "testbenches/bitmapcache/README.md"
   ]
 }

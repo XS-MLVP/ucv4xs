@@ -1,6 +1,6 @@
 # InstrUncache 文档
 
-当前摘要、构建与运行入口见[工程 README](../README.md)。本工程只验证 `InstrUncache`
+当前摘要、构建与运行入口见[工程 README](spec/verification/suite-overview.md)。本工程只验证 `InstrUncache`
 及其真实内部层次；不是 ICache/IFU/Frontend 或芯片验收。
 工程根的 `verification_plan.json` 已删除；当前功能要求和未证明范围沿用既有功能点、
 合同与退出标准。下方报告字段保留 2026-11-08 的运行含义；新报告依据实际用例及正式

@@ -5,12 +5,12 @@ import json
 from toffee import Bin, CoverGroupDef, CoverPointDef, DriveStable, FallingEdge, RisingEdge, SyncDriver
 
 from suites.memblock.lsq.testbenches.shared.env.dut import ROOT
-from suites.memblock.lsq.testbenches.uncache_entry.transactions import Request
-from suites.memblock.lsq.testbenches.uncache_entry.transactions import RobPtr
-from suites.memblock.lsq.testbenches.uncache_entry.transactions import QueuePtr
-from suites.memblock.lsq.testbenches.uncache_entry.transactions import SOURCE_EXCEPTION_BITS
+from suites.memblock.lsq.testbenches.shared.transactions.uncache_entry import Request
+from suites.memblock.lsq.testbenches.shared.transactions.uncache_entry import RobPtr
+from suites.memblock.lsq.testbenches.shared.transactions.uncache_entry import QueuePtr
+from suites.memblock.lsq.testbenches.shared.transactions.uncache_entry import SOURCE_EXCEPTION_BITS
 from suites.memblock.lsq.testbenches.raw.transactions import FtqPtr
-from suites.memblock.lsq.testbenches.uncache_entry.transactions import IdResponse, Redirect
+from suites.memblock.lsq.testbenches.shared.transactions.uncache_entry import IdResponse, Redirect
 from suites.memblock.lsq.testbenches.load_uncache.transactions import BypassQuery, BusReturn, LoadRequest, SampledInputs
 
 SCENARIOS = {
@@ -175,9 +175,9 @@ class PublicDriver(SyncDriver):
 
 def _load_from_dict(data):
     from suites.memblock.lsq.testbenches.raw.transactions import FtqPtr
-    from suites.memblock.lsq.testbenches.uncache_entry.transactions import QueuePtr
-    from suites.memblock.lsq.testbenches.uncache_entry.transactions import Request
-    from suites.memblock.lsq.testbenches.uncache_entry.transactions import RobPtr
+    from suites.memblock.lsq.testbenches.shared.transactions.uncache_entry import QueuePtr
+    from suites.memblock.lsq.testbenches.shared.transactions.uncache_entry import Request
+    from suites.memblock.lsq.testbenches.shared.transactions.uncache_entry import RobPtr
 
     entry = data["entry"]
     request = Request(

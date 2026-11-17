@@ -1,0 +1,134 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "duts": {
+    "icache_ctrl_buffer": {
+      "testbench": "icache_ctrl_buffer",
+      "design_spec": "docs/spec/design/icache_ctrl_buffer.md",
+      "verification_spec": "docs/spec/verification/icache_ctrl_buffer.md",
+      "environment": "testbenches/icache_ctrl_buffer/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/MemBlock.scala"
+      ],
+      "tests": [
+        "testbenches/icache_ctrl_buffer/tests"
+      ],
+      "smoke": "testbenches/icache_ctrl_buffer/tests/test_icache_ctrl_buffer_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "ICacheCtrlBuffer",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_frontendBridge.icachectrl",
+        "direct_parents": [
+          {
+            "parent": "FrontendBridge",
+            "instance": "icachectrl",
+            "line": 134
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/MemBlock.scala",
+          "line": 310
+        }
+      },
+      "module_id": "M-96780b24ad21"
+    },
+    "icache_buffer": {
+      "testbench": "icache_buffer",
+      "design_spec": "docs/spec/design/icache_buffer.md",
+      "verification_spec": "docs/spec/verification/icache_buffer.md",
+      "environment": "testbenches/icache_buffer/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/MemBlock.scala"
+      ],
+      "tests": [
+        "testbenches/icache_buffer/tests"
+      ],
+      "smoke": "testbenches/icache_buffer/tests/test_icache_buffer_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "ICacheBuffer",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_frontendBridge.icache",
+        "direct_parents": [
+          {
+            "parent": "FrontendBridge",
+            "instance": "icache",
+            "line": 98
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/MemBlock.scala",
+          "line": 298
+        }
+      },
+      "module_id": "M-9aba5866a1a2"
+    },
+    "instr_uncache_buffer": {
+      "testbench": "instr_uncache_buffer",
+      "design_spec": "docs/spec/design/instr_uncache_buffer.md",
+      "verification_spec": "docs/spec/verification/instr_uncache_buffer.md",
+      "environment": "testbenches/instr_uncache_buffer/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/MemBlock.scala"
+      ],
+      "tests": [
+        "testbenches/instr_uncache_buffer/tests"
+      ],
+      "smoke": "testbenches/instr_uncache_buffer/tests/test_instr_uncache_buffer_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "InstrUncacheBuffer",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_frontendBridge.instr_uncache",
+        "direct_parents": [
+          {
+            "parent": "FrontendBridge",
+            "instance": "instr_uncache",
+            "line": 172
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/MemBlock.scala",
+          "line": 277
+        }
+      },
+      "module_id": "M-b4ac198066bf"
+    },
+    "frontend_bridge": {
+      "testbench": "frontend_bridge",
+      "design_spec": "docs/spec/design/frontend_bridge.md",
+      "verification_spec": "docs/spec/verification/frontend_bridge.md",
+      "environment": "testbenches/frontend_bridge/env.py",
+      "chisel": [
+        "src/main/scala/xiangshan/mem/MemBlock.scala"
+      ],
+      "tests": [
+        "testbenches/frontend_bridge/tests"
+      ],
+      "smoke": "testbenches/frontend_bridge/tests/test_frontend_bridge_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "FrontendBridge",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_frontendBridge",
+        "direct_parents": [
+          {
+            "parent": "MemBlock",
+            "instance": "inner_frontendBridge",
+            "line": 8645
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/MemBlock.scala",
+          "line": 323
+        }
+      },
+      "module_id": "M-59afff83eba7"
+    }
+  }
+}

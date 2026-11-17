@@ -1,7 +1,6 @@
 {
   "schema": 2,
   "fixtures": "conftest.py",
-  "loader": "testbenches/shared/env/dut.py",
   "duts": {
     "vtype_gen": {
       "design_spec": [
@@ -24,7 +23,26 @@
       "chisel": [
         "src/main/scala/xiangshan/backend/decode/VTypeGen.scala"
       ],
-      "testbench": "vtype_gen"
+      "testbench": "vtype_gen",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "VTypeGen",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_ibuffer.vtypeGen",
+        "direct_parents": [
+          {
+            "parent": "IBuffer",
+            "instance": "vtypeGen",
+            "line": 13828
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/backend/decode/VTypeGen.scala",
+          "line": 17
+        }
+      },
+      "module_id": "M-aaf9136f9f68"
     },
     "ibuffer": {
       "design_spec": [
@@ -47,7 +65,26 @@
       "chisel": [
         "src/main/scala/xiangshan/frontend/ibuffer/IBuffer.scala"
       ],
-      "testbench": "ibuffer"
+      "testbench": "ibuffer",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IBuffer",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_ibuffer",
+        "direct_parents": [
+          {
+            "parent": "Frontend",
+            "instance": "inner_ibuffer",
+            "line": 9428
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/ibuffer/IBuffer.scala",
+          "line": 41
+        }
+      },
+      "module_id": "M-8dad50fe2867"
     }
   }
 }

@@ -11,6 +11,17 @@ shared 是保留的共享包，不对应 RTL top；实现按实际职责组织�
 - 设计规格：[docs/spec/design/README.md](../../docs/spec/design/README.md)
 - 验证合同：[docs/spec/verification/README.md](../../docs/spec/verification/README.md)
 - env：[testbenches/shared/env](env)
+- tests：[testbenches/shared/tests](tests)
 - 问题：[docs/bugs/README.md](../../docs/bugs/README.md)
+
+## 从仓库根操作
+
+```sh
+./scripts/ucv run vagq --collect-only --workers 1 -- testbenches/shared/tests
+./scripts/ucv run vagq --workers 1 -- testbenches/shared/tests
+./scripts/ucv report
+```
+
+按 DUT 默认选择时同时收集这些共享自检；显式 pytest 路径或 nodeid 仍限定实际选择。
 
 <!-- ucv:module:end -->

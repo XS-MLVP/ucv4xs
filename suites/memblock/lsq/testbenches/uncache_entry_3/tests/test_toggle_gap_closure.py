@@ -1,0 +1,35 @@
+"""Legal high-address and exception payload transitions for one real entry."""
+
+from dataclasses import replace
+
+from suites.memblock.lsq.testbenches.uncache_entry_3.transactions import SOURCE_EXCEPTION_MASK
+
+
+async def test_high_address_and_fault_payload_bits_are_checked(uncache_entry_3):
+    # All exported address/exception fields are legal at their full widths.
+    # The entry model still owns the lifecycle and checks the actual public
+    # request, response, wakeup, data and exception observations.
+    high = replace(
+        uncache_entry_3.request(nc=True, tag=0x155, lq=127),
+        vaddr=(1 << 50) - 1,
+        fullva=(1 << 64) - 1,
+        paddr=(1 << 48) - 1,
+        gpaddr=(1 << 64) - 1,
+        exceptions=SOURCE_EXCEPTION_MASK,
+    )
+    await uncache_entry_3.cycle(high, pending=high.rob)
+    await uncache_entry_3.complete(data=(1 << 64) - 1, sid=15, error=True, nderr=True)
+
+    # A second legal owner with zero-valued addresses and no source exception
+    # forces the stored fields and exception report back in the opposite
+    # direction instead of relying on reset/random initialization.
+    low = replace(
+        uncache_entry_3.request(nc=False, tag=0, lq=0),
+        vaddr=0,
+        fullva=0,
+        paddr=0,
+        gpaddr=0,
+        exceptions=0,
+    )
+    await uncache_entry_3.cycle(low, pending=low.rob)
+    await uncache_entry_3.complete(data=0, sid=0, error=False, nderr=False)

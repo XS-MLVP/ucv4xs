@@ -16,8 +16,12 @@ ucv4xs/
 ├── dependencies/               # Python/原生工具锁与带哈希的工具补丁
 ├── src/ucv/                    # 公共编排、路径、运行记录与报告
 ├── suites/
-│   ├── frontend/{bpu,icache,ftq,ifu,ibuffer,instr_uncache}/
-│   ├── memblock/{lsq,dcache,mmu,sbuffer,lsu}/
+│   ├── frontend/{bpu,ftq,ifu,ibuffer,instr_uncache,icache,frontend_top}/
+│   ├── backend/{ctrl,int_region,fp_region,vec_region}/
+│   ├── memblock/{lsq,dcache,mmu,sbuffer,lsu,prefetch,frontend_bridge}/
+│   ├── cache/{l2,llc}/
+│   ├── bus/{ncb,peripheral}/
+│   ├── soc/{aia,plic,debug,timer,clock_reset,mbist}/
 │   └── vector/vagq/
 ├── skills/                     # 项目工作流、跨模块防复发手册与速查卡
 ├── AGENTS.md                   # 仓库协作约定
@@ -36,7 +40,7 @@ ucv4xs/
 验证经验从 [经验与复盘索引](lessons/README.md) 进入：`skills/` 保留可复用方法，工程 `docs/` 保留合同、缺陷与具体复盘，`docs/history/` 记录来源和历史证据。
 
 每个工程保留 `ucv.json`、`workspace.json`、`conftest.py`、`pytest.ini`、DUT 实现包和领域文档。
-十二工程与新工程使用 schema2 的 `testbenches/<dut>/` 及跨 DUT 的 `testbenches/shared/`，
+所有工程使用 schema2 的 `testbenches/<dut>/` 及跨 DUT 的 `testbenches/shared/`，
 现有工程的版本兼容范围见[目录规范](reference/module-layout.md#schema-版本与本轮范围)。
 公共编排层不导入工程领域模型；各工程通过 `ucv.runtime` 解析项目工具、有效源码和历史
 证据路径。历史 `manifest/` 和审计文档保留原基线含义，当前构建以缓存中的 `source.json`、
@@ -49,7 +53,13 @@ ucv4xs/
 | 工程 | `ucv.json` 声明生成方式、DUT top、导出类、pytest 收集根，可覆盖基线 |
 | DUT | 继承整个工程的基线，不提供单 DUT commit/config override |
 
-引用最近一级显式基线，不合并命名基线的内部字段。三个初始分组均继承根；VAGQ 单独引用 internal 基线。新增基线要复制完整定义并更新名称、commit、递归 gitlink、生成配置、工具版本和补丁哈希。所有当前工程使用 DefaultConfig。
+引用最近一级显式基线，不合并命名基线的内部字段。公开工程继承根；VAGQ 单独引用 internal 基线。新增基线要复制完整定义并更新名称、commit、递归 gitlink、生成配置、工具版本和补丁哈希。所有当前工程使用 DefaultConfig。
+
+suite 是代码维护与执行边界，DUT＋合同是工作认领与验收单元，testbench 是每个 DUT 的独立验证实现。
+先确定对象与合同，再按真实需求提取共享组件。父级负责接口协作，关键子级承担独立性质；父级包含子模块不自动
+证明子级覆盖。源码 package、RTL top 和父实例共同确定绑定，参数化数字后缀不作为稳定身份。
+当前工程设计索引和 workspace 的 `binding` 保存一次具体基线的观察，不是源码/配置 override；
+升级基线后须重新核对，旧绑定观察不能代替新构建凭据。
 
 工作入口为 `info/init/check/docs`。`prepare --source-only` 独立获取精确源码；
 `prepare --rtl-source release` 下载锁定的完整 RTL 并提取模块闭包；本机完整生成由
@@ -74,11 +84,50 @@ ucv：选择、基线与构建身份预检、进程隔离、收据
 参考模型预测来决定下一笔合法刺激。期望、实际观察、刺激所有权及覆盖证明仍需独立审查；
 目录分层只能提供边界，不能自动证明这些语义正确。
 
+## 验证工作如何管理
+
+以**模块树**作为管理主轴，模块 ID 长期延续；DUT＋合同作为技术绑定与验收单元。
+根配置引用的模块目录保存名称、管理父级、基线观察和有依据的承接历史，workspace 的
+`module_id` 将每个 DUT 关联到模块。`ucv modules diff/apply` 比较旧记录与新观察的并集；
+改名/移动保留身份，缺失保留待核实记录，拆分/合并/内联显式关联后继。具体见
+[模块维护契约](reference/modules.md)。
+
+每个 DUT 独立维护 testbench 与测试入口，模块族只承担管理归组；实际共用组件按职责提取到 shared。
+大 DUT 内按合同条款拆任务，同族参数变体也分别保留硬件绑定与结果。suite 数量、DUT 数量、测试条数表示资产
+规模，不作为总体完成率的分母；一次运行的标签通过率也不表示完整合同已证明。
+
+使用现有入口即可形成管理闭环：
+
+- 工程验证规格首页的 **DUT 工作索引**由 `ucv docs --write` 从配方和 workspace 生成；
+  每个 DUT 链接自己的合同与实现入口，接入观察明确区分骨架、已有资产待复验和 top 缺失。
+- 负责人、当前工作、下一步、阻塞及证据维护在对应合同正文或关联任务中。没有认领证据时
+  保持待认领；不将历史跟踪表的姓名自动分派给新对象。
+- 范围、要求与完成条件继续属于原规格；实际执行结果来自冻结收据与 `ucv report`，问题
+  状态来自稳定问题记录。工作索引只是导航，不另造计划文件或第二份状态数据库。
+- 跨模块性质归实际集成对象，例如 `frontend_top/frontend`、`frontend_bridge/frontend_bridge`
+  和各 Region 顶层。设计分组用于查找，无需另维护功能链路视图或链路进度。
+
+### 验证包边界的依据
+
+| 包 | 维护与执行依据 | 工作拆分口径 |
+|---|---|---|
+| `ftq`、`ifu`、`ibuffer`、`instr_uncache` | 各自已有独立事务环境、生命周期、模型和覆盖工具；原 `fetch` 的四套 shared/env 并未形成共同环境 | 各 DUT 的既有合同、问题与结果独立；通用报告机制复用 `ucv.pytest_features` |
+| `frontend_top` | 真实 `Frontend` 闭包的组合验证；尚为骨架 | 只承接顶层连接、取消/背压、WFI 等经评审的集成性质；不汇总冒充子模块验收 |
+| `frontend_bridge` | MemBlock 内真实 `FrontendBridge` 与三个 A/D 缓冲切点；尚为骨架 | 各缓冲合同与父级三通道隔离/组合性质；物理位于 memblock |
+| `ctrl` | 控制块及已有后端顶层切点的维护容器；尚为骨架 | rename/dispatch/ROB 等各自认领，`backend` 与 `ctrl_block` 的集成范围分别定义 |
+| `int_region` | 整数调度、DataPath、执行协作及已登记参数变体；尚为骨架 | 发射队列、连接变体、DataPath、ExuBlock、Region 分别验收；访存流水归 LSU |
+| `fp_region` | 浮点发射/IssuePipe、寄存器读取与写回使用关联的事务身份；尚为骨架 | 队列/流水变体、寄存器、仲裁和 Region 顶层分别认领；不宣称已实现联合环境 |
+| `vec_region` | 向量发射/IssuePipe、寄存器/写回和异常组件的维护容器；尚为骨架 | 各对象独立合同；异常合并的 Backend 实例边界显式记录；internal VAGQ 独立 |
+| 其余缓存、访存、互联与系统服务包 | 保留已有环境及第一版纠正后的硬件绑定；scaffold 仍是接入资产 | 统一使用逐 DUT 工作索引，不给整包自动分配“验证完成”状态 |
+
+Region 的保留是当前维护选择，预期联合环境不是已证明的复用。如果实现时出现独立维护、
+独立运行需求，应据具体成本调整；仅因位于相同物理层级或功能链路不构成强制合并理由。
+
 ## 工程文档与问题记录
 
 所有工程共用 `docs/spec/{design,verification}/` 与 `docs/bugs/{open,closed}/` 结构。
 工程 README 汇总工程入口，docs/README 汇总规格和问题，bugs/README 的表格与
-各 DUT 实现包的 README 工作入口由 `ucv docs <suite> --write` 生成；schema2 的已有
+各 DUT 实现包的 README 工作入口、验证规格首页的 DUT 工作索引由 `ucv docs <suite> --write` 生成；schema2 的已有
 shared 包同样有独立生成入口。人工说明保留在生成区块之外，行为要求和问题分析各有
 一个维护位置。
 
@@ -92,7 +141,7 @@ shared 包同样有独立生成入口。人工说明保留在生成区块之外�
 
 所有安装、源码和产物都属于当前检出：`.venv/`、`.tools/`、`.cache/`、`results/` 均忽略；工程中的 `rtl/`、`dut/`、`XiangShan` 是运行时创建的相对链接。`.ucv/local.json` 保存机器配置，Git 中没有通往旧工作区的链接。源目录移动后应重新建立虚拟环境和工具，不复用含绝对路径的二进制缓存。
 
-新增工程/DUT 优先用 `ucv init` 创建实现骨架、pytest 配置和规格入口，在根注册工程，
+新增工程/DUT 用 `ucv init --module-id <id>` 创建独立实现骨架、pytest 配置和规格入口，在根注册工程，
 并声明完整 DUT 配方。新工程使用 schema2 的 `testbenches/<dut>/`，向已有工程添加 DUT
 则沿用其 schema。公共编排变更运行根 `tests/`；工程内部检查通过 `ucv run <suite>` 运行。
 更改构建语义时应更新缓存身份中的 `pipeline_version`，不复用旧构建凭据。第一版不配置 CI。
@@ -146,7 +195,8 @@ schema2 的每个 DUT 实现和用例集中在 `testbenches/<dut>/`，`testbench
 保留名，没有独立 DUT/top/本地原生库。DUT 专用参数生成归其 tests/插件，由工程唯一
 `conftest.py` 注册，离线汇总和审计命令归 tools。
 
-`workspace.json` 以 `duts.<name>.testbench` 显式关联实现，参数化 DUT 可指向同一包。
+`workspace.json` 以 `duts.<name>.testbench` 一对一关联实现，`module_id` 关联稳定模块身份。
+新增时 testbench 与 DUT 同名；同一模块 ID 可以关联多个独立 DUT，不能合并其实现与测试根。
 配方 `tests` 与 `pytest.ini` 的 `testpaths` 都使用 `testbenches`。规格和问题集中工程
 `docs/`；完整规则及 schema 兼容边界见[testbench 目录规范](reference/module-layout.md)。
 

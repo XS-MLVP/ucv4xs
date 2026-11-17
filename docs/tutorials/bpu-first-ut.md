@@ -1,15 +1,16 @@
 # 第一次运行 BPU UT：MainBTB
 
-本教程从 clone 开始，依次找到规格和源码、获取 release RTL、构建一个 DUT、运行现有
+本教程从 clone 开始，依次找到规格和源码、从源码准备 RTL、构建一个 DUT、运行现有
 复位/冷查询用例并读懂报告。例子固定为 BPU 工程中的 `mbtb`，真实 RTL top 是 `MainBtb`。
 完成后，你会得到一次有源码、基线和构建身份的运行记录；不需要修改 RTL、模型或用例。
 
 ## 开始前
 
-- 仿真宿主为 Linux x86_64，准备 Python 3.12（含 venv/开发头文件）、Git、Make、CMake、
+- 仿真宿主为 Linux x86_64，准备 Python 3.12（含 venv/开发头文件）、Java 17、Git、Make、CMake、
   C++20 编译器、SWIG ≥ 4.2，以及构建 Verilator 所需的 Autoconf/Flex/Bison。
-- 首次下载 RTL、获取依赖和编译工具需要网络、磁盘和编译时间；本教程使用 release，
-  不要求本机生成整芯片 RTL，也不要求 Java/Mill/firtool。
+- 首次获取依赖、编译工具和完整生成香山 RTL 需要网络、磁盘、内存和编译时间；
+  `setup --profile full` 安装锁定的 Mill/firtool 及仿真工具。生成资源要求见
+  [构建经验](../lessons/build-and-toolchain.md)。
 - 所有命令从仓库根执行。以下 `results/mbtb-first-ut` 必须尚不存在；再次练习时换一个新名字。
 
 ## 1. 打开工作目录
@@ -39,15 +40,19 @@ suites/frontend/bpu/testbenches/mbtb/tests/testcase/test_reset.py
 设计背景可在 [MainBTB 设计规格](../../suites/frontend/bpu/docs/spec/design/mbtb.md)中按需查阅。
 若只想读源码/写规格，不必继续安装工具，改看[只准备源码](../how-to/workspace.md#只找资料或准备源码)。
 
-## 3. 获取已发布 RTL
+## 3. 安装工具并准备 RTL
+
+当前默认基线 `public-e716c7658` 尚无锁定的 RTL release，本教程显式从源码生成。
+依赖和工具安装到当前检出的 `.venv/`、`.tools/`。
 
 ```sh
-./scripts/ucv doctor bpu --stage rtl
-./scripts/ucv prepare bpu --dut mbtb --rtl-source release
+./scripts/ucv setup --profile full --jobs 2
+./scripts/ucv doctor bpu --stage generate
+./scripts/ucv prepare bpu --dut mbtb --rtl-source source
 ```
 
-预期输出 `bpu/mbtb: PREPARED`。工具下载完整 DefaultConfig release，校验压缩包、参数与
-逐文件哈希，然后提取 MainBTB 闭包。查看：
+预期输出 `bpu/mbtb: PREPARED`。工具检出锁定源码和子模块，完整生成 DefaultConfig RTL，
+然后提取 MainBTB 闭包；已有匹配生成缓存时先核验逐文件哈希。查看：
 
 ```text
 suites/frontend/bpu/rtl/mbtb/MainBtb.sv
@@ -55,20 +60,18 @@ suites/frontend/bpu/rtl/mbtb/filelist.f
 suites/frontend/bpu/rtl/mbtb/source.json
 ```
 
-RTL 获取只需要 Python 与网络。没有匹配 release 时会明确报错；本地完整生成需要显式
-选择 `--rtl-source source`。下载包只提供 RTL，下一步仍需编译该 DUT 的原生仿真库。
+生成结果记录在 `.cache/generated/`，闭包的 `source.json` 记录其基线和来源。
+下一步编译该 DUT 的原生仿真库。其它已登记匹配 release 的基线可按
+[release 获取指南](../how-to/workspace.md#使用-release-rtl)操作。
 
-## 4. 安装仿真工具并构建 MainBTB
-
-依赖和工具安装到当前检出的 `.venv/`、`.tools/`，不会要求你手工搭另一套验证环境。
+## 4. 构建 MainBTB
 
 ```sh
-./scripts/ucv setup --profile runtime --jobs 2
 ./scripts/ucv doctor bpu --stage run
-./scripts/ucv build bpu --dut mbtb --jobs 2
+./scripts/ucv build bpu --dut mbtb --jobs 2 --rtl-source source
 ```
 
-`runtime` 安装本教程所需的仿真依赖；`--jobs 2` 限制编译并发。若 `doctor` 报缺工具，
+`--jobs 2` 限制编译并发。若 `doctor` 报缺工具，
 先按错误补齐再构建，常见处理见[构建经验](../lessons/build-and-toolchain.md)。
 
 预期输出 `bpu/mbtb: BUILT + SMOKE PASS`：Picker/Verilator 已生成 Python DUT 包，并在
@@ -109,7 +112,7 @@ PASS，也不能据此签核完整 BPU。旧报告因残余清单产生的 `INCO
 
 ## 6. 完成与下一步
 
-你已经走过“资料定位 → release RTL → DUT 构建/冒烟 → 一个现有用例 → 有身份的报告”。
+你已经走过“资料定位 → 源码生成 RTL → DUT 构建/冒烟 → 一个现有用例 → 有身份的报告”。
 保留 `results/mbtb-first-ut/`；它是一次有限选择的证据，不是完整 BPU 的验收报告。
 
 - 换 DUT、选参数、比较两次运行：[运行指南](../how-to/run-tests.md)。

@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "suite": "frontend_bridge",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "icache_ctrl_buffer": {
+      "top": "ICacheCtrlBuffer",
+      "export_name": "ICacheCtrlBufferDut"
+    },
+    "icache_buffer": {
+      "top": "ICacheBuffer",
+      "export_name": "ICacheBufferDut"
+    },
+    "instr_uncache_buffer": {
+      "top": "InstrUncacheBuffer",
+      "export_name": "InstrUncacheBufferDut"
+    },
+    "frontend_bridge": {
+      "top": "FrontendBridge",
+      "export_name": "FrontendBridgeDut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "testbenches"
+  ],
+  "process_isolation": "dut"
+}

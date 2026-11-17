@@ -55,3 +55,26 @@
   XFAIL。
 - 覆盖闭环中的结构不可达与 don't-care 归因属于当前配置的工程判断，配置变化后需重做
   [覆盖分析](../verification/coverage/icache-coverage-closure.md)。
+## 当前切分与 Chisel / RTL 映射
+
+本表是 **2026-11-16** 的设计身份核对，基线 `public-e716c7658`，完整 commit `e716c765824900ff78816b92ac827fd4aa2cab35`。配置为 DefaultConfig、单核、CHI E.b、OpenLLC，含 `--fpga-platform --reset-gen`。
+
+Chisel 位置来自该次 FIRRTL 源位置注解，并与源码核对；RTL 实例来自生成模块中的实际实例声明。表中实例为可定位样本，全部直接父实例见 workspace.json。数字后缀只属于该基线，不是稳定逻辑身份；同一个 RTL 类型可能有多个实例。
+
+沿用既有工程功能合同；本表补充当前源码、生成名与实际放置位置。
+
+| DUT | 当前配方 top | Chisel 定义/生成位置（相对源码根） | RTL 实例样本 | 接入状态 |
+|---|---|---|---|---|
+| `waylookup` | `ICacheWayLookup` | `src/main/scala/xiangshan/frontend/icache/ICacheWayLookup.scala:30` | `XSTop.core_with_l2.core.frontend.inner_icache.wayLookup` | 已有实现；新基线未验收 |
+| `replacer` | `ICacheReplacer` | `src/main/scala/xiangshan/frontend/icache/ICacheReplacer.scala:24` | `XSTop.core_with_l2.core.frontend.inner_icache.replacer` | 已有实现；新基线未验收 |
+| `mshr` | `ICacheMshr` | `src/main/scala/xiangshan/frontend/icache/ICacheMshr.scala:28` | `XSTop.core_with_l2.core.frontend.inner_icache.missUnit.allMshr_0` | 已有实现；新基线未验收 |
+| `databank` | `ICacheDataBank` | `src/main/scala/xiangshan/frontend/icache/ICacheDataBank.scala:24` | `XSTop.core_with_l2.core.frontend.inner_icache.dataArray.banks_0` | 已有实现；新基线未验收 |
+| `metabank` | `ICacheMetaInterleavedBank` | `src/main/scala/xiangshan/frontend/icache/ICacheMetaInterleavedBank.scala:24` | `XSTop.core_with_l2.core.frontend.inner_icache.metaArray.banks_0` | 已有实现；新基线未验收 |
+| `metaarray` | `ICacheMetaArray` | `src/main/scala/xiangshan/frontend/icache/ICacheMetaArray.scala:24` | `XSTop.core_with_l2.core.frontend.inner_icache.metaArray` | 已有实现；新基线未验收 |
+| `dataarray` | `ICacheDataArray` | `src/main/scala/xiangshan/frontend/icache/ICacheDataArray.scala:22` | `XSTop.core_with_l2.core.frontend.inner_icache.dataArray` | 已有实现；新基线未验收 |
+| `missunit` | `ICacheMissUnit` | `src/main/scala/xiangshan/frontend/icache/ICacheMissUnit.scala:31` | `XSTop.core_with_l2.core.frontend.inner_icache.missUnit` | 已有实现；新基线未验收 |
+| `mainpipe` | `ICacheMainPipe` | `src/main/scala/xiangshan/frontend/icache/ICacheMainPipe.scala:37` | `XSTop.core_with_l2.core.frontend.inner_icache.mainPipe` | 已有实现；新基线未验收 |
+| `prefetchpipe` | `ICachePrefetchPipe` | `src/main/scala/xiangshan/frontend/icache/ICachePrefetchPipe.scala:34` | `XSTop.core_with_l2.core.frontend.inner_icache.prefetcher` | 已有实现；新基线未验收 |
+| `icache` | `ICache` | `src/main/scala/xiangshan/frontend/icache/ICacheImp.scala:39` | `XSTop.core_with_l2.core.frontend.inner_icache` | 已有实现；新基线未验收 |
+
+这些映射不证明接口向后兼容、硬件等价或功能覆盖；历史规格和报告沿用原日期及基线。构建、冒烟、功能、覆盖分别验收。公共 NewPipelineConnectPipe 与 internal VAGQ 同名模块没有互相覆盖结论。

@@ -1,0 +1,388 @@
+{
+  "schema": 1,
+  "date": "2026-11-17",
+  "status": "STRUCTURE_AND_OFFLINE_CHECKS_COMPLETE",
+  "scope": "Existing shared testbench split; not new hardware verification",
+  "baseline_names": [
+    "public-e716c7658",
+    "internal-d4566d58a"
+  ],
+  "before": {
+    "suites": 29,
+    "duts": 336,
+    "testbenches": 313
+  },
+  "after": {
+    "suites": 29,
+    "duts": 336,
+    "testbenches": 336
+  },
+  "affected": {
+    "dut_count": 29,
+    "former_shared_groups": 6,
+    "suites": {
+      "lsq": {
+        "duts": 38,
+        "before_testbenches": 18,
+        "after_testbenches": 38
+      },
+      "mmu": {
+        "duts": 22,
+        "before_testbenches": 20,
+        "after_testbenches": 22
+      },
+      "vagq": {
+        "duts": 12,
+        "before_testbenches": 11,
+        "after_testbenches": 12
+      }
+    }
+  },
+  "identity": {
+    "modules_preserved": 354,
+    "recipe_bytes_preserved": [
+      "lsq",
+      "mmu",
+      "vagq"
+    ],
+    "module_binding_and_tracking_preserved": true,
+    "reference_only_updates": 7
+  },
+  "checks": {
+    "public_tool_tests": {
+      "passed": 426
+    },
+    "collection": {
+      "original": 3522,
+      "current": 3573,
+      "missing": 0,
+      "duplicate_successors": 0,
+      "new_selftests": 49,
+      "split_selftest_increment": 2
+    },
+    "offline_tests": {
+      "lsq_shared": 8,
+      "mmu": 42,
+      "vagq": 117
+    },
+    "isolation": {
+      "lsq_single_dut_controls": 23,
+      "mmu_cold_process_controls": 12,
+      "vagq_metadata_only_collection_roots": 12
+    },
+    "current_python_files_matched_to_reviewed_evidence": 1217,
+    "protected_file_hashes_checked": 278,
+    "structure_layout_skills_assets_public_baseline": "PASS"
+  },
+  "history": {
+    "old_root_mappings_preserved": 633,
+    "new_root_mappings": 626,
+    "total_root_mappings": 1259,
+    "unchanged_legacy_unavailable_destinations": 35,
+    "frozen_suite_path_maps_preserved": true,
+    "source_and_node_lineage": "results/per-dut-migration-20261117/README.md"
+  },
+  "hardware": {
+    "tests_executed": 0,
+    "verdict": "NOT_CERTIFIED",
+    "attempted": "mmu/ptwfilter smoke",
+    "cli_exit_code": 2,
+    "blocker": "Pinned toffee source checkout changed",
+    "expected_toffee_commit": "f57150021791535d4b2fd01056c106f0cad53177",
+    "observed_toffee_commit": "a8e2e884a4fb675bc4c6f8227b14e92e44a9221c"
+  },
+  "integration_corrections": [
+    "Moved VAGQ smoke selectors from recipe to workspace; original recipe bytes restored.",
+    "Nested feature-report tests now create their own pytest.ini; repository-local basetemp control passed.",
+    "The six-node synthetic feature report was identified, checked for open handles, and archived with a hash receipt."
+  ],
+  "migrations": [
+    {
+      "suite": "lsq",
+      "dut": "freelist_rar",
+      "module_id": "M-74c5502fcebf",
+      "before": "freelist",
+      "after": "freelist_rar"
+    },
+    {
+      "suite": "lsq",
+      "dut": "freelist_raw",
+      "module_id": "M-74c5502fcebf",
+      "before": "freelist",
+      "after": "freelist_raw"
+    },
+    {
+      "suite": "lsq",
+      "dut": "freelist_replay",
+      "module_id": "M-74c5502fcebf",
+      "before": "freelist",
+      "after": "freelist_replay"
+    },
+    {
+      "suite": "lsq",
+      "dut": "freelist_uncache",
+      "module_id": "M-74c5502fcebf",
+      "before": "freelist",
+      "after": "freelist_uncache"
+    },
+    {
+      "suite": "lsq",
+      "dut": "cam_rar",
+      "module_id": "M-26766856e82a",
+      "before": "cam",
+      "after": "cam_rar"
+    },
+    {
+      "suite": "lsq",
+      "dut": "cam_raw",
+      "module_id": "M-26766856e82a",
+      "before": "cam",
+      "after": "cam_raw"
+    },
+    {
+      "suite": "lsq",
+      "dut": "cam_mask",
+      "module_id": "M-b8dbaf9976aa",
+      "before": "cam",
+      "after": "cam_mask"
+    },
+    {
+      "suite": "lsq",
+      "dut": "uncache_entry_0",
+      "module_id": "M-98bb23839881",
+      "before": "uncache_entry",
+      "after": "uncache_entry_0"
+    },
+    {
+      "suite": "lsq",
+      "dut": "uncache_entry_1",
+      "module_id": "M-98bb23839881",
+      "before": "uncache_entry",
+      "after": "uncache_entry_1"
+    },
+    {
+      "suite": "lsq",
+      "dut": "uncache_entry_2",
+      "module_id": "M-98bb23839881",
+      "before": "uncache_entry",
+      "after": "uncache_entry_2"
+    },
+    {
+      "suite": "lsq",
+      "dut": "uncache_entry_3",
+      "module_id": "M-98bb23839881",
+      "before": "uncache_entry",
+      "after": "uncache_entry_3"
+    },
+    {
+      "suite": "lsq",
+      "dut": "uncache_entry_4",
+      "module_id": "M-98bb23839881",
+      "before": "uncache_entry",
+      "after": "uncache_entry_4"
+    },
+    {
+      "suite": "lsq",
+      "dut": "uncache_entry_5",
+      "module_id": "M-98bb23839881",
+      "before": "uncache_entry",
+      "after": "uncache_entry_5"
+    },
+    {
+      "suite": "lsq",
+      "dut": "uncache_entry_6",
+      "module_id": "M-98bb23839881",
+      "before": "uncache_entry",
+      "after": "uncache_entry_6"
+    },
+    {
+      "suite": "lsq",
+      "dut": "uncache_entry_7",
+      "module_id": "M-98bb23839881",
+      "before": "uncache_entry",
+      "after": "uncache_entry_7"
+    },
+    {
+      "suite": "lsq",
+      "dut": "uncache_entry_8",
+      "module_id": "M-98bb23839881",
+      "before": "uncache_entry",
+      "after": "uncache_entry_8"
+    },
+    {
+      "suite": "lsq",
+      "dut": "uncache_entry_9",
+      "module_id": "M-98bb23839881",
+      "before": "uncache_entry",
+      "after": "uncache_entry_9"
+    },
+    {
+      "suite": "lsq",
+      "dut": "uncache_entry_10",
+      "module_id": "M-98bb23839881",
+      "before": "uncache_entry",
+      "after": "uncache_entry_10"
+    },
+    {
+      "suite": "lsq",
+      "dut": "uncache_entry_11",
+      "module_id": "M-98bb23839881",
+      "before": "uncache_entry",
+      "after": "uncache_entry_11"
+    },
+    {
+      "suite": "lsq",
+      "dut": "uncache_entry_12",
+      "module_id": "M-98bb23839881",
+      "before": "uncache_entry",
+      "after": "uncache_entry_12"
+    },
+    {
+      "suite": "lsq",
+      "dut": "uncache_entry_13",
+      "module_id": "M-98bb23839881",
+      "before": "uncache_entry",
+      "after": "uncache_entry_13"
+    },
+    {
+      "suite": "lsq",
+      "dut": "uncache_entry_14",
+      "module_id": "M-98bb23839881",
+      "before": "uncache_entry",
+      "after": "uncache_entry_14"
+    },
+    {
+      "suite": "lsq",
+      "dut": "uncache_entry_15",
+      "module_id": "M-98bb23839881",
+      "before": "uncache_entry",
+      "after": "uncache_entry_15"
+    },
+    {
+      "suite": "mmu",
+      "dut": "ptwrepeater",
+      "module_id": "M-476c05f9fe7c",
+      "before": "ptwrepeater",
+      "after": "ptwrepeater"
+    },
+    {
+      "suite": "mmu",
+      "dut": "ptwfilter",
+      "module_id": "M-58e09c3763d4",
+      "before": "ptwrepeater",
+      "after": "ptwfilter"
+    },
+    {
+      "suite": "mmu",
+      "dut": "bitmap",
+      "module_id": "M-2770571682a1",
+      "before": "bitmap",
+      "after": "bitmap"
+    },
+    {
+      "suite": "mmu",
+      "dut": "bitmapcache",
+      "module_id": "M-57460b639a61",
+      "before": "bitmap",
+      "after": "bitmapcache"
+    },
+    {
+      "suite": "vagq",
+      "dut": "NewPipelineConnectPipe",
+      "module_id": "M-4110a665bb93",
+      "before": "pipeline",
+      "after": "NewPipelineConnectPipe"
+    },
+    {
+      "suite": "vagq",
+      "dut": "NewPipelineConnectPipe_3",
+      "module_id": "M-4110a665bb93",
+      "before": "pipeline",
+      "after": "NewPipelineConnectPipe_3"
+    }
+  ],
+  "evidence": {
+    "results/per-dut-migration-20261117/before-manifest.json": {
+      "sha256": "5ef98ddf1f7f76055b4ee54179a8189e12a766946315a8f395e3e0bfa9a621d5"
+    },
+    "results/per-dut-migration-20261117/structure-audit.json": {
+      "sha256": "86d39213e66f1864670f7deb9be9589df31860f02de27b9decee6b08d7de31a6"
+    },
+    "results/per-dut-migration-20261117/collection-audit.json": {
+      "sha256": "38ef322bbc210039eef785de479c6164683f139aa2a35182466acf9097cbfccc"
+    },
+    "results/per-dut-migration-20261117/tool-tests-final.log": {
+      "sha256": "a96a7cb0eb10740b4076f079625fe3fed8c56da2a8d8749ab2babe61617dbe06"
+    },
+    "results/per-dut-migration-20261117/report-isolation-control.log": {
+      "sha256": "b7f8336f049bf5c200bf2bd7d571241e78b1a0d0214b388833883d38af823e1b"
+    },
+    "results/per-dut-migration-20261117/structure-check.json": {
+      "sha256": "accd1b8ff676d2a22bd930980eb9c094a051bf55510b006a6ce1a46b96bbd051"
+    },
+    "results/per-dut-migration-20261117/layout-check.md": {
+      "sha256": "652868ec19254a4865bb138a3254b757ecd56c64e981a4bc9600830f3a6ee776"
+    },
+    "results/per-dut-migration-20261117/skill-check.json": {
+      "sha256": "ed35d547800c17997feb292d7d805fd4ccdfee767f778f37014c9288050a49b1"
+    },
+    "results/per-dut-migration-20261117/asset-check.json": {
+      "sha256": "102152c601ad9adaa52498b6fab1e36b52fcd5a75599bdffbebef0d0303890e3"
+    },
+    "results/per-dut-migration-20261117/public-baselines.json": {
+      "sha256": "31d809f6d63d1955679b4b2591a202e334080f34edb59f2de19e55eea9a5ed57"
+    },
+    "results/per-dut-migration-20261117/public-reference-receipt.json": {
+      "sha256": "87c109272d77eb79f5cca1f1518344fc9efa0d91b1996b76c0f90b1c71a6dd38"
+    },
+    "results/per-dut-migration-20261117/internal-reference-receipt.json": {
+      "sha256": "a8ba9606f3a3ed4921ff9b9f94e1a5be85426389e069f6fefaf865880714f416"
+    },
+    "results/per-dut-migration-20261117/harness-artifact-receipt.json": {
+      "sha256": "8c510f9c6eb598869f7114ef667c5af92151a9428a4d9dd97afd2041a34ce52b"
+    },
+    "results/per-dut-migration-20261117/lsq/migration-map.json": {
+      "sha256": "4a6f0afc1853f3e0eb876b9e91f5e83aa9f624c7109e98c5809e949db749a149"
+    },
+    "results/per-dut-migration-20261117/lsq/ast-comparison.json": {
+      "sha256": "195cfcfb769afab69435d25c05e82e91b905d3d0d92750b28da58a943aa3aef0"
+    },
+    "results/per-dut-migration-20261117/lsq/isolation-summary.json": {
+      "sha256": "2a9db6ab3a8d654183c87a108e28f7d8f6df2c0db5bd84b5d0bcc40189fa0465"
+    },
+    "results/per-dut-migration-20261117/lsq/protected-evidence.json": {
+      "sha256": "23060b77e1e3e83bd64e0b992f898da2bddf73d3691195fa29a1757e71239ef3"
+    },
+    "results/per-dut-migration-20261117/mmu/handoff.json": {
+      "sha256": "e2e082181a5eb11a298ebd767094b80d7b190e32ca176de2559114f9f03aa8bf"
+    },
+    "results/per-dut-migration-20261117/mmu/nodeid-mapping.json": {
+      "sha256": "a2526573cf9d212c1f6bf6df0aa0d311ee75a57f1c26c68ee72ace5628ea379a"
+    },
+    "results/per-dut-migration-20261117/mmu/file-path-mapping.json": {
+      "sha256": "d9d1e62be7fe60afd02c07532e5b1ee0439cb8fffa91c91de2996eb48915fd64"
+    },
+    "results/per-dut-migration-20261117/mmu/ast-comparison.json": {
+      "sha256": "6b642b8766dd059ea94be5152b74650e20f881739796f11f7ab544cb642170ac"
+    },
+    "results/per-dut-migration-20261117/mmu/hardware-ptwfilter.log": {
+      "sha256": "4adc46563ade7157bdf31ccaab93068940e7b38494dcfa34a7432621fb7391a8"
+    },
+    "results/per-dut-migration-20261117/vagq/migration-audit.json": {
+      "sha256": "4b58c62f8e3720ce509b2a71305d56a65654a574ef9a325d1ab02b711428907a"
+    },
+    "results/per-dut-migration-20261117/vagq/nodeid-mapping.json": {
+      "sha256": "2fb91d2df4bf40cea416eb2cf1fc8f0d904479adad7c3ec97b436f1c80db946d"
+    },
+    "results/per-dut-migration-20261117/vagq/file-mapping.json": {
+      "sha256": "49f269a1e6528922038a6f1b5d5a00fccd87ec5d2194916ec19da4cf78636740"
+    },
+    "results/per-dut-migration-20261117/vagq/isolated-collection-summary.json": {
+      "sha256": "804d2bcce3b8eca3daa2770f3f7b3ca624c2c5630288a6369d58042386bfb2fd"
+    },
+    "results/per-dut-migration-20261117/vagq/offline-3.xml": {
+      "sha256": "faadff1b776223de225cbe61c458302956940be189376f8f4b5cd1c5c8b54174"
+    }
+  },
+  "git_commit_or_push_performed": false
+}

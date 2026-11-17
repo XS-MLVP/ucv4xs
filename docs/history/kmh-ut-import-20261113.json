@@ -1,0 +1,1432 @@
+{
+ "schema": 1,
+ "recorded_at": "2026-11-13",
+ "source": {
+  "name": "KMH V3 UT 验证跟踪",
+  "base": "MNDoBb60VL1bG99yUndgw9XeJlemrZQ3",
+  "table": "Z069jPn",
+  "tasks": 244,
+  "modules": 87
+ },
+ "method": {
+  "suite": "微架构子树；相邻 suite 子树互斥，每条任务唯一归属",
+  "shared_rtl": "子树内共享的底层模块允许被多个 suite 重复验证",
+  "port_count": "不作为切分判据",
+  "parameterised": "Queue/Arbiter/IssueQueue/IssuePipe/DPI 包装按类合并为 1 个参数化 DUT",
+  "existing": "十二个既有 suite 原样保留"
+ },
+ "new_suites": [
+  {
+   "suite": "backend_exec",
+   "group": "backend",
+   "tree_nodes": [
+    "FltRegionModule",
+    "VecRegionModule"
+   ],
+   "owners": [
+    "宋方圆"
+   ],
+   "note": "Backend 的浮点/向量执行子树（FltRegionModule、VecRegionModule）",
+   "tasks": [
+    "DummyDPICWrapper_PhyFpRegState",
+    "DummyDPICWrapper_PhyVecRegState",
+    "FltWbDataPath",
+    "FpRegFile",
+    "IssuePipeFaluFmul",
+    "IssuePipeFaluFmulFcvtFcmp",
+    "IssuePipeFaluFmulFdiv",
+    "IssuePipeVialu",
+    "IssuePipeVialuVidivVfmacVfdiv",
+    "IssuePipeVialuVimacVmoveVfcvtVfmac",
+    "IssuePipeVstd",
+    "IssueQueueFaluFmul",
+    "IssueQueueFaluFmulFcvtFcmp",
+    "IssueQueueFaluFmulFdiv",
+    "IssueQueueVialu",
+    "IssueQueueVialuVidivVfmacVfdiv",
+    "IssueQueueVialuVimacVmoveVfcvtVfmac",
+    "IssueQueueVstd",
+    "VfRegFile",
+    "VlRegFile",
+    "WbDataPath",
+    "WbFuBusyTable"
+   ],
+   "duts": [
+    {
+     "top": "FpRegFile",
+     "ports": 306,
+     "instances": 1
+    },
+    {
+     "top": "DummyDPICWrapper_PhyFpRegState",
+     "ports": 259,
+     "instances": 1,
+     "class": "DummyDPICWrapper",
+     "represents": [
+      "DummyDPICWrapper_PhyFpRegState",
+      "DummyDPICWrapper_PhyVecRegState"
+     ]
+    },
+    {
+     "top": "IssueQueueFaluFmulFcvtFcmp",
+     "ports": 245,
+     "instances": 1,
+     "class": "IssueQueue",
+     "represents": [
+      "IssueQueueFaluFmul",
+      "IssueQueueFaluFmulFcvtFcmp",
+      "IssueQueueFaluFmulFdiv",
+      "IssueQueueVialu",
+      "IssueQueueVialuVidivVfmacVfdiv",
+      "IssueQueueVialuVimacVmoveVfcvtVfmac",
+      "IssueQueueVstd"
+     ]
+    },
+    {
+     "top": "IssuePipeFaluFmulFcvtFcmp",
+     "ports": 243,
+     "instances": 1,
+     "class": "IssuePipe",
+     "represents": [
+      "IssuePipeFaluFmul",
+      "IssuePipeFaluFmulFcvtFcmp",
+      "IssuePipeFaluFmulFdiv",
+      "IssuePipeVialu",
+      "IssuePipeVialuVidivVfmacVfdiv",
+      "IssuePipeVialuVimacVmoveVfcvtVfmac",
+      "IssuePipeVstd"
+     ]
+    },
+    {
+     "top": "VfRegFile",
+     "ports": 178,
+     "instances": 1
+    },
+    {
+     "top": "FltWbDataPath",
+     "ports": 57,
+     "instances": 1
+    },
+    {
+     "top": "WbDataPath",
+     "ports": 51,
+     "instances": 1
+    },
+    {
+     "top": "VlRegFile",
+     "ports": 15,
+     "instances": 1
+    },
+    {
+     "top": "WbFuBusyTable",
+     "ports": 8,
+     "instances": 2
+    }
+   ],
+   "variants": [
+    "DummyDPICWrapper_PhyFpRegState",
+    "DummyDPICWrapper_PhyVecRegState",
+    "IssuePipeFaluFmul",
+    "IssuePipeFaluFmulFcvtFcmp",
+    "IssuePipeFaluFmulFdiv",
+    "IssuePipeVialu",
+    "IssuePipeVialuVidivVfmacVfdiv",
+    "IssuePipeVialuVimacVmoveVfcvtVfmac",
+    "IssuePipeVstd",
+    "IssueQueueFaluFmul",
+    "IssueQueueFaluFmulFcvtFcmp",
+    "IssueQueueFaluFmulFdiv",
+    "IssueQueueVialu",
+    "IssueQueueVialuVidivVfmacVfdiv",
+    "IssueQueueVialuVimacVmoveVfcvtVfmac",
+    "IssueQueueVstd"
+   ],
+   "no_rtl": [],
+   "placement": {
+    "DummyDPICWrapper_PhyFpRegState": "subtree FltRegionModule",
+    "DummyDPICWrapper_PhyVecRegState": "subtree VecRegionModule",
+    "FltWbDataPath": "subtree FltRegionModule",
+    "FpRegFile": "subtree FltRegionModule",
+    "IssuePipeFaluFmul": "subtree FltRegionModule",
+    "IssuePipeFaluFmulFcvtFcmp": "subtree FltRegionModule",
+    "IssuePipeFaluFmulFdiv": "subtree FltRegionModule",
+    "IssuePipeVialu": "subtree VecRegionModule",
+    "IssuePipeVialuVidivVfmacVfdiv": "subtree VecRegionModule",
+    "IssuePipeVialuVimacVmoveVfcvtVfmac": "subtree VecRegionModule",
+    "IssuePipeVstd": "subtree VecRegionModule",
+    "IssueQueueFaluFmul": "subtree FltRegionModule",
+    "IssueQueueFaluFmulFcvtFcmp": "subtree FltRegionModule",
+    "IssueQueueFaluFmulFdiv": "subtree FltRegionModule",
+    "IssueQueueVialu": "subtree VecRegionModule",
+    "IssueQueueVialuVidivVfmacVfdiv": "subtree VecRegionModule",
+    "IssueQueueVialuVimacVmoveVfcvtVfmac": "subtree VecRegionModule",
+    "IssueQueueVstd": "subtree VecRegionModule",
+    "VfRegFile": "subtree VecRegionModule",
+    "VlRegFile": "subtree VecRegionModule",
+    "WbDataPath": "subtree VecRegionModule",
+    "WbFuBusyTable": "subtree VecRegionModule"
+   }
+  },
+  {
+   "suite": "backend_ctrl",
+   "group": "backend",
+   "tree_nodes": [
+    "CtrlBlock"
+   ],
+   "owners": [
+    "宋方圆"
+   ],
+   "note": "Backend 的 CtrlBlock 子树",
+   "tasks": [
+    "DecodeStage",
+    "Dispatch",
+    "FusionDecoder",
+    "GPAMem",
+    "LsqEnqCtrl",
+    "MemCtrl",
+    "PipeGroupConnect",
+    "PipelineConnectPipe",
+    "RedirectGenerator",
+    "Rename",
+    "Rob",
+    "SyncDataModuleTemplate_BackendPC_64entry",
+    "Trace"
+   ],
+   "duts": [
+    {
+     "top": "Dispatch",
+     "ports": 3398,
+     "instances": 1
+    },
+    {
+     "top": "Rename",
+     "ports": 1786,
+     "instances": 1
+    },
+    {
+     "top": "PipeGroupConnect",
+     "ports": 1526,
+     "instances": 1
+    },
+    {
+     "top": "Rob",
+     "ports": 1238,
+     "instances": 1
+    },
+    {
+     "top": "DecodeStage",
+     "ports": 945,
+     "instances": 1
+    },
+    {
+     "top": "LsqEnqCtrl",
+     "ports": 288,
+     "instances": 1
+    },
+    {
+     "top": "MemCtrl",
+     "ports": 153,
+     "instances": 1
+    },
+    {
+     "top": "FusionDecoder",
+     "ports": 138,
+     "instances": 1
+    },
+    {
+     "top": "PipelineConnectPipe",
+     "ports": 138,
+     "instances": 8
+    },
+    {
+     "top": "RedirectGenerator",
+     "ports": 81,
+     "instances": 1
+    },
+    {
+     "top": "Trace",
+     "ports": 74,
+     "instances": 1
+    },
+    {
+     "top": "SyncDataModuleTemplate_BackendPC_64entry",
+     "ports": 56,
+     "instances": 1
+    },
+    {
+     "top": "GPAMem",
+     "ports": 12,
+     "instances": 1
+    }
+   ],
+   "variants": [],
+   "no_rtl": [],
+   "placement": {
+    "DecodeStage": "subtree CtrlBlock",
+    "Dispatch": "subtree CtrlBlock",
+    "FusionDecoder": "subtree CtrlBlock",
+    "GPAMem": "subtree CtrlBlock",
+    "LsqEnqCtrl": "subtree CtrlBlock",
+    "MemCtrl": "subtree CtrlBlock",
+    "PipeGroupConnect": "subtree CtrlBlock",
+    "PipelineConnectPipe": "subtree CtrlBlock",
+    "RedirectGenerator": "subtree CtrlBlock",
+    "Rename": "subtree CtrlBlock",
+    "Rob": "subtree CtrlBlock",
+    "SyncDataModuleTemplate_BackendPC_64entry": "subtree CtrlBlock",
+    "Trace": "subtree CtrlBlock"
+   }
+  },
+  {
+   "suite": "backend_issue",
+   "group": "backend",
+   "tree_nodes": [
+    "Region"
+   ],
+   "owners": [
+    "吴天择"
+   ],
+   "note": "Backend 的 Region 子树与向量异常合并路径",
+   "tasks": [
+    "DataPath",
+    "ExuBlock",
+    "FpRFReadArbiter",
+    "GetE8OffsetInVreg",
+    "IssueQueueAluBkuVset",
+    "IssueQueueAluCsrFenceLinkBrhNjmp",
+    "IssueQueueAluDivBrhNjmp",
+    "IssueQueueAluI2fBrhNjmp",
+    "IssueQueueAluMul",
+    "IssueQueueLdu",
+    "IssueQueueStaMou",
+    "IssueQueueStdMoud",
+    "NfMappedElemIdx"
+   ],
+   "duts": [
+    {
+     "top": "DataPath",
+     "ports": 1092,
+     "instances": 1
+    },
+    {
+     "top": "ExuBlock",
+     "ports": 700,
+     "instances": 1
+    },
+    {
+     "top": "FpRFReadArbiter",
+     "ports": 508,
+     "instances": 2
+    },
+    {
+     "top": "IssueQueueAluI2fBrhNjmp",
+     "ports": 321,
+     "instances": 1,
+     "class": "IssueQueue",
+     "represents": [
+      "IssueQueueAluBkuVset",
+      "IssueQueueAluCsrFenceLinkBrhNjmp",
+      "IssueQueueAluDivBrhNjmp",
+      "IssueQueueAluI2fBrhNjmp",
+      "IssueQueueAluMul",
+      "IssueQueueLdu",
+      "IssueQueueStaMou",
+      "IssueQueueStdMoud"
+     ]
+    },
+    {
+     "top": "NfMappedElemIdx",
+     "ports": 18,
+     "instances": 1
+    },
+    {
+     "top": "GetE8OffsetInVreg",
+     "ports": 3,
+     "instances": 1
+    }
+   ],
+   "variants": [
+    "IssueQueueAluBkuVset",
+    "IssueQueueAluCsrFenceLinkBrhNjmp",
+    "IssueQueueAluDivBrhNjmp",
+    "IssueQueueAluI2fBrhNjmp",
+    "IssueQueueAluMul",
+    "IssueQueueLdu",
+    "IssueQueueStaMou",
+    "IssueQueueStdMoud"
+   ],
+   "no_rtl": [],
+   "placement": {
+    "DataPath": "subtree Region",
+    "ExuBlock": "subtree Region",
+    "FpRFReadArbiter": "subtree Region",
+    "GetE8OffsetInVreg": "domain module list",
+    "IssueQueueAluBkuVset": "subtree Region",
+    "IssueQueueAluCsrFenceLinkBrhNjmp": "subtree Region",
+    "IssueQueueAluDivBrhNjmp": "subtree Region",
+    "IssueQueueAluI2fBrhNjmp": "subtree Region",
+    "IssueQueueAluMul": "subtree Region",
+    "IssueQueueLdu": "subtree Region",
+    "IssueQueueStaMou": "subtree Region",
+    "IssueQueueStdMoud": "subtree Region",
+    "NfMappedElemIdx": "domain module list"
+   }
+  },
+  {
+   "suite": "mem_misc",
+   "group": "bus",
+   "tree_nodes": [
+    "MemMisc"
+   ],
+   "owners": [
+    "刘锦程",
+    "张宇鑫"
+   ],
+   "note": "XSTop 的 MemMisc 子树、芯片级总线胶合与 imsic_bus_top",
+   "tasks": [
+    "APLIC",
+    "AXI4Deinterleaver",
+    "AXI4IdIndexer",
+    "AXI4Map",
+    "AXIRegIMSIC",
+    "CHILogger",
+    "LazyModule",
+    "LevelGateway",
+    "PLICFanIn",
+    "PMPChecker",
+    "Queue128_BundleMap",
+    "Queue1_AXI4BundleARW",
+    "Queue1_AXI4BundleB",
+    "Queue1_AXI4BundleR",
+    "Queue1_AXI4BundleW",
+    "Queue1_BundleMap",
+    "Queue1_RegMapperInput",
+    "Queue1_TLBundleA",
+    "Queue2_AXI4BundleAR",
+    "Queue2_AXI4BundleAW",
+    "Queue2_AXI4BundleB",
+    "Queue2_AXI4BundleR",
+    "Queue2_AXI4BundleW",
+    "Queue2_TLBundleA",
+    "Queue2_TLBundleD",
+    "Queue2_UInt1",
+    "Queue2_UInt2",
+    "Queue2_UInt3",
+    "Queue3072_BundleMap",
+    "Queue3073_BundleMap",
+    "Queue32_BundleMap",
+    "Queue64_BundleMap",
+    "Queue65540_BundleMap",
+    "Repeater",
+    "TLFIFOFixer",
+    "TLFilter",
+    "TLFragmenter",
+    "TLXbar"
+   ],
+   "duts": [
+    {
+     "top": "PMPChecker",
+     "ports": 489,
+     "instances": 9
+    },
+    {
+     "top": "LazyModule",
+     "ports": 128,
+     "instances": 1
+    },
+    {
+     "top": "APLIC",
+     "ports": 95,
+     "instances": 1
+    },
+    {
+     "top": "AXI4Deinterleaver",
+     "ports": 69,
+     "instances": 1
+    },
+    {
+     "top": "AXI4IdIndexer",
+     "ports": 68,
+     "instances": 1
+    },
+    {
+     "top": "PLICFanIn",
+     "ports": 68,
+     "instances": 2
+    },
+    {
+     "top": "CHILogger",
+     "ports": 64,
+     "instances": 3
+    },
+    {
+     "top": "TLFIFOFixer",
+     "ports": 48,
+     "instances": 1
+    },
+    {
+     "top": "TLFragmenter",
+     "ports": 48,
+     "instances": 1
+    },
+    {
+     "top": "AXIRegIMSIC",
+     "ports": 42,
+     "instances": 1
+    },
+    {
+     "top": "Queue2_TLBundleA",
+     "ports": 36,
+     "instances": 1,
+     "class": "Queue",
+     "represents": [
+      "Queue128_BundleMap",
+      "Queue1_AXI4BundleARW",
+      "Queue1_AXI4BundleB",
+      "Queue1_AXI4BundleR",
+      "Queue1_AXI4BundleW",
+      "Queue1_BundleMap",
+      "Queue1_RegMapperInput",
+      "Queue1_TLBundleA",
+      "Queue2_AXI4BundleAR",
+      "Queue2_AXI4BundleAW",
+      "Queue2_AXI4BundleB",
+      "Queue2_AXI4BundleR",
+      "Queue2_AXI4BundleW",
+      "Queue2_TLBundleA",
+      "Queue2_TLBundleD",
+      "Queue2_UInt2",
+      "Queue2_UInt3",
+      "Queue3072_BundleMap",
+      "Queue3073_BundleMap",
+      "Queue32_BundleMap",
+      "Queue64_BundleMap",
+      "Queue65540_BundleMap"
+     ]
+    },
+    {
+     "top": "Repeater",
+     "ports": 33,
+     "instances": 1
+    },
+    {
+     "top": "AXI4Map",
+     "ports": 26,
+     "instances": 1
+    },
+    {
+     "top": "LevelGateway",
+     "ports": 6,
+     "instances": 65
+    }
+   ],
+   "variants": [
+    "Queue128_BundleMap",
+    "Queue1_AXI4BundleARW",
+    "Queue1_AXI4BundleB",
+    "Queue1_AXI4BundleR",
+    "Queue1_AXI4BundleW",
+    "Queue1_BundleMap",
+    "Queue1_RegMapperInput",
+    "Queue1_TLBundleA",
+    "Queue2_AXI4BundleAR",
+    "Queue2_AXI4BundleAW",
+    "Queue2_AXI4BundleB",
+    "Queue2_AXI4BundleR",
+    "Queue2_AXI4BundleW",
+    "Queue2_TLBundleA",
+    "Queue2_TLBundleD",
+    "Queue2_UInt2",
+    "Queue2_UInt3",
+    "Queue3072_BundleMap",
+    "Queue3073_BundleMap",
+    "Queue32_BundleMap",
+    "Queue64_BundleMap",
+    "Queue65540_BundleMap"
+   ],
+   "no_rtl": [
+    "Queue2_UInt1",
+    "TLXbar",
+    "TLFilter"
+   ],
+   "placement": {
+    "APLIC": "subtree MemMisc",
+    "AXI4Deinterleaver": "subtree MemMisc",
+    "AXI4IdIndexer": "subtree MemMisc",
+    "AXI4Map": "explicit placement",
+    "AXIRegIMSIC": "explicit placement",
+    "CHILogger": "explicit placement",
+    "LazyModule": "subtree MemMisc",
+    "LevelGateway": "subtree MemMisc",
+    "PLICFanIn": "subtree MemMisc",
+    "PMPChecker": "subtree MemMisc",
+    "Queue128_BundleMap": "subtree MemMisc",
+    "Queue1_AXI4BundleARW": "subtree MemMisc",
+    "Queue1_AXI4BundleB": "subtree MemMisc",
+    "Queue1_AXI4BundleR": "subtree MemMisc",
+    "Queue1_AXI4BundleW": "subtree MemMisc",
+    "Queue1_BundleMap": "subtree MemMisc",
+    "Queue1_RegMapperInput": "subtree MemMisc",
+    "Queue1_TLBundleA": "subtree MemMisc",
+    "Queue2_AXI4BundleAR": "subtree MemMisc",
+    "Queue2_AXI4BundleAW": "subtree MemMisc",
+    "Queue2_AXI4BundleB": "subtree MemMisc",
+    "Queue2_AXI4BundleR": "subtree MemMisc",
+    "Queue2_AXI4BundleW": "subtree MemMisc",
+    "Queue2_TLBundleA": "subtree MemMisc",
+    "Queue2_TLBundleD": "subtree MemMisc",
+    "Queue2_UInt1": "explicit placement",
+    "Queue2_UInt2": "subtree MemMisc",
+    "Queue2_UInt3": "explicit placement",
+    "Queue3072_BundleMap": "subtree MemMisc",
+    "Queue3073_BundleMap": "subtree MemMisc",
+    "Queue32_BundleMap": "subtree MemMisc",
+    "Queue64_BundleMap": "subtree MemMisc",
+    "Queue65540_BundleMap": "explicit placement",
+    "Repeater": "subtree MemMisc",
+    "TLFIFOFixer": "subtree MemMisc",
+    "TLFilter": "explicit placement",
+    "TLFragmenter": "subtree MemMisc",
+    "TLXbar": "explicit placement"
+   }
+  },
+  {
+   "suite": "ncb",
+   "group": "bus",
+   "tree_nodes": [
+    "OpenNCB",
+    "OpenNCB_1"
+   ],
+   "owners": [
+    "张宇鑫"
+   ],
+   "note": "XSTop 的 OpenNCB 子树",
+   "tasks": [
+    "CHILinkActiveManagerRX",
+    "CHILinkActiveManagerTX",
+    "NCBDownstreamAR",
+    "NCBDownstreamAW",
+    "NCBDownstreamB",
+    "NCBDownstreamR",
+    "NCBDownstreamW",
+    "NCBOrderAddressCAM",
+    "NCBOrderRequestCAM",
+    "NCBTransactionAgeMatrix",
+    "NCBTransactionFreeList",
+    "NCBTransactionPayload",
+    "NCBTransactionQueue",
+    "NCBUpstreamRXDAT",
+    "NCBUpstreamRXREQ",
+    "NCBUpstreamTXDAT",
+    "NCBUpstreamTXRSP"
+   ],
+   "duts": [
+    {
+     "top": "NCBTransactionQueue",
+     "ports": 2271,
+     "instances": 1
+    },
+    {
+     "top": "NCBTransactionPayload",
+     "ports": 1432,
+     "instances": 1
+    },
+    {
+     "top": "NCBUpstreamTXDAT",
+     "ports": 884,
+     "instances": 1
+    },
+    {
+     "top": "NCBUpstreamRXREQ",
+     "ports": 671,
+     "instances": 1
+    },
+    {
+     "top": "NCBTransactionAgeMatrix",
+     "ports": 579,
+     "instances": 1
+    },
+    {
+     "top": "NCBUpstreamTXRSP",
+     "ports": 423,
+     "instances": 1
+    },
+    {
+     "top": "NCBDownstreamW",
+     "ports": 407,
+     "instances": 1
+    },
+    {
+     "top": "NCBDownstreamAW",
+     "ports": 402,
+     "instances": 1
+    },
+    {
+     "top": "NCBDownstreamAR",
+     "ports": 401,
+     "instances": 1
+    },
+    {
+     "top": "NCBUpstreamRXDAT",
+     "ports": 293,
+     "instances": 1
+    },
+    {
+     "top": "NCBDownstreamR",
+     "ports": 277,
+     "instances": 1
+    },
+    {
+     "top": "NCBOrderAddressCAM",
+     "ports": 203,
+     "instances": 1
+    },
+    {
+     "top": "NCBTransactionFreeList",
+     "ports": 197,
+     "instances": 1
+    },
+    {
+     "top": "NCBDownstreamB",
+     "ports": 71,
+     "instances": 1
+    },
+    {
+     "top": "CHILinkActiveManagerRX",
+     "ports": 8,
+     "instances": 2
+    },
+    {
+     "top": "CHILinkActiveManagerTX",
+     "ports": 8,
+     "instances": 2
+    }
+   ],
+   "variants": [],
+   "no_rtl": [
+    "NCBOrderRequestCAM"
+   ],
+   "placement": {
+    "CHILinkActiveManagerRX": "subtree OpenNCB",
+    "CHILinkActiveManagerTX": "subtree OpenNCB",
+    "NCBDownstreamAR": "subtree OpenNCB",
+    "NCBDownstreamAW": "subtree OpenNCB",
+    "NCBDownstreamB": "subtree OpenNCB",
+    "NCBDownstreamR": "subtree OpenNCB",
+    "NCBDownstreamW": "subtree OpenNCB",
+    "NCBOrderAddressCAM": "subtree OpenNCB",
+    "NCBOrderRequestCAM": "module majority",
+    "NCBTransactionAgeMatrix": "subtree OpenNCB",
+    "NCBTransactionFreeList": "subtree OpenNCB",
+    "NCBTransactionPayload": "subtree OpenNCB",
+    "NCBTransactionQueue": "subtree OpenNCB",
+    "NCBUpstreamRXDAT": "subtree OpenNCB",
+    "NCBUpstreamRXREQ": "subtree OpenNCB",
+    "NCBUpstreamTXDAT": "subtree OpenNCB",
+    "NCBUpstreamTXRSP": "subtree OpenNCB"
+   }
+  },
+  {
+   "suite": "llc_link",
+   "group": "bus",
+   "tree_nodes": [
+    "OpenLLC"
+   ],
+   "owners": [
+    "张宇鑫"
+   ],
+   "note": "XSTop 的 OpenLLC 子树与芯片级 link monitor",
+   "tasks": [
+    "MMIODiverger",
+    "MMIOMerger",
+    "MemUnit",
+    "RNLinkMonitor",
+    "RNXbar",
+    "RXREQ",
+    "ReceiverLinkMonitor",
+    "RefillUnit",
+    "ResponseUnit",
+    "SNLinkMonitor",
+    "SNXbar",
+    "SnoopUnit",
+    "TXSNP",
+    "TransmitterLinkMonitor"
+   ],
+   "duts": [
+    {
+     "top": "RNXbar",
+     "ports": 349,
+     "instances": 1
+    },
+    {
+     "top": "MemUnit",
+     "ports": 298,
+     "instances": 1
+    },
+    {
+     "top": "MMIODiverger",
+     "ports": 293,
+     "instances": 1
+    },
+    {
+     "top": "ResponseUnit",
+     "ports": 276,
+     "instances": 1
+    },
+    {
+     "top": "MMIOMerger",
+     "ports": 230,
+     "instances": 1
+    },
+    {
+     "top": "SNXbar",
+     "ports": 219,
+     "instances": 1
+    },
+    {
+     "top": "TransmitterLinkMonitor",
+     "ports": 159,
+     "instances": 2
+    },
+    {
+     "top": "ReceiverLinkMonitor",
+     "ports": 158,
+     "instances": 1
+    },
+    {
+     "top": "RefillUnit",
+     "ports": 158,
+     "instances": 1
+    },
+    {
+     "top": "RNLinkMonitor",
+     "ports": 139,
+     "instances": 1
+    },
+    {
+     "top": "SnoopUnit",
+     "ports": 122,
+     "instances": 1
+    },
+    {
+     "top": "SNLinkMonitor",
+     "ports": 118,
+     "instances": 1
+    },
+    {
+     "top": "RXREQ",
+     "ports": 40,
+     "instances": 1
+    },
+    {
+     "top": "TXSNP",
+     "ports": 22,
+     "instances": 1
+    }
+   ],
+   "variants": [],
+   "no_rtl": [],
+   "placement": {
+    "MMIODiverger": "subtree OpenLLC",
+    "MMIOMerger": "subtree OpenLLC",
+    "MemUnit": "subtree OpenLLC",
+    "RNLinkMonitor": "subtree OpenLLC",
+    "RNXbar": "subtree OpenLLC",
+    "RXREQ": "subtree OpenLLC",
+    "ReceiverLinkMonitor": "explicit placement",
+    "RefillUnit": "subtree OpenLLC",
+    "ResponseUnit": "subtree OpenLLC",
+    "SNLinkMonitor": "subtree OpenLLC",
+    "SNXbar": "subtree OpenLLC",
+    "SnoopUnit": "subtree OpenLLC",
+    "TXSNP": "subtree OpenLLC",
+    "TransmitterLinkMonitor": "explicit placement"
+   }
+  },
+  {
+   "suite": "l2",
+   "group": "cache",
+   "tree_nodes": [
+    "L2Top"
+   ],
+   "owners": [
+    "苟铖"
+   ],
+   "note": "L2Top 整棵子树（CoupledL2 + L1L2 fabric）",
+   "tasks": [
+    "Arbiter16_CHIDAT",
+    "Arbiter16_TLBundleD",
+    "Arbiter2_L2TlbReq",
+    "Arbiter3_L1PrefetchReq",
+    "Arbiter3_L2PrefetchReq",
+    "Arbiter3_L3PrefetchReq",
+    "Arbiter4_L2CacheErrorInfo",
+    "Arbiter4_L2ToL1HintInsideL2",
+    "BankBinder",
+    "BertiPrefetcher",
+    "BusErrorUnit",
+    "CDPPrefetcher",
+    "DataStorage",
+    "Decoupled2LCredit",
+    "Directory",
+    "GrantBuffer",
+    "HPerfCounter",
+    "IntBuffer",
+    "L1Prefetcher",
+    "L2Cache",
+    "L2Slice",
+    "LCredit2Decoupled",
+    "MMIOBridgeEntry",
+    "MSHRBuffer",
+    "MSHRCtl",
+    "MbistPipeL2Prefetcher",
+    "MbistPipeSms",
+    "PBestOffsetPrefetch",
+    "PrefetchController",
+    "PrefetchReceiver",
+    "Queue2_PCrdGranted",
+    "Queue2_TLBundleB",
+    "Queue2_TLBundleC",
+    "Queue2_TLBundleE",
+    "Queue4_PrefetchTrain",
+    "Queue78_PCrdGranted",
+    "RXDAT",
+    "RXRSP",
+    "RXSNP",
+    "RequestArb",
+    "RequestBuffer",
+    "SMSPrefetcher",
+    "SinkA",
+    "SinkC",
+    "SpecMissABuffer",
+    "StashPrefetcher",
+    "TXDAT",
+    "TXREQ",
+    "TXRSP",
+    "VBestOffsetPrefetch",
+    "perfEventsModule"
+   ],
+   "duts": [
+    {
+     "top": "RequestArb",
+     "ports": 1383,
+     "instances": 4
+    },
+    {
+     "top": "MSHRCtl",
+     "ports": 992,
+     "instances": 2
+    },
+    {
+     "top": "Directory",
+     "ports": 789,
+     "instances": 1
+    },
+    {
+     "top": "RXSNP",
+     "ports": 477,
+     "instances": 4
+    },
+    {
+     "top": "RequestBuffer",
+     "ports": 361,
+     "instances": 4
+    },
+    {
+     "top": "Arbiter16_CHIDAT",
+     "ports": 204,
+     "instances": 1,
+     "class": "Arbiter",
+     "represents": [
+      "Arbiter16_CHIDAT",
+      "Arbiter16_TLBundleD",
+      "Arbiter2_L2TlbReq",
+      "Arbiter3_L1PrefetchReq",
+      "Arbiter3_L2PrefetchReq",
+      "Arbiter3_L3PrefetchReq",
+      "Arbiter4_L2CacheErrorInfo",
+      "Arbiter4_L2ToL1HintInsideL2"
+     ]
+    },
+    {
+     "top": "SinkC",
+     "ports": 190,
+     "instances": 4
+    },
+    {
+     "top": "MbistPipeL2Prefetcher",
+     "ports": 183,
+     "instances": 1
+    },
+    {
+     "top": "GrantBuffer",
+     "ports": 178,
+     "instances": 4
+    },
+    {
+     "top": "PBestOffsetPrefetch",
+     "ports": 173,
+     "instances": 1
+    },
+    {
+     "top": "TXDAT",
+     "ports": 138,
+     "instances": 4
+    },
+    {
+     "top": "CDPPrefetcher",
+     "ports": 130,
+     "instances": 1
+    },
+    {
+     "top": "VBestOffsetPrefetch",
+     "ports": 116,
+     "instances": 1
+    },
+    {
+     "top": "L1Prefetcher",
+     "ports": 86,
+     "instances": 1
+    },
+    {
+     "top": "DataStorage",
+     "ports": 77,
+     "instances": 1
+    },
+    {
+     "top": "TXREQ",
+     "ports": 76,
+     "instances": 4
+    },
+    {
+     "top": "SMSPrefetcher",
+     "ports": 75,
+     "instances": 1
+    },
+    {
+     "top": "L2Cache",
+     "ports": 68,
+     "instances": 1
+    },
+    {
+     "top": "MMIOBridgeEntry",
+     "ports": 64,
+     "instances": 2
+    },
+    {
+     "top": "TXRSP",
+     "ports": 51,
+     "instances": 4
+    },
+    {
+     "top": "SpecMissABuffer",
+     "ports": 42,
+     "instances": 4
+    },
+    {
+     "top": "Decoupled2LCredit",
+     "ports": 38,
+     "instances": 3
+    },
+    {
+     "top": "SinkA",
+     "ports": 37,
+     "instances": 4
+    },
+    {
+     "top": "L2Slice",
+     "ports": 35,
+     "instances": 1
+    },
+    {
+     "top": "HPerfCounter",
+     "ports": 29,
+     "instances": 8
+    },
+    {
+     "top": "BusErrorUnit",
+     "ports": 26,
+     "instances": 1
+    },
+    {
+     "top": "RXDAT",
+     "ports": 26,
+     "instances": 4
+    },
+    {
+     "top": "StashPrefetcher",
+     "ports": 26,
+     "instances": 1
+    },
+    {
+     "top": "Queue4_PrefetchTrain",
+     "ports": 26,
+     "instances": 2,
+     "class": "Queue",
+     "represents": [
+      "Queue2_PCrdGranted",
+      "Queue2_TLBundleB",
+      "Queue2_TLBundleC",
+      "Queue2_TLBundleE",
+      "Queue4_PrefetchTrain",
+      "Queue78_PCrdGranted"
+     ]
+    },
+    {
+     "top": "LCredit2Decoupled",
+     "ports": 23,
+     "instances": 1
+    },
+    {
+     "top": "MbistPipeSms",
+     "ports": 23,
+     "instances": 1
+    },
+    {
+     "top": "BertiPrefetcher",
+     "ports": 22,
+     "instances": 1
+    },
+    {
+     "top": "RXRSP",
+     "ports": 18,
+     "instances": 4
+    },
+    {
+     "top": "PrefetchController",
+     "ports": 17,
+     "instances": 1
+    },
+    {
+     "top": "MSHRBuffer",
+     "ports": 12,
+     "instances": 4
+    },
+    {
+     "top": "PrefetchReceiver",
+     "ports": 8,
+     "instances": 1
+    },
+    {
+     "top": "perfEventsModule",
+     "ports": 5,
+     "instances": 24
+    },
+    {
+     "top": "IntBuffer",
+     "ports": 4,
+     "instances": 3
+    }
+   ],
+   "variants": [
+    "Arbiter16_CHIDAT",
+    "Arbiter16_TLBundleD",
+    "Arbiter2_L2TlbReq",
+    "Arbiter3_L1PrefetchReq",
+    "Arbiter3_L2PrefetchReq",
+    "Arbiter3_L3PrefetchReq",
+    "Arbiter4_L2CacheErrorInfo",
+    "Arbiter4_L2ToL1HintInsideL2",
+    "Queue2_PCrdGranted",
+    "Queue2_TLBundleB",
+    "Queue2_TLBundleC",
+    "Queue2_TLBundleE",
+    "Queue4_PrefetchTrain",
+    "Queue78_PCrdGranted"
+   ],
+   "no_rtl": [
+    "BankBinder"
+   ],
+   "placement": {
+    "Arbiter16_CHIDAT": "subtree L2Top",
+    "Arbiter16_TLBundleD": "subtree L2Top",
+    "Arbiter2_L2TlbReq": "subtree L2Top",
+    "Arbiter3_L1PrefetchReq": "explicit placement",
+    "Arbiter3_L2PrefetchReq": "explicit placement",
+    "Arbiter3_L3PrefetchReq": "explicit placement",
+    "Arbiter4_L2CacheErrorInfo": "subtree L2Top",
+    "Arbiter4_L2ToL1HintInsideL2": "subtree L2Top",
+    "BankBinder": "explicit placement",
+    "BertiPrefetcher": "explicit placement",
+    "BusErrorUnit": "subtree L2Top",
+    "CDPPrefetcher": "subtree L2Top",
+    "DataStorage": "subtree L2Top",
+    "Decoupled2LCredit": "subtree L2Top",
+    "Directory": "subtree L2Top",
+    "GrantBuffer": "subtree L2Top",
+    "HPerfCounter": "explicit placement",
+    "IntBuffer": "subtree L2Top",
+    "L1Prefetcher": "explicit placement",
+    "L2Cache": "subtree L2Top",
+    "L2Slice": "subtree L2Top",
+    "LCredit2Decoupled": "subtree L2Top",
+    "MMIOBridgeEntry": "subtree L2Top",
+    "MSHRBuffer": "subtree L2Top",
+    "MSHRCtl": "subtree L2Top",
+    "MbistPipeL2Prefetcher": "subtree L2Top",
+    "MbistPipeSms": "explicit placement",
+    "PBestOffsetPrefetch": "subtree L2Top",
+    "PrefetchController": "subtree L2Top",
+    "PrefetchReceiver": "subtree L2Top",
+    "Queue2_PCrdGranted": "subtree L2Top",
+    "Queue2_TLBundleB": "subtree L2Top",
+    "Queue2_TLBundleC": "subtree L2Top",
+    "Queue2_TLBundleE": "subtree L2Top",
+    "Queue4_PrefetchTrain": "subtree L2Top",
+    "Queue78_PCrdGranted": "subtree L2Top",
+    "RXDAT": "subtree L2Top",
+    "RXRSP": "subtree L2Top",
+    "RXSNP": "subtree L2Top",
+    "RequestArb": "subtree L2Top",
+    "RequestBuffer": "subtree L2Top",
+    "SMSPrefetcher": "explicit placement",
+    "SinkA": "subtree L2Top",
+    "SinkC": "subtree L2Top",
+    "SpecMissABuffer": "subtree L2Top",
+    "StashPrefetcher": "subtree L2Top",
+    "TXDAT": "subtree L2Top",
+    "TXREQ": "subtree L2Top",
+    "TXRSP": "subtree L2Top",
+    "VBestOffsetPrefetch": "subtree L2Top",
+    "perfEventsModule": "explicit placement"
+   }
+  },
+  {
+   "suite": "clock",
+   "group": "clock",
+   "tree_nodes": [],
+   "owners": [
+    "吴天择"
+   ],
+   "note": "时钟复位域（无单一子树）",
+   "tasks": [
+    "AsyncResetSynchronizerShiftReg_w1_d3_i0",
+    "ResetGen",
+    "TIMER",
+    "TimeAsync",
+    "TopDownGen"
+   ],
+   "duts": [
+    {
+     "top": "TIMER",
+     "ports": 20,
+     "instances": 1
+    },
+    {
+     "top": "TopDownGen",
+     "ports": 17,
+     "instances": 1
+    },
+    {
+     "top": "ResetGen",
+     "ports": 6,
+     "instances": 14
+    },
+    {
+     "top": "TimeAsync",
+     "ports": 5,
+     "instances": 1
+    },
+    {
+     "top": "AsyncResetSynchronizerShiftReg_w1_d3_i0",
+     "ports": 4,
+     "instances": 19
+    }
+   ],
+   "variants": [],
+   "no_rtl": [],
+   "placement": {
+    "AsyncResetSynchronizerShiftReg_w1_d3_i0": "domain module list",
+    "ResetGen": "domain module list",
+    "TIMER": "domain module list",
+    "TimeAsync": "domain module list",
+    "TopDownGen": "domain module list"
+   }
+  },
+  {
+   "suite": "debug",
+   "group": "debug",
+   "tree_nodes": [],
+   "owners": [
+    "刘锦程"
+   ],
+   "note": "Debug 域",
+   "tasks": [
+    "DebugCustomXbar",
+    "DebugTransportModuleJTAG",
+    "TLDebugModule"
+   ],
+   "duts": [
+    {
+     "top": "TLDebugModule",
+     "ports": 51,
+     "instances": 1
+    },
+    {
+     "top": "DebugTransportModuleJTAG",
+     "ports": 18,
+     "instances": 1
+    }
+   ],
+   "variants": [],
+   "no_rtl": [
+    "DebugCustomXbar"
+   ],
+   "placement": {
+    "DebugCustomXbar": "domain module list",
+    "DebugTransportModuleJTAG": "domain module list",
+    "TLDebugModule": "domain module list"
+   }
+  },
+  {
+   "suite": "frontend_bridge",
+   "group": "frontend",
+   "tree_nodes": [],
+   "owners": [
+    "皮彦"
+   ],
+   "note": "Frontend/MemBlock 之间的缓冲桥",
+   "tasks": [
+    "ICacheBuffer",
+    "ICacheCtrlBuffer",
+    "InstrUncacheBuffer"
+   ],
+   "duts": [
+    {
+     "top": "ICacheCtrlBuffer",
+     "ports": 36,
+     "instances": 1
+    },
+    {
+     "top": "ICacheBuffer",
+     "ports": 33,
+     "instances": 1
+    },
+    {
+     "top": "InstrUncacheBuffer",
+     "ports": 29,
+     "instances": 1
+    }
+   ],
+   "variants": [],
+   "no_rtl": [],
+   "placement": {
+    "ICacheBuffer": "domain module list",
+    "ICacheCtrlBuffer": "domain module list",
+    "InstrUncacheBuffer": "domain module list"
+   }
+  },
+  {
+   "suite": "mbist",
+   "group": "mbist",
+   "tree_nodes": [],
+   "owners": [
+    "吴天择",
+    "姚治成"
+   ],
+   "note": "MBIST 域（跨块，无单一子树）",
+   "tasks": [
+    "MbistIntfFrontend",
+    "MbistIntfL2",
+    "MbistIntfMemBlk",
+    "MbistPipeFrontend",
+    "MbistPipeMemBlk"
+   ],
+   "duts": [
+    {
+     "top": "MbistPipeFrontend",
+     "ports": 338,
+     "instances": 1
+    },
+    {
+     "top": "MbistPipeMemBlk",
+     "ports": 79,
+     "instances": 1
+    },
+    {
+     "top": "MbistIntfFrontend",
+     "ports": 22,
+     "instances": 1
+    },
+    {
+     "top": "MbistIntfL2",
+     "ports": 22,
+     "instances": 1
+    },
+    {
+     "top": "MbistIntfMemBlk",
+     "ports": 22,
+     "instances": 1
+    }
+   ],
+   "variants": [],
+   "no_rtl": [],
+   "placement": {
+    "MbistIntfFrontend": "domain module list",
+    "MbistIntfL2": "domain module list",
+    "MbistIntfMemBlk": "domain module list",
+    "MbistPipeFrontend": "domain module list",
+    "MbistPipeMemBlk": "domain module list"
+   }
+  },
+  {
+   "suite": "memblock_misc",
+   "group": "memblock",
+   "tree_nodes": [],
+   "owners": [
+    "皮彦"
+   ],
+   "note": "MemBlock 中既有 suite 未覆盖的杂项",
+   "tasks": [
+    "DummyDPICWrapper_LrScEvent",
+    "SelectOldest"
+   ],
+   "duts": [
+    {
+     "top": "SelectOldest",
+     "ports": 95,
+     "instances": 2
+    },
+    {
+     "top": "DummyDPICWrapper_LrScEvent",
+     "ports": 6,
+     "instances": 1,
+     "class": "DummyDPICWrapper",
+     "represents": [
+      "DummyDPICWrapper_LrScEvent"
+     ]
+    }
+   ],
+   "variants": [
+    "DummyDPICWrapper_LrScEvent"
+   ],
+   "no_rtl": [],
+   "placement": {
+    "DummyDPICWrapper_LrScEvent": "domain module list",
+    "SelectOldest": "domain module list"
+   }
+  }
+ ],
+ "checks": {
+  "task_overlaps": 0,
+  "subtree_conflicts": 0,
+  "unassigned": 0,
+  "duplicate_tops": 0,
+  "suites_total": 24,
+  "duts_total": 266,
+  "new_duts": 127
+ },
+ "validation": {
+  "pytest_tests": 301,
+  "audit_suite_layout_strict": "exit 0",
+  "ucv_check_new_suites": "PASS (structure-only)"
+ },
+ "limits": [
+  "tops only prove the module name exists in generated public-a0c2a26cb DefaultConfig RTL; Picker export is not proven",
+  "no RTL closure, build, transaction or functional test exists for the new DUTs",
+  "new suites are not in public/full profiles",
+  "chisel source paths are not registered",
+  "the table was not written back",
+  "table has no VAGQ entry"
+ ]
+}

@@ -32,6 +32,7 @@
 - [Fixture 集中与 agent 边界](pending/fixture-consolidation.md)
 - [框架能力选型](pending/framework-capability-selection.md)
 - [迁移边界复核：端口别名不等于事务抽象](pending/pin-schema-and-suite-migration.md)
+- [模块树、身份与生命周期维护](pending/module-identity-and-lifecycle.md)：持久 ID、离线变化对账、历史承接与 per-DUT 初始化；语义承接需设计证据。
 
 审核通过后再移入对应阶段目录并更新上表。
 
@@ -51,7 +52,7 @@
 ```
 
 检查格式、项目命名约定、引用和框架入口，不等于安装、自动发现或内容审批。当前
-三个 SKILL.md 为仓库入口，十三篇为支持文档，四篇 pending 为未审批草稿；未把草稿
+三个 SKILL.md 为仓库入口，十三篇为支持文档，五篇 pending 为未审批草稿；未把草稿
 隐式注册到客户端。复核发现的错误方法和目录取舍见
 [2026-10-31 复核](../docs/lessons/structure-skill-review-20261031.md)。
 

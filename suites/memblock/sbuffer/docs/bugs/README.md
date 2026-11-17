@@ -20,22 +20,22 @@
 
 由 `ucv docs --write` 生成；目录表示当前处理状态，版本结论见各记录。
 
-当前工程基线：`public-a0c2a26cb`。未复验项不继承历史通过结论。
+当前工程基线：`public-e716c7658`。未复验项不继承历史通过结论。
 
 ## 未解决（5）
 
 | ID | 问题 | 类型 | 本基线结论 | 关闭原因 |
 |---|---|---|---|---|
-| [PICKER-DEFAULT-DUMPFILE](open/PICKER-DEFAULT-DUMPFILE.md) | Picker 默认 dump 已在旧基线验证隔离，当前基线未复验 | verification | 未复验 | — |
-| [SBD-SAME-LANE-PORT-HALVES](open/SBD-SAME-LANE-PORT-HALVES.md) | SbufferData 高槽同一 lane 的另一半字节端口路径未覆盖 | verification | 未复验 | — |
-| [SBD-TIME0-INIT](open/SBD-TIME0-INIT.md) | SbufferData initial 的 if(reset) else 分支不可由运行期激励到达 | verification | 未复验 | — |
-| [SBT-SAMEBLOCK-SLOT-SWEEP](open/SBT-SAMEBLOCK-SLOT-SWEEP.md) | 同块 inflight 时 follower 高槽插入路径未全部激活 | verification | 未复验 | — |
-| [SBT-TOGGLE-RESIDUAL](open/SBT-TOGGLE-RESIDUAL.md) | Sbuffer 顶层 toggle 82.0% 的剩余点分类与补例计划 | verification | 未复验 | — |
+| [PICKER-DEFAULT-DUMPFILE](open/PICKER-DEFAULT-DUMPFILE.md) | Picker 默认 dump 已在旧基线验证隔离，当前基线未复验 | verification | 未登记复验 | — |
+| [SBD-SAME-LANE-PORT-HALVES](open/SBD-SAME-LANE-PORT-HALVES.md) | SbufferData 高槽同一 lane 的另一半字节端口路径未覆盖 | verification | 未登记复验 | — |
+| [SBD-TIME0-INIT](open/SBD-TIME0-INIT.md) | SbufferData initial 的 if(reset) else 分支不可由运行期激励到达 | verification | 未登记复验 | — |
+| [SBT-SAMEBLOCK-SLOT-SWEEP](open/SBT-SAMEBLOCK-SLOT-SWEEP.md) | 同块 inflight 时 follower 高槽插入路径未全部激活 | verification | 未登记复验 | — |
+| [SBT-TOGGLE-RESIDUAL](open/SBT-TOGGLE-RESIDUAL.md) | Sbuffer 顶层 toggle 82.0% 的剩余点分类与补例计划 | verification | 未登记复验 | — |
 
 ## 已关闭（1）
 
 | ID | 问题 | 类型 | 本基线结论 | 关闭原因 |
 |---|---|---|---|---|
-| [FLUSH-EMPTY-TWO-LEVELS-REVIEWED](closed/FLUSH-EMPTY-TWO-LEVELS-REVIEWED.md) | CMO 期间 flush.empty 受 sqempty 门控是两级空语义，不是缺陷 | investigation | 未复验 | invalid |
+| [FLUSH-EMPTY-TWO-LEVELS-REVIEWED](closed/FLUSH-EMPTY-TWO-LEVELS-REVIEWED.md) | CMO 期间 flush.empty 受 sqempty 门控是两级空语义，不是缺陷 | investigation | 未登记复验 | invalid |
 
 <!-- ucv:bugs:end -->

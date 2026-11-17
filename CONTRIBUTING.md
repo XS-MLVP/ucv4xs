@@ -21,15 +21,19 @@
 | 完整运行结果、波形、生成 RTL、native 库 | 忽略的 `results/`、`.cache/` 等本地产物目录 | Git 源文件 |
 | 简短交接、来源与哈希索引 | `docs/history/` | 内部源码或大结果拷贝 |
 
-上表实现路径采用十二工程统一的 schema2 布局；现有工程先查 `workspace.json`，
+上表实现路径采用所有工程统一的 schema2 布局；现有工程先查 `workspace.json`，
 版本兼容与本轮迁移范围见[目录规范](docs/reference/module-layout.md#schema-版本与本轮范围)。
 
 现有工程键和目录保持一致：
 
 ```text
 suites/
-├── frontend/{bpu,icache,ftq,ifu,ibuffer,instr_uncache}/
-├── memblock/{lsq,dcache,mmu,sbuffer,lsu}/
+├── frontend/{bpu,ftq,ifu,ibuffer,instr_uncache,icache,frontend_top}/
+├── backend/{ctrl,int_region,fp_region,vec_region}/
+├── memblock/{lsq,dcache,mmu,sbuffer,lsu,prefetch,frontend_bridge}/
+├── cache/{l2,llc}/
+├── bus/{ncb,peripheral}/
+├── soc/{aia,plic,debug,timer,clock_reset,mbist}/
 └── vector/vagq/
 ```
 
@@ -77,8 +81,9 @@ Git 忽略也会失败，符号链接不能绕过。`ucv check`、布局审计�
 
 除 `tests/` 必须为目录外，其余五个职责块可以采用单文件或同名子包，按复杂度选择；
 可选角色不建空壳。
-同一参数化实现的多个 DUT 可通过 `workspace.json` 的 `duts.<name>.testbench` 字段共用实现包。
-每个 DUT 的真实 top、基线和测试选择仍明确登记。跨 DUT 的行为合同放工程规格，
+每个 DUT 独立维护 testbench、环境与测试；初始化使用 `testbenches/<dut>/`，实际复用按职责提取到 shared。
+模块族的同一 `module_id` 不合并 testbench。schema2 的 `duts.<name>.testbench` 必须一对一关联，
+每个 DUT 的真实 top、基线和测试选择明确登记。跨 DUT 的行为合同放工程规格，
 shared 的同名职责与 DUT 同义：共同事务归 transactions，独立参考计算归 model，比较归
 checker，覆盖归 coverage，环境机制归 env，自检归 tests。仅一个 DUT 使用的内容留在该
 DUT；shared 实现不得反向导入具体 DUT 或工程 tools，shared/tests 可检查集成引用。
@@ -119,7 +124,8 @@ DUT；shared 实现不得反向导入具体 DUT 或工程 tools，shared/tests �
 
 ## 工作空间与资料维护
 
-先运行 `./scripts/ucv info <suite> --dut <dut>` 找到资源；新增对象使用 `ucv init`。
+先运行 `./scripts/ucv modules list` 查模块身份，`ucv info <suite> --dut <dut>` 找到资源；
+新增对象使用 `ucv init --module-id <id>`，模块变更按[增量维护契约](docs/reference/modules.md)对账。
 能由配置和证据计算的地图、索引、计数由工具生成，人工/AI维护行为要求、独立预期与解释。
 源码阅读和 spec 编写可先于工具安装；RTL 使用有效基线对应的锁定 release，源码生成显式选择。
 
@@ -139,6 +145,13 @@ DUT；shared 实现不得反向导入具体 DUT 或工程 tools，shared/tests �
 
 ## 分工和合并
 
+工作以**模块树**查找与追踪，以 **DUT＋合同范围**绑定和验收。模块的稳定 ID、历史观察与变更
+依据由根模块目录保存，负责人、合同与任务关联其上。工程 `docs/spec/verification/README.md` 的 DUT 工作
+索引由 `ucv docs --write` 生成，仅链接已有资产与合同；suite 是代码维护和运行边界。
+负责人、当前工作、下一步、阻塞与证据写在所属合同正文或关联任务中。未知负责人保持待认领，
+历史表格与包名不能推断当前责任人。同族参数变体各有独立实现入口、选择和结论。
+父级集成 DUT 承担明确的跨接口性质，子级 PASS 不自动完成父级；无需另建功能链路进度表。
+
 1. 从同一个已发布 **Git commit/tag** 开始，各用独立分支或 worktree。
 2. 在任务或 PR 中声明负责的工程/DUT及要改的共享文件；同一共享组件、
    `conftest.py`、工程配置或依赖锁不要由多个贡献者同时重构。
@@ -157,7 +170,7 @@ DUT；shared 实现不得反向导入具体 DUT 或工程 tools，shared/tests �
 
 ```sh
 python3.12 scripts/audit-assets.py
-./scripts/ucv check full
+./scripts/ucv check all
 .venv/bin/python scripts/audit-suite-layout.py --strict
 .venv/bin/python scripts/audit-skills.py --strict --check-framework
 .venv/bin/python -m pytest -q tests

@@ -74,3 +74,29 @@ store 合并后字节丢失，详见 [问题记录](../../bugs/open/MQ-STORE-MER
 - 待确认：设计 owner 对各条行为要求的逐条确认、wrapper perf 两级延迟的设计承诺、
   CounterFilter 无复位流水是否由上游修复，以及 Uncache/DCache 仲裁的验证归属。
 - 设计要求变更使用 Git review；新增要求分配稳定 ID，并在验证规格中登记场景与证据。
+## 当前切分与 Chisel / RTL 映射
+
+本表是 **2026-11-16** 的设计身份核对，基线 `public-e716c7658`，完整 commit `e716c765824900ff78816b92ac827fd4aa2cab35`。配置为 DefaultConfig、单核、CHI E.b、OpenLLC，含 `--fpga-platform --reset-gen`。
+
+Chisel 位置来自该次 FIRRTL 源位置注解，并与源码核对；RTL 实例来自生成模块中的实际实例声明。表中实例为可定位样本，全部直接父实例见 workspace.json。数字后缀只属于该基线，不是稳定逻辑身份；同一个 RTL 类型可能有多个实例。
+
+沿用既有工程功能合同；本表补充当前源码、生成名与实际放置位置。
+
+| DUT | 当前配方 top | Chisel 定义/生成位置（相对源码根） | RTL 实例样本 | 接入状态 |
+|---|---|---|---|---|
+| `duplicated_tag_array` | `DuplicatedTagArray` | `src/main/scala/xiangshan/cache/dcache/meta/TagArray.scala:120` | `XSTop.core_with_l2.core.memBlock.inner_dcache.dcache.tagArray` | 已有实现；新基线未验收 |
+| `ctrl_unit` | `CtrlUnit` | `src/main/scala/xiangshan/cache/dcache/CtrlUnit.scala:82` | `XSTop.core_with_l2.core.memBlock.inner_dcache.dcache.cacheCtrlOpt` | 已有实现；新基线未验收 |
+| `miss_ready_gen` | `MissReadyGen` | `src/main/scala/xiangshan/cache/dcache/DCacheWrapper.scala:974` | `XSTop.core_with_l2.core.memBlock.inner_dcache.dcache.missReadyGen` | 已有实现；新基线未验收 |
+| `counter_filter` | `CounterFilter` | `src/main/scala/xiangshan/mem/prefetch/FDP.scala:60` | `XSTop.core_with_l2.core.memBlock.inner_dcache.dcache.counterFilter` | 已有实现；新基线未验收 |
+| `miss_track` | `MissTrack` | `src/main/scala/xiangshan/cache/dcache/loadpipe/MissTrack.scala:124` | `XSTop.core_with_l2.core.memBlock.inner_dcache.dcache.misstrack` | 已有实现；新基线未验收 |
+| `load_pipe` | `LoadPipe` | `src/main/scala/xiangshan/cache/dcache/loadpipe/LoadPipe.scala:34` | `XSTop.core_with_l2.core.memBlock.inner_dcache.dcache.ldu_0` | 已有实现；新基线未验收 |
+| `banked_data_array` | `BankedDataArray` | `src/main/scala/xiangshan/cache/dcache/data/BankedDataArray.scala:669` | `XSTop.core_with_l2.core.memBlock.inner_dcache.dcache.bankedDataArray` | 已有实现；新基线未验收 |
+| `main_pipe` | `MainPipe` | `src/main/scala/xiangshan/cache/dcache/mainpipe/MainPipe.scala:142` | `XSTop.core_with_l2.core.memBlock.inner_dcache.dcache.mainPipe` | 已有实现；新基线未验收 |
+| `miss_queue` | `MissQueue` | `src/main/scala/xiangshan/cache/dcache/mainpipe/MissQueue.scala:1195` | `XSTop.core_with_l2.core.memBlock.inner_dcache.dcache.missQueue` | 已有实现；新基线未验收 |
+| `probe_queue` | `ProbeQueue` | `src/main/scala/xiangshan/cache/dcache/mainpipe/Probe.scala:128` | `XSTop.core_with_l2.core.memBlock.inner_dcache.dcache.probeQueue` | 已有实现；新基线未验收 |
+| `writeback_queue` | `WritebackQueue` | `src/main/scala/xiangshan/cache/dcache/mainpipe/WritebackQueue.scala:311` | `XSTop.core_with_l2.core.memBlock.inner_dcache.dcache.wb` | 已有实现；新基线未验收 |
+| `dcache` | `DCache` | `src/main/scala/xiangshan/cache/dcache/DCacheWrapper.scala:1045` | `XSTop.core_with_l2.core.memBlock.inner_dcache.dcache` | 已有实现；新基线未验收 |
+| `dcache_wrapper` | `DCacheWrapper` | `src/main/scala/xiangshan/cache/dcache/DCacheWrapper.scala:1984` | `XSTop.core_with_l2.core.memBlock.inner_dcache` | 已有实现；新基线未验收 |
+| `uncache` | `Uncache` | `src/main/scala/xiangshan/cache/dcache/Uncache.scala:204` | `XSTop.core_with_l2.core.memBlock.inner_uncache` | 骨架；待实现 |
+
+这些映射不证明接口向后兼容、硬件等价或功能覆盖；历史规格和报告沿用原日期及基线。构建、冒烟、功能、覆盖分别验收。公共 NewPipelineConnectPipe 与 internal VAGQ 同名模块没有互相覆盖结论。

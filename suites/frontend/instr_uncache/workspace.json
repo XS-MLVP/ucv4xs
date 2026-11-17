@@ -24,7 +24,26 @@
       "chisel": [
         "src/main/scala/xiangshan/frontend/instruncache/InstrUncacheEntry.scala"
       ],
-      "testbench": "instr_uncache_entry"
+      "testbench": "instr_uncache_entry",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "InstrUncacheEntry",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_instrUncache.entries_0",
+        "direct_parents": [
+          {
+            "parent": "InstrUncache",
+            "instance": "entries_0",
+            "line": 46
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/instruncache/InstrUncacheEntry.scala",
+          "line": 31
+        }
+      },
+      "module_id": "M-b43a058ae2f6"
     },
     "instr_uncache_resp_arbiter": {
       "design_spec": [
@@ -48,7 +67,27 @@
         "src/main/scala/xiangshan/frontend/instruncache/InstrUncacheImp.scala",
         "src/main/scala/xiangshan/frontend/instruncache/Bundles.scala"
       ],
-      "testbench": "instr_uncache_resp_arbiter"
+      "testbench": "instr_uncache_resp_arbiter",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Arbiter1_InstrUncacheResp",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_instrUncache.respArbiter",
+        "direct_parents": [
+          {
+            "parent": "InstrUncache",
+            "instance": "respArbiter",
+            "line": 34
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/chisel3/util/Arbiter.scala",
+          "line": 149
+        },
+        "source_location_kind": "locked-dependency"
+      },
+      "module_id": "M-95b645d2d50e"
     },
     "instr_uncache": {
       "design_spec": [
@@ -70,11 +109,29 @@
       ],
       "environment": "testbenches/instr_uncache/env/agent.py",
       "chisel": [
-        "src/main/scala/xiangshan/frontend/instruncache/InstrUncache.scala",
-        "src/main/scala/xiangshan/frontend/instruncache/InstrUncacheImp.scala"
+        "src/main/scala/xiangshan/frontend/instruncache/InstrUncacheImp.scala",
+        "src/main/scala/xiangshan/frontend/instruncache/InstrUncache.scala"
       ],
-      "testbench": "instr_uncache"
+      "testbench": "instr_uncache",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "InstrUncache",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_instrUncache",
+        "direct_parents": [
+          {
+            "parent": "Frontend",
+            "instance": "inner_instrUncache",
+            "line": 2774
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/instruncache/InstrUncacheImp.scala",
+          "line": 28
+        }
+      },
+      "module_id": "M-898912700580"
     }
-  },
-  "loader": "testbenches/shared/env/harness.py"
+  }
 }

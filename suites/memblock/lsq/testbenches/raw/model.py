@@ -3,8 +3,8 @@ from collections import deque
 from copy import copy
 from dataclasses import replace
 
-from suites.memblock.lsq.testbenches.freelist.model import FreeListModel
-from suites.memblock.lsq.testbenches.freelist.transactions import Observation as FreeObservation
+from suites.memblock.lsq.testbenches.shared.model.freelist import FreeListModel
+from suites.memblock.lsq.testbenches.shared.transactions.freelist import Observation as FreeObservation
 from suites.memblock.lsq.testbenches.vlq.model import RobTimeline
 
 from suites.memblock.lsq.testbenches.raw.transactions import Change

@@ -5,17 +5,22 @@
 ## schema 版本与本轮范围
 
 目录由工程 `workspace.json` 的 schema 决定，同一版本使用通用门禁，不按工程名放行。
-新建工程的 `ucv init` 与本轮十二工程统一迁移使用 **schema2**；工具保留严格的
-**schema1** 兼容。全仓既有 **137 DUT / 114 实现包**的映射保持，shared 不计作 DUT 实现包。
+新建工程的 `ucv init` 与所有现有工程使用 **schema2**；工具保留严格的
+**schema1** 兼容。DUT 与实现数量由配方查询，shared 不计作 DUT 实现包。
 
-| 契约 | schema2：当前十二工程与新工程 | schema1：旧工作空间兼容 |
+| 契约 | schema2：当前工程与新工程 | schema1：旧工作空间兼容 |
 |---|---|---|
 | DUT 实现目录 | `testbenches/<testbench>/`，通常与 DUT 同名 | `modules/<module>/` |
-| workspace 归属字段 | 每个 `duts.<name>.testbench` 显式登记 | `duts.<name>.module`，省略时与 DUT 同名 |
+| workspace 归属字段 | 每个 `duts.<name>.testbench` 一对一显式登记 | `duts.<name>.module`，省略时与 DUT 同名 |
 | 跨 DUT 共享代码 | `testbenches/shared/`，同用六职责 | `runtime/`，沿用既有运行职责 |
 | 配方收集根 | `tests: ["testbenches"]` | `tests: ["modules"]` |
 | pytest 收集根 | `testpaths = testbenches` | `testpaths = modules` |
 | `ucv info` 的实现字段 | `testbench` | `module` |
+
+管理树的 `module_id` 与实现包名分开。新增 DUT 经 `ucv init --module-id <id>` 创建独立环境、
+tests 和 smoke；同一个模块族可以关联多个独立 DUT。复用在出现实际需求后再按职责提取。
+schema2 不允许多个 DUT 指向同一 testbench；`info/check/run/init` 读取 workspace 时均会拒绝。
+同族变体的入口保持独立，真正共用的组件归 shared 的相应职责。
 
 两种 schema 都使用工程根 `conftest.py`、`pytest_root: "."` 和封闭白名单；实现归属字段、
 收集根及源码目录不得混用。向已有工程 `init` 新 DUT 时沿用其 schema，初始化不会隐式
@@ -142,10 +147,10 @@ shared 按真实共享需求建立相应职责及独立 README，不要求凑齐
 
 这些落位使用通用 schema2 约束；BPU 顶层自身的功能不会因名称为 bpu 而自动成为共享组件。
 
-## DUT 与参数化实现
+## DUT 与参数变体
 
-初始化生成与 DUT 同名的 testbench。共享参数化实现时，在 `workspace.json` 显式声明；
-下面是新工程中参数变体 `leaf_0` 共用 `leaf` 实现的 schema2 示例：
+初始化生成与 DUT 同名的 testbench；schema2 的实现关联必须一对一。
+下面是同族参数变体 `leaf_0` 的独立 schema2 入口示例：
 
 ```json
 {
@@ -153,9 +158,9 @@ shared 按真实共享需求建立相应职责及独立 README，不要求凑齐
   "fixtures": "conftest.py",
   "duts": {
     "leaf_0": {
-      "testbench": "leaf",
-      "environment": "testbenches/leaf/env/__init__.py",
-      "tests": ["testbenches/leaf/tests"],
+      "testbench": "leaf_0",
+      "environment": "testbenches/leaf_0/env/__init__.py",
+      "tests": ["testbenches/leaf_0/tests"],
       "design_spec": "docs/spec/design/README.md",
       "verification_spec": "docs/spec/verification/README.md"
     }
@@ -163,9 +168,9 @@ shared 按真实共享需求建立相应职责及独立 README，不要求凑齐
 }
 ```
 
-每个 DUT 仍在 `ucv.json` 声明真实 top、导出名，共用工程基线。多个实例可以指向同一
-testbench 包和参数化测试。`--dut` 限制测试文件范围；schema2 默认选择同时包含存在的
-`shared/tests`。参数化用例还需选择实际加载的全部 DUT 或完整参数化 nodeid。
+每个 DUT 在 `ucv.json` 声明真实 top、导出名，共用工程基线。每个 DUT 的 fixture 固定
+自己的硬件变体；参数化测试可枚举本 DUT 的种子和输入。`--dut` 限制独立测试根；schema2
+默认选择同时包含存在的 `shared/tests`，共享自检不应加载未选 DUT。
 testbench 内不得按测试路径暗中选择不同模型。
 
 fixture 在工程 `conftest.py` 显式注册，DUT 相关实现可放其 `tests/fixtures.py`。一个工程
@@ -174,8 +179,8 @@ fixture 在工程 `conftest.py` 显式注册，DUT 相关实现可放其 `tests/
 ## 生成、检查与维护
 
 ```sh
-# 示例：新增独立 DUT；suite/group/top 均由实际设计确定。
-./scripts/ucv init demo --group frontend --dut leaf --top Leaf --export-name LeafDut
+# 示例：新增独立 DUT；suite/group/top 由实际设计确定，module-id 已有本版 top 观察。
+./scripts/ucv init demo --group frontend --dut leaf --top Leaf --export-name LeafDut --module-id <module-id>
 ./scripts/ucv info demo --dut leaf
 ./scripts/ucv docs demo --write
 ./scripts/ucv check demo
@@ -185,14 +190,32 @@ fixture 在工程 `conftest.py` 显式注册，DUT 相关实现可放其 `tests/
   给已有工程添加 DUT 前，先拒绝违反目录规范的工程，避免写入部分骨架。
 - `docs --write` 更新 DUT、已有 shared 的独立 README 和问题汇总的生成区块，保留人工说明；
   shared 入口链接实际存在的职责、工程规格和自检，不生成虚构的 DUT 构建命令。
+- 同一命令在既有验证规格首页生成 DUT 工作索引，逐 DUT 链接合同与实现，保留正文中的
+  认领、下一步和阻塞说明；接入观察不等同于合同进度，不另维护功能链路进度。
 - `check` 校验封闭白名单、所有 DUT 的归属、资源位置、重复布局、缺失入口及过期 README；
   只读报告错误，清理前需核对用途与活动状态并保留归档清单。
 - `audit-suite-layout.py --strict` 使用同一结构规则，并检查 fixture/namespace 接线。
   `audit-assets.py` 同样调用此白名单，根工具回归覆盖全部已登记工程。
   `--require-transaction-boundary` 另外报告引脚级耦合；结构通过不等于硬件通过。
 
-旧路径导航记在工程 `docs/path-migrations.json`。冻结报告、问题中的原始路径、命令、
+旧路径导航记在仓库或工程 `docs/path-migrations.json`。冻结报告、问题中的原始路径、命令、
 日期、哈希和判定保留原义；路径映射只帮助找到当前实现，不能证明字节或执行身份相同。
 目录调整后的新运行使用新 nodeid；比较历史记录时必须先声明路径映射，再核对具体用例。
-同文件拆分到多个 DUT 时，映射可细到 `文件.py::测试函数`；`ucv.layout.relocated_name`
-保留参数后缀，`relocated` 返回当前文件。最长匹配优先，历史原文不经导航函数重写。
+映射采用最长匹配，可细到含参数的完整 nodeid。schema1 的 paths 是单一字符串映射；
+schema2 还允许非空唯一列表表达一个旧文件或包的多个后继。例如：
+
+```json
+{
+  "schema": 2,
+  "paths": {
+    "testbenches/family": ["testbenches/leaf_0", "testbenches/leaf_1"],
+    "testbenches/family/tests/test_leaf.py::test_reset[variant0]": "testbenches/leaf_0/tests/test_leaf.py::test_reset"
+  }
+}
+```
+
+`ucv.layout.relocated_names` / `relocated_paths` 返回全部后继，供历史资料导航；`relocated_name`
+/ `relocated` 只接受唯一后继，多义时抛错，防止把旧结果任意转给某个 DUT。函数级映射保留
+尚未匹配的参数后缀，完整 nodeid 映射可准确调整旧变体参数。某个 DUT 保留原文件时，多后继列表
+可以显式包含原路径，该分支终止；其它直接或间接循环仍被拒绝。文档与模块引用检查要求所有
+后继存在，历史原文不经导航函数重写。路径可达不建立新旧结果等价或增加验证通过数。

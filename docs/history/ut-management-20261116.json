@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "date": "2026-11-16",
+  "scope": "验证对象工作管理与包边界调整；不是硬件验收",
+  "predecessor": "docs/history/ut-split-20261116.json",
+  "snapshot": {
+    "path": "results/ut-management-20261116/before-source.tar.gz",
+    "sha256": "b952c10a8ebe9d63a6ba23eed70d28bc6023a46e166f027b9b36b82071c4f097",
+    "files": 7443
+  },
+  "packages": {
+    "ftq": ["resolve_queue", "commit_queue", "ftq"],
+    "ifu": ["rvc_expander", "instr_boundary", "pred_checker", "uncache_unit", "frontend_trigger", "perf_analysis", "ifu"],
+    "ibuffer": ["vtype_gen", "ibuffer"],
+    "instr_uncache": ["instr_uncache_entry", "instr_uncache_resp_arbiter", "instr_uncache"],
+    "frontend_top": ["frontend"],
+    "frontend_bridge": ["icache_ctrl_buffer", "icache_buffer", "instr_uncache_buffer", "frontend_bridge"]
+  },
+  "decisions": [
+    "DUT＋合同用于认领和验收；suite 用于维护与执行；不另建功能链路进度视图。",
+    "FrontendBridge 归 suites/memblock/frontend_bridge；Frontend 顶层归 suites/frontend/frontend_top。",
+    "后端 Region 保留维护边界；骨架不证明联合环境已实现，各 DUT 分别管理。",
+    "工作索引由既有配方/workspace 生成到既有验证规格首页；不建立替代计划文件。",
+    "历史表格不回写，负责人不自动继承；原始基线与真实判定保持。"
+  ],
+  "archive": "results/ut-management-20261116/retired-fetch",
+  "archive_inventory": "results/ut-management-20261116/archived-files.json",
+  "path_migrations": "docs/path-migrations.json",
+  "validation": {
+    "suites": 29,
+    "duts": 336,
+    "testbenches": 313,
+    "recipe_and_binding_differences": 0,
+    "root_tests": {"passed": 308, "log": "results/ut-management-20261116/root-tests-final.log"},
+    "collection": {"before": 2029, "after": 2029, "missing": 0, "added": 0, "changed_after_namespace_normalization": 0},
+    "relocated_python_ast_equivalent": 360,
+    "frozen_and_protected_byte_identical": 538,
+    "path_mappings": 633,
+    "path_cycles": 0,
+    "offline_selfchecks": {"passed": 940, "failed": 2, "selection": "same 942 nodes as previous checkpoint"},
+    "structural_checks": ["ucv check all", "layout --strict", "skills --strict --check-framework", "python3.12 scripts/audit-assets.py", "git diff --check"],
+    "public_unified_baseline_suites": 28,
+    "managed_collection": "blocked: Pinned toffee source checkout changed",
+    "observed_toffee_checkout": "e80f2a0b10406feda466e270ce8ab4f362bdb088",
+    "locked_toffee_checkout": "f57150021791535d4b2fd01056c106f0cad53177",
+    "remaining_failures": ["IFU signals.json absent", "InstrUncache RTL closure absent"],
+    "hardware_acceptance": "NOT_CERTIFIED",
+    "evidence_directory": "results/ut-management-20261116"
+  }
+}

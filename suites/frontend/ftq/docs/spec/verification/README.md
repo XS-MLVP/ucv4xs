@@ -1,7 +1,41 @@
 # FTQ 验证规格
 
-状态：当前验证范围已按 `public-a0c2a26cb` 核验；**不是硬件验收**。本页给出方法、
-判定和入口，具体功能点到用例的映射见[追溯表](traceability.md)。
+<!-- ucv:work-index:start -->
+
+## DUT 工作索引
+
+由 `ucv docs --write` 从配方与 workspace 生成；每行是一个 DUT 的合同入口。
+当前工程基线：`public-e716c7658`。接入观察不代表验证进度或验收结果。
+
+负责人、当前工作、下一步、阻塞与验收证据维护在对应合同正文或关联任务中；
+未认领不推断负责人；各 DUT 独立实现、选跑与验收。
+
+| DUT / RTL top | 接入观察 | 验证合同 | 工作入口 |
+|---|---|---|---|
+| `resolve_queue` / `ResolveQueue` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/resolve_queue/README.md) |
+| `commit_queue` / `CommitQueue` | 当前 top 缺失；历史资产待重新定界 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/commit_queue/README.md) |
+| `ftq` / `Ftq` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/ftq/README.md) |
+
+<!-- ucv:work-index:end -->
+
+## 当前工作（public-e716c7658）
+
+负责人：各 DUT **待认领**，认领后在本节或关联任务记录责任人、范围和证据。
+已有模型、场景和问题保留；当前基线尚未完成功能验收。
+
+| 对象 | 当前工作与下一步 | 阻塞 / 验收证据 |
+|---|---|---|
+| `ftq` | 对照当前 Ftq 端口及提交逻辑更新合同，再适配环境与逐项复验 | 接口适配未完成；旧基线结果不转记 |
+| `resolve_queue` | 核对槽位/容量合同，保留 RQ-011 合法对照和反例进行新基线复验 | [RQ-011](../../bugs/open/resolve-queue-branch-overflow.md) 沿用原记录 |
+| `commit_queue` | 审查当前 Ftq 内提交行为与历史 CQ 合同的对应关系，明确替代验证范围 | 当前 top 缺失，保留旧实现；未直接改绑 |
+
+环境身份与本轮结构检查见[全仓状态](../../../../../../docs/status.md)。验收须绑定本 DUT、
+合同条款、基线、实际选择和结果；与 IFU/ICache/BPU 的真实组合性质归 Frontend 顶层合同。
+
+## 历史验证范围与方法（public-a0c2a26cb）
+
+以下内容保留 `public-a0c2a26cb` 的核验边界，**不是当前基线硬件验收**。
+具体功能点到用例的映射见[追溯表](traceability.md)。
 
 ## 范围与假设
 
@@ -12,7 +46,7 @@
 - 环境按 agent / driver / monitor / checker / transaction 分层，测试只持有事务；
   包结构与采样约定见[验证包结构](architecture.md)。
 
-## 结果与判定
+## 历史结果与判定
 
 最新完整回归：**931 PASS / 2 XFAIL**（933 nodeid，seed 1 与 seed 2 的逐 nodeid
 判定一致）。0 FAIL、0 SKIP、0 ERROR；两个 strict XFAIL 是同一真实 RTL 缺陷的两个

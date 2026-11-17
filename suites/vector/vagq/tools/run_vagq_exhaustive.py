@@ -22,11 +22,6 @@ import time
 ROOT = __import__('suites.vector.vagq', fromlist=['ROOT']).ROOT
 sys.path.insert(0, str(ROOT))
 
-from suites.vector.vagq.testbenches.vagq.env.exhaustive import build_shape_sequence
-from suites.vector.vagq.testbenches.vagq.env.scenario_matrix import feature_case_id
-from suites.vector.vagq.testbenches.vagq.env.scenario_matrix import legal_public_feature_cases
-
-
 SOURCES = (
     'tools/run_vagq_exhaustive.py',
     'testbenches/vagq/tests/test_isa_exhaustive_shape.py',
@@ -84,6 +79,10 @@ def audit_attempt(attempt, expected, frozen):
 
 
 def main():
+    from suites.vector.vagq.testbenches.vagq.env.exhaustive import build_shape_sequence
+    from suites.vector.vagq.testbenches.vagq.env.scenario_matrix import feature_case_id
+    from suites.vector.vagq.testbenches.vagq.env.scenario_matrix import legal_public_feature_cases
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--shard-size', type=int, default=256)

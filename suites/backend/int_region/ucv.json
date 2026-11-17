@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "suite": "int_region",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "region": {
+      "top": "Region",
+      "export_name": "RegionDut"
+    },
+    "data_path": {
+      "top": "DataPath",
+      "export_name": "DataPathDut"
+    },
+    "exu_block": {
+      "top": "ExuBlock",
+      "export_name": "ExuBlockDut"
+    },
+    "iq_alu_i2f_brh_njmp": {
+      "top": "IssueQueueAluI2fBrhNjmp",
+      "export_name": "IssueQueueDut"
+    },
+    "iq_alu_csr_fence_link_brh_njmp": {
+      "top": "IssueQueueAluCsrFenceLinkBrhNjmp",
+      "export_name": "IssueQueueAluCsrFenceLinkBrhNjmpDut"
+    },
+    "iq_alu_div_brh_njmp": {
+      "top": "IssueQueueAluDivBrhNjmp",
+      "export_name": "IssueQueueAluDivBrhNjmpDut"
+    },
+    "iq_alu_bku_vset": {
+      "top": "IssueQueueAluBkuVset",
+      "export_name": "IssueQueueAluBkuVsetDut"
+    },
+    "iq_alu_mul": {
+      "top": "IssueQueueAluMul",
+      "export_name": "IssueQueueAluMulDut"
+    },
+    "iq_ldu": {
+      "top": "IssueQueueLdu",
+      "export_name": "IssueQueueLduDut"
+    },
+    "iq_sta_mou": {
+      "top": "IssueQueueStaMou",
+      "export_name": "IssueQueueStaMouDut"
+    },
+    "iq_sta_mou_1": {
+      "top": "IssueQueueStaMou_1",
+      "export_name": "IssueQueueStaMou_1Dut"
+    },
+    "iq_std_moud": {
+      "top": "IssueQueueStdMoud",
+      "export_name": "IssueQueueStdMoudDut"
+    },
+    "iq_std_moud_1": {
+      "top": "IssueQueueStdMoud_1",
+      "export_name": "IssueQueueStdMoud_1Dut"
+    },
+    "connect_variant": {
+      "top": "NewPipelineConnectPipe",
+      "export_name": "NewPipelineConnectPipeDut"
+    },
+    "connect_variant_1": {
+      "top": "NewPipelineConnectPipe_1",
+      "export_name": "NewPipelineConnectPipe_1Dut"
+    },
+    "connect_variant_2": {
+      "top": "NewPipelineConnectPipe_2",
+      "export_name": "NewPipelineConnectPipe_2Dut"
+    },
+    "connect_variant_4": {
+      "top": "NewPipelineConnectPipe_4",
+      "export_name": "NewPipelineConnectPipe_4Dut"
+    },
+    "connect_variant_6": {
+      "top": "NewPipelineConnectPipe_6",
+      "export_name": "NewPipelineConnectPipe_6Dut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "testbenches"
+  ],
+  "process_isolation": "suite"
+}

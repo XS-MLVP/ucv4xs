@@ -6,16 +6,6 @@ from toffee import DriveStable, Execution, RisingEdge, SamplingMonitor, XCommClo
 
 from suites.memblock.lsq.testbenches.shared.env.dut import DutFactory
 from suites.memblock.lsq.testbenches.shared.env.dut import ROOT
-from suites.memblock.lsq.testbenches.freelist.coverage import FunctionalCoverage
-from suites.memblock.lsq.testbenches.freelist.env.driver import FreeListDriver
-from suites.memblock.lsq.testbenches.freelist.env import FreeListEnv
-from suites.memblock.lsq.testbenches.freelist.model import FreeListModel
-from suites.memblock.lsq.testbenches.freelist.env.ports import Ports
-from suites.memblock.lsq.testbenches.cam.coverage import FunctionalCoverage as CamCoverage
-from suites.memblock.lsq.testbenches.cam.env.driver import CamDriver
-from suites.memblock.lsq.testbenches.cam.env import CamEnv
-from suites.memblock.lsq.testbenches.cam.model import CamModel
-from suites.memblock.lsq.testbenches.cam.env.ports import Ports as CamPorts
 from suites.memblock.lsq.testbenches.age.coverage import FunctionalCoverage as AgeCoverage
 from suites.memblock.lsq.testbenches.age.env.driver import AgeDriver
 from suites.memblock.lsq.testbenches.age.env import AgeEnv
@@ -36,11 +26,6 @@ from suites.memblock.lsq.testbenches.raw.env.driver import RawDriver
 from suites.memblock.lsq.testbenches.raw.env import RawEnv
 from suites.memblock.lsq.testbenches.raw.model import LoadQueueRawModel
 from suites.memblock.lsq.testbenches.raw.env.ports import Ports as RawPorts
-from suites.memblock.lsq.testbenches.uncache_entry.coverage import FunctionalCoverage as EntryCoverage
-from suites.memblock.lsq.testbenches.uncache_entry.env.driver import EntryDriver
-from suites.memblock.lsq.testbenches.uncache_entry.env import EntryEnv
-from suites.memblock.lsq.testbenches.uncache_entry.model import UncacheEntryModel
-from suites.memblock.lsq.testbenches.uncache_entry.env.ports import Ports as EntryPorts
 from suites.memblock.lsq.testbenches.load_uncache.env.probe import ProbeEnv as LoadUncacheProbeEnv
 from suites.memblock.lsq.testbenches.load_uncache.env.probe import PublicDriver
 from suites.memblock.lsq.testbenches.load_uncache.env.probe import PublicPorts
@@ -60,6 +45,30 @@ from suites.memblock.lsq.testbenches.unalign.env.driver import UnalignDriver
 from suites.memblock.lsq.testbenches.unalign.env import UnalignEnv
 from suites.memblock.lsq.testbenches.unalign.model import UnalignModel
 from suites.memblock.lsq.testbenches.unalign.env.ports import Ports as UnalignPorts
+
+from suites.memblock.lsq.testbenches.freelist_rar.tests.fixtures import freelist_rar
+from suites.memblock.lsq.testbenches.freelist_raw.tests.fixtures import freelist_raw
+from suites.memblock.lsq.testbenches.freelist_replay.tests.fixtures import freelist_replay
+from suites.memblock.lsq.testbenches.freelist_uncache.tests.fixtures import freelist_uncache
+from suites.memblock.lsq.testbenches.cam_rar.tests.fixtures import cam_rar
+from suites.memblock.lsq.testbenches.cam_raw.tests.fixtures import cam_raw
+from suites.memblock.lsq.testbenches.cam_mask.tests.fixtures import cam_mask
+from suites.memblock.lsq.testbenches.uncache_entry_0.tests.fixtures import uncache_entry_0
+from suites.memblock.lsq.testbenches.uncache_entry_1.tests.fixtures import uncache_entry_1
+from suites.memblock.lsq.testbenches.uncache_entry_2.tests.fixtures import uncache_entry_2
+from suites.memblock.lsq.testbenches.uncache_entry_3.tests.fixtures import uncache_entry_3
+from suites.memblock.lsq.testbenches.uncache_entry_4.tests.fixtures import uncache_entry_4
+from suites.memblock.lsq.testbenches.uncache_entry_5.tests.fixtures import uncache_entry_5
+from suites.memblock.lsq.testbenches.uncache_entry_6.tests.fixtures import uncache_entry_6
+from suites.memblock.lsq.testbenches.uncache_entry_7.tests.fixtures import uncache_entry_7
+from suites.memblock.lsq.testbenches.uncache_entry_8.tests.fixtures import uncache_entry_8
+from suites.memblock.lsq.testbenches.uncache_entry_9.tests.fixtures import uncache_entry_9
+from suites.memblock.lsq.testbenches.uncache_entry_10.tests.fixtures import uncache_entry_10
+from suites.memblock.lsq.testbenches.uncache_entry_11.tests.fixtures import uncache_entry_11
+from suites.memblock.lsq.testbenches.uncache_entry_12.tests.fixtures import uncache_entry_12
+from suites.memblock.lsq.testbenches.uncache_entry_13.tests.fixtures import uncache_entry_13
+from suites.memblock.lsq.testbenches.uncache_entry_14.tests.fixtures import uncache_entry_14
+from suites.memblock.lsq.testbenches.uncache_entry_15.tests.fixtures import uncache_entry_15
 
 pytest_plugins = ("ucv.pytest_selftest",)
 
@@ -105,26 +114,6 @@ def dut_factory(request, tmp_path, monkeypatch):
         factory.close()
 
 
-@pytest.fixture(params=tuple(k for k in SPECS if k.startswith("freelist_")),
-                ids=tuple(k for k in SPECS if k.startswith("freelist_")))
-async def freelist(request, dut_factory):
-    key, spec = request.param, SPECS[request.param]
-    dut = dut_factory.create(key)
-    ports = Ports(dut)
-    model = FreeListModel(spec["size"], spec["preallocate"])
-    coverage = FunctionalCoverage(key, spec, request.node.nodeid)
-    before = SamplingMonitor(DriveStable(dut.clock), capture=ports.sample, capacity=8)
-    after = SamplingMonitor(RisingEdge(dut.clock), capture=ports.sample, capacity=8)
-    driver = FreeListDriver(ports)
-    backend = XCommClockBackend(dut.GetXClock())
-    try:
-        async with Execution(backend, max_batch_ticks=16) as execution:
-            async with driver, before.start(execution), after.start(execution):
-                env = FreeListEnv(key, spec, driver, before, after, model, coverage)
-                await env.reset()
-                yield env
-    finally:
-        backend.close()
 
 
 @pytest.fixture
@@ -149,26 +138,6 @@ async def age(request, dut_factory):
         backend.close()
 
 
-@pytest.fixture(params=tuple(k for k in SPECS if k.startswith("cam_")),
-                ids=tuple(k for k in SPECS if k.startswith("cam_")))
-async def cam(request, dut_factory):
-    key, spec = request.param, SPECS[request.param]
-    dut = dut_factory.create(key)
-    ports = CamPorts(dut, spec)
-    model = CamModel(spec)
-    coverage = CamCoverage(key, spec, request.node.nodeid)
-    before = SamplingMonitor(DriveStable(dut.clock), capture=ports.sample, capacity=8)
-    after = SamplingMonitor(RisingEdge(dut.clock), capture=ports.sample, capacity=8)
-    driver = CamDriver(ports)
-    backend = XCommClockBackend(dut.GetXClock())
-    try:
-        async with Execution(backend, max_batch_ticks=16) as execution:
-            async with driver, before.start(execution), after.start(execution):
-                env = CamEnv(key, spec, driver, before, after, model, coverage)
-                await env.idle(3)
-                yield env
-    finally:
-        backend.close()
 
 
 @pytest.fixture
@@ -240,27 +209,6 @@ async def raw(request, dut_factory):
         backend.close()
 
 
-@pytest.fixture(params=tuple(k for k in SPECS if k.startswith("uncache_entry_")),
-                ids=tuple(k for k in SPECS if k.startswith("uncache_entry_")))
-async def entry(request, dut_factory):
-    key, spec = request.param, SPECS[request.param]
-    dut = dut_factory.create(key)
-    ports = EntryPorts(dut, spec)
-    model = UncacheEntryModel(spec)
-    coverage = EntryCoverage(key, spec, request.node.nodeid)
-    before = SamplingMonitor(DriveStable(dut.clock), capture=ports.sample, capacity=8)
-    after = SamplingMonitor(RisingEdge(dut.clock), capture=ports.sample, capacity=8)
-    driver = EntryDriver(ports)
-    backend = XCommClockBackend(dut.GetXClock())
-    try:
-        with dut_factory.journal(f"{key}.jsonl") as trace:
-            async with Execution(backend, max_batch_ticks=16) as execution:
-                async with driver, before.start(execution), after.start(execution):
-                    env = EntryEnv(key, spec, driver, before, after, model, coverage, trace)
-                    await env.reset()
-                    yield env
-    finally:
-        backend.close()
 
 
 @pytest.fixture

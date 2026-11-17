@@ -1,5 +1,8 @@
 # IFU 设计规格
 
+> 本文保留原基线合同。当前源码/生成绑定与集成职责见[本页当前绑定](#当前硬件绑定观察)；
+> 目录迁移没有重新验收新基线的接口与行为。
+
 状态：**待设计 owner 确认**。本页由现有接口合同、ISA 规范、生成 RTL 可观察面和工程
 验证记录归纳；未取得完整微架构设计签核。功能要求和责任边界以
 [功能点](functional-points.md)与[行为矩阵](behavior-matrix.md)的稳定 ID 为准。
@@ -48,3 +51,22 @@
 - `R-13` 的修复方向（全 64 位比较或 CSR 高位 WARL 只读 0）需要设计/CSR 确认。
 - `R-14` 的端口合同 FAIL 已确认，但真实 FTQ 生产可达性未证明；不能自动当成整机缺陷。
 - 其他配置、Frontend 级 flush/redirect 与 IBuffer/后端消费不在本层设计边界内。
+
+## 当前硬件绑定观察
+
+2026-11-16 观察：`public-e716c7658 / DefaultConfig`，单核、CHI E.b、OpenLLC，
+含 `--fpga-platform --reset-gen`。源码位置来自锁定源码及完整生成注解，
+实例为实际 RTL 样本；全部直接父实例见 workspace。数字后缀不是跨基线稳定身份。
+
+| DUT | 配方 top | Chisel 定义/生成位置 | RTL 实例样本 |
+|---|---|---|---|
+| `rvc_expander` | `RvcExpander` | `src/main/scala/xiangshan/frontend/ifu/RvcExpander.scala:23` | `XSTop.core_with_l2.core.frontend.inner_ifu.rvcExpanders_0` |
+| `instr_boundary` | `InstrBoundary` | `src/main/scala/xiangshan/frontend/ifu/InstrBoundary.scala:23` | `XSTop.core_with_l2.core.frontend.inner_ifu.instrBoundary` |
+| `pred_checker` | `PredChecker` | `src/main/scala/xiangshan/frontend/ifu/PredChecker.scala:32` | `XSTop.core_with_l2.core.frontend.inner_ifu.predChecker` |
+| `uncache_unit` | `IfuUncacheUnit` | `src/main/scala/xiangshan/frontend/ifu/IfuUncacheUnit.scala:28` | `XSTop.core_with_l2.core.frontend.inner_ifu.uncacheUnit` |
+| `frontend_trigger` | `FrontendTrigger` | `src/main/scala/xiangshan/frontend/ifu/FrontendTrigger.scala:33` | `XSTop.core_with_l2.core.frontend.inner_ifu.frontendTrigger` |
+| `perf_analysis` | `IfuPerfAnalysis` | `src/main/scala/xiangshan/frontend/ifu/IfuPerfAnalysis.scala:36` | `XSTop.core_with_l2.core.frontend.inner_ifu.perfAnalyzer` |
+| `ifu` | `Ifu` | `src/main/scala/xiangshan/frontend/ifu/Ifu.scala:48` | `XSTop.core_with_l2.core.frontend.inner_ifu` |
+
+这些观察不证明端口兼容、独立预期成立或硬件通过；当前工作与验收范围见
+[验证合同](../verification/README.md)。历史报告按原基线解释。

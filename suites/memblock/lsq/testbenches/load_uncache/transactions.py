@@ -9,7 +9,7 @@ from dataclasses import dataclass
 
 from suites.memblock.lsq.testbenches.shared.transactions import RobIdentity
 from suites.memblock.lsq.testbenches.raw.transactions import FtqPtr
-from suites.memblock.lsq.testbenches.uncache_entry.transactions import IdResponse, QueuePtr, Redirect, Request, RobPtr
+from suites.memblock.lsq.testbenches.shared.transactions.uncache_entry import IdResponse, QueuePtr, Redirect, Request, RobPtr
 
 
 @dataclass(frozen=True)

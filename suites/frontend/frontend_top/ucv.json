@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "suite": "frontend_top",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "frontend": {
+      "top": "Frontend",
+      "export_name": "FrontendDut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "testbenches"
+  ],
+  "process_isolation": "dut"
+}

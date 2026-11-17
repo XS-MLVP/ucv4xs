@@ -1,5 +1,58 @@
 # LSQ Verification Spec
 
+<!-- ucv:work-index:start -->
+
+## DUT 工作索引
+
+由 `ucv docs --write` 从配方与 workspace 生成；每行是一个 DUT 的合同入口。
+当前工程基线：`public-e716c7658`。接入观察不代表验证进度或验收结果。
+
+负责人、当前工作、下一步、阻塞与验收证据维护在对应合同正文或关联任务中；
+未认领不推断负责人；各 DUT 独立实现、选跑与验收。
+
+| DUT / RTL top | 接入观察 | 验证合同 | 工作入口 |
+|---|---|---|---|
+| `freelist_rar` / `FreeList` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/freelist_rar/README.md) |
+| `freelist_raw` / `FreeList_1` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/freelist_raw/README.md) |
+| `freelist_replay` / `FreeList_2` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/freelist_replay/README.md) |
+| `freelist_uncache` / `FreeList_3` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/freelist_uncache/README.md) |
+| `cam_rar` / `LqPAddrModule` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/cam_rar/README.md) |
+| `cam_raw` / `LqPAddrModule_1` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/cam_raw/README.md) |
+| `cam_mask` / `LqMaskModule` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/cam_mask/README.md) |
+| `age_replay` / `AgeDetector_36` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/age/README.md) |
+| `virtual_load_queue` / `VirtualLoadQueue` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/vlq/README.md) |
+| `load_queue_rar` / `LoadQueueRAR` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/rar/README.md) |
+| `load_queue_raw` / `LoadQueueRAW` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/raw/README.md) |
+| `load_queue_uncache` / `LoadQueueUncache` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/load_uncache/README.md) |
+| `load_queue_replay` / `LoadQueueReplay` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/replay/README.md) |
+| `enter_sbuffer_queue` / `EnterSbufferQueue` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/enter_sbuffer/README.md) |
+| `unalign_queue` / `UnalignQueue` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/unalign/README.md) |
+| `forward_module` / `ForwardModule` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/forward/README.md) |
+| `virtual_store_queue` / `VirtualStoreQueue` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/vsq/README.md) |
+| `deq_module` / `DeqModule` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/deq/README.md) |
+| `physical_store_queue` / `PhysicalStoreQueue` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/psq/README.md) |
+| `store_queue` / `StoreQueue` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/store_queue/README.md) |
+| `load_queue` / `LoadQueue` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/load_queue/README.md) |
+| `lsq_wrapper` / `LsqWrapper` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/lsq_wrapper/README.md) |
+| `uncache_entry_0` / `UncacheEntry` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/uncache_entry_0/README.md) |
+| `uncache_entry_1` / `UncacheEntry_1` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/uncache_entry_1/README.md) |
+| `uncache_entry_2` / `UncacheEntry_2` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/uncache_entry_2/README.md) |
+| `uncache_entry_3` / `UncacheEntry_3` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/uncache_entry_3/README.md) |
+| `uncache_entry_4` / `UncacheEntry_4` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/uncache_entry_4/README.md) |
+| `uncache_entry_5` / `UncacheEntry_5` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/uncache_entry_5/README.md) |
+| `uncache_entry_6` / `UncacheEntry_6` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/uncache_entry_6/README.md) |
+| `uncache_entry_7` / `UncacheEntry_7` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/uncache_entry_7/README.md) |
+| `uncache_entry_8` / `UncacheEntry_8` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/uncache_entry_8/README.md) |
+| `uncache_entry_9` / `UncacheEntry_9` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/uncache_entry_9/README.md) |
+| `uncache_entry_10` / `UncacheEntry_10` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/uncache_entry_10/README.md) |
+| `uncache_entry_11` / `UncacheEntry_11` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/uncache_entry_11/README.md) |
+| `uncache_entry_12` / `UncacheEntry_12` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/uncache_entry_12/README.md) |
+| `uncache_entry_13` / `UncacheEntry_13` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/uncache_entry_13/README.md) |
+| `uncache_entry_14` / `UncacheEntry_14` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/uncache_entry_14/README.md) |
+| `uncache_entry_15` / `UncacheEntry_15` | 已有资产；本基线待复验 | [范围、工作与完成条件](README.md) | [实现、用例与命令](../../../testbenches/uncache_entry_15/README.md) |
+
+<!-- ucv:work-index:end -->
+
 状态：验证侧当前索引。**完整硬件结论仍为非 PASS；历史运行与本轮限定事务适配验收分开。**
 
 ## 1. 范围与基线

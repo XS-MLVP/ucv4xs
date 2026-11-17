@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "current": [
+    "README.md",
+    "docs/README.md",
+    "docs/spec/design/README.md",
+    "docs/spec/verification/README.md",
+    "docs/bugs/README.md",
+    "docs/spec/design/tl_debug_module.md",
+    "docs/spec/verification/tl_debug_module.md",
+    "testbenches/tl_debug_module/README.md",
+    "docs/spec/design/debug_transport_module_jtag.md",
+    "docs/spec/verification/debug_transport_module_jtag.md",
+    "testbenches/debug_transport_module_jtag/README.md",
+    "docs/spec/design/debug_module.md",
+    "docs/spec/verification/debug_module.md",
+    "testbenches/debug_module/README.md"
+  ]
+}

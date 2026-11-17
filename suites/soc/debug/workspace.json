@@ -1,0 +1,102 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "duts": {
+    "tl_debug_module": {
+      "testbench": "tl_debug_module",
+      "design_spec": "docs/spec/design/tl_debug_module.md",
+      "verification_spec": "docs/spec/verification/tl_debug_module.md",
+      "environment": "testbenches/tl_debug_module/env.py",
+      "chisel": [
+        "rocket-chip/src/main/scala/devices/debug/Debug.scala"
+      ],
+      "tests": [
+        "testbenches/tl_debug_module/tests"
+      ],
+      "smoke": "testbenches/tl_debug_module/tests/test_tl_debug_module_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "TLDebugModule",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.nocMisc.debugModule.debug",
+        "direct_parents": [
+          {
+            "parent": "DebugModule",
+            "instance": "debug",
+            "line": 128
+          }
+        ],
+        "declaration": {
+          "path": "rocket-chip/src/main/scala/devices/debug/Debug.scala",
+          "line": 1950
+        }
+      },
+      "module_id": "M-c8f652f70b97"
+    },
+    "debug_transport_module_jtag": {
+      "testbench": "debug_transport_module_jtag",
+      "design_spec": "docs/spec/design/debug_transport_module_jtag.md",
+      "verification_spec": "docs/spec/verification/debug_transport_module_jtag.md",
+      "environment": "testbenches/debug_transport_module_jtag/env.py",
+      "chisel": [
+        "rocket-chip/src/main/scala/devices/debug/DebugTransport.scala"
+      ],
+      "tests": [
+        "testbenches/debug_transport_module_jtag/tests"
+      ],
+      "smoke": "testbenches/debug_transport_module_jtag/tests/test_debug_transport_module_jtag_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "DebugTransportModuleJTAG",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.nocMisc.debugModule.dtm",
+        "direct_parents": [
+          {
+            "parent": "DebugModule",
+            "instance": "dtm",
+            "line": 212
+          }
+        ],
+        "declaration": {
+          "path": "rocket-chip/src/main/scala/devices/debug/DebugTransport.scala",
+          "line": 73
+        }
+      },
+      "module_id": "M-8cddd7c52697"
+    },
+    "debug_module": {
+      "testbench": "debug_module",
+      "design_spec": "docs/spec/design/debug_module.md",
+      "verification_spec": "docs/spec/verification/debug_module.md",
+      "environment": "testbenches/debug_module/env.py",
+      "chisel": [
+        "src/main/scala/device/RocketDebugWrapper.scala"
+      ],
+      "tests": [
+        "testbenches/debug_module/tests"
+      ],
+      "smoke": "testbenches/debug_module/tests/test_debug_module_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "DebugModule",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.nocMisc.debugModule",
+        "direct_parents": [
+          {
+            "parent": "MemMisc",
+            "instance": "debugModule",
+            "line": 4470
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/device/RocketDebugWrapper.scala",
+          "line": 58
+        }
+      },
+      "module_id": "M-0ba00c3e8876"
+    }
+  }
+}

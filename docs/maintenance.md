@@ -30,7 +30,7 @@
 `ucv check full` 检查关联。工程不新增通用 history 目录；正式迭代由 Git 固定，证据保存于
 有身份和哈希的运行存储。已存在的仓库级来源索引继续用于原证据接入。
 
-新增 DUT 使用 `ucv init`，在工程配方中给出真实生成模块名和导出类名。新增测试放在所属
+新增 DUT 使用 `ucv init --module-id <id>`，在工程配方中给出真实生成模块名和导出类名。新增测试放在所属
 testbench 的 tests；领域模型和检查器留在工程内，共用编排能力放在 `src/ucv/`。
 
 回归失败应保留原始 FAIL、ERROR、XFAIL 和 XPASS，不为取得全绿而扩大 xfail 或删除测试。判定报告分别记录：
@@ -65,7 +65,7 @@ testbench 的 tests；领域模型和检查器留在工程内，共用编排能�
 
 ## 验证包布局与自检分类
 
-十二工程与新工程使用 schema2 的 `testbenches/<dut>/` 和跨 DUT 的 `testbenches/shared/`；
+所有工程使用 schema2 的 `testbenches/<dut>/` 和跨 DUT 的 `testbenches/shared/`；
 版本兼容与本轮范围见[目录规范](reference/module-layout.md#schema-版本与本轮范围)。
 fixtures/pytest 插件在工程唯一 `conftest.py` 注册，各实现包不另设 pytest 根。
 `ucv init` 生成骨架，`ucv check` 按 schema 校验归属与工作入口。功能用例的事务边界还需单独验收：
@@ -115,7 +115,7 @@ DUT 与 shared 同用六职责，单 DUT 专用实现归该 DUT。
 标记可以放在模块、测试类或单个测试函数上；混合文件中未标记的用例和 helper 仍受检查。
 动态标记不能作为排除依据，`toffee_functional_coverage(False)` 也不等于自检。
 
-分类需要核对实际用途：例如 VAGQ 的 `pipeline/tests/test_encoding.py` 专门校验事务到
+分类需要核对实际用途：例如 VAGQ 的管线 DUT 下 `tests/test_encoding.py` 专门校验事务到
 端口字段的编码，其 `P.p_*` 有合理用途；真实功能场景中的同类访问则需要适配。
 检查器不证明分类正确，审查应对照原用例和实际执行链，避免将功能场景误标为自检。
 不能把总数直接当成必须改写的测试数量，或只改名字/搬目录消除报告。

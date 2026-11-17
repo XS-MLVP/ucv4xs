@@ -3,6 +3,7 @@ from __future__ import annotations
 
 
 from suites.memblock.mmu.testbenches.shared.env.execution import execution
+from suites.memblock.mmu.testbenches.ptwrepeater.checker import check_response_payload
 
 
 async def _respond(env, tag: int, ppn: int, s2: int = 0) -> None:
@@ -32,9 +33,7 @@ async def test_request_to_ptw_and_response_hold(repeater_env):
         # Response is latched and held while the consumer is not ready.
         await _respond(env, 0x0ABCD, 0x34567, s2=2)
         assert env.response_valid() == 1
-        assert env.response_snapshot()["tag"] == 0x0ABCD
-        assert env.response_snapshot()["ppn"] == 0x34567
-        assert env.response_snapshot()["s2xlate"] == 2
+        check_response_payload(env, tag=0x0ABCD, ppn=0x34567, stage=2)
         assert env.response_ready() == 0
         for _ in range(3):
             await env.edge()

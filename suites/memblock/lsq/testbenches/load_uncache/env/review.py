@@ -8,8 +8,8 @@ from __future__ import annotations
 
 import json
 
-from suites.memblock.lsq.testbenches.uncache_entry.transactions import QueuePtr
-from suites.memblock.lsq.testbenches.uncache_entry.transactions import RobPtr
+from suites.memblock.lsq.testbenches.shared.transactions.uncache_entry import QueuePtr
+from suites.memblock.lsq.testbenches.shared.transactions.uncache_entry import RobPtr
 
 
 class ReviewLoadUncacheEnv:

@@ -1,6 +1,8 @@
 # MMU 验证工程
 
-包含 17 个独立 DUT，统一使用 toffee。完整配方见 `ucv.json`，基线按根目录、硬件分组、工程目录继承。
+当前登记 22 个 DUT，统一使用 toffee。完整配方见 `ucv.json`，基线按根目录、硬件分组、工程目录继承。
+当前绑定为 `public-e716c7658`；新增三个 DTLB 变体及 PMPChecker 等骨架。
+历史 `tlbn` 的 TLBNonBlock top 在该基线缺失，保留旧实现待适配，详见设计索引。
 
 ```sh
 ucv prepare mmu
@@ -14,7 +16,7 @@ ucv run mmu --workers 8
 
 - [文档入口](docs/README.md)与[当前页面登记](docs/navigation.json)。
 - [Design spec](docs/spec/design/README.md)：真实 TLB/MMU 层次、PTW 合同和设计确认边界。
-- [Verification spec](docs/spec/verification/README.md)：17 个 DUT、功能点、可信度复核和完成条件。
+- [Verification spec](docs/spec/verification/README.md)：既有 DUT 功能点、可信度复核和完成条件；新增项见各自规格。
 - [残余项](docs/spec/verification/residuals.md)：未归为正式 bug 的覆盖/结构/范围边界。
 - [问题记录](docs/bugs/README.md)；历史证据在 `docs/spec/verification/evidence/`。
 - `./scripts/ucv info mmu --dut <key>`：逐 DUT 显示模块功能点、验证报告和固定基线 Chisel 定义/实例化来源。

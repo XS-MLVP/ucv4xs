@@ -40,10 +40,43 @@ def make_project(root):
                          'design_spec':'docs/spec/design/README.md','verification_spec':'docs/spec/verification/README.md'}
     write(suite.path/'workspace.json',meta)
     from ucv.layout import refresh_readmes
-    from ucv.documents import refresh_index
+    from ucv.documents import refresh_index, refresh_work_index
     refresh_readmes(project,suite,meta,True)
     refresh_index(project,suite,True)
+    refresh_work_index(project,suite,meta,True)
     return project
+
+
+def test_work_index_keeps_contracts_and_variant_acceptance_separate(tmp_path):
+    from ucv.documents import refresh_work_index, WORK_START
+    from ucv.workspace import metadata
+    project=make_project(tmp_path)
+    suite=project.suite('demo')
+    meta=metadata(suite)
+    path=suite.path/'docs/spec/verification/README.md'
+    path.write_text('# Reviewed contract\n\nOwner: assigned in task T-1.\n')
+    meta['duts']['one']['binding']={'observed_baseline':'test','observed_top':'One','verification_state':'scaffold'}
+    meta['duts']['two']['module']='one'
+    meta['duts']['two']['binding']={'observed_baseline':'old','availability':'present',
+                                  'verification_state':'existing-unrevalidated'}
+    preview=refresh_work_index(project,suite,meta)
+    assert not preview['current'] and WORK_START not in path.read_text()
+    refresh_work_index(project,suite,meta,True)
+    text=path.read_text()
+    assert text.startswith('# Reviewed contract\n\n'+WORK_START)
+    assert 'Owner: assigned in task T-1.\n' in text
+    assert '| `one` / `One` | 骨架' in text
+    assert '| `two` / `Two` | 旧基线观察 old；当前需重核' in text
+    assert text.count('../../../modules/one/README.md')==2
+    assert 'PASS' not in text and '100%' not in text
+    assert not refresh_work_index(project,suite,meta,True)['updated']
+    meta['duts']['two']['binding']={'observed_baseline':'test','observed_top':'Two','availability':'absent'}
+    assert '当前 top 缺失' in refresh_work_index(project,suite,meta)['markdown']
+    meta['duts']['two']['binding']['observed_top']='HistoricalTwo'
+    assert '观察 top 与当前配方不符' in refresh_work_index(project,suite,meta)['markdown']
+    path.write_text(text+'\n'+WORK_START)
+    with pytest.raises(UcvError,match='invalid generated work index markers'):
+        refresh_work_index(project,suite,meta,True)
 
 
 def make_release(project):
@@ -179,6 +212,26 @@ def test_init_preserves_existing_work_and_emits_explicit_unimplemented_test(tmp_
     assert any('unexpected directory at suite root: tests' in e for e in result['errors'])
 
 
+def test_frozen_suite_link_resolves_repository_migration_without_rewriting_evidence(tmp_path):
+    from ucv.workspace import check
+    project=make_project(tmp_path)
+    suite=project.suite('demo')
+    page=suite.path/'docs/spec/design/README.md'
+    frozen=b'# Frozen evidence\n\n[original](../../../../../../docs/old.md)\n'
+    page.write_bytes(frozen)
+    destination=tmp_path/'docs/current.md'
+    destination.parent.mkdir(exist_ok=True)
+    destination.write_text('# Current location\n')
+    assert any('missing local link' in e for e in check(project,[suite])['errors'])
+    write(tmp_path/'docs/path-migrations.json',{'schema':1,'paths':{'docs/old.md':'docs/current.md'}})
+    result=check(project,[suite])
+    assert result['errors']==[]
+    assert any('historical repository path relocated' in e for e in result['notices'])
+    assert page.read_bytes()==frozen
+    destination.unlink()
+    assert any('missing local link' in e for e in check(project,[suite])['errors'])
+
+
 def test_layout_rejects_physical_extras_even_without_python_sources(tmp_path):
     from ucv.workspace import check
     project=make_project(tmp_path)
@@ -222,6 +275,23 @@ def test_layout_rejects_physical_extras_even_without_python_sources(tmp_path):
         initialize(project,'demo','frontend','three','Three','ThreeDut')
     assert before==((root/'ucv.json').read_bytes(),(root/'workspace.json').read_bytes())
     assert not (root/'modules/three').exists()
+
+
+def test_split_historical_link_requires_every_successor_without_rewriting_evidence(tmp_path):
+    from ucv.workspace import check
+    project=make_project(tmp_path)
+    suite=project.suite('demo')
+    page=suite.path/'docs/spec/design/README.md'
+    frozen=b'# Frozen evidence\n\n[original](../../../../../../docs/combined.md)\n'
+    page.write_bytes(frozen)
+    write(tmp_path/'docs/path-migrations.json',{'schema':2,'paths':{
+        'docs/combined.md':['docs/one.md','docs/two.md']}})
+    for name in ('one','two'):
+        (tmp_path/f'docs/{name}.md').write_text('# Independent successor\n')
+    assert check(project,[suite])['errors']==[]
+    (tmp_path/'docs/two.md').unlink()
+    assert any('missing local link' in e for e in check(project,[suite])['errors'])
+    assert page.read_bytes()==frozen
 
 
 def test_schema2_shared_contract_imports_navigation_and_actual_selection(tmp_path,monkeypatch):
@@ -306,11 +376,13 @@ def test_schema2_shared_contract_imports_navigation_and_actual_selection(tmp_pat
     with pytest.raises(UcvError,match='shared is reserved'):metadata(suite)
     del suite.recipe['duts']['shared']
     write(root/'workspace.json',meta)
-    # Parameterized DUTs can explicitly share one testbench; shared stays outside
-    # the recipe's DUT registry and is appended to the selected roots just once.
+    # Schema 2 must not accidentally select another DUT through the same root.
+    # Reusable components use shared; each DUT owns its implementation/tests.
     suite.recipe['duts']['variant']=suite.recipe['duts']['leaf']
     write(root/'workspace.json',{**meta,'duts':{**meta['duts'],'variant':entry}})
-    assert test_roots(suite,['leaf','variant'])==[root/'testbenches/leaf/tests',shared/'tests']
+    with pytest.raises(UcvError,match='independent testbench'):
+        test_roots(suite,['leaf'])
+    assert any('independent testbench' in error for error in problems(suite,read(root/'workspace.json')))
     del suite.recipe['duts']['variant']
     write(root/'workspace.json',meta)
     for name in ('modules','runtime','testbenches/.hidden','testbenches/shared/extra'):

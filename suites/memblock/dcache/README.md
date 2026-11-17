@@ -1,6 +1,6 @@
 # DCache 验证工程
 
-包含 13 个独立 DUT，统一使用 toffee。完整配方见 `ucv.json`，基线按根目录、硬件分组、工程目录继承。
+当前登记 14 个 DUT（含 Uncache 骨架），统一使用 toffee。完整配方见 `ucv.json`，基线按根目录、硬件分组、工程目录继承。
 
 ```sh
 ucv prepare dcache
@@ -21,7 +21,7 @@ ucv run dcache --workers 8
 
 ## 状态边界
 
-当前默认公开基线为根配置的 `public-a0c2a26cb`。覆盖与功能证据来自
+当前默认公开基线为根配置的 `public-e716c7658`。覆盖与功能证据来自
 `public-893e1580b`（`results/soundness-recheck-03`：210 PASS + 3 XFAIL，61 个功能组
 100%）；2026-11-01 事务修复检查点另记录 **229 PASS + 3 XFAIL**，原项判定保持，新增项
 包含事务/自检。两组记录都绑定旧基线，没有自动迁移到新默认基线；在新基线上完成

@@ -1,6 +1,8 @@
 # LSU 验证工程
 
-包含 19 个独立 DUT，统一使用 toffee。完整配方见 `ucv.json`，基线按根目录、硬件分组、工程目录继承。
+当前登记 23 个 DUT，统一使用 toffee。完整配方见 `ucv.json`，基线按根目录、硬件分组、工程目录继承。
+2026-11-16 新增 AtomicsUnit / MemBlock 集成切点，并接入异常选择与 difftest 观察骨架。
+当前绑定为 `public-e716c7658`；下面的历史功能结果保留原基线，新增项尚未实现验证。
 
 ```sh
 ucv prepare lsu
@@ -13,7 +15,7 @@ ucv run lsu --workers 8
 ## 当前入口
 
 - [文档入口](docs/README.md)与[当前页面登记](docs/navigation.json)。
-- [Design spec](docs/spec/design/README.md)：真实层次、19 份 DUT 合同和设计确认边界。
+- [Design spec](docs/spec/design/README.md)：当前模块映射、既有流水合同和新增切点边界。
 - [Verification spec](docs/spec/verification/README.md)：DUT/测试、覆盖残余、7 个开放问题和完成条件。
 - [问题记录](docs/bugs/README.md)；旧错误包在 `docs/bugs/evidence/`。
 - [历史证据索引](docs/spec/verification/evidence/README.md)与[缺口归因](docs/spec/verification/gaps)。

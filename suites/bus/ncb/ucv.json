@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "suite": "ncb",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "ncb_transaction_queue": {
+      "top": "NCBTransactionQueue",
+      "export_name": "NcbTransactionQueueDut"
+    },
+    "ncb_transaction_payload": {
+      "top": "NCBTransactionPayload",
+      "export_name": "NcbTransactionPayloadDut"
+    },
+    "ncb_upstream_txdat": {
+      "top": "NCBUpstreamTXDAT",
+      "export_name": "NcbUpstreamTxdatDut"
+    },
+    "ncb_upstream_rxreq": {
+      "top": "NCBUpstreamRXREQ",
+      "export_name": "NcbUpstreamRxreqDut"
+    },
+    "ncb_transaction_age_matrix": {
+      "top": "NCBTransactionAgeMatrix",
+      "export_name": "NcbTransactionAgeMatrixDut"
+    },
+    "ncb_upstream_txrsp": {
+      "top": "NCBUpstreamTXRSP",
+      "export_name": "NcbUpstreamTxrspDut"
+    },
+    "ncb_downstream_w": {
+      "top": "NCBDownstreamW",
+      "export_name": "NcbDownstreamWDut"
+    },
+    "ncb_downstream_aw": {
+      "top": "NCBDownstreamAW",
+      "export_name": "NcbDownstreamAwDut"
+    },
+    "ncb_downstream_ar": {
+      "top": "NCBDownstreamAR",
+      "export_name": "NcbDownstreamArDut"
+    },
+    "ncb_upstream_rxdat": {
+      "top": "NCBUpstreamRXDAT",
+      "export_name": "NcbUpstreamRxdatDut"
+    },
+    "ncb_downstream_r": {
+      "top": "NCBDownstreamR",
+      "export_name": "NcbDownstreamRDut"
+    },
+    "ncb_order_address_cam": {
+      "top": "NCBOrderAddressCAM",
+      "export_name": "NcbOrderAddressCamDut"
+    },
+    "ncb_transaction_free_list": {
+      "top": "NCBTransactionFreeList",
+      "export_name": "NcbTransactionFreeListDut"
+    },
+    "ncb_downstream_b": {
+      "top": "NCBDownstreamB",
+      "export_name": "NcbDownstreamBDut"
+    },
+    "chi_link_active_manager_rx": {
+      "top": "CHILinkActiveManagerRX",
+      "export_name": "ChiLinkActiveManagerRxDut"
+    },
+    "chi_link_active_manager_tx": {
+      "top": "CHILinkActiveManagerTX",
+      "export_name": "ChiLinkActiveManagerTxDut"
+    },
+    "llc_bridge": {
+      "top": "OpenNCB",
+      "export_name": "OpenNCBDut"
+    },
+    "mmio_bridge": {
+      "top": "OpenNCB_1",
+      "export_name": "OpenNCB_1Dut"
+    },
+    "llc_core": {
+      "top": "NCB200",
+      "export_name": "NCB200Dut"
+    },
+    "mmio_core": {
+      "top": "NCB200_1",
+      "export_name": "NCB200_1Dut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "testbenches"
+  ],
+  "process_isolation": "suite"
+}

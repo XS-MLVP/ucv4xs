@@ -8,8 +8,8 @@ the load finishes only after observed s1 and s2 bypass windows.
 from dataclasses import asdict, dataclass, replace
 from functools import cmp_to_key
 
-from suites.memblock.lsq.testbenches.uncache_entry.model import is_younger
-from suites.memblock.lsq.testbenches.uncache_entry.transactions import RobPtr
+from suites.memblock.lsq.testbenches.shared.model.uncache_entry import is_younger
+from suites.memblock.lsq.testbenches.shared.transactions.uncache_entry import RobPtr
 from suites.memblock.lsq.testbenches.load_uncache.transactions import LoadRequest, Observation, SampledInputs
 
 

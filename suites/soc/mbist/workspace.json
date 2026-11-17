@@ -1,0 +1,390 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "duts": {
+    "mbist_pipe_frontend": {
+      "testbench": "mbist_pipe_frontend",
+      "design_spec": "docs/spec/design/mbist_pipe_frontend.md",
+      "verification_spec": "docs/spec/verification/mbist_pipe_frontend.md",
+      "environment": "testbenches/mbist_pipe_frontend/env.py",
+      "chisel": [
+        "utility/src/main/scala/utility/mbist/MbistPipeline.scala"
+      ],
+      "tests": [
+        "testbenches/mbist_pipe_frontend/tests"
+      ],
+      "smoke": "testbenches/mbist_pipe_frontend/tests/test_mbist_pipe_frontend_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MbistPipeFrontend",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_mbistPl",
+        "direct_parents": [
+          {
+            "parent": "Frontend",
+            "instance": "inner_mbistPl",
+            "line": 14851
+          }
+        ],
+        "declaration": {
+          "path": "utility/src/main/scala/utility/mbist/MbistPipeline.scala",
+          "line": 164
+        }
+      },
+      "module_id": "M-5356a2cb7f35"
+    },
+    "mbist_pipe_mem_blk": {
+      "testbench": "mbist_pipe_mem_blk",
+      "design_spec": "docs/spec/design/mbist_pipe_mem_blk.md",
+      "verification_spec": "docs/spec/verification/mbist_pipe_mem_blk.md",
+      "environment": "testbenches/mbist_pipe_mem_blk/env.py",
+      "chisel": [
+        "utility/src/main/scala/utility/mbist/MbistPipeline.scala"
+      ],
+      "tests": [
+        "testbenches/mbist_pipe_mem_blk/tests"
+      ],
+      "smoke": "testbenches/mbist_pipe_mem_blk/tests/test_mbist_pipe_mem_blk_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MbistPipeMemBlk",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_mbistPl",
+        "direct_parents": [
+          {
+            "parent": "MemBlock",
+            "instance": "inner_mbistPl",
+            "line": 24050
+          }
+        ],
+        "declaration": {
+          "path": "utility/src/main/scala/utility/mbist/MbistPipeline.scala",
+          "line": 164
+        }
+      },
+      "module_id": "M-9ccf1fe86fbb"
+    },
+    "mbist_intf_frontend": {
+      "testbench": "mbist_intf_frontend",
+      "design_spec": "docs/spec/design/mbist_intf_frontend.md",
+      "verification_spec": "docs/spec/verification/mbist_intf_frontend.md",
+      "environment": "testbenches/mbist_intf_frontend/env.py",
+      "chisel": [
+        "utility/src/main/scala/utility/mbist/MbistPipeline.scala"
+      ],
+      "tests": [
+        "testbenches/mbist_intf_frontend/tests"
+      ],
+      "smoke": "testbenches/mbist_intf_frontend/tests/test_mbist_intf_frontend_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MbistIntfFrontend",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_mbistIntf",
+        "direct_parents": [
+          {
+            "parent": "Frontend",
+            "instance": "inner_mbistIntf",
+            "line": 15195
+          }
+        ],
+        "declaration": {
+          "path": "utility/src/main/scala/utility/mbist/MbistPipeline.scala",
+          "line": 52
+        }
+      },
+      "module_id": "M-54ac36fa2b70"
+    },
+    "mbist_intf_l2": {
+      "testbench": "mbist_intf_l2",
+      "design_spec": "docs/spec/design/mbist_intf_l2.md",
+      "verification_spec": "docs/spec/verification/mbist_intf_l2.md",
+      "environment": "testbenches/mbist_intf_l2/env.py",
+      "chisel": [
+        "utility/src/main/scala/utility/mbist/MbistPipeline.scala"
+      ],
+      "tests": [
+        "testbenches/mbist_intf_l2/tests"
+      ],
+      "smoke": "testbenches/mbist_intf_l2/tests/test_mbist_intf_l2_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MbistIntfL2",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.l2MbistIntf",
+        "direct_parents": [
+          {
+            "parent": "CoupledL2",
+            "instance": "l2MbistIntf",
+            "line": 6353
+          }
+        ],
+        "declaration": {
+          "path": "utility/src/main/scala/utility/mbist/MbistPipeline.scala",
+          "line": 52
+        }
+      },
+      "module_id": "M-f0b261da2e6d"
+    },
+    "mbist_intf_mem_blk": {
+      "testbench": "mbist_intf_mem_blk",
+      "design_spec": "docs/spec/design/mbist_intf_mem_blk.md",
+      "verification_spec": "docs/spec/verification/mbist_intf_mem_blk.md",
+      "environment": "testbenches/mbist_intf_mem_blk/env.py",
+      "chisel": [
+        "utility/src/main/scala/utility/mbist/MbistPipeline.scala"
+      ],
+      "tests": [
+        "testbenches/mbist_intf_mem_blk/tests"
+      ],
+      "smoke": "testbenches/mbist_intf_mem_blk/tests/test_mbist_intf_mem_blk_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MbistIntfMemBlk",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_mbistIntf",
+        "direct_parents": [
+          {
+            "parent": "MemBlock",
+            "instance": "inner_mbistIntf",
+            "line": 24135
+          }
+        ],
+        "declaration": {
+          "path": "utility/src/main/scala/utility/mbist/MbistPipeline.scala",
+          "line": 52
+        }
+      },
+      "module_id": "M-182e64de27bc"
+    },
+    "mbist_pipe_l2_prefetcher": {
+      "testbench": "mbist_pipe_l2_prefetcher",
+      "design_spec": "docs/spec/design/mbist_pipe_l2_prefetcher.md",
+      "verification_spec": "docs/spec/verification/mbist_pipe_l2_prefetcher.md",
+      "environment": "testbenches/mbist_pipe_l2_prefetcher/env.py",
+      "chisel": [
+        "utility/src/main/scala/utility/mbist/MbistPipeline.scala"
+      ],
+      "tests": [
+        "testbenches/mbist_pipe_l2_prefetcher/tests"
+      ],
+      "smoke": "testbenches/mbist_pipe_l2_prefetcher/tests/test_mbist_pipe_l2_prefetcher_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MbistPipeL2Prefetcher",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.prefetcher.mbistPl",
+        "direct_parents": [
+          {
+            "parent": "Prefetcher",
+            "instance": "mbistPl",
+            "line": 1461
+          }
+        ],
+        "declaration": {
+          "path": "utility/src/main/scala/utility/mbist/MbistPipeline.scala",
+          "line": 164
+        }
+      },
+      "module_id": "M-5159a0e4adcc"
+    },
+    "l2_cache_pipeline": {
+      "testbench": "l2_cache_pipeline",
+      "design_spec": "docs/spec/design/l2_cache_pipeline.md",
+      "verification_spec": "docs/spec/verification/l2_cache_pipeline.md",
+      "environment": "testbenches/l2_cache_pipeline/env.py",
+      "chisel": [
+        "utility/src/main/scala/utility/mbist/MbistPipeline.scala"
+      ],
+      "tests": [
+        "testbenches/l2_cache_pipeline/tests"
+      ],
+      "smoke": "testbenches/l2_cache_pipeline/tests/test_l2_cache_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "L2Cache",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.mbistPl",
+        "direct_parents": [
+          {
+            "parent": "CoupledL2",
+            "instance": "mbistPl",
+            "line": 6279
+          }
+        ],
+        "declaration": {
+          "path": "utility/src/main/scala/utility/mbist/MbistPipeline.scala",
+          "line": 164
+        }
+      },
+      "module_id": "M-9f6e1f00cf8c"
+    },
+    "l2_slice0_pipeline": {
+      "testbench": "l2_slice0_pipeline",
+      "design_spec": "docs/spec/design/l2_slice0_pipeline.md",
+      "verification_spec": "docs/spec/verification/l2_slice0_pipeline.md",
+      "environment": "testbenches/l2_slice0_pipeline/env.py",
+      "chisel": [
+        "utility/src/main/scala/utility/mbist/MbistPipeline.scala"
+      ],
+      "tests": [
+        "testbenches/l2_slice0_pipeline/tests"
+      ],
+      "smoke": "testbenches/l2_slice0_pipeline/tests/test_l2_slice_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "L2Slice",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.slices_0.mbistPl",
+        "direct_parents": [
+          {
+            "parent": "Slice",
+            "instance": "mbistPl",
+            "line": 10593
+          }
+        ],
+        "declaration": {
+          "path": "utility/src/main/scala/utility/mbist/MbistPipeline.scala",
+          "line": 164
+        }
+      },
+      "module_id": "M-d4e79a1206d1"
+    },
+    "mbist_pipe_sms": {
+      "testbench": "mbist_pipe_sms",
+      "design_spec": "docs/spec/design/mbist_pipe_sms.md",
+      "verification_spec": "docs/spec/verification/mbist_pipe_sms.md",
+      "environment": "testbenches/mbist_pipe_sms/env.py",
+      "chisel": [
+        "utility/src/main/scala/utility/mbist/MbistPipeline.scala"
+      ],
+      "tests": [
+        "testbenches/mbist_pipe_sms/tests"
+      ],
+      "smoke": "testbenches/mbist_pipe_sms/tests/test_mbist_pipe_sms_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MbistPipeSms",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_prefetcher.mbistSmsPl",
+        "direct_parents": [
+          {
+            "parent": "PrefetcherWrapper",
+            "instance": "mbistSmsPl",
+            "line": 567
+          }
+        ],
+        "declaration": {
+          "path": "utility/src/main/scala/utility/mbist/MbistPipeline.scala",
+          "line": 164
+        }
+      },
+      "module_id": "M-3318ab133123"
+    },
+    "l2_slice1_pipeline": {
+      "testbench": "l2_slice1_pipeline",
+      "design_spec": "docs/spec/design/l2_slice1_pipeline.md",
+      "verification_spec": "docs/spec/verification/l2_slice1_pipeline.md",
+      "environment": "testbenches/l2_slice1_pipeline/env.py",
+      "chisel": [
+        "utility/src/main/scala/utility/mbist/MbistPipeline.scala"
+      ],
+      "tests": [
+        "testbenches/l2_slice1_pipeline/tests"
+      ],
+      "smoke": "testbenches/l2_slice1_pipeline/tests/test_l2_slice1_pipeline_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "L2Slice_1",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.slices_1.mbistPl",
+        "direct_parents": [
+          {
+            "parent": "Slice_1",
+            "instance": "mbistPl",
+            "line": 10593
+          }
+        ],
+        "declaration": {
+          "path": "utility/src/main/scala/utility/mbist/MbistPipeline.scala",
+          "line": 164
+        }
+      },
+      "module_id": "M-d4e79a1206d1"
+    },
+    "l2_slice2_pipeline": {
+      "testbench": "l2_slice2_pipeline",
+      "design_spec": "docs/spec/design/l2_slice2_pipeline.md",
+      "verification_spec": "docs/spec/verification/l2_slice2_pipeline.md",
+      "environment": "testbenches/l2_slice2_pipeline/env.py",
+      "chisel": [
+        "utility/src/main/scala/utility/mbist/MbistPipeline.scala"
+      ],
+      "tests": [
+        "testbenches/l2_slice2_pipeline/tests"
+      ],
+      "smoke": "testbenches/l2_slice2_pipeline/tests/test_l2_slice2_pipeline_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "L2Slice_2",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.slices_2.mbistPl",
+        "direct_parents": [
+          {
+            "parent": "Slice_2",
+            "instance": "mbistPl",
+            "line": 10593
+          }
+        ],
+        "declaration": {
+          "path": "utility/src/main/scala/utility/mbist/MbistPipeline.scala",
+          "line": 164
+        }
+      },
+      "module_id": "M-d4e79a1206d1"
+    },
+    "l2_slice3_pipeline": {
+      "testbench": "l2_slice3_pipeline",
+      "design_spec": "docs/spec/design/l2_slice3_pipeline.md",
+      "verification_spec": "docs/spec/verification/l2_slice3_pipeline.md",
+      "environment": "testbenches/l2_slice3_pipeline/env.py",
+      "chisel": [
+        "utility/src/main/scala/utility/mbist/MbistPipeline.scala"
+      ],
+      "tests": [
+        "testbenches/l2_slice3_pipeline/tests"
+      ],
+      "smoke": "testbenches/l2_slice3_pipeline/tests/test_l2_slice3_pipeline_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "L2Slice_3",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.l2top.inner_l2cache.slices_3.mbistPl",
+        "direct_parents": [
+          {
+            "parent": "Slice_3",
+            "instance": "mbistPl",
+            "line": 10593
+          }
+        ],
+        "declaration": {
+          "path": "utility/src/main/scala/utility/mbist/MbistPipeline.scala",
+          "line": 164
+        }
+      },
+      "module_id": "M-d4e79a1206d1"
+    }
+  }
+}

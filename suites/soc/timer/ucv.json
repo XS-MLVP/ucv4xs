@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "suite": "timer",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "syscnt": {
+      "top": "SYSCNT",
+      "export_name": "SYSCNTDut"
+    },
+    "timer": {
+      "top": "TIMER",
+      "export_name": "TimerDut"
+    },
+    "time_async": {
+      "top": "TimeAsync",
+      "export_name": "TimeAsyncDut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "testbenches"
+  ],
+  "process_isolation": "suite"
+}

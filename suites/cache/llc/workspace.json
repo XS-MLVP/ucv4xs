@@ -1,0 +1,580 @@
+{
+  "schema": 2,
+  "fixtures": "conftest.py",
+  "duts": {
+    "open_llc": {
+      "testbench": "open_llc",
+      "design_spec": "docs/spec/design/open_llc.md",
+      "verification_spec": "docs/spec/verification/open_llc.md",
+      "environment": "testbenches/open_llc/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/openLLC/OpenLLC.scala"
+      ],
+      "tests": [
+        "testbenches/open_llc/tests"
+      ],
+      "smoke": "testbenches/open_llc/tests/test_open_llc_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "OpenLLC",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_openllc_opt",
+        "direct_parents": [
+          {
+            "parent": "XSTop",
+            "instance": "chi_openllc_opt",
+            "line": 2067
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/openLLC/OpenLLC.scala",
+          "line": 26
+        }
+      },
+      "module_id": "M-0e13d4e47b41"
+    },
+    "chi_logger": {
+      "testbench": "chi_logger",
+      "design_spec": "docs/spec/design/chi_logger.md",
+      "verification_spec": "docs/spec/verification/chi_logger.md",
+      "environment": "testbenches/chi_logger/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/xscache/chi/CHILogger.scala"
+      ],
+      "tests": [
+        "testbenches/chi_logger/tests"
+      ],
+      "smoke": "testbenches/chi_logger/tests/test_chi_logger_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "CHILogger",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.mmioLogger",
+        "direct_parents": [
+          {
+            "parent": "XSTop",
+            "instance": "mmioLogger",
+            "line": 2154
+          },
+          {
+            "parent": "XSTop",
+            "instance": "llcLogger",
+            "line": 2220
+          },
+          {
+            "parent": "XSTop",
+            "instance": "memLogger",
+            "line": 2963
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/xscache/chi/CHILogger.scala",
+          "line": 27
+        }
+      },
+      "module_id": "M-8e7d8a22759d"
+    },
+    "rn_xbar": {
+      "testbench": "rn_xbar",
+      "design_spec": "docs/spec/design/rn_xbar.md",
+      "verification_spec": "docs/spec/verification/rn_xbar.md",
+      "environment": "testbenches/rn_xbar/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/openLLC/utils/CHIXbar.scala"
+      ],
+      "tests": [
+        "testbenches/rn_xbar/tests"
+      ],
+      "smoke": "testbenches/rn_xbar/tests/test_rn_xbar_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "RNXbar",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_openllc_opt.rnXbar",
+        "direct_parents": [
+          {
+            "parent": "OpenLLC",
+            "instance": "rnXbar",
+            "line": 1876
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/openLLC/utils/CHIXbar.scala",
+          "line": 26
+        }
+      },
+      "module_id": "M-53744be63cdf"
+    },
+    "mem_unit": {
+      "testbench": "mem_unit",
+      "design_spec": "docs/spec/design/mem_unit.md",
+      "verification_spec": "docs/spec/verification/mem_unit.md",
+      "environment": "testbenches/mem_unit/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/openLLC/MemUnit.scala"
+      ],
+      "tests": [
+        "testbenches/mem_unit/tests"
+      ],
+      "smoke": "testbenches/mem_unit/tests/test_mem_unit_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MemUnit",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_openllc_opt.slices_0.memUnit",
+        "direct_parents": [
+          {
+            "parent": "Slice_4",
+            "instance": "memUnit",
+            "line": 2517
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/openLLC/MemUnit.scala",
+          "line": 60
+        }
+      },
+      "module_id": "M-fa3da36c6964"
+    },
+    "mmio_diverger": {
+      "testbench": "mmio_diverger",
+      "design_spec": "docs/spec/design/mmio_diverger.md",
+      "verification_spec": "docs/spec/verification/mmio_diverger.md",
+      "environment": "testbenches/mmio_diverger/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/openLLC/utils/MMIOBridge.scala"
+      ],
+      "tests": [
+        "testbenches/mmio_diverger/tests"
+      ],
+      "smoke": "testbenches/mmio_diverger/tests/test_mmio_diverger_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MMIODiverger",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_openllc_opt.mmioDiverger",
+        "direct_parents": [
+          {
+            "parent": "OpenLLC",
+            "instance": "mmioDiverger",
+            "line": 989
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/openLLC/utils/MMIOBridge.scala",
+          "line": 26
+        }
+      },
+      "module_id": "M-12d353666089"
+    },
+    "response_unit": {
+      "testbench": "response_unit",
+      "design_spec": "docs/spec/design/response_unit.md",
+      "verification_spec": "docs/spec/verification/response_unit.md",
+      "environment": "testbenches/response_unit/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/openLLC/ResponseUnit.scala"
+      ],
+      "tests": [
+        "testbenches/response_unit/tests"
+      ],
+      "smoke": "testbenches/response_unit/tests/test_response_unit_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "ResponseUnit",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_openllc_opt.slices_0.responseUnit",
+        "direct_parents": [
+          {
+            "parent": "Slice_4",
+            "instance": "responseUnit",
+            "line": 3074
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/openLLC/ResponseUnit.scala",
+          "line": 57
+        }
+      },
+      "module_id": "M-5c7aa1a95414"
+    },
+    "mmio_merger": {
+      "testbench": "mmio_merger",
+      "design_spec": "docs/spec/design/mmio_merger.md",
+      "verification_spec": "docs/spec/verification/mmio_merger.md",
+      "environment": "testbenches/mmio_merger/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/openLLC/utils/MMIOBridge.scala"
+      ],
+      "tests": [
+        "testbenches/mmio_merger/tests"
+      ],
+      "smoke": "testbenches/mmio_merger/tests/test_mmio_merger_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "MMIOMerger",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_openllc_opt.mmioMerger",
+        "direct_parents": [
+          {
+            "parent": "OpenLLC",
+            "instance": "mmioMerger",
+            "line": 1513
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/openLLC/utils/MMIOBridge.scala",
+          "line": 114
+        }
+      },
+      "module_id": "M-7e878d970e7a"
+    },
+    "sn_xbar": {
+      "testbench": "sn_xbar",
+      "design_spec": "docs/spec/design/sn_xbar.md",
+      "verification_spec": "docs/spec/verification/sn_xbar.md",
+      "environment": "testbenches/sn_xbar/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/openLLC/utils/CHIXbar.scala"
+      ],
+      "tests": [
+        "testbenches/sn_xbar/tests"
+      ],
+      "smoke": "testbenches/sn_xbar/tests/test_sn_xbar_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "SNXbar",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_openllc_opt.snXbar",
+        "direct_parents": [
+          {
+            "parent": "OpenLLC",
+            "instance": "snXbar",
+            "line": 2287
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/openLLC/utils/CHIXbar.scala",
+          "line": 117
+        }
+      },
+      "module_id": "M-54ee1b5b2b63"
+    },
+    "transmitter_link_monitor": {
+      "testbench": "transmitter_link_monitor",
+      "design_spec": "docs/spec/design/transmitter_link_monitor.md",
+      "verification_spec": "docs/spec/verification/transmitter_link_monitor.md",
+      "environment": "testbenches/transmitter_link_monitor/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/openLLC/chi/LinkLayer.scala"
+      ],
+      "tests": [
+        "testbenches/transmitter_link_monitor/tests"
+      ],
+      "smoke": "testbenches/transmitter_link_monitor/tests/test_transmitter_link_monitor_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "TransmitterLinkMonitor",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.linkMonitor_1",
+        "direct_parents": [
+          {
+            "parent": "XSTop",
+            "instance": "linkMonitor_1",
+            "line": 2631
+          },
+          {
+            "parent": "XSTop",
+            "instance": "linkMonitor_2",
+            "line": 2797
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/openLLC/chi/LinkLayer.scala",
+          "line": 190
+        }
+      },
+      "module_id": "M-ec5ccd349abd"
+    },
+    "receiver_link_monitor": {
+      "testbench": "receiver_link_monitor",
+      "design_spec": "docs/spec/design/receiver_link_monitor.md",
+      "verification_spec": "docs/spec/verification/receiver_link_monitor.md",
+      "environment": "testbenches/receiver_link_monitor/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/openLLC/DummyLLC.scala"
+      ],
+      "tests": [
+        "testbenches/receiver_link_monitor/tests"
+      ],
+      "smoke": "testbenches/receiver_link_monitor/tests/test_receiver_link_monitor_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "ReceiverLinkMonitor",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.linkMonitor",
+        "direct_parents": [
+          {
+            "parent": "XSTop",
+            "instance": "linkMonitor",
+            "line": 2286
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/openLLC/DummyLLC.scala",
+          "line": 372
+        }
+      },
+      "module_id": "M-9a7139dcf4c6"
+    },
+    "refill_unit": {
+      "testbench": "refill_unit",
+      "design_spec": "docs/spec/design/refill_unit.md",
+      "verification_spec": "docs/spec/verification/refill_unit.md",
+      "environment": "testbenches/refill_unit/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/openLLC/RefillUnit.scala"
+      ],
+      "tests": [
+        "testbenches/refill_unit/tests"
+      ],
+      "smoke": "testbenches/refill_unit/tests/test_refill_unit_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "RefillUnit",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_openllc_opt.slices_0.refillUnit",
+        "direct_parents": [
+          {
+            "parent": "Slice_4",
+            "instance": "refillUnit",
+            "line": 2350
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/openLLC/RefillUnit.scala",
+          "line": 52
+        }
+      },
+      "module_id": "M-b860ae6a4511"
+    },
+    "rn_link_monitor": {
+      "testbench": "rn_link_monitor",
+      "design_spec": "docs/spec/design/rn_link_monitor.md",
+      "verification_spec": "docs/spec/verification/rn_link_monitor.md",
+      "environment": "testbenches/rn_link_monitor/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/openLLC/chi/LinkLayer.scala"
+      ],
+      "tests": [
+        "testbenches/rn_link_monitor/tests"
+      ],
+      "smoke": "testbenches/rn_link_monitor/tests/test_rn_link_monitor_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "RNLinkMonitor",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_openllc_opt.rnLinkMonitor",
+        "direct_parents": [
+          {
+            "parent": "OpenLLC",
+            "instance": "rnLinkMonitor",
+            "line": 3091
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/openLLC/chi/LinkLayer.scala",
+          "line": 58
+        }
+      },
+      "module_id": "M-0401eaa23348"
+    },
+    "snoop_unit": {
+      "testbench": "snoop_unit",
+      "design_spec": "docs/spec/design/snoop_unit.md",
+      "verification_spec": "docs/spec/verification/snoop_unit.md",
+      "environment": "testbenches/snoop_unit/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/openLLC/SnoopUnit.scala"
+      ],
+      "tests": [
+        "testbenches/snoop_unit/tests"
+      ],
+      "smoke": "testbenches/snoop_unit/tests/test_snoop_unit_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "SnoopUnit",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_openllc_opt.slices_0.snpUnit",
+        "direct_parents": [
+          {
+            "parent": "Slice_4",
+            "instance": "snpUnit",
+            "line": 3604
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/openLLC/SnoopUnit.scala",
+          "line": 31
+        }
+      },
+      "module_id": "M-be49d1c062af"
+    },
+    "sn_link_monitor": {
+      "testbench": "sn_link_monitor",
+      "design_spec": "docs/spec/design/sn_link_monitor.md",
+      "verification_spec": "docs/spec/verification/sn_link_monitor.md",
+      "environment": "testbenches/sn_link_monitor/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/openLLC/chi/LinkLayer.scala"
+      ],
+      "tests": [
+        "testbenches/sn_link_monitor/tests"
+      ],
+      "smoke": "testbenches/sn_link_monitor/tests/test_sn_link_monitor_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "SNLinkMonitor",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_openllc_opt.snLinkMonitor",
+        "direct_parents": [
+          {
+            "parent": "OpenLLC",
+            "instance": "snLinkMonitor",
+            "line": 2516
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/openLLC/chi/LinkLayer.scala",
+          "line": 142
+        }
+      },
+      "module_id": "M-85f037f86a0d"
+    },
+    "rxreq": {
+      "testbench": "rxreq",
+      "design_spec": "docs/spec/design/rxreq.md",
+      "verification_spec": "docs/spec/verification/rxreq.md",
+      "environment": "testbenches/rxreq/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/openLLC/chi/RXREQ.scala"
+      ],
+      "tests": [
+        "testbenches/rxreq/tests"
+      ],
+      "smoke": "testbenches/rxreq/tests/test_rxreq_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "RXREQ",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_openllc_opt.slices_0.rxreqUp",
+        "direct_parents": [
+          {
+            "parent": "Slice_4",
+            "instance": "rxreqUp",
+            "line": 1053
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/openLLC/chi/RXREQ.scala",
+          "line": 26
+        }
+      },
+      "module_id": "M-538d5e65bba0"
+    },
+    "txsnp": {
+      "testbench": "txsnp",
+      "design_spec": "docs/spec/design/txsnp.md",
+      "verification_spec": "docs/spec/verification/txsnp.md",
+      "environment": "testbenches/txsnp/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/openLLC/chi/TXSNP.scala"
+      ],
+      "tests": [
+        "testbenches/txsnp/tests"
+      ],
+      "smoke": "testbenches/txsnp/tests/test_txsnp_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "TXSNP",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_openllc_opt.slices_0.txsnpUp",
+        "direct_parents": [
+          {
+            "parent": "Slice_4",
+            "instance": "txsnpUp",
+            "line": 1029
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/openLLC/chi/TXSNP.scala",
+          "line": 26
+        }
+      },
+      "module_id": "M-12ccfc6d5d17"
+    },
+    "slice": {
+      "testbench": "slice",
+      "design_spec": "docs/spec/design/slice.md",
+      "verification_spec": "docs/spec/verification/slice.md",
+      "environment": "testbenches/slice/env.py",
+      "chisel": [
+        "XSCache/src/main/scala/openLLC/Slice.scala"
+      ],
+      "tests": [
+        "testbenches/slice/tests"
+      ],
+      "smoke": "testbenches/slice/tests/test_slice_smoke.py::test_smoke",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Slice_4",
+        "verification_state": "scaffold",
+        "availability": "present",
+        "sample_instance": "XSTop.chi_openllc_opt.slices_0",
+        "direct_parents": [
+          {
+            "parent": "OpenLLC",
+            "instance": "slices_0",
+            "line": 2639
+          },
+          {
+            "parent": "OpenLLC",
+            "instance": "slices_1",
+            "line": 2752
+          },
+          {
+            "parent": "OpenLLC",
+            "instance": "slices_2",
+            "line": 2865
+          },
+          {
+            "parent": "OpenLLC",
+            "instance": "slices_3",
+            "line": 2978
+          }
+        ],
+        "declaration": {
+          "path": "XSCache/src/main/scala/openLLC/Slice.scala",
+          "line": 27
+        }
+      },
+      "module_id": "M-763546fb2eaa"
+    }
+  }
+}

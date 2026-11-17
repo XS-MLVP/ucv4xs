@@ -4,7 +4,9 @@ from __future__ import annotations
 from suites.memblock.mmu.testbenches.shared.env.execution import execution
 import pytest
 
-from suites.memblock.mmu.testbenches.bitmap.env.bitmap import BmReq
+from suites.memblock.mmu.testbenches.bitmap.transactions import BmReq
+from suites.memblock.mmu.testbenches.bitmap.model import merge_ppn
+from suites.memblock.mmu.testbenches.bitmap.checker import check_response
 
 BMA = 0x90000000 >> 6
 BASE = 0x90000000
@@ -30,7 +32,7 @@ async def test_cache_hit_pass_and_fail(bitmap_env):
         env.configure(cache_hit=True, cache_cfs=0x00)
         await env.issue(BmReq(bmppn=0x80000, id=1))
         resp = await env.wait_resp(note="hit pass")
-        assert resp["cf"] == 0 and resp["cfs"] == [0] * 8 and resp["id"] == 1
+        check_response(resp, cf=0, cfs=[0] * 8, request_id=1)
         env.configure(cache_cfs=0x01)
         await env.issue(BmReq(bmppn=0x80000, id=2))
         resp = await env.wait_resp(note="hit fail")
@@ -79,7 +81,7 @@ async def test_pmp_denied(bitmap_env):
         env.configure(pmp_deny=True)
         await env.issue(BmReq(bmppn=0x80000, id=4))
         resp = await env.wait_resp(note="pmp fail")
-        assert resp["cf"] == 1 and resp["cfs"] == [1] * 8 and resp["id"] == 4
+        check_response(resp, cf=1, cfs=[1] * 8, request_id=4)
         assert env.cache_requests == [] and env.mem_requests == []
         env.coverage.sample("pmp_fail", 0, "fail") if env.coverage else None
 
@@ -333,7 +335,7 @@ async def test_level_variants(bitmap_env):
                 await env.issue(BmReq(bmppn=0x80000, vpn=vpn, level=level,
                                       id=level))
                 assert (await env.wait_resp(note=f"level {level}"))["id"] == level
-                expected = (0x80000 & ~mask) | (vpn & mask)
+                expected = merge_ppn(0x80000, vpn, mask)
                 assert env.cache_requests[0]["tag"] == expected, (level, vpn)
                 if env.coverage:
                     env.coverage.sample("cache_hit", level, "pass")

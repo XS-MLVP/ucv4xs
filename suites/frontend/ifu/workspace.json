@@ -23,7 +23,206 @@
       "chisel": [
         "src/main/scala/xiangshan/frontend/ifu/RvcExpander.scala"
       ],
-      "testbench": "rvc_expander"
+      "testbench": "rvc_expander",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "RvcExpander",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_ifu.rvcExpanders_0",
+        "direct_parents": [
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_0",
+            "line": 15951
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_1",
+            "line": 15957
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_2",
+            "line": 15963
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_3",
+            "line": 15969
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_4",
+            "line": 15975
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_5",
+            "line": 15981
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_6",
+            "line": 15987
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_7",
+            "line": 15993
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_8",
+            "line": 15999
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_9",
+            "line": 16005
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_10",
+            "line": 16011
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_11",
+            "line": 16017
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_12",
+            "line": 16023
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_13",
+            "line": 16029
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_14",
+            "line": 16035
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_15",
+            "line": 16041
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_16",
+            "line": 16047
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_17",
+            "line": 16053
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_18",
+            "line": 16059
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_19",
+            "line": 16065
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_20",
+            "line": 16071
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_21",
+            "line": 16077
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_22",
+            "line": 16083
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_23",
+            "line": 16089
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_24",
+            "line": 16095
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_25",
+            "line": 16101
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_26",
+            "line": 16107
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_27",
+            "line": 16113
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_28",
+            "line": 16119
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_29",
+            "line": 16125
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_30",
+            "line": 16131
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_31",
+            "line": 16137
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_32",
+            "line": 16143
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_33",
+            "line": 16149
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_34",
+            "line": 16155
+          },
+          {
+            "parent": "Ifu",
+            "instance": "rvcExpanders_35",
+            "line": 16161
+          },
+          {
+            "parent": "Ifu",
+            "instance": "uncacheRvcExpander",
+            "line": 16381
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/ifu/RvcExpander.scala",
+          "line": 23
+        }
+      },
+      "module_id": "M-d9272390888c"
     },
     "instr_boundary": {
       "design_spec": [
@@ -46,7 +245,26 @@
       "chisel": [
         "src/main/scala/xiangshan/frontend/ifu/InstrBoundary.scala"
       ],
-      "testbench": "instr_boundary"
+      "testbench": "instr_boundary",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "InstrBoundary",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_ifu.instrBoundary",
+        "direct_parents": [
+          {
+            "parent": "Ifu",
+            "instance": "instrBoundary",
+            "line": 14233
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/ifu/InstrBoundary.scala",
+          "line": 23
+        }
+      },
+      "module_id": "M-b4d13a08959e"
     },
     "pred_checker": {
       "design_spec": [
@@ -69,7 +287,26 @@
       "chisel": [
         "src/main/scala/xiangshan/frontend/ifu/PredChecker.scala"
       ],
-      "testbench": "pred_checker"
+      "testbench": "pred_checker",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "PredChecker",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_ifu.predChecker",
+        "direct_parents": [
+          {
+            "parent": "Ifu",
+            "instance": "predChecker",
+            "line": 14918
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/ifu/PredChecker.scala",
+          "line": 32
+        }
+      },
+      "module_id": "M-1f65affd099f"
     },
     "uncache_unit": {
       "design_spec": [
@@ -92,7 +329,26 @@
       "chisel": [
         "src/main/scala/xiangshan/frontend/ifu/IfuUncacheUnit.scala"
       ],
-      "testbench": "uncache_unit"
+      "testbench": "uncache_unit",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IfuUncacheUnit",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_ifu.uncacheUnit",
+        "direct_parents": [
+          {
+            "parent": "Ifu",
+            "instance": "uncacheUnit",
+            "line": 16354
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/ifu/IfuUncacheUnit.scala",
+          "line": 28
+        }
+      },
+      "module_id": "M-57cf02701d23"
     },
     "frontend_trigger": {
       "design_spec": [
@@ -115,7 +371,26 @@
       "chisel": [
         "src/main/scala/xiangshan/frontend/ifu/FrontendTrigger.scala"
       ],
-      "testbench": "frontend_trigger"
+      "testbench": "frontend_trigger",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "FrontendTrigger",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_ifu.frontendTrigger",
+        "direct_parents": [
+          {
+            "parent": "Ifu",
+            "instance": "frontendTrigger",
+            "line": 15855
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/ifu/FrontendTrigger.scala",
+          "line": 33
+        }
+      },
+      "module_id": "M-67e405b524d2"
     },
     "perf_analysis": {
       "design_spec": [
@@ -138,7 +413,26 @@
       "chisel": [
         "src/main/scala/xiangshan/frontend/ifu/IfuPerfAnalysis.scala"
       ],
-      "testbench": "perf_analysis"
+      "testbench": "perf_analysis",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "IfuPerfAnalysis",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_ifu.perfAnalyzer",
+        "direct_parents": [
+          {
+            "parent": "Ifu",
+            "instance": "perfAnalyzer",
+            "line": 16167
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/ifu/IfuPerfAnalysis.scala",
+          "line": 36
+        }
+      },
+      "module_id": "M-bd13e2d68016"
     },
     "ifu": {
       "design_spec": [
@@ -161,8 +455,26 @@
       "chisel": [
         "src/main/scala/xiangshan/frontend/ifu/Ifu.scala"
       ],
-      "testbench": "ifu"
+      "testbench": "ifu",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "Ifu",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.frontend.inner_ifu",
+        "direct_parents": [
+          {
+            "parent": "Frontend",
+            "instance": "inner_ifu",
+            "line": 8456
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/frontend/ifu/Ifu.scala",
+          "line": 48
+        }
+      },
+      "module_id": "M-77d462dc82c2"
     }
-  },
-  "loader": "testbenches/shared/env/harness.py"
+  }
 }

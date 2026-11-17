@@ -60,11 +60,12 @@ internal 来源按[本地配置](../local-configuration.md)接入。
 
 ## 创建新工程或接入新 DUT
 
-填写工程、分组、真实 top 和导出类名：
+先用 `ucv modules list` 找到模块 ID；新模块按[模块维护契约](../reference/modules.md)登记身份和
+本版观察，再填写工程、分组、真实 top 和导出类名：
 
 ```sh
 ./scripts/ucv init <suite> --group <group> --dut <dut> \
-  --top <ActualRtlTop> --export-name <DutClass>
+  --top <ActualRtlTop> --export-name <DutClass> --module-id <module-id>
 ./scripts/ucv info <suite>
 ```
 
@@ -83,8 +84,8 @@ internal 来源按[本地配置](../local-configuration.md)接入。
 4. `testbenches/<testbench>/env.py`（复杂时 `env/`）与工程 `conftest.py`：实际 Toffee 环境、
    fixture 注册和 DUT 生命周期。
 5. `testbenches/<testbench>/tests/test_<dut>_smoke.py`：用真实事务检查替换显式失败占位。
-6. 参数化共享实现：多个 DUT 的 `workspace.json` 以 `duts.<name>.testbench` 显式指向同一实现；每个 DUT 仍在
-   `ucv.json` 登记自己的真实 top 和导出名。
+6. 每个新 DUT 保持独立 `testbench` 和测试根，`module_id` 关联管理树。同族多 DUT 可以关联同一
+   模块 ID，但不会因此共用环境或测试。每个 DUT 在 `ucv.json` 登记自己的真实 top 和导出名。
 
 DUT 与 `testbenches/shared/` 同用 `env`、`transactions`、`model`、`checker`、`coverage`、
 `tests` 六类职责：tests 为目录，其余按需选单文件或同名包。shared 仅承接真正跨 DUT 的
@@ -108,12 +109,12 @@ DUT 与 `testbenches/shared/` 同用 `env`、`transactions`、`model`、`checker
 
 `docs --write` 只用于你新增/修改了资源或问题记录、需要刷新生成入口的情况；单纯运行
 现有用例不必先写文档。构建需已完成 `setup --profile runtime` 或 `full`，工具安装步骤
-见[首次教程](../tutorials/bpu-first-ut.md#4-安装仿真工具并构建-mainbtb)。
+见[首次教程](../tutorials/bpu-first-ut.md#3-安装工具并准备-rtl)。
 
 单 DUT 使用 `workspace.json` 登记的 `tests`；schema2 常规入口为
 `testbenches/<testbench>/tests`，默认选择同时包含存在的 `testbenches/shared/tests`。
 显式传入其它 DUT 的测试路径会被拒绝；显式路径或 nodeid 仍限定实际选择。多 DUT 可重复 `--dut`。
-共享参数化测试仍须用完整 nodeid 选择变体；仅指定 DUT 键不会自动过滤 fixture 参数。
+同族硬件变体各有独立测试根；用例内的种子、事务参数可继续通过完整 nodeid 精确选择。
 下一步按[运行指南](run-tests.md)选择用例、使用新结果目录并读取实际收据；新增工程的
 显式失败占位用例必须先实现，不将构建冒烟或文档生成当作功能验证通过。
 

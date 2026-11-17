@@ -67,3 +67,43 @@ StdExeUnit（无内部子模块）
 - 已确认的 RTL 问题见 [bugs/open](../../bugs/open)；它们是验证观察与规范/源码依据之间的差异，不表示本目录已批准修复方案。
 - `LSU-STD-PERF-001` 只有源码静态证据（计数器未导出），不能扩成功能缺陷；其余 6 个有原生 DUT 动态证据。
 - 外部代理的合法域限制（LSQ/DCache/TLB/PMP/Sbuffer/Backend/ROB）仍是本工程结论的边界；未做跨族联合或整核可达性证明。
+## 当前切分与 Chisel / RTL 映射
+
+LSU 的独立 Load/Store/Atomics 流水检查执行合同；`memblock` 是 MemBlock 级集成切点，
+负责与 LSQ、Sbuffer、DCache、MMU、预取及 FrontendBridge 的接口协作，不能替代这些工程的
+子级功能证明。`select_oldest` 来自 ExceptionInfoGen；difftest wrapper 属观察设施，
+其骨架不计作 LR/SC 功能已验证。
+
+本表是 **2026-11-16** 的设计身份核对，基线 `public-e716c7658`，完整 commit `e716c765824900ff78816b92ac827fd4aa2cab35`。配置为 DefaultConfig、单核、CHI E.b、OpenLLC，含 `--fpga-platform --reset-gen`。
+
+Chisel 位置来自该次 FIRRTL 源位置注解，并与源码核对；RTL 实例来自生成模块中的实际实例声明。表中实例为可定位样本，全部直接父实例见 workspace.json。数字后缀只属于该基线，不是稳定逻辑身份；同一个 RTL 类型可能有多个实例。
+
+沿用既有工程功能合同；本表补充当前源码、生成名与实际放置位置。
+
+| DUT | 当前配方 top | Chisel 定义/生成位置（相对源码根） | RTL 实例样本 | 接入状态 |
+|---|---|---|---|---|
+| `store_arbiter` | `Arbiter3_StoreStageIO` | 依赖库 `src/main/scala/chisel3/util/Arbiter.scala`；实例化位置见 workspace | `XSTop.core_with_l2.core.memBlock.inner_StoreUnit_0.s0.RequestSources_arb` | 已有实现；新基线未验收 |
+| `store_trigger` | `MemTrigger_3` | `src/main/scala/xiangshan/backend/fu/NewCSR/Debug.scala:301` | `XSTop.core_with_l2.core.memBlock.inner_StoreUnit_0.s1.storeTrigger` | 已有实现；新基线未验收 |
+| `store_delay` | `DelayPipeline` | `src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala:950` | `XSTop.core_with_l2.core.memBlock.inner_StoreUnit_0.s3.delayPipe` | 已有实现；新基线未验收 |
+| `store_s0` | `StoreUnitS0` | `src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala:38` | `XSTop.core_with_l2.core.memBlock.inner_StoreUnit_0.s0` | 已有实现；新基线未验收 |
+| `store_s1` | `StoreUnitS1` | `src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala:255` | `XSTop.core_with_l2.core.memBlock.inner_StoreUnit_0.s1` | 已有实现；新基线未验收 |
+| `store_s2` | `StoreUnitS2` | `src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala:547` | `XSTop.core_with_l2.core.memBlock.inner_StoreUnit_0.s2` | 已有实现；新基线未验收 |
+| `store_s3` | `StoreUnitS3` | `src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala:710` | `XSTop.core_with_l2.core.memBlock.inner_StoreUnit_0.s3` | 已有实现；新基线未验收 |
+| `store_s4` | `StoreUnitS4` | `src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala:837` | `XSTop.core_with_l2.core.memBlock.inner_StoreUnit_0.s4` | 已有实现；新基线未验收 |
+| `new_store_unit` | `NewStoreUnit` | `src/main/scala/xiangshan/mem/pipeline/NewStoreUnit.scala:891` | `XSTop.core_with_l2.core.memBlock.inner_StoreUnit_0` | 已有实现；新基线未验收 |
+| `std_exe_unit` | `StdExeUnit` | `src/main/scala/xiangshan/mem/pipeline/StdExeUnit.scala:44` | `XSTop.core_with_l2.core.memBlock.inner_stdExeUnits_0` | 已有实现；新基线未验收 |
+| `load_arbiter` | `Arbiter7_LoadStageIO` | 依赖库 `src/main/scala/chisel3/util/Arbiter.scala`；实例化位置见 workspace | `XSTop.core_with_l2.core.memBlock.inner_LoadUnit_0.s0.RequestSources_arb` | 已有实现；新基线未验收 |
+| `load_trigger` | `MemTrigger` | `src/main/scala/xiangshan/backend/fu/NewCSR/Debug.scala:301` | `XSTop.core_with_l2.core.memBlock.inner_LoadUnit_0.s1.loadTrigger` | 已有实现；新基线未验收 |
+| `load_datapath` | `LoadUnitDataPath` | `src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala:1896` | `XSTop.core_with_l2.core.memBlock.inner_LoadUnit_0.dataPath` | 已有实现；新基线未验收 |
+| `load_s0` | `LoadUnitS0` | `src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala:43` | `XSTop.core_with_l2.core.memBlock.inner_LoadUnit_0.s0` | 已有实现；新基线未验收 |
+| `load_s1` | `LoadUnitS1` | `src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala:498` | `XSTop.core_with_l2.core.memBlock.inner_LoadUnit_0.s1` | 已有实现；新基线未验收 |
+| `load_s2` | `LoadUnitS2` | `src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala:804` | `XSTop.core_with_l2.core.memBlock.inner_LoadUnit_0.s2` | 已有实现；新基线未验收 |
+| `load_s3` | `LoadUnitS3` | `src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala:1291` | `XSTop.core_with_l2.core.memBlock.inner_LoadUnit_0.s3` | 已有实现；新基线未验收 |
+| `load_s4` | `LoadUnitS4` | `src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala:1874` | `XSTop.core_with_l2.core.memBlock.inner_LoadUnit_0.s4` | 已有实现；新基线未验收 |
+| `new_load_unit` | `NewLoadUnit` | `src/main/scala/xiangshan/mem/pipeline/NewLoadUnit.scala:2063` | `XSTop.core_with_l2.core.memBlock.inner_LoadUnit_0` | 已有实现；新基线未验收 |
+| `select_oldest` | `SelectOldest` | `src/main/scala/xiangshan/mem/MemCommon.scala:195` | `XSTop.core_with_l2.core.memBlock.inner_exceptionInfoGen.s1Oldest_s1SelectOldestGroup_0` | 骨架；待实现 |
+| `dummy_dpic_wrapper` | `DummyDPICWrapper_LrScEvent` | `difftest/src/main/scala/DPIC.scala:370` | `XSTop.core_with_l2.core.memBlock.inner_atomicsUnit.difftest_lrsc_1` | 骨架；待实现 |
+| `atomics` | `AtomicsUnit` | `src/main/scala/xiangshan/mem/pipeline/AtomicsUnit.scala:39` | `XSTop.core_with_l2.core.memBlock.inner_atomicsUnit` | 骨架；待实现 |
+| `memblock` | `MemBlock` | `src/main/scala/xiangshan/mem/MemBlock.scala:1635` | `XSTop.core_with_l2.core.memBlock` | 骨架；待实现 |
+
+这些映射不证明接口向后兼容、硬件等价或功能覆盖；历史规格和报告沿用原日期及基线。构建、冒烟、功能、覆盖分别验收。公共 NewPipelineConnectPipe 与 internal VAGQ 同名模块没有互相覆盖结论。

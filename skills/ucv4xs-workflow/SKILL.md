@@ -1,6 +1,6 @@
 ---
 name: ucv4xs-workflow
-description: 维护 ucv4xs 香山单元测试仓库的基线、构建编排和工程接入，使用 ucv 完成项目内安装、完整 RTL 生成、DUT 构建和隔离回归。适用于本仓库的开发与运行任务。
+description: 维护 ucv4xs 香山单元测试仓库的基线、构建编排和工程接入，使用 ucv 完成项目内安装、完整 RTL 生成、DUT 构建和隔离回归；模块树切分及跨基线模块变化评审按需转入身份与生命周期方法。适用于本仓库的开发、运行与验证资产维护任务。
 ---
 
 # ucv4xs 项目工作流
@@ -11,12 +11,16 @@ description: 维护 ucv4xs 香山单元测试仓库的基线、构建编排和�
 
 - 仅查看工程或继承：`PYTHONPATH=src python3.12 -m ucv list public --require-unified-baseline`；不需要为阅读配置启动完整构建。
 - 查资源或初始化：`./scripts/ucv info <suite> --dut <dut>`、`ucv init`；由工具生成地图和骨架。
+- 模块树、切分粒度或基线升级后模块消失：读取[模块身份与生命周期方法（待审核）](../pending/module-identity-and-lifecycle.md)。模块作为管理主记录，合同/任务/负责人关联其上；先用 `ucv modules diff` 对账持久 ID 与新观察，依据确认的承接关系 apply，再评估绑定和实现变更。命令格式见[模块维护契约](../../docs/reference/modules.md)。
 - 只读源码/写规格：`ucv prepare <suite> --source-only`；不安装仿真工具，不生成 RTL。
 - 资料维护：按[现有主题原位更新](../../docs/how-to/maintain-docs.md)，用 `ucv check` 检查路径，运行统计由 `ucv report` 提供。设计/验证 spec 使用工程结构。
 - 工程规格放 `docs/spec/{design,verification}/`，问题放 `docs/bugs/{open,closed}/`；README
-  是当前摘要入口，`ucv docs <suite> --write` 生成问题汇总与 DUT/shared README 工作入口。稳定 ID
+  是当前摘要入口，`ucv docs <suite> --write` 生成逐 DUT 工作索引、问题汇总与 DUT/shared README 工作入口。稳定 ID
   与各基线证据保存在同一问题记录，Git 固定迭代；不为每轮新增泛化历史目录。通用要求不
   硬编码具体设计。
+- 工作按 DUT＋合同范围认领与验收；suite 只承担维护与运行。负责人、下一步、阻塞和证据
+  沿用对应合同正文或关联任务，未知责任人保持待认领。工作索引的接入观察和运行标签统计
+  不自动成为合同完成率；跨模块性质写入真实集成 DUT 的合同。
 - 安装、编译或定位工具问题：读取 [编译构建经验](../../docs/lessons/build-and-toolchain.md)。实际配置以 `baselines/`、`dependencies/` 和工程 `ucv.json` 为准。
 - 修改源码版本或 override：读取 [基线规则](../../docs/baselines.md)，建立完整命名基线，并在根、分组或整个工程引用。
 - 接入镜像、internal 源码或旧证据：读取 [本地配置](../../docs/local-configuration.md)，只在 `.ucv/local.json` 保存机器路径。
@@ -27,13 +31,15 @@ description: 维护 ucv4xs 香山单元测试仓库的基线、构建编排和�
 
 ## 构建和回归
 
-从根目录使用以下入口，按当前任务选择需要的阶段和集合。下面是 **BPU/MainBTB 示例**：
+从根目录使用以下入口，按当前任务选择需要的阶段和集合。下面是 **BPU/MainBTB 示例**；
+当前默认基线尚无锁定 release，使用源码生成路线：
 
 ```sh
-./scripts/ucv prepare bpu --dut mbtb --rtl-source release
-./scripts/ucv setup --profile runtime --jobs 2
+./scripts/ucv setup --profile full --jobs 2
+.venv/bin/ucv doctor bpu --stage generate
+./scripts/ucv prepare bpu --dut mbtb --rtl-source source
 .venv/bin/ucv doctor bpu --stage run
-.venv/bin/ucv build bpu --dut mbtb --jobs 2
+.venv/bin/ucv build bpu --dut mbtb --jobs 2 --rtl-source source
 .venv/bin/ucv run bpu --dut mbtb --workers 1 -- testbenches/mbtb/tests/testcase/test_reset.py::test_reset_completes_before_cold_lookup
 .venv/bin/ucv report
 ```
@@ -99,20 +105,21 @@ UNCERTAIN 插件为 `toffee._pytest_outcomes`，选项形如 `--toffee-output`�
 
 ## 修改工程与公共工具
 
-新增工程/DUT 使用 `ucv init`。新工程使用 workspace schema2，生成 `testbenches/<dut>/`
-下的环境、事务、测试与 README，规格和问题保留工程 docs。现有十二工程的统一布局与
+新增工程/DUT 使用 `ucv init --module-id <id>`。新工程使用 workspace schema2，每个新 DUT 独立生成 `testbenches/<dut>/`
+下的环境、事务、测试与 README，规格和问题保留工程 docs。现有工程的统一布局与
 适用范围见[统一目录规范](../../docs/reference/module-layout.md#schema-版本与本轮范围)。
 `ucv docs --write` 更新 DUT 与已有 shared 的独立入口，`ucv check` 按 schema 强制校验。
 schema2 导入名为 `suites.<group>.<suite>.testbenches.<testbench>`；工程根保持 Python 包与唯一 pytest 根。
 每个 DUT 配方声明真实 RTL top 和 Python 导出类。领域模型与检查器留在工程中，公共层
-负责路径、基线、调度和报告。DUT 顶层的集成模型和用例归该 DUT；参数化复用通过
-`workspace.json` 的 `duts.<name>.testbench` 字段显式登记，`info` 显示 `testbench`。
+负责路径、基线、调度和报告。DUT 顶层的集成模型和用例归该 DUT；`workspace.json` 的
+`duts.<name>.module_id` 关联管理身份，`testbench` 关联实际实现，`info` 同时显示两者。
+schema2 每个 DUT 独占 testbench 和测试根，同族也保持独立；真正复用按职责提取到 shared。
 schema2 配方 `tests` 为 `["testbenches"]`，`pytest.ini` 使用 `testpaths = testbenches`。
 工程根、实现包层与集中资料层级按规范使用封闭白名单，检查实际磁盘条目及类型，
 不忽略空目录、旧缓存目录或隐藏目录。固定层级的符号链接仅允许工程根 `XiangShan`；
 `dut/rtl/results` 为工具管理的本地产物位置。`ucv init` 给已有工程增加 DUT 前也检查
 布局，违规时不写入新骨架。清理残留先核对活动占用，保留归档路径与哈希清单，再执行
-`ucv check full`；不通过新增例外目录绕过约束。
+`ucv check all`；不通过新增例外目录绕过约束。
 
 `testbenches/shared/` 只放实际跨 DUT 共享的组件，与 DUT 同用 env、transactions、model、
 checker、coverage、tests 六职责且同名同义。tests 为目录，其余按需选文件或同名包；

@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "suite": "fp_region",
+  "generation": "soc",
+  "closure": "module-dependencies",
+  "duts": {
+    "region": {
+      "top": "FltRegionModule",
+      "export_name": "FltRegionModuleDut"
+    },
+    "fp_reg_file": {
+      "top": "FpRegFile",
+      "export_name": "FpRegFileDut"
+    },
+    "dummy_dpic_wrapper": {
+      "top": "DummyDPICWrapper_PhyFpRegState",
+      "export_name": "DummyDpicWrapperDut"
+    },
+    "iq_falu_fmul_fcvt_fcmp": {
+      "top": "IssueQueueFaluFmulFcvtFcmp",
+      "export_name": "IssueQueueDut"
+    },
+    "pipe_falu_fmul_fcvt_fcmp": {
+      "top": "IssuePipeFaluFmulFcvtFcmp",
+      "export_name": "IssuePipeDut"
+    },
+    "flt_wb_data_path": {
+      "top": "FltWbDataPath",
+      "export_name": "FltWbDataPathDut"
+    },
+    "fp_rf_read_arbiter": {
+      "top": "FpRFReadArbiter",
+      "export_name": "FpRfReadArbiterDut"
+    },
+    "iq_falu_fmul_fdiv": {
+      "top": "IssueQueueFaluFmulFdiv",
+      "export_name": "IssueQueueFaluFmulFdivDut"
+    },
+    "iq_falu_fmul_fdiv_1": {
+      "top": "IssueQueueFaluFmulFdiv_1",
+      "export_name": "IssueQueueFaluFmulFdiv_1Dut"
+    },
+    "iq_falu_fmul": {
+      "top": "IssueQueueFaluFmul",
+      "export_name": "IssueQueueFaluFmulDut"
+    },
+    "pipe_falu_fmul_fdiv": {
+      "top": "IssuePipeFaluFmulFdiv",
+      "export_name": "IssuePipeFaluFmulFdivDut"
+    },
+    "pipe_falu_fmul_fdiv_1": {
+      "top": "IssuePipeFaluFmulFdiv_1",
+      "export_name": "IssuePipeFaluFmulFdiv_1Dut"
+    },
+    "pipe_falu_fmul": {
+      "top": "IssuePipeFaluFmul",
+      "export_name": "IssuePipeFaluFmulDut"
+    }
+  },
+  "pytest_root": ".",
+  "tests": [
+    "testbenches"
+  ],
+  "process_isolation": "suite"
+}

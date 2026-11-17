@@ -57,7 +57,7 @@ R-08 保持关闭。6 条硬件 FAIL 的逐条归因见 §3。本结论只覆盖
 
 | 要求 | 判据 | 本轮状态 |
 |---|---|---|
-| 构建 | 七个 DUT 均 BUILT + SMOKE PASS，包文件齐全且哈希入凭据 | 达成（`ucv build ifu`） |
+| 构建 | 七个 DUT 均 BUILT + SMOKE PASS，包文件齐全且哈希入凭据 | 达成（`ucv build fetch`） |
 | 冒烟 | 每个 DUT 独立进程构造、时钟推进、`Finish` 通过 | 达成 |
 | 功能判定 | 硬件功能点 53/55 PASS + 1 FAIL（`IFU-TR-002`）+ 1 UNCERTAIN（`IFU-TOP-011`）；环境功能点 5/5 PASS，分区统计 | **未达成**（144 PASS、2 FAIL、1 UNCERTAIN） |
 | 行覆盖 | 七个 DUT 的生成 RTL 行 100% | 达成（4053/4053 等） |

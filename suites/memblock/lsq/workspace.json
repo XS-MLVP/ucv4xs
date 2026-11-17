@@ -13,17 +13,37 @@
         "docs/spec/verification/plan.md",
         "testbenches/lsq_wrapper/coverage/function_points.py"
       ],
-      "environment": "testbenches/freelist/env/__init__.py",
+      "environment": "testbenches/freelist_rar/env/__init__.py",
       "chisel": [
         "src/main/scala/xiangshan/mem/lsqueue/FreeList.scala",
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueRAR.scala"
       ],
       "tests": [
-        "testbenches/freelist/tests",
-        "testbenches/freelist/tests/test_basic.py",
-        "testbenches/freelist/tests/test_returns.py"
+        "testbenches/freelist_rar/tests",
+        "testbenches/freelist_rar/tests/test_basic.py",
+        "testbenches/freelist_rar/tests/test_returns.py"
       ],
-      "testbench": "freelist"
+      "testbench": "freelist_rar",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "FreeList",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.loadQueueRAR.freeList",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueRAR",
+            "instance": "freeList",
+            "line": 12757
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/FreeList.scala",
+          "line": 25
+        }
+      },
+      "module_id": "M-74c5502fcebf",
+      "smoke": "testbenches/freelist_rar/tests/test_basic.py::test_initial_pool_and_single_allocations[freelist_rar]"
     },
     "freelist_raw": {
       "design_spec": [
@@ -35,17 +55,37 @@
         "docs/spec/verification/plan.md",
         "testbenches/lsq_wrapper/coverage/function_points.py"
       ],
-      "environment": "testbenches/freelist/env/__init__.py",
+      "environment": "testbenches/freelist_raw/env/__init__.py",
       "chisel": [
         "src/main/scala/xiangshan/mem/lsqueue/FreeList.scala",
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueRAW.scala"
       ],
       "tests": [
-        "testbenches/freelist/tests",
-        "testbenches/freelist/tests/test_basic.py",
-        "testbenches/freelist/tests/test_returns.py"
+        "testbenches/freelist_raw/tests",
+        "testbenches/freelist_raw/tests/test_basic.py",
+        "testbenches/freelist_raw/tests/test_returns.py"
       ],
-      "testbench": "freelist"
+      "testbench": "freelist_raw",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "FreeList_1",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.loadQueueRAW.freeList",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueRAW",
+            "instance": "freeList",
+            "line": 20796
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/FreeList.scala",
+          "line": 25
+        }
+      },
+      "module_id": "M-74c5502fcebf",
+      "smoke": "testbenches/freelist_raw/tests/test_basic.py::test_initial_pool_and_single_allocations[freelist_raw]"
     },
     "freelist_replay": {
       "design_spec": [
@@ -57,17 +97,37 @@
         "docs/spec/verification/plan.md",
         "testbenches/lsq_wrapper/coverage/function_points.py"
       ],
-      "environment": "testbenches/freelist/env/__init__.py",
+      "environment": "testbenches/freelist_replay/env/__init__.py",
       "chisel": [
         "src/main/scala/xiangshan/mem/lsqueue/FreeList.scala",
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueReplay.scala"
       ],
       "tests": [
-        "testbenches/freelist/tests",
-        "testbenches/freelist/tests/test_basic.py",
-        "testbenches/freelist/tests/test_returns.py"
+        "testbenches/freelist_replay/tests",
+        "testbenches/freelist_replay/tests/test_basic.py",
+        "testbenches/freelist_replay/tests/test_returns.py"
       ],
-      "testbench": "freelist"
+      "testbench": "freelist_replay",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "FreeList_2",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.loadQueueReplay.freeList",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueReplay",
+            "instance": "freeList",
+            "line": 66897
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/FreeList.scala",
+          "line": 25
+        }
+      },
+      "module_id": "M-74c5502fcebf",
+      "smoke": "testbenches/freelist_replay/tests/test_basic.py::test_initial_pool_and_single_allocations[freelist_replay]"
     },
     "freelist_uncache": {
       "design_spec": [
@@ -79,17 +139,37 @@
         "docs/spec/verification/plan.md",
         "testbenches/lsq_wrapper/coverage/function_points.py"
       ],
-      "environment": "testbenches/freelist/env/__init__.py",
+      "environment": "testbenches/freelist_uncache/env/__init__.py",
       "chisel": [
         "src/main/scala/xiangshan/mem/lsqueue/FreeList.scala",
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala"
       ],
       "tests": [
-        "testbenches/freelist/tests",
-        "testbenches/freelist/tests/test_basic.py",
-        "testbenches/freelist/tests/test_returns.py"
+        "testbenches/freelist_uncache/tests",
+        "testbenches/freelist_uncache/tests/test_basic.py",
+        "testbenches/freelist_uncache/tests/test_returns.py"
       ],
-      "testbench": "freelist"
+      "testbench": "freelist_uncache",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "FreeList_3",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.freeList",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueUncache",
+            "instance": "freeList",
+            "line": 6646
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/FreeList.scala",
+          "line": 25
+        }
+      },
+      "module_id": "M-74c5502fcebf",
+      "smoke": "testbenches/freelist_uncache/tests/test_basic.py::test_initial_pool_and_single_allocations[freelist_uncache]"
     },
     "cam_rar": {
       "design_spec": [
@@ -101,17 +181,37 @@
         "docs/spec/verification/plan.md",
         "testbenches/lsq_wrapper/coverage/function_points.py"
       ],
-      "environment": "testbenches/cam/env/__init__.py",
+      "environment": "testbenches/cam_rar/env/__init__.py",
       "chisel": [
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueData.scala",
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueRAR.scala"
       ],
       "tests": [
-        "testbenches/cam/tests",
-        "testbenches/cam/tests/test_basic.py",
-        "testbenches/cam/tests/test_extended.py"
+        "testbenches/cam_rar/tests",
+        "testbenches/cam_rar/tests/test_basic.py",
+        "testbenches/cam_rar/tests/test_extended.py"
       ],
-      "testbench": "cam"
+      "testbench": "cam_rar",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "LqPAddrModule",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.loadQueueRAR.paddrModule",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueRAR",
+            "instance": "paddrModule",
+            "line": 12170
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueData.scala",
+          "line": 136
+        }
+      },
+      "module_id": "M-26766856e82a",
+      "smoke": "testbenches/cam_rar/tests/test_basic.py::test_basic_synchronous_write_and_query[cam_rar]"
     },
     "cam_raw": {
       "design_spec": [
@@ -123,17 +223,37 @@
         "docs/spec/verification/plan.md",
         "testbenches/lsq_wrapper/coverage/function_points.py"
       ],
-      "environment": "testbenches/cam/env/__init__.py",
+      "environment": "testbenches/cam_raw/env/__init__.py",
       "chisel": [
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueData.scala",
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueRAW.scala"
       ],
       "tests": [
-        "testbenches/cam/tests",
-        "testbenches/cam/tests/test_basic.py",
-        "testbenches/cam/tests/test_extended.py"
+        "testbenches/cam_raw/tests",
+        "testbenches/cam_raw/tests/test_basic.py",
+        "testbenches/cam_raw/tests/test_extended.py"
       ],
-      "testbench": "cam"
+      "testbench": "cam_raw",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "LqPAddrModule_1",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.loadQueueRAW.paddrModule",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueRAW",
+            "instance": "paddrModule",
+            "line": 20542
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueData.scala",
+          "line": 136
+        }
+      },
+      "module_id": "M-26766856e82a",
+      "smoke": "testbenches/cam_raw/tests/test_basic.py::test_basic_synchronous_write_and_query[cam_raw]"
     },
     "cam_mask": {
       "design_spec": [
@@ -145,17 +265,37 @@
         "docs/spec/verification/plan.md",
         "testbenches/lsq_wrapper/coverage/function_points.py"
       ],
-      "environment": "testbenches/cam/env/__init__.py",
+      "environment": "testbenches/cam_mask/env/__init__.py",
       "chisel": [
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueData.scala",
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueRAW.scala"
       ],
       "tests": [
-        "testbenches/cam/tests",
-        "testbenches/cam/tests/test_basic.py",
-        "testbenches/cam/tests/test_extended.py"
+        "testbenches/cam_mask/tests",
+        "testbenches/cam_mask/tests/test_basic.py",
+        "testbenches/cam_mask/tests/test_extended.py"
       ],
-      "testbench": "cam"
+      "testbench": "cam_mask",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "LqMaskModule",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.loadQueueRAW.maskModule",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueRAW",
+            "instance": "maskModule",
+            "line": 20670
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueData.scala",
+          "line": 210
+        }
+      },
+      "module_id": "M-b8dbaf9976aa",
+      "smoke": "testbenches/cam_mask/tests/test_basic.py::test_basic_synchronous_write_and_query[cam_mask]"
     },
     "age_replay": {
       "design_spec": [
@@ -176,7 +316,36 @@
         "testbenches/age/tests/test_basic.py",
         "testbenches/age/tests/test_extended.py"
       ],
-      "testbench": "age"
+      "testbench": "age",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "AgeDetector_36",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.loadQueueReplay.ageOldest_age",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueReplay",
+            "instance": "ageOldest_age",
+            "line": 66909
+          },
+          {
+            "parent": "LoadQueueReplay",
+            "instance": "ageOldest_age_1",
+            "line": 67179
+          },
+          {
+            "parent": "LoadQueueReplay",
+            "instance": "ageOldest_age_2",
+            "line": 67449
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueReplay.scala",
+          "line": 113
+        }
+      },
+      "module_id": "M-7e9e9b6d3722"
     },
     "virtual_load_queue": {
       "design_spec": [
@@ -199,7 +368,26 @@
         "testbenches/vlq/tests/test_extended.py",
         "testbenches/vlq/tests/test_toggle_gap_closure.py"
       ],
-      "testbench": "vlq"
+      "testbench": "vlq",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "VirtualLoadQueue",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.virtualLoadQueue",
+        "direct_parents": [
+          {
+            "parent": "LoadQueue",
+            "instance": "virtualLoadQueue",
+            "line": 2345
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/VirtualLoadQueue.scala",
+          "line": 35
+        }
+      },
+      "module_id": "M-df83e9ae59d3"
     },
     "load_queue_rar": {
       "design_spec": [
@@ -222,7 +410,26 @@
         "testbenches/rar/tests/test_extended.py",
         "testbenches/rar/tests/test_release_boundaries.py"
       ],
-      "testbench": "rar"
+      "testbench": "rar",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "LoadQueueRAR",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.loadQueueRAR",
+        "direct_parents": [
+          {
+            "parent": "LoadQueue",
+            "instance": "loadQueueRAR",
+            "line": 1155
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueRAR.scala",
+          "line": 29
+        }
+      },
+      "module_id": "M-67b9538daed5"
     },
     "load_queue_raw": {
       "design_spec": [
@@ -245,7 +452,26 @@
         "testbenches/raw/tests/test_extended.py",
         "testbenches/raw/tests/test_toggle_gap_closure.py"
       ],
-      "testbench": "raw"
+      "testbench": "raw",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "LoadQueueRAW",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.loadQueueRAW",
+        "direct_parents": [
+          {
+            "parent": "LoadQueue",
+            "instance": "loadQueueRAW",
+            "line": 1213
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueRAW.scala",
+          "line": 32
+        }
+      },
+      "module_id": "M-5ceb6ac9588c"
     },
     "load_queue_uncache": {
       "design_spec": [
@@ -273,7 +499,26 @@
         "testbenches/load_uncache/tests/test_timing_boundaries.py",
         "testbenches/load_uncache/tests/test_uncache_exception_property.py"
       ],
-      "testbench": "load_uncache"
+      "testbench": "load_uncache",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "LoadQueueUncache",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer",
+        "direct_parents": [
+          {
+            "parent": "LoadQueue",
+            "instance": "uncacheBuffer",
+            "line": 2431
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala",
+          "line": 268
+        }
+      },
+      "module_id": "M-9bd51e7c6553"
     },
     "load_queue_replay": {
       "design_spec": [
@@ -300,7 +545,26 @@
         "testbenches/replay/tests/test_pool_payload.py",
         "testbenches/replay/tests/test_timing.py"
       ],
-      "testbench": "replay"
+      "testbench": "replay",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "LoadQueueReplay",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.loadQueueReplay",
+        "direct_parents": [
+          {
+            "parent": "LoadQueue",
+            "instance": "loadQueueReplay",
+            "line": 1443
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueReplay.scala",
+          "line": 211
+        }
+      },
+      "module_id": "M-e84a2d4f84fb"
     },
     "enter_sbuffer_queue": {
       "design_spec": [
@@ -321,7 +585,26 @@
         "testbenches/enter_sbuffer/tests/test_basic.py",
         "testbenches/enter_sbuffer/tests/test_extended.py"
       ],
-      "testbench": "enter_sbuffer"
+      "testbench": "enter_sbuffer",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "EnterSbufferQueue",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.storeQueue.physicalQueue.deqModule.dataQueue",
+        "direct_parents": [
+          {
+            "parent": "DeqModule",
+            "instance": "dataQueue",
+            "line": 488
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/NewStoreQueue.scala",
+          "line": 749
+        }
+      },
+      "module_id": "M-dcdbc43d6a39"
     },
     "unalign_queue": {
       "design_spec": [
@@ -343,7 +626,26 @@
         "testbenches/unalign/tests/test_extended.py",
         "testbenches/unalign/tests/test_page_pairs.py"
       ],
-      "testbench": "unalign"
+      "testbench": "unalign",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "UnalignQueue",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.storeQueue.physicalQueue.unalignQueue",
+        "direct_parents": [
+          {
+            "parent": "PhysicalStoreQueue",
+            "instance": "unalignQueue",
+            "line": 16063
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/NewStoreQueue.scala",
+          "line": 1500
+        }
+      },
+      "module_id": "M-fa8f6ce8b76f"
     },
     "forward_module": {
       "design_spec": [
@@ -369,7 +671,26 @@
         "testbenches/forward/tests/test_semantics.py",
         "testbenches/forward/tests/test_independent_forward_property.py"
       ],
-      "testbench": "forward"
+      "testbench": "forward",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "ForwardModule",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.storeQueue.physicalQueue.forwardModule",
+        "direct_parents": [
+          {
+            "parent": "PhysicalStoreQueue",
+            "instance": "forwardModule",
+            "line": 14935
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/NewStoreQueue.scala",
+          "line": 256
+        }
+      },
+      "module_id": "M-e6f88e2f00bd"
     },
     "virtual_store_queue": {
       "design_spec": [
@@ -397,7 +718,26 @@
         "testbenches/vsq/tests/test_retire_batch_width.py",
         "testbenches/vsq/tests/test_retire_known_width.py"
       ],
-      "testbench": "vsq"
+      "testbench": "vsq",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "VirtualStoreQueue",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.storeQueue.virtualStoreQueue",
+        "direct_parents": [
+          {
+            "parent": "StoreQueue",
+            "instance": "virtualStoreQueue",
+            "line": 698
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/VirtualStoreQueue.scala",
+          "line": 43
+        }
+      },
+      "module_id": "M-6d78ec5570b6"
     },
     "deq_module": {
       "design_spec": [
@@ -422,7 +762,26 @@
         "testbenches/deq/tests/test_split_control_consumption.py",
         "testbenches/deq/tests/test_uncache_and_queue.py"
       ],
-      "testbench": "deq"
+      "testbench": "deq",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "DeqModule",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.storeQueue.physicalQueue.deqModule",
+        "direct_parents": [
+          {
+            "parent": "PhysicalStoreQueue",
+            "instance": "deqModule",
+            "line": 15922
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/NewStoreQueue.scala",
+          "line": 869
+        }
+      },
+      "module_id": "M-4f1146f50fe3"
     },
     "physical_store_queue": {
       "design_spec": [
@@ -453,7 +812,26 @@
         "testbenches/psq/tests/test_uq_page_pairs.py",
         "testbenches/psq/tests/test_zero_owner.py"
       ],
-      "testbench": "psq"
+      "testbench": "psq",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "PhysicalStoreQueue",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.storeQueue.physicalQueue",
+        "direct_parents": [
+          {
+            "parent": "StoreQueue",
+            "instance": "physicalQueue",
+            "line": 874
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/NewStoreQueue.scala",
+          "line": 1702
+        }
+      },
+      "module_id": "M-7fbc4f298458"
     },
     "store_queue": {
       "design_spec": [
@@ -488,7 +866,26 @@
         "testbenches/store_queue/tests/test_strict_lifetimes.py",
         "testbenches/store_queue/tests/test_uq_page_pairs.py"
       ],
-      "testbench": "store_queue"
+      "testbench": "store_queue",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "StoreQueue",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.storeQueue",
+        "direct_parents": [
+          {
+            "parent": "LsqWrapper",
+            "instance": "storeQueue",
+            "line": 3376
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/NewStoreQueue.scala",
+          "line": 2198
+        }
+      },
+      "module_id": "M-7c022991e244"
     },
     "load_queue": {
       "design_spec": [
@@ -524,7 +921,26 @@
         "testbenches/load_queue/tests/test_uncache.py",
         "testbenches/load_queue/tests/test_uncache_pressure.py"
       ],
-      "testbench": "load_queue"
+      "testbench": "load_queue",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "LoadQueue",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue",
+        "direct_parents": [
+          {
+            "parent": "LsqWrapper",
+            "instance": "loadQueue",
+            "line": 1611
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueue.scala",
+          "line": 165
+        }
+      },
+      "module_id": "M-127cd68dd597"
     },
     "lsq_wrapper": {
       "design_spec": [
@@ -596,7 +1012,26 @@
         "testbenches/lsq_wrapper/tests/test_uncache_store_fault.py",
         "testbenches/lsq_wrapper/tests/test_uq_page_pairs.py"
       ],
-      "testbench": "lsq_wrapper"
+      "testbench": "lsq_wrapper",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "LsqWrapper",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq",
+        "direct_parents": [
+          {
+            "parent": "MemBlock",
+            "instance": "inner_lsq",
+            "line": 14187
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LSQWrapper.scala",
+          "line": 87
+        }
+      },
+      "module_id": "M-9387fe983964"
     },
     "uncache_entry_0": {
       "design_spec": [
@@ -608,17 +1043,37 @@
         "docs/spec/verification/plan.md",
         "testbenches/lsq_wrapper/coverage/function_points.py"
       ],
-      "environment": "testbenches/uncache_entry/env/__init__.py",
+      "environment": "testbenches/uncache_entry_0/env/__init__.py",
       "chisel": [
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala"
       ],
       "tests": [
-        "testbenches/uncache_entry/tests",
-        "testbenches/uncache_entry/tests/test_basic.py",
-        "testbenches/uncache_entry/tests/test_extended.py",
-        "testbenches/uncache_entry/tests/test_toggle_gap_closure.py"
+        "testbenches/uncache_entry_0/tests",
+        "testbenches/uncache_entry_0/tests/test_basic.py",
+        "testbenches/uncache_entry_0/tests/test_extended.py",
+        "testbenches/uncache_entry_0/tests/test_toggle_gap_closure.py"
       ],
-      "testbench": "uncache_entry"
+      "testbench": "uncache_entry_0",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "UncacheEntry",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_0",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueUncache",
+            "instance": "entries_0",
+            "line": 3862
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala",
+          "line": 34
+        }
+      },
+      "module_id": "M-98bb23839881",
+      "smoke": "testbenches/uncache_entry_0/tests/test_basic.py::test_idle_has_no_request_wakeup_output_or_report[uncache_entry_0]"
     },
     "uncache_entry_1": {
       "design_spec": [
@@ -630,17 +1085,37 @@
         "docs/spec/verification/plan.md",
         "testbenches/lsq_wrapper/coverage/function_points.py"
       ],
-      "environment": "testbenches/uncache_entry/env/__init__.py",
+      "environment": "testbenches/uncache_entry_1/env/__init__.py",
       "chisel": [
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala"
       ],
       "tests": [
-        "testbenches/uncache_entry/tests",
-        "testbenches/uncache_entry/tests/test_basic.py",
-        "testbenches/uncache_entry/tests/test_extended.py",
-        "testbenches/uncache_entry/tests/test_toggle_gap_closure.py"
+        "testbenches/uncache_entry_1/tests",
+        "testbenches/uncache_entry_1/tests/test_basic.py",
+        "testbenches/uncache_entry_1/tests/test_extended.py",
+        "testbenches/uncache_entry_1/tests/test_toggle_gap_closure.py"
       ],
-      "testbench": "uncache_entry"
+      "testbench": "uncache_entry_1",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "UncacheEntry_1",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_1",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueUncache",
+            "instance": "entries_1",
+            "line": 4033
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala",
+          "line": 34
+        }
+      },
+      "module_id": "M-98bb23839881",
+      "smoke": "testbenches/uncache_entry_1/tests/test_basic.py::test_idle_has_no_request_wakeup_output_or_report[uncache_entry_1]"
     },
     "uncache_entry_2": {
       "design_spec": [
@@ -652,17 +1127,37 @@
         "docs/spec/verification/plan.md",
         "testbenches/lsq_wrapper/coverage/function_points.py"
       ],
-      "environment": "testbenches/uncache_entry/env/__init__.py",
+      "environment": "testbenches/uncache_entry_2/env/__init__.py",
       "chisel": [
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala"
       ],
       "tests": [
-        "testbenches/uncache_entry/tests",
-        "testbenches/uncache_entry/tests/test_basic.py",
-        "testbenches/uncache_entry/tests/test_extended.py",
-        "testbenches/uncache_entry/tests/test_toggle_gap_closure.py"
+        "testbenches/uncache_entry_2/tests",
+        "testbenches/uncache_entry_2/tests/test_basic.py",
+        "testbenches/uncache_entry_2/tests/test_extended.py",
+        "testbenches/uncache_entry_2/tests/test_toggle_gap_closure.py"
       ],
-      "testbench": "uncache_entry"
+      "testbench": "uncache_entry_2",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "UncacheEntry_2",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_2",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueUncache",
+            "instance": "entries_2",
+            "line": 4206
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala",
+          "line": 34
+        }
+      },
+      "module_id": "M-98bb23839881",
+      "smoke": "testbenches/uncache_entry_2/tests/test_basic.py::test_idle_has_no_request_wakeup_output_or_report[uncache_entry_2]"
     },
     "uncache_entry_3": {
       "design_spec": [
@@ -674,17 +1169,37 @@
         "docs/spec/verification/plan.md",
         "testbenches/lsq_wrapper/coverage/function_points.py"
       ],
-      "environment": "testbenches/uncache_entry/env/__init__.py",
+      "environment": "testbenches/uncache_entry_3/env/__init__.py",
       "chisel": [
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala"
       ],
       "tests": [
-        "testbenches/uncache_entry/tests",
-        "testbenches/uncache_entry/tests/test_basic.py",
-        "testbenches/uncache_entry/tests/test_extended.py",
-        "testbenches/uncache_entry/tests/test_toggle_gap_closure.py"
+        "testbenches/uncache_entry_3/tests",
+        "testbenches/uncache_entry_3/tests/test_basic.py",
+        "testbenches/uncache_entry_3/tests/test_extended.py",
+        "testbenches/uncache_entry_3/tests/test_toggle_gap_closure.py"
       ],
-      "testbench": "uncache_entry"
+      "testbench": "uncache_entry_3",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "UncacheEntry_3",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_3",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueUncache",
+            "instance": "entries_3",
+            "line": 4379
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala",
+          "line": 34
+        }
+      },
+      "module_id": "M-98bb23839881",
+      "smoke": "testbenches/uncache_entry_3/tests/test_basic.py::test_idle_has_no_request_wakeup_output_or_report[uncache_entry_3]"
     },
     "uncache_entry_4": {
       "design_spec": [
@@ -696,17 +1211,37 @@
         "docs/spec/verification/plan.md",
         "testbenches/lsq_wrapper/coverage/function_points.py"
       ],
-      "environment": "testbenches/uncache_entry/env/__init__.py",
+      "environment": "testbenches/uncache_entry_4/env/__init__.py",
       "chisel": [
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala"
       ],
       "tests": [
-        "testbenches/uncache_entry/tests",
-        "testbenches/uncache_entry/tests/test_basic.py",
-        "testbenches/uncache_entry/tests/test_extended.py",
-        "testbenches/uncache_entry/tests/test_toggle_gap_closure.py"
+        "testbenches/uncache_entry_4/tests",
+        "testbenches/uncache_entry_4/tests/test_basic.py",
+        "testbenches/uncache_entry_4/tests/test_extended.py",
+        "testbenches/uncache_entry_4/tests/test_toggle_gap_closure.py"
       ],
-      "testbench": "uncache_entry"
+      "testbench": "uncache_entry_4",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "UncacheEntry_4",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_4",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueUncache",
+            "instance": "entries_4",
+            "line": 4552
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala",
+          "line": 34
+        }
+      },
+      "module_id": "M-98bb23839881",
+      "smoke": "testbenches/uncache_entry_4/tests/test_basic.py::test_idle_has_no_request_wakeup_output_or_report[uncache_entry_4]"
     },
     "uncache_entry_5": {
       "design_spec": [
@@ -718,17 +1253,37 @@
         "docs/spec/verification/plan.md",
         "testbenches/lsq_wrapper/coverage/function_points.py"
       ],
-      "environment": "testbenches/uncache_entry/env/__init__.py",
+      "environment": "testbenches/uncache_entry_5/env/__init__.py",
       "chisel": [
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala"
       ],
       "tests": [
-        "testbenches/uncache_entry/tests",
-        "testbenches/uncache_entry/tests/test_basic.py",
-        "testbenches/uncache_entry/tests/test_extended.py",
-        "testbenches/uncache_entry/tests/test_toggle_gap_closure.py"
+        "testbenches/uncache_entry_5/tests",
+        "testbenches/uncache_entry_5/tests/test_basic.py",
+        "testbenches/uncache_entry_5/tests/test_extended.py",
+        "testbenches/uncache_entry_5/tests/test_toggle_gap_closure.py"
       ],
-      "testbench": "uncache_entry"
+      "testbench": "uncache_entry_5",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "UncacheEntry_5",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_5",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueUncache",
+            "instance": "entries_5",
+            "line": 4725
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala",
+          "line": 34
+        }
+      },
+      "module_id": "M-98bb23839881",
+      "smoke": "testbenches/uncache_entry_5/tests/test_basic.py::test_idle_has_no_request_wakeup_output_or_report[uncache_entry_5]"
     },
     "uncache_entry_6": {
       "design_spec": [
@@ -740,17 +1295,37 @@
         "docs/spec/verification/plan.md",
         "testbenches/lsq_wrapper/coverage/function_points.py"
       ],
-      "environment": "testbenches/uncache_entry/env/__init__.py",
+      "environment": "testbenches/uncache_entry_6/env/__init__.py",
       "chisel": [
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala"
       ],
       "tests": [
-        "testbenches/uncache_entry/tests",
-        "testbenches/uncache_entry/tests/test_basic.py",
-        "testbenches/uncache_entry/tests/test_extended.py",
-        "testbenches/uncache_entry/tests/test_toggle_gap_closure.py"
+        "testbenches/uncache_entry_6/tests",
+        "testbenches/uncache_entry_6/tests/test_basic.py",
+        "testbenches/uncache_entry_6/tests/test_extended.py",
+        "testbenches/uncache_entry_6/tests/test_toggle_gap_closure.py"
       ],
-      "testbench": "uncache_entry"
+      "testbench": "uncache_entry_6",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "UncacheEntry_6",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_6",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueUncache",
+            "instance": "entries_6",
+            "line": 4898
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala",
+          "line": 34
+        }
+      },
+      "module_id": "M-98bb23839881",
+      "smoke": "testbenches/uncache_entry_6/tests/test_basic.py::test_idle_has_no_request_wakeup_output_or_report[uncache_entry_6]"
     },
     "uncache_entry_7": {
       "design_spec": [
@@ -762,17 +1337,37 @@
         "docs/spec/verification/plan.md",
         "testbenches/lsq_wrapper/coverage/function_points.py"
       ],
-      "environment": "testbenches/uncache_entry/env/__init__.py",
+      "environment": "testbenches/uncache_entry_7/env/__init__.py",
       "chisel": [
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala"
       ],
       "tests": [
-        "testbenches/uncache_entry/tests",
-        "testbenches/uncache_entry/tests/test_basic.py",
-        "testbenches/uncache_entry/tests/test_extended.py",
-        "testbenches/uncache_entry/tests/test_toggle_gap_closure.py"
+        "testbenches/uncache_entry_7/tests",
+        "testbenches/uncache_entry_7/tests/test_basic.py",
+        "testbenches/uncache_entry_7/tests/test_extended.py",
+        "testbenches/uncache_entry_7/tests/test_toggle_gap_closure.py"
       ],
-      "testbench": "uncache_entry"
+      "testbench": "uncache_entry_7",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "UncacheEntry_7",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_7",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueUncache",
+            "instance": "entries_7",
+            "line": 5071
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala",
+          "line": 34
+        }
+      },
+      "module_id": "M-98bb23839881",
+      "smoke": "testbenches/uncache_entry_7/tests/test_basic.py::test_idle_has_no_request_wakeup_output_or_report[uncache_entry_7]"
     },
     "uncache_entry_8": {
       "design_spec": [
@@ -784,17 +1379,37 @@
         "docs/spec/verification/plan.md",
         "testbenches/lsq_wrapper/coverage/function_points.py"
       ],
-      "environment": "testbenches/uncache_entry/env/__init__.py",
+      "environment": "testbenches/uncache_entry_8/env/__init__.py",
       "chisel": [
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala"
       ],
       "tests": [
-        "testbenches/uncache_entry/tests",
-        "testbenches/uncache_entry/tests/test_basic.py",
-        "testbenches/uncache_entry/tests/test_extended.py",
-        "testbenches/uncache_entry/tests/test_toggle_gap_closure.py"
+        "testbenches/uncache_entry_8/tests",
+        "testbenches/uncache_entry_8/tests/test_basic.py",
+        "testbenches/uncache_entry_8/tests/test_extended.py",
+        "testbenches/uncache_entry_8/tests/test_toggle_gap_closure.py"
       ],
-      "testbench": "uncache_entry"
+      "testbench": "uncache_entry_8",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "UncacheEntry_8",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_8",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueUncache",
+            "instance": "entries_8",
+            "line": 5244
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala",
+          "line": 34
+        }
+      },
+      "module_id": "M-98bb23839881",
+      "smoke": "testbenches/uncache_entry_8/tests/test_basic.py::test_idle_has_no_request_wakeup_output_or_report[uncache_entry_8]"
     },
     "uncache_entry_9": {
       "design_spec": [
@@ -806,17 +1421,37 @@
         "docs/spec/verification/plan.md",
         "testbenches/lsq_wrapper/coverage/function_points.py"
       ],
-      "environment": "testbenches/uncache_entry/env/__init__.py",
+      "environment": "testbenches/uncache_entry_9/env/__init__.py",
       "chisel": [
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala"
       ],
       "tests": [
-        "testbenches/uncache_entry/tests",
-        "testbenches/uncache_entry/tests/test_basic.py",
-        "testbenches/uncache_entry/tests/test_extended.py",
-        "testbenches/uncache_entry/tests/test_toggle_gap_closure.py"
+        "testbenches/uncache_entry_9/tests",
+        "testbenches/uncache_entry_9/tests/test_basic.py",
+        "testbenches/uncache_entry_9/tests/test_extended.py",
+        "testbenches/uncache_entry_9/tests/test_toggle_gap_closure.py"
       ],
-      "testbench": "uncache_entry"
+      "testbench": "uncache_entry_9",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "UncacheEntry_9",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_9",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueUncache",
+            "instance": "entries_9",
+            "line": 5417
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala",
+          "line": 34
+        }
+      },
+      "module_id": "M-98bb23839881",
+      "smoke": "testbenches/uncache_entry_9/tests/test_basic.py::test_idle_has_no_request_wakeup_output_or_report[uncache_entry_9]"
     },
     "uncache_entry_10": {
       "design_spec": [
@@ -828,17 +1463,37 @@
         "docs/spec/verification/plan.md",
         "testbenches/lsq_wrapper/coverage/function_points.py"
       ],
-      "environment": "testbenches/uncache_entry/env/__init__.py",
+      "environment": "testbenches/uncache_entry_10/env/__init__.py",
       "chisel": [
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala"
       ],
       "tests": [
-        "testbenches/uncache_entry/tests",
-        "testbenches/uncache_entry/tests/test_basic.py",
-        "testbenches/uncache_entry/tests/test_extended.py",
-        "testbenches/uncache_entry/tests/test_toggle_gap_closure.py"
+        "testbenches/uncache_entry_10/tests",
+        "testbenches/uncache_entry_10/tests/test_basic.py",
+        "testbenches/uncache_entry_10/tests/test_extended.py",
+        "testbenches/uncache_entry_10/tests/test_toggle_gap_closure.py"
       ],
-      "testbench": "uncache_entry"
+      "testbench": "uncache_entry_10",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "UncacheEntry_10",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_10",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueUncache",
+            "instance": "entries_10",
+            "line": 5590
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala",
+          "line": 34
+        }
+      },
+      "module_id": "M-98bb23839881",
+      "smoke": "testbenches/uncache_entry_10/tests/test_basic.py::test_idle_has_no_request_wakeup_output_or_report[uncache_entry_10]"
     },
     "uncache_entry_11": {
       "design_spec": [
@@ -850,17 +1505,37 @@
         "docs/spec/verification/plan.md",
         "testbenches/lsq_wrapper/coverage/function_points.py"
       ],
-      "environment": "testbenches/uncache_entry/env/__init__.py",
+      "environment": "testbenches/uncache_entry_11/env/__init__.py",
       "chisel": [
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala"
       ],
       "tests": [
-        "testbenches/uncache_entry/tests",
-        "testbenches/uncache_entry/tests/test_basic.py",
-        "testbenches/uncache_entry/tests/test_extended.py",
-        "testbenches/uncache_entry/tests/test_toggle_gap_closure.py"
+        "testbenches/uncache_entry_11/tests",
+        "testbenches/uncache_entry_11/tests/test_basic.py",
+        "testbenches/uncache_entry_11/tests/test_extended.py",
+        "testbenches/uncache_entry_11/tests/test_toggle_gap_closure.py"
       ],
-      "testbench": "uncache_entry"
+      "testbench": "uncache_entry_11",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "UncacheEntry_11",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_11",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueUncache",
+            "instance": "entries_11",
+            "line": 5766
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala",
+          "line": 34
+        }
+      },
+      "module_id": "M-98bb23839881",
+      "smoke": "testbenches/uncache_entry_11/tests/test_basic.py::test_idle_has_no_request_wakeup_output_or_report[uncache_entry_11]"
     },
     "uncache_entry_12": {
       "design_spec": [
@@ -872,17 +1547,37 @@
         "docs/spec/verification/plan.md",
         "testbenches/lsq_wrapper/coverage/function_points.py"
       ],
-      "environment": "testbenches/uncache_entry/env/__init__.py",
+      "environment": "testbenches/uncache_entry_12/env/__init__.py",
       "chisel": [
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala"
       ],
       "tests": [
-        "testbenches/uncache_entry/tests",
-        "testbenches/uncache_entry/tests/test_basic.py",
-        "testbenches/uncache_entry/tests/test_extended.py",
-        "testbenches/uncache_entry/tests/test_toggle_gap_closure.py"
+        "testbenches/uncache_entry_12/tests",
+        "testbenches/uncache_entry_12/tests/test_basic.py",
+        "testbenches/uncache_entry_12/tests/test_extended.py",
+        "testbenches/uncache_entry_12/tests/test_toggle_gap_closure.py"
       ],
-      "testbench": "uncache_entry"
+      "testbench": "uncache_entry_12",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "UncacheEntry_12",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_12",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueUncache",
+            "instance": "entries_12",
+            "line": 5942
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala",
+          "line": 34
+        }
+      },
+      "module_id": "M-98bb23839881",
+      "smoke": "testbenches/uncache_entry_12/tests/test_basic.py::test_idle_has_no_request_wakeup_output_or_report[uncache_entry_12]"
     },
     "uncache_entry_13": {
       "design_spec": [
@@ -894,17 +1589,37 @@
         "docs/spec/verification/plan.md",
         "testbenches/lsq_wrapper/coverage/function_points.py"
       ],
-      "environment": "testbenches/uncache_entry/env/__init__.py",
+      "environment": "testbenches/uncache_entry_13/env/__init__.py",
       "chisel": [
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala"
       ],
       "tests": [
-        "testbenches/uncache_entry/tests",
-        "testbenches/uncache_entry/tests/test_basic.py",
-        "testbenches/uncache_entry/tests/test_extended.py",
-        "testbenches/uncache_entry/tests/test_toggle_gap_closure.py"
+        "testbenches/uncache_entry_13/tests",
+        "testbenches/uncache_entry_13/tests/test_basic.py",
+        "testbenches/uncache_entry_13/tests/test_extended.py",
+        "testbenches/uncache_entry_13/tests/test_toggle_gap_closure.py"
       ],
-      "testbench": "uncache_entry"
+      "testbench": "uncache_entry_13",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "UncacheEntry_13",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_13",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueUncache",
+            "instance": "entries_13",
+            "line": 6118
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala",
+          "line": 34
+        }
+      },
+      "module_id": "M-98bb23839881",
+      "smoke": "testbenches/uncache_entry_13/tests/test_basic.py::test_idle_has_no_request_wakeup_output_or_report[uncache_entry_13]"
     },
     "uncache_entry_14": {
       "design_spec": [
@@ -916,17 +1631,37 @@
         "docs/spec/verification/plan.md",
         "testbenches/lsq_wrapper/coverage/function_points.py"
       ],
-      "environment": "testbenches/uncache_entry/env/__init__.py",
+      "environment": "testbenches/uncache_entry_14/env/__init__.py",
       "chisel": [
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala"
       ],
       "tests": [
-        "testbenches/uncache_entry/tests",
-        "testbenches/uncache_entry/tests/test_basic.py",
-        "testbenches/uncache_entry/tests/test_extended.py",
-        "testbenches/uncache_entry/tests/test_toggle_gap_closure.py"
+        "testbenches/uncache_entry_14/tests",
+        "testbenches/uncache_entry_14/tests/test_basic.py",
+        "testbenches/uncache_entry_14/tests/test_extended.py",
+        "testbenches/uncache_entry_14/tests/test_toggle_gap_closure.py"
       ],
-      "testbench": "uncache_entry"
+      "testbench": "uncache_entry_14",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "UncacheEntry_14",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_14",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueUncache",
+            "instance": "entries_14",
+            "line": 6294
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala",
+          "line": 34
+        }
+      },
+      "module_id": "M-98bb23839881",
+      "smoke": "testbenches/uncache_entry_14/tests/test_basic.py::test_idle_has_no_request_wakeup_output_or_report[uncache_entry_14]"
     },
     "uncache_entry_15": {
       "design_spec": [
@@ -938,17 +1673,37 @@
         "docs/spec/verification/plan.md",
         "testbenches/lsq_wrapper/coverage/function_points.py"
       ],
-      "environment": "testbenches/uncache_entry/env/__init__.py",
+      "environment": "testbenches/uncache_entry_15/env/__init__.py",
       "chisel": [
         "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala"
       ],
       "tests": [
-        "testbenches/uncache_entry/tests",
-        "testbenches/uncache_entry/tests/test_basic.py",
-        "testbenches/uncache_entry/tests/test_extended.py",
-        "testbenches/uncache_entry/tests/test_toggle_gap_closure.py"
+        "testbenches/uncache_entry_15/tests",
+        "testbenches/uncache_entry_15/tests/test_basic.py",
+        "testbenches/uncache_entry_15/tests/test_extended.py",
+        "testbenches/uncache_entry_15/tests/test_toggle_gap_closure.py"
       ],
-      "testbench": "uncache_entry"
+      "testbench": "uncache_entry_15",
+      "binding": {
+        "observed_baseline": "public-e716c7658",
+        "observed_top": "UncacheEntry_15",
+        "verification_state": "existing-unrevalidated",
+        "availability": "present",
+        "sample_instance": "XSTop.core_with_l2.core.memBlock.inner_lsq.loadQueue.uncacheBuffer.entries_15",
+        "direct_parents": [
+          {
+            "parent": "LoadQueueUncache",
+            "instance": "entries_15",
+            "line": 6470
+          }
+        ],
+        "declaration": {
+          "path": "src/main/scala/xiangshan/mem/lsqueue/LoadQueueUncache.scala",
+          "line": 34
+        }
+      },
+      "module_id": "M-98bb23839881",
+      "smoke": "testbenches/uncache_entry_15/tests/test_basic.py::test_idle_has_no_request_wakeup_output_or_report[uncache_entry_15]"
     }
   }
 }
