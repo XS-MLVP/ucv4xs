@@ -23,6 +23,7 @@
 | 找工程资料、只获取源码、准备 RTL 或新增 DUT | [准备工作空间](how-to/workspace.md) |
 | 选跑单个或多个 DUT、只收集用例、控制种子与并发、比较两次结果 | [运行测试与查看报告](how-to/run-tests.md) |
 | 使用源码镜像、接入 internal 来源或外部历史证据 | [配置本地来源与运行环境](local-configuration.md) |
+| 在 Linux ARM 主机上准备环境、构建并运行 | [Linux aarch64 主机准备](how-to/linux-arm-host.md) |
 | 更新使用文档、工程规格或问题记录 | [维护文档与工程规格](how-to/maintain-docs.md) |
 
 ## 参考：查准确名称、参数与位置

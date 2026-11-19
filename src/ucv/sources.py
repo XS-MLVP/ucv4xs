@@ -1,7 +1,9 @@
 """Exact independent source checkouts and Chisel generation. MPL-2.0."""
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from . import host
 from .common import UcvError, digest, execute, file_hash, lock, now, read, write
+from .host import FIRTOOL_VERSION
 
 def git(path, *args):
     return execute(['git','-C',path,*args]).stdout.strip()
@@ -136,7 +138,13 @@ def generate(project, suite):
         mill = project.root/'.tools/bin/mill'
         firtool = project.root/'.tools/bin/firtool'
         if not mill.is_file() or not firtool.is_file():
-            raise UcvError('Generation tools missing; run ucv setup')
+            if not host.rtl_generation_available():
+                raise UcvError(
+                    f'RTL generation needs firtool {FIRTOOL_VERSION}, which CIRCT does not '
+                    f'publish for {host.machine()}; take RTL from a released package '
+                    f'(.cache/releases via baselines/rtl-releases.json) or supply one '
+                    f'through local.json firtool')
+            raise UcvError('Generation tools missing; run ucv setup --profile full')
         if baseline['tools']['firtool'] not in execute([firtool,'--version']).stdout:
             raise UcvError('firtool version differs from the baseline')
         if (checkout_root/'.mill-version').read_text().strip()!=baseline['tools']['mill']:

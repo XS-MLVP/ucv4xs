@@ -57,6 +57,18 @@ def test_cache_separates_baseline_dut_tools_and_options(project):
     project.tools['toffee']['commit']='f'*40
     assert original!=project.cache_key(suite,'unit')
 
+def test_cache_separates_host_architecture(project,monkeypatch):
+    """A package carries native libraries, so another architecture cannot reuse it."""
+    from ucv import host
+    suite=project.suite('bpu')
+    monkeypatch.setattr(host,'machine',lambda:'x86_64')
+    ours=project.cache_key(suite,'unit')
+    monkeypatch.setattr(host,'machine',lambda:'aarch64')
+    theirs=project.cache_key(suite,'unit')
+    assert ours!=theirs
+    monkeypatch.setattr(host,'machine',lambda:'x86_64')
+    assert project.cache_key(suite,'unit')==ours
+
 @pytest.mark.parametrize('field,value', [
     ('design', {'config':'','num_cores':1,'top':'top.TopMain'}),
     ('design', {'config':'DefaultConfig','num_cores':0,'top':'top.TopMain'}),
