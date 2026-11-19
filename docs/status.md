@@ -73,6 +73,103 @@ workspace.module_id 唯一关联；目录与测试选择仍按工程配方。`uc
 
 ## 最近核验
 
+### 公开基线 RTL release（`xiangshan-e716c7658`）
+
+2026-11-19 为默认基线 `public-e716c7658` 发布整芯片 RTL 包，按既有规则执行：
+来源是 `.cache/generated/1016962d…/rtl`（2026-11-13 生成），不从 DUT 闭包拼装；
+包内 2002 个 `*.sv`、22 个 `*.v`、firtool 自带 `filelist.f`（2024 项，其中 23 项带
+`./` 前缀，原样保留）、`BUILD-PARAMETERS.json`、上游许可、逐文件 `SHA256SUMS`
+和 README。
+
+验证链（发布前后各一段）：
+
+- 解压副本 `sha256sum -c`：**2028 个文件全部通过**
+- `verilator 5.052 --lint-only -Wno-fatal -f filelist.f --top-module XSTop -I.`：
+  **exit 0**，2025 个模块，266.6 s
+- 发布后重新下载，压缩包 SHA-256 与暂存件一致（`2e3cf964…`）
+- `compare_rtl`：包内 RTL 与本机整芯片生成**逐字节一致**
+- `ucv prepare sbuffer --dut sbuffer --rtl-source release` → **PREPARED**
+
+效果：默认基线不再需要 Java 17 或本机 Chisel 生成，也是 Linux aarch64 上唯一可用的
+准备路线。登记在 `baselines/rtl-releases.json`，用 `scripts/publish-rtl-release.py`
+可重复暂存与打包。记录见
+[发布记录](history/rtl-release-e716c7658-20261119.json)。
+
+边界：这不改变任何模块级结论；既有 PASS/FAIL 仍属于各自基线、日期和主机架构。
+本次仍未在 aarch64 上执行任何步骤。
+
+### 主机架构支持（Linux aarch64）
+
+2026-11-19 让工具链接受 `Linux aarch64`，与 `Linux x86_64` 并列。改动集中在架构身份
+和获取路径，不涉及验证语义：
+
+- 新增 `src/ucv/host.py` 作为唯一的架构判断入口：机器名规范化（`arm64`/`amd64` 等别名）、
+  支持集合、ELF `e_machine` 读取、架构相关的下载地址。`setup`、`doctor`、`validation`
+  和 `sources` 都从这里取，不再各自比较字符串。
+- **构建缓存身份加入 `machine`**。生成的 DUT 包内含原生库，架构不同必须视为不同产物；
+  这条同时修掉了"同一 key 在 x86 与 ARM 之间复用"的隐患。代价是升级后所有旧缓存
+  一次性失效。
+- `.tools/receipt.json` 记录 `machine`/`system`，`installed_tools` 拒绝架构不符的安装；
+  缺该字段的旧收据明确要求重跑 `ucv setup`，不静默放行。
+- `verilator_seed` 与 `firtool` seed 在使用前读取 ELF 架构，换机器复用 seed 会在
+  复制阶段报出原因，而不是留下跑不起来的二进制。
+- 修掉 `install_generation_tools` 的 mill 获取：原来下载 `mill-dist-0.12.17.jar` 并当作
+  可执行文件，任何架构都不可用。现在下载 Maven 上的架构中立启动脚本
+  （`mill-dist-0.12.17-mill.sh`），由它自己解析平台，含 aarch64。
+- **`firtool` 是硬边界**：CIRCT 的 `firtool-1.149.0` 只有 `linux-x64` 与 `macos-arm64`，
+  没有 `linux-arm64`（1.140/1.149/1.150 一致）。因此 aarch64 上不能从 Chisel 生成 RTL，
+  只能用已发布 RTL 包或自备 firtool。三条失败路径都会点明这个原因。
+
+新增测试：`tests/test_host.py`（23 项：别名规范化、支持集合、ELF 架构读取、外来 seed
+拒绝、firtool 仅 x86_64、mill 启动器选择）、`tests/test_installed_tools.py`（5 项：
+收据架构校验）以及 `tests/test_baselines.py` 中的架构入 key 一项。
+
+已验证：公共工具回归 **461 PASS**（原 426，新增 35）；`ucv check`、`ucv modules check`
+通过；`ucv setup` 在新收据格式下成功并记录 `machine=x86_64`；`ucv doctor --stage run`
+通过；`sbuffer`（2 个 DUT）与 `lsq/deq_module` 在加入架构身份后的新 key 下
+**BUILT + SMOKE PASS**；LSQ `deq_module` 实跑 **13 passed / 3 failed**，与升级前一致，
+失败的仍是开放缺陷 `DEQ-WB-001`。
+
+**未验证**：没有在真实 aarch64 主机上执行任何一步。上面的结果是 x86_64 上的回归，
+证明改动没有破坏现有平台；aarch64 上的编译、Verilator 源码构建、Picker 补丁等价性
+和 336 个 DUT 的重建全部**尚未执行**，不能算作已验证支持。操作路径见
+[Linux ARM 主机准备](how-to/linux-arm-host.md)。
+
+### 工具链升级到 Toffee 2.3.0 / xcomm 2.0.0 / Picker 3.0.0
+
+2026-11-18 按上游发布把锁从 `uc-toffee 2.1.0`（ABI 3）升到 `uc-toffee 2.3.0`、
+`uc-xcomm 2.0.0`（ABI 6）、`picker 3.0.0`，Python 依赖同步到 `pip 26.3`、
+`pytest-asyncio 1.5.0`、`scikit-build-core 1.1.2`；`setuptools-scm` 保持 9.2.2，
+因为上游 toffee/xcomm 的构建要求都是 `>=8,<10`。
+
+- 工具锁参与构建缓存身份，`.cache/duts` 中 **438 个 ABI 3 时期的构建全部失效**，
+  必须按新身份重建；旧收据不再代表新工具链的结果。
+- **Picker 的 trace 调用图补丁已退役**：Picker 3 在上游索引 trace helper 体并解析调用图，
+  覆盖了原补丁的跨兄弟函数 prefix 栈场景，`tests/test_picker_trace.py` 改为直接验证上游实现。
+  xcomm 的宽字补丁上游仍无对应实现，继续保留并已在新版本上验证可应用。
+- Picker 3 用单一 `<top>.xscfg` 配置库取代 `signals.json` 与 `<top>_offset.yaml`。
+  套件不再保留这两个派生文件，统一经 `ucv.xscfg` 读取：`ports` 取自 `metadata.ports`
+  （与原 `signals.json` 逐字节等价），地址映射取自 `variables`，`direct` 别名按上游语义
+  已并入 `variables` 而非 `signals`。原先在构建时重新序列化旧文件的做法已删除。
+- 新增 `ucv.xscfg` 只做读取，并提供一个仅供测试/对照组构造合成库的写入器；
+  `tests/test_xscfg.py` 用上游 `picker config` 与 `xspcomm.XSignalCFG` 双向验证它。
+- 查出并修掉一个既有的环境缺陷：`ucv setup` 的原生库安装只增不删，`.tools` 下三处
+  目录累积了历次 ABI 的 `libxspcomm.so.*` 并被整体拷进 DUT 包。现在安装前清理，
+  SDK 布局也从锁的 `package_version`/`native_abi` 派生。
+- 清理了升级后不可达的缓存（`.cache` 32 GB → 9.3 GB，回收 22.7 GB）：437 个 ABI 3 时期的
+  DUT 包、28 个孤立/历史生成目录、2 个历史源码检出。保留当前两个基线的完整 RTL 与检出、
+  两个新锁下已验证的 DUT 包和全部镜像，因此 DUT 重建仍不需要重跑 Chisel。
+  只删可重建或可再获取的生成态，未改动任何提交的报告、判定或哈希索引；
+  删除清单与不可用边界见[存储回收记录](history/storage-reclamation-20261118.json)。
+
+已验证：`ucv setup` 成功且 `receipt.tools == dependencies/versions.json`；
+`validate_runtime()` 报 `2.3.0 / 2.0.0 / ABI 6`；公共工具回归 **426 PASS**（含 Picker 解析
+3 项实际执行）；`sbuffer/sbuffer` 与 `lsq/deq_module` 在新身份下 **BUILT + SMOKE PASS**；
+LSQ `deq_module` 收集 **PASS**。
+
+未验证：其余 436 个 DUT 尚未重建，硬件执行只覆盖上述两个 DUT 的原生冒烟与 LSQ 收集，
+任何旧报告都不能当作新工具链的通过证据。
+
 ### 运行环境
 
 2026-11-17 已修复本机 `.venv` 的 Toffee 身份不一致。依赖源码恢复为锁定的
