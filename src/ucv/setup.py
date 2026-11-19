@@ -1,17 +1,18 @@
 """Project-local installation from pinned sources. MPL-2.0."""
 import os
 from pathlib import Path
-import platform
 import shutil
 import sys
 import urllib.request
 import venv
+from . import host
 from .common import UcvError, digest, execute, file_hash, lock, now, read, write
 from .sources import checkout, git
 
 def setup(project, jobs=16, profile='runtime'):
-    if sys.version_info[:2]!=(3,12) or platform.system()!='Linux' or platform.machine()!='x86_64':
-        raise UcvError('The locked environment requires Linux x86_64 and Python 3.12')
+    host.require()
+    if sys.version_info[:2]!=(3,12):
+        raise UcvError(f'The locked environment requires {host.requirement()}')
     root = project.root
     prefix = root/'.tools'
     prefix.mkdir(exist_ok=True)
@@ -93,6 +94,9 @@ def setup(project, jobs=16, profile='runtime'):
         if not (verilator/'bin/verilator').exists():
             seed = project.local.get('verilator_seed')
             if seed:
+                # Check the architecture before executing the seed: running a
+                # foreign binary reports an opaque exec error instead.
+                host.require_elf_machine(Path(seed)/'bin/verilator_bin')
                 if '5.052' not in execute([Path(seed)/'bin/verilator','--version']).stdout:
                     raise UcvError('Verilator seed is not 5.052')
                 shutil.copytree(seed,verilator,symlinks=False)
@@ -110,6 +114,7 @@ def setup(project, jobs=16, profile='runtime'):
         binaries=[prefix/'bin/picker',verilator/'bin/verilator_bin']
         if profile=='full':binaries += [prefix/'bin/firtool',prefix/'bin/mill']
         write(prefix/'receipt.json',{'tools':project.tools,'profile':profile,'completed_at':now(),
+              'machine':host.machine(),'system':host.system(),
               'python':sys.version,'packages':freeze.splitlines(),
               'binaries':{str(p.relative_to(prefix)):file_hash(p) for p in
                  binaries}})
@@ -123,12 +128,24 @@ def install_generation_tools(project,log=None):
         if dest.exists():continue
         seed=project.local.get(name)
         if seed:
+            # A seed binary is architecture-specific too; refuse a foreign
+            # one here rather than at the first generation attempt.
+            if name=='firtool':host.require_elf_machine(seed)
             shutil.copy2(seed,dest)
         elif name=='mill':
-            urllib.request.urlretrieve('https://repo1.maven.org/maven2/com/lihaoyi/mill-dist/0.12.17/mill-dist-0.12.17.jar',dest)
+            # The launcher script resolves the platform-specific distribution
+            # itself (including aarch64), so one artifact serves every Linux
+            # architecture. The jar is not executable and cannot be substituted.
+            urllib.request.urlretrieve(host.MILL_LAUNCHER,dest)
         else:
+            url=host.firtool_url()
+            if url is None:
+                raise UcvError(
+                    f'No published firtool for {host.machine()}: CIRCT ships Linux x86_64 '
+                    f'only. Supply one through local.json "firtool", or take RTL from a '
+                    f'released package (baselines/rtl-releases.json) instead of generating it')
             archive=project.root/'.tools/firtool.tar.gz'
-            urllib.request.urlretrieve('https://github.com/llvm/circt/releases/download/firtool-1.149.0/firrtl-bin-linux-x64.tar.gz',archive)
+            urllib.request.urlretrieve(url,archive)
             import tarfile
             with tarfile.open(archive) as stream:
                 member=next(m for m in stream.getmembers() if m.name.endswith('/bin/firtool'))

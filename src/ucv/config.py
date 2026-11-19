@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import re
 from .common import UcvError, contained, digest, file_hash, read
+from . import host
 
 HEX = re.compile(r'[0-9a-f]{40}\Z')
 
@@ -130,10 +131,14 @@ class Project:
     def cache_key(self, suite, dut, options=None):
         # Keep the null slot in the existing SoC cache format. Generation never
         # injects Scala sources; the suite recipe change invalidates old BPU DUTs.
+        # The machine architecture is part of the identity: a generated package
+        # carries native libraries, so a package from another architecture must
+        # never be reused even when every pinned version matches.
         return digest({'baseline':suite.baseline_key, 'suite':suite.name, 'dut':dut,
                        'recipe':suite.recipe, 'tools':self.tools, 'options':options or {},
                         'pipeline_version':2,
                        'build_options':self.config.get('build_options',{}),
+                       'machine':host.machine(),
                        'overlay':None})
 
     def environment(self):

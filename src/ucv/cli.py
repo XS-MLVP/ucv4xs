@@ -2,9 +2,9 @@
 import argparse
 import json
 from pathlib import Path
-import platform
 import shutil
 import sys
+from . import host as host_platform
 from .common import UcvError, execute, read
 from .config import Project
 
@@ -136,7 +136,12 @@ def main(argv=None):
             if args.command=='doctor':
                 if sys.version_info[:2]!=(3,12):errors.append('Python 3.12 required')
                 native=args.stage in {'run','generate'}
-                if native and (platform.system(),platform.machine())!=('Linux','x86_64'):errors.append('Linux x86_64 required')
+                if native and not host_platform.supported():
+                    errors.append(f'{host_platform.requirement()} required; '
+                                  f'this host is {host_platform.describe()}')
+                if native and args.stage=='generate' and not host_platform.rtl_generation_available():
+                    errors.append(f'No published firtool for {host_platform.machine()}; take RTL from a '
+                                  'released package or supply local.json firtool')
                 host={'source':('git',),'rtl':(),'run':('git','cmake','g++','swig','make'),
                       'generate':('git','java','cmake','g++','swig','make')}[args.stage]
                 for tool in host:
