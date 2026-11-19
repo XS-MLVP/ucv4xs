@@ -87,10 +87,12 @@ VAGQ 显式使用 `internal-d4566d58a`。各工程设计规格索引登记 Chise
 
 ## 快速开始：BPU/MainBTB 示例
 
-资源导航只需要 Python 3.12；源码获取需要 Git。当前 `public-e716c7658` 尚无锁定
-RTL release，首次运行使用源码生成路线，宿主还需 Java 17。
-仿真支持 Linux x86_64，宿主需提供 Make、CMake、C++20 编译器、SWIG ≥ 4.2 及
-Autoconf/Flex/Bison。工具和 Python 环境安装在 `.tools/` 与 `.venv/`。
+资源导航只需要 Python 3.12；源码获取需要 Git。当前 `public-e716c7658` 已有锁定的
+RTL release（`xiangshan-e716c7658`），默认直接取用；只有显式 `--rtl-source source`
+才需要 Java 17 生成。
+仿真支持 Linux x86_64 与 Linux aarch64，宿主需提供 Make、CMake、C++20 编译器、
+SWIG ≥ 4.2 及 Autoconf/Flex/Bison。工具和 Python 环境安装在 `.tools/` 与 `.venv/`。
+aarch64 的差异（生成工具与架构分离的构建缓存）见[Linux ARM 主机准备](docs/how-to/linux-arm-host.md)。
 
 ```sh
 git clone https://github.com/XS-MLVP/ucv4xs.git

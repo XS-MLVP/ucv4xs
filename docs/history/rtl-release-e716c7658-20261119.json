@@ -1,0 +1,48 @@
+{
+  "date": "2026-11-19T02:40:00+00:00",
+  "operation": "publish whole-chip RTL release for the default public baseline",
+  "baseline": "public-e716c7658",
+  "commit": "e716c765824900ff78816b92ac827fd4aa2cab35",
+  "tag": "xiangshan-e716c7658",
+  "release_url": "https://github.com/XS-MLVP/ucv4xs/releases/tag/xiangshan-e716c7658",
+  "asset_url": "https://github.com/XS-MLVP/ucv4xs/releases/download/xiangshan-e716c7658/xiangshan-e716c7658-rtl.tar.gz",
+  "asset_sha256": "2e3cf9647f172a865fdfcab03f1697ca34403f88ba7eef4ab233201d45da1bd9",
+  "asset_bytes": 12130954,
+  "baseline_sha256": "42584a368c9351e8ebd2d1ac57f508dde4ecfab36345141d9829588b98c578b0",
+  "source_of_record": ".cache/generated/1016962d116907c05df0a64bbb9e1c17f9e71795b08ec4fe96e131c169c276ba/rtl, generated 2026-11-13; never assembled from DUT closures",
+  "contents": {
+    "rtl/*.sv": 2002,
+    "rtl/*.v": 22,
+    "diffext_verilog": 21,
+    "printcommitid_verilog": 1,
+    "filelist_entries": 2024,
+    "top_module": "XSTop",
+    "filelist_entries_with_dot_prefix": 23
+  },
+  "assertions": {
+    "chisel_assertions_in_firrtl": 9581,
+    "systemverilog_fatal": 0,
+    "reason": "--default-layer-specialization=disable drops the verification layer"
+  },
+  "verification": {
+    "sha256sum_check": "PASS (2028 files, exit 0) on an extracted copy",
+    "verilator_lint": "PASS: verilator 5.052 --lint-only -Wno-fatal -f filelist.f --top-module XSTop -I. exit 0, 2025 modules, 266.6 s",
+    "redownload": "re-downloaded from the release; archive SHA-256 matches the staged file",
+    "byte_equality_with_local_generation": "compare_rtl PASS: released RTL is byte-identical to the whole-chip generation cache for this baseline",
+    "import_end_to_end": "ucv prepare sbuffer --dut sbuffer --rtl-source release -> PREPARED"
+  },
+  "lock_entry": {
+    "file": "baselines/rtl-releases.json",
+    "sha256": "2e3cf9647f172a865fdfcab03f1697ca34403f88ba7eef4ab233201d45da1bd9",
+    "package": "xiangshan-e716c7658-rtl"
+  },
+  "tooling": {
+    "script": "scripts/publish-rtl-release.py",
+    "note": "stages and packs only; refuses a generation cache whose filelist disagrees with the actual file set, and compares filelist entries with their ./-prefix normalised while keeping the original lines"
+  },
+  "effect": "The default public baseline no longer requires Java 17 or a local Chisel generation. It is also the only route available on Linux aarch64, where no firtool is published.",
+  "not_claimed": [
+    "No module-level PASS/FAIL is implied: existing suite conclusions keep their own baseline, date and host architecture.",
+    "No aarch64 execution was performed; this record only removes the generation tool dependency from the prepare path."
+  ]
+}
