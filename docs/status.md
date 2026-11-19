@@ -86,8 +86,12 @@ workspace.module_id 唯一关联；目录与测试选择仍按工程配方。`uc
 - 解压副本 `sha256sum -c`：**2028 个文件全部通过**
 - `verilator 5.052 --lint-only -Wno-fatal -f filelist.f --top-module XSTop -I.`：
   **exit 0**，2025 个模块，266.6 s
-- 发布后重新下载，压缩包 SHA-256 与暂存件一致（`2e3cf964…`）
 - `compare_rtl`：包内 RTL 与本机整芯片生成**逐字节一致**
+- 重新下载校验：压缩包 SHA-256 一致（`2064fed7…`），解压后 2028 项逐文件校验和与
+  首次上传时完全相同
+- **压缩包可复现**：`publish-rtl-release.py` 固定 tar 成员元数据与 gzip 头部，
+  同一输入重建得到同一 SHA-256；首次上传因带文件 mtime 与 gzip 时间戳不可复现，
+  已替换为可复现版本，内容未变（逐文件校验和一致，先前的 lint 结论仍适用）
 - `ucv prepare sbuffer --dut sbuffer --rtl-source release` → **PREPARED**
 
 效果：默认基线不再需要 Java 17 或本机 Chisel 生成，也是 Linux aarch64 上唯一可用的
@@ -120,11 +124,11 @@ workspace.module_id 唯一关联；目录与测试选择仍按工程配方。`uc
   没有 `linux-arm64`（1.140/1.149/1.150 一致）。因此 aarch64 上不能从 Chisel 生成 RTL，
   只能用已发布 RTL 包或自备 firtool。三条失败路径都会点明这个原因。
 
-新增测试：`tests/test_host.py`（23 项：别名规范化、支持集合、ELF 架构读取、外来 seed
+新增测试：`tests/test_host.py`（29 项：别名规范化、支持集合、ELF 架构读取、外来 seed
 拒绝、firtool 仅 x86_64、mill 启动器选择）、`tests/test_installed_tools.py`（5 项：
 收据架构校验）以及 `tests/test_baselines.py` 中的架构入 key 一项。
 
-已验证：公共工具回归 **461 PASS**（原 426，新增 35）；`ucv check`、`ucv modules check`
+已验证：公共工具回归 **474 PASS**（原 426，新增 48）；`ucv check`、`ucv modules check`
 通过；`ucv setup` 在新收据格式下成功并记录 `machine=x86_64`；`ucv doctor --stage run`
 通过；`sbuffer`（2 个 DUT）与 `lsq/deq_module` 在加入架构身份后的新 key 下
 **BUILT + SMOKE PASS**；LSQ `deq_module` 实跑 **13 passed / 3 failed**，与升级前一致，

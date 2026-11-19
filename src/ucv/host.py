@@ -14,8 +14,8 @@ from pathlib import Path
 
 from .common import UcvError
 
-# canonical architecture name -> description used in messages
-SUPPORTED_MACHINES = {'x86_64': 'x86_64', 'aarch64': 'aarch64'}
+# Architectures this host can build and run native artifacts for.
+SUPPORTED_MACHINES = ('x86_64', 'aarch64')
 
 # Linux ELF e_machine values for the architectures we can recognise.
 ELF_MACHINES = {
@@ -30,10 +30,20 @@ _ALIASES = {'amd64': 'x86_64', 'x64': 'x86_64', 'arm64': 'aarch64',
             'armv8l': 'aarch64', 'aarch64_be': 'aarch64'}
 
 
+def canonical(machine_name):
+    """Canonical architecture name for a reported one.
+
+    Every entry point funnels through here so a caller passing
+    ``platform.machine()`` directly gets the same answer as one passing
+    nothing at all.
+    """
+    raw = str(machine_name).lower()
+    return _ALIASES.get(raw, raw)
+
+
 def machine():
     """Canonical machine architecture of the running host."""
-    raw = platform.machine().lower()
-    return _ALIASES.get(raw, raw)
+    return canonical(platform.machine())
 
 
 def system():
@@ -42,7 +52,7 @@ def system():
 
 def supported(machine_name=None, system_name=None):
     """Whether this host can build and run native DUT packages."""
-    machine_name = machine() if machine_name is None else _ALIASES.get(machine_name.lower(), machine_name.lower())
+    machine_name = machine() if machine_name is None else canonical(machine_name)
     system_name = system() if system_name is None else system_name
     return system_name == 'Linux' and machine_name in SUPPORTED_MACHINES
 
@@ -62,7 +72,7 @@ def require(machine_name=None, system_name=None):
         return
     raise UcvError(f'The locked environment requires {requirement()}; '
                    f'this host reports {system_name or system()} '
-                   f'{machine_name or machine()}')
+                   f'{canonical(machine_name) if machine_name else machine()}')
 
 
 def elf_machine(path):
@@ -112,7 +122,7 @@ FIRTOOL_URLS = {
 
 def firtool_url(machine_name=None):
     """Download URL for a native firtool, or ``None`` when none is published."""
-    machine_name = machine() if machine_name is None else machine_name
+    machine_name = machine() if machine_name is None else canonical(machine_name)
     return FIRTOOL_URLS.get(machine_name)
 
 

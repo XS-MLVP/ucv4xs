@@ -103,19 +103,15 @@ finally:d.Finish()
 print('UCV_SMOKE_PASS')
 '''
 
-def package_metadata(package, tname):
-    """Record the single configuration database the build must leave behind.
-
-    Picker 3 emits one ``<top>.xscfg`` and no derived copies. Suites read that
-    database through ``ucv.xscfg``; nothing else is written here.
-    """
-    database = package/(tname+'.xscfg')
-    if not database.is_file():
-        raise UcvError(f'Picker did not produce a configuration database: {database}')
-    return {'configuration_database':database.name}
-
 def repair_python_keywords(path):
-    """Picker 4dd442c emits reserved public port names as Python attributes."""
+    """Picker renamed reserved public port names; report whether anything moved.
+
+    Picker 3 maps Python keywords to a ``pin_`` prefix in its own conflict map,
+    so a generated wrapper should already be valid Python. The rewrite is kept
+    as a defensive pass: if a future pin emits a bare keyword attribute the
+    module would be a syntax error, and this turns it into a recorded change
+    instead of an import failure.
+    """
     original = path.read_text()
     text = original
     # Only an attribute that is exactly a Python keyword is changed; signal
@@ -149,10 +145,13 @@ def build(project, suite, dut, jobs=4, rtl_source='auto', archive=None):
                        '--cp_lib','1','--autobuild','true','-j',str(jobs)]
             execute(command,cwd=base/'rtl',env=env,log=base/'build.log')
             tname=spec['export_name']
-            package_metadata(package,tname)
+            # Picker 3 emits one <top>.xscfg and no derived metadata copies.
             expected=['__init__.py',tname+'.xscfg','_UT_'+tname+'.so','libUT'+tname+'.so']
-            if any(not (package/p).is_file() or not (package/p).stat().st_size for p in expected):
-                raise UcvError(f'Picker did not produce a complete package: {package}; see {base}/build.log')
+            missing=[p for p in expected
+                     if not (package/p).is_file() or not (package/p).stat().st_size]
+            if missing:
+                raise UcvError(f'Picker did not produce a complete package: {package}; '
+                               f'missing or empty {missing}; see {base}/build.log')
             binding_fix = repair_python_keywords(package/'__init__.py')
             with tempfile.TemporaryDirectory(prefix='smoke-',dir=base) as temp:
                 execute([project.root/'.venv/bin/python','-c',SMOKE,package,tname,

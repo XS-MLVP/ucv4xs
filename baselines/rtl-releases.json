@@ -10,7 +10,7 @@
     "public-e716c7658": {
       "baseline_sha256": "42584a368c9351e8ebd2d1ac57f508dde4ecfab36345141d9829588b98c578b0",
       "url": "https://github.com/XS-MLVP/ucv4xs/releases/download/xiangshan-e716c7658/xiangshan-e716c7658-rtl.tar.gz",
-      "sha256": "2e3cf9647f172a865fdfcab03f1697ca34403f88ba7eef4ab233201d45da1bd9",
+      "sha256": "2064fed7821b6fc609b18f93147e143265b331d445ec9273fa99175884527b80",
       "package": "xiangshan-e716c7658-rtl"
     }
   }
