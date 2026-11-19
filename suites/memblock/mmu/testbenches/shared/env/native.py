@@ -14,6 +14,7 @@ import sys
 
 import xspcomm as xsp
 from toffee import as_xdata
+from ucv import xscfg
 
 ROOT = _SUITE_ROOT
 
@@ -23,7 +24,7 @@ def _load_package(directory: Path, alias: str):
     init = directory / "__init__.py"
     if not init.is_file():
         raise FileNotFoundError(
-            f"generated DUT package not found at {init}; build it with tools/build_dut.py"
+            f"generated DUT package not found at {init}; build it with ucv build"
         )
     module = sys.modules.get(alias)
     if module is None:
@@ -57,7 +58,7 @@ def _artifact_schema(directory: Path, module) -> Path:
             f"cached generated DUT package mismatch: requested {directory} "
             f"but the loaded package belongs to {actual}; run each artifact "
             "in an isolated process")
-    return actual / "signals.json"
+    return xscfg.database_path(actual)
 
 
 def native_seed(seed: int | None = None) -> int:

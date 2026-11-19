@@ -16,11 +16,12 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+from ucv import xscfg
 
 if __package__:
-    from tools.dut_sdk import normalize_sdk, validate_sdk
+    from tools.dut_sdk import SONAME, normalize_sdk, validate_sdk
 else:
-    from dut_sdk import normalize_sdk, validate_sdk
+    from dut_sdk import SONAME, normalize_sdk, validate_sdk
 
 ROOT = __import__('suites.frontend.bpu', fromlist=['ROOT']).ROOT
 MODULES = dict(abtb='AheadBtb', bpu='Bpu', ittage='Ittage', mbtb='MainBtb',
@@ -43,12 +44,12 @@ def record(path, data):
 
 def validate(package, name):
     top = name.capitalize() + 'Dut'
-    required = ('__init__.py', 'signals.json', f'{top}_offset.yaml',
+    required = ('__init__.py', f'{top}.xscfg',
         f'_UT_{top}.so', f'libUT{top}.so', f'{top}.v')
     assert all((package / item).is_file() for item in required), (name, required)
     # A successful link is not enough: a failed SDK copy can leave an empty
     # namespace package, or a retry of `cp -r` can create xspcomm/xspcomm.
-    native = ('__init__.py', 'pyxspcomm.py', '_pyxspcomm.so', 'libxspcomm.so.3')
+    native = ('__init__.py', 'pyxspcomm.py', '_pyxspcomm.so', SONAME)
     assert all((package / 'xspcomm' / item).is_file() for item in native), 'incomplete copied xspcomm binding'
     assert not (package / 'xspcomm/xspcomm').exists(), 'nested copied xspcomm binding'
     validate_sdk(package / 'xspcomm')
@@ -58,10 +59,13 @@ def validate(package, name):
     assert 'export TRACE := fst' in makefile, 'trace metadata is required for read-only signal reconstruction'
     assert '--public-flat-rw' not in makefile, 'do not retain fields unnecessarily; use trace mappings'
     assert '.BindNativeData(' in wrapper and '.BindDPIPtr(' not in wrapper
-    assert (package / f'{top}_offset.yaml').stat().st_size > 0
-    assert '\nsignals:\n' in (package / f'{top}_offset.yaml').read_text(), 'trace signal map missing'
+    database = xscfg.database_path(package)
+    assert database.stat().st_size > 0, 'configuration database is empty'
+    # Trace declarations must survive into the database: a package whose
+    # address map is complete but whose signal map is empty cannot be bound.
+    assert xscfg.Database(database).signals, 'trace signal map missing from the configuration database'
     old = ROOT / 'dut' / name
-    assert json.loads((package / 'signals.json').read_text()) == json.loads((old / 'signals.json').read_text())
+    assert xscfg.ports(package) == xscfg.ports(old), 'published port tree changed'
     assert digest(package / f'{top}.v') == digest(old / f'{top}.v'), 'predictor RTL changed'
     return {item: digest(package / item) for item in required}
 
@@ -213,7 +217,7 @@ def install(name, stage):
     provenance.update(validated_build_settings(name, stage, identities))
     provenance.update(access_mode='MEM_DIRECT', VPI=False, internal_DPI_exports=False,
         generated_at=datetime.now(timezone.utc).isoformat(), export_directory=str(package),
-        memory_direct_offset_sha256=identities[name.capitalize() + 'Dut_offset.yaml'],
+        configuration_sha256=identities[name.capitalize() + 'Dut.xscfg'],
         previous_package_backup=str(backup), memory_direct_package_sha256=identities)
     lock_path = ROOT / 'dependencies/versions.json'
     if lock_path.is_file():

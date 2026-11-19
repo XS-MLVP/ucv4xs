@@ -14,7 +14,7 @@ from suites.memblock.lsq.testbenches.shared.env.evidence import Journal
 ROOT = _SUITE_ROOT
 
 
-from ucv.runtime import validate_runtime
+from ucv.runtime import validate_binding, validate_runtime
 
 
 class DutFactory:
@@ -44,8 +44,9 @@ class DutFactory:
         try:
             if not dut.dut.GetXSignalCFGBasePtr() or not dut.GetCovMetrics() & 1:
                 raise RuntimeError("DUT needs mem_direct access and native line coverage")
-            if module.xsp.abi_version() != 3 or module.xsp.XTriggerEngine.CoverageVersion() != 5:
-                raise RuntimeError("generated DUT xcomm ABI/coverage mismatch")
+            # Compare against dependencies/versions.json instead of a literal:
+            # the pinned ABI is a toolchain property, not a suite constant.
+            validate_binding(module.xsp)
             dut.InitClock("clock")
             reset = getattr(dut, "reset", None)
             for signal in vars(dut).values():

@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import re
 import shutil
+from ucv import xscfg
 
 from suites.frontend.bpu import ROOT
 
@@ -44,11 +45,10 @@ def build_provenance(dut: str, *, root: Path = ROOT) -> dict[str, object] | None
     if (data.get("format") != "bpu-dut-build-provenance"
             or data.get("version") != 1 or data.get("dut") != dut):
         raise ValueError(f"invalid DUT build provenance: {path}")
-    for name, field in (
-        (f"{dut.capitalize()}Dut.v", "primary_rtl_sha256"),
-        ("signals.json", "signals_sha256"),
+    for field, source in (
+        ("primary_rtl_sha256", directory / f"{dut.capitalize()}Dut.v"),
+        ("configuration_sha256", xscfg.database_path(directory)),
     ):
-        source = directory / name
         if not source.is_file() or sha256(source.read_bytes()).hexdigest() != data.get(field):
             raise ValueError(f"DUT build provenance does not match {source}")
     if not isinstance(data.get("verilator_version"), str) or not isinstance(data.get("export_directory"), str):

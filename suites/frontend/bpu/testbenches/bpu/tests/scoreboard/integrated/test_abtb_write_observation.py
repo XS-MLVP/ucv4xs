@@ -9,12 +9,12 @@ import re
 from types import SimpleNamespace
 
 import pytest
-import yaml
 from toffee import ClockCycles
 from toffee import Execution
 from toffee import MemoryBackend
 from toffee import ScoreboardMismatch
 from toffee import Transfer
+from ucv import xscfg
 from suites.frontend.bpu.testbenches.bpu.env.bundle.values import _plain
 from suites.frontend.bpu.testbenches.bpu.checker.abtb.write import WriteChecker as DirectChecks
 from suites.frontend.bpu.testbenches.bpu.checker.abtb.write import entry
@@ -51,11 +51,10 @@ class ReadOnlySignal:
 def declared_abtb_suffixes():
     # Real trace declarations supply names only. Synthetic tests never read
     # a native address or construct a hardware DUT.
-    layout = RTL.parents[1] / 'dut/bpu/BpuDut_offset.yaml'
-    metadata = yaml.load(layout.read_bytes(), Loader=yaml.CSafeLoader)
+    database = xscfg.open_dut(RTL.parents[1] / 'dut/bpu')
     prefix = 'BpuDut_top.Bpu.abtb.'
-    names = tuple(row['name'].removeprefix(prefix)
-        for row in metadata['signals'] if row['name'].startswith(prefix))
+    names = tuple(name.removeprefix(prefix)
+        for name in database.names() if name.startswith(prefix))
     assert 'takenCounter_0_0_0_value' in names and 'reset' in names
     return names
 

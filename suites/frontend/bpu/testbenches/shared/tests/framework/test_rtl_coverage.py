@@ -8,6 +8,7 @@ import re
 import subprocess
 
 import pytest
+from ucv import xscfg
 
 from suites.frontend.bpu.tools import rtl_coverage as rtl_coverage
 
@@ -190,13 +191,12 @@ def test_missing_unrelated_source_is_not_silently_remapped(tmp_path, monkeypatch
 
 def _provenance(directory, dut, export):
     source = directory / f"{dut.capitalize()}Dut.v"
-    signals = directory / "signals.json"
-    signals.write_text("{}", encoding="utf-8")
+    database = xscfg.database_path(directory)
     data = {
         "format": "bpu-dut-build-provenance", "version": 1, "dut": dut,
         "export_directory": str(export), "verilator_version": "Verilator 5.052",
         "primary_rtl_sha256": sha256(source.read_bytes()).hexdigest(),
-        "signals_sha256": sha256(signals.read_bytes()).hexdigest(),
+        "configuration_sha256": sha256(database.read_bytes()).hexdigest(),
     }
     (directory / "build-provenance.json").write_text(json.dumps(data), encoding="utf-8")
     return data
@@ -208,6 +208,7 @@ def test_named_export_relocates_only_with_matching_build_provenance(tmp_path, mo
     directory.mkdir(parents=True)
     source = directory / "TageDut.v"
     source.write_text("module Tage;", encoding="utf-8")
+    (directory / "TageDut.xscfg").write_text("placeholder", encoding="utf-8")
     export = tmp_path / "removed/tage-v5052"
     data = _provenance(directory, "tage", export)
     assert rtl_coverage._build_provenance("tage") == data
@@ -216,12 +217,13 @@ def test_named_export_relocates_only_with_matching_build_provenance(tmp_path, mo
         rtl_coverage._source_path(str(export.with_name("unrelated") / source.name), "tage")
 
 
-@pytest.mark.parametrize("filename", ["TageDut.v", "signals.json"])
+@pytest.mark.parametrize("filename", ["TageDut.v", "TageDut.xscfg"])
 def test_modified_export_rejects_stale_build_provenance(tmp_path, monkeypatch, filename):
     monkeypatch.setattr(rtl_coverage, "ROOT", tmp_path)
     directory = tmp_path / "dut/tage"
     directory.mkdir(parents=True)
     (directory / "TageDut.v").write_text("module Tage;", encoding="utf-8")
+    (directory / "TageDut.xscfg").write_text("placeholder", encoding="utf-8")
     _provenance(directory, "tage", tmp_path / "removed/tage-v5052")
     (directory / filename).write_text("changed", encoding="utf-8")
     with pytest.raises(ValueError, match="provenance does not match"):

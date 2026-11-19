@@ -92,7 +92,7 @@
 历史结论和复现命令仍按原日期/基线保留在 [evidence/reports](evidence/reports) 与 [bugs/evidence](../../bugs/evidence/bug-reports-20261026)。以下旧工具只用于旧证据复现或专用审计，不作为当前构建/运行入口：
 
 - `tools/prepare_rtl.py`：旧 RTL 提取入口；当前 RTL 提供方由 `ucv prepare` 管理。
-- `tools/build_dut.py`：旧 Picker 直接导出 + 最小 smoke，写 `results/builds/<stamp>-<dut>/report.json`，不生成 `ucv` 构建缓存/收据；已存在的 DUT 目录会被拒绝覆盖。
+- `tools/build_dut.py`：旧 Picker 直接导出 + 最小 smoke，写 `results/builds/<stamp>-<dut>/report.json`，不生成 `ucv` 构建缓存/收据。已随 Picker 3 迁移**删除**；旧目录仍可复现当时的证据，当前构建入口是 `ucv build`。
 - `tools/run.py`：旧 Toffee managed runner，保存 `console.log`、JUnit、`run-provenance.json` 和原生覆盖，不生成 `run.json`，也没有问题快照；`ucv report` 不能读取其输出作为统一运行收据。
 - `tools/coverage_audit.py`、`tools/verify_delivery.py`：专用覆盖/交付审计，读取旧运行目录、`manifest/` 和逐 DUT gap 文件；它们是证据审计，不是功能验收，也不替代 `ucv check/run/report`。
 

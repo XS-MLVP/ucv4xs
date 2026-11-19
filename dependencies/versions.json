@@ -1,13 +1,18 @@
 {
   "toffee": {
     "repository": "https://github.com/XS-MLVP/toffee.git",
-    "commit": "f57150021791535d4b2fd01056c106f0cad53177",
-    "distribution": "uc-toffee"
+    "commit": "1ea5c42c45b77ffc9501b5ccecfe3c1d99545bbf",
+    "distribution": "uc-toffee",
+    "package_version": "2.3.0"
   },
   "picker": {
     "repository": "https://github.com/XS-MLVP/picker.git",
-    "commit": "4dd442c4a80c92549381e417c608836e3b78a8e9",
+    "commit": "f9bb9b14a966e4c7cebfa85da06d7752239785cd",
     "dependencies": {
+      "xcomm": {
+        "repository": "https://github.com/XS-MLVP/xcomm.git",
+        "commit": "595e1ca33d6c11e980e934a72030ea2832018d0a"
+      },
       "yaml-cpp": {
         "repository": "https://github.com/jbeder/yaml-cpp.git",
         "commit": "56e3bb550c91fd7005566f19c079cb7a503223cf"
@@ -20,21 +25,14 @@
         "repository": "https://github.com/MikePopoloski/slang.git",
         "commit": "7ddf4059f79eff508dd486eb42fd650cdf320d52"
       }
-    },
-    "patches": [
-      {
-        "path": "dependencies/patches/picker-trace-callgraph.patch",
-        "sha256": "2823ef36bfd4ee06853670c3c23543301abbef6da27b189779063e08072ad6f4",
-        "purpose": "Preserve scope across Verilator 5.052 split trace initialization calls"
-      }
-    ]
+    }
   },
   "xcomm": {
     "repository": "https://github.com/XS-MLVP/xcomm.git",
-    "commit": "2e4a4a99293360c2a642025000c6948b24cf8e88",
+    "commit": "595e1ca33d6c11e980e934a72030ea2832018d0a",
     "distribution": "uc-xcomm",
-    "package_version": "1.1.1",
-    "native_abi": 3,
+    "package_version": "2.0.0",
+    "native_abi": 6,
     "coverage_protocol": 5,
     "patches": [
       {

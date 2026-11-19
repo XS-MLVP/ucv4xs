@@ -4,9 +4,9 @@ from copy import deepcopy
 from itertools import product
 from pathlib import Path
 from types import SimpleNamespace
-import re
 import pytest
 from toffee import Bundle
+from ucv import xscfg
 from suites.frontend.bpu.testbenches.shared.env.bundle.bindings import PortBinding
 from suites.frontend.bpu.testbenches.bpu.model.sc.model import NAMES
 from suites.frontend.bpu.testbenches.bpu.model.sc.model import ScReference
@@ -231,8 +231,8 @@ def test_wrong_captured_common_history_index_rejected(field):
         used_requests(tx, ScReference().memories)
 
 def test_monitor_all35_leaves_exist_with_correct_width_in_native_yaml():
-    text = (ROOT / 'dut/bpu/BpuDut_offset.yaml').read_text()
-    entries = {name: int(width) for name, width in re.findall('^  - name: (BpuDut_top\\.Bpu\\.sc\\.[^\\n]+)\\n(?:    [^\\n]+\\n)*?    rtl_width: (\\d+)$', text, re.M)}
+    entries = {name: int(record['rtl_width'])
+               for name, record in xscfg.open_dut(ROOT / 'dut/bpu').variables.items()}
     wanted = pipeline_leaves()
     assert len(wanted) == len(set(wanted)) == 2 * SC_WAYS + 3 * 8 + 3
     for leaf in wanted:

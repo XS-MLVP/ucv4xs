@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 import pytest
+from tools import dut_sdk
 from tools import rebuild_memory_direct as staged
 
 FLAGS = '--no-coverage-expr;--no-coverage-fsm;--MMD;--MP;--MAKEFLAGS;-DVL_INLINE_OPT=inline;-O3;--instr-count-dpi;0'
@@ -13,7 +14,7 @@ def build_record(tmp_path):
     stage = tmp_path / 'staging'
     package = stage / 'dut/bpu'
     package.mkdir(parents=True)
-    for name in ('__init__.py', 'signals.json', 'BpuDut_offset.yaml',
+    for name in ('__init__.py', 'BpuDut.xscfg',
                  '_UT_BpuDut.so', 'libUTBpuDut.so', 'BpuDut.v'):
         (package / name).write_text('synthetic fixture: ' + name)
     identities = {path.name: staged.digest(path) for path in package.iterdir()}
@@ -75,7 +76,7 @@ def test_incomplete_or_nested_native_binding_cannot_be_installed(build_record, n
     native = package / 'xspcomm'
     native.mkdir()
     if nested:
-        for name in ('__init__.py', 'pyxspcomm.py', '_pyxspcomm.so', 'libxspcomm.so.3'):
+        for name in ('__init__.py', 'pyxspcomm.py', '_pyxspcomm.so', dut_sdk.SONAME):
             (native / name).write_text('synthetic fixture')
         (native / 'xspcomm').mkdir()
     with pytest.raises(AssertionError, match='copied xspcomm binding'):

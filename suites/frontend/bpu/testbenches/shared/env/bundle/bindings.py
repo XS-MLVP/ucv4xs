@@ -4,12 +4,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from functools import lru_cache
-import json
 from pathlib import Path
 import sys
 from typing import Any
 from typing import Mapping
 
+from ucv import xscfg
 from toffee import Bundle
 from toffee import as_xdata
 from toffee.data import DataNode
@@ -18,17 +18,24 @@ from toffee.data import signal_width
 
 
 @lru_cache(maxsize=20)
-def _port_schema(path: str, identity: tuple[int, ...]):
-    return json.loads(Path(path).read_text())
+def _port_schema(directory: str, identity: tuple[int, ...]):
+    """Port tree of one generated DUT, keyed by its database identity."""
+    return xscfg.ports(directory)
+
+
+def _port_tree(dut: Any) -> Mapping[str, Any]:
+    """Cached port tree of the package that owns ``dut``."""
+    module = sys.modules[type(dut).__module__]
+    directory = Path(module.__file__).resolve().parent
+    stat = xscfg.database_path(directory).stat()
+    return _port_schema(str(directory),
+                        (stat.st_dev, stat.st_ino, stat.st_mtime_ns, stat.st_size))
 
 
 def _tree_node(dut: Any, path: tuple[str, ...], tree=None) -> Mapping[str, Any]:
     # Use standard picker metadata, not injected attributes or patched XPorts.
     if tree is None:
-        module = sys.modules[type(dut).__module__]
-        schema = Path(module.__file__).with_name('signals.json').resolve()
-        stat = schema.stat()
-        tree = _port_schema(str(schema), (stat.st_dev, stat.st_ino, stat.st_mtime_ns, stat.st_size))
+        tree = _port_tree(dut)
     node: Any = tree
     for part in path:
         node = node[part]
@@ -104,10 +111,7 @@ class PulseBinding:
 
 def _leaf_node(dut: Any, path: tuple[str, ...], tree=None) -> Mapping[str, Any]:
     if tree is None:
-        module = sys.modules[type(dut).__module__]
-        schema = Path(module.__file__).with_name('signals.json').resolve()
-        stat = schema.stat()
-        tree = _port_schema(str(schema), (stat.st_dev, stat.st_ino, stat.st_mtime_ns, stat.st_size))
+        tree = _port_tree(dut)
     node: Any = tree
     for part in path:
         node = node[part]

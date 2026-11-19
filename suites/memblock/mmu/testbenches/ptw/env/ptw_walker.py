@@ -266,7 +266,7 @@ class PtwEnv:
     def _register_mxr(self, dut, schema_path) -> None:
         """Bind MXR only when the artifact schema and handle agree.
 
-        The schema is the generated artifact's own ``signals.json``; a Python
+        The schema is the generated artifact's own configuration database; a Python
         attribute alone is not evidence that a build declares the pin.
         """
         if schema_path is None:

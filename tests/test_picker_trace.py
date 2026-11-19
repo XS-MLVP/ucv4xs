@@ -1,4 +1,8 @@
-"""Pinned parser must preserve declaration identity across split functions. MPL-2.0."""
+"""Pinned parser must preserve declaration identity across split functions. MPL-2.0.
+
+Picker 3 indexes trace helper bodies and resolves their call graph itself, so this
+checks the pinned upstream implementation rather than a local patch.
+"""
 from pathlib import Path
 import shlex
 import subprocess
@@ -26,7 +30,8 @@ def trace_parser(tmp_path_factory):
 namespace picker { bool is_debug = false; char *lib_random_hash = nullptr; }
 int main(int argc, char **argv) {
     std::vector<std::string> files(argv+1, argv+argc);
-    auto events = picker::parser::verilator::detail::parse_v5_048(files);
+    auto input = picker::parser::verilator::detail::read_trace_input(files);
+    auto events = picker::parser::verilator::detail::parse_trace_events(input, true);
     for (const auto &event : events)
         if (event.kind == picker::parser::verilator::detail::trace_event_kind::declaration)
             std::cout << event.slot << ":" << event.name << "\\n";
@@ -75,7 +80,7 @@ VTop__trace_init_sub__missing(vlSelf, tracep);
 ''')
     result = subprocess.run([trace_parser,source],capture_output=True,text=True)
     assert result.returncode != 0
-    assert 'Invalid trace initialization call' in result.stderr
+    assert 'missing trace initialization helper' in result.stderr
 
 
 def test_flat_declaration_fixture_remains_supported(trace_parser, tmp_path):

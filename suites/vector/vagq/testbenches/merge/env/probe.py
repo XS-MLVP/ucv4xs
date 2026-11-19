@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from toffee import Bundle
+from ucv import xscfg
 
 from suites.vector.vagq.testbenches.merge.transactions import Beat
 from suites.vector.vagq.testbenches.merge.transactions import Observation
@@ -15,7 +16,7 @@ from suites.vector.vagq.testbenches.merge.transactions import VrfReadRequest
 from suites.vector.vagq.testbenches.merge.transactions import VrfWriteRequest
 
 ROOT = _SUITE_ROOT
-SCHEMA = json.loads((ROOT / 'dut/MergeCtrl/signals.json').read_text())
+SCHEMA = xscfg.ports(ROOT / 'dut/MergeCtrl')
 
 
 def _leaves(node, prefix=''):

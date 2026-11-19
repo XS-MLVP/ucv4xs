@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 import pytest
+from ucv import xscfg
 
 from suites.frontend.ifu.testbenches.ifu.model.cenc import c_addi
 from suites.frontend.ifu.testbenches.ifu.model.fetch import build_window
@@ -19,7 +19,7 @@ ROOT = __import__('suites.frontend.ifu', fromlist=['ROOT']).ROOT
 def test_signal_schema_confirms_the_halfword_address_unit():
     """GuardedPc ports carry bits [50:1] on the request; the redirect PC is full width."""
 
-    schema = json.loads((ROOT / "dut" / "ifu" / "signals.json").read_text())
+    schema = xscfg.ports(ROOT / "dut" / "ifu")
     bits = schema["io"]["fromICache"]["req"]["bits"]
     start = bits["info"]["0"]["startVAddr_addr"]
     out = schema["io"]["toFtq_wbRedirect"]["bits"]

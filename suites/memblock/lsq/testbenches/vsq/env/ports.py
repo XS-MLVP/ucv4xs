@@ -1,4 +1,4 @@
-import json
+from ucv import xscfg
 
 from suites.memblock.lsq.testbenches.shared.env.dut import ROOT
 from suites.memblock.lsq.testbenches.raw.transactions import SqPtr
@@ -22,7 +22,7 @@ class Ports:
                 for name, child in node.items():
                     if isinstance(child, dict):
                         walk(child, (*prefix, name))
-        walk(json.loads((ROOT / "dut/virtual_store_queue/signals.json").read_text()))
+        walk(xscfg.ports(ROOT / "dut/virtual_store_queue"))
         assert len(self.inputs) == 85 and len(self.outputs) == 19 and set(self.inputs) == set(encode(Inputs()))
 
     def sample(self, event):

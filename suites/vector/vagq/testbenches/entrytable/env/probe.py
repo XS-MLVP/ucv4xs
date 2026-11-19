@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from toffee import Bundle
+from ucv import xscfg
 
 ROOT = _SUITE_ROOT
 
@@ -20,7 +21,7 @@ def _leaves(node, prefix=''):
     return result
 
 
-SCHEMA = json.loads((ROOT / 'dut/VAGQEntryTable/signals.json').read_text())
+SCHEMA = xscfg.ports(ROOT / 'dut/VAGQEntryTable')
 LEAVES = _leaves(SCHEMA)
 INPUT_NAMES = tuple(name for name, pin in LEAVES if pin == 'input' and name not in ('clock', 'reset'))
 

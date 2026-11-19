@@ -81,12 +81,12 @@ def prepare(project, suite, dut, rtl_source='auto', archive=None):
 SMOKE = r'''
 import importlib.util, sys
 from pathlib import Path
-p=Path(sys.argv[1]); name=sys.argv[2]
+p=Path(sys.argv[1]); name=sys.argv[2]; abi=int(sys.argv[3]); coverage=int(sys.argv[4])
 spec=importlib.util.spec_from_file_location('ucv_native_smoke',p/'__init__.py',submodule_search_locations=[str(p)])
 m=importlib.util.module_from_spec(spec); sys.modules[spec.name]=m; spec.loader.exec_module(m)
 d=getattr(m,'DUT'+name)(waveform_filename='',coverage_filename='')
 try:
-    assert m.xsp.abi_version()==3 and m.xsp.XTriggerEngine.CoverageVersion()==5
+    assert m.xsp.abi_version()==abi and m.xsp.XTriggerEngine.CoverageVersion()==coverage
     assert d.dut.GetXSignalCFGBasePtr() and d.GetCovMetrics() & 1
     pins=set(d.xport.GetKeys())
     for s in vars(d).values():
@@ -102,6 +102,17 @@ try:
 finally:d.Finish()
 print('UCV_SMOKE_PASS')
 '''
+
+def package_metadata(package, tname):
+    """Record the single configuration database the build must leave behind.
+
+    Picker 3 emits one ``<top>.xscfg`` and no derived copies. Suites read that
+    database through ``ucv.xscfg``; nothing else is written here.
+    """
+    database = package/(tname+'.xscfg')
+    if not database.is_file():
+        raise UcvError(f'Picker did not produce a configuration database: {database}')
+    return {'configuration_database':database.name}
 
 def repair_python_keywords(path):
     """Picker 4dd442c emits reserved public port names as Python attributes."""
@@ -138,12 +149,16 @@ def build(project, suite, dut, jobs=4, rtl_source='auto', archive=None):
                        '--cp_lib','1','--autobuild','true','-j',str(jobs)]
             execute(command,cwd=base/'rtl',env=env,log=base/'build.log')
             tname=spec['export_name']
-            expected=['__init__.py','signals.json',tname+'_offset.yaml','_UT_'+tname+'.so','libUT'+tname+'.so']
+            package_metadata(package,tname)
+            expected=['__init__.py',tname+'.xscfg','_UT_'+tname+'.so','libUT'+tname+'.so']
             if any(not (package/p).is_file() or not (package/p).stat().st_size for p in expected):
                 raise UcvError(f'Picker did not produce a complete package: {package}; see {base}/build.log')
             binding_fix = repair_python_keywords(package/'__init__.py')
             with tempfile.TemporaryDirectory(prefix='smoke-',dir=base) as temp:
-                execute([project.root/'.venv/bin/python','-c',SMOKE,package,tname],cwd=temp,env=env,log=base/'smoke.log')
+                execute([project.root/'.venv/bin/python','-c',SMOKE,package,tname,
+                         str(project.tools['xcomm']['native_abi']),
+                         str(project.tools['xcomm']['coverage_protocol'])],
+                        cwd=temp,env=env,log=base/'smoke.log')
             record = {'suite':suite.name,'dut':dut,**spec,'cache_key':base.name,
                        'baseline':suite.baseline,'rtl':read(base/'rtl/source.json')['files'],
                        'rtl_origin':read(base/'rtl/source.json')['origin'],

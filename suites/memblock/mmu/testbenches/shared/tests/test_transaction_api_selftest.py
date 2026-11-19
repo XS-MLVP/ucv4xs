@@ -14,7 +14,9 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
+from ucv import xscfg
 
+from suites.memblock.mmu.testbenches.shared.env import interface as interface_mod
 from suites.memblock.mmu.testbenches.l2tlb.env.l2tlb import L2TlbEnv
 from suites.memblock.mmu.testbenches.llptw.env.llptw import LlptwEnv
 from suites.memblock.mmu.testbenches.ptw.env.ptw_walker import PtwEnv
@@ -197,19 +199,31 @@ def test_ptw_hptw_queue_takes_named_fields_not_an_open_dict():
 
 async def test_trimmed_mxr_csr_fails_closed(tmp_path, monkeypatch):
     """MXR is trimmed only when artifact schema and handle agree."""
-    def schema(path, *, with_mxr, valid_json=True):
-        priv = {"virt_changed": {"Pin": "input", "High": -1, "Low": 0, "_": True}}
-        if with_mxr:
-            priv["mxr"] = {"Pin": "input", "High": -1, "Low": 0, "_": True}
-        path.write_text(json.dumps({"io": {"csr": {"priv": priv}}})
-                        if valid_json else "{not-json")
+    trees = {}
+
+    class FakeDatabase:
+        """Stand-in for the artifact's configuration database."""
+        def __init__(self, path):
+            try:
+                self.ports = trees[Path(path).name]
+            except KeyError:
+                raise ValueError(f"unreadable configuration database: {path}") from None
+
+    monkeypatch.setattr(interface_mod.xscfg, "Database", FakeDatabase)
+
+    def schema(path, *, with_mxr, readable=True):
+        if readable:
+            priv = {"virt_changed": {"Pin": "input", "High": -1, "Low": 0, "_": True}}
+            if with_mxr:
+                priv["mxr"] = {"Pin": "input", "High": -1, "Low": 0, "_": True}
+            trees[path.name] = {"io": {"csr": {"priv": priv}}}
         return path
 
     for env_type in (PtwEnv, LlptwEnv):
-        with_schema = schema(tmp_path / f"{env_type.__name__}-with.json", with_mxr=True)
-        without_schema = schema(tmp_path / f"{env_type.__name__}-without.json", with_mxr=False)
-        bad_schema = schema(tmp_path / f"{env_type.__name__}-bad.json", with_mxr=True,
-                            valid_json=False)
+        with_schema = schema(tmp_path / f"{env_type.__name__}-with.xscfg", with_mxr=True)
+        without_schema = schema(tmp_path / f"{env_type.__name__}-without.xscfg", with_mxr=False)
+        bad_schema = schema(tmp_path / f"{env_type.__name__}-bad.xscfg", with_mxr=True,
+                            readable=False)
         handle_with = SimpleNamespace(io_csr_priv_mxr=Signal())
         handle_without = SimpleNamespace()
 
@@ -235,7 +249,7 @@ async def test_trimmed_mxr_csr_fails_closed(tmp_path, monkeypatch):
         bound._trimmed_csrs = {}
         with pytest.raises(RuntimeError, match="MXR schema is unavailable"):
             bound._register_mxr(handle_without, None)
-        with pytest.raises(RuntimeError, match="not valid JSON"):
+        with pytest.raises(RuntimeError, match="schema is unavailable"):
             bound._register_mxr(handle_with, bad_schema)
         with pytest.raises(RuntimeError, match="schema declares .*does not expose"):
             bound._register_mxr(handle_without, with_schema)
@@ -306,6 +320,11 @@ async def test_trimmed_mxr_csr_fails_closed(tmp_path, monkeypatch):
     monkeypatch.setattr(native_mod, "_argv", fake_argv)
     ptw_dir = (tmp_path / "ptw-artifact").resolve()
     llptw_dir = (tmp_path / "llptw-artifact").resolve()
+    # Schema lookup resolves the artifact's configuration database by name, so
+    # the synthetic packages only need a placeholder file with that suffix.
+    for directory in (ptw_dir, llptw_dir):
+        directory.mkdir(parents=True, exist_ok=True)
+        (directory / "SyntheticDut.xscfg").write_text("placeholder")
     monkeypatch.setenv("MMU_PTW_DUT_DIR", str(ptw_dir))
     monkeypatch.setenv("MMU_LLPTW_DUT_DIR", str(llptw_dir))
 
@@ -341,17 +360,17 @@ async def test_trimmed_mxr_csr_fails_closed(tmp_path, monkeypatch):
         before = len(argv_calls)
         triple = loader(with_schema=True)
         assert len(triple) == 3 and triple[0] is cls
-        assert triple[2] == current / "signals.json"
-        assert triple[2] == Path(cached[alias].__file__).resolve().parent / "signals.json"
+        assert triple[2] == xscfg.database_path(current)
+        assert triple[2] == xscfg.database_path(Path(cached[alias].__file__).resolve().parent)
         seeded = loader(with_schema=True, seed=13)
-        assert seeded[2] == current / "signals.json"
-        assert loader(with_schema=True)[2] == current / "signals.json"
+        assert seeded[2] == xscfg.database_path(current)
+        assert loader(with_schema=True)[2] == xscfg.database_path(current)
         assert len(loader()) == 2
         monkeypatch.setenv(env_name, str(other))
         with pytest.raises(RuntimeError, match="cached generated DUT package mismatch"):
             loader(with_schema=True)
         monkeypatch.setenv(env_name, str(current))
-        assert loader(with_schema=True)[2] == current / "signals.json"
+        assert loader(with_schema=True)[2] == xscfg.database_path(current)
         assert argv_calls[before:] == [None, 13, None, None, None, None]
 
     monkeypatch.setattr(

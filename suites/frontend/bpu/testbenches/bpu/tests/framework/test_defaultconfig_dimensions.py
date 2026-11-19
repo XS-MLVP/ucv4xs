@@ -1,9 +1,9 @@
 """Declared model geometry and actual public projection; not full table proof."""
-import json
 from pathlib import Path
 import sys
 
 import pytest
+from ucv import xscfg
 
 from suites.frontend.bpu.testbenches.bpu.model.configuration import MAIN_WAYS
 from suites.frontend.bpu.testbenches.bpu.model.configuration import MICRO_HISTORIES
@@ -21,8 +21,8 @@ def test_model_geometry_is_the_reviewed_defaultconfig_not_minimalconfig():
 
 
 async def test_generated_bpu_schema_is_checked_for_dce_and_consumed_shape(bpu_agent):
-    schema = Path(sys.modules[type(bpu_agent.dut).__module__].__file__).with_name('signals.json')
-    tree = json.loads(schema.read_text())['io']['toFtq']
+    directory = Path(sys.modules[type(bpu_agent.dut).__module__].__file__).resolve().parent
+    tree = xscfg.ports(directory)['io']['toFtq']
     assert set(tree['prediction']['bits']) == {
         'startPc_addr', 'taken', 'endPosition', 's2Override', 's3Override'
     }

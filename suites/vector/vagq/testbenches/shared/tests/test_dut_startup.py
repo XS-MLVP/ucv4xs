@@ -51,37 +51,33 @@ def _probe(tmp_path, mode, dut, selection):
 
 
 def _metadata(tmp_path, dut):
-    path = tmp_path / 'vagq' / 'dut' / dut / 'signals.json'
-    path.parent.mkdir(parents=True)
-    # Picker-shaped synthetic leaves, not copied from any generated DUT.
-    path.write_text(json.dumps({
-        'clock': {'_': True, 'Pin': 'input', 'High': 0, 'Low': 1},
-        'reset': {'_': True, 'Pin': 'input', 'High': 0, 'Low': 1},
-        'io_synthetic_input': {'_': True, 'Pin': 'input', 'High': 7, 'Low': 0},
-        'io_synthetic_output': {'_': True, 'Pin': 'output', 'High': 7, 'Low': 0},
-    }))
-    return path
+    """Create only the selected DUT directory; the probe supplies the ports."""
+    directory = tmp_path / 'vagq' / 'dut' / dut
+    directory.mkdir(parents=True)
+    return directory
 
 
 @pytest.mark.parametrize('dut', DUTS)
 def test_selected_dut_collects_with_only_its_own_metadata(tmp_path, dut):
-    path = _metadata(tmp_path, dut)
+    directory = _metadata(tmp_path, dut)
     workspace = json.loads((ROOT / 'workspace.json').read_text())
     selected = workspace['duts'][dut]['tests']
     assert len(selected) == 1
     report = _probe(tmp_path, 'collect', dut, selected[0])
     assert all(node.startswith(selected[0] + '/') for node in report['items'])
-    assert set(report['metadata_reads']) <= {str(path)}
+    # Collection may read nothing; it must never read another DUT.
+    assert set(report['metadata_reads']) <= {str(directory.resolve())}
     assert sorted(p.name for p in (tmp_path / 'vagq' / 'dut').iterdir()) == [dut]
 
 
 @pytest.mark.parametrize('dut,testbench', (('VAGQArbiter', 'arbiter'), ('VAGQ', 'vagq')))
 def test_model_entry_collects_without_fixture_import_order(tmp_path, dut, testbench):
-    path = _metadata(tmp_path, dut)
+    directory = _metadata(tmp_path, dut)
     selection = f'testbenches/{testbench}/tests/test_model.py'
     report = _probe(tmp_path, 'collect', dut, selection)
     assert all(node.startswith(selection + '::') for node in report['items'])
-    assert set(report['metadata_reads']) <= {str(path)}
+    # Collection may read nothing; it must never read another DUT.
+    assert set(report['metadata_reads']) <= {str(directory.resolve())}
 
 
 @pytest.mark.parametrize('dut,testbench,fixture', LAZY_FIXTURES, ids=[row[0] for row in LAZY_FIXTURES])

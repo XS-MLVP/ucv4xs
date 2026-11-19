@@ -51,6 +51,13 @@ def setup(project, jobs=16, profile='runtime'):
         env.update(BUILD_XSPCOMM_SWIG='python', CMAKE_BUILD_PARALLEL_LEVEL=str(jobs),
                    **{f"SETUPTOOLS_SCM_PRETEND_VERSION_FOR_{xcomm_distribution.upper().replace('-', '_')}":
                       xcomm_version})
+        # The toffee pin carries an explicit version so the install does not
+        # depend on release tags being present in a mirror or shallow clone.
+        toffee_pin = project.tools['toffee']
+        if toffee_pin.get('package_version'):
+            toffee_distribution = toffee_pin.get('distribution', 'pytoffee')
+            toffee_key = toffee_distribution.upper().replace('-', '_')
+            env[f"SETUPTOOLS_SCM_PRETEND_VERSION_FOR_{toffee_key}"] = toffee_pin['package_version']
         execute([python,'-m','pip','install','--no-build-isolation','--no-deps',sources['xcomm']],env=env,log=log)
         # Picker needs headers/native libraries beside its installed templates.
         xbuild = prefix/'build/xcomm'
@@ -59,6 +66,14 @@ def setup(project, jobs=16, profile='runtime'):
                  '-DSKBUILD_PROJECT_VERSION='+xcomm_version,
                  '-DSKBUILD_PROJECT_VERSION_FULL='+xcomm_version],env=env,log=log)
         execute(['cmake','--build',xbuild,'-j',jobs],env=env,log=log)
+        # Installs only add files. Remove earlier ABI libraries first, otherwise
+        # a generated DUT copies several ABIs beside each other and the loader
+        # may pick a stale soname. Picker stages the SDK in three places.
+        for stale in (prefix/'lib', prefix/'share/picker/lib', prefix/'share/picker/python/xspcomm'):
+            if stale.is_dir():
+                for item in stale.iterdir():
+                    if item.name.startswith(('libxspcomm.so', '_pyxspcomm.so')):
+                        item.unlink()
         execute(['cmake','--install',xbuild],env=env,log=log)
         for name,pin in project.tools['picker']['dependencies'].items():
             parent = project.local.get('dependency_mirrors',{}).get('picker')
