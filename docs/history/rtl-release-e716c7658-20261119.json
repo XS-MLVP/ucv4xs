@@ -6,8 +6,8 @@
   "tag": "xiangshan-e716c7658",
   "release_url": "https://github.com/XS-MLVP/ucv4xs/releases/tag/xiangshan-e716c7658",
   "asset_url": "https://github.com/XS-MLVP/ucv4xs/releases/download/xiangshan-e716c7658/xiangshan-e716c7658-rtl.tar.gz",
-  "asset_sha256": "2064fed7821b6fc609b18f93147e143265b331d445ec9273fa99175884527b80",
-  "asset_bytes": 12068093,
+  "asset_sha256": "2e3cf9647f172a865fdfcab03f1697ca34403f88ba7eef4ab233201d45da1bd9",
+  "asset_bytes": 12130954,
   "baseline_sha256": "42584a368c9351e8ebd2d1ac57f508dde4ecfab36345141d9829588b98c578b0",
   "source_of_record": ".cache/generated/1016962d116907c05df0a64bbb9e1c17f9e71795b08ec4fe96e131c169c276ba/rtl, generated 2026-11-13; never assembled from DUT closures",
   "contents": {
@@ -27,14 +27,14 @@
   "verification": {
     "sha256sum_check": "PASS (2028 files, exit 0) on an extracted copy",
     "verilator_lint": "PASS: verilator 5.052 --lint-only -Wno-fatal -f filelist.f --top-module XSTop -I. exit 0, 2025 modules, 266.6 s",
-    "redownload": "re-downloaded from the release; archive SHA-256 matches the staged file",
+    "redownload": "re-downloaded after restoring the asset; archive SHA-256 and the .sha256 sidecar asset both match the lock entry",
     "byte_equality_with_local_generation": "compare_rtl PASS: released RTL is byte-identical to the whole-chip generation cache for this baseline",
     "import_end_to_end": "ucv prepare sbuffer --dut sbuffer --rtl-source release -> PREPARED",
-    "reproducible_archive": "PASS: scripts/publish-rtl-release.py pins tar member metadata and the gzip header, so rebuilding an unchanged package reproduces the published SHA-256"
+    "reproducible_archive": "scripts/publish-rtl-release.py pins tar member metadata and the gzip header so future publishes reproduce their hash. The currently published archive predates that change: rebuilding it yields different bytes with identical content (all 2028 per-file checksums match, so the lint result stands)."
   },
   "lock_entry": {
     "file": "baselines/rtl-releases.json",
-    "sha256": "2064fed7821b6fc609b18f93147e143265b331d445ec9273fa99175884527b80",
+    "sha256": "2e3cf9647f172a865fdfcab03f1697ca34403f88ba7eef4ab233201d45da1bd9",
     "package": "xiangshan-e716c7658-rtl"
   },
   "tooling": {
@@ -45,11 +45,5 @@
   "not_claimed": [
     "No module-level PASS/FAIL is implied: existing suite conclusions keep their own baseline, date and host architecture.",
     "No aarch64 execution was performed; this record only removes the generation tool dependency from the prepare path."
-  ],
-  "asset_sha256_before_normalisation": "2e3cf9647f172a865fdfcab03f1697ca34403f88ba7eef4ab233201d45da1bd9",
-  "asset_replacement": {
-    "reason": "The first upload embedded file mtimes and a gzip timestamp, so the archive was not reproducible; re-running the script produced different bytes for identical content.",
-    "content_effect": "none: all 2028 per-file checksums are identical, so the earlier Verilator lint result still applies",
-    "verification": "re-downloaded after the replacement, SHA-256 matches, and a clean rebuild of the script reproduces the same hash; ucv prepare --rtl-source release reaches PREPARED"
-  }
+  ]
 }

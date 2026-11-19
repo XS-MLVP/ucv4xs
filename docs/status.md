@@ -87,11 +87,10 @@ workspace.module_id 唯一关联；目录与测试选择仍按工程配方。`uc
 - `verilator 5.052 --lint-only -Wno-fatal -f filelist.f --top-module XSTop -I.`：
   **exit 0**，2025 个模块，266.6 s
 - `compare_rtl`：包内 RTL 与本机整芯片生成**逐字节一致**
-- 重新下载校验：压缩包 SHA-256 一致（`2064fed7…`），解压后 2028 项逐文件校验和与
-  首次上传时完全相同
-- **压缩包可复现**：`publish-rtl-release.py` 固定 tar 成员元数据与 gzip 头部，
-  同一输入重建得到同一 SHA-256；首次上传因带文件 mtime 与 gzip 时间戳不可复现，
-  已替换为可复现版本，内容未变（逐文件校验和一致，先前的 lint 结论仍适用）
+- 重新下载校验：压缩包 SHA-256、`.sha256` 附件与锁登记三者一致（`2e3cf964…`）
+- **压缩包可复现**（自本次修复起）：`publish-rtl-release.py` 固定 tar 成员元数据与
+  gzip 头部，同一输入重建得到同一 SHA-256。已发布资产早于该修复，用脚本重建会得到
+  不同字节但内容相同（2028 项逐文件校验和一致，lint 结论不变）
 - `ucv prepare sbuffer --dut sbuffer --rtl-source release` → **PREPARED**
 
 效果：默认基线不再需要 Java 17 或本机 Chisel 生成，也是 Linux aarch64 上唯一可用的
