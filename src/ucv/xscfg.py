@@ -121,11 +121,18 @@ _DATABASES = {}
 
 
 def open_dut(directory):
-    """Open the configuration database of an installed DUT package."""
+    """Open the configuration database of an installed DUT package.
+
+    Cached per resolved path so a suite that asks for several sections of one
+    artifact spawns ``picker config`` once per section, not once per call. The
+    cache is keyed by path and size, so a rebuilt package in the same process
+    is not served stale sections.
+    """
     path = database_path(directory).resolve()
-    if path not in _DATABASES:
-        _DATABASES[path] = Database(path)
-    return _DATABASES[path]
+    key = (path, path.stat().st_size)
+    if key not in _DATABASES:
+        _DATABASES[key] = Database(path)
+    return _DATABASES[key]
 
 
 def ports(directory):

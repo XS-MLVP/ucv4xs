@@ -31,6 +31,7 @@ def main():
     mode, dut, resource_root, selection, destination = sys.argv[1:]
     actual_root = suite.ROOT
     suite.ROOT = Path(resource_root)
+    resource_root_path = suite.ROOT.resolve()
     allowed = (suite.ROOT / 'dut' / dut).resolve()
     reads = []
 
@@ -43,6 +44,11 @@ def main():
         if event != 'open' or not isinstance(args[0], (str, bytes, os.PathLike)):
             return
         path = Path(os.fsdecode(args[0])).absolute()
+        # Any file the control is handed lives under resource_root. A direct
+        # read outside the selected DUT would bypass the xscfg reader below, so
+        # it is refused here as well as recording the reader-level requests.
+        if path.is_relative_to(resource_root_path / 'dut') and not path.is_relative_to(allowed):
+            raise AssertionError(f'unselected metadata read: {path}')
         if any(path.is_relative_to(actual_root / directory) for directory in ('dut', 'rtl', 'XiangShan')):
             raise AssertionError(f'real design/native access is forbidden: {path}')
 

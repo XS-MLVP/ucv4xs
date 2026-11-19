@@ -44,7 +44,8 @@
  },
  "unavailable_after_deletion": [
   ".cache/duts packages built against xcomm ABI 3: their build.json receipts and smoke logs are gone, so those runs can no longer be inspected as artifacts. Their conclusions remain only in the committed reports that cited them.",
-  "generated RTL for public-893e1580b and public-a0c2a26cb: reproducing a build on those baselines now requires running the Chisel generation again (hours, plus network and 64G heap)."
+  "generated RTL for public-893e1580b and public-a0c2a26cb: reproducing a build on those baselines now requires running the Chisel generation again (hours, plus network and 64G heap).",
+  "The per-DUT links under suites/*/rtl and suites/*/dut were removed with the deleted packages. Suites that read generated RTL or DUT metadata directly (for example the BPU local-guard and scoreboard controls) now fail with a missing-file error until ucv prepare / ucv build recreates them. This is the same state as a fresh clone and is not a change in their verdicts."
  ],
  "evidence_boundary": "Only rebuildable or re-obtainable generated state was removed. No committed report, verdict, bug record or hash index was modified; earlier conclusions keep their original baseline and date, and none of them becomes a new-toolchain result."
 }

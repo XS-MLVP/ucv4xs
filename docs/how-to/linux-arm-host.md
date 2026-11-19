@@ -74,7 +74,9 @@ CIRCT 的 `firtool-1.149.0` 只发布 `linux-x64` 与 `macos-arm64`，**没有 l
    `ucv setup --profile full` 会复制并校验它是本机架构的 ELF。
 
 没有可用 firtool 时，`ucv doctor --stage generate` 会报明原因，
-`ucv setup --profile full` 也会在下载前失败，不会留下半个工具目录。
+`ucv setup --profile full` 也会在获取 firtool 前失败。注意 `install_generation_tools`
+按 mill、firtool 的顺序安装：mill 会先落地，但收据只在全部成功后才写入，所以
+`ucv doctor` 仍会明确报告工具未安装。
 
 ## 4. 构建并运行
 

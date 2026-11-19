@@ -6,8 +6,8 @@
   "tag": "xiangshan-e716c7658",
   "release_url": "https://github.com/XS-MLVP/ucv4xs/releases/tag/xiangshan-e716c7658",
   "asset_url": "https://github.com/XS-MLVP/ucv4xs/releases/download/xiangshan-e716c7658/xiangshan-e716c7658-rtl.tar.gz",
-  "asset_sha256": "2e3cf9647f172a865fdfcab03f1697ca34403f88ba7eef4ab233201d45da1bd9",
-  "asset_bytes": 12130954,
+  "asset_sha256": "2064fed7821b6fc609b18f93147e143265b331d445ec9273fa99175884527b80",
+  "asset_bytes": 12068093,
   "baseline_sha256": "42584a368c9351e8ebd2d1ac57f508dde4ecfab36345141d9829588b98c578b0",
   "source_of_record": ".cache/generated/1016962d116907c05df0a64bbb9e1c17f9e71795b08ec4fe96e131c169c276ba/rtl, generated 2026-11-13; never assembled from DUT closures",
   "contents": {
@@ -29,20 +29,27 @@
     "verilator_lint": "PASS: verilator 5.052 --lint-only -Wno-fatal -f filelist.f --top-module XSTop -I. exit 0, 2025 modules, 266.6 s",
     "redownload": "re-downloaded from the release; archive SHA-256 matches the staged file",
     "byte_equality_with_local_generation": "compare_rtl PASS: released RTL is byte-identical to the whole-chip generation cache for this baseline",
-    "import_end_to_end": "ucv prepare sbuffer --dut sbuffer --rtl-source release -> PREPARED"
+    "import_end_to_end": "ucv prepare sbuffer --dut sbuffer --rtl-source release -> PREPARED",
+    "reproducible_archive": "PASS: scripts/publish-rtl-release.py pins tar member metadata and the gzip header, so rebuilding an unchanged package reproduces the published SHA-256"
   },
   "lock_entry": {
     "file": "baselines/rtl-releases.json",
-    "sha256": "2e3cf9647f172a865fdfcab03f1697ca34403f88ba7eef4ab233201d45da1bd9",
+    "sha256": "2064fed7821b6fc609b18f93147e143265b331d445ec9273fa99175884527b80",
     "package": "xiangshan-e716c7658-rtl"
   },
   "tooling": {
     "script": "scripts/publish-rtl-release.py",
-    "note": "stages and packs only; refuses a generation cache whose filelist disagrees with the actual file set, and compares filelist entries with their ./-prefix normalised while keeping the original lines"
+    "note": "stages and packs only; refuses a generation cache whose filelist disagrees with the actual file set, compares filelist entries with their ./-prefix normalised while keeping the original lines, and pins tar/gzip metadata so the archive is reproducible"
   },
   "effect": "The default public baseline no longer requires Java 17 or a local Chisel generation. It is also the only route available on Linux aarch64, where no firtool is published.",
   "not_claimed": [
     "No module-level PASS/FAIL is implied: existing suite conclusions keep their own baseline, date and host architecture.",
     "No aarch64 execution was performed; this record only removes the generation tool dependency from the prepare path."
-  ]
+  ],
+  "asset_sha256_before_normalisation": "2e3cf9647f172a865fdfcab03f1697ca34403f88ba7eef4ab233201d45da1bd9",
+  "asset_replacement": {
+    "reason": "The first upload embedded file mtimes and a gzip timestamp, so the archive was not reproducible; re-running the script produced different bytes for identical content.",
+    "content_effect": "none: all 2028 per-file checksums are identical, so the earlier Verilator lint result still applies",
+    "verification": "re-downloaded after the replacement, SHA-256 matches, and a clean rebuild of the script reproduces the same hash; ucv prepare --rtl-source release reaches PREPARED"
+  }
 }
