@@ -36,6 +36,7 @@ import argparse
 import json
 import re
 from pathlib import Path
+from ucv import xscfg
 
 ROOT = __import__('suites.memblock.lsq', fromlist=['ROOT']).ROOT          # suites/memblock/lsq
 REPO = ROOT.parents[2]                             # repository root
@@ -110,8 +111,8 @@ def scala_file_for(top: str, src: Path):
 
 
 def ports_of(dut: str):
-    path = ROOT / "dut" / dut / "signals.json"
-    if not path.exists():
+    directory = ROOT / "dut" / dut
+    if not directory.is_dir():
         return None
 
     def walk(node, prefix=()):
@@ -122,7 +123,7 @@ def ports_of(dut: str):
                 if isinstance(child, dict):
                     yield from walk(child, (*prefix, key))
 
-    return set(walk(json.loads(path.read_text())))
+    return set(walk(xscfg.ports(directory)))
 
 
 def shapes(names):
@@ -191,7 +192,7 @@ def strict():
             continue
         ports = ports_of(dut)
         if ports is None:
-            problems.append(f"{dut}: no signals.json")
+            problems.append(f"{dut}: no generated DUT package")
             continue
         present = field in ports
         if expect == "port" and not present:

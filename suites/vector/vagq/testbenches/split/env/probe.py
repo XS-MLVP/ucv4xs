@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from toffee import Bundle
+from ucv import xscfg
 
 from suites.vector.vagq.testbenches.split.transactions import Beat
 from suites.vector.vagq.testbenches.split.transactions import EmptyReq
@@ -15,7 +16,7 @@ from suites.vector.vagq.testbenches.split.transactions import Observation
 from suites.vector.vagq.testbenches.split.transactions import Update
 
 ROOT = _SUITE_ROOT
-SCHEMA = json.loads((ROOT / 'dut/SplitCtrl/signals.json').read_text())
+SCHEMA = xscfg.ports(ROOT / 'dut/SplitCtrl')
 
 
 def _leaves(node, prefix=''):

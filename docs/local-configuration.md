@@ -83,7 +83,7 @@ wheel SHA-256、`git ls-files --cached --others --exclude-standard` 的完整文
 `run.json.installed_tools.runtime` 记录这份开发身份和 wheel 哈希，同时保留原生 DUT
 构建所用的锁定工具身份。源码与配置还纳入运行前后完整性校验。
 
-当前公共锁使用 `uc-toffee 2.1.0` 和 `uc-xcomm 1.1.1`（ABI 3、coverage protocol 5）；
+当前公共锁使用 `uc-toffee 2.3.0` 和 `uc-xcomm 2.0.0`（ABI 6、coverage protocol 5）；
 UNCERTAIN 已由正式版提供，默认 `.venv` 即可运行。`ucv setup` 从锁定源码安装，并在运行前
 逐文件校验。上面的开发运行环境字段只用于尚未发布的本地框架开发，不是默认路径；使用后
 必须保留源码、wheel 和安装包哈希凭据，原有 DUT 原生构建收据不改写。含 UNCERTAIN 声明的

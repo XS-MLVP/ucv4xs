@@ -7,6 +7,7 @@ from types import SimpleNamespace
 import pytest
 
 import xspcomm as xsp
+from ucv import xscfg
 from suites.frontend.bpu.testbenches.shared.env.memory_direct import MemoryDirectSignals
 from suites.frontend.bpu.testbenches.shared.env.memory_direct import memory_signal
 from suites.frontend.bpu.testbenches.shared.env.memory_direct import require_memory_direct
@@ -16,11 +17,13 @@ def native_dut(tmp_path, *, width=1, stride=1, size=0):
     storage = (ctypes.c_ubyte * 96)(*([0xA5] * 96))
     for position in range(16, 16 + stride * max(1, size)):
         storage[position] = 0
-    layout = tmp_path / 'offset.yaml'
+    layout = tmp_path / 'offset.xscfg'
     kind = 'CData' if stride == 1 else 'SData' if stride == 2 else 'IData' if stride == 4 else 'QData' if stride == 8 else 'VlWide'
-    layout.write_text('variables:\n  - name: model.field\n'
-        f'    type: {kind}\n    mem_bytes: {stride}\n    rtl_width: {width}\n'
-        f'    offset: 16\n' + (f'    array_size: {size}\n' if size else ''), encoding='utf-8')
+    variable = {'type': kind, 'mem_bytes': stride, 'rtl_width': width, 'offset': 16}
+    if size:
+        variable.update(array_size=size, array_dimensions=[size], array_strides=[stride])
+    sections = {'variables': {'model.field': variable}}
+    xscfg.write_database(layout, sections)
     base = ctypes.addressof(storage)
     def forbidden(*args, **kwargs):
         raise AssertionError('legacy picker getters must never be used')
@@ -29,7 +32,7 @@ def native_dut(tmp_path, *, width=1, stride=1, size=0):
         xcfg=xsp.XSignalCFG(str(layout), base),
         internal_signals={'model.field': object()},
         GetInternalSignal=forbidden, GetInternalSignalList=forbidden,
-        storage=storage,
+        storage=storage, layout=layout, sections=sections,
     )
     return dut
 
@@ -80,7 +83,7 @@ def test_same_layout_different_model_bases_never_share_handles(tmp_path):
         storage=(ctypes.c_ubyte * 96)(), internal_signals={},
     )
     base = ctypes.addressof(second.storage)
-    layout = str(tmp_path / 'offset.yaml')
+    layout = str(first.layout)
     second.dut = SimpleNamespace(GetXSignalCFGBasePtr=lambda: base, GetXSignalCFGPath=lambda: layout)
     second.xcfg = xsp.XSignalCFG(layout, base)
     left, right = memory_signal(first, 'model.field'), memory_signal(second, 'model.field')
@@ -96,11 +99,12 @@ def test_same_layout_different_model_bases_never_share_handles(tmp_path):
 
 def test_rtl_discovery_does_not_confuse_delayed_temporary_with_real_field(tmp_path):
     dut = native_dut(tmp_path, width=8, stride=1)
-    layout = tmp_path / 'offset.yaml'
-    layout.write_text(layout.read_text() +
-        '  - name: __Vdly__model.field\n    mem_bytes: 1\n    rtl_width: 8\n    offset: 17\n'
-        'signals:\n  - name: model.field\n    kind: direct\n    source: model.field\n'
-        '    mem_bytes: 1\n    rtl_width: 8\n    offset: 16\n', encoding='utf-8')
+    dut.sections['variables']['__Vdly__model.field'] = {
+        'mem_bytes': 1, 'rtl_width': 8, 'offset': 17}
+    dut.sections['signals'] = {'model.field': {
+        'kind': 'direct', 'source': 'model.field',
+        'mem_bytes': 1, 'rtl_width': 8, 'offset': 16}}
+    xscfg.write_database(dut.layout, dut.sections)
     view = require_memory_direct(dut)
     assert '__Vdly__model.field' in tuple(view.cfg.GetSignalNames())
     assert view.names() == ('TOP.model.field',)
@@ -120,14 +124,14 @@ def test_invalid_native_capability_fails_without_fallback(tmp_path, case, messag
     elif case == 'zero_base':
         dut.dut.GetXSignalCFGBasePtr = lambda: 0
     elif case == 'no_layout':
-        dut.dut.GetXSignalCFGPath = lambda: str(tmp_path / 'missing.yaml')
+        dut.dut.GetXSignalCFGPath = lambda: str(tmp_path / 'missing.xscfg')
     elif case == 'wrong_base':
         dut.xcfg.cfg_base_address += 1
     elif case == 'wrong_layout':
-        dut.xcfg.cfg_data = str(tmp_path / 'other.yaml')
+        dut.xcfg.cfg_data = str(tmp_path / 'other.xscfg')
     else:
         dut.xcfg = SimpleNamespace(cfg_base_address=ctypes.addressof(dut.storage),
-            cfg_data=str(tmp_path / 'offset.yaml'), GetSignalNames=lambda: ())
+            cfg_data=str(dut.layout), GetSignalNames=lambda: ())
     with pytest.raises(RuntimeError, match=message):
         MemoryDirectSignals(dut)
 
@@ -153,17 +157,17 @@ def test_unknown_derived_unsafe_and_closed_bindings_fail(tmp_path):
 @pytest.mark.parametrize('kind,expected', [('direct',13), ('projection',1), ('expr',14), ('const',3)])
 def test_trace_reconstructed_read_views_use_native_cfg_without_vpi(tmp_path, kind, expected):
     dut = native_dut(tmp_path, width=8, stride=1)
-    layout = tmp_path / 'offset.yaml'
-    common = 'signals:\n  - name: model.alias\n    kind: ' + kind + '\n    rtl_width: 8\n'
+    record = {'kind': kind, 'rtl_width': 8}
     if kind == 'direct':
-        extra = '    source: model.field\n    offset: 16\n    mem_bytes: 1\n'
+        record.update(source='model.field', offset=16, mem_bytes=1)
     elif kind == 'projection':
-        extra = '    source: model.field\n    expr: "model.field & 3U"\n'
+        record.update(source='model.field', expr='model.field & 3U')
     elif kind == 'expr':
-        extra = '    deps:\n      - name: model.field\n    expr: "model.field + 1U"\n'
+        record.update(deps=['model.field'], expr='model.field + 1U')
     else:
-        extra = '    value: "3U"\n'
-    layout.write_text(layout.read_text() + common + extra, encoding='utf-8')
+        record.update(value='3U')
+    dut.sections['signals'] = {'model.alias': record}
+    xscfg.write_database(dut.layout, dut.sections)
     dut.storage[16] = 13
     view = require_memory_direct(dut)
     alias = view.signal('model.alias')

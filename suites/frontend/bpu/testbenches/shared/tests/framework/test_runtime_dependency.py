@@ -15,8 +15,11 @@ from suites.frontend.bpu.testbenches.shared.env.paths import REPO_ROOT
 
 def test_runtime_uses_the_project_environment_and_native_protocol():
     actual = validate_runtime()
-    assert actual['native_abi'] == 3
-    assert actual['coverage_protocol'] == 5
+    # The pinned ABI is a toolchain property; assert it matches the lock
+    # instead of a literal so an upgrade cannot be masked by a stale number.
+    pin = ucv_paths.Project().tools['xcomm']
+    assert actual['native_abi'] == pin['native_abi']
+    assert actual['coverage_protocol'] == pin['coverage_protocol']
     expected = ucv_paths.project_root() / '.venv'
     assert Path(actual['toffee']).is_relative_to(expected)
     validate_dut_runtime(xspcomm)
@@ -24,7 +27,8 @@ def test_runtime_uses_the_project_environment_and_native_protocol():
 
 def test_old_toffee_checkout_is_not_a_silent_fallback(monkeypatch):
     monkeypatch.setattr(toffee, '__file__', str(ucv_paths.project_root() / '.tools/sources/toffee/src/toffee/__init__.py'))
-    with pytest.raises(RuntimeError, match='project environment'):
+    # The guard rejects any toffee outside the selected runtime environment.
+    with pytest.raises(RuntimeError, match='selected runtime environment'):
         validate_runtime()
 
 

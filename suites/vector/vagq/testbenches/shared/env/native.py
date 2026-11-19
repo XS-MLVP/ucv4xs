@@ -5,8 +5,8 @@ No clock stepping, dynamic source adaptation, reference state or coverage collec
 """
 from contextlib import contextmanager
 import importlib
-import json
 from pathlib import Path
+from ucv import xscfg
 
 from suites.vector.vagq.testbenches.shared.env.control import ROOT
 from suites.vector.vagq.testbenches.shared.env.control import validate_binding
@@ -75,7 +75,7 @@ def open_dut(module, output, *, clocked=False, register=None):
         # Picker metadata identifies actual leaves; XPorts are never mistaken
         # for inputs. Only initial reset is written immediately here. Later
         # write-mode and transaction timing belong to the module's driver.
-        schema_path = Path(binding.__file__).with_name('signals.json')
+        schema_path = Path(binding.__file__).resolve().parent
 
         def initialize(node, prefix=''):
             for name, leaf in node.items():
@@ -90,7 +90,7 @@ def open_dut(module, output, *, clocked=False, register=None):
                 else:
                     initialize(leaf, path + '_')
 
-        initialize(json.loads(schema_path.read_text()))
+        initialize(xscfg.ports(schema_path))
         if clocked:
             dut.InitClock('clock')
         if register is not None:

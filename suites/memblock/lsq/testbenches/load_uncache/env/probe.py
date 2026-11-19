@@ -3,6 +3,7 @@ from collections import deque
 import json
 
 from toffee import Bin, CoverGroupDef, CoverPointDef, DriveStable, FallingEdge, RisingEdge, SyncDriver
+from ucv import xscfg
 
 from suites.memblock.lsq.testbenches.shared.env.dut import ROOT
 from suites.memblock.lsq.testbenches.shared.transactions.uncache_entry import Request
@@ -74,7 +75,7 @@ class PublicPorts:
             for name, child in node.items():
                 if isinstance(child, dict):
                     walk(child, (*names, name))
-        walk(json.loads((ROOT / "dut/load_queue_uncache/signals.json").read_text()))
+        walk(xscfg.ports(ROOT / "dut/load_queue_uncache"))
         assert "reset" in self.inputs and "io_uncache_req_bits_id" in self.outputs
 
     def sample(self, event):

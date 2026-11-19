@@ -134,11 +134,10 @@ def test_no_table_can_be_silently_omitted_from_actual_offer_comparison(count):
 
 
 def test_committed_memory_direct_layout_has_every_new_read_only_TAGE_port():
-    import yaml
+    from ucv import xscfg
     from suites.frontend.bpu.testbenches.bpu.env.bundle.tage_semantic import HISTORY_PORTS
     root=__import__('suites.frontend.bpu', fromlist=['ROOT']).ROOT
-    layout=yaml.load((root/'dut/bpu/BpuDut_offset.yaml').read_bytes(),Loader=yaml.CSafeLoader)
-    names={r['name'] for field in ('variables','signals') for r in layout.get(field,())}
+    names=set(xscfg.open_dut(root/'dut/bpu').names())
     anchor,=[n for n in names if n.endswith('.tage.io_enable')]
     prefix=anchor.removesuffix('tage.io_enable')
     fields=['valid','bits_setIdx','bits_bankMask','bits_wayMask']

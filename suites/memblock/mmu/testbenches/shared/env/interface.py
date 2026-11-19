@@ -1,8 +1,8 @@
 """Read the exact signal schema shipped with a generated DUT artifact.
 
 This module never executes the DUT and never infers a port from a Python
-attribute alone. The schema file is the artifact metadata used to decide
-whether a named interface leaf is declared by the bound build.
+attribute alone. The configuration database is the artifact metadata used to
+decide whether a named interface leaf is declared by the bound build.
 """
 from __future__ import annotations
 
@@ -10,6 +10,7 @@ import hashlib
 import json
 from dataclasses import dataclass
 from pathlib import Path
+from ucv import xscfg
 
 
 MXR_PIN = "io_csr_priv_mxr"
@@ -24,20 +25,17 @@ class MxrInputCapability:
 
 
 def signal_schema(schema_path: str | Path) -> tuple[frozenset[str], str]:
-    """Return flattened leaf names and the schema file digest."""
+    """Return flattened leaf names and a digest of the decoded port tree."""
     path = Path(schema_path)
     try:
-        raw = path.read_bytes()
-    except OSError as exc:
+        data = xscfg.Database(path).ports
+    except (OSError, ValueError) as exc:
         raise RuntimeError(
             f"generated DUT signal schema is unavailable at {path}"
         ) from exc
-    try:
-        data = json.loads(raw)
-    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-        raise RuntimeError(
-            f"generated DUT signal schema is not valid JSON at {path}"
-        ) from exc
+    # Identity covers the port tree itself, not container framing, so a
+    # re-packed database with identical ports keeps the same digest.
+    raw = json.dumps(data, sort_keys=True, separators=(',', ':')).encode()
     leaves: set[str] = set()
 
     def walk(node, prefix: str) -> None:

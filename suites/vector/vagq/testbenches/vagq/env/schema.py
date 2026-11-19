@@ -2,10 +2,11 @@
 from suites.vector.vagq import ROOT as _SUITE_ROOT
 import json
 from pathlib import Path
+from ucv import xscfg
 
 
 ROOT = _SUITE_ROOT
-SCHEMA = json.loads((ROOT / 'dut/VAGQ/signals.json').read_text())
+SCHEMA = xscfg.ports(ROOT / 'dut/VAGQ')
 
 
 def _leaves(node, prefix=''):

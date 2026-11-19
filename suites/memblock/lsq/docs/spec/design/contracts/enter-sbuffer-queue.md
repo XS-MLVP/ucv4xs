@@ -49,7 +49,7 @@
 
 ## 5. 运行、证据和验收
 
-使用本工程 `tools/build_dut.py`、`tools/run.py` 和已锁定Picker/xreactor/xcomm/Verilator，真实fixture逐拍采样全部公开输入/输出（包括fixture切换空拍）。每次运行新目录、冻结验证源码、保存原样RTL与包哈希、波形、JUnit、功能覆盖和原生LCOV。
+使用 `ucv build` / `ucv run` 和已锁定的 Picker/xcomm/Verilator，真实 fixture 逐拍采样全部公开输入/输出（包括 fixture 切换空拍）；旧 `tools/build_dut.py` 已在 Picker 3 迁移中删除。每次运行新目录、冻结验证源码、保存原样RTL与包哈希、波形、JUnit、功能覆盖和原生LCOV。
 
 每个成功例最终排空；所有分配必须等于Sbuffer真实消费+reset中止+仍存活UID。普通checked等待实际输出payload比较和消费；单独人工调用mark或只驱动valid不算完成。最终独立公开历史审计重建FIFO及credit，不导入领域模型；审计源、artifact与运行source-evidence哈希，不能只相信绿色manifest。
 

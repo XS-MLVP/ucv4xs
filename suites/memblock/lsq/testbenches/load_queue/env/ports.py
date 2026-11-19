@@ -1,5 +1,5 @@
 """Passive full pin sample, with an independently written transaction decoder."""
-import json
+from ucv import xscfg
 
 from suites.memblock.lsq.testbenches.shared.env.dut import ROOT
 from suites.memblock.lsq.testbenches.raw.transactions import FtqPtr
@@ -104,7 +104,7 @@ class Ports:
                 for name, child in node.items():
                     if isinstance(child, dict):
                         walk(child, (*prefix, name))
-        walk(json.loads((ROOT / "dut/load_queue/signals.json").read_text()))
+        walk(xscfg.ports(ROOT / "dut/load_queue"))
         assert set(self.inputs) == set(encode(Inputs())) == set(ports()["input"]) and set(self.outputs) == set(ports()["output"])
 
     def sample(self, event):

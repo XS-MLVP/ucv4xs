@@ -1,7 +1,9 @@
 """Fresh-process metadata isolation probe used by test_dut_startup.py.
 
-All signals are synthetic. Any real native/RTL access or an unselected schema
-read is rejected before opening a file. This process never runs hardware tests.
+All signals are synthetic. Any real native/RTL access is rejected, and the
+configuration-database reader is replaced by one that records which DUT
+directory was asked for, so an unselected read fails before any file opens.
+This process never runs hardware tests.
 """
 import asyncio
 from contextlib import contextmanager
@@ -16,11 +18,20 @@ import pytest
 import suites.vector.vagq as suite
 
 
+# Picker-shaped synthetic leaves, not copied from any generated DUT.
+SYNTHETIC_PORTS = {
+    'clock': {'_': True, 'Pin': 'input', 'High': 0, 'Low': 1},
+    'reset': {'_': True, 'Pin': 'input', 'High': 0, 'Low': 1},
+    'io_synthetic_input': {'_': True, 'Pin': 'input', 'High': 7, 'Low': 0},
+    'io_synthetic_output': {'_': True, 'Pin': 'output', 'High': 7, 'Low': 0},
+}
+
+
 def main():
     mode, dut, resource_root, selection, destination = sys.argv[1:]
     actual_root = suite.ROOT
     suite.ROOT = Path(resource_root)
-    allowed = suite.ROOT / 'dut' / dut / 'signals.json'
+    allowed = (suite.ROOT / 'dut' / dut).resolve()
     reads = []
 
     class SelectedMetadataRead(Exception):
@@ -32,15 +43,29 @@ def main():
         if event != 'open' or not isinstance(args[0], (str, bytes, os.PathLike)):
             return
         path = Path(os.fsdecode(args[0])).absolute()
-        if path.name == 'signals.json':
-            assert path == allowed, f'unselected metadata read: {path}'
-            reads.append(str(path))
-            if mode == 'fixture':
-                raise SelectedMetadataRead(dut)
         if any(path.is_relative_to(actual_root / directory) for directory in ('dut', 'rtl', 'XiangShan')):
             raise AssertionError(f'real design/native access is forbidden: {path}')
 
     sys.addaudithook(guard)
+
+    # Suites read generated metadata through ucv.xscfg. Replacing the reader
+    # here records the requested DUT directory directly, which is the
+    # invariant under test: only the selected DUT may be asked for metadata.
+    from ucv import xscfg as xscfg_module
+
+    def synthetic_open(directory):
+        requested = Path(directory).resolve()
+        assert requested == allowed, f'unselected metadata read: {requested}'
+        reads.append(str(requested))
+        if mode == 'fixture':
+            raise SelectedMetadataRead(dut)
+        instance = xscfg_module.Database.__new__(xscfg_module.Database)
+        instance.path = requested / 'synthetic.xscfg'
+        instance._picker = None
+        instance._cache = {'metadata': {'ports': SYNTHETIC_PORTS}}
+        return instance
+
+    xscfg_module.open_dut = synthetic_open
     if mode == 'fixture':
         registry = importlib.import_module('suites.vector.vagq.conftest')
         for plugin in registry.pytest_plugins:

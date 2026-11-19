@@ -15,6 +15,7 @@ import json
 from pathlib import Path
 
 import pytest
+from ucv import xscfg
 
 pytestmark = pytest.mark.selftest
 
@@ -23,8 +24,8 @@ MANIFEST = ROOT / "manifest/critical-fields.json"
 
 
 def ports_of(dut):
-    path = ROOT / "dut" / dut / "signals.json"
-    if not path.exists():
+    directory = ROOT / "dut" / dut
+    if not directory.is_dir():
         return None
 
     def walk(node, prefix=()):
@@ -35,7 +36,7 @@ def ports_of(dut):
                 if isinstance(child, dict):
                     yield from walk(child, (*prefix, key))
 
-    return set(walk(json.loads(path.read_text())))
+    return set(walk(xscfg.ports(directory)))
 
 
 def entries():

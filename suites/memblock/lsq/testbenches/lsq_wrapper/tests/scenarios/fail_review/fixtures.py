@@ -4,6 +4,7 @@ import json
 
 import pytest
 from toffee import DriveStable, Execution, FallingEdge, RisingEdge, SamplingMonitor, SyncDriver, XCommClockBackend
+from ucv import xscfg
 
 from suites.memblock.lsq.testbenches.shared.env.dut import ROOT
 
@@ -24,7 +25,7 @@ class ReviewPorts:
                 if isinstance(child, dict):
                     walk(child, (*prefix, name))
 
-        walk(json.loads((ROOT / "dut" / key / "signals.json").read_text()))
+        walk(xscfg.ports(ROOT / "dut" / key))
 
     def sample(self, event):
         return ({name: pin.U() for name, pin in self.inputs.items()},

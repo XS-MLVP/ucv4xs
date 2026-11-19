@@ -8,6 +8,7 @@ have been a false PASS.
 from types import SimpleNamespace
 
 import pytest
+from ucv import xscfg
 
 from suites.memblock.lsq.testbenches.psq.env.ports import Ports as PsqPorts
 from suites.memblock.lsq.testbenches.psq.env import PsqEnv
@@ -188,7 +189,7 @@ def test_wrapper_typed_window_consumes_every_declared_channel():
             for name, value in node.items():
                 if isinstance(value, dict):
                     outputs(value, (*prefix, name))
-    outputs(json.loads((ROOT / "dut/lsq_wrapper/signals.json").read_text()))
+    outputs(xscfg.ports(ROOT / "dut/lsq_wrapper"))
     snapshot = decode_observation(pins)
     assert snapshot.forward[0].data_invalid_ptr == SqPtr()
     diagnostic = decode_observation(pins | {"io_stExceptionInfo_bits_vaddr": 0x12340,

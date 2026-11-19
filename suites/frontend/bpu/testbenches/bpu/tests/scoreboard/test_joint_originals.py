@@ -112,11 +112,10 @@ def test_contract_is_human_semantics_and_exactly_matches_the_registered_point():
 
 
 def test_public_memory_direct_layout_has_every_complete_training_response_word():
-    import yaml
+    from ucv import xscfg
     from suites.frontend.bpu.testbenches.bpu.env.bundle.statistical import TABLES
     root=__import__('suites.frontend.bpu', fromlist=['ROOT']).ROOT
-    layout=yaml.load((root/'dut/bpu/BpuDut_offset.yaml').read_bytes(),Loader=yaml.CSafeLoader)
-    names={r['name'] for field in ('variables','signals') for r in layout.get(field,())}
+    names=set(xscfg.open_dut(root/'dut/bpu').names())
     anchor,=[n for n in names if n.endswith('.sc.io_trainReady')]
     prefix=anchor.removesuffix('io_trainReady')
     assert {prefix+f'{table}.io_trainReadResp_{i}_ctr_value' for table in TABLES for i in range(32 if table=='biasTable' else 8)}<=names

@@ -6,14 +6,13 @@ from pathlib import Path
 from typing import Any
 from functools import lru_cache
 
-import yaml
+from ucv import xscfg
 
 
 @lru_cache(maxsize=20)
-def _trace_metadata(path: str, identity: tuple[int, ...]):
+def _trace_metadata(database: str, identity: tuple[int, ...]):
     """Cache model-independent metadata, never native addresses or XData handles."""
-    data = yaml.load(Path(path).read_bytes(), Loader=yaml.CSafeLoader)
-    return {entry['name']: entry for entry in data.get('signals', ())}
+    return dict(xscfg.Database(database).signals)
 
 
 class MemoryDirectSignals:

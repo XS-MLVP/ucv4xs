@@ -1,5 +1,5 @@
 """Observe all actual public pins; independently decode the driven transactions."""
-import json
+from ucv import xscfg
 
 from suites.memblock.lsq.testbenches.shared.env.dut import ROOT
 from suites.memblock.lsq.testbenches.raw.transactions import FtqPtr
@@ -80,7 +80,7 @@ class Ports:
                 for name, child in node.items():
                     if isinstance(child, dict):
                         walk(child, (*names, name))
-        walk(json.loads((ROOT / "dut/load_queue_replay/signals.json").read_text()))
+        walk(xscfg.ports(ROOT / "dut/load_queue_replay"))
         assert set(encode(Inputs())) == set(self.inputs) and len(self.inputs) == 400
 
     def sample(self, event):

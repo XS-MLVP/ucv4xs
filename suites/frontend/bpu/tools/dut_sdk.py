@@ -14,10 +14,20 @@ import subprocess
 
 ROOT = __import__('suites.frontend.bpu', fromlist=['ROOT']).ROOT
 MODULES = ('abtb', 'bpu', 'ittage', 'mbtb', 'ras', 'sc', 'tage', 'ubtb', 'uras', 'utage')
-LIBRARY = 'libxspcomm.so.0.3.0'
-EXTENSION = '_pyxspcomm.so.0.3.0'
-LINKS = {'libxspcomm.so': 'libxspcomm.so.3',
-         'libxspcomm.so.3': LIBRARY, '_pyxspcomm.so': EXTENSION}
+
+
+def _xcomm_pin():
+    """Read the native SDK identity from the project lock, not from literals."""
+    from ucv.config import Project
+    return Project().tools['xcomm']
+
+
+_PIN = _xcomm_pin()
+ABI = _PIN['native_abi']
+LIBRARY = 'libxspcomm.so.' + _PIN['package_version']
+EXTENSION = '_pyxspcomm.so.' + _PIN['package_version']
+SONAME = 'libxspcomm.so.' + str(ABI)
+LINKS = {'libxspcomm.so': SONAME, SONAME: LIBRARY, '_pyxspcomm.so': EXTENSION}
 
 
 def _elf(path):
@@ -32,10 +42,10 @@ def inspect_sdk(sdk):
         path = sdk / name
         if path.is_symlink() or not path.is_file():
             raise ValueError(f'missing canonical SDK file: {path}')
-    if 'Library soname: [libxspcomm.so.3]' not in _elf(sdk / LIBRARY):
-        raise ValueError(f'canonical library is not ABI 3: {sdk}')
-    if 'Shared library: [libxspcomm.so.3]' not in _elf(sdk / EXTENSION):
-        raise ValueError(f'canonical Python extension does not require ABI 3: {sdk}')
+    if f'Library soname: [{SONAME}]' not in _elf(sdk / LIBRARY):
+        raise ValueError(f'canonical library is not ABI {ABI}: {sdk}')
+    if f'Shared library: [{SONAME}]' not in _elf(sdk / EXTENSION):
+        raise ValueError(f'canonical Python extension does not require ABI {ABI}: {sdk}')
     return {name: sha256((sdk / name).read_bytes()).hexdigest()
             for name in (LIBRARY, EXTENSION)}
 

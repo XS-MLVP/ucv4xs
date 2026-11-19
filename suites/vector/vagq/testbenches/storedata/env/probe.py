@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from toffee import Bundle
+from ucv import xscfg
 
 from suites.vector.vagq.testbenches.storedata.transactions import Beat
 from suites.vector.vagq.testbenches.storedata.transactions import Observation
@@ -13,7 +14,7 @@ from suites.vector.vagq.testbenches.storedata.transactions import Update
 from suites.vector.vagq.testbenches.storedata.transactions import VrfReadRequest
 
 ROOT = _SUITE_ROOT
-SCHEMA = json.loads((ROOT / 'dut/StoreDataCtrl/signals.json').read_text())
+SCHEMA = xscfg.ports(ROOT / 'dut/StoreDataCtrl')
 
 
 def _leaves(node, prefix=''):

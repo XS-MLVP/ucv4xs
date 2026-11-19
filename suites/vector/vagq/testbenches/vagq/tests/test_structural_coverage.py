@@ -8,6 +8,7 @@ functional coverage and it is not an ISA-correctness oracle.
 """
 
 import pytest
+from ucv import xscfg
 
 from suites.vector.vagq.testbenches.shared.env.structural import randomized_pin_sweep
 
@@ -55,7 +56,7 @@ async def test_native_rtl_structural_sweep(
         return
     randomized_pin_sweep(
         module,
-        ROOT / "dut" / module / "signals.json",
+        xscfg.database_path(ROOT / "dut" / module),
         cycles=cycles,
         seed=seed,
         clocked=clocked,

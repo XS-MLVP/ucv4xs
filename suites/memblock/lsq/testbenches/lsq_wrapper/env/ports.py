@@ -1,6 +1,6 @@
 """Full passive sample; wrapper decoder is separate from its encode mapping."""
 from dataclasses import asdict
-import json
+from ucv import xscfg
 
 from suites.memblock.lsq.testbenches.shared.env.dut import ROOT
 from suites.memblock.lsq.testbenches.forward.transactions import Query
@@ -95,7 +95,7 @@ class Ports:
                 for name, child in node.items():
                     if isinstance(child, dict):
                         walk(child, (*prefix, name))
-        walk(json.loads((ROOT / "dut/lsq_wrapper/signals.json").read_text()))
+        walk(xscfg.ports(ROOT / "dut/lsq_wrapper"))
         assert set(self.inputs) == set(ports()["input"]) == set(encode(Inputs()))
         assert set(self.outputs) == set(ports()["output"])
 
