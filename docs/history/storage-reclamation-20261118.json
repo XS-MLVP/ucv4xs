@@ -1,0 +1,50 @@
+{
+ "date": "2026-11-18T07:43:21.133861+00:00",
+ "scope": "DUT build cache, historical source checkouts and orphaned generated RTL under .cache/ after the toolchain upgrade to toffee 2.3.0 / xcomm 2.0.0 / picker 3.0.0.",
+ "process_check": "No active ucv build/prepare/run or simulation process before deletion; root regression had passed on the new lock.",
+ "reason": "The DUT cache key includes dependencies/versions.json, so every pre-upgrade DUT package is unreachable by the current lock and cannot support a new-toolchain claim. Historical source checkouts and generated RTL for public baselines are re-obtainable from upstream, and the retained generated RTL keeps DUT rebuilds from requiring a Chisel regeneration.",
+ "preserved": [
+  ".cache/generated/1016962d1169 (public-e716c7658 complete RTL)",
+  ".cache/generated/709f51e2ff4b (internal-d4566d58a complete RTL)",
+  ".cache/sources/5e1598380189 (public-e716c7658 checkout)",
+  ".cache/sources/8f3730c50439 (internal-d4566d58a checkout; also the source_mirrors target)",
+  ".cache/duts/6c4e97ab4d5e (lsq/deq_module, new lock, BUILT + SMOKE PASS)",
+  ".cache/duts/fafc9eae... (sbuffer/sbuffer, new lock, BUILT + SMOKE PASS)",
+  ".cache/mirrors/, .cache/releases/, .cache/tmp/, .cache/logs/, .cache/locks/",
+  ".tools/, .venv/, .ucv/, .history/, results/, all tracked source files"
+ ],
+ "deleted_cache_directories": {
+  ".cache/duts": {
+   "deleted_directories": 437,
+   "retained": [
+    "6c4e97ab4d5eab87f30bf97e181c79378b719b901a85c1a9aa52402babcafd16",
+    "fafc9eaea7a8a49755597ac3fb360a68d763d03abeba7f0da0cea26a210e2038"
+   ]
+  },
+  ".cache/generated": {
+   "deleted_directories": 28,
+   "retained": [
+    "1016962d116907c05df0a64bbb9e1c17f9e71795b08ec4fe96e131c169c276ba",
+    "709f51e2ff4b67e7d8286c1e23ae82d6c1ee31cffca92762c9b9e294bc526abf"
+   ]
+  },
+  ".cache/sources": {
+   "deleted_directories": 2,
+   "retained": [
+    "5e159838018902877ef5ecde4b718e24de1c1c40487c7c30c761b305bffad17f",
+    "8f3730c50439fea33837afc03b14f37ae8ed1535013760073d257feea6290206"
+   ]
+  }
+ },
+ "reclaimed_gigabytes": 22.7,
+ "recovery": {
+  "dut_packages": "ucv build per DUT; closures are copied from the retained generated RTL",
+  "public-893e1580b": "git checkout 893e1580b705 from https://github.com/OpenXiangShan/XiangShan.git (no design patches); its generated RTL is gone and must be regenerated",
+  "public-a0c2a26cb": "git checkout a0c2a26cbe3c from upstream, or seed from the retained .cache/mirrors/public-a0c2a26cb; its generated RTL must be regenerated"
+ },
+ "unavailable_after_deletion": [
+  ".cache/duts packages built against xcomm ABI 3: their build.json receipts and smoke logs are gone, so those runs can no longer be inspected as artifacts. Their conclusions remain only in the committed reports that cited them.",
+  "generated RTL for public-893e1580b and public-a0c2a26cb: reproducing a build on those baselines now requires running the Chisel generation again (hours, plus network and 64G heap)."
+ ],
+ "evidence_boundary": "Only rebuildable or re-obtainable generated state was removed. No committed report, verdict, bug record or hash index was modified; earlier conclusions keep their original baseline and date, and none of them becomes a new-toolchain result."
+}
