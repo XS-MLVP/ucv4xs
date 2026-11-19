@@ -11,10 +11,9 @@ because both need the network and are visible outside this repository; see the
 "发布生成 RTL 包" section of skills/ucv4xs-workflow/SKILL.md.
 """
 import argparse
-import hashlib
+import gzip
 import json
 import shutil
-import subprocess
 import sys
 import tarfile
 
@@ -70,16 +69,36 @@ def file_inventory(rtl):
     return {'sv': sv, 'v': verilog, 'entries': entries}
 
 
+def count_occurrences(path, needle, chunk=1 << 20):
+    """Count a byte pattern without materialising the file.
+
+    The dumped FIRRTL is around 1.8 GB, so reading it whole would cost more
+    memory than the rest of this script combined. The window keeps a needle
+    length of overlap so a match spanning a chunk boundary is still found.
+    """
+    pattern = needle.encode()
+    overlap = len(pattern) - 1
+    total, carry = 0, b''
+    with path.open('rb') as stream:
+        while True:
+            block = stream.read(chunk)
+            if not block:
+                break
+            window = carry + block
+            total += window.count(pattern)
+            carry = window[-overlap:] if overlap else b''
+    return total
+
+
 def assertion_counts(generation):
     """Chisel assertions retained in FIRRTL versus $fatal in SystemVerilog."""
     fir = next((generation / 'rtl').glob('*.fir'), None)
     fir_assertions = None
     if fir is not None:
         # Same measure the earlier package used: chisel's assert lowering.
-        fir_assertions = fir.read_text(errors='replace').count('circt_chisel_ifelsefatal')
-    fatal = 0
-    for path in (generation / 'rtl').glob('*.sv'):
-        fatal += path.read_text(errors='replace').count('$fatal')
+        fir_assertions = count_occurrences(fir, 'circt_chisel_ifelsefatal')
+    fatal = sum(count_occurrences(path, '$fatal')
+                for path in (generation / 'rtl').glob('*.sv'))
     return fir_assertions, fatal
 
 
@@ -232,10 +251,35 @@ def _source_key(baseline):
 
 
 def pack(root, archive):
+    """Archive the staging tree reproducibly.
+
+    ``tarfile.add`` embeds each file's mtime, uid, gid and owner, and gzip
+    embeds its own timestamp, so re-running the script over identical content
+    produced a different archive hash. Both are pinned here, and members are
+    ordered explicitly because directory iteration order is filesystem
+    dependent. Rebuilding an unchanged package then reproduces the published
+    bytes.
+    """
     if archive.exists():
         raise UcvError(f'Archive already exists: {archive}')
-    with tarfile.open(archive, 'w:gz') as stream:
-        stream.add(root, arcname=root.name)
+    root = Path(root)
+    members = [root] + sorted(p for p in root.rglob('*'))
+    with archive.open('wb') as raw:
+        with gzip.GzipFile(filename='', mode='wb', fileobj=raw, compresslevel=9,
+                           mtime=0) as compressed:
+            with tarfile.open(fileobj=compressed, mode='w') as stream:
+                for path in members:
+                    relative = root.name if path == root else f'{root.name}/{path.relative_to(root)}'
+                    info = stream.gettarinfo(str(path), arcname=relative)
+                    info.mtime = 0
+                    info.uid = info.gid = 0
+                    info.uname = info.gname = ''
+                    info.mode = 0o755 if info.isdir() else 0o644
+                    if info.isfile():
+                        with path.open('rb') as handle:
+                            stream.addfile(info, handle)
+                    else:
+                        stream.addfile(info)
     return archive
 
 

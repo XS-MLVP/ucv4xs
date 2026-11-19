@@ -95,3 +95,23 @@ def test_written_records_are_found_by_name_not_only_enumerated(database):
     reader = xscfg.Database(database)
     for name, record in sections()['variables'].items():
         assert reader.addressable(name) == record
+
+
+def test_reopening_after_a_rebuild_is_not_served_stale_sections(tmp_path):
+    """The reader cache is keyed by file size, so a rebuilt package reloads."""
+    package = tmp_path / 'dut'
+    package.mkdir()
+    database = package / 'SynthDut.xscfg'
+    first = {'metadata': {'ports': {'clock': {'_': True, 'Pin': 'input', 'High': 0, 'Low': 1}}}}
+    xscfg.write_database(database, first)
+    before = xscfg.open_dut(package)
+    assert list(before.ports) == ['clock']
+    second = {'metadata': {'ports': {'clock': {'_': True, 'Pin': 'input', 'High': 0, 'Low': 1},
+                                     'reset': {'_': True, 'Pin': 'input', 'High': 0, 'Low': 1}}}}
+    xscfg.write_database(database, second)
+    assert list(xscfg.open_dut(package).ports) == ['clock', 'reset']
+
+
+def test_a_package_without_or_with_two_databases_is_rejected(tmp_path):
+    with pytest.raises(UcvError, match='found 0'):
+        xscfg.database_path(tmp_path)

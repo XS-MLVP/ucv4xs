@@ -82,6 +82,28 @@ def test_firtool_is_published_for_x86_64_only():
     assert host.rtl_generation_available('aarch64') is False
 
 
+@pytest.mark.parametrize('alias', ['amd64', 'AMD64', 'x64'])
+def test_aliases_resolve_identically_in_every_entry_point(alias):
+    """A caller passing platform.machine() directly must get the same answer."""
+    assert host.canonical(alias) == 'x86_64'
+    assert host.supported(alias, 'Linux') is True
+    assert host.rtl_generation_available(alias) is True
+    assert host.firtool_url(alias) == host.firtool_url('x86_64')
+
+
+@pytest.mark.parametrize('alias', ['arm64', 'aarch64'])
+def test_arm_aliases_agree_across_entry_points(alias):
+    assert host.canonical(alias) == 'aarch64'
+    assert host.supported(alias, 'Linux') is True
+    assert host.rtl_generation_available(alias) is False
+
+
+def test_rejection_names_the_canonical_architecture(monkeypatch):
+    """An alias in the message must not look like a different architecture."""
+    with pytest.raises(UcvError, match=r'Linux riscv64'):
+        host.require('RISCV64', 'Linux')
+
+
 def test_mill_launcher_is_the_architecture_neutral_script():
     """The jar is not executable; only the shell launcher selects a native build."""
     assert host.MILL_LAUNCHER.endswith('-mill.sh')

@@ -75,7 +75,7 @@ def open_dut(module, output, *, clocked=False, register=None):
         # Picker metadata identifies actual leaves; XPorts are never mistaken
         # for inputs. Only initial reset is written immediately here. Later
         # write-mode and transaction timing belong to the module's driver.
-        schema_path = Path(binding.__file__).resolve().parent
+        package = Path(binding.__file__).resolve().parent
 
         def initialize(node, prefix=''):
             for name, leaf in node.items():
@@ -90,7 +90,7 @@ def open_dut(module, output, *, clocked=False, register=None):
                 else:
                     initialize(leaf, path + '_')
 
-        initialize(xscfg.ports(schema_path))
+        initialize(xscfg.ports(package))
         if clocked:
             dut.InitClock('clock')
         if register is not None:
