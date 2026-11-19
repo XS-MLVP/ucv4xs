@@ -6,7 +6,8 @@
 
 ## 开始前
 
-- 仿真宿主为 Linux x86_64，准备 Python 3.12（含 venv/开发头文件）、Java 17、Git、Make、CMake、
+- 仿真宿主为 Linux x86_64 或 Linux aarch64（见 [ARM 主机准备](../how-to/linux-arm-host.md)），
+  准备 Python 3.12（含 venv/开发头文件）、Java 17、Git、Make、CMake、
   C++20 编译器、SWIG ≥ 4.2，以及构建 Verilator 所需的 Autoconf/Flex/Bison。
 - 首次获取依赖、编译工具和完整生成香山 RTL 需要网络、磁盘、内存和编译时间；
   `setup --profile full` 安装锁定的 Mill/firtool 及仿真工具。生成资源要求见
@@ -42,8 +43,19 @@ suites/frontend/bpu/testbenches/mbtb/tests/testcase/test_reset.py
 
 ## 3. 安装工具并准备 RTL
 
-当前默认基线 `public-e716c7658` 尚无锁定的 RTL release，本教程显式从源码生成。
+当前默认基线 `public-e716c7658` 已登记锁定 RTL release（`xiangshan-e716c7658`）。
+本教程先按 release 路线准备，最后给出显式从源码生成的做法。
 依赖和工具安装到当前检出的 `.venv/`、`.tools/`。
+
+```sh
+./scripts/ucv setup --jobs 2
+./scripts/ucv doctor bpu --stage rtl
+./scripts/ucv prepare bpu --dut mbtb
+```
+
+默认（`--rtl-source auto`）优先复用经核验的本机完整生成，否则下载
+`baselines/rtl-releases.json` 锁定的 release 包并核对压缩包与逐文件 SHA-256，
+再提取 MainBTB 闭包。需要 Java 17 的源码生成路线是显式操作：
 
 ```sh
 ./scripts/ucv setup --profile full --jobs 2
@@ -51,8 +63,8 @@ suites/frontend/bpu/testbenches/mbtb/tests/testcase/test_reset.py
 ./scripts/ucv prepare bpu --dut mbtb --rtl-source source
 ```
 
-预期输出 `bpu/mbtb: PREPARED`。工具检出锁定源码和子模块，完整生成 DefaultConfig RTL，
-然后提取 MainBTB 闭包；已有匹配生成缓存时先核验逐文件哈希。查看：
+`--rtl-source source` 检出锁定源码和子模块并完整生成 DefaultConfig RTL；
+已有匹配生成缓存时先核验逐文件哈希。预期输出都是 `bpu/mbtb: PREPARED`。查看：
 
 ```text
 suites/frontend/bpu/rtl/mbtb/MainBtb.sv

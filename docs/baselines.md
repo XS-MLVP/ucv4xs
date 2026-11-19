@@ -68,7 +68,9 @@ native缓存身份自动与旧版分离，已有旧链接不手工切换；执�
 **配置示例：本仓库 internal 基线。** 按原 `build/time.log` 中的命令使用 `xiangshan.test.runMain top.XiangShanSim`、DefaultConfig、单核、`--enable-difftest` 和启用的 layer specialization。此配置保留 VAGQ 的断言层输入与 difftest 元数据端口，独立记录在 internal 命名基线中。
 
 `prepare` 默认复用核验过的完整本机生成，否则获取 `baselines/rtl-releases.json` 锁定的
-release；无匹配附件时明确报错。`--rtl-source source` 才校验完整递归源码并启动本机生成。
+release；无匹配附件时明确报错。当前 `public-e716c7658` 与 `public-a0c2a26cb` 都已登记
+release，因此默认路线不依赖 Java 17。`--rtl-source source` 才校验完整递归源码并启动
+本机生成；两种来源同时存在时会交叉核对实际 RTL 字节。
 `--source-only` 单独准备源码。两种 RTL 来源均按实例关系提取最小闭包，遇到缺失或重名模块
 即报错，复制前后字节保持一致。真实 top 与导出名记录在工程 `ucv.json`。
 导入收据、完整基线绑定及缓存版本见[工作空间参考](reference/workspace.md)。

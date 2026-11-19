@@ -32,17 +32,22 @@ description: 维护 ucv4xs 香山单元测试仓库的基线、构建编排和�
 ## 构建和回归
 
 从根目录使用以下入口，按当前任务选择需要的阶段和集合。下面是 **BPU/MainBTB 示例**；
-当前默认基线尚无锁定 release，使用源码生成路线：
+当前默认基线 `public-e716c7658` 已登记锁定 release（`xiangshan-e716c7658`），
+默认走 release 路线，不需要 Java 17：
 
 ```sh
-./scripts/ucv setup --profile full --jobs 2
-.venv/bin/ucv doctor bpu --stage generate
-./scripts/ucv prepare bpu --dut mbtb --rtl-source source
+./scripts/ucv setup --jobs 2
+.venv/bin/ucv doctor bpu --stage rtl
+./scripts/ucv prepare bpu --dut mbtb
 .venv/bin/ucv doctor bpu --stage run
-.venv/bin/ucv build bpu --dut mbtb --jobs 2 --rtl-source source
+.venv/bin/ucv build bpu --dut mbtb --jobs 2
 .venv/bin/ucv run bpu --dut mbtb --workers 1 -- testbenches/mbtb/tests/testcase/test_reset.py::test_reset_completes_before_cold_lookup
 .venv/bin/ucv report
 ```
+
+需要从 Chisel 生成时改用 `setup --profile full`、`doctor --stage generate` 和
+`prepare --rtl-source source`（需 Java 17）；aarch64 上没有发布的 firtool，
+只能用 release 或自备 firtool，见[Linux ARM 主机准备](../../docs/how-to/linux-arm-host.md)。
 
 `--jobs` 和 `--workers` 按宿主资源及任务范围选择；`run` 的 `--` 后传 pytest 选择条件。每次回归使用新结果目录。公开集合统一验收启用严格基线检查；当前 `full` 含 internal VAGQ，混合基线会被该检查拒绝。
 
@@ -63,7 +68,7 @@ description: 维护 ucv4xs 香山单元测试仓库的基线、构建编排和�
 |---|---|
 | `uc-toffee` | PyPI 分发名（导入名 `toffee`）；版本锁在 `dependencies/versions.json` 与 `dependencies/python.txt` |
 | `toffee` | 导入名，例如 `from toffee import Execution, ClockCycles` |
-| `XS-MLVP/toffee` | 源码与文档仓库；当前锁定 `v2.1.0`，`main` 是 Toffee 2，`master` 保留 Toffee Legacy |
+| `XS-MLVP/toffee` | 源码与文档仓库；当前锁定 `v2.3.0`，`main` 是 Toffee 2，`master` 保留 Toffee Legacy |
 | `XReactor` | 框架旧名；序列化的 `xreactor-*` 格式 ID 为兼容保留，不是另一套框架 |
 
 锁定的完整源码检出在 `.tools/sources/toffee`，含 `docs/` 用户手册和 `examples/`。
@@ -80,7 +85,7 @@ sed -n 1,60p .tools/sources/toffee/docs/zh/guides/monitors.md
 UNCERTAIN 插件为 `toffee._pytest_outcomes`，选项形如 `--toffee-output`、
 `--toffee-native-coverage-tool`，覆盖标记为 `toffee_functional_coverage`。
 
-`uc-toffee 2.1.0` 已正式提供 `@pytest.mark.uncertain(reason=..., reference=...)`：正常执行
+`uc-toffee 2.3.0` 已正式提供 `@pytest.mark.uncertain(reason=..., reference=...)`：正常执行
 已有检查，证据不足单列 `U`/`UNCERTAIN`，不计 PASS；真实错误优先，UNCERTAIN 本身不改变
 退出码。未发布的本地框架开发仍使用[独立运行环境与源码凭据](../../docs/local-configuration.md#本地-toffee-开发环境)，
 不改写公共构建锁或伪造原生重建记录。依赖升级和分发名变化的流程见待审核
@@ -179,6 +184,9 @@ python3.12 scripts/audit-assets.py
 
 1. 用 `ucv prepare --rtl-source source` 生成的整芯片缓存（`.cache/generated/<key>/rtl`）作为来源，不要
    从 DUT 闭包拼装。核对 `generation.json` 的 baseline commit 与生成命令。
+   `scripts/publish-rtl-release.py <baseline>` 完成第 2–5 步的暂存、参数文件、README、
+   `SHA256SUMS` 与 `tar.gz`，并拒绝 filelist 与实际文件不一致的缓存；它不联网、
+   不 lint、不上传。
 2. 打包 `*.sv`、`*.v` 和 **firtool 自带的 `filelist.f`**。`filelist.f` 是权威编译入口
    （依赖顺序，顶层在末行），不要用 `*.sv` 通配替代；也不要手改它——部分条目带 `./`
    前缀，改成裸名会与上游产物失去可比性，需要时另附说明而不是替换原文件。
@@ -197,9 +205,13 @@ python3.12 scripts/audit-assets.py
 6. 验证后再发布：解压副本执行 `sha256sum -c`，并用
    `verilator --lint-only -Wno-fatal -f filelist.f --top-module XSTop -I.` 确认可编译；
    发布后重新下载，比对压缩包 SHA-256 与逐文件校验和。
-7. tag 与 release 以香山 commit 命名（如 `xiangshan-a0c2a26cb`），不要用 ucv4xs 自身
-   版本号，避免与仓库版本混淆。正文说明包是什么即可；模块级 PASS/FAIL 留在
-   `docs/status.md` 和对应工程文档，不写成这份 RTL 的属性。
+7. tag 与 release 以香山 commit 命名（如 `xiangshan-a0c2a26cb`、`xiangshan-e716c7658`，
+   取 commit 前 9 位，与基线名后缀一致），不要用 ucv4xs 自身版本号，避免与仓库版本混淆。
+   正文说明包是什么即可；模块级 PASS/FAIL 留在 `docs/status.md` 和对应工程文档，
+   不写成这份 RTL 的属性。上传时同时提供 `<package>.tar.gz.sha256`。
+8. 发布后把 `url`、压缩包 `sha256` 与 `digest(baseline)` 的 `baseline_sha256` 写入
+   `baselines/rtl-releases.json`，再用 `ucv doctor <suite> --stage rtl` 与一次
+   `ucv prepare` 确认导入成功；`fetch_release` 会重新核对压缩包和逐文件哈希。
 
 ## 产物与经验
 
