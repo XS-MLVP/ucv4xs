@@ -139,8 +139,9 @@ def main(argv=None):
                 if native and not host_platform.supported():
                     errors.append(f'{host_platform.requirement()} required; '
                                   f'this host is {host_platform.describe()}')
-                if native and args.stage=='generate' and not host_platform.rtl_generation_available():
-                    errors.append(f'No published firtool for {host_platform.machine()}; take RTL from a '
+                if (native and args.stage=='generate' and not host_platform.rtl_generation_available()
+                        and not (project.root/'.tools/bin/firtool').is_file()):
+                    errors.append(f'No published firtool for {host_platform.describe()}; take RTL from a '
                                   'released package or supply local.json firtool')
                 host={'source':('git',),'rtl':(),'run':('git','cmake','g++','swig','make'),
                       'generate':('git','java','cmake','g++','swig','make')}[args.stage]

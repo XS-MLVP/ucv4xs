@@ -46,8 +46,9 @@ description: 维护 ucv4xs 香山单元测试仓库的基线、构建编排和�
 ```
 
 需要从 Chisel 生成时改用 `setup --profile full`、`doctor --stage generate` 和
-`prepare --rtl-source source`（需 Java 17）；aarch64 上没有发布的 firtool，
-只能用 release 或自备 firtool，见[Linux ARM 主机准备](../../docs/how-to/linux-arm-host.md)。
+`prepare --rtl-source source`（需 Java 17）；Linux aarch64 与 macOS x86_64 没有该版本发布的 firtool，
+需用 release 或自备 firtool。macOS aarch64 自动获取原生 firtool。见
+[Linux ARM 主机准备](../../docs/how-to/linux-arm-host.md)和 [macOS 主机准备](../../docs/how-to/macos-host.md)。
 
 `--jobs` 和 `--workers` 按宿主资源及任务范围选择；`run` 的 `--` 后传 pytest 选择条件。每次回归使用新结果目录。公开集合统一验收启用严格基线检查；当前 `full` 含 internal VAGQ，混合基线会被该检查拒绝。
 

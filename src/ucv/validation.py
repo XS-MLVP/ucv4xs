@@ -18,6 +18,9 @@ def installed_tools(project, runtime=True, generation=False):
     if installed_machine != host.machine():
         raise UcvError(f'Installed tools were built for {installed_machine} but this host is '
                        f'{host.machine()}; run ucv setup here')
+    if receipt.get('system') != host.system():
+        raise UcvError(f'Installed tools were built for {receipt.get("system", "an unknown system")} '
+                       f'but this host is {host.system()}; run ucv setup here')
     names=['bin/picker','verilator/bin/verilator_bin']
     if generation:names+=['bin/mill','bin/firtool']
     for name in names:

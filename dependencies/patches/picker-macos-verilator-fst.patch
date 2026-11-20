@@ -1,0 +1,34 @@
+diff --git a/template/lib/cmake/verilator.cmake b/template/lib/cmake/verilator.cmake
+index 18302f9..998284a 100644
+--- a/template/lib/cmake/verilator.cmake
++++ b/template/lib/cmake/verilator.cmake
+@@ -187,6 +187,7 @@ if(SIMULATOR STREQUAL "verilator")
+ 	if (APPLE)
+ 		target_link_libraries(${ModuleName} PRIVATE
+ 			"-Wl,-force_load,$<TARGET_FILE:DPI${ModuleName}>"
++			DPI${ModuleName}
+ 			dl
+ 			z
+     	)
+diff --git a/template/toolchain/macos-homebrew-llvm.cmake b/template/toolchain/macos-homebrew-llvm.cmake
+index f460514..6d7ad0e 100644
+--- a/template/toolchain/macos-homebrew-llvm.cmake
++++ b/template/toolchain/macos-homebrew-llvm.cmake
+@@ -9,10 +9,13 @@ find_package(PkgConfig REQUIRED)
+ pkg_check_modules(ZLIB REQUIRED zlib)
+ include_directories(${ZLIB_INCLUDE_DIRS})
+ link_directories(${ZLIB_LIBRARY_DIRS})
+-# systemc
+-pkg_check_modules(SYSTEMC REQUIRED systemc)
+-include_directories(${SYSTEMC_INCLUDE_DIRS})
+-link_directories(${SYSTEMC_LIBRARY_DIRS})
++# Verilator --cc models do not need SystemC. The FST writer in Verilator
++# 5.050+ does need Homebrew's lz4 headers and libraries.
++if ("$ENV{TRACE}" STREQUAL "fst")
++    pkg_check_modules(LZ4 REQUIRED liblz4)
++    include_directories(${LZ4_INCLUDE_DIRS})
++    link_directories(${LZ4_LIBRARY_DIRS})
++endif ()
+ # macOS need this, according to https://github.com/verilator/verilator/blob/master/include/verilated.mk.in#L114-L118
+ add_link_options("-Wl,-U,__Z15vl_time_stamp64v,-U,__Z13sc_time_stampv")
+ 

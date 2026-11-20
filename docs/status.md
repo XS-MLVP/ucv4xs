@@ -1,6 +1,6 @@
 # 验证工作组织与当前状态
 
-更新于 **2026-11-17**。当前登记 **29 suite / 336 DUT / 336 独立 testbench 实现包**。
+更新于 **2026-11-20**。当前登记 **29 suite / 336 DUT / 336 独立 testbench 实现包**。
 公开工程继承 `public-e716c7658 / DefaultConfig`；VAGQ 使用外部
 `internal-d4566d58a / DefaultConfig`。有效基线、数量与选择范围以 `ucv list/info` 为准。
 
@@ -72,6 +72,40 @@ workspace.module_id 唯一关联；目录与测试选择仍按工程配方。`uc
 其余 322 个公开 DUT top 在该次完整生成中存在；存在和来源可定位不证明端口兼容或硬件正确。
 
 ## 最近核验
+
+### macOS 主机接入（Darwin aarch64）
+
+2026-11-20 在 Apple Silicon Mac、Python 3.12 上实际安装并验证。公共工具接受 Linux / Darwin
+的 x86_64 与 aarch64；构建缓存加入 `system`，`pipeline_version` 更新为 3，安装收据同时校验
+操作系统与架构。预编译 seed 区分 ELF / Mach-O，并识别 Mach-O universal binary。
+macOS 原生 DUT 的 `.dylib` 与 Python 扩展的 `.so` 分别校验。
+
+宿主依赖和操作步骤见 [macOS 主机准备](how-to/macos-host.md)。`ucv` 在项目子进程中发现
+Homebrew 的 Bison/Flex 及开发文件；锁定的 Verilator 补丁按实际 `FlexLexer.h` 声明适配接口，
+Picker 补丁补齐 FST 的 lz4 头文件和静态模型链接依赖，并去掉 C++ 模型不需要的 SystemC 要求。
+补丁及哈希纳入 `dependencies/versions.json`。BPU 原生进程隔离在 Mac 上读取 dyld 映射，
+继续检查同一解释器只加载一种 DUT，不依赖 `/proc/self/maps`。
+提交前审查补齐安装重试边界：Verilator 是否需要源码重建与预检查使用同一收据判定，
+Mill/firtool 在下载和检查完成后才原子安装，失败不留下会被重试跳过的半文件。
+
+本机已验证：
+
+- `bash scripts/ucv setup --jobs 6` 与 `setup --profile full --jobs 6` 成功；xcomm / Picker /
+  Verilator 从锁定源码构建，收据为 `Darwin / aarch64`。原生 firtool 下载、架构校验与
+  `--version` 通过，版本为 1.149.0；`doctor bpu/lsq --stage run` 通过。
+- 公共工具回归 **497 PASS**（含安装重试边界审查后的回归）；BPU 进程隔离自检 **87 PASS**。
+- 使用 `public-e716c7658 / DefaultConfig` 的完整 RTL release，`lsq/deq_module` 与 `bpu/uras`
+  均 **BUILT + SMOKE PASS**，包括 memory-direct、原生覆盖接口、复位/步进/结束。
+- DeqModule 的 `testbenches/deq/tests`、seed 1：**67 PASS / 32 FAIL**，保留行为断言失败与
+  开放问题；结果为 `results/macos-deq-module-20261120-r2`。先前一次选错测试路径的运行保留为
+  `results/macos-deq-module-20261120`，其空计数与命令错误不计功能结果。
+- MicroRAS 的 `test_main_and_s1.py`、seed 1：**2 PASS**；因工程开放问题，整体
+  `hardware_verdict=INCOMPLETE`，没有写成工程验收通过。结果为 `results/macos-uras-20261120`。
+
+本机完整日志和收据保存在忽略目录，不随 Git 发布。初次 MainBTB 构建在旧 Picker 模板上
+遇到 lz4 路径错误；停止剩余编译并保留失败日志，没有成功收据。该 DUT 尚未在新模板上重建。
+未执行 Intel Mac 实机验证、从 Chisel 完整生成 RTL、全部 DUT 重建或 Linux 同选择对比回归。
+本轮不调整 RTL、模型、预期或豁免，不以安装支持代替硬件功能与覆盖验收。
 
 ### 公开基线 RTL release（`xiangshan-e716c7658`）
 

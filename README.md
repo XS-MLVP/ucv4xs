@@ -90,9 +90,10 @@ VAGQ 显式使用 `internal-d4566d58a`。各工程设计规格索引登记 Chise
 资源导航只需要 Python 3.12；源码获取需要 Git。当前 `public-e716c7658` 已有锁定的
 RTL release（`xiangshan-e716c7658`），默认直接取用；只有显式 `--rtl-source source`
 才需要 Java 17 生成。
-仿真支持 Linux x86_64 与 Linux aarch64，宿主需提供 Make、CMake、C++20 编译器、
-SWIG ≥ 4.2 及 Autoconf/Flex/Bison。工具和 Python 环境安装在 `.tools/` 与 `.venv/`。
-aarch64 的差异（生成工具与架构分离的构建缓存）见[Linux ARM 主机准备](docs/how-to/linux-arm-host.md)。
+仿真支持 Linux 与 macOS（x86_64 / aarch64），宿主需提供 Make、CMake、C++20 编译器、
+SWIG ≥ 4.2、Autoconf/Flex/Bison/help2man 及 zlib/lz4 开发文件。工具和 Python 环境安装在 `.tools/` 与 `.venv/`。
+平台依赖和生成工具的差异见 [macOS 主机准备](docs/how-to/macos-host.md)与
+[Linux ARM 主机准备](docs/how-to/linux-arm-host.md)。原生工具与 DUT 构建缓存同时区分操作系统和架构。
 
 ```sh
 git clone https://github.com/XS-MLVP/ucv4xs.git

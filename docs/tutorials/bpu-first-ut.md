@@ -6,9 +6,10 @@
 
 ## 开始前
 
-- 仿真宿主为 Linux x86_64 或 Linux aarch64（见 [ARM 主机准备](../how-to/linux-arm-host.md)），
+- 仿真宿主为 Linux 或 macOS，架构为 x86_64 / aarch64
+  （见 [Linux ARM 主机准备](../how-to/linux-arm-host.md)与 [macOS 主机准备](../how-to/macos-host.md)），
   准备 Python 3.12（含 venv/开发头文件）、Java 17、Git、Make、CMake、
-  C++20 编译器、SWIG ≥ 4.2，以及构建 Verilator 所需的 Autoconf/Flex/Bison。
+  C++20 编译器、SWIG ≥ 4.2，以及构建 Verilator 所需的 Autoconf/Flex/Bison/help2man 和 zlib/lz4 开发文件。
 - 首次获取依赖、编译工具和完整生成香山 RTL 需要网络、磁盘、内存和编译时间；
   `setup --profile full` 安装锁定的 Mill/firtool 及仿真工具。生成资源要求见
   [构建经验](../lessons/build-and-toolchain.md)。
