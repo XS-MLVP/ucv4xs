@@ -12,8 +12,8 @@
 | 从源码生成整芯片 RTL（`ucv prepare --rtl-source source`） | **不可行**，见[生成路线](#生成路线没有-linux-arm64-的-firtool) |
 | 使用已发布 RTL 包构建（默认路线或 `--rtl-source release`） | 可行 |
 
-`ucv setup` 和 `ucv doctor --stage run` 接受 `Linux x86_64` 与 `Linux aarch64`；
-其他系统或架构在安装和运行前直接拒绝，不会留下半成品环境。
+`ucv setup` 和 `ucv doctor --stage run` 接受 Linux 与 macOS 的 x86_64 / aarch64；
+本页只描述 Linux ARM，macOS 见[对应指南](macos-host.md)。
 
 ## 1. 准备宿主依赖
 
@@ -21,7 +21,7 @@
 
 ```
 Java 17、Git、Make、CMake、C++20 编译器、SWIG >= 4.2
-Autoconf、Flex、Bison（Verilator 源码构建需要）
+Autoconf、Flex、Bison、help2man、zlib/lz4 开发文件（Verilator 源码构建需要）
 Python 3.12 及其 venv、开发头文件
 ```
 
@@ -88,21 +88,21 @@ CIRCT 的 `firtool-1.149.0` 只发布 `linux-x64` 与 `macos-arm64`，**没有 l
 
 ## 5. 记录结论时必须写清架构
 
-构建缓存身份包含机器架构（`machine`），所以 x86_64 与 aarch64 的 DUT 包
+构建缓存身份包含操作系统（`system`）和机器架构（`machine`），所以不同系统或架构的 DUT 包
 互不命中，也不会互相覆盖。副作用是**同一个 DUT 在两个架构上必须分别构建**。
 
 因此：
 
 - x86_64 的 PASS 不能当作 aarch64 的 PASS，反之亦然
 - 报告里写明主机架构、基线、工具版本和 seed，与既有报告的做法一致
-- 仓库当前**没有** aarch64 的构建或运行记录；本指南描述的是可用路径，
+- 仓库当前**没有** Linux aarch64 的构建或运行记录；本指南描述的是可用路径，
   不构成已验证结论
 
 ## 常见失败
 
 | 现象 | 原因与处理 |
 |---|---|
-| `The locked environment requires Linux x86_64 or aarch64` | 宿主架构不在支持集合，或不在 Linux 上 |
+| `The locked environment requires Linux or macOS ...` | 宿主系统或架构不在支持集合 |
 | `... is built for x86_64, but this host is aarch64` | 复用了他架构的 `verilator_seed`；换成源码构建或本机 seed |
 | `No published firtool for aarch64` | 见上文生成路线，改用 RTL 发布包或自建 firtool |
 | DUT 目录不命中缓存 | 正常：架构是缓存身份的一部分，需在本机重新 `ucv build` |

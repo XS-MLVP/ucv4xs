@@ -43,6 +43,9 @@ PYTHONPATH=src python3.12 -m ucv setup --profile full --jobs 8
 
 | 问题或容易误用的地方 | 当前处理与边界 | 依据 |
 |---|---|---|
+| macOS 被主机检查拒绝；相同 ARM64 名称也不能让 Linux 原生库在 Mac 上运行 | 支持 Linux / Darwin 的 x86_64 与 aarch64；seed 同时检查 ELF/Mach-O 格式及架构，安装收据和 DUT 缓存都区分操作系统 | [主机适配](../../src/ucv/host.py)、[macOS 主机准备](../how-to/macos-host.md) |
+| Verilator 5.052 根据 macOS 版本把 Flex 接口改成 `size_t`，与 Homebrew 的 `int` 接口不符，也可能与新版 Xcode 的 `ssize_t` 返回值不符 | 编译时使用 Homebrew Flex 的头文件；锁定补丁从实际编译器选中的 `FlexLexer.h` 读取声明，分别适配返回值和长度参数，不按 OS 版本猜类型 | [Verilator 补丁](../../dependencies/patches/verilator-macos-flex-signatures.patch)、[实际核验范围](../status.md#macos-主机接入darwin-aarch64) |
+| Mac 上的 Verilator FST writer 找不到 `lz4.h`，或 `-force_load` 只装入静态模型而丢失其 lz4 链接依赖 | Picker 的 macOS 工具链通过 pkg-config 找 liblz4；保留静态目标的传递链接依赖。C++ DUT 不额外要求 SystemC | [Picker 补丁](../../dependencies/patches/picker-macos-verilator-fst.patch)、[原生构建](../../src/ucv/build.py) |
 | 只固定香山主仓 commit，子模块、生成参数或工具却不一致 | 命名基线包含递归 gitlink、配置、firtool 参数和版本；工具补丁保存 SHA-256 | [基线说明](../baselines.md)、[sources.py](../../src/ucv/sources.py) |
 | 历史 `make verilog` 会把 `$fatal` 替换成依赖宏的调用，直接拿旧文件构建可能缺少宏；同 commit 也未必得到逐字节相同的历史 RTL | 当前调用基线记录的完整生成 top，保留 Chisel/CIRCT 原始 `$fatal`；闭包只复制与核验，不进行硬件逻辑改写。历史差异单列 | [原 soc-split 说明](../history/build-notes/soc-split.original.md)、[RTL 差异记录](../history/public-rtl-rebuild-comparison.json) |
 | BPU 独立生成与整芯片生成的配置、优化后端口不同，旧模型不能直接套用 | 所有工程使用 DefaultConfig；BPU 从完整香山产物提取。模型与用例适配实际端口，旧独立入口保留为历史材料 | [基线说明](../baselines.md)、[阶段状态](../status.md) |

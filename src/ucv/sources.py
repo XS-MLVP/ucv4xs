@@ -141,7 +141,7 @@ def generate(project, suite):
             if not host.rtl_generation_available():
                 raise UcvError(
                     f'RTL generation needs firtool {FIRTOOL_VERSION}, which CIRCT does not '
-                    f'publish for {host.machine()}; take RTL from a released package '
+                    f'publish for {host.describe()}; take RTL from a released package '
                     f'(.cache/releases via baselines/rtl-releases.json) or supply one '
                     f'through local.json firtool')
             raise UcvError('Generation tools missing; run ucv setup --profile full')

@@ -10,6 +10,7 @@ from ucv.common import UcvError, file_hash, write
 @pytest.fixture
 def installed(tmp_path, monkeypatch):
     """A receipt plus the two binaries ``installed_tools`` hashes."""
+    monkeypatch.setattr(host, 'system', lambda: 'Linux')
     tools = {'toffee': {'commit': '1' * 40}, 'xcomm': {'commit': '2' * 40}}
     prefix = tmp_path / '.tools'
     (prefix / 'bin').mkdir(parents=True)
@@ -78,3 +79,16 @@ def test_missing_receipt_still_reports_installation_first(tmp_path):
         tools = {}
     with pytest.raises(UcvError, match='not installed'):
         validation.installed_tools(Project, runtime=False)
+
+
+def test_same_architecture_on_another_os_is_rejected(installed, monkeypatch):
+    project, save, receipt = installed
+    monkeypatch.setattr(host, 'machine', lambda: 'aarch64')
+    monkeypatch.setattr(host, 'system', lambda: 'Darwin')
+    save(receipt('aarch64'))
+    with pytest.raises(UcvError, match='built for Linux but this host is Darwin'):
+        validation.installed_tools(project, runtime=False)
+    data = receipt('aarch64')
+    data['system'] = 'Darwin'
+    save(data)
+    assert validation.installed_tools(project, runtime=False)['system'] == 'Darwin'

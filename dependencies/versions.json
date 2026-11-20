@@ -25,7 +25,14 @@
         "repository": "https://github.com/MikePopoloski/slang.git",
         "commit": "7ddf4059f79eff508dd486eb42fd650cdf320d52"
       }
-    }
+    },
+    "patches": [
+      {
+        "path": "dependencies/patches/picker-macos-verilator-fst.patch",
+        "sha256": "f010930383f29197627e48309bc583e59a2730494eefc977ee910a0f0dafe13a",
+        "purpose": "Find macOS FST lz4 headers and propagate static-model link dependencies without requiring SystemC"
+      }
+    ]
   },
   "xcomm": {
     "repository": "https://github.com/XS-MLVP/xcomm.git",
@@ -45,6 +52,14 @@
   "verilator": {
     "version": "5.052",
     "repository": "https://github.com/verilator/verilator.git",
-    "ref": "v5.052"
+    "ref": "v5.052",
+    "commit": "ea338be98e1e838d3518809ce8899f85a009963c",
+    "patches": [
+      {
+        "path": "dependencies/patches/verilator-macos-flex-signatures.patch",
+        "sha256": "f23b46a4f9c93793168ba9f8fff54797a5589f50e0ac943a5c51a1f2c2f88d07",
+        "purpose": "Match Flex C++ lexer signatures to the actual compiler-selected header on macOS"
+      }
+    ]
   }
 }

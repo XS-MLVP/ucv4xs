@@ -96,6 +96,15 @@ def test_own_libraries_and_python_wrappers_are_not_foreign(tmp_path, domain):
         packages=[domain], native_mappings=[domain], owner=domain, claims=1)
 
 
+def test_dyld_library_paths_preserve_native_ownership_without_python_wrappers(tmp_path):
+    scope = DutProcessScope('bpu')
+    own = str(tmp_path/'bpu/libUTBpuDut.dylib')
+    foreign = str(tmp_path/'ras/libUTRasDut.dylib')
+    assert scope.observe(names=(), library_paths=[own], dut_root=tmp_path)['native_mappings'] == ['bpu']
+    with pytest.raises(RuntimeError, match='loaded DUTs'):
+        scope.observe(names=(), library_paths=[own, foreign], dut_root=tmp_path)
+
+
 def test_partition_is_a_disjoint_complete_permutation_not_a_selection_heuristic():
     values = [item(), *[item(f'testbenches/{name}/tests/testcase/test_x.py::test_x',
         fixtures=('dut_factory', f'{name}_agent')) for name in DOMAINS]]

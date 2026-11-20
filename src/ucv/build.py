@@ -9,6 +9,7 @@ import shutil
 import tempfile
 from .common import UcvError, activate, digest, execute, file_hash, lock, now, read, write
 from .sources import obtain_rtl, source_key
+from . import host
 
 MODULE = re.compile(r'^\s*module\s+(\w+)', re.M)
 INSTANCE = re.compile(r'^[ \t]*(\w+)[ \t]+(?:#\s*\([^;]*?\)\s*)?(\w+)[ \t]*\(',re.M)
@@ -146,7 +147,8 @@ def build(project, suite, dut, jobs=4, rtl_source='auto', archive=None):
             execute(command,cwd=base/'rtl',env=env,log=base/'build.log')
             tname=spec['export_name']
             # Picker 3 emits one <top>.xscfg and no derived metadata copies.
-            expected=['__init__.py',tname+'.xscfg','_UT_'+tname+'.so','libUT'+tname+'.so']
+            expected=['__init__.py',tname+'.xscfg','_UT_'+tname+'.so',
+                      'libUT'+tname+host.shared_library_suffix()]
             missing=[p for p in expected
                      if not (package/p).is_file() or not (package/p).stat().st_size]
             if missing:
@@ -162,6 +164,7 @@ def build(project, suite, dut, jobs=4, rtl_source='auto', archive=None):
                        'baseline':suite.baseline,'rtl':read(base/'rtl/source.json')['files'],
                        'rtl_origin':read(base/'rtl/source.json')['origin'],
                       'tools':project.tools,'command':list(map(str,command)),'smoke':'PASS',
+                      'system':host.system(),'machine':host.machine(),
                       'python_keyword_fix':binding_fix,'completed_at':now(),
                       'coverage_processor':str(project.root/'.tools/verilator/bin/verilator_coverage'),
                       'outputs':{p:file_hash(package/p) for p in expected}}

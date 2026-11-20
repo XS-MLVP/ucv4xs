@@ -3,6 +3,7 @@ from pathlib import Path
 import os
 import subprocess
 import pytest
+from ucv import host
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -10,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_wide_trace_words_are_live_bounded_and_read_only(tmp_path):
     prefix = Path(os.environ.get('UCV_XCOMM_TEST_PREFIX', ROOT/'.tools'))
     includes = Path(os.environ.get('UCV_XCOMM_TEST_INCLUDE', prefix/'include'))
-    if not (prefix/'lib/libxspcomm.so').exists():
+    if not (prefix/('lib/libxspcomm'+host.shared_library_suffix())).exists():
         pytest.skip('requires ucv setup native SDK')
     source = tmp_path/'wide.cpp'
     source.write_text(r'''

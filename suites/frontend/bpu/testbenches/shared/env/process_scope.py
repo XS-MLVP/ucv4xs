@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import re
 import sys
+from ucv.host import loaded_library_paths
 
 DOMAINS = ('abtb', 'bpu', 'ittage', 'mbtb', 'ras', 'sc', 'tage', 'ubtb', 'uras', 'utage')
 SCOPES = ('pure', *DOMAINS)
@@ -27,16 +28,19 @@ class DutProcessScope:
         self.owner = name
         self.claims += 1
 
-    def observe(self, *, names, maps, dut_root):
+    def observe(self, *, names, maps='', dut_root, library_paths=()):
         packages = {match.group(1) for name in names if (match := PACKAGE.match(name))}
         base = Path(dut_root).resolve()
         native = set()
         resolved_roots = {name: (base / name).resolve() for name in DOMAINS if (base / name).exists()}
+        paths = list(library_paths)
         for line in maps.splitlines():
             fields = line.split(maxsplit=5)
             if len(fields) < 6 or not fields[5].startswith('/'):
                 continue
-            path = Path(fields[5].removesuffix(' (deleted)'))
+            paths.append(fields[5].removesuffix(' (deleted)'))
+        for filename in paths:
+            path = Path(filename)
             for name, directory in resolved_roots.items():
                 if path.is_relative_to(directory):
                     native.add(name)
@@ -63,5 +67,5 @@ def process_scope():
 
 
 def observe_process(root):
-    return process_scope().observe(names=tuple(sys.modules), maps=Path('/proc/self/maps').read_text(),
+    return process_scope().observe(names=tuple(sys.modules), library_paths=loaded_library_paths(),
                                    dut_root=Path(root) / 'dut')

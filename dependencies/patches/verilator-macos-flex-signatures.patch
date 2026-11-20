@@ -1,0 +1,48 @@
+diff --git a/src/flexfix b/src/flexfix
+index 0a64beb..becc787 100755
+--- a/src/flexfix
++++ b/src/flexfix
+@@ -15,6 +15,25 @@
+ import re
+ import sys
+ import platform
++import os
++import shlex
++import subprocess
++
++# Apple's Flex and Homebrew Flex can expose different C++ signatures on the
++# same macOS version. Inspect the header selected by the actual build flags.
++lexer_signatures = {}
++if platform.system() == "Darwin":
++    command = (shlex.split(os.environ.get("CXX", "c++"))
++               + shlex.split(os.environ.get("CPPFLAGS", ""))
++               + shlex.split(os.environ.get("CXXFLAGS", ""))
++               + ["-E", "-x", "c++", "-"])
++    header = subprocess.check_output(command, input="#include <FlexLexer.h>\n", text=True)
++    for method in ("LexerInput", "LexerOutput"):
++        match = re.search(r"virtual\s+(\w+)\s+" + method
++                          + r"\s*\([^,]+,\s*(\w+)\s+\w+\s*\)", header)
++        if not match:
++            raise RuntimeError("Cannot determine FlexLexer.h signature for " + method)
++        lexer_signatures[method] = match.groups()
+ 
+ for line in sys.stdin:
+     # Fix flex 2.6.1 warning
+@@ -48,14 +67,8 @@ for line in sys.stdin:
+     line = re.sub(r'(#line \d+ ".*)_pretmp', r'\1', line)
+     # Fix 'register' storage class specifier is deprecated and incompatible with C++17
+     line = re.sub(r'register ', '', line)
+-    # Change int to size_t on LexerInput/LexerOutput when using macOS Tahoe
+-    if platform.system() == "Darwin":
+-        try:
+-            osv = platform.mac_ver()[0]  # Example "26.2"
+-            if len(osv) > 2 and osv[2] == "." and int(osv[:2]) >= 26:
+-                if "::LexerInput(" in line or "::LexerOutput(" in line:
+-                    line = re.sub(r'int ', r'size_t ', line)
+-        except IndexError as e:
+-            print(f"Unexpected index error {e}")
++    for method, (result_type, size_type) in lexer_signatures.items():
++        line = re.sub(r"^\w+(\s+yyFlexLexer::" + method + r"\s*\([^,]+,\s*)\w+",
++                      lambda m: result_type + m[1] + size_type, line)
+ 
+     print(line, end='')

@@ -69,6 +69,15 @@ def test_cache_separates_host_architecture(project,monkeypatch):
     monkeypatch.setattr(host,'machine',lambda:'x86_64')
     assert project.cache_key(suite,'unit')==ours
 
+def test_cache_separates_operating_systems_on_the_same_architecture(project,monkeypatch):
+    from ucv import host
+    suite=project.suite('bpu')
+    monkeypatch.setattr(host,'machine',lambda:'aarch64')
+    monkeypatch.setattr(host,'system',lambda:'Linux')
+    linux=project.cache_key(suite,'unit')
+    monkeypatch.setattr(host,'system',lambda:'Darwin')
+    assert project.cache_key(suite,'unit')!=linux
+
 @pytest.mark.parametrize('field,value', [
     ('design', {'config':'','num_cores':1,'top':'top.TopMain'}),
     ('design', {'config':'DefaultConfig','num_cores':0,'top':'top.TopMain'}),

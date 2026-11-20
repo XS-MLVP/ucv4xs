@@ -22,7 +22,7 @@ def audit(root):
     files = sorted(set(listed.decode().split('\0'))-{''})
     errors = []
     forbidden_dirs = {'.venv','.tools','.cache','.ucv','.history','results','rtl','dut','XiangShan','XiangShan-internal'}
-    forbidden_suffixes = {'.so','.a','.o','.fst','.vcd','.dat','.fir','.v','.sv','.vh','.svh','.pyc'}
+    forbidden_suffixes = {'.so','.dylib','.a','.o','.fst','.vcd','.dat','.fir','.v','.sv','.vh','.svh','.pyc'}
     for name in files:
         path = root/name
         if not path.exists() and not path.is_symlink():continue  # pending source deletion

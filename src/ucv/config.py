@@ -136,9 +136,10 @@ class Project:
         # never be reused even when every pinned version matches.
         return digest({'baseline':suite.baseline_key, 'suite':suite.name, 'dut':dut,
                        'recipe':suite.recipe, 'tools':self.tools, 'options':options or {},
-                        'pipeline_version':2,
+                        'pipeline_version':3,
                        'build_options':self.config.get('build_options',{}),
                        'machine':host.machine(),
+                       'system':host.system(),
                        'overlay':None})
 
     def environment(self):
@@ -152,7 +153,7 @@ class Project:
         env['PYTHONPATH']=os.pathsep.join(dict.fromkeys(
             [str(self.root/'src'),str(self.root),
              *filter(None,env.get('PYTHONPATH','').split(os.pathsep))]))
-        return env
+        return host.build_environment(env)
 
     def runtime_python(self):
         """Select an explicit local runtime without moving/replacing a venv."""
